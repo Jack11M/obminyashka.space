@@ -1,0 +1,320 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1.0.0" author="jack.petrov">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="username" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_name" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="jack.petrov">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(45)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.2" author="jack.petrov">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.3" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_roles_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.4" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="role_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_role_to_role_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="roles"/>
+    </changeSet>
+
+    <changeSet id="1.0.5" author="jack.petrov">
+        <createTable tableName="locations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="district" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.6" author="jack.petrov">
+        <createTable tableName="user_locations">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.7" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_locations"
+                                 constraintName="fk_user_location_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.8" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="user_locations"
+                                 constraintName="fk_user_location_to_location_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="locations"/>
+    </changeSet>
+
+    <changeSet id="1.0.9" author="jack.petrov">
+        <createTable tableName="deals">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="deal_status" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.10" author="jack.petrov">
+        <createTable tableName="user_deals">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="deal_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.11" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_deals"
+                                 constraintName="fk_user_deal_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.12" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="deal_id"
+                                 baseTableName="user_deals"
+                                 constraintName="fk_user_deal_to_deal_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="deals"/>
+    </changeSet>
+
+    <changeSet id="1.0.13" author="jack.petrov">
+        <createTable tableName="advertisements">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="topic" type="VARCHAR(70)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="deal_type" type="VARCHAR(45)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_favourite" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="description" type="VARCHAR(2000)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.14" author="jack.petrov">
+        <createTable tableName="user_advertisements">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="advertisement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.15" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_advertisements"
+                                 constraintName="fk_user_advertisements_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.0.16" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="user_advertisements"
+                                 constraintName="fk_user_advertisements_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisements"/>
+    </changeSet>
+
+    <changeSet id="1.0.17" author="jack.petrov">
+        <createTable tableName="advertisement_locations">
+            <column name="advertisement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="location_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.18" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="advertisement_locations"
+                                 constraintName="fk_advertisement_location_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisements"/>
+    </changeSet>
+
+    <changeSet id="1.0.19" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="advertisement_locations"
+                                 constraintName="fk_advertisement_location_to_location_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="locations"/>
+    </changeSet>
+</databaseChangeLog>

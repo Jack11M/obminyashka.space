@@ -1,0 +1,146 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1.4.0" author="jack.petrov">
+
+        <createTable tableName="products">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="advertisement_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="subcategory_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="age" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="gender" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="size" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="season" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.4.1" author="jack.petrov">
+        <createTable tableName="subcategories">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.4.2" author="jack.petrov">
+        <createTable tableName="categories">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.4.3" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="products"
+                                 constraintName="fk_products_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="1.4.4" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="subcategory_id"
+                                 baseTableName="products"
+                                 constraintName="fk_products_to_subcategory_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subcategories"/>
+    </changeSet>
+
+    <changeSet id="1.4.5" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="category_id"
+                                 baseTableName="subcategories"
+                                 constraintName="fk_subcategory_to_category_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="categories"/>
+    </changeSet>
+
+    <changeSet id="1.4.6" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="products"
+                                 constraintName="fk_products_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisements"/>
+    </changeSet>
+</databaseChangeLog>

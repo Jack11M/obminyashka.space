@@ -1,0 +1,211 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1.1.0" author="jack.petrov">
+        <createTable tableName="phones">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="phone_number" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="show" type="BOOLEAN" defaultValue="true">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="default_phone" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+    <changeSet id="1.1.1" author="jack.petrov">
+        <createTable tableName="user_photos">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="resource_url" type="VARCHAR(150)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+
+            <column name="default_photo" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+    <changeSet id="1.1.2" author="jack.petrov">
+        <createTable tableName="children">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="birth_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="sex" type="VARCHAR(15)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+    <changeSet id="1.1.3" author="jack.petrov">
+        <createTable tableName="advertisement_images">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="advertisement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="resource_url" type="VARCHAR(150)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+
+            <column name="default_photo" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.1.4" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="phones"
+                                 constraintName="fk_phones_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1.1.5" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_photos"
+                                 constraintName="fk_user_photos_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1.1.6" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="children"
+                                 constraintName="fk_children_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1.1.7" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="advertisement_images"
+                                 constraintName="fk_advertisement_images_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisements"/>
+    </changeSet>
+
+    <changeSet id="1.1.8" author="jack.petrov">
+        <createTable tableName="products_to_exchange">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="advertisement_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(50)" defaultValue="Your proposition">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.1.9" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="products_to_exchange"
+                                 constraintName="fk_products_to_exchange_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisements"/>
+    </changeSet>
+</databaseChangeLog>
