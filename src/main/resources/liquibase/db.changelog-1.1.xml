@@ -182,7 +182,7 @@
             </column>
 
             <column name="name" type="VARCHAR(50)" defaultValue="Your proposition">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">

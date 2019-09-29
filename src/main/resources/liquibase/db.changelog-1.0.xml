@@ -69,6 +69,10 @@
 
     <changeSet id="1.0.2" author="jack.petrov">
         <createTable tableName="user_roles">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -129,9 +133,14 @@
 
     <changeSet id="1.0.6" author="jack.petrov">
         <createTable tableName="user_locations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
+
             <column name="location_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -180,6 +189,10 @@
 
     <changeSet id="1.0.10" author="jack.petrov">
         <createTable tableName="user_deals">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -256,6 +269,10 @@
 
     <changeSet id="1.0.14" author="jack.petrov">
         <createTable tableName="user_advertisements">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -288,6 +305,10 @@
 
     <changeSet id="1.0.17" author="jack.petrov">
         <createTable tableName="advertisement_locations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
             <column name="advertisement_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
