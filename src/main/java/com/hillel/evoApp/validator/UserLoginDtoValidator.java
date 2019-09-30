@@ -32,7 +32,7 @@ public class UserLoginDtoValidator implements Validator {
     public void validate(Object o, Errors errors) {
         UserLoginDto userLoginDto = (UserLoginDto) o;
         if (userLoginDto.getUsernameOrEmail().isEmpty()) {
-            throw new BadRequestException(invalidLoginForm);
+            throw new UnauthorizedException(invalidLoginForm);
         }
 
         if (userLoginDto.getPassword().isEmpty() || !userService.existsByUsernameOrEmailAndPassword(userLoginDto.getUsernameOrEmail(),

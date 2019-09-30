@@ -20,7 +20,7 @@ public class Product extends BaseEntity {
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "advertisement_id")
+    @JoinColumn(name = "id")
     private Advertisement advertisement;
 
     @ManyToOne(fetch = FetchType.LAZY)

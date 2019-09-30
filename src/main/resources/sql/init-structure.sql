@@ -7,8 +7,8 @@ USE `evo_exchange`;
 CREATE TABLE IF NOT EXISTS evo_exchange.users(
     id BIGINT AUTO_INCREMENT NOT NULL,
     username VARCHAR(100) NOT NULL,
-    password VARCHAR(200) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    password VARCHAR(300) NOT NULL,
+    email VARCHAR(130) NOT NULL,
     first_name VARCHAR(50) NULL,
     last_name VARCHAR(50) NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
@@ -102,8 +102,7 @@ ADD CONSTRAINT fk_user_deal_to_deal_id
 
 CREATE TABLE IF NOT EXISTS evo_exchange.advertisements (
     id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NULL,
-    product_id BIGINT NULL,
+    user_id BIGINT NULL, product_id BIGINT NULL,
     topic VARCHAR(70) NULL,
     deal_type VARCHAR(45) NULL,
     is_favourite BIT(1) DEFAULT 0 NULL,
@@ -262,7 +261,7 @@ CREATE TABLE IF NOT EXISTS evo_exchange.products (
     created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
     updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
     status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_PRODUCTS PRIMARY KEY (id), UNIQUE (id)
+    CONSTRAINT PK_PRODUCTS PRIMARY KEY (id), UNIQUE (id)
 );
 
 CREATE TABLE evo_exchange.subcategories (

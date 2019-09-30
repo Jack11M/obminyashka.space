@@ -44,7 +44,7 @@ public class Advertisement extends BaseEntity {
     private List<ExchangeProduct> exchangeProducts;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "advertisement_id")
+    @JoinColumn(name = "id")
     private Product product;
 
     @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)

@@ -13,11 +13,11 @@
                 <constraints nullable="false" unique="true"/>
             </column>
 
-            <column name="password" type="VARCHAR(200)">
+            <column name="password" type="VARCHAR(300)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="email" type="VARCHAR(100)">
+            <column name="email" type="VARCHAR(130)">
                 <constraints nullable="false" unique="true"/>
             </column>
 

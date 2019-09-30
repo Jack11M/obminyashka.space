@@ -2,7 +2,7 @@ package com.hillel.evoApp.validator;
 
 import com.hillel.evoApp.dao.UserRepository;
 import com.hillel.evoApp.dto.UserRegistrationDto;
-import com.hillel.evoApp.exception.UnauthorizedException;
+import com.hillel.evoApp.exception.BadRequestException;
 import com.hillel.evoApp.exception.UnprocessableEntityException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,11 +75,11 @@ public class UserRegistrationDtoValidator implements Validator {
         UserRegistrationDto userRegistrationDto = (UserRegistrationDto) o;
 
         if (userRegistrationDto.getUsername().isEmpty()) {
-            throw new UnauthorizedException(emptyUsernameField);
+            throw new BadRequestException(emptyUsernameField);
         }
 
         if (userRegistrationDto.getUsername().length() < 2 || userRegistrationDto.getUsername().length() > 50) {
-            throw new UnauthorizedException(invalidUsernameSize);
+            throw new BadRequestException(new String(invalidUsernameSize.getBytes(), StandardCharsets.US_ASCII));
         }
 
         if (userRepository.existsByUsername(userRegistrationDto.getUsername())) {
@@ -86,19 +87,19 @@ public class UserRegistrationDtoValidator implements Validator {
         }
 
         if (regExValidator(validUsernameRegEx, userRegistrationDto.getUsername())) {
-            throw new UnauthorizedException(invalidUsername);
+            throw new BadRequestException(invalidUsername);
         }
 
         if (userRegistrationDto.getEmail().length() > 130) {
-            throw new UnauthorizedException(tooBigEmail);
+            throw new BadRequestException(tooBigEmail);
         }
 
         if (userRegistrationDto.getEmail().isEmpty()) {
-            throw new UnauthorizedException(emptyEmailField);
+            throw new BadRequestException(emptyEmailField);
         }
 
         if (regExValidator(validEmailRegEx, userRegistrationDto.getEmail())) {
-            throw new UnauthorizedException(invalidEmail);
+            throw new BadRequestException(invalidEmail);
         }
 
         if (userRepository.existsByEmail(userRegistrationDto.getEmail())) {
@@ -106,23 +107,23 @@ public class UserRegistrationDtoValidator implements Validator {
         }
 
         if (userRegistrationDto.getPassword().isEmpty()) {
-            throw new UnauthorizedException(emptyPasswordField);
+            throw new BadRequestException(emptyPasswordField);
         }
 
         if (userRegistrationDto.getPassword().length() < 8 || userRegistrationDto.getPassword().length() > 30) {
-            throw new UnauthorizedException(invalidPasswordSize);
+            throw new BadRequestException(invalidPasswordSize);
         }
 
         if (userRegistrationDto.getConfirmPassword().isEmpty()) {
-            throw new UnauthorizedException(emptyConfirmPasswordField);
+            throw new BadRequestException(emptyConfirmPasswordField);
         }
 
         if (regExValidator(validPasswordRegEx, userRegistrationDto.getPassword())) {
-            throw new UnauthorizedException(invalidPasswordSize);
+            throw new BadRequestException(invalidPasswordSize);
         }
 
         if (!userRegistrationDto.getConfirmPassword().equals(userRegistrationDto.getPassword())) {
-            throw new UnauthorizedException(differentPasswords);
+            throw new BadRequestException(differentPasswords);
         }
     }
 
