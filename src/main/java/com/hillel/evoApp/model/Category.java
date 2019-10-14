@@ -22,4 +22,9 @@ public class Category extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private List<Subcategory> subcategories;
+
+//    @Override
+//    public String toString() {
+//        return name;
+//    }
 }

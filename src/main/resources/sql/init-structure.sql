@@ -367,3 +367,13 @@ ADD CONSTRAINT fk_messages_to_chat_id
     REFERENCES evo_exchange.chat_rooms (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE;
+
+INSERT INTO evo_exchange.categories (name) VALUES ('Одежда');
+INSERT INTO evo_exchange.categories (name) VALUES ('Обувь');
+INSERT INTO evo_exchange.categories (name) VALUES ('Игрушки');
+INSERT INTO evo_exchange.categories (name) VALUES ('Детская мебель');
+INSERT INTO evo_exchange.categories (name) VALUES ('Транспорт для детей');
+INSERT INTO evo_exchange.categories (name) VALUES ('Малыши до года');
+INSERT INTO evo_exchange.categories (name) VALUES ('Книги');
+INSERT INTO evo_exchange.categories (name) VALUES ('Другое');
+
