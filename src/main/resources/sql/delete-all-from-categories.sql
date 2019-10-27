@@ -1,0 +1,1 @@
+DELETE FROM evo_exchange.categories;

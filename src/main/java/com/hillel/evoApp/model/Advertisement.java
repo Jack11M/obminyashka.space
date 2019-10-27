@@ -47,6 +47,6 @@ public class Advertisement extends BaseEntity {
     @JoinColumn(name = "id")
     private Product product;
 
-    @ManyToMany(mappedBy = "advertisements", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "advertisements", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<User> users;
 }

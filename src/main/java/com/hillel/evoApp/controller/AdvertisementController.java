@@ -21,4 +21,10 @@ public class AdvertisementController {
     public List<String> allCategories() {
         return advertisementService.findAllCategoryNames();
     }
+
+    @ResponseBody
+    @GetMapping("/locations")
+    public List<String> allCities() {
+        return advertisementService.getAllCitiesNamesInRussian();
+    }
 }

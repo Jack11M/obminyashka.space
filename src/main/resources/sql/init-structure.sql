@@ -377,3 +377,16 @@ INSERT INTO evo_exchange.categories (name) VALUES ('Малыши до года')
 INSERT INTO evo_exchange.categories (name) VALUES ('Книги');
 INSERT INTO evo_exchange.categories (name) VALUES ('Другое');
 
+ALTER TABLE evo_exchange.products
+ADD category_id BIGINT NULL;
+
+DELETE FROM evo_exchange.categories;
+
+ALTER TABLE evo_exchange.products
+ADD CONSTRAINT fk_products_to_category_id
+    FOREIGN KEY (category_id)
+    REFERENCES evo_exchange.categories (id)
+    ON UPDATE RESTRICT
+    ON DELETE CASCADE;
+
+

@@ -36,4 +36,25 @@
             <column name="name" value="Другое"/>
         </insert>
     </changeSet>
+
+    <changeSet id="1.6.1" author="jack.petrov">
+        <addColumn schemaName="evo_exchange"
+                   tableName="products">
+            <column name="category_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1.6.2" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="category_id"
+                                 baseTableName="products"
+                                 constraintName="fk_products_to_category_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="categories"/>
+    </changeSet>
+
+    <changeSet id="1.6.3" author="jack.petrov">
+        <sqlFile dbms="mysql" path="../sql/delete-all-from-categories.sql" relativeToChangelogFile="true" />
+    </changeSet>
 </databaseChangeLog>
