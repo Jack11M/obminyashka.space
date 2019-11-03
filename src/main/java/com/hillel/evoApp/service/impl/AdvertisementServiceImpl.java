@@ -40,7 +40,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(City::getRussianValue)
                 .collect(Collectors.toList());
 
-        log.info("IN AdvertisementServiceImpl (getAllCitiesNames): there are these cities: {}", cities);
+        log.info("IN AdvertisementServiceImpl (getAllCitiesNamesInRussian): there are these cities: {}", cities);
         return citiesInString;
     }
 }
