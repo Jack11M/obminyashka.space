@@ -1,0 +1,169 @@
+*{
+    box-sizing: border-box;
+}
+.cards{
+    width: 100%;
+    height: auto;
+    padding-top: 90px;
+    padding-bottom: 125px;
+    &__title{
+        width: 1220px;
+        height: 30px;
+        margin: 0 auto 44px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      
+       
+        &_name{
+            margin: 0 42px;
+            font-size: 27px;
+            line-height: 24px;
+            color: #11b5ed;
+            font-family: 'Pollywog Cyr';
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            &:before{
+                content: "";
+                width: 11px;
+                height: 11px;
+                border-radius: 50%;
+                background-color: #12b6ed;
+                position: absolute;
+                top: 8px;
+                left: -32px;
+            } 
+            &:after{
+                content: "";
+                width: 11px;
+                height: 11px;
+                border-radius: 50%;
+                background-color: #12b6ed;
+                position: absolute;
+                top: 8px;
+                right: -32px;
+            } 
+        }
+        &_search{
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 19px;
+            line-height: 24px;
+            a{
+                color: #11b5ed;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        }
+
+    }
+    &__container{
+        width: 1220px;
+        height: auto;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 290px 290px 290px 290px;
+        grid-gap: 40px 20px;
+        // grid-row-gap: 40px;
+        // grid-column-gap: 14px;
+    }
+    &__item{
+        position: relative;
+        border: 2px dashed #c4c4c4;
+        width: 290px;
+        height: 419px;
+        border-radius: 20px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        &_favorite{
+            position: absolute;
+            top:0;
+            right: 43.5%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #a0a0a0;
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            cursor: pointer;
+            &_add{
+                background-color: #ffe400;
+            }
+            &_icon{
+                width: 25px;
+                height: 25px;
+                background: url(../../assets/icons/cards/favorite_white.png);
+            }
+        }
+        &_img{
+            width: 100%;
+            height: auto;
+            /*object-fit: scale-down;*/
+            background: #fff;
+            // background: #c10076 url(../../assets/img/cards/lot1.png);
+             border-radius: 20px 20px 0 0;
+             border: none;
+        }
+        &_graph{
+            width: 223px;
+            height: auto;
+            font-size: 16px;
+            line-height: 19px;
+            color: #111111;
+            font-family: Roboto;
+            text-align: center;
+            text-decoration: none;
+        }
+        &_location{
+            font-size: 14px;
+            line-height: 24px;
+            color: #00c0ff;
+            font-family: Roboto;
+            text-decoration: none;
+        }
+        &_button{
+            width: 222px;
+            height: 48px;
+            margin-bottom: 20px;
+            border-radius: 24px;
+            background-color: #12b6ed;
+            font-size: 16px;
+            line-height: 19px;
+            color: #ffffff;
+            font-family: Roboto;
+            text-align: center;
+            text-transform: uppercase;
+            outline-style: none;
+            border: none;
+            cursor: pointer;
+        }
+    }
+    &__search{
+        width: 1220px;
+        padding: 35px 0 65px;
+        margin: 0 auto;
+        text-align: right;
+    }
+
+}
+
+.add_favorite{
+    background-color: #ffe400;
+    &_icon{
+        background: url(../../assets/icons/cards/favorite_blue.png);
+    }
+}
+.cards__item_wrapper{
+    width: 285px;
+    height: 257px;
+    overflow: hidden;
+
+    
+}

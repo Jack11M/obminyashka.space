@@ -1,0 +1,63 @@
+.charity{
+    position: relative;
+    width: 1220px;
+    height: 353px;
+    margin: 71px auto 97px;
+    /*padding: 33px;*/
+    border-radius: 20px;
+    background: #f8f8f8;
+    background-size: auto;
+    background-repeat: no-repeat;
+    &__img{
+        position: absolute;
+        bottom: -10px;
+        right: 0;
+    }
+    &__title{
+        font-family: 'Roboto';
+        font-weight: 900;
+        font-size: 43px;
+        color: #00c0ff;
+        text-align: left;
+        text-transform: uppercase; 
+        /*margin: 46px 0px 37px 0px;*/
+        padding-top: 46px;
+        padding-left: 30px;
+        margin-bottom: 37px;
+    }
+    &__graph{
+        width: 412px;
+        height: 92px;
+        margin-bottom: 40px;
+        font-size: 18px;
+        line-height: 24px;
+        color: black;
+        font-family: 'Roboto', sans-serif;
+        text-align: justify;
+        padding-left: 45px;
+        margin-bottom: 40px;
+        &_accent{
+            color: #00c0ff;
+            font-family: "Roboto";
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    }
+    &__button{
+        width: 320px;
+        height: 53px;
+        margin-left: 45px;
+        border-radius: 27px;
+        background-color: #00c0ff;
+        font: 18px/24px 'Roboto', sans-serif;
+        color: #ffffff;
+        text-align: center;
+        text-transform: uppercase;
+        border: none;
+        outline-style: none;
+
+        &_img{
+            margin: 0 15px;
+        }
+    }
+}

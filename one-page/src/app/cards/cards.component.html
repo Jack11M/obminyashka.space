@@ -1,0 +1,33 @@
+<section class="cards">
+    <div class="cards__title">
+        
+        <h2 class="cards__title_name">
+            Текущие предложения
+        </h2>
+        <div class="cards__title_search">
+            <a href="#">Расширенный поиск > </a>
+        </div>
+    </div>
+    <div class="cards__container">
+        <div class="cards__item" *ngFor="let card of cards">
+            <div id="label" 
+                 class="cards__item_favorite" 
+                 [ngClass]="{'cards__item_favorite_add': card.isFavorite}"
+                 (click)="addToFavorites()">
+                <div class="cards__item_favorite_icon"></div>
+            </div>
+            <!-- <div class="cards__item_img"></div> -->
+            <div class="cards__item_wrapper"><img [src]="card.img" alt="lot" class="cards__item_img"></div>
+            <a href="" class="cards__item_graph"> 
+                {{card.title}}
+            </a>
+            <a href="" class="cards__item_location">
+                <img src="../../assets/icons/cards/location.png" alt="">
+                {{card.location}}
+            </a>
+            <button class="cards__item_button">
+                смотреть
+            </button>
+        </div>
+    </div>
+</section>
