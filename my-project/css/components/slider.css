@@ -1,0 +1,83 @@
+/* Main slider */
+.section-main-slider .swiper-container {
+    width: 100%;
+    height: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section-main-slider .swiper-slide {
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+}
+
+.section-main-slider .gallery-top {
+    height: 666px;
+    width: 100%;
+}
+
+.section-main-slider .gallery-thumbs {
+    height: 138px;
+    box-sizing: border-box;
+    padding: 10px 0;
+}
+
+.section-main-slider .gallery-thumbs .swiper-slide {
+    height: 100%;
+    opacity: 0.4;
+}
+
+.section-main-slider .gallery-thumbs .swiper-slide-thumb-active {
+    opacity: 1;
+}
+
+.section-main-slider .gallery-top .swiper-slide {
+    height: 666px;
+}
+
+.section-main-slider .gallery-thumbs .swiper-slide {
+    height: 138px;
+    width: 138px;
+}
+
+.section-main-slider .gallery-thumbs {
+    height: 180px;
+}
+
+/* Secondary slider */
+
+.section-ads .swiper-container {
+    width: 100%;
+    height: 100%;
+}
+
+.section-ads .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.section-ads .swiper-button-next, .section-ads .swiper-button-prev {
+    color: #fff;
+    padding: 20px;
+    border-radius: 50%;
+    background-color: #00C1FF;
+}
+
+.section-ads .swiper-button-next::after, .section-ads .swiper-button-prev::after {
+    font-size: initial;
+}

@@ -1,0 +1,59 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+  font-weight: 400;
+  color:#000000;
+  line-height: 1.5;
+  font-family: 'Roboto';
+  background-color: #E5E5E5;
+}
+
+.wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  box-sizing: content-box;
+  margin: 0 auto;
+  padding: 0 76px;
+}
+
+p, ul, ol, figure {
+  margin: 0 0 10px 0;
+}
+
+* + p, * + ul, * + ol , * + figure {
+  margin-top: 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.67em 0;
+}
+
+* + h1, * + h2, * + h3, * + h4, * + h5, * + h6 {
+  margin-top: 0.67em;
+}
+
+a, .link {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover, .link:hover {
+  text-decoration: underline;
+  color: red;
+}
+
+img {
+  width: 100%;
+  /* object-fit: contain; */
+  height: auto;
+}
+
+.logo {
+  display: inline-block;
+}
