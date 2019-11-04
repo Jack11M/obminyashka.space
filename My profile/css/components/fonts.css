@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'pollywog_cyrregular';
+    src: url('../../fonts/16271_1-webfont.woff2') format('woff2'),
+         url('../../fonts/16271_1-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}

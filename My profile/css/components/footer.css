@@ -1,0 +1,19 @@
+.footer {
+    background-image: url('../../images/footer.png');
+    background-size: cover;
+    padding-bottom: 20px;
+    
+   
+}
+
+.footer-nav {
+    padding: 105px 0 20px 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+}

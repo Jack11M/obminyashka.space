@@ -1,0 +1,284 @@
+*, *::before, *::after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  color: #000;
+  background-color: #E5E5E5;
+}
+
+body {  
+  margin: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.form-container {
+  max-width: 547px;
+
+}
+
+img {
+  width: 100%;
+  height:auto;
+}
+
+a, .link {
+  color: #000;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, .link:hover {
+  color: #43B05C;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 0.67em 0;
+}
+
+* + h1, * + h2, * + h3,* + h4,* + h5,* + h6 {
+  margin:0.67em 0 0 0;
+}
+
+p, ul, ol {
+  margin: 0 0 15px 0;
+}
+
+* + p, * + ul, * + ol{
+  margin-top: 15px;
+}
+
+ul > li > ol,
+ul > li > ul,
+ol > li > ul,
+ol > li > ol {
+  margin: 0;
+}
+
+.img-plus {
+  width: 10px;
+  height: 16px;
+}
+
+.img-heart {
+  width: 18px;
+  height: 17px;
+}
+
+.img-cab {
+  width: 30px;
+  height: 28px;
+  margin-right: 10px;
+}
+
+.img-search {
+  width: 22px;
+  height: 22px;
+}
+
+.img-logo {
+  width: 94px;
+  height: 36px;
+}
+
+.img-nav {
+  width: 16px;
+  height: 16px;
+}
+
+.img {
+  width: 25px;
+  height: 25px;
+}
+
+.img-account {
+  width: 114px;
+  height: 114px;
+  border-radius: 55%;
+}
+
+.img-circle{
+  width: 12px;
+  height: 12px;
+}
+
+.avatar {
+  position: relative;
+}
+
+.name-cabinet {
+  font-size: 16px;
+}
+
+.quantity {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  height: 16px;
+  width: 16px;
+  font-size: 9px;
+  background-color: red;
+  color: #FFFFFF;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.contact, .questions {
+  text-align: center;
+}
+
+.home {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.main {
+  /*background: linear-gradient(to right, white, white 25%, transparent 75%, transparent 75%); */
+ 
+  background-color: #E5E5E5;
+  position: relative;
+
+}
+
+.account-inform {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  padding-top: 21px;
+}
+
+
+.user-name {
+  font-size: 14px;
+  line-height: 16px;
+  color: #FFFFFF;
+  margin: 15px 0 0 0;
+  text-align: center;
+}
+
+.user-location {
+  font-size: 12px;
+  line-height: 16px;
+  color: #FFFFFF;
+  margin:  0;
+  padding: 0 0 20px 0;
+  text-align: center;
+}
+
+.account-background {
+  background-color: #00C0FF;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  
+  width: 617px;
+  height: 223px;
+  z-index: 0;
+}
+
+.account-foreground {
+  position: relative;
+  z-index: 3;
+}
+
+.account-nav {
+   padding: 30px 0 0 0;
+}
+
+.account-title {
+  padding-left: 20px;
+}
+
+.account-item {
+  padding: 24px 0 0 40px;
+
+}
+
+.active {
+  color: #12B6ED;
+}
+
+.bg-aside {
+  background-color: white;
+ 
+}
+
+.bg-about {
+  padding-left: 41px;
+}
+
+
+.email {
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  color: #FFFFFF;
+  padding: 40px 20px;
+}
+
+.tel {
+  font-size: 22px;
+  line-height: 24px;
+  text-align: center;
+  color: #FFFFFF;
+  padding-bottom: 10px;
+}
+
+.item-question {
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  color: #FFFFFF;
+  padding-top: 16px;
+}
+
+.first-item {
+  padding-top: 40px;
+}
+
+.rights {
+  font-size: 16px;
+  line-height: 16px;
+  color: #FFFFFF;
+  opacity: 0.5;
+  text-align: center;
+}
+
+.item-active{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}

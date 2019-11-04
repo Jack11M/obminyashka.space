@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Обменяшка</title>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-topbg">
+        <div class="container">
+          <div class="header-top">
+            <ul class="list header-left">
+              <li><a href="#" class="list-item">О проекте</a></li>
+              <li><a href="#" class="list-item"><img src="images/heart.png" alt="heart" class="img-heart"> Благотворительность</a></li>
+            </ul>
+            <div class="header-right">
+              <div class="avatar">
+                <img src="images/cabinet.png" alt="cabinet" class="img-cab">
+                <p class="quantity">3</p>
+              </div>
+              <a href="#" class="name-cabinet">Мой кабинет</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-bottom-background">
+      <div class="container">
+        <div class="header-bottom">
+          <a href="#"><img src="images/Logo.png" alt="logo" class="img-logo"></a>
+          <form action="#">
+            <select class="form-category">
+              <option>Категории</option>
+              <option>Категория 1</option>
+              <option>Категория 2</option>
+              <option>Категория 3</option>
+              <option>Категория 4</option>
+              <option>Категория 5</option>
+            </select>
+          </form>
+          <form action="#">
+            <div class="form-search">
+              <input type="search" name="Search" placeholder="Я ищу..." class="search-item">
+              <button class="button-search"><img class="img-search" src="images/search.png" alt="search"></button>
+            </div>
+          </form>
+          <button class="button-secondary">+ ДОБАВИТЬ ОБЪЯВЛЕНИЕ</button>
+        </div>
+      </div>
+      </div>
+    </header>
+
+
+    <main class="main">
+      <div class="container">
+        <div class="row">
+          <div class="col col-1-4 bg-aside">
+            <aside class="account">
+              <div class="account-inform">
+                <div class="account-background"></div>
+                <div class="account-foreground">
+                  <img src="images/mama.png" alt="photo" class="img-account">
+                  <p class="user-name">Альбина Задорожная,</p>
+                  <p class="user-location">Харьков</p>
+                </div>
+              </div>
+              <ul class="account-nav">
+                <li class="account-item"><img src="images/bell.png" alt="img" class="img-nav"><a href="#" class="account-title"> Мой активность</a></li>
+                <li class="account-item item-active"><span><img src="images/account.png" alt="img" class="img-nav"><a href="#" class="account-title active"> Мой профиль</a></span><img src="images/circle.png" alt="img" class="img-circle"></li>
+                <li class="account-item"><img src="images/star.png" alt="img" class="img-nav"><a href="#" class="account-title"> Избранное</a></li>
+                <li class="account-item"><img src="images/settings.png" alt="img" class="img-nav"><a href="#" class="account-title">Настройки</a></li>
+                <li class="account-item"><img src="images/logout.png" alt="img" class="img-nav"><a href="#" class="account-title">Выйти</a></li>
+              </ul>
+            </aside>
+          </div>
+          <div class="aside-mobile">
+            <aside class="account">
+              <div class="account-inform">
+                <img src="images/mama.png" alt="photo" class="img-account">
+                <p class="user-name">Альбина Задорожная,</p>
+                <p class="user-location">Харьков</p>
+              </div>
+              <ul class="account-nav">
+                <li class="account-item"><img src="images/bell.png" alt="img" class="img-nav"><a href="#" class="account-title"> Мой активность</a></li>
+                <li class="account-item item-active"><img src="images/account.png" alt="img" class="img-nav"><a href="#" class="account-title active"> Мой профиль</a></li>
+                <li class="account-item"><img src="images/star.png" alt="img" class="img-nav"><a href="#" class="account-title"> Избранное</a></li>
+                <li class="account-item"><img src="images/settings.png" alt="img" class="img-nav"><a href="#" class="account-title">Настройки</a></li>
+                <li class="account-item"><img src="images/logout.png" alt="img" class="img-nav"><a href="#" class="account-title">Выйти</a></li>
+              </ul>
+            </aside>
+          </div>
+          <div class="col col-3-4 bg-about">
+            <div class="form-container">
+              <section class="section about">
+                <h1 class="section-title">О себе</h1>
+                <form action="#">
+                  <div class="form-group">
+                    <label for="name">Имя:</label>
+                    <input id="name" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="surname">Фамилия:</label>
+                    <input id="surname" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="city">Город:</label>
+                    <input id="city" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="selection"></label>
+                    <select class="form-control" id="selection">
+                      <option>Выберите район:</option>
+                      <option>Шевченковский</option>
+                      <option>Слободской</option>
+                      <option>Основянский</option>
+                      <option>Холодногорский</option>
+                      <option>Московский</option>
+                      <option>Новобаварский</option>
+                      <option>Индустриальный</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Телефон:</label>
+                    <input id="phone" type="tel" class="form-control">
+                  </div>
+                </form>
+              </section>
+              <section class="section children">
+                <h1 class="section-title">Дети</h1>
+                <form action="#">
+                  <div class="form-group">
+                    <label for="name-child1">Имя:</label>
+                    <input id="name-child1" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="age-child1">Возраст:</label>
+                    <input id="age-child1" type="number" class="form-control">
+                  </div>
+                </form>
+                <div class="add-form">
+                  <p class="button-title">Добавить поле</p>
+                  <button class="button-add"><img src="images/plus.png" alt="img" class="img-plus"></button>
+                </div>
+                <form action="#">
+                  <div class="form-group">
+                    <label for="name-child2">Имя:</label>
+                    <input id="name-child2" type="text" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="age-child2">Возраст:</label>
+                    <input id="age-child2" type="number" name="quantity" min="1" class="form-control">
+                  </div>
+                </form>
+                <div class="add-form">
+                  <p class="button-title">Добавить поле</p>
+                  <button class="button-add"><img src="images/plus.png" alt="img" class="img-plus"></button>
+                </div>
+              </section>
+            </div>
+            <button class="button-save">Сохранить</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-nav">
+          <div class="contact">
+            <img src="images/phone.png" alt="phone" class="img">
+            <ul class="list list-contacts">
+              <li><a href="email.obmenyashka@gmail.com" class="email">email.obmenyashka@gmail.com</a></li>
+              <li><a href="tel:+380931234567" class="tel">+3 80 (93) 123 45 67</a></li>
+              <li><a href="tel:+380931234567" class="tel">+3 80 (93) 123 45 67</a></li>
+            </ul>
+          </div>
+          <div class="questions">
+            <img src="images/question.png" alt="question" class="img">
+            <ul class="list list-question">
+              <li><a href="#" class="item-question first-item">Правила безопасной сделки</a></li>
+              <li><a href="#" class="item-question first-item">Благотворительные организации</a></li>
+              <li><a href="#" class="item-question first-item">Часто задаваемые вопросы</a></li>
+            </ul>
+          </div>
+          <div class="home">
+            <a href="#"><img src="images/home.png" alt="home" class="img "></a>
+            <a href="#"><img src="images/Logo1.png" alt="logo" class="img-logo"></a>
+            <button class="button-charity"><img src="images/heart.png" alt="heart" class="img-heart"> Благотворительность</button>
+          </div>
+        </div>
+      </div>
+      <p class="rights">© Все права защищены 2019 / Обменяшка</p>
+    </footer>
+  </body>
+
+</html>

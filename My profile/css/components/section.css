@@ -1,0 +1,22 @@
+.section-title {
+font-family: 'pollywog_cyrregular';
+font-size: 27px;
+line-height: 24px;
+text-transform: uppercase;
+color: #11B5ED;
+padding: 65px 0 51px 0;
+}
+
+.section-title::after {
+    content: "•";
+    text-align: center;
+    padding-left: 27px;
+}
+
+.section-title::before {
+    content: "•";
+    text-align: center;
+    padding-right: 27px;
+}
+
+

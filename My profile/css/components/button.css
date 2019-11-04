@@ -1,0 +1,93 @@
+.button-add {
+    background-color: #43B05C;
+    border: transparent;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    outline: none;
+    margin-bottom: 21px;
+}
+
+.button-add:hover {
+   cursor: pointer;
+}
+
+.button-title {
+    margin: 5px 0;
+    padding-right: 21px;
+}
+
+.button-save {
+    background-color: #12B6ED;
+    border-radius: 63px;
+    width: 248px;
+    height: 49px;
+    border: transparent;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    outline: none;
+    margin-bottom: 140px;
+}
+
+.button-save:hover {
+    cursor: pointer;
+}
+
+.button-search {
+    position: absolute;
+    display: inline-block;
+    right: 495px;
+    top: 50%;
+    width: 42px;
+    height: 42px;
+    -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+    border: none;
+    background-color: #12B6ED;
+    border-radius: 50%;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box; 
+    outline: none;
+}
+
+.button-search:hover {
+    cursor: pointer;
+}
+
+.button-secondary {
+    width: 292px;
+    height: 56px;
+    background-color: #43B05C;
+    padding: 16px 36px;
+    outline: none;
+    border-radius: 30px;
+    border: transparent;
+    color: #FFFFFF;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.button-secondary:hover {
+    cursor: pointer;
+}
+
+.button-charity {
+    background-color: #00C0FF;
+    border-radius: 20px;
+    padding: 5px 35px ;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    outline: none;
+    border: transparent;
+}
+
+.button-charity:hover {
+    cursor: pointer;
+}
