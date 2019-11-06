@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700&display=swap&subset=cyrillic" rel="stylesheet">
+	<link rel="stylesheet" href="css/minified/all.min.css">
+</head>
+<body>
+	<header>
+		<div class="header-wrap">
+			<div class="header-inner">
+				<ul>
+					<li><a href="#">о проекте</a></li>
+					<li><a href="#"><span class="heart"></span>благотворительность</a></li>
+				</ul>
+				<a href="#" class="cabinet"><span data-badge="3"></span>Мой кабинет</a>
+			</div>
+		</div>
+		
+	</header>
+	<main>
+		<div class="main-header-wrap">
+			<div class="main-header">
+				<span class="logo"></span>
+				<span class="pointer">
+					<a href="#">Категории</a>
+		            <ul>
+		                <li><a href="#">Lorem</a></li>
+		                <li><a href="#">ipsum</a></li>
+		                <li><a href="#">dolor</a></li>
+		                <li><a href="#">sit</a></li>
+		                <li><a href="#">amet</a></li>
+		            </ul>
+				</span>
+				<div class="search">
+					<form>
+						<button type="submit"><span class="search-icon"></span></button>
+						<input type="search" placeholder="Я ищу...">
+						
+					</form>
+				</div>
+				<a href="#" class="ad"><span class="plus">добавить объявление</span></a>
+            </div>
+		</div>
+		<div class="page">
+			<ul class="breadcrumb">
+	            <li><a href="#"><span>Главная</span></a></li>
+	            <li><a href="#"><span>Поиск</span></a></li>
+	            <li>Результаты поиска</li>
+	        </ul>
+	        <div class="page-main">
+	        	<div class="aside">
+		        	<div class="aside-top">
+		        		<form action="#">
+		        			<fieldset>
+		        				<legend>Фильтр</legend>
+		        				<p>
+		        					<span>Локация:</span>
+		        					<input type="text" placeholder="Город:">
+		        					<select>
+									  <option hidden>Район:</option>
+									  <option>Киевский</option>
+									  <option>Немышлянский</option>
+									</select>
+		        				</p>
+		        				<p class="radio">
+		        					<span>Пол:</span>
+		        					 
+		        					<input type="radio" id="sex1" name="sex-group" checked>
+		    						<label for="sex1">Женский</label>
+		    						<input type="radio" id="sex2" name="sex-group">
+		    						<label for="sex2">Мужской</label>
+		    						<input type="radio" id="sex3" name="sex-group">
+		    						<label for="sex3">Унисекс</label>
+									<span>Возраст:</span>
+									<input type="radio" id="age1" name="age-group" checked>
+		    						<label for="age1">0</label>
+		    						<input type="radio" id="age2" name="age-group">
+		    						<label for="age2">1-2</label>
+		    						<input type="radio" id="age3" name="age-group">
+		    						<label for="age3">2-4</label>
+		    						<input type="radio" id="age4" name="age-group">
+		    						<label for="age4">5-7</label>
+		    						<input type="radio" id="age5" name="age-group">
+		    						<label for="age5">8-11</label>
+		    						<input type="radio" id="age6" name="age-group">
+		    						<label for="age6">11-14</label>
+		    						<span>Размер (одежда):</span>
+									<input type="radio" id="size1" name="size-group" checked>
+		    						<label for="size1">50 - 80 см</label>
+		    						<input type="radio" id="size2" name="size-group">
+		    						<label for="size2">80 -92 см</label>
+		    						<input type="radio" id="size3" name="size-group">
+		    						<label for="size3">92 - 104 см</label>
+		    						<input type="radio" id="size4" name="size-group">
+		    						<label for="size4"> 110 - 122 см</label>
+		    						<input type="radio" id="size5" name="size-group">
+		    						<label for="size5">128 - 146 см</label>
+		    						<input type="radio" id="size6" name="size-group">
+		    						<label for="size6">146 -164 см</label>
+		    						<span>Размер (обувь):</span>
+		    						<select class="shoes">
+									  <option hidden>Стелька (см) - Размер:</option>
+									  <option>9,5 см - 16</option>
+									  <option>10 см - 16,5</option>
+									  <option>10,5 см - 17</option>
+									  <option>11 см - 18</option>
+									  <option>11,5 см - 19</option>
+									  <option>9,5 см - 16</option>
+									  <option>10 см - 16,5</option>
+									  <option>10,5 см - 17</option>
+									  <option>11 см - 18</option>
+									  <option>11,5 см - 19</option>
+									</select>
+		    						<span>Сезон:</span>
+									<input type="radio" id="season1" name="season-group" checked>
+		    						<label for="season1">Демисезон</label>
+		    						<input type="radio" id="season2" name="season-group">
+		    						<label for="season2">Лето</label>
+		    						<input type="radio" id="season3" name="season-group">
+		    						<label for="season3">Зима</label>
+		    						
+		        				
+		        				</p>
+		        				<div class="colors">
+		        				
+		        					<span>Цвет:</span>
+									<div class="radio-group">
+										
+										<label for="color-one"><input class="checkbox" type="checkbox" id="color-one"><span class="col-one"></span></label>
+										<label for="color-two"><input class="checkbox" type="checkbox" id="color-two"><span class="col-two"></span></label>
+										<label for="color-three"><input class="checkbox" type="checkbox" id="color-three"><span class="col-three"></span></label>
+										<label for="color-four"><input class="checkbox" type="checkbox" id="color-four"><span class="col-four"></span></label>
+										<label for="color-five"><input class="checkbox" type="checkbox" id="color-five"><span class="col-five"></span></label>
+										<label for="color-six"><input class="checkbox" type="checkbox" id="color-six"><span class="col-six"></span></label>
+										<label for="color-seven"><input class="checkbox" type="checkbox" id="color-seven"><span class="col-seven"></span></label>
+										<label for="color-eight"><input class="checkbox" type="checkbox" id="color-eight"><span class="col-eight"></span></label>
+										<label for="color-nine"><input class="checkbox" type="checkbox" id="color-nine"><span class="col-nine"></span></label>
+										<label for="color-ten"><input class="checkbox" type="checkbox" id="color-ten"><span class="col-ten"></span></label>
+										<label for="color-eleven"><input class="checkbox" type="checkbox" id="color-eleven"><span class="col-eleven"></span></label>
+										<label for="color-twelve"><input class="checkbox" type="checkbox" id="color-twelve"><span class="col-twelve"></span></label>
+									</div>
+		        					
+									<!--	
+		        					<input type="checkbox" id="color1" />
+									<label for="color1"></label>
+									
+									
+									<input type="checkbox" id="color2" checked="checked" />
+									<label for="color2"></label>
+
+									<input type="checkbox" id="color3" />
+									<label for="color3"></label>
+									
+									
+									<input type="checkbox" id="color4" />
+									<label for="color4"></label>
+
+									<input type="checkbox" id="color5" />
+									<label for="color5"></label>
+									
+									
+									<input type="checkbox" id="color6"  />
+									<label for="color6"></label>
+
+									<input type="checkbox" id="color7" />
+									<label for="color7"></label>
+									
+									
+									<input type="checkbox" id="color8"  />
+									<label for="color8"></label>
+
+									<input type="checkbox" id="color9" />
+									<label for="color9"></label>
+									
+									
+									<input type="checkbox" id="color10" />
+									<label for="color10"></label>
+
+									<input type="checkbox" id="color11" />
+									<label for="color11"></label>
+									
+									
+									<input type="checkbox" id="color12" />
+									<label for="color12"></label>
+								-->
+									
+		    						
+		        				</div>
+		        			</fieldset>
+		        		</form>
+
+		        	</div>
+		        	<div class="aside-bottom">
+		        		<form action="#">
+		        			<fieldset>
+		        				<legend>категории</legend>
+		        				<ul>
+		        					<li class="pointer">
+						                <a href="#">Одежда</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Обувь</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Игрушки</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Детская мебель</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Транспорт для детей</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Малыши до года</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Книги</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Карнавальные костюмы</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						            <li class="pointer">
+						                <a href="#">Другое</a>
+						                <ul>
+						                    <li><a href="#">Кросовки, Кеды</a></li>
+						                    <li><a href="#">Ботинки, Сапоги</a></li>
+						                    <li><a href="#">Босоножки, Тапочки</a></li>
+						                    <li><a href="#">Туфли, Мокасины</a></li>
+						                    <li><a href="#">Другое</a></li>
+						                </ul>
+						            </li>
+						        </ul>
+		        			</fieldset>
+		        		</form>
+					</div>
+		        </div>
+	        	<div>
+
+	        		<div class="sorted">
+
+	        			<form action="#">
+		        			<fieldset>
+		        				<a href="#" class="list-style active"><span>&#8942;&#8942;&#8942;</span></a>
+		        				<a href="#" class="list-style "><span>&#8942;&#8801;</span></a>
+		        				<span>Показать:</span>
+		        				<select>
+									<option>15</option>
+									<option>10</option>
+									<option>5</option>
+								</select>	
+		        				<span>Сортировать:</span>	
+								<select>
+									<option>Без сортировки</option>
+									<option>По возрастанию цены</option>
+									<option>По дате</option>
+								</select>
+							</fieldset>
+	        			</form>
+	        		</div>
+	        		<h1>результаты поиска</h1>
+		        	<div class="search-results">
+		        		
+		        		<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+						<div class="product-item">
+						  <img src="images/mustang-princess.jpg">
+						  <div class="product-list">
+						    <h3>Велосипед детский для девочки 5 лет</h3>
+						      <span class="city">Харьков</span>
+						      <a href="" class="button">смотреть</a>
+						  </div>
+						</div>
+					</div>	
+	        	</div>
+	        </div>
+		</div>
+	</main>
+	<footer>
+		<div class="footer-inner">
+			<div class="contacts">
+				<span class="phone-ico"></span>
+				<a href="mailto:email.obmenyashka@gmail.com" >email.obmenyashka@gmail.com</a>
+				<a href="tel:+38093234567" class="phone">+3 80 (93) 123 45 67</a>
+				<a href="tel:+38093234567" class="phone">+3 80 (93) 123 45 67</a>
+			</div>
+			<div class="about">
+				<span class="ask-ico"></span>
+				<a href="#">Правила безопасной сделки</a>
+				<a href="#">Благотворительные организации</a>
+				<a href="#">Часто задаваемые вопросы</a>
+			</div>
+			<div>
+				<span class="home"></span>
+				<a href="#"><span class="footer-logo"></span></a>
+				<a href="#" class="charity">благотворительность</a>
+			</div>
+		</div>
+		<div class="copyright">
+			<span >&copy; Все права защищены </span><span>2019 / Обменяшка</span>
+		</div>
+	</footer>
+	<script src="https://use.fontawesome.com/5c816d7975.js"></script>
+</body>
+</html>
