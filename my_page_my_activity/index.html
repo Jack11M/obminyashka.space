@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800&display=swap" rel="stylesheet">
+  <title>My activity</title>
+</head>
+
+<body>
+  <header>
+    <div class="row1-wrap">
+      <div class="row1">
+        <nav>
+          <a href="#" class="black">о проэкте</a>
+          <a href="#" class="black"><i class="fas fa-heart"></i>благотворительность</a>
+        </nav>
+        <div class="my-account">
+          <div class="acc-logo">
+            <img src="./img/AccLogo.png" alt="">
+            <p class="logo-count white">3</p>
+          </div>
+          <a href="#" class="black">Мой кабинет</a>
+        </div>
+      </div>
+    </div>
+    <div class="row2-wrap">
+      <div class="row2">
+        <a href="#" class="main-logo"><img src="./img/MainLogo.png" alt=""></a>
+        <div class="categories"><span class="black">Категории</span><button class="black"><i class="fas fa-caret-down"></i></button></div>
+        <input type="text" value="" class="search" placeholder="Я ищу...">
+        <button class="add-advert">+   добавить объявление</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="sidebar">
+      <div class="user-wrap">
+        <div class="user">
+          <div class="user-logo"></div>
+          <p class="user-name">Альбина Задорожная,</p>
+          <p class="user-location">Харьков </p>
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <nav class="menu">
+          <a href="#" class="blue active"><i class="far fa-bell"></i> Моя активность</a>
+          <a href="#" class="black"><i class="far fa-user"></i> Мой профиль</a>
+          <a href="#" class="black"><i class="far fa-star"></i> Избранное</a>
+          <a href="#" class="black"><i class="fas fa-cog"></i> Настройки</a>
+          <a href="#" class="black"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </nav>
+      </div>
+    </div>
+    <div class="content">
+      <div class="title">
+        <h2>входящие ответы</h2>
+      </div>
+      <div class="elemetns-wrap">
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+      </div>
+      <div class="title">
+        <h2>исходящие ответы</h2> 
+      </div>
+      <div class="elemetns-wrap">
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+        <div data-template="element"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer">
+      <div class="f-wrap">
+        <div class="col">
+          <img src="./img/IconPhone.png" alt="" class="icon">
+          <a href="mailto:email.obmenyashka@gmail.com" class="white">email.obmenyashka@gmail.com</a>
+          <a href="tel:+380931234567" class="fs-22 white">+3 80 (93) 123 45 67</a>
+          <a href="tel:+380931234567" class="fs-22 white">+3 80 (93) 123 45 67</a>
+        </div>
+        <div class="col">
+          <img src="./img/IcotQuestion.png" alt="" class="icon">
+          <a href="#" class="white">Правила безопасной сделки</a>
+          <a href="#" class="white">Благотворительные организации</a>
+          <a href="#" class="white">Часто задаваемые вопросы</a>
+        </div>
+        <div class="col">
+          <img src="./img/IconHome.png" alt="" class="icon">
+          <img src="./img/FooterLogo.png" alt="" class="f-logo">
+          <button><i class="fas fa-heart"></i>благотворительность</button>
+        </div>
+      </div>
+      <p class="copyright white">
+        <i class="far fa-copyright"></i>
+        <span>Все права защищены</span>
+        <span>2019 / Обменяшка</span>
+      </p>
+    </div>
+  </footer>
+
+
+
+  <template id="element">
+    <div class="icon-element">
+      <div class="icon-element-pic"></div>
+    </div>
+    <div class="img"></div>
+    <div class="elemetn-content">
+      <h4>Велосипед детский для девочки 5 лет</h4>
+      <p class="location fs-14 blue"><i class="fas fa-map-marker-alt"></i> <span>Харьков</span></p>
+      <div class="btn-wrap">
+        <button class="look">смотреть</button>
+        <p class="look-counter white">3</p>
+      </div>
+    </div>
+  </template>
+
+
+  <script src="index.js"></script>
+</body>
+
+</html>

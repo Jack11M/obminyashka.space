@@ -1,0 +1,50 @@
+.main
+  display: flex
+  padding-top: 160px
+
+.sidebar
+  width: 25%
+  .user-wrap, .menu-wrap
+    display: flex
+    flex-direction: column
+    align-items: flex-end
+    padding: 50px 0
+  .user-wrap .user, .menu-wrap .menu
+    padding-right: 50px
+  .user-wrap
+    background: #00C0FF
+    margin-top: -20px
+    .user-logo
+      width: 118px
+      height: 118px
+      border-radius: 50%
+      background: url(../img/UserLogo.png)
+      display: block
+      margin: 0 auto
+      margin-bottom: 16px
+    .user-name, .user-location
+      text-align: center
+      color: #FFFFFF
+    .user-name
+      line-height: 1.5em
+      font-weight: 700
+    .user-location
+      font-size: 0.75em
+  .menu-wrap
+    background: #ffffff
+    height: 100%
+    .menu a
+      display: block
+      margin-bottom: 23px
+      i
+        margin-right: 20px
+
+.content
+  max-width: 1200px
+  padding: 50px
+  position: relative
+  z-index: 1
+  .elemetns-wrap
+    display: flex
+    flex-wrap: wrap
+    padding-bottom: 50px
