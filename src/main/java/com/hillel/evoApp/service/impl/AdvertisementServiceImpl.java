@@ -23,7 +23,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public List<String> findAllCategoryNames() {
         List<String> categoryNames = advertisementRepository.findAllCategories();
 
-        if (categoryNames != null) {
+        if (!categoryNames.isEmpty()) {
             log.info("IN AdvertisementServiceImpl (findAllCategoryNames): there are these categories: {}", categoryNames);
             return categoryNames;
         } else {
