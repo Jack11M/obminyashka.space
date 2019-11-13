@@ -1,0 +1,86 @@
+@font-face {
+	font-family: Proxima Nova;
+	src: url(../../fonts/ProximaNova/ProximaNova-Black.ttf);
+	src: url(../../fonts/ProximaNova/ProximaNova-Bold.ttf);
+	src: url(../../fonts/ProximaNova/ProximaNova-Regular.ttf);
+	src: url(../../fonts/ProximaNova/ProximaNova-Light.ttf);
+}
+
+@font-face {
+	font-family: Pollywog Cyr;
+  src: url(../../fonts/PollywogCyr/PollywogCyr.ttf);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background: #E5E5E5;
+	font-family: Proxima Nova;
+	position: relative;
+	font-size: 16px;
+	line-height: 16px;
+}
+
+.container {
+	box-sizing: content-box;
+	margin: 0 auto;
+	max-width: 1220px;
+}
+
+a, button, input {
+	outline: none;
+	font-size: 1em;
+	line-height: 1em;
+}
+
+button, input {
+	border-radius: 50px;
+}
+
+a, button {
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+}
+
+button {
+	text-transform: uppercase;
+	text-align: center;
+	color: #ffffff;
+	text-align: center;
+	border: none;
+}
+
+.fs-22 {
+	font-size: 1.375em;
+}
+
+.fs-14 {
+	font-size: 0.875em;
+}
+
+.black {
+	color: black;
+}
+
+.white {
+	color: white;
+}
+
+.blue {
+	color: #00C0FF;
+}
+
+h2::before {
+	content: '\2022';
+	margin-right: 30px;
+}
+
+h2::after {
+	content: '\2022';
+	margin-left: 30px;
+}

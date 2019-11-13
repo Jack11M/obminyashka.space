@@ -1,0 +1,72 @@
+.sidebar {
+	height: 100%;
+  overflow: hidden;
+}
+
+.content-title {
+	font-family: Pollywog Cyr;
+	font-size: 27px;
+	line-height: 24px;
+	text-transform: uppercase;
+	color: #11B5ED;
+	margin: 0 27px 50px 0;
+	font-weight: 700;
+}
+
+.sidebar .user-wrap, .sidebar .menu-wrap {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	padding: 50px 0;
+}
+
+.sidebar .user-wrap .user, .sidebar .menu-wrap .menu {
+	padding-right: 50px;
+}
+
+.sidebar .user-wrap {
+	background: #00C0FF;
+}
+
+.sidebar .user-wrap .user-logo {
+	width: 118px;
+	height: 118px;
+	border-radius: 50%;
+	background: url(../../img/UserLogo.png);
+	display: block;
+	margin: 0 auto;
+	margin-bottom: 16px;
+}
+
+.sidebar .user-wrap .user-name, .sidebar .user-wrap .user-location {
+	text-align: center;
+	color: #FFFFFF;
+}
+
+.sidebar .user-wrap .user-name {
+	line-height: 1.5em;
+	font-weight: 700;
+}
+
+.sidebar .user-wrap .user-location {
+	font-size: 0.75em;
+}
+
+.sidebar .menu-wrap {
+	background: #ffffff;
+	min-height: 100%;
+}
+
+.sidebar .menu-wrap .menu a {
+	display: block;
+	margin-bottom: 23px;
+}
+
+.sidebar .menu-wrap .menu a i {
+	margin-right: 20px;
+}
+
+.content {
+	max-width: 1200px;
+	margin: 50px;
+}
