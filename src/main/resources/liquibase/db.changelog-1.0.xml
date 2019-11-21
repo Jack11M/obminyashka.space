@@ -230,10 +230,6 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="location_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-
             <column name="topic" type="VARCHAR(70)">
                 <constraints nullable="true"/>
             </column>

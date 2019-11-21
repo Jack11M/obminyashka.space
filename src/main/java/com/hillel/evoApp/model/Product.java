@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
-@EqualsAndHashCode(exclude = {"user", "advertisement", "subcategory", "images"})
+@EqualsAndHashCode(exclude = {"advertisement", "subcategory", "images"})
 @Entity
 @Data
 @NoArgsConstructor
@@ -22,10 +22,6 @@ public class Product {
     private String gender;
     private String season;
     private String size;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "advertisement_id")

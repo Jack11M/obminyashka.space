@@ -27,8 +27,7 @@ public class Advertisement extends BaseEntity {
     @Column(name = "ready_for_offers")
     private Boolean readyForOffers;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
+    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Location locations;
 
     @Column(name = "wishes_to_exchange")

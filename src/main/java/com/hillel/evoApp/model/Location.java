@@ -22,5 +22,5 @@ public class Location {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "advertisement_id")
-    private Advertisement advertisements;
+    private Advertisement advertisement;
 }
