@@ -8,13 +8,16 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(exclude = "user")
 @Entity
-@Table(name = "children")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Child extends BaseEntity {
+public class Child {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -23,7 +26,5 @@ public class Child extends BaseEntity {
     @Column(name = "birth_date")
     private Date birthDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "sex")
-    private Sex sex;
+    private String sex;
 }

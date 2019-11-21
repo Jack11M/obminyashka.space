@@ -7,17 +7,20 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(exclude = {"product"})
 @Entity
-@Table(name = "user_photos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPhoto extends BaseEntity {
+public class Image {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(name = "resource_url")
     private String resourceUrl;

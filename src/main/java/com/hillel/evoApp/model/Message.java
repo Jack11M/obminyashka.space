@@ -8,28 +8,35 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "messages")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Message extends BaseEntity {
-
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "read")
-    private boolean read;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_id")
-    private ChatRoom chatRoom;
-
-    @Column(name = "message_time")
-    private Date messageTime;
-}
+//    2019-11-21: jack.petrov: I need time to figured out with correct mapping chats and messages.
+//@EqualsAndHashCode(exclude = {"chatRoom", "user"})
+//@Entity
+//@Data
+//@NoArgsConstructor
+//@AllArgsConstructor
+//public class Message{
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
+//
+//    @Column(name = "content")
+//    private String content;
+//
+//    @Column(name = "created")
+//    private Date created;
+//
+//    private Boolean delivered;
+//    private Boolean modified;
+//
+//    @Column(name = "was_read")
+//    private Boolean wasRead;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private User user;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "chat_id")
+//    private ChatRoom chatRoom;
+//}

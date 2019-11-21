@@ -6,23 +6,21 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(exclude = "advertisements")
 @Entity
-@Table(name = "locations")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Location extends BaseEntity {
+public class Location {
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "city")
-    private City city;
-
-    @Column(name = "district")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String city;
     private String district;
 
-    @ManyToMany(mappedBy = "locations", fetch = FetchType.LAZY)
-    private List<Advertisement> advertisements;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advertisement_id")
+    private Advertisement advertisements;
 }

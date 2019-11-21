@@ -5,28 +5,26 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Entity
-@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role extends BaseEntity {
+public class Role {
 
-    @Column(name = "name")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     private List<User> users;
-
-    public Role(String name) {
-        this.name = name;
-    }
 
     @Override
     public String toString() {
         return "Role{" +
-                "id: " + super.getId() + ", " +
-                "name: " + name + "}";
+                "name='" + name + '\'' +
+                '}';
     }
 }

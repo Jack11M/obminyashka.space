@@ -33,9 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                //TODO fix a problem with CORS headers in the UI side
-                //.cors()
-                //.and()
+                .cors()
+                .and()
                 .csrf()
                 .disable()
                 .sessionManagement()

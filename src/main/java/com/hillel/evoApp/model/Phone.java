@@ -7,13 +7,16 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(exclude = "user")
 @Entity
-@Table(name = "phones")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Phone extends BaseEntity {
+public class Phone {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -23,8 +26,8 @@ public class Phone extends BaseEntity {
     private Long phoneNumber;
 
     @Column(name = "show")
-    private boolean show;
+    private Boolean show;
 
     @Column(name = "default_phone")
-    private boolean defaultPhone;
+    private Boolean defaultPhone;
 }

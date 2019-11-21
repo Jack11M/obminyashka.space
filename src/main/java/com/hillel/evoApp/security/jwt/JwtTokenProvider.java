@@ -15,8 +15,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,9 +34,9 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username, List<Role> roles) {
+    public String createToken(String username, Role role) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", getRoleNames(roles));
+        claims.put("role", role.getName());
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + jwtTokenExpireTime);
@@ -78,9 +76,5 @@ public class JwtTokenProvider {
             log.error("WT token is expired or invalid: {}", e.getMessage());
             return false;
         }
-    }
-
-    private List<String> getRoleNames(List<Role> userRoles) {
-        return userRoles.stream().map(Role::getName).collect(Collectors.toList());
     }
 }

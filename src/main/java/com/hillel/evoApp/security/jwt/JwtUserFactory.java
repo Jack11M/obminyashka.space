@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public final class JwtUserFactory {
@@ -22,15 +21,13 @@ public final class JwtUserFactory {
                 user.getLastName(),
                 user.getEmail(),
                 user.getPassword(),
-                mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
+                mapToGrantedAuthorities(user.getRole()),
                 user.getStatus().equals(Status.ACTIVE),
                 user.getUpdated()
         );
     }
 
-    private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> userRoles) {
-        return userRoles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
+    private static List<GrantedAuthority> mapToGrantedAuthorities(Role userRole) {
+        return Collections.singletonList(new SimpleGrantedAuthority(userRole.getName()));
     }
 }

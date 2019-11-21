@@ -8,22 +8,23 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(exclude = {"category", "products"})
 @Entity
-@Table(name = "subcategories")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Subcategory extends BaseEntity {
+public class Subcategory {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "name")
-    private String name;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "subcategory_id")
+    @OneToMany(mappedBy = "subcategory", fetch = FetchType.LAZY)
     private List<Product> products;
 }
