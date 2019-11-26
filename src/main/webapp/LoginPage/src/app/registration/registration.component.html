@@ -1,0 +1,15 @@
+<div class="form">
+    <div class="login">
+    <label for="#username">Username</label>
+    <input type="text" class="input" id="username" #username>
+    <label for="#email">Email</label>
+    <input type="text" class="input" id="email" #email>
+    <label for="#password">Password</label>
+    <input type="password" class="input" id="password" #password>
+    <label for="#confirmPassword">Confirm Password</label>
+    <input type="password" class="input" id="confirmPassword" #confirmPassword>
+    <button class="submit" (click)="Registration(username.value, email.value, password.value, confirmPassword.value)">Submit</button>
+    <button routerLink="">Login</button>
+    </div>  
+  </div>
+

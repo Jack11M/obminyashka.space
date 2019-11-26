@@ -1,0 +1,11 @@
+<div class="form">
+  <h1>grhdrh</h1>
+  <div class="login">
+  <label for="#username">Username or Email</label>
+  <input type="text" class="input" id="username" #username>
+  <label for="#password">Password</label>
+  <input type="password" class="input" id="password" #password>
+  <button class="submit" (click)="login(username.value, password.value)">Submit</button>
+  <button routerLink="/registration">Registration</button>
+  </div>  
+</div>
