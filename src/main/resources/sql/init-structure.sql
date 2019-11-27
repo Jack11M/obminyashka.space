@@ -4,376 +4,189 @@ CREATE SCHEMA IF NOT EXISTS `evo_exchange` DEFAULT CHARACTER SET utf8;
 
 USE `evo_exchange`;
 
-CREATE TABLE IF NOT EXISTS evo_exchange.users(
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    username VARCHAR(100) NOT NULL,
+CREATE TABLE IF NOT EXISTS evo_exchange.user (
+	id BIGINT AUTO_INCREMENT NOT NULL,
+    role_id BIGINT NOT NULL,
+    username VARCHAR(51) NOT NULL,
     password VARCHAR(300) NOT NULL,
     email VARCHAR(130) NOT NULL,
     first_name VARCHAR(50) NULL,
     last_name VARCHAR(50) NULL,
+    avatar_image VARCHAR(50) NULL,
+    hometown VARCHAR(100) NULL,
+    on_line BIT(1) DEFAULT 0 NULL,
+    last_online_time timestamp NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
     updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
     status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_USERS PRIMARY KEY (id), UNIQUE (email), UNIQUE (id), UNIQUE (username)
-);
-
-CREATE TABLE IF NOT EXISTS evo_exchange.roles (
-	id BIGINT AUTO_INCREMENT NOT NULL,
-	name VARCHAR(45) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_ROLES PRIMARY KEY (id), UNIQUE (name), UNIQUE (id)
+  CONSTRAINT PK_USER PRIMARY KEY (id), UNIQUE (id), UNIQUE (username), UNIQUE (email)
   );
 
-CREATE TABLE IF NOT EXISTS evo_exchange.user_roles (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NOT NULL,
-    role_id BIGINT NOT NULL,
-  CONSTRAINT PK_USER_ROLES PRIMARY KEY (id), UNIQUE (id)
-);
+CREATE TABLE IF NOT EXISTS evo_exchange.`role` (
+	id BIGINT AUTO_INCREMENT NOT NULL,
+	name VARCHAR(30) NULL,
+  CONSTRAINT PK_ROLE PRIMARY KEY (id), UNIQUE (name), UNIQUE (id)
+  );
 
-ALTER TABLE evo_exchange.user_roles
-ADD CONSTRAINT fk_user_roles_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
+ALTER TABLE evo_exchange.user
+ADD CONSTRAINT fk_user_to_role_id
+	FOREIGN KEY (role_id)
+    REFERENCES evo_exchange.`role` (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE;
 
-CREATE TABLE IF NOT EXISTS evo_exchange.locations (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    city VARCHAR(100) NULL,
-    district VARCHAR(100) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_LOCATIONS PRIMARY KEY (id), UNIQUE (id)
-);
+INSERT INTO evo_exchange.`role` (name) VALUES ('ROLE_USER');
+INSERT INTO evo_exchange.`role` (name) VALUES ('ROLE_ADMIN');
+INSERT INTO evo_exchange.`role` (name) VALUES ('ROLE_MODERATOR');
 
-CREATE TABLE IF NOT EXISTS evo_exchange.user_locations (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NOT NULL,
-    location_id BIGINT NOT NULL,
-  CONSTRAINT PK_USER_LOCATIONS PRIMARY KEY (id), UNIQUE (id)
-);
-
-ALTER TABLE evo_exchange.user_locations
-ADD CONSTRAINT fk_user_location_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.user_locations
-ADD CONSTRAINT fk_user_location_to_location_id
-    FOREIGN KEY (location_id)
-    REFERENCES evo_exchange.locations (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-CREATE TABLE IF NOT EXISTS evo_exchange.deals (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    deal_status VARCHAR(45) NOT NULL,
-  CONSTRAINT PK_DEALS PRIMARY KEY (id), UNIQUE (id)
-);
-
-CREATE TABLE IF NOT EXISTS evo_exchange.user_deals (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NOT NULL,
-    deal_id BIGINT NOT NULL,
-  CONSTRAINT PK_USER_DEALS PRIMARY KEY (id), UNIQUE (id)
-);
-
-ALTER TABLE evo_exchange.user_deals
-ADD CONSTRAINT fk_user_deal_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.user_deals
-ADD CONSTRAINT fk_user_deal_to_deal_id
-    FOREIGN KEY (deal_id)
-    REFERENCES evo_exchange.deals (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-CREATE TABLE IF NOT EXISTS evo_exchange.advertisements (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NULL, product_id BIGINT NULL,
-    topic VARCHAR(70) NULL,
-    deal_type VARCHAR(45) NULL,
-    is_favourite BIT(1) DEFAULT 0 NULL,
-    description VARCHAR(2000) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) NOT NULL,
-  CONSTRAINT PK_ADVERTISEMENTS PRIMARY KEY (id), UNIQUE (id)
-);
-
-CREATE TABLE IF NOT EXISTS evo_exchange.user_advertisements (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NOT NULL,
-    advertisement_id BIGINT NOT NULL,
-  CONSTRAINT PK_USER_ADVERTISEMENTS PRIMARY KEY (id), UNIQUE (id)
-);
-
-ALTER TABLE evo_exchange.user_advertisements
-ADD CONSTRAINT fk_user_advertisements_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.user_advertisements
-ADD CONSTRAINT fk_user_advertisements_to_advertisement_id
-    FOREIGN KEY (advertisement_id)
-    REFERENCES evo_exchange.advertisements (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-CREATE TABLE IF NOT EXISTS evo_exchange.advertisement_locations (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    advertisement_id BIGINT NOT NULL,
-    location_id BIGINT NOT NULL,
-  CONSTRAINT PK_ADVERTISEMENT_LOCATIONS PRIMARY KEY (id), UNIQUE (id)
-);
-
-ALTER TABLE evo_exchange.advertisement_locations
-ADD CONSTRAINT fk_advertisement_location_to_advertisement_id
-    FOREIGN KEY (advertisement_id)
-    REFERENCES evo_exchange.advertisements (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.advertisement_locations
-ADD CONSTRAINT fk_advertisement_location_to_location_id
-    FOREIGN KEY (location_id)
-    REFERENCES evo_exchange.locations (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-CREATE TABLE IF NOT EXISTS evo_exchange.phones (
-    id BIGINT AUTO_INCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS evo_exchange.phone (
+	id BIGINT AUTO_INCREMENT NOT NULL,
     user_id BIGINT NULL,
-    phone_number BIGINT NULL,
-    `show` BIT(1) DEFAULT 1 NULL,
+    phone_number BIGINT NULL, `show` BIT(1) DEFAULT 1 NULL,
     default_phone BIT(1) DEFAULT 0 NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_PHONES PRIMARY KEY (id), UNIQUE (id)
-);
+  CONSTRAINT PK_PHONE PRIMARY KEY (id), UNIQUE (id)
+  );
 
-CREATE TABLE IF NOT EXISTS evo_exchange.user_photos (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NOT NULL,
-    resource_url VARCHAR(150) NULL,
-    default_photo BIT(1) DEFAULT 0 NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) NOT NULL,
-  CONSTRAINT PK_USER_PHOTOS PRIMARY KEY (id), UNIQUE (id), UNIQUE (resource_url)
-);
+ALTER TABLE evo_exchange.phone
+ADD CONSTRAINT fk_phone_to_user_id
+	FOREIGN KEY (user_id)
+	REFERENCES evo_exchange.user (id)
+    ON UPDATE RESTRICT
+    ON DELETE CASCADE;
 
-CREATE TABLE IF NOT EXISTS evo_exchange.children (
-    id BIGINT AUTO_INCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS evo_exchange.child (
+	id BIGINT AUTO_INCREMENT NOT NULL,
     user_id BIGINT NOT NULL,
     birth_date date NULL,
     sex VARCHAR(15) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) NOT NULL,
-  CONSTRAINT PK_CHILDREN PRIMARY KEY (id), UNIQUE (sex), UNIQUE (id)
+  CONSTRAINT PK_CHILD PRIMARY KEY (id), UNIQUE (sex), UNIQUE (id)
 );
 
-CREATE TABLE IF NOT EXISTS evo_exchange.advertisement_images (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    advertisement_id BIGINT NOT NULL,
-    resource_url VARCHAR(150) NULL,
-    default_photo BIT(1) DEFAULT 0 NULL,
+ALTER TABLE evo_exchange.child
+ADD CONSTRAINT fk_child_to_user_id
+	FOREIGN KEY (user_id)
+    REFERENCES evo_exchange.user (id)
+    ON UPDATE RESTRICT
+    ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS evo_exchange.deal (
+	id BIGINT AUTO_INCREMENT NOT NULL,
     created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
     updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) NOT NULL,
-  CONSTRAINT PK_ADVERTISEMENT_IMAGES PRIMARY KEY (id), UNIQUE (id), UNIQUE (resource_url)
+    status VARCHAR(45) NULL, CONSTRAINT PK_DEAL PRIMARY KEY (id), UNIQUE (id)
 );
 
-ALTER TABLE evo_exchange.phones
-ADD CONSTRAINT fk_phones_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.user_photos
-ADD CONSTRAINT fk_user_photos_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.children
-ADD CONSTRAINT fk_children_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.advertisement_images
-ADD CONSTRAINT fk_advertisement_images_to_advertisement_id
-    FOREIGN KEY (advertisement_id)
-    REFERENCES evo_exchange.advertisements (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-CREATE TABLE IF NOT EXISTS evo_exchange.products_to_exchange (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    advertisement_id BIGINT NOT NULL,
-    name VARCHAR(50) DEFAULT 'Your proposition' NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) NOT NULL,
-    CONSTRAINT PK_PRODUCTS_TO_EXCHANGE PRIMARY KEY (id), UNIQUE (id)
+CREATE TABLE IF NOT EXISTS evo_exchange.user_deal (
+	id BIGINT AUTO_INCREMENT NOT NULL,
+    user_id BIGINT NOT NULL,
+    deal_id BIGINT NOT NULL,
+  CONSTRAINT PK_USER_DEAL PRIMARY KEY (id), UNIQUE (id)
 );
 
-ALTER TABLE evo_exchange.products_to_exchange
-ADD CONSTRAINT fk_products_to_exchange_to_advertisement_id
-    FOREIGN KEY (advertisement_id)
-    REFERENCES evo_exchange.advertisements (id)
+ALTER TABLE evo_exchange.user_deal
+ADD CONSTRAINT fk_user_deal_to_user_id
+	FOREIGN KEY (user_id)
+	REFERENCES evo_exchange.user (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE;
 
-INSERT INTO evo_exchange.roles (name) VALUES ('ROLE_USER');
+ALTER TABLE evo_exchange.user_deal
+ADD CONSTRAINT fk_user_deal_to_deal_id
+	FOREIGN KEY (deal_id)
+    REFERENCES evo_exchange.deal (id);
 
-INSERT INTO evo_exchange.roles (name) VALUES ('ROLE_ADMIN');
-
-CREATE TABLE IF NOT EXISTS evo_exchange.products (
-    id BIGINT AUTO_INCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS evo_exchange.advertisement (
+	id BIGINT AUTO_INCREMENT NOT NULL,
     user_id BIGINT NULL,
+    product_id BIGINT NULL,
+    topic VARCHAR(70) NULL,
+    deal_type VARCHAR(45) NULL,
+    is_favourite BIT(1) DEFAULT 0 NULL,
+    description VARCHAR(255) NULL,
+    wishes_to_exchange VARCHAR(210) NULL,
+    ready_for_offers BIT(1) DEFAULT 0 NULL,
+    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
+    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
+    status VARCHAR(45) NULL,
+  CONSTRAINT PK_ADVERTISEMENT PRIMARY KEY (id), UNIQUE (id)
+);
+
+ALTER TABLE evo_exchange.advertisement
+ADD CONSTRAINT fk_advertisement_to_user_id
+	FOREIGN KEY (user_id)
+    REFERENCES evo_exchange.user (id)
+    ON UPDATE RESTRICT
+    ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS evo_exchange.location (
+	id BIGINT AUTO_INCREMENT NOT NULL,
+    advertisement_id BIGINT NULL,
+    city VARCHAR(100) NULL,
+    district VARCHAR(100) NULL,
+  CONSTRAINT PK_LOCATION PRIMARY KEY (id), UNIQUE (id)
+);
+
+ALTER TABLE evo_exchange.location
+ADD CONSTRAINT fk_location_to_advertisement_id
+	FOREIGN KEY (advertisement_id)
+    REFERENCES evo_exchange.advertisement (id)
+    ON UPDATE RESTRICT
+    ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS evo_exchange.product (
+	id BIGINT AUTO_INCREMENT NOT NULL,
     advertisement_id BIGINT NULL,
     subcategory_id BIGINT NULL,
     age VARCHAR(50) NULL,
     gender VARCHAR(50) NULL,
     size VARCHAR(50) NULL,
     season VARCHAR(50) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-    CONSTRAINT PK_PRODUCTS PRIMARY KEY (id), UNIQUE (id)
+  CONSTRAINT PK_PRODUCT PRIMARY KEY (id), UNIQUE (id)
 );
 
-CREATE TABLE evo_exchange.subcategories (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    category_id BIGINT NULL,
+CREATE TABLE IF NOT EXISTS evo_exchange.subcategory (
+	id BIGINT AUTO_INCREMENT NOT NULL,
+    category_id BIGINT NOT NULL,
     name VARCHAR(50) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_SUBCATEGORIES PRIMARY KEY (id), UNIQUE (id)
+  CONSTRAINT PK_SUBCATEGORY PRIMARY KEY (id), UNIQUE (id)
 );
 
-CREATE TABLE evo_exchange.categories (
-    id BIGINT AUTO_INCREMENT NOT NULL,
+CREATE TABLE IF NOT EXISTS evo_exchange.category (
+	id BIGINT AUTO_INCREMENT NOT NULL,
     name VARCHAR(50) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_CATEGORIES PRIMARY KEY (id), UNIQUE (id)
+  CONSTRAINT PK_CATEGORY PRIMARY KEY (id), UNIQUE (id)
 );
 
-ALTER TABLE evo_exchange.products
-ADD CONSTRAINT fk_products_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
+ALTER TABLE evo_exchange.product
+ADD CONSTRAINT fk_product_to_subcategory_id
+	FOREIGN KEY (subcategory_id)
+    REFERENCES evo_exchange.subcategory (id);
 
-ALTER TABLE evo_exchange.products
-ADD CONSTRAINT fk_products_to_subcategory_id
-    FOREIGN KEY (subcategory_id)
-    REFERENCES evo_exchange.subcategories (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.subcategories
+ALTER TABLE evo_exchange.subcategory
 ADD CONSTRAINT fk_subcategory_to_category_id
-    FOREIGN KEY (category_id)
-    REFERENCES evo_exchange.categories (id)
+	FOREIGN KEY (category_id)
+    REFERENCES evo_exchange.category (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE;
 
-ALTER TABLE evo_exchange.products
-ADD CONSTRAINT fk_products_to_advertisement_id
-    FOREIGN KEY (advertisement_id)
-    REFERENCES evo_exchange.advertisements (id)
+ALTER TABLE evo_exchange.product
+ADD CONSTRAINT fk_product_to_advertisement_id
+	FOREIGN KEY (advertisement_id)
+    REFERENCES evo_exchange.advertisement (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE;
 
-CREATE TABLE evo_exchange.chat_rooms (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    name VARCHAR(50) NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_CHAT_ROOMS PRIMARY KEY (id), UNIQUE (id)
+CREATE TABLE IF NOT EXISTS evo_exchange.image (
+	id BIGINT AUTO_INCREMENT NOT NULL,
+    product_id BIGINT NOT NULL,
+    resource_url VARCHAR(150) NULL,
+    main_photo BIT(1) DEFAULT 0 NULL,
+  CONSTRAINT PK_IMAGE PRIMARY KEY (id), UNIQUE (id), UNIQUE (resource_url)
 );
 
-CREATE TABLE evo_exchange.user_chats (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    user_id BIGINT NOT NULL,
-    chat_id BIGINT NOT NULL,
-  CONSTRAINT PK_USER_CHATS PRIMARY KEY (id), UNIQUE (id)
-);
-
-ALTER TABLE evo_exchange.user_chats
-ADD CONSTRAINT fk_user_chats_to_chat_id
-    FOREIGN KEY (chat_id)
-    REFERENCES evo_exchange.chat_rooms (id)
+ ALTER TABLE evo_exchange.image
+ ADD CONSTRAINT fk_image_to_product_id
+	FOREIGN KEY (product_id)
+    REFERENCES evo_exchange.product (id)
     ON UPDATE RESTRICT
     ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.user_chats
-ADD CONSTRAINT fk_user_chats_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-CREATE TABLE evo_exchange.messages (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    chat_id BIGINT NULL,
-    user_id BIGINT NULL,
-    content VARCHAR(2000) NULL,
-    `read` BIT(1) DEFAULT 0 NULL,
-    message_time timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    created timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    updated timestamp DEFAULT CURRENT_TIMESTAMP() NOT NULL,
-    status VARCHAR(45) DEFAULT 'ACTIVE' NOT NULL,
-  CONSTRAINT PK_MESSAGES PRIMARY KEY (id), UNIQUE (id)
-);
-
-ALTER TABLE evo_exchange.messages
-ADD CONSTRAINT fk_messages_to_user_id
-    FOREIGN KEY (user_id)
-    REFERENCES evo_exchange.users (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-ALTER TABLE evo_exchange.messages
-ADD CONSTRAINT fk_messages_to_chat_id
-    FOREIGN KEY (chat_id)
-    REFERENCES evo_exchange.chat_rooms (id)
-    ON UPDATE RESTRICT
-    ON DELETE CASCADE;
-
-INSERT INTO evo_exchange.categories (name) VALUES ('Одежда');
-INSERT INTO evo_exchange.categories (name) VALUES ('Обувь');
-INSERT INTO evo_exchange.categories (name) VALUES ('Игрушки');
-INSERT INTO evo_exchange.categories (name) VALUES ('Детская мебель');
-INSERT INTO evo_exchange.categories (name) VALUES ('Транспорт для детей');
-INSERT INTO evo_exchange.categories (name) VALUES ('Малыши до года');
-INSERT INTO evo_exchange.categories (name) VALUES ('Книги');
-INSERT INTO evo_exchange.categories (name) VALUES ('Другое');
-
