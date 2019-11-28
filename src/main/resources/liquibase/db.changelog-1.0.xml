@@ -37,10 +37,6 @@
             <constraints nullable="true"/>
         </column>
 
-        <column name="hometown" type="VARCHAR(100)">
-            <constraints nullable="true"/>
-        </column>
-
         <column name="on_line" type="BOOLEAN" defaultValue="false">
         </column>
 
