@@ -1,17 +1,15 @@
 package com.hillel.items_exchange.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(callSuper = true, exclude = {"user", "product", "locations"})
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true, exclude = {"user", "product", "location"})
 public class Advertisement extends BaseEntity {
 
     private String topic;
@@ -28,7 +26,7 @@ public class Advertisement extends BaseEntity {
     private Boolean readyForOffers;
 
     @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
-    private Location locations;
+    private Location location;
 
     @Column(name = "wishes_to_exchange")
     private String wishesToExchange;
