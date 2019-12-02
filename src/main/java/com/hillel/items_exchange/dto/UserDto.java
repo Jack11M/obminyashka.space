@@ -17,7 +17,6 @@ public class UserDto {
     private String username;
     private String password;
     private String email;
-    private String hometown;
     private Boolean online;
     private String firstName;
     private String lastName;

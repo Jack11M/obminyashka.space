@@ -3,15 +3,12 @@ package com.hillel.items_exchange.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true, exclude = {"advertisements", "phones", "deals", "children"})
+
 @Entity
-@Data
-@ToString(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
                 "username"
@@ -20,13 +17,17 @@ import java.util.List;
                 "email"
         })
 })
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"advertisements", "phones", "deals", "children"})
 public class User extends BaseEntity {
 
     private String username;
     private String password;
     private String email;
-
-    @Column(name = "on_line")
     private Boolean online;
 
     @Column(name = "first_name")
@@ -35,15 +36,15 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
     @Column(name = "avatar_image")
     private String avatarImage;
 
     @Column(name = "last_online_time")
-    private Date lastOnlineTime;
+    private LocalDate lastOnlineTime;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Advertisement> advertisements;

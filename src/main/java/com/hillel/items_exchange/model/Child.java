@@ -1,18 +1,16 @@
 package com.hillel.items_exchange.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@EqualsAndHashCode(exclude = "user")
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = "user")
 public class Child {
 
     @Id
