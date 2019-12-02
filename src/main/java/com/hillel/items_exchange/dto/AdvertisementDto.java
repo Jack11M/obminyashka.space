@@ -18,28 +18,28 @@ import javax.validation.constraints.Size;
 public class AdvertisementDto {
 
     private Long id;
-    @NotEmpty
-    @Size(min = 3, max = 50, message = "Topic must be between 3 and 50 symbols")
+    @NotEmpty(message = "Topic has to be not empty")
+    @Size(min = 3, max = 70, message = "Topic must be between 3 and 70 symbols")
     private String topic;
-    @NotEmpty
-    @Size(max = 512, message = "Description must be less than 512 symbols")
+    @NotEmpty(message = "Description has to be not empty")
+    @Size(max = 255, message = "Description must be less than 255 symbols")
     private String description;
-    @NotEmpty
-    @Size
+    @NotEmpty(message = "Wishes to exchange have to be not empty")
+    @Size(max = 210, message = "Wishes to exchange have to be less than 210 symbols")
     private String wishesToExchange;
-    @NotNull
+    @NotNull(message = "Ready for offers parameter has to be not null")
     private Boolean readyForOffers;
-    @NotNull
+    @NotNull(message = "Is favourite parameter has to be not null")
     private Boolean isFavourite;
-    @NotNull
+    @NotNull(message = "Deal type has to be not null")
     private DealType dealType;
-    @NotNull
+    @NotNull(message = "Location has to be not null")
     @Valid
     private LocationDto location;
-    @NotNull
+    @NotNull(message = "Product has to be not null")
     @Valid
     private ProductDto product;
-    @NotNull
+    @NotNull(message = "User has to be not null")
     @Valid
     private UserDto user;
 
