@@ -1,11 +1,14 @@
 package com.hillel.items_exchange.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @MappedSuperclass
 @NoArgsConstructor
@@ -19,10 +22,10 @@ public abstract class BaseEntity {
     private Long id;
 
     @CreatedDate
-    private Date created;
+    private LocalDate created;
 
     @LastModifiedDate
-    private Date updated;
+    private LocalDate updated;
 
     @Enumerated(EnumType.STRING)
     private Status status;

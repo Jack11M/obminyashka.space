@@ -9,14 +9,6 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "user", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-                "username"
-        }),
-        @UniqueConstraint(columnNames = {
-                "email"
-        })
-})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,8 +17,10 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true, exclude = {"advertisements", "phones", "deals", "children"})
 public class User extends BaseEntity {
 
+    @Column(unique = true)
     private String username;
     private String password;
+    @Column(unique = true)
     private String email;
     private Boolean online;
 
