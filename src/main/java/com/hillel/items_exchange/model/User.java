@@ -25,7 +25,6 @@ public class User extends BaseEntity {
     private String username;
     private String password;
     private String email;
-    private String hometown;
 
     @Column(name = "on_line")
     private Boolean online;
