@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<String> findAllCategoryNames() {
-        List<String> categoryNames = categoryRepository.findAllCategories();
+        List<String> categoryNames = categoryRepository.findAllCategoriesNames();
 
         if (categoryNames.isEmpty()) {
             log.warn("IN CategoryServiceImpl (findAllCategoryNames): there are no categories");
