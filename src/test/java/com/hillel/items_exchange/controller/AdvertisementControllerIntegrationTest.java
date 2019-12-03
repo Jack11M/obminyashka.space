@@ -70,7 +70,7 @@ class AdvertisementControllerIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void createAdvertisement() throws Exception {
+    void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ class AdvertisementControllerIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void updateAdvertisement() throws Exception {
+    void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         existDto.setDescription("new description");
         existDto.setTopic("new topic");
         existDto.setWishesToExchange("BMW");
@@ -102,7 +102,7 @@ class AdvertisementControllerIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void deleteAdvertisement() throws Exception {
+    void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
         mockMvc.perform(delete("/adv")
                 .content(asJsonString(existDto))
                 .contentType(MediaType.APPLICATION_JSON))
