@@ -34,6 +34,5 @@ public class ProductDto {
     @Valid
     private SubcategoryDto subcategory;
     @NotNull(message = "Images has to be not null")
-    @Valid
-    private List<ImageDto> images;
+    private List<@Valid ImageDto> images;
 }
