@@ -1,15 +1,25 @@
 <div class="form">
-    <div class="login">
-    <label for="#username">Username</label>
-    <input type="text" class="input" id="username" #username>
-    <label for="#email">Email</label>
-    <input type="text" class="input" id="email" #email>
-    <label for="#password">Password</label>
-    <input type="password" class="input" id="password" #password>
-    <label for="#confirmPassword">Confirm Password</label>
-    <input type="password" class="input" id="confirmPassword" #confirmPassword>
-    <button class="submit" (click)="Registration(username.value, email.value, password.value, confirmPassword.value)">Submit</button>
-    <button routerLink="">Login</button>
-    </div>  
-  </div>
-
+      <div class="switch">
+          <h3 routerLink="/registration" class="h3-active">Зарегистрироватся</h3>
+          <h3 routerLink="/login">Авторизироватся</h3>
+      </div>
+      <div class="login">
+        <div class="field">
+        <input type="text" class="input" id="username" [ngClass]="{'field-input': usernameError}" #username placeholder="    Введите ваш Логин">
+        <p class="error-messege" *ngIf="UsernameErrorMessege">{{UsernameErrorMessege}}</p>
+        </div>
+        <div class="field">
+        <input type="text" class="input" id="email" [ngClass]="{'field-input': emailError}" #email placeholder="    Введите ваш E-mail">
+        <p class="error-messege" *ngIf="EmailErrorMessege">{{EmailErrorMessege}}</p>
+        </div>
+        <div class="field">
+        <input type="password" class="input" id="password" [ngClass]="{'field-input': passwordError}" #password placeholder="    Введите ваш Пароль*">
+        <p class="error-messege" *ngIf="PasswordErrorMessege">{{PasswordErrorMessege}}</p>
+        </div>
+        <div class="field">
+        <input type="password" class="input" id="passwordConfirm" [ngClass]="{'field-input': confirmPassError}" #confirmPassword placeholder="    Подтвердите ваш Пароль*">
+        <p class="error-messege" *ngIf="PasswordConfirmErrorMessege">{{PasswordConfirmErrorMessege}}</p>
+        </div>
+        <button class="submit" (click)="Registration(username.value, email.value, password.value, confirmPassword.value)">Зарегистрироватся</button>
+      </div>  
+    </div>

@@ -1,93 +1,22 @@
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
-.login-page {
-  width: 360px;
-  padding: 8% 0 0;
-  margin: auto;
-}
 .form {
+  background: #FDFDFF;
   position: relative;
+  display: block;
   z-index: 1;
   background: #FFFFFF;
-  max-width: 360px;
-  margin: 0 auto 100px;
-  padding: 45px;
+  max-width: 456px;
+  height: 622px auto;
+  margin: 120px auto;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
-.form input {
-  font-family: "Roboto", sans-serif;
-  outline: 0;
-  background: #f2f2f2;
-  width: 100%;
-  border: 0;
-  margin: 0 0 15px;
-  padding: 15px;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-.form button {
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  outline: 0;
-  background: #4CAF50;
-  width: 100%;
-  border: 0;
-  padding: 15px;
-  color: #FFFFFF;
-  font-size: 14px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
-  cursor: pointer;
-}
-.form button:hover,.form button:active,.form button:focus {
-  background: #43A047;
-}
-.form .message {
-  margin: 15px 0 0;
-  color: #b3b3b3;
-  font-size: 12px;
-}
-.form .message a {
-  color: #4CAF50;
-  text-decoration: none;
-}
-.form .register-form {
-  display: none;
-}
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 300px;
-  margin: 0 auto;
-}
-.container:before, .container:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-.container .info {
-  margin: 50px auto;
-  text-align: center;
-}
-.container .info h1 {
-  margin: 0 0 15px;
-  padding: 0;
-  font-size: 36px;
-  font-weight: 300;
-  color: #1a1a1a;
-}
-.container .info span {
-  color: #4d4d4d;
-  font-size: 12px;
-}
-.container .info span a {
-  color: #000000;
-  text-decoration: none;
-}
-.container .info span .fa {
-  color: #EF3B3A;
+.switch{
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
 }
 body {
   background: #76b852; /* fallback for old browsers */
@@ -98,4 +27,108 @@ body {
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
+}
+h3{
+  font-family:"Roboto", sans-serif;
+  width: 50%;
+  color: #8E8E8E;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid #8E8E8E;
+  padding-bottom: 15px;
+  outline: none;
+  transition: 0.2s;
+}
+h3:hover{
+  color: #12B6ED;
+  border-bottom: 2px solid #12B6ED;
+}
+.h3-active{
+  color: #12B6ED;
+  border-bottom: 2px solid #12B6ED;
+}
+.input{
+  display: flex;
+  justify-content: center;
+  outline: none;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  width: 100%;
+  height: 48px;
+  border: 1px solid #BCBCBC;
+  border-radius: 2px;
+  color: #8E8E8E;
+}
+.login{
+  margin-top: 10%;
+}
+button{
+  width: 372px;
+  height: 48px;
+  background: #12B6ED;
+  border-radius: 24px;
+  border: none;
+  outline: none;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+  color: #FDF9FF;
+  margin-bottom: 10%;
+  cursor: pointer;
+}
+.chech{
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 40px;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+}
+.checkbox{
+  display: none;
+}
+.checkbo{
+  cursor: pointer;
+}
+.checkbo::before{
+  content:'✓';
+  display: inline-block;
+  margin-right: 10px;
+	height:18px;
+  width:18px;
+  background: #12B6ED;
+  border: none;
+  color: #12B6ED;
+  font-size: 14px;
+  border-radius: 5%;
+}
+.checkbox:checked + .checkbo::before{
+  color: #fff;
+}
+a{
+  font-family: "Roboto", sans-serif;
+  color: #757E88;
+}
+.field-input{
+  border-color: #FF4C4C;
+}
+.error-messege{
+  display: flex;
+  font-family: "Roboto", sans-serif;
+  color: #FF4C4C;
+  margin: 0px;
+}
+.field{
+  margin: 9%;
+}
+.login-section{
+  display: flex;
+  justify-content: center;
 }
