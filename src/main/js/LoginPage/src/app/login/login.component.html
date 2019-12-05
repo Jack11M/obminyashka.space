@@ -1,0 +1,26 @@
+<div class="form">
+  <div class="switch">
+      <h3 routerLink="/registration">Зарегистрироватся</h3>
+      <h3 routerLink="/login" class="h3-active">Авторизироватся</h3>
+  </div>
+  <div class="login">
+    <div class="field">
+    <input type="text" class="input" id="username" [ngClass]="{'field-input': usernameError}" #username placeholder="    Введите ваш E-mail или Логин">
+    <p class="error-messege" *ngIf="UsernameErrorMessege">{{UsernameErrorMessege}}</p>
+    </div>
+    <div class="field">
+    <input type="password" class="input" id="password" [ngClass]="{'field-input': passwordError}" #password placeholder="    Введите ваш Пароль*">
+    <p class="error-messege" *ngIf="PasswordErrorMessege">{{PasswordErrorMessege}}</p>
+    </div>
+    <div class="chech">
+      <div class="agree">
+        <input type="checkbox" class="checkbox" id="checkbox"/>
+        <label for="checkbox" class="checkbo">Запомнить меня</label>
+      </div>
+      <a href="#">Не можете войти?</a>
+    </div>
+    <div class="login-section">
+    <button class="submit" (click)="login(username.value, password.value)">Войти</button>
+    </div>
+  </div>  
+</div>
