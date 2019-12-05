@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { ILogin, IReg } from 'src/assets/intarface/intarface';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +68,20 @@ public RegFieldValidation(username, password, email, confirmPassword){
   this.PasswordConfirmvalidationField = true
   this.ConfirmPassErrorMessege = 'Вы не заполнили это поле!'
 }
+if (password == confirmPassword){
+  if (email.includes("@") && email.includes(".")){
+  }
+  else{
+    this.EmailErrorMessege = 'Вы ввели не верный Email!'
+    this.EmailvalidationField = true
+  }
+}
+else{
+  this.PasswordErrorMessege = 'Ваши пароли не совподают!'
+  this.ConfirmPassErrorMessege = 'Ваши пароли не совподают!'
+  this.PasswordvalidationField = true
+  this.PasswordConfirmvalidationField = true
+}
   return {'username': this.UsernamevalidationField, 'password': this.PasswordvalidationField,
           'email': this.EmailvalidationField, 'confirmPassword': this.PasswordConfirmvalidationField,
           'UsernameMessege': this.UsernameErrorMessege, 'PasswordMessege': this.PasswordErrorMessege,
@@ -79,13 +91,13 @@ public RegFieldValidation(username, password, email, confirmPassword){
   public LoginUser(username:string, password:string){
     this.Login.usernameOrEmail = username
     this.Login.password = password
-    console.log(this.Login);
-    console.log(JSON.stringify(this.Login));
-    return this._http.post('http://54.37.125.180:8080/auth/login', JSON.stringify(this.Login))
+    return this._http.post('localhost:8080/auth/login', this.Login)
   }
   public RegUser(username:string, email:string, password:string, confirmPassword:string){
-      this.Login.usernameOrEmail = username
-      this.Login.password = password
-      return this._http.post('http://54.37.125.180:8080/auth/register', JSON.stringify(this.Registration))
+      this.Registration.username = username
+      this.Registration.password = password
+      this.Registration.email = email
+      this.Registration.confirmPassword = confirmPassword
+      return this._http.post('localhost:8080/auth/register', this.Registration)
   }
 }

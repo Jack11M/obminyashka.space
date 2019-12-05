@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -18,7 +18,6 @@ export class RegistrationComponent{
   constructor(private _Auth:AuthService) { }
 
   public Registration(username, email, password, confirmPassword){
-    console.log(this._Auth.RegUser(username, email, password, confirmPassword))
     this.usernameError = this._Auth.RegFieldValidation(username, password, email, confirmPassword).username
     this.emailError = this._Auth.RegFieldValidation(username, password, email, confirmPassword).email
     this.passwordError = this._Auth.RegFieldValidation(username, password, email, confirmPassword).password
@@ -27,6 +26,10 @@ export class RegistrationComponent{
     this.PasswordErrorMessege = this._Auth.RegFieldValidation(username, password, email, confirmPassword).PasswordMessege
     this.EmailErrorMessege = this._Auth.RegFieldValidation(username, password, email, confirmPassword).EmailMessege
     this.PasswordConfirmErrorMessege = this._Auth.RegFieldValidation(username, password, email, confirmPassword).confirmPassMessege
+    if (!this.UsernameErrorMessege && !this.EmailErrorMessege && !this.PasswordErrorMessege && !this.PasswordConfirmErrorMessege)
+    {
+      this._Auth.RegUser(username, email, password, confirmPassword).subscribe(data => {console.log(data)})
+    }
   }
 
 }
