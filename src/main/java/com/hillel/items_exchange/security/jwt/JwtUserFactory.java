@@ -3,6 +3,7 @@ package com.hillel.items_exchange.security.jwt;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collections;
 import java.util.List;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtUserFactory {
 
     public static JwtUser create(User user) {
