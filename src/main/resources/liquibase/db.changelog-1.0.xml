@@ -37,7 +37,7 @@
             <constraints nullable="true"/>
         </column>
 
-        <column name="on_line" type="BOOLEAN" defaultValue="false">
+        <column name="online" type="BOOLEAN" defaultValue="false">
         </column>
 
         <column name="last_online_time" type="TIMESTAMP">
@@ -219,10 +219,6 @@
             </column>
 
             <column name="user_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="product_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
 
