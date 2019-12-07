@@ -31,8 +31,7 @@ public class ProductDto {
     private String size;
 
     @NotNull(message = "Subcategory has to be not null")
-    @Valid
-    private SubcategoryDto subcategory;
+    private @Valid SubcategoryDto subcategory;
     @NotNull(message = "Images has to be not null")
     private List<@Valid ImageDto> images;
 }

@@ -20,6 +20,5 @@ public class SubcategoryDto {
     @Size(min = 3, max = 50, message = "Subcategory name has to be between 3 and 50 symbols")
     private String name;
     @NotNull(message = "Category has to be not null")
-    @Valid
-    private CategoryDto category;
+    private @Valid CategoryDto category;
 }

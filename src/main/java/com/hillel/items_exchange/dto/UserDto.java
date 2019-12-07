@@ -15,22 +15,24 @@ import java.time.LocalDate;
 @Setter
 public class UserDto {
     private Long id;
-    @NotEmpty(message = "Username has to be not empty")
-    @Size(min = 3, max = 50, message = "Username has to be between 3 and 50 symbols")
+    @NotEmpty(message = "Login field is required")
+    @Size(min = 2, max = 50, message = "Your login must be between 2 and 50 characters")
     private String username;
-    @NotEmpty(message = "Password must be not empty")
+    @NotEmpty(message = "Password field is required")
     private String password;
-    @Email(message = "E-Mail has to be valid")
+    @NotEmpty(message = "Email field is required")
+    @Size(max = 129, message = "Email length should be less than 129 characters. Please enter valid email address")
+    @Email(message = "Please enter valid email address (Ex: username@example.com)")
     private String email;
     @NotNull(message = "Online status has to be not null")
     private Boolean online;
-    @NotEmpty(message = "First name has to be not empty")
+    @NotNull(message = "First name has to be not empty")
     @Size(min = 2, max = 50, message = "First name has to be between 2 and 50 symbols")
     private String firstName;
-    @NotEmpty(message = "Last name has to be not empty")
+    @NotNull(message = "Last name has to be not empty")
     @Size(min = 2, max = 50, message = "Last name has to be between 2 and 50 symbols")
     private String lastName;
-    @NotEmpty(message = "Avatar image has to be not empty")
+    @NotNull(message = "Avatar image has to be not empty")
     private String avatarImage;
     @NotNull(message = "Last online date has to be not null")
     @PastOrPresent(message = "Last online date couldn't be in the future")

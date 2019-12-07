@@ -24,7 +24,7 @@ public class AdvertisementDto {
     @NotEmpty(message = "Description has to be not empty")
     @Size(max = 255, message = "Description must be less than 255 symbols")
     private String description;
-    @NotEmpty(message = "Wishes to exchange have to be not empty")
+    @NotNull(message = "Wishes to exchange have to be not null")
     @Size(max = 210, message = "Wishes to exchange have to be less than 210 symbols")
     private String wishesToExchange;
     @NotNull(message = "Ready for offers parameter has to be not null")
@@ -34,13 +34,10 @@ public class AdvertisementDto {
     @NotNull(message = "Deal type has to be not null")
     private DealType dealType;
     @NotNull(message = "Location has to be not null")
-    @Valid
-    private LocationDto location;
+    private @Valid LocationDto location;
     @NotNull(message = "Product has to be not null")
-    @Valid
-    private ProductDto product;
+    private @Valid ProductDto product;
     @NotNull(message = "User has to be not null")
-    @Valid
-    private UserDto user;
+    private @Valid UserDto user;
 
 }
