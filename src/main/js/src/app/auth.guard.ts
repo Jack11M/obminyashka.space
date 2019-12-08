@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 })
 export class AuthGuard implements  CanActivate{
   public canRedirect = false
+  public complitLogin() {
+    this.canRedirect = true
+  }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree{
-    function complitLogin() {
-      this.canRedirect = true
-    }
     return this.canRedirect
   };
 }

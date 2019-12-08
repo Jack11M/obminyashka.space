@@ -6,12 +6,11 @@
   <div class="login">
     <div class="field">
     <input type="text" class="input" id="username" [ngClass]="{'field-input': usernameError}" #username placeholder="    Введите ваш E-mail или Логин">
-    <p class="error-messege" *ngIf="UsernameErrorMessege">{{UsernameErrorMessege}}</p>
     </div>
     <div class="field">
     <input type="password" class="input" id="password" [ngClass]="{'field-input': passwordError}" #password placeholder="    Введите ваш Пароль*">
-    <p class="error-messege" *ngIf="PasswordErrorMessege">{{PasswordErrorMessege}}</p>
     </div>
+      <p class="error-messege" *ngIf="TotalErrorMessege">{{TotalErrorMessege}}</p>
     <div class="chech">
       <div class="agree">
         <input type="checkbox" class="checkbox" id="checkbox"/>
@@ -22,5 +21,5 @@
     <div class="login-section">
     <button class="submit" (click)="login(username.value, password.value)">Войти</button>
     </div>
-  </div>
+  </div>  
 </div>

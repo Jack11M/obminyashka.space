@@ -121,6 +121,7 @@ a{
 }
 .error-messege{
   display: flex;
+  justify-content: center;
   font-family: "Roboto", sans-serif;
   color: #FF4C4C;
   margin: 0px;

@@ -16,88 +16,76 @@ export class AuthService {
     password:'*',
     confirmPassword:'*'
   }
-  private UsernameErrorMessage = ''
-  private EmailErrorMessage = ''
-  private PasswordErrorMessage = ''
-  private ConfirmPassErrorMessage = ''
-  private UsernameValidationField = false
-  private PasswordValidationField = false
-  private EmailValidationField = false
-  private PasswordConfirmValidationField = false
+  private TotalErrorMessege = ''
+  private UsernamevalidationField = false
+  private PasswordvalidationField = false
+  private EmailvalidationField = false
+  private PasswordConfirmvalidationField = false
+  public CurentUsername = ''
   constructor(private _http:HttpClient) { }
 
   public LoginFieldValidation(username, password){
-    this.UsernameErrorMessage = ''
-    this.PasswordErrorMessage = ''
-    this.UsernameValidationField = false
-    this.PasswordValidationField = false
+    this.TotalErrorMessege = ''
+    this.UsernamevalidationField = false
+    this.PasswordvalidationField = false
     if (!username){
-      this.UsernameValidationField = true
-      this.UsernameErrorMessage = 'Вы не заполнили это поле!'
+      this.UsernamevalidationField = true
+      this.TotalErrorMessege = 'Вы заполнили не все поля!'
     }
     if (!password){
-      this.PasswordValidationField = true
-      this.PasswordErrorMessage = 'Вы не заполнили это поле!'
-  }
-    return {'username': this.UsernameValidationField, 'password': this.PasswordValidationField,
-            'UsernameMessege':this.UsernameErrorMessage, 'PasswordMessege': this.PasswordErrorMessage}
+      this.PasswordvalidationField = true
+      this.TotalErrorMessege = 'Вы заполнили не все поля!'
+    }
+    return {'username': this.UsernamevalidationField, 'password': this.PasswordvalidationField,
+            'TotalErrorMessege':this.TotalErrorMessege,}
 }
 
 public RegFieldValidation(username, password, email, confirmPassword){
-  this.UsernameErrorMessage = ''
-  this.EmailErrorMessage = ''
-  this.PasswordErrorMessage = ''
-  this.ConfirmPassErrorMessage = ''
-  this.UsernameValidationField = false
-  this.PasswordValidationField = false
-  this.EmailValidationField = false
-  this.PasswordConfirmValidationField = false
+  this.TotalErrorMessege = ''
+  this.UsernamevalidationField = false
+  this.PasswordvalidationField = false
+  this.EmailvalidationField = false
+  this.PasswordConfirmvalidationField = false
+  if (password != confirmPassword){
+    this.TotalErrorMessege = 'Ваши пароли не совподают!'
+    this.PasswordvalidationField = true
+    this.PasswordConfirmvalidationField = true
+  }
+  if (!email.includes("@") && !email.includes(".")){
+    this.TotalErrorMessege = 'Вы ввели не верный Email!'
+    this.EmailvalidationField = true
+    }
   if (!username){
-    this.UsernameValidationField = true
-    this.UsernameErrorMessage = 'Вы не заполнили это поле!'
+    this.UsernamevalidationField = true
+    this.TotalErrorMessege ='Вы заполнили не все поля!'
   }
   if (!email){
-    this.EmailValidationField = true
-    this.EmailErrorMessage = 'Вы не заполнили это поле!'
+    this.EmailvalidationField = true
+    this.TotalErrorMessege = 'Вы заполнили не все поля!'
 }
   if (!password){
-  this.PasswordValidationField = true
-  this.PasswordErrorMessage = 'Вы не заполнили это поле!'
+  this.PasswordvalidationField = true
+  this.TotalErrorMessege = 'Вы заполнили не все поля!'
 }
   if (!confirmPassword){
-  this.PasswordConfirmValidationField = true
-  this.ConfirmPassErrorMessage = 'Вы не заполнили это поле!'
+  this.PasswordConfirmvalidationField = true
+  this.TotalErrorMessege = 'Вы заполнили не все поля'
 }
-if (password == confirmPassword){
-  if (email.includes("@") && email.includes(".")){
-  }
-  else{
-    this.EmailErrorMessage = 'Вы ввели не верный Email!'
-    this.EmailValidationField = true
-  }
-}
-else{
-  this.PasswordErrorMessage = 'Ваши пароли не совподают!'
-  this.ConfirmPassErrorMessage = 'Ваши пароли не совподают!'
-  this.PasswordValidationField = true
-  this.PasswordConfirmValidationField = true
-}
-  return {'username': this.UsernameValidationField, 'password': this.PasswordValidationField,
-          'email': this.EmailValidationField, 'confirmPassword': this.PasswordConfirmValidationField,
-          'UsernameMessege': this.UsernameErrorMessage, 'PasswordMessege': this.PasswordErrorMessage,
-          'EmailMessege': this.EmailErrorMessage, 'confirmPassMessege': this.ConfirmPassErrorMessage}
+  return {'username': this.UsernamevalidationField, 'password': this.PasswordvalidationField,
+          'email': this.EmailvalidationField, 'confirmPassword': this.PasswordConfirmvalidationField,
+          'TotalErrorMessege': this.TotalErrorMessege}
 }
 
   public LoginUser(username:string, password:string){
     this.Login.usernameOrEmail = username
     this.Login.password = password
-    return this._http.post('http://localhost:8080/auth/login', this.Login)
+    return this._http.post('http://54.37.125.180:8080/auth/login', this.Login).subscribe(data => {this.CurentUsername = data.username})
   }
   public RegUser(username:string, email:string, password:string, confirmPassword:string){
       this.Registration.username = username
       this.Registration.password = password
       this.Registration.email = email
       this.Registration.confirmPassword = confirmPassword
-      return this._http.post('http://localhost:8080/auth/register', this.Registration)
+      return this._http.post('http://54.37.125.180:8080/auth/register', this.Registration)
   }
 }
