@@ -1,18 +1,16 @@
 package com.hillel.items_exchange.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-@EqualsAndHashCode(exclude = {"advertisement", "subcategory", "images"})
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"advertisement", "subcategory", "images"})
 public class Product {
 
     @Id
@@ -27,7 +25,7 @@ public class Product {
     @JoinColumn(name = "advertisement_id")
     private Advertisement advertisement;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
 
