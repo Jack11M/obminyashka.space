@@ -22,6 +22,9 @@
     </properties>
 
     <dependencies>
+
+        <!--  Spring Framework -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -34,19 +37,30 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!--  Databases -->
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.connetor.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>${jsonwebtoken.version}</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+        </dependency>
+
+        <!--   Model    -->
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jsonwebtoken.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -58,6 +72,27 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!--   API   -->
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!--  Testing    -->
+
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
@@ -68,14 +103,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.0-M1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-spring</artifactId>
+            <version>1.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
