@@ -9,6 +9,8 @@ import { AuthGuard } from '../auth.guard';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent{
+  public messege = ''
+  public Status = ''
   public TotalErrorMessege = ''
   public usernameError = false
   public passwordError = false
@@ -22,6 +24,8 @@ export class LoginComponent{
     if (!this.TotalErrorMessege)
     {
       this._Auth.LoginUser(username, password).subscribe(data => {
+        this.messege = data.messege
+        this.Status = data.Status
         if (data.Status == 200){
           this._authGuard.complitLogin()
           this._router.navigate(['/home'])

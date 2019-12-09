@@ -9,6 +9,8 @@ import { AuthGuard } from '../auth.guard';
   styleUrls: ['./registration.component.css']
 })
 export class RegistrationComponent{
+  public messege = ''
+  public Status = ''
   public TotalErrorMessege = ''
   public usernameError = false
   public emailError = false
@@ -25,6 +27,8 @@ export class RegistrationComponent{
     if (!this.TotalErrorMessege)
     {
       this._Auth.RegUser(username, email, password, confirmPassword).subscribe(data => {
+        this.messege = data.messege
+        this.Status = data.Status
       if (data.Status == 201){
         setInterval(() => {
           this.TotalErrorMessege = "Вы зарегестрировались"
