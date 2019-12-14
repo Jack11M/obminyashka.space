@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 
 import static java.util.Collections.emptyList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -68,6 +68,7 @@ class AdvertisementControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
@@ -81,6 +82,7 @@ class AdvertisementControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
@@ -115,8 +117,7 @@ class AdvertisementControllerIntegrationTest {
         CategoryDto shoes = new CategoryDto(1L, "shoes");
         SubcategoryDto lightShoes = new SubcategoryDto(1L, "light_shoes", shoes);
         ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes, emptyList());
-        UserDto stas = new UserDto(1L, "admin", "@kuIOIY*h986", "admin@gmail.com", true, "super", "admin", "empty", LocalDate.now());
-        existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress, stas);
+        existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress);
     }
 
     private void createNonExistAdvertisementDto() {
@@ -124,8 +125,7 @@ class AdvertisementControllerIntegrationTest {
         CategoryDto clothes = new CategoryDto(null, "Clothes");
         SubcategoryDto dress = new SubcategoryDto(null, "dress", clothes);
         ProductDto springDress = new ProductDto(null, "16", "male", "spring", "M", dress, emptyList());
-        UserDto stas = new UserDto(null, "user", "A123456", "user@mail.ua", true, "super", "user", "empty", LocalDate.now());
-        nonExistDto = new AdvertisementDto(null, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kharkiv, springDress, stas);
+        nonExistDto = new AdvertisementDto(null, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kharkiv, springDress);
     }
 
     private String asJsonString(final Object obj) {

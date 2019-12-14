@@ -37,7 +37,5 @@ public class AdvertisementDto {
     private @Valid LocationDto location;
     @NotNull(message = "Product has to be not null")
     private @Valid ProductDto product;
-    @NotNull(message = "User has to be not null")
-    private @Valid UserDto user;
 
 }
