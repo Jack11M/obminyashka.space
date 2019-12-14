@@ -102,6 +102,7 @@ class AdvertisementControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {

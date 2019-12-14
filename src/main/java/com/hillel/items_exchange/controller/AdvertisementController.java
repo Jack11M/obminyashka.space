@@ -59,9 +59,13 @@ public class AdvertisementController {
     }
 
     @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto) {
+    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         if (isAdvertisementIdInvalid(dto.getId())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        User owner = getUser(principal.getName());
+        if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
+            throw new EntityNotFoundException("Current user don't have advertisement with such id");
         }
         advertisementService.remove(dto);
         return ResponseEntity.status(HttpStatus.OK).build();
