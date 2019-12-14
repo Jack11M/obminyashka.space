@@ -5,6 +5,8 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +21,7 @@ import java.util.List;
 @RequestMapping("/adv")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
+@Log4j2
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
@@ -39,8 +42,9 @@ public class AdvertisementController {
     @PostMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        if (dto.getId() != null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Long id = dto.getId();
+        if (id != null) {
+            throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
         }
         return new ResponseEntity<>(advertisementService.createAdvertisement(dto, getUser(principal.getName())), HttpStatus.CREATED);
     }
@@ -48,35 +52,61 @@ public class AdvertisementController {
     @PutMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        if (isAdvertisementIdInvalid(dto.getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        validateAdvertisementId(dto.getId());
         User owner = getUser(principal.getName());
-        if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new EntityNotFoundException("Current user don't have advertisement with such id");
-        }
+        validateAdvertisementOwner(dto, owner);
         return new ResponseEntity<>(advertisementService.updateAdvertisement(dto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        if (isAdvertisementIdInvalid(dto.getId())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        validateAdvertisementId(dto.getId());
         User owner = getUser(principal.getName());
-        if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new EntityNotFoundException("Current user don't have advertisement with such id");
-        }
+        validateAdvertisementOwner(dto, owner);
         advertisementService.remove(dto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    private boolean isAdvertisementIdInvalid(Long id) {
-        return id == null || id <= 0L;
+    private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto, User owner) {
+        if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
+            throw new EntityNotFoundException("User: " + owner + " don't own gained advertisement: " + dto);
+        }
+    }
+
+    private void validateAdvertisementId(Long id) {
+        if (id == null || id <= 0L) {
+            throw new IllegalIdentifierException("Id value is not valid: " + id);
+        }
     }
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + userNameOrEmail + " not found!"));
     }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UsernameNotFoundException e) {
+        log.info(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("User with such login or e-mail not found!");
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleOwnerException(EntityNotFoundException e) {
+        log.info(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Current user doesn't own gained advertisement!");
+    }
+
+    @ExceptionHandler(IllegalIdentifierException.class)
+    public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
+        log.info(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Id value isn't valid!");
+    }
+
+
 }
