@@ -18,4 +18,8 @@ public interface CategoryService {
     Optional<CategoryControllerDto> addNewCategory(CategoryControllerDto categoryControllerDto);
 
     Optional<CategoryControllerDto> updateCategory(CategoryControllerDto categoryControllerDto);
+
+    boolean removeCategoryById(Long categoryId);
+
+    boolean removeSubcategoryById(Long subcategoryId);
 }

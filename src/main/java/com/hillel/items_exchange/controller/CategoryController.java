@@ -5,10 +5,12 @@ import com.hillel.items_exchange.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/category")
@@ -60,21 +62,41 @@ public class CategoryController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public @ResponseBody
     ResponseEntity<CategoryControllerDto> addCategory(@Valid @RequestBody CategoryControllerDto dto) {
-        if (categoryService.addNewCategory(dto).isPresent()) {
-            return new ResponseEntity<>(categoryService.addNewCategory(dto).get(), HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Optional<CategoryControllerDto> categoryDto = categoryService.addNewCategory(dto);
+        return categoryDto.map(categoryControllerDto -> new ResponseEntity<>(categoryControllerDto, HttpStatus.CREATED))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping
     public @ResponseBody
     ResponseEntity<CategoryControllerDto> updateCategory(@Valid @RequestBody CategoryControllerDto dto) {
-        if (categoryService.updateCategory(dto).isPresent()) {
-            return new ResponseEntity<>(categoryService.updateCategory(dto).get(), HttpStatus.ACCEPTED);
+        Optional<CategoryControllerDto> categoryDto = categoryService.updateCategory(dto);
+        return categoryDto.map(categoryControllerDto -> new ResponseEntity<>(categoryControllerDto, HttpStatus.ACCEPTED))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{category_id}")
+    public ResponseEntity<CategoryControllerDto> deleteCategoryById(@PathVariable("category_id") Long id) {
+        if (categoryService.removeCategoryById(id)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/subcategory/{subcategory_id}")
+    public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") Long id) {
+        if (categoryService.removeSubcategoryById(id)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
