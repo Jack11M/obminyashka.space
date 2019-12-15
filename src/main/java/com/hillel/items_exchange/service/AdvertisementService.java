@@ -3,6 +3,7 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.model.Advertisement;
+import com.hillel.items_exchange.model.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -25,9 +26,14 @@ public class AdvertisementService {
         return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
     }
 
-    public AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto) {
-        Advertisement savedAdvertisement = advertisementRepository.save(mapDtoToAdvertisement(advertisementDto));
-        return mapAdvertisementToDto(savedAdvertisement);
+    public boolean isAdvertisementExists(Long id, User user) {
+        return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
+    }
+
+    public AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto, User user) {
+        Advertisement adv = mapDtoToAdvertisement(advertisementDto);
+        adv.setUser(user);
+        return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
     public AdvertisementDto updateAdvertisement(AdvertisementDto advertisementDto) {
