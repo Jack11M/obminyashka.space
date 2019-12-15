@@ -92,4 +92,11 @@ public class AdvertisementController {
                 .status(HttpStatus.FORBIDDEN)
                 .body("Current user doesn't own gained advertisement!");
     }
+    @ExceptionHandler(IllegalIdentifierException.class)
+    public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
+        log.info(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("New advertisement does't have to contain id except 0!");
+    }
 }
