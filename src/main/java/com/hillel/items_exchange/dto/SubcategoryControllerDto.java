@@ -1,9 +1,6 @@
 package com.hillel.items_exchange.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -12,6 +9,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class SubcategoryControllerDto {
     private Long id;
     @NotEmpty(message = "Subcategory name has to be not empty")

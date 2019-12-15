@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (categoryNames.isEmpty()) {
             log.warn("IN CategoryServiceImpl (findAllCategoryNames): there are not categories names");
-            return Collections.emptyList();
+            return Collections.singletonList("No categories");
         } else {
             log.info("IN CategoryServiceImpl (findAllCategoryNames): there are these categories: {}", categoryNames);
             return categoryNames;
@@ -73,9 +73,9 @@ public class CategoryServiceImpl implements CategoryService {
         List<String> subcategoryNames = subcategoryRepository.findSubcategoriesNamesByCategory(categoryId);
 
         if (subcategoryNames.isEmpty()) {
-            log.warn("IN CategoryServiceImpl (findSubcategoryNamesByCategoryId): there are not subcategories " +
+            log.warn("IN CategoryServiceImpl (findSubcategoryNamesByCategoryId): there no subcategories " +
                     "in the category with id: {}", categoryId);
-            return Collections.emptyList();
+            return Collections.singletonList(String.format("No subcategories in the category with id: %s", categoryId));
         } else {
             log.info("IN CategoryServiceImpl (findSubcategoryNamesByCategoryId): there are these subcategories: {} " +
                     "in the category with id: {}", subcategoryNames, categoryId);
@@ -98,8 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryControllerDto> updateCategory(CategoryControllerDto categoryControllerDto) {
-        if (isCategoryDtoIdValid(categoryControllerDto.getId())
-                && !isSubcategoryDtoIdInvalid(categoryControllerDto.getSubcategories())) {
+        if (isCategoryDtoUpdatable(categoryControllerDto)) {
             Optional<Category> updatedCategory = categoryRepository.findById(categoryControllerDto.getId());
             if (updatedCategory.isPresent()) {
                 updatedCategory = Optional.of(categoryMapper.categoryControllerDtoToUpdatedCategory(categoryControllerDto,
@@ -207,6 +206,16 @@ public class CategoryServiceImpl implements CategoryService {
                     subcategoryDtoId);
             return false;
         }
+    }
+
+    private boolean isCategoryDtoUpdatable(CategoryControllerDto categoryDto) {
+        if (findAllCategoryNames().contains(categoryDto.getName())) {
+            log.warn("IN CategoryServiceImpl (isCategoryDtoUpdatable): the updated category must not have " +
+                            "a name like the existing category: {}", categoryDto.getName());
+            return false;
+        }
+
+        return isCategoryDtoIdValid(categoryDto.getId()) && !isSubcategoryDtoIdInvalid(categoryDto.getSubcategories());
     }
 
     private boolean isCategoryDtoCreatable(CategoryControllerDto categoryDto) {
