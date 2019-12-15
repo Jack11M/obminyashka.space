@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UserDto {
+    @PositiveOrZero(message = "Id value has to be 0 or positive")
     private Long id;
     @NotEmpty(message = "Login field is required")
     @Size(min = 2, max = 50, message = "Your login must be between 2 and 50 characters")
