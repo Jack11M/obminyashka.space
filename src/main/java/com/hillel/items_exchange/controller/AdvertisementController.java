@@ -33,7 +33,8 @@ public class AdvertisementController {
     }
 
     @GetMapping("/{advertisement_id}")
-    public @ResponseBody ResponseEntity<AdvertisementDto> getAdvertisement(@PathVariable("advertisement_id") Long id) {
+    public @ResponseBody
+    ResponseEntity<AdvertisementDto> getAdvertisement(@PathVariable("advertisement_id") Long id) {
         return advertisementService.findById(id)
                 .map(advertisementDto -> new ResponseEntity<>(advertisementDto, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -43,7 +44,7 @@ public class AdvertisementController {
     public @ResponseBody
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         Long id = dto.getId();
-        if (id != null) {
+        if (id != 0) {
             throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
         }
         return new ResponseEntity<>(advertisementService.createAdvertisement(dto, getUser(principal.getName())), HttpStatus.CREATED);
@@ -52,7 +53,6 @@ public class AdvertisementController {
     @PutMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        validateAdvertisementId(dto.getId());
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
         return new ResponseEntity<>(advertisementService.updateAdvertisement(dto), HttpStatus.ACCEPTED);
@@ -60,7 +60,6 @@ public class AdvertisementController {
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        validateAdvertisementId(dto.getId());
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
         advertisementService.remove(dto);
@@ -70,12 +69,6 @@ public class AdvertisementController {
     private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto, User owner) {
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
             throw new EntityNotFoundException("User: " + owner + " don't own gained advertisement: " + dto);
-        }
-    }
-
-    private void validateAdvertisementId(Long id) {
-        if (id == null || id <= 0L) {
-            throw new IllegalIdentifierException("Id value is not valid: " + id);
         }
     }
 
@@ -99,14 +92,11 @@ public class AdvertisementController {
                 .status(HttpStatus.FORBIDDEN)
                 .body("Current user doesn't own gained advertisement!");
     }
-
     @ExceptionHandler(IllegalIdentifierException.class)
     public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
         log.info(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Id value isn't valid!");
+                .body("New advertisement does't have to contain id except 0!");
     }
-
-
 }
