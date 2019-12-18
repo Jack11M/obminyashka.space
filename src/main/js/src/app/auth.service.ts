@@ -79,7 +79,7 @@ public RegFieldValidation(username, password, email, confirmPassword){
   public LoginUser(username:string, password:string){
     this.Login.usernameOrEmail = username
     this.Login.password = password
-    return this._http.post('http://54.37.125.180:8080/auth/login', this.Login).subscribe(data => {this.CurentUsername = data.username})
+    return this._http.post('http://54.37.125.180:8080/auth/login', this.Login)
   }
   public RegUser(username:string, email:string, password:string, confirmPassword:string){
       this.Registration.username = username

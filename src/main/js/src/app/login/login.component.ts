@@ -21,19 +21,7 @@ export class LoginComponent{
     this.usernameError = this._Auth.LoginFieldValidation(username, password).username
     this.passwordError = this._Auth.LoginFieldValidation(username, password).password
     this.TotalErrorMessege = this._Auth.LoginFieldValidation(username, password).TotalErrorMessege
-    if (!this.TotalErrorMessege)
-    {
-      this._Auth.LoginUser(username, password).subscribe(data => {
-        this.messege = data.messege
-        this.Status = data.Status
-        if (data.Status == 200){
-          this._authGuard.complitLogin()
-          this._router.navigate(['/home'])
-        }
-        else{
-          if (data.messege = 'Please enter valid email/login or password'){
-            this.TotalErrorMessege = 'Пожалуйста введите валидный Email/login или пароль!'
-          }
+    this._Auth.LoginUser(username, password).subscribe(data => {console.log(data)})
         }
       })
     }
