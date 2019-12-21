@@ -1,11 +1,14 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.CategoryControllerDto;
-import com.hillel.items_exchange.exception.InvalidCategoryControllerDtoException;
+import com.hillel.items_exchange.dto.CategoriesNamesDto;
+import com.hillel.items_exchange.dto.CategoriesVo;
+import com.hillel.items_exchange.dto.CategoryVo;
+import com.hillel.items_exchange.exception.InvalidCategoryVoException;
 import com.hillel.items_exchange.service.CategoryService;
+import com.hillel.items_exchange.service.SubcategoryService;
+import com.hillel.items_exchange.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,127 +27,118 @@ import java.util.Optional;
 @Slf4j
 public class CategoryController {
 
+    private static final String NAME_OF_CLASS = "IN the CategoryController: ";
     private final CategoryService categoryService;
+    private final SubcategoryService subcategoryService;
 
-    @GetMapping("/categories/names")
-    public ResponseEntity<List<String>> allCategoriesNames() {
-        List<String> categoriesNames = categoryService.findAllCategoryNames();
-
-        if (categoriesNames.isEmpty()) {
-            return new ResponseEntity<>(categoriesNames, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(categoriesNames, HttpStatus.OK);
+    @GetMapping("/names")
+    public ResponseEntity<CategoriesNamesDto> allCategoriesNames() {
+        CategoriesNamesDto categoriesNames = categoryService.findAllCategoryNames();
+        if (categoriesNames == null || categoriesNames.getCategoriesNames().equals(Collections.emptyList())) {
+            throw new EntityNotFoundException(StringUtils.NO_CATEGORIES);
         }
+        return new ResponseEntity<>(categoriesNames, HttpStatus.OK);
     }
 
-    @GetMapping("/categories")
-    public ResponseEntity<List<CategoryControllerDto>> getAllCategories() {
-        List<CategoryControllerDto> categoriesDto = categoryService.findAllCategories();
-
-        if (!categoriesDto.isEmpty()) {
-            return new ResponseEntity<>(categoryService.findAllCategories(), HttpStatus.OK);
-        } else {
-            throw new EntityNotFoundException("No categories");
-        }
+    @GetMapping("/all")
+    public ResponseEntity<CategoriesVo> getAllCategories() {
+        Optional<CategoriesVo> categoriesVo = categoryService.findAllCategories();
+        return categoriesVo.map(c -> new ResponseEntity<>(categoriesVo.get(), HttpStatus.OK))
+                .orElseThrow(() -> new EntityNotFoundException(StringUtils.NO_CATEGORIES));
     }
 
     @GetMapping("/{category_id}")
-    public @ResponseBody
-    ResponseEntity<CategoryControllerDto> getCategoryById(@PathVariable("category_id") Long id) {
+    public ResponseEntity<CategoryVo> getCategoryById(@PathVariable("category_id") Long id) {
         return categoryService.findCategoryById(id)
-                .map(advertisementDto -> new ResponseEntity<>(advertisementDto, HttpStatus.OK))
-                .orElseThrow(() -> new EntityNotFoundException(String.format("No category by id %s", id)));
+                .map(categoryVo -> new ResponseEntity<>(categoryVo, HttpStatus.OK))
+                .orElseThrow(() -> new EntityNotFoundException(StringUtils.NO_CATEGORY_BY_ID + id));
     }
 
-    @GetMapping("/{category_id}/subcategories/names")
-    public @ResponseBody
-    ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id") Long id) {
-        List<String> subcategoriesNames = categoryService.findSubcategoryNamesByCategoryId(id);
-
-        if (!subcategoriesNames.isEmpty()) {
-            return new ResponseEntity<>(subcategoriesNames, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(subcategoriesNames, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize(StringUtils.HAS_ROLE_ADMIN)
     @PostMapping
-    public @ResponseBody
-    ResponseEntity<CategoryControllerDto> addCategory(@Valid @RequestBody CategoryControllerDto dto) {
-        Optional<CategoryControllerDto> categoryDto = categoryService.addNewCategory(dto);
-        return categoryDto.map(categoryControllerDto -> new ResponseEntity<>(categoryControllerDto, HttpStatus.CREATED))
-                .orElseThrow(() -> new InvalidCategoryControllerDtoException(String.format("This category controller dto " +
-                        "can not be created: %s. It and its internal subcategories must not have id! The new category " +
-                        "must not have a name like the existing category", dto)));
+    public ResponseEntity<CategoryVo> addCategory(@Valid @RequestBody CategoryVo categoryVo) {
+        Optional<CategoryVo> updatedCategoryVo = Optional.empty();
+        if (isCategoryVoCreatable(categoryVo)) {
+            updatedCategoryVo = categoryService.addNewCategory(categoryVo);
+        }
+        return updatedCategoryVo.map(categoryVO -> new ResponseEntity<>(categoryVO, HttpStatus.CREATED))
+                .orElseThrow(() -> new InvalidCategoryVoException(StringUtils.CAN_NOT_BE_CREATED + categoryVo));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize(StringUtils.HAS_ROLE_ADMIN)
     @PutMapping
-    public @ResponseBody
-    ResponseEntity<CategoryControllerDto> updateCategory(@Valid @RequestBody CategoryControllerDto dto) {
-        String errorMessage = String.format("This category controller dto " +
-                "can not be updated: %s. It has to have existing id and its internal subcategories has to have id, " +
-                "if they were exist before or can have no id, if they are new! Also the updated category must not " +
-                "have a name like the existing category", dto);
-
-        Optional<CategoryControllerDto> categoryDto = Optional.ofNullable(categoryService.updateCategory(dto)
-                .orElseThrow(() -> new IllegalArgumentException(errorMessage)));
-        return categoryDto.map(categoryControllerDto -> new ResponseEntity<>(categoryControllerDto, HttpStatus.ACCEPTED))
-                .orElseThrow(() -> new InvalidCategoryControllerDtoException(errorMessage));
+    public ResponseEntity<CategoryVo> updateCategory(@Valid @RequestBody CategoryVo categoryVo) {
+        if (isCategoryVoUpdatable(categoryVo)) {
+            return categoryService.updateCategory(categoryVo)
+                    .map(categoryVO -> new ResponseEntity<>(categoryVo, HttpStatus.ACCEPTED))
+                    .orElseThrow(() -> new InvalidCategoryVoException(StringUtils.CAN_NOT_BE_UPDATED + categoryVo));
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize(StringUtils.HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
-    public ResponseEntity<CategoryControllerDto> deleteCategoryById(@PathVariable("category_id") Long id) {
-        if (categoryService.removeCategoryById(id)) {
+    public ResponseEntity<CategoryVo> deleteCategoryById(@PathVariable("category_id") Long id) {
+        if (isCategoryVoDeletable(id)) {
+            categoryService.removeCategoryById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            throw new IllegalIdentifierException(String.format("The category with id: %s can not be deleted. " +
-                    "The id has to be valid (represent existing category) and internal subcategories must not have " +
-                    "any products!", id));
+            throw new InvalidCategoryVoException(StringUtils.CAN_NOT_BE_DELETED + id);
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/subcategory/{subcategory_id}")
-    public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") Long id) {
-        if (categoryService.removeSubcategoryById(id)) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            throw new IllegalIdentifierException(String.format("The subcategory with id: %s can not be deleted." +
-                    " The id has to be valid (represent existing subcategory) and this subcategory must not have " +
-                    "any products!", id));
+    private boolean isCategoryVoCreatable(CategoryVo categoryVo) {
+        boolean isCategoryVoNotDistinct = categoryService.findAllCategoryNames().getCategoriesNames()
+                .contains(categoryVo.getName());
+        boolean isSubcategoriesIdIsZero = categoryVo.getSubcategories().stream()
+                .allMatch(subcategoryVo -> subcategoryVo.getId() == 0);
+
+        if (categoryVo.getId() != 0) {
+            throw new InvalidCategoryVoException(StringUtils.MUST_HAVE_ID_ZERO);
         }
+        if (!isSubcategoriesIdIsZero) {
+            throw new InvalidCategoryVoException(StringUtils.ID_ZERO_OF_ALL_SUBCATEGORIES);
+        }
+        if (isCategoryVoNotDistinct) {
+            throw new InvalidCategoryVoException(StringUtils.CATEGORY_MUST_BE_DISTINCT + categoryVo.getName());
+        }
+        return true;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.info(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
+    private boolean isCategoryVoUpdatable(CategoryVo categoryVo) {
+        if (categoryService.isCategoryVoIdInvalid(categoryVo.getId())) {
+            throw new InvalidCategoryVoException(StringUtils.CATEGORY_MUST_EXIST_BY_ID);
+        }
+        if (subcategoryService.isSubcategoriesVoIdsInvalid(categoryVo.getSubcategories())) {
+            throw new InvalidCategoryVoException(StringUtils.SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO);
+        }
+        return true;
+    }
+
+    private boolean isCategoryVoDeletable(Long categoryId) {
+        if (categoryService.isCategoryVoIdInvalid(categoryId)) {
+            throw new InvalidCategoryVoException(StringUtils.CATEGORY_MUST_EXIST_BY_ID);
+        } else {
+            List<Long> subcategoriesIdList = categoryService.getSubcategoriesIdsByCategoryId(categoryId);
+            boolean isSubcategoriesIdsValid = subcategoriesIdList.stream()
+                    .allMatch(id -> subcategoryService.isSubcategoryVoIdValid(id)
+                            && subcategoryService.isSubcategoryHasNotProducts(id));
+
+            return !subcategoriesIdList.isEmpty() && isSubcategoriesIdsValid;
+        }
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
-        log.info(e.getMessage(), e);
+        log.warn(NAME_OF_CLASS + e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidCategoryControllerDtoException.class)
-    public ResponseEntity<String> handleInvalidCategoryControllerDtoException(InvalidCategoryControllerDtoException e) {
-        log.info(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(IllegalIdentifierException.class)
-    public ResponseEntity<String> handleIllegalIdException(IllegalIdentifierException e) {
-        log.info(e.getMessage(), e);
+    @ExceptionHandler(InvalidCategoryVoException.class)
+    public ResponseEntity<String> handleInvalidCategoryControllerDtoException(InvalidCategoryVoException e) {
+        log.warn(NAME_OF_CLASS + e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
