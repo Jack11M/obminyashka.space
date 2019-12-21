@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @Setter
 public class SubcategoryDto {
     @PositiveOrZero(message = "Id value has to be 0 or positive")
-    private Long id;
+    private long id;
     @NotEmpty(message = "Subcategory name has to be not empty")
     @Size(min = 3, max = 50, message = "Subcategory name has to be between 3 and 50 symbols")
     private String name;

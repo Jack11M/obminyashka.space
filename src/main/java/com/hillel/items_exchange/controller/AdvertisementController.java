@@ -43,7 +43,7 @@ public class AdvertisementController {
     @PostMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        Long id = dto.getId();
+        long id = dto.getId();
         if (id != 0) {
             throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
         }
