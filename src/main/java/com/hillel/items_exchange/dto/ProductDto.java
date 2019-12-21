@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 public class ProductDto {
     @PositiveOrZero(message = "Id value has to be 0 or positive")
-    private Long id;
+    private long id;
     @NotEmpty(message = "Age has to be not empty")
     @Size(max = 50, message = "Age has to be less than 50 symbols")
     private String age;

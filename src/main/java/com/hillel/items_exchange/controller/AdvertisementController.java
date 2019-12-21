@@ -40,10 +40,16 @@ public class AdvertisementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/filtering/{gender}")
+    public @ResponseBody
+    ResponseEntity <List<AdvertisementDto>> getGenderedAdvertisements(@PathVariable("gender") String gender) {
+        return new ResponseEntity<>(advertisementService.findByGender(gender), HttpStatus.OK);
+    }
+
     @PostMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
-        Long id = dto.getId();
+        long id = dto.getId();
         if (id != 0) {
             throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
         }

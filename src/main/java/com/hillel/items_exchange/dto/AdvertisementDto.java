@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class AdvertisementDto {
     @PositiveOrZero(message = "Id value has to be 0 or positive")
-    private Long id;
+    private long id;
     @NotEmpty(message = "Topic has to be not empty")
     @Size(min = 3, max = 70, message = "Topic must be between 3 and 70 symbols")
     private String topic;
