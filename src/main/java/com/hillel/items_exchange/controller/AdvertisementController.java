@@ -40,6 +40,12 @@ public class AdvertisementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/filtering/{gender}")
+    public @ResponseBody
+    ResponseEntity <List<AdvertisementDto>> getGenderedAdvertisements(@PathVariable("gender") String gender) {
+        return new ResponseEntity<>(advertisementService.findByGender(gender), HttpStatus.OK);
+    }
+
     @PostMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
