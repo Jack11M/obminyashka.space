@@ -54,6 +54,15 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void getAllAdvertisements_shouldReturnAllGenderedAdvertisements() throws Exception {
+        mockMvc.perform(get("/adv/filtering/{gender}", "male")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 
     @Test
     @Transactional
@@ -122,11 +131,11 @@ class AdvertisementControllerIntegrationTest {
     }
 
     private void createNonExistAdvertisementDto() {
-        LocationDto kharkiv = new LocationDto(null, "Kharkiv", "District");
-        CategoryDto clothes = new CategoryDto(null, "Clothes");
-        SubcategoryDto dress = new SubcategoryDto(null, "dress", clothes);
-        ProductDto springDress = new ProductDto(null, "16", "male", "spring", "M", dress, emptyList());
-        nonExistDto = new AdvertisementDto(null, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kharkiv, springDress);
+        LocationDto kharkiv = new LocationDto(0L, "Kharkiv", "District");
+        CategoryDto clothes = new CategoryDto(0L, "Clothes");
+        SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
+        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress, emptyList());
+        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kharkiv, springDress);
     }
 
     private String asJsonString(final Object obj) {

@@ -26,6 +26,11 @@ public class AdvertisementService {
         return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
     }
 
+    public List<AdvertisementDto> findByGender(String gender) {
+        return modelMapper.map(
+                advertisementRepository.findAdvertisementsByProductGender(gender), new TypeToken<List<AdvertisementDto>>() {}.getType());
+    }
+
     public boolean isAdvertisementExists(Long id, User user) {
         return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
     }

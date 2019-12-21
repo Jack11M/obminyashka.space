@@ -11,4 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
 
     boolean existsAdvertisementByIdAndUser(Long id, User user);
+
+    Iterable<Advertisement> findAdvertisementsByProductGender(String gender);
 }

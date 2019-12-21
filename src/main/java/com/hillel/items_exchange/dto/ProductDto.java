@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -16,7 +17,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductDto {
-    private Long id;
+    @PositiveOrZero(message = "Id value has to be 0 or positive")
+    private long id;
     @NotEmpty(message = "Age has to be not empty")
     @Size(max = 50, message = "Age has to be less than 50 symbols")
     private String age;
