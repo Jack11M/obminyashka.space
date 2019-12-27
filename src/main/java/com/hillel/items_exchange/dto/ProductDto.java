@@ -1,9 +1,6 @@
 package com.hillel.items_exchange.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(exclude = {"subcategory", "images"})
 public class ProductDto {
     @PositiveOrZero(message = "Id value has to be 0 or positive")
     private long id;

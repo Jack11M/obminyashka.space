@@ -16,6 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/adv")
@@ -61,15 +62,19 @@ public class AdvertisementController {
     ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
-        return new ResponseEntity<>(advertisementService.updateAdvertisement(dto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(advertisementService.updateAdvertisement(dto, owner), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
-        advertisementService.remove(dto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Optional<AdvertisementDto> byId = advertisementService.findById(dto.getId());
+        if (byId.isPresent() && byId.get().equals(dto)) {
+            advertisementService.remove(dto.getId());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto, User owner) {

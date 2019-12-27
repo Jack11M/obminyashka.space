@@ -1,9 +1,6 @@
 package com.hillel.items_exchange.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -14,6 +11,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class LocationDto {
     @PositiveOrZero(message = "Id value has to be 0 or positive")
     private long id;

@@ -1,10 +1,7 @@
 package com.hillel.items_exchange.dto;
 
 import com.hillel.items_exchange.model.DealType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -16,6 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class AdvertisementDto {
     @PositiveOrZero(message = "Id value has to be 0 or positive")
     private long id;
