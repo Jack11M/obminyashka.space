@@ -3,6 +3,7 @@ package com.hillel.items_exchange.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -18,7 +19,6 @@ public class Location {
     private String city;
     private String district;
 
-    @OneToOne
-    @JoinColumn(name = "advertisement_id")
-    private Advertisement advertisement;
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    private List<Advertisement> advertisement;
 }

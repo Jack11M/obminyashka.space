@@ -28,7 +28,8 @@ public class Advertisement extends BaseEntity {
     @Column(name = "wishes_to_exchange")
     private String wishesToExchange;
 
-    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @ManyToOne(cascade = CascadeType.ALL)

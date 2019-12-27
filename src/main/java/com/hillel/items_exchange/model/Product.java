@@ -21,7 +21,7 @@ public class Product {
     private String season;
     private String size;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "advertisement_id")
     private Advertisement advertisement;
 
