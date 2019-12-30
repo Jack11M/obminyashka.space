@@ -79,13 +79,13 @@ public RegFieldValidation(username, password, email, confirmPassword){
   public LoginUser(username:string, password:string){
     this.Login.usernameOrEmail = username
     this.Login.password = password
-    return this._http.post('http://54.37.125.180:8080/auth/login', this.Login)
+    return this._http.post('http://localhost:8080/auth/login', this.Login)
   }
   public RegUser(username:string, email:string, password:string, confirmPassword:string){
       this.Registration.username = username
       this.Registration.password = password
       this.Registration.email = email
       this.Registration.confirmPassword = confirmPassword
-      return this._http.post('http://54.37.125.180:8080/auth/register', this.Registration)
+      return this._http.post('http://localhost:8080/auth/register', this.Registration)
   }
 }
