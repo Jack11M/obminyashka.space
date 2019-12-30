@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -43,13 +44,12 @@ public class AdvertisementService {
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
-    public AdvertisementDto updateAdvertisement(AdvertisementDto advertisementDto, User user) {
-        // todo: update this method
-        Advertisement entity = mapDtoToAdvertisement(advertisementDto);
-        entity.setUser(user);
-        List<Advertisement> advertisements = user.getAdvertisements();
-        advertisements.remove(advertisements.size() - (int) entity.getId());
-        Advertisement updatedAdvertisement = advertisementRepository.save(entity);
+    public AdvertisementDto updateAdvertisement(AdvertisementDto dto) {
+        Advertisement toUpdate = mapDtoToAdvertisement(dto);
+        Advertisement fromDB = advertisementRepository.findById(dto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created", "updated", "status");
+        Advertisement updatedAdvertisement = advertisementRepository.save(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
     }
 
