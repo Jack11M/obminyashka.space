@@ -13,7 +13,7 @@ import { IReg } from '@app/_models/ireg';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    private urlLogin = 'http://localhost:8080/';
+    private urlLogin = 'http://54.37.125.180:8080';
 
     private curLogin: ILogin = {
         usernameOrEmail: '*',
