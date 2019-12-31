@@ -1,0 +1,77 @@
+<mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4" [(selectedIndex)]="activeTab" (selectedTabChange)="onTabChange($event)">
+  <mat-tab label="Вход">
+      <h2>Login</h2>
+      <div class="alerts">
+        <alert></alert>
+      </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+              <label for="username">E-mail</label>
+              <input type="text" autocomplete="username email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': loginSubmitted && f.email.errors }" />
+              <div *ngIf="loginSubmitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">E-mail is required</div>
+                  <div *ngIf="f.email.errors.email">Please provide a valid email address</div>
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password"  autocomplete="username password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': loginSubmitted && f.password.errors }" />
+              <div *ngIf="loginSubmitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+              </div>
+          </div>
+          <div class="form-group form-group-btns">
+              <div class="btn-loading">
+                <button [disabled]="loginLoading" class="btn btn-primary">Login</button>
+                <img *ngIf="loginLoading" class="loading-img" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />                
+              </div>
+          </div>
+      </form>
+  </mat-tab>
+  <mat-tab label="Регистрация">
+      <h2>Register</h2>
+      <div class="alerts">
+        <alert></alert>
+      </div>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
+          <div class="form-group">
+              <label for="email">E-mail</label>
+              <input type="text" autocomplete="username email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': registerSubmitted && fr.email.errors }" />
+              <div *ngIf="registerSubmitted && fr.email.errors" class="invalid-feedback">
+                  <div *ngIf="fr.email.errors.required">E-mail is required</div>
+                  <div *ngIf="fr.email.errors.email">Please provide a valid email address</div>
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': registerSubmitted && fr.username.errors }" />
+              <div *ngIf="registerSubmitted && fr.username.errors" class="invalid-feedback">
+                  <div *ngIf="fr.username.errors.required">Username is required</div>
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" autocomplete="username password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': registerSubmitted && fr.password.errors }" />
+              <div *ngIf="registerSubmitted && fr.password.errors" class="invalid-feedback">
+                  <div *ngIf="fr.password.errors.required">Password is required</div>
+                  <div *ngIf="fr.password.errors.minlength">Password must be at least 6 characters</div>
+              </div>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" autocomplete="username password" formControlName="confirmPassword" class="form-control" [ngClass]="{ 'is-invalid': registerSubmitted && fr.confirmPassword.errors }" />
+            <div *ngIf="registerSubmitted && fr.confirmPassword.errors" class="invalid-feedback">
+                <div *ngIf="fr.confirmPassword.errors.required">Confirm password is required</div>
+                <div *ngIf="fr.confirmPassword.errors.mustMatch">Password & Confirm Password does not match.</div>
+            </div>
+        </div>          
+          <div class="form-group form-group-btns">
+              <div class="btn-loading">
+                <button [disabled]="registerLoading" class="btn btn-primary">Register</button>
+                <img *ngIf="registerLoading" class="loading-img" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+              </div>
+              <button type="reset" (click)="returnToLoginPage()" class="btn btn-primary">Cancel</button>
+          </div>
+      </form>        
+  </mat-tab>
+</mat-tab-group>

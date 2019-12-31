@@ -1,0 +1,222 @@
+{
+  "cards" : [ {
+    "age" : "5-7",
+    "created" : "2019-04-23T18:25:43.511Z",
+    "gender" : "u",
+    "id" : 0,
+    "img" : "http://www.velik.in.ua/wp-content/uploads/2017/05/1137.750-1-510x510.jpg.pagespeed.ce.qqdi0jwHbA.jpg",
+    "isFavourite" : true,
+    "location" : "Харьков",
+    "season" : "u",
+    "size" : "",
+    "title" : "Велосипед детский для девочки 5 лет",
+    "category" : 4,
+    "subcategory": ""
+  }, {
+    "age" : "5-7",
+    "created" : "2019-01-20T18:25:43.511Z",
+    "gender" : "u",
+    "id" : 1,
+    "img" : "https://img.moyo.ua/img/gallery/4052/5/631939_middle.jpg?1514365590",
+    "isFavourite" : false,
+    "location" : "Тернополь",
+    "season" : "u",
+    "size" : "",
+    "title" : "Игрушка интерактивная Сова",
+    "category" : 2,
+    "subcategory": ""
+  }, {
+    "age" : "11-14",
+    "created" : "2019-06-10T18:25:43.511Z",
+    "gender" : "w",
+    "id" : 2,
+    "img" : "https://images.ua.prom.st/1276386212_ochen-naryadnoe-firmennoe.jpg",
+    "isFavourite" : false,
+    "location" : "Луцк",
+    "season" : "s",
+    "size" : "50-80",
+    "title" : "Платье (Турция) на девочку 12-14 лет",
+    "category" : 0,
+    "subcategory": ""
+  }, {
+    "age" : "",
+    "created" : "2019-06-10T18:25:42.511Z",
+    "gender" : "m",
+    "id" : 3,
+    "img" : "https://images.izi.zone/2454165",
+    "isFavourite" : false,
+    "location" : "Каменец-Подольский",
+    "season" : "s",
+    "size" : "20",
+    "title" : "Кроссовки фирменные на мальчика 27 р-р",
+    "category" : 1,
+    "subcategory": ""
+  }, {
+    "age" : "5-7",
+    "created" : "2019-07-10T18:25:42.511Z",
+    "gender" : "m",
+    "id" : 4,
+    "img" : "https://static-eu.insales.ru/images/products/1/3163/222506075/KRZ0011_%D0%B0%D0%B2%D1%82%D0%BE_%D1%81%D0%B8%D0%BD%D0%B8%D0%B9_front.jpg",
+    "isFavourite" : true,
+    "location" : "Харьков",
+    "season" : "s",
+    "size" : "80-92",
+    "title" : "Джемпер для мальчика, синий с машинкой",
+    "category" : 0,
+    "subcategory": ""
+  }, {
+    "age" : "5-7",
+    "created" : "2019-08-10T18:25:42.511Z",
+    "gender" : "w",
+    "id" : 5,
+    "img" : "https://mkarapuz.com.ua/wp-content/uploads/2018/11/kurtka_snezhinki__rozovyj_polukombinezon.jpg",
+    "isFavourite" : false,
+    "location" : "Тернополь",
+    "season" : "w",
+    "size" : "104-122",
+    "title" : "Комбинезон для девочки, светло-оливковый с розовым",
+    "category" : 0,
+    "subcategory": ""
+  }, {
+    "age" : "5-7",
+    "created" : "2019-08-10T18:25:42.511Z",
+    "gender" : "w",
+    "id" : 6,
+    "img" : "https://img1.wbstatic.net/big/new/5470000/5470609-1.jpg",
+    "isFavourite" : false,
+    "location" : "Луцк",
+    "season" : "s",
+    "size" : "50-80",
+    "title" : "Лонгслив для девочки, бледно-коралловый",
+    "category" : 0,
+    "subcategory": ""
+  }, {
+    "age" : "11-14",
+    "created" : "2019-10-10T18:25:42.511Z",
+    "gender" : "u",
+    "id" : 7,
+    "img" : "https://cdn.4glaza.ru/images/products/large/0/globus-politicheskij-diametrom-320-mm.jpg",
+    "isFavourite" : false,
+    "location" : "Каменец-Подольский",
+    "season" : "u",
+    "size" : "",
+    "title" : "Глобус физический, 26см. Для юных географов 6-15 лет",
+    "category" : 7,
+    "subcategory": ""
+  }, {
+    "age" : "1-2",
+    "created" : "2019-08-10T18:25:42.511Z",
+    "gender" : "u",
+    "id" : 8,
+    "img" : "https://static.detmir.st/media_out/541/809/1809541/1500/0.jpg",
+    "isFavourite" : false,
+    "location" : "Ужгород",
+    "season" : "u",
+    "size" : "",
+    "title" : "Ходунки Babyton QUACK",
+    "category" : 5,
+    "subcategory": ""
+  }, {
+    "age" : "5-7",
+    "created" : "2019-10-12T18:25:42.511Z",
+    "gender" : "w",
+    "id" : 9,
+    "img" : "https://i.allo.ua/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/k/2/k21.jpg",
+    "isFavourite" : false,
+    "location" : "Киев",
+    "season" : "u",
+    "size" : "",
+    "title" : "Коляска для кукол Lily",
+    "category" : 2,
+    "subcategory": ""
+  }, {
+    "age" : "5-7",
+    "created" : "2019-10-15T18:25:42.511Z",
+    "gender" : "w",
+    "id" : 10,
+    "img" : "https://nabatute.com.ua/uploads/media/eshop/0001/29/thumb_28756_eshop_product_list.jpeg",
+    "isFavourite" : false,
+    "location" : "Харьков",
+    "season" : "u",
+    "size" : "",
+    "title" : "Bambi LoL Домик для кукол",
+    "category" : 2,
+    "subcategory": ""
+  }, {
+    "age" : "8-11",
+    "created" : "2019-10-20T18:25:42.511Z",
+    "gender" : "m",
+    "id" : 11,
+    "img" : "https://boxsat.ru/Content/Files/Products/7773/2a5ad6e9-80c2-4b49-838b-6bd451cbd707.jpg",
+    "isFavourite" : true,
+    "location" : "Сумы",
+    "season" : "u",
+    "size" : "",
+    "title" : "Радиоуправляемая машина Xiaomi Smart Racing Car",
+    "category" : 2,
+    "subcategory": ""
+  }, {
+    "age" : "1-2",
+    "created" : "2019-11-10T18:25:42.511Z",
+    "gender" : "u",
+    "id" : 12,
+    "img" : "https://inkluzia.com.ua/content/images/6/sukhiy-baseyn-z-kulkami-al-290-94245858987172_small11.jpg",
+    "isFavourite" : false,
+    "location" : "Полтава",
+    "season" : "u",
+    "size" : "",
+    "title" : "Сухой бассейн, круглый, для 1-2 человек. От 1 до 3 лет. Внутри 50 шариков",
+    "category" : 3,
+    "subcategory": ""
+  }, {
+    "age" : "",
+    "created" : "2019-12-25T18:25:42.511Z",
+    "gender" : "u",
+    "id" : 13,
+    "img" : "https://s.vseceni.ua/i/md/8303/2518587/2518587_00p.jpg",
+    "isFavourite" : false,
+    "location" : "Ахтырка",
+    "season" : "u",
+    "size" : "",
+    "title" : "Подушка-рогалик дорожная из плюша",
+    "category" : 2,
+    "subcategory": ""
+  }, {
+    "created" : "2019-12-10T18:25:42.511Z",
+    "gender" : "u",
+    "id" : 14,
+    "img" : "https://motik.com.ua/images/cache/280x280/products_images/mealux/evo_18_blj.jpg",
+    "isFavourite" : false,
+    "location" : "Одесса",
+    "season" : "u",
+    "size" : "",
+    "title" : "Парта Evo-kids BD-04 XL Teddy (с лампой и подставкой для книг)",
+    "category" : 3,
+    "subcategory": ""
+  } ],
+  "category" : [ {
+    "id" : 0,
+    "name" : "Одежда"
+  }, {
+    "id" : 1,
+    "name" : "Обувь"
+  }, {
+    "id" : 2,
+    "name" : "Игрушки"
+  }, {
+    "id" : 3,
+    "name" : "Детская мебель"
+  }, {
+    "id" : 4,
+    "name" : "Транспорт для детей"
+  }, {
+    "id" : 5,
+    "name" : "Малыши до года"
+  }, {
+    "id" : 6,
+    "name" : "Книги"
+  }, {
+    "id" : 7,
+    "name" : "Другое"
+  } ]
+}

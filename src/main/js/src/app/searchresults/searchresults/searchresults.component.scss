@@ -1,0 +1,290 @@
+*{
+  box-sizing: border-box;
+}
+
+$aside-left-padding: 28px;
+$black: #111111;
+$medium-spring-green: #12B6ED;
+$background-default: #F2F4F7;
+@mixin font ($weight, $size, $height, $color) {
+  font-weight: $weight;
+  font-size: $size;
+  line-height: $height;
+  color: $color;
+  font-family: 'Roboto', sans-serif;
+}
+.page {
+  width: 100%;
+  background-color: $background-default;
+  position: relative;
+  top: -30px;
+  padding-bottom: 120px;
+}
+
+.main-page{
+  width: 1240px;
+  margin: auto;
+  background-color: $background-default;
+}
+
+.page .site-address-bar {
+  position: relative;
+  display: flex;
+  padding-top: 52px;
+  padding-left: 10px;
+  padding-bottom: 20px;
+  font-size: 18px;
+  line-height: 24px;  
+  // font-family: 'Proxima Nova Cn Rg', sans-serif;
+  li {
+    list-style-type: none;
+    padding-left: 8px;
+    padding-right: 40px;
+    a {
+      // font-family: 'Proxima Nova Cn Rg', sans-serif;
+      color: #5D5D5D;
+      text-decoration: none;
+    }
+  }
+  .site-address-bar-item {
+    position: relative;
+  }
+  .site-address-bar-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 7px;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #B8B8B8;
+    border-left: none;
+    border-top: none;
+    transform: rotate(-45deg);
+  }  
+  .current{
+    color: #00C0FF;;
+  }
+}
+
+.search-results-page{
+  display: flex;
+
+  fieldset {
+    border: none;
+    padding: 0;
+  }
+
+  button {
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .aside{
+    flex-basis: 30%;
+    display: flex;
+    flex-direction: column;
+    border: 2px dashed #C4C4C4;
+    border-radius: 18px;
+
+    .filter-title {
+      width: 100%;
+      height: 70px;
+      padding-left: $aside-left-padding;
+      font-size: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      line-height: 30px;
+      border-bottom: solid 3px #DCDCDC;
+      // font-family: 'Proxima Nova Cn Rg', sans-serif;
+    }
+
+    .filter-title-name {
+      display: block;
+      padding-left: $aside-left-padding;
+      padding-top: 20px;
+      padding-bottom: 18px;
+      // font-family: 'Proxima Nova Cn Rg', sans-serif;
+      font-size: 22px;
+      line-height: 27px;
+      color: #383838;
+    }
+
+    .filter-values-wrapper {
+      display: flex;
+      flex-direction: column;
+      padding-left: ($aside-left-padding + 20px);
+      padding-right: 34px;
+
+    }
+
+  }
+  .search-results-cards{
+    flex-basis: 70%;
+    margin-left: 30px;
+    display: flex;
+    flex-direction: column;
+
+    .sorted {
+      width: 831px;
+      height: 73px;
+      border: 2px solid #C4C4C4;
+      border-radius: 16px;
+      margin-bottom: 55px;
+      @include font(400, 16px, 19px, #373737);
+      box-sizing: border-box;
+      padding: 15px 16px 0 17px;
+      
+      select {
+        border: 1px solid #E1E3E6;
+        height: 36px;
+        background: #F2F4F7;
+        border-radius: 7px;
+        margin-left: 10px;
+      }
+      span {
+        margin-left: 30px;
+      }
+      .list-style {
+        @include font(400, 30px, 1, #B8B8B8);
+        vertical-align: middle;
+
+        span {
+          margin-left: 0;
+        }
+        &.active {
+          color: $black;
+        }
+        &:nth-child(2n) {
+          margin-right: 190px;
+          margin-left: 10px;
+        }
+      }
+      .sorted-pagging {
+        width: 50px; 
+      }
+      .sorted-sort {
+        width: 230px; 
+      }
+      select{
+        background: $background-default;
+        border: 1px solid #C4C4C4;;
+        border-radius: 2px;
+      }
+    }    
+
+    .search-results {
+      display: flex;
+      flex-wrap: wrap;
+
+      .search-results-item {
+        margin-bottom: 28px;
+        margin-right: 18px;
+      }
+      :nth-child(3n){
+        margin-right: 0px;
+      }
+    }
+
+    h2 {
+      @include font(600, 27px, 1, #11B5ED);
+      text-transform: uppercase;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 56px;
+      &:before, &:after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: $medium-spring-green;
+        border-radius: 50%;
+        display: inline-block;
+        margin-bottom: 5px;
+      }
+      &:before {
+        margin-right: 28px;
+      }
+      &:after {
+        margin-left: 28px; 
+      }      
+    }    
+  }
+}
+
+//checkboxes
+/* The container */
+.container {
+  display: block;
+  position: relative;
+  padding-left: 40px; 
+  margin-bottom: 12px;
+  padding-top: 3px;
+  cursor: pointer;
+  // font-family: 'Proxima Nova Cn Rg', sans-serif;
+  color: #111111;
+  font-size: 16px;
+  line-height: 19px;        
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  box-sizing: content-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  border: 3px solid #B8B8B8;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #0FC4FF;
+  border-color: #0FC4FF;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 12px;
+  border: solid #FFFFFF;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(50deg);
+  -ms-transform: rotate(50deg);
+  transform: rotate(50deg);
+}

@@ -1,0 +1,124 @@
+{ 
+  "cards": [
+      {
+          "id":1,
+          "isFavorite":true,
+          "img":"http://www.velik.in.ua/wp-content/uploads/2017/05/1137.750-1-510x510.jpg.pagespeed.ce.qqdi0jwHbA.jpg",
+          "title":"Велосипед детский для девочки 5 лет",
+          "location":"Харьков"
+
+      },
+      {
+          "id":2,
+          "isFavorite":false,
+          "img":"https://img.moyo.ua/img/gallery/4052/5/631939_middle.jpg?1514365590",
+          "title":"Игрушка интерактивная Сова",
+          "location":"Тернополь"
+
+      },
+      {
+          "id":3,
+          "isFavorite":false,
+          "img":"https://images.ua.prom.st/1276386212_ochen-naryadnoe-firmennoe.jpg",
+          "title":"Платье (Турция) на девочку 12-14 лет",
+          "location":"Луцк"
+
+      },
+      {
+          "id":4,
+          "isFavorite":false,
+          "img":"https://images.izi.zone/2454165",
+          "title":"Кроссовки фирменные на мальчика 27 р-р",
+          "location":"Каменец-Подольский"
+
+      },
+      {
+          "id":5,
+          "isFavorite":true,
+          "img":"https://static-eu.insales.ru/images/products/1/3163/222506075/KRZ0011_%D0%B0%D0%B2%D1%82%D0%BE_%D1%81%D0%B8%D0%BD%D0%B8%D0%B9_front.jpg",
+          "title":"Джемпер для мальчика, синий с машинкой",
+          "location":"Харьков"
+
+      },
+      {
+          "id":6,
+          "isFavorite":false,
+          "img":"https://mkarapuz.com.ua/wp-content/uploads/2018/11/kurtka_snezhinki__rozovyj_polukombinezon.jpg",
+          "title":"Комбинезон для девочки, светло-оливковый с розовым",
+          "location":"Тернополь"
+
+      },
+      {
+          "id":7,
+          "isFavorite":false,
+          "img":"https://img1.wbstatic.net/big/new/5470000/5470609-1.jpg",
+          "title":"Лонгслив для девочки, бледно-коралловый",
+          "location":"Луцк"
+
+      },
+      {
+          "id":8,
+          "isFavorite":false,
+          "img":"https://cdn.4glaza.ru/images/products/large/0/globus-politicheskij-diametrom-320-mm.jpg",
+          "title":"Глобус физический, 26см. Для юных географов 6-15 лет",
+          "location":"Каменец-Подольский"
+
+      },
+      {
+          "id":9,
+          "isFavorite":false,
+          "img":"https://static.detmir.st/media_out/541/809/1809541/1500/0.jpg",
+          "title":"Ходунки Babyton QUACK",
+          "location":"Ужгород"
+
+      },
+      {
+          "id":10,
+          "isFavorite":false,
+          "img":"https://i.allo.ua/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/k/2/k21.jpg",
+          "title":"Коляска для кукол Lily",
+          "location":"Киев"
+
+      },
+      {
+          "id":11,
+          "isFavorite":false,
+          "img":"https://nabatute.com.ua/uploads/media/eshop/0001/29/thumb_28756_eshop_product_list.jpeg",
+          "title":"Bambi LoL Домик для кукол",
+          "location":"Харьков"
+
+      },
+      {
+          "id":12,
+          "isFavorite":true,
+          "img":"https://boxsat.ru/Content/Files/Products/7773/2a5ad6e9-80c2-4b49-838b-6bd451cbd707.jpg",
+          "title":"Радиоуправляемая машина Xiaomi Smart Racing Car",
+          "location":"Сумы"
+
+      },
+      {
+          "id":13,
+          "isFavorite":false,
+          "img":"https://inkluzia.com.ua/content/images/6/sukhiy-baseyn-z-kulkami-al-290-94245858987172_small11.jpg",
+          "title":"Сухой бассейн, круглый, для 1-2 человек. От 1 до 3 лет. Внутри 50 шариков",
+          "location":"Полтава"
+
+      },
+      {
+          "id":14,
+          "isFavorite":false,
+          "img":"https://s.vseceni.ua/i/md/8303/2518587/2518587_00p.jpg",
+          "title":"Подушка-рогалик дорожная из плюша",
+          "location":"Ахтырка"
+
+      },
+      {
+          "id":15,
+          "isFavorite":false,
+          "img":"https://motik.com.ua/images/cache/280x280/products_images/mealux/evo_18_blj.jpg",
+          "title":"Парта Evo-kids BD-04 XL Teddy (с лампой и подставкой для книг)",
+          "location":"Одесса"
+
+      }
+  ]
+}
