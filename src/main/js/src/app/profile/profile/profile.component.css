@@ -1,0 +1,11 @@
+.page {
+    width: 100%;
+    top: -30px;
+    padding-bottom: 100px;
+    min-height: 41.8vh;
+}
+
+.main-page{
+    width: 1240px;
+    margin: auto;
+}
