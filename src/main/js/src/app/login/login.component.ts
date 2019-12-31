@@ -35,13 +35,13 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', Validators.required]
+            loginOrEmail: ['', Validators.required],
+            password: ['', Validators.required],
+            rememberMe: ['', '']
         });
 
         this.registerForm = this.formBuilder.group({
             email: ['', [Validators.required, Validators.email]],
-            // lastName: ['', Validators.required],
             username: ['', Validators.required],
             password: ['', [Validators.required, Validators.minLength(6)]],
             confirmPassword: ['', [Validators.required]]
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loginLoading = true;
-        this.authenticationService.login(this.f.email.value, this.f.password.value)
+        this.authenticationService.login(this.f.loginOrEmail.value, this.f.password.value)
             .pipe(first())
             .subscribe(
                 data => {

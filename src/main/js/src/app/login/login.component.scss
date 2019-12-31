@@ -1,17 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 @import '../shared/shared.scss';
 
-body {
-  background: #76b852; /* fallback for old browsers */
-  background: -webkit-linear-gradient(right, #76b852, #8DC26F);
-  background: -moz-linear-gradient(right, #76b852, #8DC26F);
-  background: -o-linear-gradient(right, #76b852, #8DC26F);
-  background: linear-gradient(to left, #76b852, #8DC26F);
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;      
-}
-
 .btn{
   width: 372px;
   height: 48px;
@@ -40,6 +29,13 @@ body {
   width: 100%;
 }
 
+.form-group label{
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+  color: #8E8E8E;
+}
+
 .form-control{
   box-sizing: border-box;
   display: flex;
@@ -54,11 +50,12 @@ body {
   height: 48px;
   border: 1px solid #BCBCBC;
   border-radius: 2px;
-  color: #8E8E8E;
+  color: black;
   margin: 8px auto;
 }
 input {
   padding: 12px 12px;
+  color: black;
 }
 
 .invalid-feedback,
@@ -68,14 +65,49 @@ input {
   margin-bottom: 5px;
 }
 
+.alerts{
+  min-height: 60px;
+}
+.alerts-register{
+  min-height: 38px;
+}
+
 .example-stretched-tabs {
   max-width: 460px;  
   padding: 20px;
-  margin: 50px auto 100px;
+  margin: 50px auto 150px;
+}
+
+//titles
+::ng-deep .mat-tab-label .mat-tab-label-content {
+  font-size: 18px;
+  line-height: 24px;
+  text-transform: uppercase;
+  color: #8E8E8E;
+  font-weight: normal;  
+}
+
+::ng-deep .mat-tab-label-active .mat-tab-label-content {
+  color: #12B6ED;
+  font-weight: bold;
+}
+
+.form-group-fields{
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-fields-login {
+  justify-content: space-between;
+  min-height: 192px;
+}
+
+.form-group-fields-register .form-group{
+  min-height: 120px;
 }
 
 .form-group-btns {
-  padding-top: 40px;
+  padding-top: 28px;
 }
 
 .btn-loading{
@@ -87,4 +119,32 @@ input {
   position: absolute;
   top: 15px;
   right: -30px;  
+}
+
+.chech{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 36px;
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+}
+
+.сan-not-enter{
+  font-family: Open Sans;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  text-decoration-line: underline;
+  color: #757E88;
+}
+
+.is-invalid{
+  border-color: red;
+}
+
+.registration-note{
+  font-size: 14px;
+  line-height: 22px;  
+  color: #8E8E8E;
 }
