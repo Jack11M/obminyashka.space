@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loginLoading = true;
-        this.authenticationService.login(this.f.loginOrEmail.value, this.f.password.value)
+        this.authenticationService.login(this.f.loginOrEmail.value, this.f.password.value, this.f.rememberMe.value)
             .pipe(first())
             .subscribe(
                 data => {
@@ -88,11 +88,12 @@ export class LoginComponent implements OnInit {
         }
 
         this.registerLoading = true;
-        this.userService.register(this.registerForm.value)
+        this.authenticationService.register(this.fr.email.value, this.fr.username.value,
+             this.fr.password.value, this.fr.confirmPassword.value)
             .pipe(first())
             .subscribe(
                 data => {
-                    this.alertService.success('Registration successful', true);
+                    this.alertService.success('Регстрация завершена успешно!', true);
                     this.returnToLoginPage();
                 },
                 error => {
