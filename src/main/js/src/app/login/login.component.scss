@@ -97,12 +97,7 @@ input {
   flex-direction: column;
 }
 
-.form-group-fields-login {
-  justify-content: space-between;
-  min-height: 192px;
-}
-
-.form-group-fields-register .form-group{
+.form-group-fields .form-group{
   min-height: 120px;
 }
 
@@ -124,7 +119,6 @@ input {
 .chech{
   display: flex;
   justify-content: space-between;
-  margin-top: 36px;
   font-family: "Roboto", sans-serif;
   text-align: center;
 }
