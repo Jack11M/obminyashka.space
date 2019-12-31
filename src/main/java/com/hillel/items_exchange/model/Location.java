@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "advertisement")
+@EqualsAndHashCode(exclude = {"id", "advertisement"})
 public class Location {
 
     @Id
@@ -19,6 +19,6 @@ public class Location {
     private String city;
     private String district;
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location")
     private List<Advertisement> advertisement;
 }

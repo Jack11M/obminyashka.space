@@ -22,7 +22,8 @@ public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
 
     public List<AdvertisementDto> findAll() {
-        return modelMapper.map(advertisementRepository.findAll(), new TypeToken<List<AdvertisementDto>>() {}.getType());
+        return modelMapper.map(advertisementRepository.findAll(), new TypeToken<List<AdvertisementDto>>() {
+        }.getType());
     }
 
     public Optional<AdvertisementDto> findById(Long id) {
@@ -31,7 +32,8 @@ public class AdvertisementService {
 
     public List<AdvertisementDto> findByGender(String gender) {
         return modelMapper.map(
-                advertisementRepository.findAdvertisementsByProductGender(gender), new TypeToken<List<AdvertisementDto>>() {}.getType());
+                advertisementRepository.findAdvertisementsByProductGender(gender), new TypeToken<List<AdvertisementDto>>() {
+                }.getType());
     }
 
     public boolean isAdvertisementExists(Long id, User user) {

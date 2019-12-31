@@ -12,6 +12,19 @@ advertisement:
     user_id: 1
     location_id: 1
     product_id: 1
+  - id: 2
+    topic: 'topic'
+    description: 'description'
+    deal_type: 'GIVEAWAY'
+    is_favourite: 'false'
+    ready_for_offers: 'false'
+    wishes_to_exchange: 'hat'
+    created: '[ignored]'
+    updated: '[ignored]'
+    status: null
+    user_id: 1
+    location_id: 2
+    product_id: 2
 
 user:
   - id: 1
@@ -36,6 +49,9 @@ location:
   - id: 1
     city: 'Kharkiv'
     district: 'Kharkivska district'
+  - id: 2
+    city: 'Kyiv'
+    district: 'District'
 
 product:
   - id: 1
@@ -44,12 +60,23 @@ product:
     size: '40'
     season: 'spring'
     subcategory_id: 1
+  - id: 2
+    age: '16'
+    gender: 'male'
+    size: 'M'
+    season: 'spring'
+    subcategory_id: 2
 
 category:
   - id: 1
     name: 'shoes'
+  - id: 2
+    name: 'Clothes'
 
 subcategory:
   - id: 1
     name: 'light_shoes'
     category_id: 1
+  - id: 2
+    name: 'dress'
+    category_id: 2

@@ -3,10 +3,14 @@ package com.hillel.items_exchange.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.core.api.dataset.YamlDataSet;
+import com.github.database.rider.core.replacers.DateTimeReplacer;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.model.DealType;
+import org.dbunit.dataset.ReplacementDataSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
+
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 import static java.util.Collections.emptyList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -80,6 +88,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "create/create-advertisement.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
@@ -131,11 +140,11 @@ class AdvertisementControllerIntegrationTest {
     }
 
     private void createNonExistAdvertisementDto() {
-        LocationDto kharkiv = new LocationDto(0L, "Kharkiv", "District");
+        LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
         CategoryDto clothes = new CategoryDto(0L, "Clothes");
         SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
         ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress, emptyList());
-        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kharkiv, springDress);
+        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
     }
 
     private String asJsonString(final Object obj) {

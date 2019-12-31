@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "subcategories")
+@EqualsAndHashCode(exclude = {"id", "subcategories"})
 public class Category {
 
     @Id

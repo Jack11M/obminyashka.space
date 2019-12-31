@@ -9,20 +9,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"product"})
+@EqualsAndHashCode(exclude = {"id", "product"})
 public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(name = "resource_url")
+    private String resourceUrl;
+    @Column(name = "default_photo")
+    private boolean defaultPhoto;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-    @Column(name = "resource_url")
-    private String resourceUrl;
-
-    @Column(name = "default_photo")
-    private boolean defaultPhoto;
 }
