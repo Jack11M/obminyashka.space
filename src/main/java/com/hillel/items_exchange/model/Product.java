@@ -21,10 +21,10 @@ public class Product {
     private String season;
     private String size;
 
-    @OneToOne(mappedBy = "product", orphanRemoval = true)
+    @OneToOne(mappedBy = "product")
     private Advertisement advertisement;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
 

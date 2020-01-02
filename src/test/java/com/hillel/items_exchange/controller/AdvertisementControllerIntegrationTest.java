@@ -88,7 +88,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "create/create-advertisement.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
@@ -103,6 +103,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         existDto.setDescription("new description");
         existDto.setTopic("new topic");
@@ -123,6 +124,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
         mockMvc.perform(delete("/adv")
                 .content(asJsonString(existDto))
