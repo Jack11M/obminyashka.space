@@ -14,14 +14,14 @@ public class Phone {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "phone_number")
-    private Long phoneNumber;
+    private long phoneNumber;
 
     @Column(name = "show")
     private Boolean show;

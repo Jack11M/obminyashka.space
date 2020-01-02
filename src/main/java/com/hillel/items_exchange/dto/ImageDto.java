@@ -6,13 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class ImageDto {
-    private Long id;
+    @PositiveOrZero(message = "Id value has to be 0 or positive")
+    private long id;
     @NotNull(message = "URL has to be not null")
     private String resourceUrl;
     private boolean defaultPhoto;

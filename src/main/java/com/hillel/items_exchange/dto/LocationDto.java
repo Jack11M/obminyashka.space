@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
@@ -14,7 +15,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class LocationDto {
-    private Long id;
+    @PositiveOrZero(message = "Id value has to be 0 or positive")
+    private long id;
     @NotEmpty(message = "City name has to be not empty")
     @Size(min = 2, max = 100, message = "City name has to be between 2 and 100 symbols")
     private String city;

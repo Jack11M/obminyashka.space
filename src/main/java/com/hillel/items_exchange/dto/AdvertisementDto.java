@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @Getter
@@ -16,8 +17,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdvertisementDto {
-
-    private Long id;
+    @PositiveOrZero(message = "Id value has to be 0 or positive")
+    private long id;
     @NotEmpty(message = "Topic has to be not empty")
     @Size(min = 3, max = 70, message = "Topic must be between 3 and 70 symbols")
     private String topic;
