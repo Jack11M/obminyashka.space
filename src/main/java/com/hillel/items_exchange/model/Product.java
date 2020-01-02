@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"advertisement", "subcategory", "images"})
+@EqualsAndHashCode(exclude = {"id", "advertisement", "subcategory", "images"})
 public class Product {
 
     @Id
@@ -21,11 +21,10 @@ public class Product {
     private String season;
     private String size;
 
-    @OneToOne
-    @JoinColumn(name = "advertisement_id")
+    @OneToOne(mappedBy = "product")
     private Advertisement advertisement;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "subcategory_id")
     private Subcategory subcategory;
 

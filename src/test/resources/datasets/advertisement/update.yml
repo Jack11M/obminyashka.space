@@ -1,14 +1,14 @@
 advertisement:
   - id: 1
-    topic: 'topic'
-    description: 'description'
+    topic: 'new topic'
+    description: 'new description'
     deal_type: 'EXCHANGE'
     is_favourite: 'true'
     ready_for_offers: 'true'
-    wishes_to_exchange: 'shoes'
+    wishes_to_exchange: 'BMW'
     created: '2019-01-01'
-    updated: '2019-01-01'
-    status: 'ACTIVE'
+    updated: '[ignored]'
+    status: 'UPDATED'
     user_id: 1
     location_id: 1
     product_id: 1

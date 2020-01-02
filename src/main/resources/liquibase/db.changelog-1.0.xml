@@ -53,7 +53,7 @@
         </column>
 
         <column name="status" type="VARCHAR(45)" defaultValue="ACTIVE">
-            <constraints nullable="false"/>
+            <constraints nullable="true"/>
         </column>
     </createTable>
 </changeSet>
@@ -222,6 +222,14 @@
                 <constraints nullable="true"/>
             </column>
 
+            <column name="location_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="topic" type="VARCHAR(70)">
                 <constraints nullable="true"/>
             </column>
@@ -276,10 +284,6 @@
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="advertisement_id" type="BIGINT">
-                <constraints nullable="true"/>
-            </column>
-
             <column name="city" type="VARCHAR(100)">
                 <constraints nullable="true"/>
             </column>
@@ -291,23 +295,19 @@
     </changeSet>
 
     <changeSet id="1.0.15" author="jack.petrov">
-        <addForeignKeyConstraint baseColumnNames="advertisement_id"
-                                 baseTableName="location"
-                                 constraintName="fk_location_to_advertisement_id"
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_location"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="advertisement"/>
+                                 referencedTableName="location"/>
     </changeSet>
 
     <changeSet id="1.0.16" author="jack.petrov">
         <createTable tableName="product">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
-            </column>
-
-            <column name="advertisement_id" type="BIGINT">
-                <constraints nullable="true"/>
             </column>
 
             <column name="subcategory_id" type="BIGINT">
@@ -379,13 +379,13 @@
     </changeSet>
 
     <changeSet id="1.0.21" author="jack.petrov">
-        <addForeignKeyConstraint baseColumnNames="advertisement_id"
-                                 baseTableName="product"
-                                 constraintName="fk_product_to_advertisement_id"
+        <addForeignKeyConstraint baseColumnNames="product_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_product"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="advertisement"/>
+                                 referencedTableName="product"/>
     </changeSet>
 
     <changeSet id="1.0.22" author="jack.petrov">

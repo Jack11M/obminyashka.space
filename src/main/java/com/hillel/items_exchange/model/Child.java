@@ -10,19 +10,17 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "user")
+@EqualsAndHashCode(exclude = {"id", "user"})
 public class Child {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    private String sex;
+    @Column(name = "birth_date")
+    private Date birthDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @Column(name = "birth_date")
-    private Date birthDate;
-
-    private String sex;
 }

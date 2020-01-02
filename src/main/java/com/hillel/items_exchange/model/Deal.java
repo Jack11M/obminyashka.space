@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true, exclude = {"users"})
 public class Deal extends BaseEntity {
 
     @ManyToMany(mappedBy = "deals")
