@@ -39,4 +39,9 @@ public class Advertisement extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
+
+    @PrePersist
+    private void saveProduct() {
+        product.setAdvertisement(this);
+    }
 }
