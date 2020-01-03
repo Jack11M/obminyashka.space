@@ -26,6 +26,8 @@ location:
 
 product:
 
+image:
+
 category:
   - id: 1
     name: 'shoes'

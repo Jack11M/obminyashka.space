@@ -402,7 +402,7 @@
                 <constraints nullable="true" unique="true"/>
             </column>
 
-            <column name="main_photo" type="BOOLEAN" defaultValue="false">
+            <column name="default_photo" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="true"/>
             </column>
         </createTable>
