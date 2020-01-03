@@ -45,6 +45,16 @@ product:
     season: 'spring'
     subcategory_id: 1
 
+image:
+  - id: 1
+    resource_url: 'one'
+    default_photo: 'false'
+    product_id: 1
+  - id: 2
+    resource_url: 'two'
+    default_photo: 'true'
+    product_id: 1
+
 category:
   - id: 1
     name: 'shoes'

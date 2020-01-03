@@ -30,4 +30,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Image> images;
+
+    @PrePersist
+    private void addProductReferences() {
+        images.forEach(image -> image.setProduct(this));
+    }
 }

@@ -25,6 +25,9 @@ import javax.transaction.Transactional;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -137,7 +140,8 @@ class AdvertisementControllerIntegrationTest {
         LocationDto kharkiv = new LocationDto(1L, "Kharkiv", "Kharkivska district");
         CategoryDto shoes = new CategoryDto(1L, "shoes");
         SubcategoryDto lightShoes = new SubcategoryDto(1L, "light_shoes", shoes);
-        ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes, emptyList());
+        ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes,
+                Arrays.asList(new ImageDto(1L, "one", false), new ImageDto(2L, "two", true)));
         existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress);
     }
 
@@ -145,7 +149,8 @@ class AdvertisementControllerIntegrationTest {
         LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
         CategoryDto clothes = new CategoryDto(0L, "Clothes");
         SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
-        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress, emptyList());
+        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
+                Collections.singletonList(new ImageDto(0L, "url", false)));
         nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
     }
 

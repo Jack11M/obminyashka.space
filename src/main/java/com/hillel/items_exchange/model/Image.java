@@ -20,7 +20,7 @@ public class Image {
     @Column(name = "default_photo")
     private boolean defaultPhoto;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 }
