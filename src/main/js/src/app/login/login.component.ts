@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
 
         this.loginLoading = true;
         this.authenticationService.login(this.f.loginOrEmail.value, this.f.password.value, this.f.rememberMe.value)
-            .pipe(first())
+            // .pipe(first())
             .subscribe(
                 data => {
                     this.router.navigate([this.returnUrl]);
@@ -90,10 +90,9 @@ export class LoginComponent implements OnInit {
         this.registerLoading = true;
         this.authenticationService.register(this.fr.email.value, this.fr.username.value,
              this.fr.password.value, this.fr.confirmPassword.value)
-            .pipe(first())
             .subscribe(
                 data => {
-                    this.alertService.success('Регстрация завершена успешно!', true);
+                    this.alertService.success('Регистрация завершена успешно!', true);
                     this.returnToLoginPage();
                 },
                 error => {

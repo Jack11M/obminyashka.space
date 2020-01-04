@@ -13,6 +13,7 @@ import { IReg } from '@app/_models/ireg';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+    private useServer = true;
     private urlLogin = 'http://localhost:8080';
 
     private curLogin: ILogin = {
@@ -30,7 +31,7 @@ export class AuthService {
     public currentUser: Observable<User>;
 
     constructor(private _http: HttpClient
-                // , private firebaseAuth: AngularFireAuth ///TODO delete
+                , private firebaseAuth: AngularFireAuth ///TODO delete
         ) {
         this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
@@ -44,79 +45,87 @@ export class AuthService {
 
         const subject = new Subject<User>();
 
-        this.curLogin.usernameOrEmail = username;
-        this.curLogin.password = password;
-        this._http.post(this.urlLogin + '/auth/login', this.curLogin).toPromise()
-        .then(data => {
-            // const currentUser: User = this.getUserFromData(data);
-            const currentUser: User = {///TODO check data from server
-                id: 0,
-                email: username,
-                username: username,
-                password: '',
-                firstName: '',
-                lastName: '',
-                token: ''
-            };
-            if (rememberMe) {
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            }
+        if (this.useServer) {
+            this.curLogin.usernameOrEmail = username;
+            this.curLogin.password = password;
+            this._http.post(this.urlLogin + '/auth/login', this.curLogin).toPromise()
+            .then(data => {
+                // const currentUser: User = this.getUserFromData(data);
+                const currentUser: User = {///TODO check data from server
+                    id: 0,
+                    email: username,
+                    username: username,
+                    password: '',
+                    firstName: '',
+                    lastName: '',
+                    token: ''
+                };
+                if (rememberMe) {
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
 
-            this.currentUserSubject.next(currentUser);
+                this.currentUserSubject.next(currentUser);
 
-            subject.next(currentUser);
-        })
-        .catch(err => {
-          subject.error(err);
-        });
-
+                subject.next(currentUser);
+            })
+            .catch(err => {
+            subject.error(err);
+            });
+        } else {
         //Firebase variant returns Promise instead of Observable
-        // this.firebaseAuth
-        // .auth
-        // .signInWithEmailAndPassword(username, password)
-        // .then(data => {
-        //     const currentUser: User = this.getUserFromData(data);
-        //     localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        //     this.currentUserSubject.next(currentUser);
+            this.firebaseAuth
+            .auth
+            .signInWithEmailAndPassword(username, password)
+            .then(data => {
+                const currentUser: User = this.getUserFromData(data);
+                if (rememberMe) {
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+                this.currentUserSubject.next(currentUser);
 
-        //     subject.next(currentUser);
-        // })
-        // .catch(err => {
-        //   subject.error(err);
-        // });
+                subject.next(currentUser);
+            })
+            .catch(err => {
+            subject.error(err);
+            });
+        }
         return subject;
     }
 
     register(email: string, username: string, password: string, confirmPassword: string): Observable<any> {
-        this.curRegistration.username = username;
-        this.curRegistration.password = password;
-        this.curRegistration.email = email;
-        this.curRegistration.confirmPassword = confirmPassword;
-        return this._http.post(this.urlLogin + '/auth/register', this.curRegistration);
-        //Firebase variant
-        // return from(this.firebaseAuth
-        //     .auth
-        //     .createUserWithEmailAndPassword(user.email, user.password));
+        if (this.useServer) {
+            this.curRegistration.username = username;
+            this.curRegistration.password = password;
+            this.curRegistration.email = email;
+            this.curRegistration.confirmPassword = confirmPassword;
+            return this._http.post(this.urlLogin + '/auth/register', this.curRegistration);
+        } else {
+            //Firebase variant
+            return from(this.firebaseAuth
+                .auth
+                .createUserWithEmailAndPassword(email, password));
+        }
     }
 
     logout(): Subject<boolean> {
         const subject = new Subject<boolean>();
 
-        //TODO logout on server
-        localStorage.removeItem('currentUser');
-        this.currentUserSubject.next(null);
-        subject.next(true);
-
-        //Firebase variant
-        // this.firebaseAuth
-        // .auth
-        // .signOut().then(res => {
-        //     // remove user from local storage to log user out
-        //     localStorage.removeItem('currentUser');
-        //     this.currentUserSubject.next(null);
-        //     subject.next(true);
-        // }).catch(err => {console.log(err); subject.error(err); });
-
+        if (this.useServer) {
+            //TODO logout on server
+            localStorage.removeItem('currentUser');
+            this.currentUserSubject.next(null);
+            subject.next(true);
+        } else {
+            //Firebase variant
+            this.firebaseAuth
+            .auth
+            .signOut().then(res => {
+                // remove user from local storage to log user out
+                localStorage.removeItem('currentUser');
+                this.currentUserSubject.next(null);
+                subject.next(true);
+            }).catch(err => {console.log(err); subject.error(err); });
+        }
         return subject;
     }
 
