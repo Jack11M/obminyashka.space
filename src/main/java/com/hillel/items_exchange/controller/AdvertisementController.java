@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,5 +119,13 @@ public class AdvertisementController {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("New advertisement does't have to contain id except 0!");
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Exception during saving object to the database!\nError message:\n" + e.getLocalizedMessage());
     }
 }
