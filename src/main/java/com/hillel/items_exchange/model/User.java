@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,10 +33,10 @@ public class User extends BaseEntity {
     @Column(name = "avatar_image")
     private String avatarImage;
 
-    @Column(name = "last_online_time")
-    private LocalDate lastOnlineTime;
+    @Column(name = "last_online_time", columnDefinition = "TIMESTAMP", nullable = false)
+    private LocalDateTime lastOnlineTime;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
     private Role role;
 

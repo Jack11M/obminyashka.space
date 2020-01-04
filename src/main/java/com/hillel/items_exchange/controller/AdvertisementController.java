@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/adv")
@@ -42,7 +44,7 @@ public class AdvertisementController {
 
     @GetMapping("/filtering/{gender}")
     public @ResponseBody
-    ResponseEntity <List<AdvertisementDto>> getGenderedAdvertisements(@PathVariable("gender") String gender) {
+    ResponseEntity<List<AdvertisementDto>> getGenderedAdvertisements(@PathVariable("gender") String gender) {
         return new ResponseEntity<>(advertisementService.findByGender(gender), HttpStatus.OK);
     }
 
@@ -68,13 +70,17 @@ public class AdvertisementController {
     public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
-        advertisementService.remove(dto);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Optional<AdvertisementDto> byId = advertisementService.findById(dto.getId());
+        if (byId.isPresent() && byId.get().equals(dto)) {
+            advertisementService.remove(dto.getId());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.unprocessableEntity().body(HttpStatus.CONFLICT);
     }
 
     private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto, User owner) {
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new EntityNotFoundException("User: " + owner + " don't own gained advertisement: " + dto);
+            throw new SecurityException("User: " + owner + " don't own gained advertisement: " + dto);
         }
     }
 
@@ -85,24 +91,41 @@ public class AdvertisementController {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UsernameNotFoundException e) {
-        log.info(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body("User with such login or e-mail not found!");
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleOwnerException(EntityNotFoundException e) {
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleOwnerException(SecurityException e) {
         log.info(e.getMessage(), e);
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.CONFLICT)
                 .body("Current user doesn't own gained advertisement!");
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleOwnerException(EntityNotFoundException e) {
+        log.warn(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Entity not found into the database!\n" + e.getLocalizedMessage());
+    }
+
     @ExceptionHandler(IllegalIdentifierException.class)
     public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
-        log.info(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("New advertisement does't have to contain id except 0!");
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Exception during saving object to the database!\nError message:\n" + e.getLocalizedMessage());
     }
 }

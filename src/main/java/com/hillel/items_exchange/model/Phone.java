@@ -9,23 +9,19 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "user")
+@EqualsAndHashCode(exclude = {"id", "user"})
 public class Phone {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "phone_number")
     private long phoneNumber;
-
-    @Column(name = "show")
     private Boolean show;
-
     @Column(name = "default_phone")
     private Boolean defaultPhone;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

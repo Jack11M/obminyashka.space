@@ -1,0 +1,96 @@
+advertisement:
+  - id: 1
+    topic: 'topic'
+    description: 'description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 1
+  - id: 2
+    topic: 'topic'
+    description: 'description'
+    deal_type: 'GIVEAWAY'
+    is_favourite: 'false'
+    ready_for_offers: 'false'
+    wishes_to_exchange: 'hat'
+    created: '[ignored]'
+    updated: '[ignored]'
+    status: 'NEW'
+    user_id: 1
+    location_id: 2
+    product_id: 2
+
+user:
+  - id: 1
+    username: 'admin'
+    password: '@kuIOIY*h986'
+    email: 'admin@gmail.com'
+    online: 'false'
+    first_name: 'super'
+    last_name: 'admin'
+    avatar_image: 'empty'
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    role_id: 1
+
+role:
+  - id: 1
+    name: 'ROLE_ADMIN'
+
+location:
+  - id: 1
+    city: 'Kharkiv'
+    district: 'Kharkivska district'
+  - id: 2
+    city: 'Kyiv'
+    district: 'District'
+
+product:
+  - id: 1
+    age: '16'
+    gender: 'male'
+    size: '40'
+    season: 'spring'
+    subcategory_id: 1
+  - id: 2
+    age: '16'
+    gender: 'male'
+    size: 'M'
+    season: 'spring'
+    subcategory_id: 2
+
+image:
+  - id: 1
+    resource_url: 'one'
+    default_photo: 'false'
+    product_id: 1
+  - id: 2
+    resource_url: 'two'
+    default_photo: 'true'
+    product_id: 1
+  - id: 3
+    resource_url: 'url'
+    default_photo: 'false'
+    product_id: 2
+
+category:
+  - id: 1
+    name: 'shoes'
+  - id: 2
+    name: 'Clothes'
+
+subcategory:
+  - id: 1
+    name: 'light_shoes'
+    category_id: 1
+  - id: 2
+    name: 'dress'
+    category_id: 2

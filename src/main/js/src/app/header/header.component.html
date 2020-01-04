@@ -1,0 +1,58 @@
+<header>
+    <div class="header_first">
+        <div class="header_first__container body-wrapper">
+                <nav class="header_first__nav">
+                    <a id="about" routerLinkActive="active" routerLink="" class="header_first__nav__item header_first__nav__item__about btn">
+                        о проекте
+                    </a>
+                    <a id="charity" routerLinkActive="active" routerLink="" class="header_first__nav__item header_first__nav__item__charity btn">
+                        <img src="../../assets/icons/header/heart.png" alt="heart">
+                        доброе дело
+                    </a>
+<!--                         <a id="notification" href="#" class="header_first__nav__item">
+                        <img src="../../assets/icons/header/notification.png" alt="notification" srcset="">
+                    </a>
+-->                    <a id="account"  routerLinkActive="active" routerLink="/profile" class="header_first__nav__item header_first__nav__item__myprofile btn">
+                        <img class="header_first__account" src="../../assets/icons/header/account.png" alt="account" srcset="">
+                        Мой кабинет
+                    </a>
+                    <a *ngIf="currentUserfirstName" (click) = 'logout()' label = "logout" class="header_first__nav__item header_first__nav__item__logout">
+                        <img src="../../assets/icons/header/icons8-sign-out-64.png">    
+                    </a>
+                </nav>   
+        </div>
+
+    </div>
+    <div class="header_second">
+        <div class="header_second__container body-wrapper">
+            <nav class="header_second__nav">
+                <a id="home" routerLinkActive="active" routerLink="" class="header_second__nav__item">
+                    <img src="../../assets/icons/header/logo_header.png" alt="logo-header">
+                </a>                
+                <button mat-button [matMenuTriggerFor]="menu" #matMenuTrigger="matMenuTrigger"
+                    class="header_second__nav__category-button">
+                    Категории <img src="../../assets/icons/header/arrow.png" alt="arrow" srcset=""></button>                    
+                <mat-menu #menu="matMenu" >
+                    <div (mouseleave)="matMenuTrigger.closeMenu()">
+                        <button mat-menu-item *ngFor="let item of listCategory|async" (click)="searchInCategory(item)">
+                            {{ item.name }}
+                        </button>
+                    </div>
+                </mat-menu>
+
+                <form (ngSubmit)="onSubmitSearch()" class="header_second__search">
+                    <button type="submit" class="header_second__magnifier">
+                        <img src="../../assets/icons/header/magnifier.png" alt="magnifier">
+                    </button>
+                    <input type="search" placeholder="Я ищу..." [(ngModel)]="searchForName" name ="searchName">
+                    <!--<a id="settings" href="#" class="header_second__settings">
+                        <img src="../../assets/icons/header/settings.png" alt="settings">
+                    </a>-->                   
+                </form>
+                    
+                <button class="header_second__btn-addproduct btn btn-shadow" routerLinkActive="active" routerLink="/addproduct">+ добавить объявление</button>
+            </nav>
+        </div>
+
+    </div>
+</header>
