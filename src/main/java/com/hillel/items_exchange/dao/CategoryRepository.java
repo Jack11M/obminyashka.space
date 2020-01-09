@@ -6,13 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query(value = "SELECT name FROM category", nativeQuery = true)
     List<String> findAllCategoriesNames();
-
-    Optional<Category> findByName(String name);
 }
