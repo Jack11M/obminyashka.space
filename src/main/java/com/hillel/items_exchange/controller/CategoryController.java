@@ -23,14 +23,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryController {
-
+    private static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
     private static final String NAME_OF_CLASS = "IN the CategoryController: ";
     private final CategoryService categoryService;
 
     @GetMapping("/names")
     public ResponseEntity<List<String>> allCategoriesNames() {
         List<String> categoriesNames = categoryService.findAllCategoryNames();
-        if (isEqualsEmptyList(categoriesNames)) {
+        if (categoriesNames.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(categoriesNames, HttpStatus.OK);
@@ -39,7 +39,7 @@ public class CategoryController {
     @GetMapping("/all")
     public ResponseEntity<List<CategoryVo>> getAllCategories() {
         List<CategoryVo> categories = categoryService.findAllCategories();
-        if (isEqualsEmptyList(categories)) {
+        if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(categories, HttpStatus.OK);
@@ -52,7 +52,7 @@ public class CategoryController {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionTextMessage.NO_CATEGORY_BY_ID + id));
     }
 
-    @PreAuthorize(ExceptionTextMessage.HAS_ROLE_ADMIN)
+    @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
     public ResponseEntity<CategoryVo> addCategory(@Valid @RequestBody CategoryVo categoryVo) {
         if (!categoryService.isCategoryVoCreatable(categoryVo)) {
@@ -61,7 +61,7 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.addNewCategory(categoryVo), HttpStatus.CREATED);
     }
 
-    @PreAuthorize(ExceptionTextMessage.HAS_ROLE_ADMIN)
+    @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
     public ResponseEntity<CategoryVo> updateCategory(@Valid @RequestBody CategoryVo categoryVo) {
         if (!categoryService.isCategoryVoUpdatable(categoryVo)) {
@@ -72,7 +72,7 @@ public class CategoryController {
                 .orElseThrow(() -> new InvalidVoException(ExceptionTextMessage.CAN_NOT_BE_UPDATED + categoryVo));
     }
 
-    @PreAuthorize(ExceptionTextMessage.HAS_ROLE_ADMIN)
+    @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
     public ResponseEntity<CategoryVo> deleteCategoryById(@PathVariable("category_id") long id) {
         if (categoryService.isCategoryVoDeletable(id)) {
@@ -80,10 +80,6 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         throw new InvalidVoException(ExceptionTextMessage.CATEGORY_CAN_NOT_BE_DELETED + id);
-    }
-
-    private boolean isEqualsEmptyList(List<?> categories) {
-        return categories.size() == 0;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
