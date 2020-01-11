@@ -12,5 +12,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     boolean existsAdvertisementByIdAndUser(Long id, User user);
 
-    Iterable<Advertisement> findAdvertisementsByProductGender(String gender);
+    Iterable<Advertisement> findFirst10ByProductGender(String gender);
+
+    Iterable<Advertisement> findFirst10ByTopicIgnoreCaseContaining(String topic);
 }
