@@ -60,10 +60,25 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getAllAdvertisements_shouldReturnAllGenderedAdvertisements() throws Exception {
-        mockMvc.perform(get("/adv/filtering/{gender}", "male")
+        mockMvc.perform(get("/adv/gender/{gender}", "female")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$[0].topic").value("Blouses"))
+                .andExpect(jsonPath("$[1].topic").value("Dresses"))
+                .andExpect(jsonPath("$[2].topic").value("Skirts"))
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void getAllAdvertisements_shouldReturnAdvertisementsByTopic() throws Exception {
+        mockMvc.perform(get("/adv/topic/{topic}", "ses")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$[0].topic").value("Blouses"))
+                .andExpect(jsonPath("$[1].topic").value("Dresses"))
+                .andExpect(status().isFound());
     }
 
     @Test

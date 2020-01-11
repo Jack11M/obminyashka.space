@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -42,10 +43,24 @@ public class AdvertisementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/filtering/{gender}")
+    @GetMapping("/gender/{gender}")
     public @ResponseBody
-    ResponseEntity<List<AdvertisementDto>> getGenderedAdvertisements(@PathVariable("gender") String gender) {
-        return new ResponseEntity<>(advertisementService.findByGender(gender), HttpStatus.OK);
+    ResponseEntity<List<AdvertisementDto>> geAllAdvertisementsByGender(@PathVariable("gender") @NotEmpty String gender) {
+        List<AdvertisementDto> allByGender = advertisementService.findAllByGender(gender);
+        if (allByGender.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(allByGender, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/topic/{topic}")
+    public @ResponseBody
+    ResponseEntity<List<AdvertisementDto>> getAllAdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
+        List<AdvertisementDto> allByTopic = advertisementService.findAllByTopic(topic);
+        if (allByTopic.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(allByTopic, HttpStatus.FOUND);
     }
 
     @PostMapping
