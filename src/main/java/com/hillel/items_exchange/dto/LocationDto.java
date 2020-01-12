@@ -13,11 +13,11 @@ import javax.validation.constraints.Size;
 @Setter
 @EqualsAndHashCode
 public class LocationDto {
-    @PositiveOrZero(message = "Id value has to be 0 or positive")
+    @PositiveOrZero(message = "${invalid.id}")
     private long id;
-    @NotEmpty(message = "City name has to be not empty")
-    @Size(min = 2, max = 100, message = "City name has to be between 2 and 100 symbols")
+    @NotEmpty(message = "${invalid.not-empty}")
+    @Size(min = 2, max = 100, message = "${invalid.size}")
     private String city;
-    @NotNull(message = "District has to be not null")
+    @NotNull(message = "${invalid.not-null}")
     private String district;
 }
