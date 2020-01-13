@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
+
 @RestController
 @RequestMapping("/subcategory")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -32,7 +34,7 @@ public class SubcategoryController {
         return new ResponseEntity<>(subcategoriesNames, HttpStatus.OK);
     }
 
-    @PreAuthorize(ExceptionTextMessage.HAS_ROLE_ADMIN)
+    @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{subcategory_id}")
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {

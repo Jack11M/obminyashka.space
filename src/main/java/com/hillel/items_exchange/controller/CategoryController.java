@@ -17,13 +17,14 @@ import javax.validation.Valid;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
+
 @RestController
 @RequestMapping("/category")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryController {
-    private static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
     private static final String NAME_OF_CLASS = "IN the CategoryController: ";
     private final CategoryService categoryService;
 
