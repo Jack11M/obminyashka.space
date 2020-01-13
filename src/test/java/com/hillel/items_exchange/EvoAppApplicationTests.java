@@ -12,5 +12,4 @@ public class EvoAppApplicationTests {
     @Test
     public void contextLoads() {
     }
-
 }
