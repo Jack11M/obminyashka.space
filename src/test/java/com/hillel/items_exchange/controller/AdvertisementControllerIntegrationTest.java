@@ -3,6 +3,7 @@ package com.hillel.items_exchange.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.*;
@@ -17,8 +18,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.Collections;
 
-import static java.util.Collections.emptyList;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -80,6 +82,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
@@ -94,6 +97,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         existDto.setDescription("new description");
         existDto.setTopic("new topic");
@@ -114,6 +118,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
         mockMvc.perform(delete("/adv")
                 .content(asJsonString(existDto))
@@ -126,16 +131,18 @@ class AdvertisementControllerIntegrationTest {
         LocationDto kharkiv = new LocationDto(1L, "Kharkiv", "Kharkivska district");
         CategoryDto shoes = new CategoryDto(1L, "shoes");
         SubcategoryDto lightShoes = new SubcategoryDto(1L, "light_shoes", shoes);
-        ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes, emptyList());
+        ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes,
+                Arrays.asList(new ImageDto(1L, "one", false), new ImageDto(2L, "two", true)));
         existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress);
     }
 
     private void createNonExistAdvertisementDto() {
-        LocationDto kharkiv = new LocationDto(0L, "Kharkiv", "District");
+        LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
         CategoryDto clothes = new CategoryDto(0L, "Clothes");
         SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
-        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress, emptyList());
-        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kharkiv, springDress);
+        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
+                Collections.singletonList(new ImageDto(0L, "url", false)));
+        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
     }
 
     private String asJsonString(final Object obj) {

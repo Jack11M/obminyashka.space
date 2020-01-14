@@ -13,36 +13,35 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class CategoryMapper {
+
     private final SubcategoryMapper subcategoryMapper;
 
-    public Category categoryVoToNewCategory(CategoryVo categoryVo) {
+    public Category voToNewCategory(CategoryVo categoryVo) {
         Category newCategory = new Category();
-        newCategory.setName(categoryVo.getName());
-        List<Subcategory> newSubcategories = categoryVo.getSubcategories().stream()
-                .map(subcategoryDto -> subcategoryMapper.subcategoryVoToNewSubcategory(subcategoryDto, newCategory))
-                .collect(Collectors.toList());
-        newCategory.setSubcategories(newSubcategories);
-        return newCategory;
+        return fillCategoryWithSubcategories(categoryVo, newCategory);
     }
 
-    public CategoryVo categoryToCategoryVo(Category category) {
+    public CategoryVo categoryToVo(Category category) {
         CategoryVo categoryVo = new CategoryVo();
         categoryVo.setId(category.getId());
         categoryVo.setName(category.getName());
         List<SubcategoryVo> subcategoryDtos = category.getSubcategories().stream()
-                .map(subcategoryMapper::subcategoryToSubcategoryVo)
+                .map(subcategoryMapper::subcategoryToVo)
                 .collect(Collectors.toList());
         categoryVo.setSubcategories(subcategoryDtos);
         return categoryVo;
     }
 
-    public Category categoryVoToUpdatedCategory(CategoryVo categoryVo, Category updatedCategory) {
-        updatedCategory.setName(categoryVo.getName());
-        List<Subcategory> updatedSubcategories = categoryVo.getSubcategories().stream()
-                .map(subcategoryDto -> subcategoryMapper.updateCategory(subcategoryDto, updatedCategory))
-                .collect(Collectors.toList());
-        updatedCategory.setSubcategories(updatedSubcategories);
+    public Category voToUpdatedCategory(CategoryVo categoryVo, Category updatedCategory) {
+        return fillCategoryWithSubcategories(categoryVo, updatedCategory);
+    }
 
-        return updatedCategory;
+    private Category fillCategoryWithSubcategories(CategoryVo categoryVo, Category category) {
+        category.setName(categoryVo.getName());
+        List<Subcategory> subcategories = categoryVo.getSubcategories().stream()
+                .map(subcategoryDto -> subcategoryMapper.updateSubcategory(subcategoryDto, category))
+                .collect(Collectors.toList());
+        category.setSubcategories(subcategories);
+        return category;
     }
 }

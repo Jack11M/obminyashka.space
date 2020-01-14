@@ -3,12 +3,16 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.model.Advertisement;
+import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +31,8 @@ public class AdvertisementService {
     }
 
     public List<AdvertisementDto> findByGender(String gender) {
-        return modelMapper.map(
-                advertisementRepository.findAdvertisementsByProductGender(gender), new TypeToken<List<AdvertisementDto>>() {}.getType());
+        return modelMapper.map(advertisementRepository.findAdvertisementsByProductGender(gender),
+                new TypeToken<List<AdvertisementDto>>() {}.getType());
     }
 
     public boolean isAdvertisementExists(Long id, User user) {
@@ -38,19 +42,27 @@ public class AdvertisementService {
     public AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto, User user) {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
+        adv.setStatus(Status.NEW);
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
-    public AdvertisementDto updateAdvertisement(AdvertisementDto advertisementDto) {
-        Advertisement updatedAdvertisement = advertisementRepository.save(mapDtoToAdvertisement(advertisementDto));
+    public AdvertisementDto updateAdvertisement(AdvertisementDto dto) {
+        Advertisement toUpdate = mapDtoToAdvertisement(dto);
+        Advertisement fromDB = advertisementRepository.findById(dto.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created", "updated", "status");
+        fromDB.setStatus(Status.UPDATED);
+        Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
     }
 
-    public void remove(AdvertisementDto advertisementDto) {
-        advertisementRepository.delete(mapDtoToAdvertisement(advertisementDto));
+    public void remove(Long id) {
+        advertisementRepository.deleteById(id);
+        advertisementRepository.flush();
     }
 
     private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper.map(dto, Advertisement.class);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Component
@@ -31,9 +32,9 @@ public class UserMapper {
         user.setDeals(Collections.emptyList());
         user.setPhones(Collections.emptyList());
         LocalDate now = LocalDate.now();
-        user.setLastOnlineTime(now);
         user.setCreated(now);
         user.setUpdated(now);
+        user.setLastOnlineTime(LocalDateTime.now());
         user.setStatus(Status.ACTIVE);
         return user;
     }

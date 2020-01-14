@@ -1,8 +1,6 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.SubcategoryRepository;
-import com.hillel.items_exchange.dto.SubcategoriesNamesDto;
-import com.hillel.items_exchange.dto.SubcategoryVo;
 import com.hillel.items_exchange.model.Subcategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,32 +14,31 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class SubcategoryService {
+
     private final SubcategoryRepository subcategoryRepository;
 
-    public void removeSubcategoryById(Long subcategoryId) {
+    public void removeSubcategoryById(long subcategoryId) {
         subcategoryRepository.deleteById(subcategoryId);
     }
 
-    public SubcategoriesNamesDto findSubcategoryNamesByCategoryId(Long categoryId) {
-        SubcategoriesNamesDto subcategoriesNamesDto = new SubcategoriesNamesDto();
-        subcategoriesNamesDto.setSubcategoriesNamesDto(Optional.ofNullable(subcategoryRepository.findSubcategoriesNamesByCategory(categoryId))
-                .orElse(Collections.emptyList()));
-        return subcategoriesNamesDto;
+    public List<String> findSubcategoryNamesByCategoryId(long categoryId) {
+        return subcategoryRepository.findSubcategoriesNamesByCategory(categoryId);
     }
 
-    public boolean isSubcategoriesVoIdsInvalid(List<SubcategoryVo> subcategoryVos) {
-        return subcategoryVos.stream()
-                .filter(subcategoryDto -> subcategoryDto.getId() != 0)
-                .map(SubcategoryVo::getId)
-                .noneMatch(this::isSubcategoryVoIdValid);
+    public boolean isSubcategoryDeletable(long id) {
+        return isSubcategoryVoIdValid(id)
+                && isSubcategoryHasNotProducts(id);
     }
 
-    public boolean isSubcategoryVoIdValid(Long subcategoryVoId) {
-        return subcategoryRepository.existsById(subcategoryVoId);
+    public boolean isSubcategoryHasNotProducts(long id) {
+        return subcategoryRepository.findById(id).get().getProducts().isEmpty();
     }
 
-    public boolean isSubcategoryHasNotProducts(Long subcategoryVoId) {
-        Optional<Subcategory> subcategory = subcategoryRepository.findById(subcategoryVoId);
-        return subcategory.map(s -> s.getProducts().isEmpty()).orElse(false);
+    public Optional<Subcategory> findById(long id) {
+        return subcategoryRepository.findById(id);
+    }
+
+    public boolean isSubcategoryVoIdValid(long id) {
+        return subcategoryRepository.existsById(id);
     }
 }

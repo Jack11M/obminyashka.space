@@ -19,6 +19,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <mysql.connetor.version>8.0.14</mysql.connetor.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+        <swagger.version>2.9.2</swagger.version>
     </properties>
 
     <dependencies>
@@ -82,17 +83,17 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-bean-validators</artifactId>
-            <version>2.9.2</version>
+            <version>${swagger.version}</version>
         </dependency>
 
         <!--  Testing    -->
@@ -116,7 +117,7 @@
         <dependency>
             <groupId>com.github.database-rider</groupId>
             <artifactId>rider-spring</artifactId>
-            <version>1.8.1</version>
+            <version>1.9.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

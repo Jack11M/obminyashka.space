@@ -28,13 +28,20 @@ public class Advertisement extends BaseEntity {
     @Column(name = "wishes_to_exchange")
     private String wishesToExchange;
 
-    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "advertisement", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
+
+    @PrePersist
+    private void saveProduct() {
+        product.setAdvertisement(this);
+    }
 }

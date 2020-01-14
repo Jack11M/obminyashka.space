@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "users")
+@EqualsAndHashCode(exclude = {"id", "users"})
 public class Role {
 
     @Id
