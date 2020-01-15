@@ -43,16 +43,6 @@ public class AdvertisementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/gender/{gender}")
-    public @ResponseBody
-    ResponseEntity<List<AdvertisementDto>> geAllAdvertisementsByGender(@PathVariable("gender") @NotEmpty String gender) {
-        List<AdvertisementDto> allByGender = advertisementService.findAllByGender(gender);
-        if (allByGender.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(allByGender, HttpStatus.FOUND);
-    }
-
     @GetMapping("/topic/{topic}")
     public @ResponseBody
     ResponseEntity<List<AdvertisementDto>> getAllAdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {

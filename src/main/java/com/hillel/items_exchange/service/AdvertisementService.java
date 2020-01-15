@@ -34,10 +34,6 @@ public class AdvertisementService {
         return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
     }
 
-    public List<AdvertisementDto> findAllByGender(String gender) {
-        return mapAdvertisementsToDto(advertisementRepository.findFirst10ByProductGender(gender));
-    }
-
     public boolean isAdvertisementExists(Long id, User user) {
         return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
     }
