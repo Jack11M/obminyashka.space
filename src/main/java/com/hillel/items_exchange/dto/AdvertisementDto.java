@@ -15,26 +15,26 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class AdvertisementDto {
-    @PositiveOrZero(message = "${invalid.id}")
+    @PositiveOrZero(message = "{invalid.id}")
     private long id;
-    @NotEmpty(message = "${invalid.not-empty}")
-    @Size(min = 3, max = 70, message = "${invalid.size}")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(min = 3, max = 70, message = "{invalid.size}")
     private String topic;
-    @NotNull(message = "${invalid.not-null}")
-    @Size(max = 255, message = "${invalid.max-size}")
+    @NotNull(message = "{invalid.not-null}")
+    @Size(max = 255, message = "{invalid.max-size}")
     private String description;
-    @NotNull(message = "${invalid.not-null}")
-    @Size(max = 210, message = "${invalid.max-size}")
+    @NotNull(message = "{invalid.not-null}")
+    @Size(max = 210, message = "{invalid.max-size}")
     private String wishesToExchange;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private Boolean readyForOffers;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private Boolean isFavourite;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private DealType dealType;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private @Valid LocationDto location;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private @Valid ProductDto product;
 
 }

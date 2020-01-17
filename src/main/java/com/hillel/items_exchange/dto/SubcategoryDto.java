@@ -16,11 +16,11 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 public class SubcategoryDto {
-    @PositiveOrZero(message = "${invalid.id}")
+    @PositiveOrZero(message = "{invalid.id}")
     private long id;
-    @NotEmpty(message = "${invalid.not-empty}")
-    @Size(min = 3, max = 50, message = "${invalid.size}")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(min = 3, max = 50, message = "{invalid.size}")
     private String name;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private @Valid CategoryDto category;
 }

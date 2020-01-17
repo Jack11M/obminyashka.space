@@ -12,6 +12,6 @@ import javax.validation.constraints.NotEmpty;
 public class UserLoginDto {
     @NotEmpty(message = "Please enter valid email/login or password")
     private String usernameOrEmail;
-    @NotEmpty(message = "${empty.password}")
+    @NotEmpty(message = "{empty.password}")
     private String password;
 }

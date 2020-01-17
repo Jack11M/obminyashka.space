@@ -13,9 +13,9 @@ import javax.validation.constraints.PositiveOrZero;
 @Getter
 @Setter
 public class ImageDto {
-    @PositiveOrZero(message = "${invalid.id}")
+    @PositiveOrZero(message = "{invalid.id}")
     private long id;
-    @NotNull(message = "${invalid.not-null}")
+    @NotNull(message = "{invalid.not-null}")
     private String resourceUrl;
     private boolean defaultPhoto;
 }
