@@ -21,11 +21,11 @@ import {ProductModule} from '@app/product/product.module';
 import {SearchResultsModule} from '@app/searchresults/searchresults.module';
 import { SharedModule } from './shared/shared.module';
 
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
 import { AuthGuard } from './_guards';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AddToFavouritesService } from './_services/add-to-favourites.service';
 import { ProfileModule } from './profile/profile.module';
 

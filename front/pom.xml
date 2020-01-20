@@ -57,7 +57,7 @@
 
     <resources>
       <resource>
-        <directory>target</directory>
+        <directory>target/front</directory>
         <targetPath>static</targetPath>
       </resource>
     </resources>

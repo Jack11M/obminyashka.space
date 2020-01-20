@@ -1,15 +1,11 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {BehaviorSubject, from, Observable, Subject} from 'rxjs';
+import {User} from '@app/_models';
 
-import { environment } from '@environments/environment';
-import { User } from '@app/_models';
-
-import { AngularFireAuth } from 'angularfire2/auth';
-import { from } from 'rxjs';
-import { ILogin } from '@app/_models/ilogin';
-import { IReg } from '@app/_models/ireg';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {ILogin} from '@app/_models/ilogin';
+import {IReg} from '@app/_models/ireg';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

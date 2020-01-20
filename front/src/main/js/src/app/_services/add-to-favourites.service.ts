@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ICard } from '@app/_models/card';
 import { from, Observable } from 'rxjs';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase } from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
