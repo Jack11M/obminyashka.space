@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -15,6 +15,12 @@ import { IReg } from '@app/_models/ireg';
 export class AuthService {
     private useServer = true;
     private urlLogin = 'http://localhost:8080';
+    private httpHeaders = {
+        headers: new HttpHeaders({
+            'Access-Control-Allow-Origin':  '*'
+        })
+      };
+
 
     private curLogin: ILogin = {
         usernameOrEmail: '*',
@@ -48,7 +54,7 @@ export class AuthService {
         if (this.useServer) {
             this.curLogin.usernameOrEmail = username;
             this.curLogin.password = password;
-            this._http.post(this.urlLogin + '/auth/login', this.curLogin).toPromise()
+            this._http.post(this.urlLogin + '/auth/login', this.curLogin, this.httpHeaders).toPromise()
             .then(data => {
                 // const currentUser: User = this.getUserFromData(data);
                 const currentUser: User = {///TODO check data from server
@@ -98,7 +104,7 @@ export class AuthService {
             this.curRegistration.password = password;
             this.curRegistration.email = email;
             this.curRegistration.confirmPassword = confirmPassword;
-            return this._http.post(this.urlLogin + '/auth/register', this.curRegistration);
+            return this._http.post(this.urlLogin + '/auth/register', this.curRegistration, this.httpHeaders);
         } else {
             //Firebase variant
             return from(this.firebaseAuth
