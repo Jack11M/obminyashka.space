@@ -1,0 +1,13 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1.2.0" author="jack.petrov">
+        <sqlFile dbms="mysql" path="../sql/fill-table-category.sql" relativeToChangelogFile="true" />
+    </changeSet>
+
+    <changeSet id="1.2.1" author="jack.petrov">
+        <sqlFile dbms="mysql" path="../sql/fill-table-subcategory.sql" relativeToChangelogFile="true" />
+    </changeSet>
+</databaseChangeLog>
