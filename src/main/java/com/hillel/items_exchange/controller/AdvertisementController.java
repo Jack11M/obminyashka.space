@@ -53,14 +53,14 @@ public class AdvertisementController {
         if (allByTopic.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(allByTopic, HttpStatus.FOUND);
+        return new ResponseEntity<>(allByTopic, HttpStatus.OK);
     }
 
     @PostMapping("/filter")
     public @ResponseBody
     ResponseEntity<List<AdvertisementDto>> getAllBySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
 
-        return new ResponseEntity<>(advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto), HttpStatus.FOUND);
+        return new ResponseEntity<>(advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto), HttpStatus.OK);
     }
 
     @PostMapping

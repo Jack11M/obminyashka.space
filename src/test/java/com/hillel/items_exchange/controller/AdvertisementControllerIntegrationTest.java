@@ -65,7 +65,7 @@ class AdvertisementControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(jsonPath("$[0].topic").value("Blouses"))
                 .andExpect(jsonPath("$[1].topic").value("Dresses"))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
     }
 
     @Test
