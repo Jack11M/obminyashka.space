@@ -4,19 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>back</artifactId>
-    <description>Spring Boot project with Spring Data DB JPA</description>
+    <artifactId>com.hillel</artifactId>
+    <description>cge</description>
     <packaging>war</packaging>
+    <version>0.0.1-SNAPSHOT</version>
 
     <parent>
-        <groupId>com.hillel</groupId>
-        <artifactId>cge</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>11</java.version>
         <mysql.connetor.version>8.0.14</mysql.connetor.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>2.9.2</swagger.version>

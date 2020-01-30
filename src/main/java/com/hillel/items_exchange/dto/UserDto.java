@@ -14,29 +14,29 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UserDto {
-    @PositiveOrZero(message = "{invalid.id}")
+    @PositiveOrZero(message = "Id value has to be 0 or positive")
     private long id;
-    @NotEmpty(message = "{invalid.not-empty}")
-    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @NotEmpty(message = "Login field is required")
+    @Size(min = 2, max = 50, message = "Your login must be between 2 and 50 characters")
     private String username;
-    @NotEmpty(message = "{invalid.not-empty}")
+    @NotEmpty(message = "Password field is required")
     private String password;
-    @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 129, message = "{invalid.max-size}")
-    @Email(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$", message = "{invalid.email}")
+    @NotEmpty(message = "Email field is required")
+    @Size(max = 129, message = "Email length should be less than 129 characters. Please enter valid email address")
+    @Email(message = "Please enter valid email address (Ex: username@example.com)")
     private String email;
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = "Online status has to be not null")
     private Boolean online;
-    @NotNull(message = "{invalid.not-null}")
-    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @NotNull(message = "First name has to be not empty")
+    @Size(min = 2, max = 50, message = "First name has to be between 2 and 50 symbols")
     private String firstName;
-    @NotNull(message = "{invalid.not-null}")
-    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @NotNull(message = "Last name has to be not empty")
+    @Size(min = 2, max = 50, message = "Last name has to be between 2 and 50 symbols")
     private String lastName;
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = "Avatar image has to be not empty")
     private String avatarImage;
-    @NotNull(message = "{invalid.not-null}")
-    @PastOrPresent(message = "{invalid.past-or-present.date}")
+    @NotNull(message = "Last online date has to be not null")
+    @PastOrPresent(message = "Last online date couldn't be in the future")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate lastOnlineTime;
 
