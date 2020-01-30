@@ -15,23 +15,23 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(exclude = {"subcategory", "images"})
 public class ProductDto {
-    @PositiveOrZero(message = "Id value has to be 0 or positive")
+    @PositiveOrZero(message = "{invalid.id}")
     private long id;
-    @NotEmpty(message = "Age has to be not empty")
-    @Size(max = 50, message = "Age has to be less than 50 symbols")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(max = 50, message = "{invalid.max-size}")
     private String age;
-    @NotEmpty(message = "Gender has to be not empty")
-    @Size(max = 50, message = "Gender has to be less than 50 symbols")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(max = 50, message = "{invalid.max-size}")
     private String gender;
-    @NotEmpty(message = "Season has to be not empty")
-    @Size(max = 50, message = "Season description has to be less than 50 symbols")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(max = 50, message = "{invalid.max-size}")
     private String season;
-    @NotEmpty(message = "Size has to be not empty")
-    @Size(max = 50, message = "Size description has to be less than 50 symbols")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(max = 50, message = "{invalid.max-size}")
     private String size;
 
-    @NotNull(message = "Subcategory has to be not null")
+    @NotNull(message = "{invalid.not-null}")
     private @Valid SubcategoryDto subcategory;
-    @NotNull(message = "Images has to be not null")
+    @NotNull(message = "{invalid.not-null}")
     private List<@Valid ImageDto> images;
 }
