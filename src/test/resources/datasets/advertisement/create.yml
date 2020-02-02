@@ -65,7 +65,7 @@ product:
     gender: 'male'
     size: 'M'
     season: 'spring'
-    subcategory_id: 2
+    subcategory_id: 4
 
 image:
   - id: 1
@@ -85,12 +85,20 @@ category:
   - id: 1
     name: 'shoes'
   - id: 2
-    name: 'Clothes'
+    name: 'toys'
+  - id: 3
+    name: 'clothes'
 
 subcategory:
   - id: 1
     name: 'light_shoes'
     category_id: 1
   - id: 2
-    name: 'dress'
+    name: 'dolls'
     category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2
+  - id: 4
+    name: 'dress'
+    category_id: 3

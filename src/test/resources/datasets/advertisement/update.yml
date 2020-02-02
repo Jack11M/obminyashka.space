@@ -58,8 +58,16 @@ image:
 category:
   - id: 1
     name: 'shoes'
+  - id: 2
+    name: 'toys'
 
 subcategory:
   - id: 1
     name: 'light_shoes'
     category_id: 1
+  - id: 2
+    name: 'dolls'
+    category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2
