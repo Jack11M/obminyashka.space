@@ -20,7 +20,6 @@ public class Subcategory {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
-
     @OneToMany(mappedBy = "subcategory")
     private List<Product> products;
 }

@@ -29,7 +29,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/names")
-    public ResponseEntity<List<String>> allCategoriesNames() {
+    public ResponseEntity<List<String>> getAllCategoriesNames() {
         List<String> categoriesNames = categoryService.findAllCategoryNames();
         if (categoriesNames.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ public class CategoryController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
-    public ResponseEntity<CategoryVo> addCategory(@Valid @RequestBody CategoryVo categoryVo) {
+    public ResponseEntity<CategoryVo> createCategory(@Valid @RequestBody CategoryVo categoryVo) {
         if (!categoryService.isCategoryVoCreatable(categoryVo)) {
             throw new IllegalIdentifierException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
         }
