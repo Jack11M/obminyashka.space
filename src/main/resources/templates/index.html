@@ -8,6 +8,7 @@
     <link href="../static/css/registration.css" rel="stylesheet" />
   </head>
   <body>
+  <button onclick="{document.querySelector('.auth').style.display = 'block'}">Go</button>
     <div class="auth">
       <div class="popup">
         <div class="tabs">
@@ -31,7 +32,7 @@
                 <input id="check" name="checkbox" type="checkbox" />
                 <label class="check" for="check">
                   <svg fill="none" height="10" viewBox="0 0 10 10" width="10" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 5.8L4.29412 9L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                    <path d="M1 5.8L4.29412 9L9 1" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                   </svg>
                 </label>
                 <label for="check">Запомнить меня</label>
@@ -54,7 +55,7 @@
             <div class="input-field">
               <label for="login-reg">Введите ваш Логин*</label>
               <input id="login-reg" name="login" type="text" />
-              <span data-error="Больше 3 и меньше 15 символов, без пробелов"></span>
+              <span data-error="Больше 2 и меньше 15 символов, без пробелов"></span>
             </div>
             <div class="input-field ">
               <label for="password-reg">Введите ваш пароль*</label>

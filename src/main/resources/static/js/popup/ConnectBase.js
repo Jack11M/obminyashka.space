@@ -7,17 +7,24 @@ class ConnectBase {
   }
 
   async postRequest(body, value) {
-    let url;
     if (value.classList[1] === "btn-login") {
-      url = this._url + "login";
+      this._url += "login";
     } else {
-      url = this._url + "register";
-      document.querySelector(".auth").style.display = "none";
+      this._url += "register";
     }
-    return await fetch(url, {
+    const response = await fetch(this._url, {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify(body)
-    }).then(data => data.json());
+    });
+    try {
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      console.log(e);
+      alert("Что-то пошло не так...");
+    }
+
   }
 }

@@ -1,198 +1,213 @@
+
 .auth * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Open Sans, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Open Sans, sans-serif;
+
 }
 
+
+.auth {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: none;
+}
+
+
 .popup {
-  margin: 0 auto;
-  max-width: 455px;
-  background: #fdfdff;
-  box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
-  border-radius: 1px 1px 0 0;
-  /*border: 1px solid black;*/
+    margin: 0 auto;
+    max-width: 455px;
+    background: #fdfdff;
+    box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
+    border-radius: 1px 1px 0 0;
 }
 
 .tabs {
-  margin-bottom: 65px;
+    margin-bottom: 65px;
 }
 
 .tabs ul {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .tabs li {
-  padding-top: 14px;
-  padding-bottom: 10px;
-  width: 50%;
-  list-style-type: none;
-  text-align: center;
-  border-bottom: 2px solid #8e8e8e;
+    padding-top: 14px;
+    padding-bottom: 10px;
+    width: 50%;
+    list-style-type: none;
+    text-align: center;
+    border-bottom: 2px solid #8e8e8e;
 }
 
 .tabs li {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
-  text-decoration: none;
-  text-transform: uppercase;
-  color: #8e8e8e;
-  cursor: pointer;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #8e8e8e;
+    cursor: pointer;
 }
 
 .tabs .active {
-  border-bottom: 2px solid #12b6ed;
-  font-weight: bold;
+    border-bottom: 2px solid #12b6ed;
+    font-weight: bold;
 }
 
 .tabs li.active {
-  color: #12b6ed;
+    color: #12b6ed;
 }
 
 
-
 .popup form {
-  margin: 0 44px;
+    margin: 0 44px;
 }
 
 .input-field input[type="text"],
 .input-field input[type="password"],
 .input-field input[type="email"] {
-  padding: 12px 16px;
-  margin-bottom: 44px;
-  width: 100%;
-  border: 1px solid #bcbcbc;
-  outline: none;
+    padding: 12px 16px;
+    margin-bottom: 44px;
+    width: 100%;
+    border: 1px solid #bcbcbc;
+    outline: none;
 
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
-  color: #333333;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 24px;
+    color: #333333;
 }
 
 .extra {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 28px;
 }
 
 .checkbox input {
-  display: none;
+    display: none;
 }
 
 .checkbox .check {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #12b6ed;
-  border-radius: 2px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #12b6ed;
+    border-radius: 2px;
+}
+
+.checkbox .check + svg {
+position: absolute;
 }
 
 .checkbox input:checked + label {
-  background-color: #12b6ed;
+    background-color: #12b6ed;
 }
 
 .check + label {
-  font-family: "Roboto", sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 24px;
+    font-family: "Roboto", sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 24px;
 
-  color: #8e8e8e;
+    color: #8e8e8e;
 
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .extra span a {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 24px;
-  text-decoration-line: underline;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 24px;
+    text-decoration-line: underline;
 
-  color: #757e88;
+    color: #757e88;
 }
 
 .input-field {
-  position: relative;
+    position: relative;
 }
 
 .input-field label {
-  position: absolute;
-  top: -22px;
+    position: absolute;
+    top: -20px;
 
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 22px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
 
-  color: #8e8e8e;
+    color: #8e8e8e;
 
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .error span {
-  position: absolute;
-  left: 0;
-  bottom: 28px;
+    position: absolute;
+    left: 0;
+    bottom: 28px;
 
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 20px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 20px;
 
-  color: #ff4c4c;
+    color: #ff4c4c;
 }
 
 .field-required {
-  margin-bottom: 28px;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 22px;
+    margin-bottom: 28px;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
 
-  color: #8e8e8e;
+    color: #8e8e8e;
 }
 
 .btn {
-  width: 100%;
-  height: 48px;
-  background: #12b6ed;
-  border-radius: 24px;
-  border: 0;
-  outline: none;
-  margin-bottom: 44px;
+    width: 100%;
+    height: 48px;
+    background: #12b6ed;
+    border-radius: 24px;
+    border: 0;
+    outline: none;
+    margin-bottom: 44px;
 
-  font-style: normal;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 24px;
-  text-transform: uppercase;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
 
-  color: #fdf9ff;
+    color: #fdf9ff;
 }
 
 .btn:hover {
-  cursor: pointer;
-  background-color: #12a5de;
+    cursor: pointer;
+    background-color: #12a5de;
 }
+
 .btn:active {
-  background-color: #1295c7;
+    background-color: #1295c7;
 }
 
 .register, .login {
-  display: none;
+    display: none;
 }
 
 .switch {
-  display: block;
+    display: block;
 }

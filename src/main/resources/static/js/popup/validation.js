@@ -4,10 +4,13 @@ function RegisterValidation(data) {
 
   let errors = [];
   const rulesPattern = {
-    "email-reg": /^\w{1,}@\w{1,}\.\w{2,}$/,
+    "email-reg": /^\w{1,}@\w{1,}\.\w{2,}$/
   };
 
   const validatorMethods = {
+    minLengthString: 1,
+    maxLengthString: 15,
+
     notEmpty(el) {
       return el.value !== "";
     },
@@ -21,10 +24,10 @@ function RegisterValidation(data) {
       } else return false;
     },
     notMore(el) {
-      return el.value.length < 15;
+      return el.value.length < this.maxLengthString;
     },
     lengthLogin(el) {
-      return el.value.length > 2 && !el.value.includes(" ");
+      return el.value.length > this.minLengthString && !el.value.includes(" ");
     }
   };
 
@@ -77,8 +80,6 @@ function RegisterValidation(data) {
     }
   };
 
-
-
   const createBody = function() {
     const formData = new FormData(formEl);
     const body = {};
@@ -103,13 +104,8 @@ function RegisterValidation(data) {
         if (errors.length === 0) {
           const connect = new ConnectBase();
           const a = await connect.postRequest(createBody(), val);
-          try {
-            if (a) {
-              document.querySelector(".auth").style.display = "none";
-            }
-          } catch (e) {
-            showError()
-          }
+
+
 
         }
       });
