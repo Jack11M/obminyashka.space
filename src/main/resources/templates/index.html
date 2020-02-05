@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="ie=edge" http-equiv="X-UA-Compatible" />
+    <title>Registration</title>
+    <link href="../static/css/registration.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="auth">
+      <div class="popup">
+        <div class="tabs">
+          <ul>
+            <li class="active">Вход</li>
+            <li>Регистрация</li>
+          </ul>
+        </div>
+        <div class="login switch">
+          <form id="login-form">
+            <div class="input-field ">
+              <input id="email" name="usernameOrEmail" placeholder="Введите ваш E-mail или Логин" type="email"/>
+              <span data-error="Укажите действующий адрес электронной почты"></span>
+            </div>
+            <div class="input-field">
+              <input id="password" name="password" placeholder="Введите ваш пароль " type="password"/>
+              <span data-error="Не верный пароль"></span>
+            </div>
+            <div class="extra">
+              <div class="checkbox">
+                <input id="check" name="checkbox" type="checkbox" />
+                <label class="check" for="check">
+                  <svg fill="none" height="10" viewBox="0 0 10 10" width="10" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 5.8L4.29412 9L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                  </svg>
+                </label>
+                <label for="check">Запомнить меня</label>
+              </div>
+              <span> <a href="#">Не можете войти?</a> </span>
+            </div>
+            <button class="btn btn-login" type="submit">Войти</button>
+          </form>
+        </div>
+        <!--		-->
+        <div class="register">
+          <form id="register-form">
+            <div class="input-field">
+              <label for="email-reg">Введите ваш E-mail*</label>
+              <input id="email-reg" name="email" type="text" />
+              <span
+                data-error="Укажите действующий адрес электронной почты"
+              ></span>
+            </div>
+            <div class="input-field">
+              <label for="login-reg">Введите ваш Логин*</label>
+              <input id="login-reg" name="login" type="text" />
+              <span data-error="Больше 2 и меньше 15 символов, без пробелов"></span>
+            </div>
+            <div class="input-field ">
+              <label for="password-reg">Введите ваш пароль*</label>
+              <input id="password-reg" name="password" type="password" />
+              <span data-error="Не больше 15 символов"></span>
+            </div>
+            <div class="input-field ">
+              <label for="confirm-password">Повторите пароль*</label>
+              <input id="confirm-password" name="confirmPassword" type="password"/>
+              <span data-error="Пароли должны совпадать"></span>
+            </div>
+            <div class="field-required">
+              * Все поля обязательны для заполнения
+            </div>
+            <button class="btn btn-register" type="submit">
+              Регистрироваться
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="../static/js/popup/ConnectBase.js"></script>
+    <script src="../static/js/popup/validation.js"></script>
+    <script src="../static/js/popup/changeList.js"></script>
+    <script></script>
+  </body>
+</html>
