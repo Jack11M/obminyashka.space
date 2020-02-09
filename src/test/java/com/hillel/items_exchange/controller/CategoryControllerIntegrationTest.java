@@ -5,10 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dao.CategoryRepository;
 import com.hillel.items_exchange.dto.CategoryVo;
 import com.hillel.items_exchange.dto.SubcategoryVo;
-import com.hillel.items_exchange.service.SubcategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CategoryControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private SubcategoryService subcategoryService;
     private CategoryVo existCategoryVo;
 
     @BeforeEach
