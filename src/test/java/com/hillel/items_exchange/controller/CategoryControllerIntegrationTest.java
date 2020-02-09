@@ -130,9 +130,9 @@ public class CategoryControllerIntegrationTest {
     }
 
     private CategoryVo createNonExistCategoryVo() {
-        SubcategoryVo dress = new SubcategoryVo(0L, "dress");
-        SubcategoryVo trousers = new SubcategoryVo(0L, "trousers");
-        return new CategoryVo(0L, "clothes", Arrays.asList(dress, trousers));
+        SubcategoryVo fairyTales = new SubcategoryVo(0L, "fairy tales");
+        SubcategoryVo educationalBooks = new SubcategoryVo(0L, "educational books");
+        return new CategoryVo(0L, "books", Arrays.asList(fairyTales, educationalBooks));
     }
 
     private String asJsonString(final Object obj) {

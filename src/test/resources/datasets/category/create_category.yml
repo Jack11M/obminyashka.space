@@ -4,7 +4,7 @@ category:
   - id: 2
     name: 'toys'
   - id: 4
-    name: 'clothes'
+    name: 'books'
 
 subcategory:
   - id: 1
@@ -17,8 +17,8 @@ subcategory:
     name: 'puzzles'
     category_id: 2
   - id: 6
-    name: 'dress'
+    name: 'fairy tales'
     category_id: 4
   - id: 7
-    name: 'trousers'
+    name: 'educational books'
     category_id: 4

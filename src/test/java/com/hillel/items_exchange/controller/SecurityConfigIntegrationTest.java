@@ -106,7 +106,7 @@ public class SecurityConfigIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "advertisement/create_for_security_test.yml", ignoreCols = {"created", "updated"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String token = obtainToken(validLoginDto);
         mockMvc.perform(post("/adv")

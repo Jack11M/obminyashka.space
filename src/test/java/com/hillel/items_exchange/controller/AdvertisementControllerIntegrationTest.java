@@ -138,7 +138,7 @@ class AdvertisementControllerIntegrationTest {
 
     private void createNonExistAdvertisementDto() {
         LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
-        CategoryDto clothes = new CategoryDto(0L, "clothes");
+        CategoryDto clothes = new CategoryDto(0L, "Clothes");
         SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
         ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
                 Collections.singletonList(new ImageDto(0L, "url", false)));

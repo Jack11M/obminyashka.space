@@ -12,7 +12,7 @@ advertisement:
     user_id: 1
     location_id: 1
     product_id: 1
-  - id: 2
+  - id: 3
     topic: 'topic'
     description: 'description'
     deal_type: 'GIVEAWAY'
@@ -23,8 +23,8 @@ advertisement:
     updated: '[ignored]'
     status: 'NEW'
     user_id: 1
-    location_id: 2
-    product_id: 2
+    location_id: 3
+    product_id: 3
 
 user:
   - id: 1
@@ -49,7 +49,7 @@ location:
   - id: 1
     city: 'Kharkiv'
     district: 'Kharkivska district'
-  - id: 2
+  - id: 3
     city: 'Kyiv'
     district: 'District'
 
@@ -60,12 +60,12 @@ product:
     size: '40'
     season: 'spring'
     subcategory_id: 1
-  - id: 2
+  - id: 3
     age: '16'
     gender: 'male'
     size: 'M'
     season: 'spring'
-    subcategory_id: 4
+    subcategory_id: 8
 
 image:
   - id: 1
@@ -76,17 +76,17 @@ image:
     resource_url: 'two'
     default_photo: 'true'
     product_id: 1
-  - id: 3
+  - id: 4
     resource_url: 'url'
     default_photo: 'false'
-    product_id: 2
+    product_id: 3
 
 category:
   - id: 1
     name: 'shoes'
   - id: 2
     name: 'toys'
-  - id: 3
+  - id: 5
     name: 'Clothes'
 
 subcategory:
@@ -99,6 +99,6 @@ subcategory:
   - id: 3
     name: 'puzzles'
     category_id: 2
-  - id: 4
+  - id: 8
     name: 'dress'
-    category_id: 3
+    category_id: 5
