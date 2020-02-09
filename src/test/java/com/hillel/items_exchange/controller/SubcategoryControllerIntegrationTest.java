@@ -36,6 +36,15 @@ public class SubcategoryControllerIntegrationTest {
     }
 
     @Test
+    @DataSet("database_init.yml")
+    public void getSubcategoryNamesByCategoryId_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/subcategory/{category_id}/names", 100L)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Transactional
     @DataSet("database_init.yml")
@@ -45,5 +54,15 @@ public class SubcategoryControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").doesNotExist());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @DataSet("database_init.yml")
+    public void deleteSubcategoryById_whenSubcategoryHasProducts_shouldReturnBadRequest() throws Exception {
+        mockMvc.perform(delete("/subcategory/{subcategory_id}", 1L)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
