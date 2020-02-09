@@ -42,12 +42,9 @@ public class SwaggerConfig {
                 .build();
     }
 
-    List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope
-                = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-
-        return List.of(new SecurityReference("JWT", authorizationScopes));
+    private List<SecurityReference> defaultAuth() {
+        return List.of(new SecurityReference("JWT",
+                new AuthorizationScope[]{
+                        new AuthorizationScope("global", "accessEverything")}));
     }
 }
