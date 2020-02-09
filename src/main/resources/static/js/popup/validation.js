@@ -10,6 +10,8 @@ function RegisterValidation(data) {
   const validatorMethods = {
     minLengthString: 1,
     maxLengthString: 15,
+    minLengthPassword: 7,
+    maxLengthPassword: 29,
 
     notEmpty(el) {
       return el.value !== "";
@@ -23,12 +25,20 @@ function RegisterValidation(data) {
         return true;
       } else return false;
     },
-    notMore(el) {
-      return el.value.length < this.maxLengthString;
-    },
     lengthLogin(el) {
-      return el.value.length > this.minLengthString && !el.value.includes(" ");
+      return (
+        el.value.length > this.minLengthString &&
+        el.value.length < this.maxLengthString &&
+        !el.value.includes(" ")
+      );
     },
+    passwordNotMore(el) {
+      return (
+        el.value.length > this.minLengthPassword &&
+        el.value.length < this.maxLengthString &&
+        !el.value.includes(" ")
+      );
+    }
   };
 
   const showError = function(el) {
@@ -115,8 +125,8 @@ const validFormRegistration = new RegisterValidation({
   id: "register-form",
   methods: {
     "email-reg": [["notEmpty"], ["pattern", "email-reg"]],
-    "login-reg": [["notEmpty"], ["lengthLogin"], ["notMore"]],
-    "password-reg": [["notEmpty"], ["notMore"]],
+    "login-reg": [["notEmpty"], ["lengthLogin"]],
+    "password-reg": [["notEmpty"], ["passwordNotMore"]],
     "confirm-password": [["notEmpty"], ["contains", "password-reg"]]
   }
 });

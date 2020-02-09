@@ -1,10 +1,7 @@
 class ConnectBase {
   constructor() {
-    // I created own server for test
-    this._url = "http://localhost:3000/auth/";
-    this.headers = {
-      "Content-Type": "application/json"
-    };
+    this._url = "http://54.37.125.180:8080/auth/";
+    this.headers = { "Content-Type": "application/json" };
   }
 
   async postRequest(body, value) {
@@ -17,13 +14,15 @@ class ConnectBase {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify(body)
+    }).catch(e => {
+      console.log(e);
+      alert("Нет подключения к базе");
     });
     try {
-      if (response.ok) {
+      if (response) {
         return await response.json();
       }
     } catch (e) {
-      console.log(e);
       alert("Что-то пошло не так...");
     }
   }
