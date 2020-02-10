@@ -1,6 +1,9 @@
-.auth * {
+body *{
   margin: 0;
   padding: 0;
+}
+
+.auth * {
   box-sizing: border-box;
   font-family: Open Sans, sans-serif;
   display: block;
@@ -18,7 +21,7 @@
   max-width: 455px;
   background: #fdfdff;
   box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
-  border-radius: 1px 1px 0 0;
+  border-radius: 1px 1px 1px 1px;
 }
 
 .tabs {
@@ -176,7 +179,6 @@
   border-radius: 24px;
   border: 0;
   outline: none;
-  margin-bottom: 44px;
 
   font-style: normal;
   font-weight: bold;
@@ -198,6 +200,7 @@
 .register,
 .login {
   display: none;
+  padding-bottom: 44px;
 }
 
 .switch {

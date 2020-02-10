@@ -114,7 +114,7 @@ function RegisterValidation(data) {
         if (errors.length === 0) {
           const connect = new ConnectBase();
           const a = await connect.postRequest(createBody(), val);
-          console.log(a);
+          console.table(a);
         }
       });
     }
@@ -124,7 +124,7 @@ function RegisterValidation(data) {
 const validFormRegistration = new RegisterValidation({
   id: "register-form",
   methods: {
-    "email-reg": [["notEmpty"], ["pattern", "email-reg"]],
+    "email-reg": [["notEmpty"], ["pattern", "email-reg"]], 
     "login-reg": [["notEmpty"], ["lengthLogin"]],
     "password-reg": [["notEmpty"], ["passwordNotMore"]],
     "confirm-password": [["notEmpty"], ["contains", "password-reg"]]
