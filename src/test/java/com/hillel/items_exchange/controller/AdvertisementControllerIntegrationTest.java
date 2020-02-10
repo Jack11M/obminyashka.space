@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -42,7 +41,6 @@ class AdvertisementControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        createNonExistAdvertisementDto();
         createExistAdvertisementDto();
     }
 
@@ -76,21 +74,6 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.topic").value("topic"))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
-    void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
-        mockMvc.perform(post("/adv")
-                .content(asJsonString(nonExistDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists());
     }
 
     @Test
@@ -134,15 +117,6 @@ class AdvertisementControllerIntegrationTest {
         ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes,
                 Arrays.asList(new ImageDto(1L, "one", false), new ImageDto(2L, "two", true)));
         existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress);
-    }
-
-    private void createNonExistAdvertisementDto() {
-        LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
-        CategoryDto clothes = new CategoryDto(0L, "Clothes");
-        SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
-        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
-                Collections.singletonList(new ImageDto(0L, "url", false)));
-        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
     }
 
     private String asJsonString(final Object obj) {

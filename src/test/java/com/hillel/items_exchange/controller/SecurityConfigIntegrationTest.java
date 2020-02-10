@@ -114,7 +114,9 @@ public class SecurityConfigIntegrationTest {
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists());
     }
 
     private void createValidUserLoginDto() {
