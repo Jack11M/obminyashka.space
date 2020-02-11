@@ -1,12 +1,10 @@
 package com.hillel.items_exchange.config;
 
-import com.hillel.items_exchange.security.jwt.JwtAuthenticationEntryPoint;
 import com.hillel.items_exchange.security.jwt.JwtConfigurator;
 import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +23,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     @Override
@@ -44,8 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(
-                        "/",
+                .antMatchers("/",
                         "/favicon.ico",
                         "/**/*.png",
                         "/**/*.gif",
@@ -53,20 +49,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js",
-                        "/auth/**").permitAll()
-                .antMatchers(
-                        "/v2/api-docs",
+                        "/**/*.js")
+                .permitAll()
+                .antMatchers("/v2/api-docs",
                         "/configuration/ui",
                         "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/webjars/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/**").permitAll()
-                .antMatchers("/adv/**", "/category/**", "/subcategory/**").authenticated()
+                        "/swagger-ui.html")
+                .permitAll()
+                .antMatchers("/auth/**", "/adv/**", "/category/**", "/subcategory/**")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurator(jwtTokenProvider))
-                .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                .apply(new JwtConfigurator(jwtTokenProvider));
     }
 }
