@@ -1,7 +1,5 @@
-package com.hillel.items_exchange.controller;
+package com.hillel.items_exchange.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -29,7 +27,8 @@ import static com.hillel.items_exchange.utils.TestUtil.asJsonString;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -108,7 +107,7 @@ public class SecurityConfigIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "security/create_for_security.yml", ignoreCols = {"created", "updated", "id",
-                    "product_id", "subcategory_id", "category_id", "location_id"})
+            "product_id", "subcategory_id", "category_id", "location_id"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String token = obtainToken(validLoginDto);
         mockMvc.perform(post("/adv")
@@ -145,8 +144,8 @@ public class SecurityConfigIntegrationTest {
 
     private void createNonExistAdvertisementDto() {
         LocationDto lviv = new LocationDto(0L, "Lviv", "District");
-        CategoryDto toys = new CategoryDto(0L, "Toys");
-        SubcategoryDto smallToys = new SubcategoryDto(0L, "small_toys", toys);
+        CategoryDto toys = new CategoryDto(0L, "Other");
+        SubcategoryDto smallToys = new SubcategoryDto(0L, "other", toys);
         ProductDto toyTrain = new ProductDto(0L, "3", "male", "all", "M", smallToys,
                 Collections.singletonList(new ImageDto(0L, "train_url", true)));
         nonExistDto = new AdvertisementDto(0L, "topic",

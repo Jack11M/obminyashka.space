@@ -76,7 +76,7 @@ image:
     resource_url: 'two'
     default_photo: 'true'
     product_id: 1
-  - id: 3
+  - id: 4
     resource_url: 'train_url'
     default_photo: 'true'
     product_id: 2
@@ -86,11 +86,19 @@ category:
     name: 'shoes'
   - id: 2
     name: 'Toys'
+  - id: 5
+    name: 'Other'
 
 subcategory:
   - id: 1
     name: 'light_shoes'
     category_id: 1
   - id: 2
-    name: 'small_toys'
+    name: 'dolls'
     category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2
+  - id: 6
+    name: 'other'
+    category_id: 5

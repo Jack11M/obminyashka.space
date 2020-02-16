@@ -32,7 +32,7 @@ category:
   - id: 1
     name: 'shoes'
   - id: 2
-    name: 'toys'
+    name: 'Toys'
 
 subcategory:
   - id: 1
