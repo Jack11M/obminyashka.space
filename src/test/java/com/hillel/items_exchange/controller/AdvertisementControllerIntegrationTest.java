@@ -41,6 +41,7 @@ class AdvertisementControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        createNonExistAdvertisementDto();
         createExistAdvertisementDto();
     }
 
