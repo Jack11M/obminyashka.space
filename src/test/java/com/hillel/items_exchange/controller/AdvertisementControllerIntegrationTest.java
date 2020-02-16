@@ -41,7 +41,6 @@ class AdvertisementControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        createNonExistAdvertisementDto();
         createExistAdvertisementDto();
     }
 
@@ -82,7 +81,7 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated", "id",
-                    "product_id", "subcategory_id", "category_id", "location_id"})
+            "product_id", "subcategory_id", "category_id", "location_id"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
