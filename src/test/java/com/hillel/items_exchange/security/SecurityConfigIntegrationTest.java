@@ -25,6 +25,7 @@ import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 
+import static com.hillel.items_exchange.utils.TestUtil.asJsonString;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -106,7 +107,8 @@ public class SecurityConfigIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create_for_security_test.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "security/create_for_security.yml", ignoreCols = {"created", "updated", "id",
+                    "product_id", "subcategory_id", "category_id", "location_id"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String token = obtainToken(validLoginDto);
         mockMvc.perform(post("/adv")
@@ -114,7 +116,9 @@ public class SecurityConfigIntegrationTest {
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists());
     }
 
     private void createValidUserLoginDto() {
@@ -123,16 +127,6 @@ public class SecurityConfigIntegrationTest {
 
     private void createNotValidUserLoginDto() {
         notValidLoginDto = new UserLoginDto(NOT_VALID_USERNAME, NOT_VALID_PASSWORD);
-    }
-
-    private String asJsonString(final Object obj) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            return objectMapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private String extractToken(MvcResult result) throws UnsupportedEncodingException {
@@ -150,11 +144,13 @@ public class SecurityConfigIntegrationTest {
     }
 
     private void createNonExistAdvertisementDto() {
-        LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
-        CategoryDto clothes = new CategoryDto(0L, "Clothes");
-        SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
-        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
-                Collections.singletonList(new ImageDto(0L, "url", false)));
-        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
+        LocationDto lviv = new LocationDto(0L, "Lviv", "District");
+        CategoryDto toys = new CategoryDto(0L, "Toys");
+        SubcategoryDto smallToys = new SubcategoryDto(0L, "small_toys", toys);
+        ProductDto toyTrain = new ProductDto(0L, "3", "male", "all", "M", smallToys,
+                Collections.singletonList(new ImageDto(0L, "train_url", true)));
+        nonExistDto = new AdvertisementDto(0L, "topic",
+                "description", "hat",
+                false, false, DealType.GIVEAWAY, lviv, toyTrain);
     }
 }
