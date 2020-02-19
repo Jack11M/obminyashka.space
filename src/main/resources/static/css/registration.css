@@ -1,0 +1,312 @@
+body * {
+  margin: 0;
+  padding: 0;
+}
+
+.auth * {
+  box-sizing: border-box;
+  font-family: Open Sans, sans-serif;
+  display: block;
+}
+
+.auth {
+  z-index: 969;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.popup {
+  position: relative;
+  margin: 0 auto;
+  max-width: 806px;
+  background: #fdfdff;
+  box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
+  border-radius: 1px 1px 1px 1px;
+}
+
+.tabs {
+  margin-bottom: 65px;
+}
+
+.tabs ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabs li {
+  padding-top: 14px;
+  padding-bottom: 10px;
+  width: 50%;
+  list-style-type: none;
+  text-align: center;
+  border-bottom: 2px solid #8e8e8e;
+}
+
+.tabs li {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #8e8e8e;
+  cursor: pointer;
+}
+
+.tabs .active {
+  border-bottom: 2px solid #12b6ed;
+  font-weight: bold;
+}
+
+.tabs li.active {
+  color: #12b6ed;
+}
+
+.popup form {
+  margin: 0 44px;
+}
+
+.input-field input[type="text"],
+.input-field input[type="password"],
+.input-field input[type="email"] {
+  padding: 12px 16px;
+  margin-bottom: 44px;
+  width: 100%;
+  border: 1px solid #bcbcbc;
+  outline: none;
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: #333333;
+}
+
+.extra {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+#check {
+  display: none;
+}
+
+.checkbox {
+  position: relative;
+}
+
+.checkbox .check {
+  display: inline-flex;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  border: 3px solid #b8b8b8;
+  margin-right: 22px;
+}
+
+.checkbox input:checked + label {
+  border: 3px solid #12b6ed;
+  background-color: #12b6ed;
+}
+
+.check + label {
+  position: relative;
+  top: 1px;
+  display: inline-flex;
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+
+  color: #8e8e8e;
+
+  cursor: pointer;
+}
+
+.check svg {
+  position: relative;
+  top: 2px;
+}
+
+.extra-reg {
+  margin-bottom: 28px;
+}
+
+#check-reg {
+  display: none;
+}
+
+.checkbox-reg {
+  display: flex;
+  justify-content: space-between;
+}
+
+.checkbox-reg .check-reg {
+  display: inline-flex;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  border: 3px solid #b8b8b8;
+  margin-right: 22px;
+}
+
+.checkbox-reg input:checked + label {
+  border: 3px solid #12b6ed;
+  background-color: #12b6ed;
+}
+
+.checkbox input:checked + label + label,
+.checkbox-reg input:checked + label + label {
+  color: #111111;
+}
+
+.check-reg + label {
+  position: relative;
+  top: -3px;
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 17px;
+
+  color: #8e8e8e;
+
+  cursor: pointer;
+}
+
+.extra span a {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  text-decoration-line: none;
+
+  color: #12b6ed;
+}
+
+.input-field {
+  position: relative;
+}
+
+.input-field label {
+  position: absolute;
+  top: -22px;
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 22px;
+
+  color: #8e8e8e;
+
+  cursor: pointer;
+}
+
+.error span {
+  position: absolute;
+  left: 0;
+  bottom: -16px;
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 20px;
+
+  color: #ff4c4c;
+}
+
+.btn-auth {
+  width: 220px;
+  height: 48px;
+  background: #12b6ed;
+  border-radius: 24px;
+  border: 0;
+  outline: none;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+
+  color: #fdf9ff;
+}
+
+.btn-auth:hover {
+  cursor: pointer;
+  background-color: #12a5de;
+}
+
+.btn-auth:active {
+  background-color: #1295c7;
+}
+
+.register,
+.login {
+  display: none;
+  padding-bottom: 44px;
+}
+
+.switch {
+  display: block;
+}
+
+.error-status {
+  position: absolute;
+  top: 65px;
+  left: 44px;
+
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 20px;
+
+  color: #ff4c4c;
+}
+
+@media screen and (max-width: 455px) {
+  .error-status {
+    line-height: 15px;
+  }
+
+  .input-field input[type="text"],
+  .input-field input[type="password"],
+  .input-field input[type="email"] {
+    margin-bottom: 54px;
+  }
+
+  #password-reg + span {
+    bottom: -36px;
+  }
+}
+
+@media screen and (max-width: 376px) {
+  .error span {
+    position: absolute;
+    left: 0;
+    bottom: -36px;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 20px;
+
+    color: #ff4c4c;
+  }
+
+  .input-field input[type="text"],
+  .input-field input[type="password"],
+  .input-field input[type="email"] {
+    margin-bottom: 54px;
+  }
+
+  #password + span,
+  #confirm-password + span {
+    bottom: -36px;
+  }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8"/>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+	<meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+	<title>Registration</title>
+	<link href="../static/css/registration.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="auth">
+	<div class="popup">
+		<div class="tabs">
+			<ul>
+				<li class="active">Вход</li>
+				<li>Регистрация</li>
+			</ul>
+		</div>
+		<div class="login switch">
+			<form id="login-form">
+				<div class="input-field ">
+					<input id="email" name="usernameOrEmail" placeholder="Введите ваш E-mail или Логин" type="email"/>
+					<span data-error="Укажите действующий адрес электронной почты"></span>
+				</div>
+				<div class="input-field">
+					<input id="password" name="password" placeholder="Введите ваш пароль " type="password"/>
+					<span data-error="Не верный пароль"></span>
+				</div>
+				<div class="extra">
+					<div class="checkbox">
+						<input id="check" name="checkbox" type="checkbox"/>
+						<label class="check" for="check">
+							<img alt="check" src="../static/img/check.svg">
+						</label>
+						<label for="check">Запомнить меня
+						</label>
+					</div>
+					<span> <a href="#">Не можете войти?</a> </span>
+				</div>
+				<button class="btn-auth btn-login" type="submit">Войти</button>
+			</form>
+		</div>
+		<!--		-->
+		<div class="register">
+			<form id="register-form">
+				<div class="input-field">
+					<label for="email-reg">Введите ваш E-mail*</label>
+					<input id="email-reg" name="email" type="text"/>
+					<span
+							data-error="Укажите действующий адрес электронной почты"
+					></span>
+				</div>
+				<div class="input-field">
+					<label for="login-reg">Введите ваш Логин*</label>
+					<input id="login-reg" name="username" type="text"/>
+					<span data-error="Больше 2 и меньше 50 символов, без пробелов"></span>
+				</div>
+				<div class="input-field ">
+					<label for="password-reg">Введите ваш пароль*</label>
+					<input id="password-reg" name="password" type="password"/>
+					<span data-error="Латиницей большие, маленькие и цифры от 8 до 30 символов"></span>
+				</div>
+				<div class="input-field ">
+					<label for="confirm-password">Повторите пароль*</label>
+					<input id="confirm-password" name="confirmPassword" type="password"/>
+					<span data-error="Пароли должны совпадать"></span>
+				</div>
+				<div class="extra-reg">
+					<div class="checkbox-reg">
+						<input id="check-reg" name="check-reg" type="checkbox"/>
+						<label class="check-reg" for="check-reg">
+							<img alt="check" src="../static/img/check.svg">
+						</label>
+						<label for="check-reg"><span>* Я соглашаюсь с правилами использования сервиса, а также с передачей и обработкой моих данных.</span>
+							<span>Я подтверждаю своё совершеннолетие и ответственность за размещение объявлений.</span>
+						</label>
+					</div>
+				</div>
+				<button class="btn-auth btn-register" type="submit">
+					регистрация
+				</button>
+			</form>
+		</div>
+	</div>
+</div>
+<script src="../static/js/popup/ConnectBase.js"></script>
+<script src="../static/js/popup/ShowErrorsOfInputs.js"></script>
+<script src="../static/js/popup/IsEmptyInputs.js"></script>
+<script src="../static/js/popup/validation.js"></script>
+<script src="../static/js/popup/changeList.js"></script>
+</body>
+</html>
