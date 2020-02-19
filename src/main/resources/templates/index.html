@@ -30,15 +30,14 @@
 					<div class="checkbox">
 						<input id="check" name="checkbox" type="checkbox"/>
 						<label class="check" for="check">
-							<svg fill="none" height="10" viewBox="0 0 10 10" width="10" xmlns="http://www.w3.org/2000/svg">
-								<path d="M1 5.8L4.29412 9L9 1" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-							</svg>
+							<img alt="check" src="../static/img/check.svg">
 						</label>
-						<label for="check">Запомнить меня</label>
+						<label for="check">Запомнить меня
+						</label>
 					</div>
 					<span> <a href="#">Не можете войти?</a> </span>
 				</div>
-				<button class="btn btn-login" type="submit">Войти</button>
+				<button class="btn-auth btn-login" type="submit">Войти</button>
 			</form>
 		</div>
 		<!--		-->
@@ -54,31 +53,40 @@
 				<div class="input-field">
 					<label for="login-reg">Введите ваш Логин*</label>
 					<input id="login-reg" name="username" type="text"/>
-					<span data-error="Больше 2 и меньше 15 символов, без пробелов"></span>
+					<span data-error="Больше 2 и меньше 50 символов, без пробелов"></span>
 				</div>
 				<div class="input-field ">
 					<label for="password-reg">Введите ваш пароль*</label>
 					<input id="password-reg" name="password" type="password"/>
-					<span data-error="Больше 8 и меньше 30 символов"></span>
+					<span data-error="Латиницей большие, маленькие и цифры от 8 до 30 символов"></span>
 				</div>
 				<div class="input-field ">
 					<label for="confirm-password">Повторите пароль*</label>
 					<input id="confirm-password" name="confirmPassword" type="password"/>
 					<span data-error="Пароли должны совпадать"></span>
 				</div>
-				<div class="field-required">
-					* Все поля обязательны для заполнения
+				<div class="extra-reg">
+					<div class="checkbox-reg">
+						<input id="check-reg" name="check-reg" type="checkbox"/>
+						<label class="check-reg" for="check-reg">
+							<img alt="check" src="../static/img/check.svg">
+						</label>
+						<label for="check-reg"><span>* Я соглашаюсь с правилами использования сервиса, а также с передачей и обработкой моих данных.</span>
+							<span>Я подтверждаю своё совершеннолетие и ответственность за размещение объявлений.</span>
+						</label>
+					</div>
 				</div>
-				<button class="btn btn-register" type="submit">
-					Регистрироваться
+				<button class="btn-auth btn-register" type="submit">
+					регистрация
 				</button>
 			</form>
 		</div>
 	</div>
 </div>
 <script src="../static/js/popup/ConnectBase.js"></script>
+<script src="../static/js/popup/ShowErrorsOfInputs.js"></script>
+<script src="../static/js/popup/IsEmptyInputs.js"></script>
 <script src="../static/js/popup/validation.js"></script>
 <script src="../static/js/popup/changeList.js"></script>
-<script></script>
 </body>
 </html>
