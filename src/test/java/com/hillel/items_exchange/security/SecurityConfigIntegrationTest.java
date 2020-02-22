@@ -1,7 +1,5 @@
-package com.hillel.items_exchange.controller;
+package com.hillel.items_exchange.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -12,10 +10,13 @@ import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,14 +26,16 @@ import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 
+import static com.hillel.items_exchange.util.TestUtil.asJsonString;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @DBRider
+@AutoConfigureMockMvc
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 public class SecurityConfigIntegrationTest {
 
     private static final String VALID_USERNAME = "admin";
@@ -45,9 +48,6 @@ public class SecurityConfigIntegrationTest {
     private WebApplicationContext wac;
 
     @Autowired
-    private FilterChainProxy springSecurityFilterChain;
-
-    @Autowired
     private AdvertisementRepository advertisementRepository;
 
     private MockMvc mockMvc;
@@ -58,8 +58,8 @@ public class SecurityConfigIntegrationTest {
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
-                .addFilter(springSecurityFilterChain)
-                .apply(springSecurity()).build();
+                .apply(springSecurity())
+                .build();
 
         createValidUserLoginDto();
         createNotValidUserLoginDto();
@@ -67,6 +67,7 @@ public class SecurityConfigIntegrationTest {
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
     public void loginWithValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
@@ -78,6 +79,7 @@ public class SecurityConfigIntegrationTest {
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
     public void loginWithNotValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
@@ -89,12 +91,14 @@ public class SecurityConfigIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void createAdvertisementWithoutTokenIsUnauthorized() throws Exception {
         mockMvc.perform(post("/adv"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
     public void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
         final String token = obtainToken(validLoginDto);
@@ -106,7 +110,7 @@ public class SecurityConfigIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "security/create-advertisement.yml", ignoreCols = {"created", "updated"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String token = obtainToken(validLoginDto);
         mockMvc.perform(post("/adv")
@@ -125,16 +129,6 @@ public class SecurityConfigIntegrationTest {
         notValidLoginDto = new UserLoginDto(NOT_VALID_USERNAME, NOT_VALID_PASSWORD);
     }
 
-    private String asJsonString(final Object obj) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule());
-            return objectMapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private String extractToken(MvcResult result) throws UnsupportedEncodingException {
         return JsonPath.read(result.getResponse().getContentAsString(), "$.token");
     }
@@ -150,11 +144,13 @@ public class SecurityConfigIntegrationTest {
     }
 
     private void createNonExistAdvertisementDto() {
-        LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
-        CategoryDto clothes = new CategoryDto(0L, "Clothes");
-        SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
-        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
-                Collections.singletonList(new ImageDto(0L, "url", false)));
-        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
+        LocationDto lviv = new LocationDto(0L, "Lviv", "District");
+        CategoryDto toys = new CategoryDto(0L, "Toys");
+        SubcategoryDto smallToys = new SubcategoryDto(0L, "small_toys", toys);
+        ProductDto toyTrain = new ProductDto(0L, "3", "male", "all", "M", smallToys,
+                Collections.singletonList(new ImageDto(0L, "train_url", true)));
+        nonExistDto = new AdvertisementDto(0L, "topic",
+                "description", "hat",
+                false, false, DealType.GIVEAWAY, lviv, toyTrain);
     }
 }
