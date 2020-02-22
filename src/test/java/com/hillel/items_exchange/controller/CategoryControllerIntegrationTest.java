@@ -72,6 +72,15 @@ public class CategoryControllerIntegrationTest {
     }
 
     @Test
+    @DataSet("database_init.yml")
+    public void getCategoryById_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/category/{category_id}", 100L)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Transactional
     @DataSet("database_init.yml")

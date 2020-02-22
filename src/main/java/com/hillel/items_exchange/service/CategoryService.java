@@ -69,15 +69,16 @@ public class CategoryService {
 
     public boolean isCategoryVoCreatable(CategoryVo categoryVo) {
         return isCategoryNameHasNotDuplicate(categoryVo.getName()) && (categoryVo.getId() == 0
-                || categoryVo.getSubcategories().stream()
+                && categoryVo.getSubcategories().stream()
                 .allMatch(subcategoryVo -> subcategoryVo.getId() == 0));
     }
 
     public boolean isCategoryVoUpdatable(CategoryVo categoryVo) {
-        return isCategoryVoIdValid(categoryVo.getId()) && isCategoryNameHasNotDuplicateExceptCurrentName(categoryVo)
-                && categoryVo.getSubcategories().stream()
+        boolean isSubcategoryHasIdZeroOrIdExists = categoryVo.getSubcategories().stream()
                 .filter(subcategoryDto -> subcategoryDto.getId() != 0)
                 .allMatch(subcategoryVo -> subcategoryService.isSubcategoryVoIdValid(subcategoryVo.getId()));
+        return isCategoryVoIdValid(categoryVo.getId()) && isCategoryNameHasNotDuplicateExceptCurrentName(categoryVo)
+                && isSubcategoryHasIdZeroOrIdExists;
     }
 
     public boolean isCategoryNameHasNotDuplicate(String name) {

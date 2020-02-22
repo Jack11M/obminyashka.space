@@ -56,21 +56,21 @@ public class CategoryController {
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
     public ResponseEntity<CategoryVo> createCategory(@Valid @RequestBody CategoryVo categoryVo) {
-        if (!categoryService.isCategoryVoCreatable(categoryVo)) {
-            throw new IllegalIdentifierException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
+        if (categoryService.isCategoryVoCreatable(categoryVo)) {
+            return new ResponseEntity<>(categoryService.addNewCategory(categoryVo), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(categoryService.addNewCategory(categoryVo), HttpStatus.CREATED);
+        throw new IllegalIdentifierException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
     public ResponseEntity<CategoryVo> updateCategory(@Valid @RequestBody CategoryVo categoryVo) {
-        if (!categoryService.isCategoryVoUpdatable(categoryVo)) {
-            throw new IllegalIdentifierException(ExceptionTextMessage.SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO);
+        if (categoryService.isCategoryVoUpdatable(categoryVo)) {
+            return categoryService.updateCategory(categoryVo)
+                    .map(categoryVO -> new ResponseEntity<>(categoryVo, HttpStatus.ACCEPTED))
+                    .orElseThrow(() -> new InvalidVoException(ExceptionTextMessage.CAN_NOT_BE_UPDATED + categoryVo));
         }
-        return categoryService.updateCategory(categoryVo)
-                .map(categoryVO -> new ResponseEntity<>(categoryVo, HttpStatus.ACCEPTED))
-                .orElseThrow(() -> new InvalidVoException(ExceptionTextMessage.CAN_NOT_BE_UPDATED + categoryVo));
+        throw new IllegalIdentifierException(ExceptionTextMessage.SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
