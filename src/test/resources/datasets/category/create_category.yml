@@ -3,7 +3,7 @@ category:
     name: 'shoes'
   - id: 2
     name: 'Toys'
-  - id: 4
+  - id: 3
     name: 'books'
 
 subcategory:
@@ -16,9 +16,9 @@ subcategory:
   - id: 3
     name: 'puzzles'
     category_id: 2
-  - id: 6
+  - id: 5
     name: 'fairy tales'
-    category_id: 4
-  - id: 7
+    category_id: 3
+  - id: 6
     name: 'educational books'
-    category_id: 4
+    category_id: 3

@@ -44,10 +44,9 @@ public class CategoryService {
                 .save(categoryMapper.voToNewCategory(categoryVO)));
     }
 
-    public Optional<CategoryVo> updateCategory(CategoryVo categoryVO) {
-        Optional<Category> updatedCategory = categoryRepository.findById(categoryVO.getId());
-        return updatedCategory.map(category -> mapCategoryToVo(categoryRepository
-                .save(categoryMapper.voToUpdatedCategory(categoryVO, updatedCategory.get()))));
+    public CategoryVo updateCategory(CategoryVo categoryVO) {
+        Category updatedCategory = categoryRepository.findCategoryById(categoryVO.getId());
+        return mapCategoryToVo(categoryRepository.save(categoryMapper.voToUpdatedCategory(categoryVO, updatedCategory)));
     }
 
     public void removeCategoryById(Long categoryId) {
@@ -87,7 +86,7 @@ public class CategoryService {
 
     public boolean isCategoryNameHasNotDuplicateExceptCurrentName(CategoryVo categoryVo) {
         return findAllCategories().stream()
-                .filter(category -> !category.getName().equals(findCategoryById(categoryVo.getId()).get().getName()))
+                .filter(category -> !category.getName().equals(categoryRepository.findCategoryById(categoryVo.getId()).getName()))
                 .map(CategoryVo::getName)
                 .noneMatch(categoryName -> categoryName.equals(categoryVo.getName()));
     }

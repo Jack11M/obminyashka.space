@@ -59,16 +59,14 @@ public class CategoryController {
         if (categoryService.isCategoryVoCreatable(categoryVo)) {
             return new ResponseEntity<>(categoryService.addNewCategory(categoryVo), HttpStatus.CREATED);
         }
-        throw new IllegalIdentifierException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
+        throw new InvalidVoException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
     public ResponseEntity<CategoryVo> updateCategory(@Valid @RequestBody CategoryVo categoryVo) {
         if (categoryService.isCategoryVoUpdatable(categoryVo)) {
-            return categoryService.updateCategory(categoryVo)
-                    .map(categoryVO -> new ResponseEntity<>(categoryVo, HttpStatus.ACCEPTED))
-                    .orElseThrow(() -> new InvalidVoException(ExceptionTextMessage.CAN_NOT_BE_UPDATED + categoryVo));
+            return new ResponseEntity<>(categoryService.updateCategory(categoryVo), HttpStatus.ACCEPTED);
         }
         throw new IllegalIdentifierException(ExceptionTextMessage.SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO);
     }

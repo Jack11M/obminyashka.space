@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 public class ExceptionTextMessage {
 
     public static final String NO_CATEGORY_BY_ID = "There is no category by id: ";
-    public static final String CAN_NOT_BE_UPDATED = "This category can not be updated: ";
     public static final String MUST_HAVE_ID_ZERO = "New category or subcategory mustn't contain id except 0, " +
             "also category name mustn't have duplicates!";
     public static final String SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO = "The updated category and subcategories have " +
