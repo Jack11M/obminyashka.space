@@ -28,6 +28,8 @@ public class JwtTokenProvider {
     private String secret;
     @Value("${app.jwt.expiration.time.ms}")
     private long jwtTokenExpireTime;
+    @Value("${token.not.start.with.bearer}")
+    private String jwtTokenNotStartWithBearer;
 
     @PostConstruct
     protected void init() {
@@ -63,17 +65,29 @@ public class JwtTokenProvider {
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
+        if (bearerToken != null && !bearerToken.startsWith(BEARER_PREFIX)) {
+            log.error(jwtTokenNotStartWithBearer);
+            req.setAttribute("bearerIsAbsent", jwtTokenNotStartWithBearer);
+            return null;
+        }
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, HttpServletRequest req) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-
             return !claims.getBody().getExpiration().before(new Date());
-
-        } catch (JwtException | IllegalArgumentException e) {
-            log.error("JWT token is expired or invalid: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: {}", e.getMessage());
+            req.setAttribute("expired", e.getMessage());
+            return false;
+        } catch (SignatureException e) {
+            log.error("JWT token is not valid: {}", e.getMessage());
+            req.setAttribute("invalid", e.getMessage());
+            return false;
+        } catch (JwtException e) {
+            log.error("Unauthorized: {}", e.getMessage());
+            req.setAttribute("unauthorized", e.getMessage());
             return false;
         }
     }
