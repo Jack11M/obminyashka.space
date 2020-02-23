@@ -10,12 +10,10 @@ import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -25,8 +23,12 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.hillel.items_exchange.util.TestUtil.asJsonString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,6 +45,15 @@ public class SecurityConfigIntegrationTest {
 
     private static final String NOT_VALID_USERNAME = "nimda";
     private static final String NOT_VALID_PASSWORD = "drowssap";
+
+    @Value("${token.not.start.with.bearer}")
+    private String jwtTokenNotStartWithBearer;
+    @Value("${token.signature.not.valid}")
+    private String jwtTokenSignatureNotValid;
+    @Value("${token.expired}")
+    private String jwtTokenIsExpired;
+    @Value("${app.jwt.expiration.time.ms}")
+    private Long jwtTimeExpired;
 
     @Autowired
     private WebApplicationContext wac;
@@ -101,9 +112,10 @@ public class SecurityConfigIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     public void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
-        final String token = obtainToken(validLoginDto);
+        final String validToken = "Bearer " + obtainToken(validLoginDto);
+
         mockMvc.perform(post("/adv")
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", validToken))
                 .andExpect(status().isBadRequest());
     }
 
@@ -112,13 +124,60 @@ public class SecurityConfigIntegrationTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "security/create-advertisement.yml", ignoreCols = {"created", "updated"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
-        final String token = obtainToken(validLoginDto);
+        final String validToken = "Bearer " + obtainToken(validLoginDto);
+
         mockMvc.perform(post("/adv")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", validToken)
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void postRequestWithJWTTokenWithoutBearerPrefixIsUnauthorizedAndBearerIsAbsent() throws Exception {
+        final String tokenWithoutBearerPrefix = obtainToken(validLoginDto);
+
+        String errorMessage = mockMvc.perform(post("/adv")
+                .header("Authorization", tokenWithoutBearerPrefix))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals(jwtTokenNotStartWithBearer, errorMessage);
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void postRequestWithNotValidJWTTokenIsUnauthorizedAndBadTokenSignature() throws Exception {
+        final String invalidToken = "Bearer " + obtainToken(validLoginDto).replaceAll(".$", "");
+
+        String errorMessage = mockMvc.perform(post("/adv")
+                .header("Authorization", invalidToken))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals(jwtTokenSignatureNotValid, errorMessage);
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void postRequestWithExpiredJwtTokenIsUnauthorizedAndTokenIsExpired() throws Exception {
+        final String validToken = "Bearer " + obtainToken(validLoginDto);
+        TimeUnit.MILLISECONDS.sleep(jwtTimeExpired);
+
+        String errorMessage = mockMvc.perform(post("/adv")
+                .header("Authorization", validToken))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertTrue(Objects.requireNonNull(errorMessage).startsWith(jwtTokenIsExpired));
     }
 
     private void createValidUserLoginDto() {
