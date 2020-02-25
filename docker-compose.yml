@@ -11,8 +11,8 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/evo_exchange?useSSL=false&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: docker
-      SPRING_DATASOURCE_PASSWORD: docker
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
     command: mvn clean spring-boot:run
     depends_on:
       - database
@@ -21,10 +21,9 @@ services:
 
   database:
     image: mysql:latest
+    command: 'mysqld --default-authentication-plugin=mysql_native_password'
     environment:
       MYSQL_DATABASE: evo_exchange
-      MYSQL_USER: docker
-      MYSQL_PASSWORD: docker
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"
