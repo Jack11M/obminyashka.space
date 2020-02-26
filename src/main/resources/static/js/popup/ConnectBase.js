@@ -23,6 +23,7 @@ class ConnectBase {
 				return await response.json();
 			}
 		} catch (e) {
+			console.log(e);
 			alert("Что-то пошло не так...");
 		}
 	}

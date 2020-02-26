@@ -3,26 +3,32 @@ body * {
   padding: 0;
 }
 
-.auth * {
-  box-sizing: border-box;
-  font-family: Open Sans, sans-serif;
-  display: block;
-}
+/*.auth * {*/
+/*  box-sizing: border-box;*/
+/*  font-family: Open Sans, sans-serif;*/
+/*  display: block;*/
+/*}*/
 
 .auth {
-  z-index: 969;
+
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
+  bottom: 0;
+  background: rgba(0,0,0, .2);
 }
-
+.popup * {
+  z-index: 969;
+  box-sizing: border-box;
+  font-family: Open Sans, sans-serif;
+}
 .popup {
   position: relative;
-  margin: 0 auto;
+  margin: 50px auto 0;
   max-width: 806px;
   background: #fdfdff;
-  box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
+  box-shadow: 0 0 40px rgba(89, 102, 116, 0.35);
   border-radius: 1px 1px 1px 1px;
 }
 
@@ -40,21 +46,20 @@ body * {
   padding-top: 14px;
   padding-bottom: 10px;
   width: 50%;
+
   list-style-type: none;
   text-align: center;
-  border-bottom: 2px solid #8e8e8e;
-}
-
-.tabs li {
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-  text-decoration: none;
+  /*text-decoration: none;*/
   text-transform: uppercase;
+  border-bottom: 2px solid #8e8e8e;
   color: #8e8e8e;
   cursor: pointer;
 }
+
 
 .tabs .active {
   border-bottom: 2px solid #12b6ed;
@@ -210,7 +215,7 @@ body * {
 .error span {
   position: absolute;
   left: 0;
-  bottom: -16px;
+  bottom: 28px;
 
   font-style: normal;
   font-weight: normal;
@@ -274,6 +279,10 @@ body * {
     line-height: 15px;
   }
 
+  .error span {
+    bottom: 36px;
+  }
+
   .input-field input[type="text"],
   .input-field input[type="password"],
   .input-field input[type="email"] {
@@ -281,7 +290,7 @@ body * {
   }
 
   #password-reg + span {
-    bottom: -36px;
+    bottom: 17px;
   }
 }
 
@@ -289,7 +298,7 @@ body * {
   .error span {
     position: absolute;
     left: 0;
-    bottom: -36px;
+    bottom: 17px;
 
     font-style: normal;
     font-weight: normal;
@@ -307,6 +316,6 @@ body * {
 
   #password + span,
   #confirm-password + span {
-    bottom: -36px;
+    bottom: 37px;
   }
 }
