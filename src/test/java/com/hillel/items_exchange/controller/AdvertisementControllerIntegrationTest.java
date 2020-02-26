@@ -85,7 +85,9 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", new SubcategoryDto(2L, "new name", new CategoryDto(1L, "name")), Collections.emptyList());
+        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL",
+                new SubcategoryDto(2L, "new name",
+                        new CategoryDto(1L, "name")), Collections.emptyList());
 
         mockMvc.perform(post("/adv/filter")
                 .content(asJsonString(productDto))
