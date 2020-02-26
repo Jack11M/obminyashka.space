@@ -22,7 +22,7 @@ public class UserDto {
     @NotEmpty(message = "{invalid.not-empty}")
     private String password;
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 129, message = "{invalid.max-size}")
+    @Size(max = 129, message = "{invalid.email}")
     @Email(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$", message = "{invalid.email}")
     private String email;
     @NotNull(message = "{invalid.not-null}")
