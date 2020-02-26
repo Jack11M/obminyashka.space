@@ -2,6 +2,8 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.dto.ProductDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
@@ -32,6 +34,12 @@ public class AdvertisementService {
 
     public Optional<AdvertisementDto> findById(Long id) {
         return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
+    }
+
+    public List<AdvertisementDto> findAdvertisementsByMultipleParams(AdvertisementFilterDto dto) {
+        return mapAdvertisementsToDto(
+                advertisementRepository.findFirst10ByProductAgeOrProductGenderOrProductSizeOrProductSeasonOrProductSubcategoryId(
+                        dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(), dto.getSubcategoryId()));
     }
 
     public boolean isAdvertisementExists(Long id, User user) {

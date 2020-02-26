@@ -65,7 +65,7 @@ class AdvertisementControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(jsonPath("$[0].topic").value("Blouses"))
                 .andExpect(jsonPath("$[1].topic").value("Dresses"))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -77,6 +77,23 @@ class AdvertisementControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.topic").value("topic"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
+        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL",
+                new SubcategoryDto(2L, "new name",
+                        new CategoryDto(1L, "name")), Collections.emptyList());
+
+        mockMvc.perform(post("/adv/filter")
+                .content(asJsonString(productDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk());
     }
 
