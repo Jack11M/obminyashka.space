@@ -73,7 +73,7 @@ public class JwtTokenProvider {
             return !claims.getBody().getExpiration().before(new Date());
 
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("WT token is expired or invalid: {}", e.getMessage());
+            log.error("JWT token is expired or invalid: {}", e.getMessage());
             return false;
         }
     }

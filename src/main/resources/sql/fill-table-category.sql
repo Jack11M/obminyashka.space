@@ -1,8 +1,3 @@
-INSERT INTO evo_exchange.category (name) VALUES ('Одежда');
-INSERT INTO evo_exchange.category (name) VALUES ('Обувь');
-INSERT INTO evo_exchange.category (name) VALUES ('Игрушки');
-INSERT INTO evo_exchange.category (name) VALUES ('Детская мебель');
-INSERT INTO evo_exchange.category (name) VALUES ('Транспорт для детей');
-INSERT INTO evo_exchange.category (name) VALUES ('Малыши до года');
-INSERT INTO evo_exchange.category (name) VALUES ('Книги');
-INSERT INTO evo_exchange.category (name) VALUES ('Другое');
+INSERT INTO `evo_exchange`.`category` (`id`, `name`)
+VALUES ('1', 'Одежда'), ('2', 'Обувь'), ('3', 'Игрушки'), ('4', 'Детская мебель'), ('5', 'Транспорт для детей'),
+('6', 'Малыши до года'), ('7', 'Книги'), ('8', 'Другое');
