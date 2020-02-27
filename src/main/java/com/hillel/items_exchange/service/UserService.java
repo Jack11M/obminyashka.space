@@ -11,13 +11,13 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    Boolean existsByUsernameOrEmail(String usernameOrEmail);
+    boolean existsByUsernameOrEmail(String usernameOrEmail);
 
-    Boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String password, BCryptPasswordEncoder bCryptPasswordEncoder);
+    boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String password, BCryptPasswordEncoder bCryptPasswordEncoder);
 
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
 
-    Boolean save(User user);
+    boolean save(User user);
 
     void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role);
 }
