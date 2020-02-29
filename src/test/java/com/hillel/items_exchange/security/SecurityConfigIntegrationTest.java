@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -46,12 +48,6 @@ public class SecurityConfigIntegrationTest {
     private static final String NOT_VALID_USERNAME = "nimda";
     private static final String NOT_VALID_PASSWORD = "drowssap";
 
-    @Value("${token.not.start.with.bearer}")
-    private String jwtTokenNotStartWithBearer;
-    @Value("${token.signature.not.valid}")
-    private String jwtTokenSignatureNotValid;
-    @Value("${token.expired}")
-    private String jwtTokenIsExpired;
     @Value("${app.jwt.expiration.time.ms}")
     private Long jwtTimeExpired;
 
@@ -60,6 +56,9 @@ public class SecurityConfigIntegrationTest {
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     private MockMvc mockMvc;
     private UserLoginDto validLoginDto;
@@ -146,7 +145,7 @@ public class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertEquals(jwtTokenNotStartWithBearer, errorMessage);
+        assertEquals(messageSource.getMessage("token.not.start.with.bearer", null, Locale.US), errorMessage);
     }
 
     @Test
@@ -161,7 +160,7 @@ public class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertEquals(jwtTokenSignatureNotValid, errorMessage);
+        assertEquals(messageSource.getMessage("token.signature.not.valid", null, Locale.US), errorMessage);
     }
 
     @Test
@@ -177,7 +176,7 @@ public class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertTrue(Objects.requireNonNull(errorMessage).startsWith(jwtTokenIsExpired));
+        assertTrue(Objects.requireNonNull(errorMessage).startsWith(messageSource.getMessage("token.expired", null, Locale.US)));
     }
 
     private void createValidUserLoginDto() {

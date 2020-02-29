@@ -13,6 +13,58 @@ advertisement:
     location_id: 1
     product_id: 1
   - id: 2
+    topic: 'Blouses'
+    description: 'Blouses description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 2
+  - id: 3
+    topic: 'Dresses'
+    description: 'Dresses description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 3
+  - id: 4
+    topic: 'Skirts'
+    description: 'Skirts description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 4
+  - id: 5
+    topic: 'Pajamas'
+    description: 'Pajamas description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 5
+  - id: 6
     topic: 'topic'
     description: 'description'
     deal_type: 'GIVEAWAY'
@@ -24,7 +76,7 @@ advertisement:
     status: 'NEW'
     user_id: 1
     location_id: 2
-    product_id: 2
+    product_id: 6
 
 user:
   - id: 1
@@ -61,6 +113,30 @@ product:
     season: 'spring'
     subcategory_id: 1
   - id: 2
+    age: '4'
+    gender: 'female'
+    size: '28'
+    season: 'summer'
+    subcategory_id: 1
+  - id: 3
+    age: '8'
+    gender: 'female'
+    size: '40'
+    season: 'summer'
+    subcategory_id: 1
+  - id: 4
+    age: '11'
+    gender: 'female'
+    size: 'M'
+    season: 'spring'
+    subcategory_id: 1
+  - id: 5
+    age: '13'
+    gender: 'unisex'
+    size: 'XS'
+    season: 'winter'
+    subcategory_id: 1
+  - id: 6
     age: '3'
     gender: 'male'
     size: 'M'
@@ -79,7 +155,7 @@ image:
   - id: 3
     resource_url: 'train_url'
     default_photo: 'true'
-    product_id: 2
+    product_id: 6
 
 category:
   - id: 1

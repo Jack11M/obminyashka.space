@@ -3,7 +3,6 @@ package com.hillel.items_exchange.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
