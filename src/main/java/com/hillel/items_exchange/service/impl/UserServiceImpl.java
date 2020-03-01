@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean existsByUsernameOrEmail(String usernameOrEmail) {
+    public boolean existsByUsernameOrEmail(String usernameOrEmail) {
         if (userRepository.existsByUsername(usernameOrEmail) || userRepository.existsByEmail(usernameOrEmail)) {
             log.info("IN UserServiceImpl (existsByUsernameOrEmail): user exists by username or email: {}", usernameOrEmail);
             return true;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String password, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String password, BCryptPasswordEncoder bCryptPasswordEncoder) {
         if (existsByUsernameOrEmail(usernameOrEmail)) {
             User user = findByUsernameOrEmail(usernameOrEmail)
                     .orElseThrow(() -> new UsernameNotFoundException("IN UserServiceImpl (existsByUsernameOrEmailAndPassword): " +
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean save(User user) {
+    public boolean save(User user) {
         if (user != null) {
             userRepository.save(user);
             log.info("IN UserServiceImpl (save): user with username: {} successfully saved", user.getUsername());

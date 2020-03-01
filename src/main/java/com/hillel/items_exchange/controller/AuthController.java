@@ -20,13 +20,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +43,7 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody UserLoginDto userLoginDto, BindingResult bindingResult) {
+    public ResponseEntity< Map<String, String>> login(@RequestBody @Valid UserLoginDto userLoginDto, BindingResult bindingResult) {
         userLoginDtoValidator.validate(userLoginDto, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ResourceNotFoundException(bindingResult.toString());
@@ -60,7 +57,7 @@ public class AuthController {
 
             String token = jwtTokenProvider.createToken(username, user.getRole());
 
-            Map<Object, Object> response = new HashMap<>();
+            Map<String, String> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
 
@@ -71,8 +68,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserRegistrationDto userRegistrationDto,
-                                          BindingResult bindingResult) {
+    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto, BindingResult bindingResult) {
         userRegistrationDtoValidator.validate(userRegistrationDto, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ResourceNotFoundException(bindingResult.toString());

@@ -1,22 +1,19 @@
 package com.hillel.items_exchange.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"subcategory", "images"})
-public class ProductDto {
-    @PositiveOrZero(message = "{invalid.id}")
-    private long id;
+public class AdvertisementFilterDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(max = 50, message = "{invalid.max-size}")
     private String age;
@@ -29,9 +26,10 @@ public class ProductDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(max = 50, message = "{invalid.max-size}")
     private String size;
-
-    @NotNull(message = "{invalid.not-null}")
-    private @Valid SubcategoryDto subcategory;
-    @NotNull(message = "{invalid.not-null}")
-    private List<@Valid ImageDto> images;
+    @PositiveOrZero(message = "{invalid.id}")
+    private long subcategoryId;
+    @PositiveOrZero(message = "{invalid.id}")
+    private long categoryId;
+    @PositiveOrZero(message = "{invalid.id}")
+    private long locationId;
 }

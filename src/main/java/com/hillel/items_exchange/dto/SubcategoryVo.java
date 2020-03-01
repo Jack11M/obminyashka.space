@@ -12,9 +12,9 @@ import javax.validation.constraints.Size;
 @Setter
 @ToString
 public class SubcategoryVo {
-    @PositiveOrZero(message = "Subcategory id has to be greater than 0 if it exists or 0 if it is new")
+    @PositiveOrZero(message = "{invalid.id}")
     private long id;
-    @NotEmpty(message = "Subcategory name has to be not empty")
-    @Size(min = 3, max = 50, message = "Subcategory name has to be between 3 and 50 symbols")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(min = 3, max = 50, message = "{invalid.size}")
     private String name;
 }
