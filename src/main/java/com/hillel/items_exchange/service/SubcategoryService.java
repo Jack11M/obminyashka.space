@@ -30,14 +30,18 @@ public class SubcategoryService {
     }
 
     public boolean isSubcategoryHasNotProducts(long id) {
-        return subcategoryRepository.findById(id).get().getProducts().isEmpty();
+        return subcategoryRepository.findById(id).getProducts().isEmpty();
     }
 
-    public Optional<Subcategory> findById(long id) {
+    public Subcategory findById(long id) {
         return subcategoryRepository.findById(id);
     }
 
     public boolean isSubcategoryVoIdValid(long id) {
+        return subcategoryRepository.existsById(id);
+    }
+
+    public boolean existById(long id) {
         return subcategoryRepository.existsById(id);
     }
 }

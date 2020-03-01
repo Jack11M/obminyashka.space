@@ -31,9 +31,9 @@ public class SubcategoryMapper {
     }
 
     public Subcategory voToUpdatedSubcategory(SubcategoryVo subcategoryVo) {
-        Optional<Subcategory> updatedSubcategory = subcategoryService.findById(subcategoryVo.getId());
-        updatedSubcategory.ifPresent(subcategory -> updatedSubcategory.get().setName(subcategoryVo.getName()));
-        return updatedSubcategory.get();
+        Subcategory updatedSubcategory = subcategoryService.findById(subcategoryVo.getId());
+        updatedSubcategory.setName(subcategoryVo.getName());
+        return updatedSubcategory;
     }
 
     public Subcategory updateSubcategory(SubcategoryVo subcategoryVo, Category category) {

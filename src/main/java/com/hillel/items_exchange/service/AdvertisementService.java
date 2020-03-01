@@ -22,6 +22,7 @@ import java.util.Optional;
 public class AdvertisementService {
     private final ModelMapper modelMapper;
     private final AdvertisementRepository advertisementRepository;
+    private final SubcategoryService subcategoryService;
 
     public List<AdvertisementDto> findAll() {
         return mapAdvertisementsToDto(advertisementRepository.findAll());
@@ -49,6 +50,7 @@ public class AdvertisementService {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
+        adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId()));
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
