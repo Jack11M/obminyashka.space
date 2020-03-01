@@ -2,6 +2,7 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
@@ -23,16 +24,21 @@ public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
 
     public List<AdvertisementDto> findAll() {
-        return modelMapper.map(advertisementRepository.findAll(), new TypeToken<List<AdvertisementDto>>() {}.getType());
+        return mapAdvertisementsToDto(advertisementRepository.findAll());
+    }
+
+    public List<AdvertisementDto> findAllByTopic(String topic) {
+        return mapAdvertisementsToDto(advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
     }
 
     public Optional<AdvertisementDto> findById(Long id) {
         return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
     }
 
-    public List<AdvertisementDto> findByGender(String gender) {
-        return modelMapper.map(advertisementRepository.findAdvertisementsByProductGender(gender),
-                new TypeToken<List<AdvertisementDto>>() {}.getType());
+    public List<AdvertisementDto> findAdvertisementsByMultipleParams(AdvertisementFilterDto dto) {
+        return mapAdvertisementsToDto(
+                advertisementRepository.findFirst10ByProductAgeOrProductGenderOrProductSizeOrProductSeasonOrProductSubcategoryId(
+                        dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(), dto.getSubcategoryId()));
     }
 
     public boolean isAdvertisementExists(Long id, User user) {
@@ -59,6 +65,10 @@ public class AdvertisementService {
     public void remove(Long id) {
         advertisementRepository.deleteById(id);
         advertisementRepository.flush();
+    }
+
+    private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
+        return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {}.getType());
     }
 
     private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {

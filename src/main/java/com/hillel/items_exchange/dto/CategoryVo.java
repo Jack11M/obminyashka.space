@@ -15,11 +15,11 @@ import java.util.List;
 @Setter
 @ToString
 public class CategoryVo {
-    @PositiveOrZero(message = "Category id has to be greater than 0 if it exists or 0 if it is new")
+    @PositiveOrZero(message = "{invalid.id}")
     private long id;
-    @NotEmpty(message = "Category name has to be not empty")
-    @Size(min = 3, max = 50, message = "Category name has to be between 3 and 50 symbols")
+    @NotEmpty(message = "{invalid.not-empty}")
+    @Size(min = 3, max = 50, message = "{invalid.size}")
     private String name;
-    @NotNull(message = "Subcategories has to be not null")
+    @NotNull(message = "{invalid.not-null}")
     private List<@Valid SubcategoryVo> subcategories;
 }

@@ -13,13 +13,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.hillel.items_exchange.utils.TestUtil.asJsonString;
+import static com.hillel.items_exchange.util.TestUtil.asJsonString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,15 +30,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class AdvertisementControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private AdvertisementRepository advertisementRepository;
-
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
+
 
     @BeforeEach
     void setUp() {
@@ -58,10 +60,12 @@ class AdvertisementControllerIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void getAllAdvertisements_shouldReturnAllGenderedAdvertisements() throws Exception {
-        mockMvc.perform(get("/adv/filtering/{gender}", "male")
+    void getAllAdvertisements_shouldReturnAdvertisementsByTopic() throws Exception {
+        mockMvc.perform(get("/adv/topic/{topic}", "ses")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
+                .andExpect(jsonPath("$[0].topic").value("Blouses"))
+                .andExpect(jsonPath("$[1].topic").value("Dresses"))
                 .andExpect(status().isOk());
     }
 
@@ -81,8 +85,24 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated", "id",
-            "product_id", "subcategory_id", "category_id", "location_id"})
+    void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
+        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL",
+                new SubcategoryDto(2L, "new name",
+                        new CategoryDto(1L, "name")), Collections.emptyList());
+
+        mockMvc.perform(post("/adv/filter")
+                .content(asJsonString(productDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))

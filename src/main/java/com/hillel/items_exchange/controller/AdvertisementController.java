@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -42,10 +44,20 @@ public class AdvertisementController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/filtering/{gender}")
+    @GetMapping("/topic/{topic}")
     public @ResponseBody
-    ResponseEntity<List<AdvertisementDto>> getGenderedAdvertisements(@PathVariable("gender") String gender) {
-        return new ResponseEntity<>(advertisementService.findByGender(gender), HttpStatus.OK);
+    ResponseEntity<List<AdvertisementDto>> getAllAdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
+        List<AdvertisementDto> allByTopic = advertisementService.findAllByTopic(topic);
+        if (allByTopic.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(allByTopic, HttpStatus.OK);
+    }
+
+    @PostMapping("/filter")
+    public @ResponseBody
+    ResponseEntity<List<AdvertisementDto>> getAllBySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
+        return new ResponseEntity<>(advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto), HttpStatus.OK);
     }
 
     @PostMapping

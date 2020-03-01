@@ -1,14 +1,14 @@
 advertisement:
   - id: 1
-    topic: 'new topic'
-    description: 'new description'
+    topic: 'topic'
+    description: 'description'
     deal_type: 'EXCHANGE'
     is_favourite: 'true'
     ready_for_offers: 'true'
-    wishes_to_exchange: 'BMW'
+    wishes_to_exchange: 'shoes'
     created: '2019-01-01'
-    updated: '[ignored]'
-    status: 'UPDATED'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
     user_id: 1
     location_id: 1
     product_id: 1
@@ -64,6 +64,19 @@ advertisement:
     user_id: 1
     location_id: 1
     product_id: 5
+  - id: 6
+    topic: 'topic'
+    description: 'description'
+    deal_type: 'GIVEAWAY'
+    is_favourite: 'false'
+    ready_for_offers: 'false'
+    wishes_to_exchange: 'hat'
+    created: '[ignored]'
+    updated: '[ignored]'
+    status: 'NEW'
+    user_id: 1
+    location_id: 2
+    product_id: 6
 
 user:
   - id: 1
@@ -88,6 +101,9 @@ location:
   - id: 1
     city: 'Kharkiv'
     district: 'Kharkivska district'
+  - id: 2
+    city: 'Lviv'
+    district: 'District'
 
 product:
   - id: 1
@@ -120,6 +136,12 @@ product:
     size: 'XS'
     season: 'winter'
     subcategory_id: 1
+  - id: 6
+    age: '3'
+    gender: 'male'
+    size: 'M'
+    season: 'all'
+    subcategory_id: 2
 
 image:
   - id: 1
@@ -130,12 +152,21 @@ image:
     resource_url: 'two'
     default_photo: 'true'
     product_id: 1
+  - id: 3
+    resource_url: 'train_url'
+    default_photo: 'true'
+    product_id: 6
 
 category:
   - id: 1
     name: 'shoes'
+  - id: 2
+    name: 'Toys'
 
 subcategory:
   - id: 1
     name: 'light_shoes'
     category_id: 1
+  - id: 2
+    name: 'small_toys'
+    category_id: 2

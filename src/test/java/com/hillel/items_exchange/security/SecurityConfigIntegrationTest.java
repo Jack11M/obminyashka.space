@@ -10,10 +10,12 @@ import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -22,16 +24,22 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-import static com.hillel.items_exchange.utils.TestUtil.asJsonString;
+import static com.hillel.items_exchange.util.TestUtil.asJsonString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @DBRider
+@AutoConfigureMockMvc
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 public class SecurityConfigIntegrationTest {
 
     private static final String VALID_USERNAME = "admin";
@@ -40,14 +48,17 @@ public class SecurityConfigIntegrationTest {
     private static final String NOT_VALID_USERNAME = "nimda";
     private static final String NOT_VALID_PASSWORD = "drowssap";
 
+    @Value("${app.jwt.expiration.time.ms}")
+    private Long jwtTimeExpired;
+
     @Autowired
     private WebApplicationContext wac;
 
     @Autowired
-    private FilterChainProxy springSecurityFilterChain;
+    private AdvertisementRepository advertisementRepository;
 
     @Autowired
-    private AdvertisementRepository advertisementRepository;
+    private MessageSource messageSource;
 
     private MockMvc mockMvc;
     private UserLoginDto validLoginDto;
@@ -57,8 +68,8 @@ public class SecurityConfigIntegrationTest {
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
-                .addFilter(springSecurityFilterChain)
-                .apply(springSecurity()).build();
+                .apply(springSecurity())
+                .build();
 
         createValidUserLoginDto();
         createNotValidUserLoginDto();
@@ -66,6 +77,7 @@ public class SecurityConfigIntegrationTest {
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
     public void loginWithValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
@@ -77,6 +89,7 @@ public class SecurityConfigIntegrationTest {
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
     public void loginWithNotValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
@@ -88,35 +101,82 @@ public class SecurityConfigIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void createAdvertisementWithoutTokenIsUnauthorized() throws Exception {
         mockMvc.perform(post("/adv"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
     public void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
-        final String token = obtainToken(validLoginDto);
+        final String validToken = "Bearer " + obtainToken(validLoginDto);
+
         mockMvc.perform(post("/adv")
-                .header("Authorization", "Bearer " + token))
+                .header("Authorization", validToken))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "security/create_for_security.yml", ignoreCols = {"created", "updated", "id",
-                    "product_id", "subcategory_id", "category_id", "location_id"})
+    @ExpectedDataSet(value = "security/create-advertisement.yml", ignoreCols = {"created", "updated"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
-        final String token = obtainToken(validLoginDto);
+        final String validToken = "Bearer " + obtainToken(validLoginDto);
+
         mockMvc.perform(post("/adv")
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", validToken)
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists());
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void postRequestWithJWTTokenWithoutBearerPrefixIsUnauthorizedAndBearerIsAbsent() throws Exception {
+        final String tokenWithoutBearerPrefix = obtainToken(validLoginDto);
+
+        String errorMessage = mockMvc.perform(post("/adv")
+                .header("Authorization", tokenWithoutBearerPrefix))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals(messageSource.getMessage("token.not.start.with.bearer", null, Locale.US), errorMessage);
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void postRequestWithNotValidJWTTokenIsUnauthorizedAndBadTokenSignature() throws Exception {
+        final String invalidToken = "Bearer " + obtainToken(validLoginDto).replaceAll(".$", "");
+
+        String errorMessage = mockMvc.perform(post("/adv")
+                .header("Authorization", invalidToken))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertEquals(messageSource.getMessage("token.signature.not.valid", null, Locale.US), errorMessage);
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void postRequestWithExpiredJwtTokenIsUnauthorizedAndTokenIsExpired() throws Exception {
+        final String validToken = "Bearer " + obtainToken(validLoginDto);
+        TimeUnit.MILLISECONDS.sleep(jwtTimeExpired);
+
+        String errorMessage = mockMvc.perform(post("/adv")
+                .header("Authorization", validToken))
+                .andExpect(status().isUnauthorized())
+                .andReturn()
+                .getResponse()
+                .getErrorMessage();
+
+        assertTrue(Objects.requireNonNull(errorMessage).startsWith(messageSource.getMessage("token.expired", null, Locale.US)));
     }
 
     private void createValidUserLoginDto() {
