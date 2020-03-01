@@ -3,7 +3,6 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
-import com.hillel.items_exchange.dto.ProductDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
