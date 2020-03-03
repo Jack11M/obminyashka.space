@@ -63,13 +63,14 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(AUTHORIZATION_HEADER_NAME);
-        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        if (bearerToken != null && !bearerToken.startsWith(BEARER_PREFIX)) {
-            log.error("Unauthorized: {}", messageSource.getMessage("token.not.start.with.bearer", null, Locale.US));
-            req.setAttribute("detailedError", messageSource.getMessage("token.not.start.with.bearer", null, Locale.US));
-            return null;
+        if(bearerToken != null) {
+            if(bearerToken.startsWith(BEARER_PREFIX)) {
+                return bearerToken.substring(7);
+            } else {
+                log.error("Unauthorized: {}", messageSource.getMessage("token.not.start.with.bearer", null, Locale.US));
+                req.setAttribute("detailedError", messageSource.getMessage("token.not.start.with.bearer", null, Locale.US));
+                return null;
+            }
         }
         return null;
     }
