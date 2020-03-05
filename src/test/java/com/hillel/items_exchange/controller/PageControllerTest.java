@@ -25,4 +25,60 @@ class PageControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("temp"));
     }
+
+    @Test
+    public void uponRequestRegistration_redirectsToThePageRegistration() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/registration"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("registration"));
+    }
+
+    @Test
+    public void uponRequestSearch_redirectsToThePageResult() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/search"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("result"));
+    }
+
+    @Test
+    public void uponRequestProductCreate_redirectsToThePageCreate() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/create"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("create"));
+    }
+
+    @Test
+    public void uponRequestProductInfo_redirectsToThePageInfo() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/info"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("info"));
+    }
+
+    @Test
+    public void uponRequestProfile_redirectsToThePageProfile() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/profile"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("profile"));
+    }
+
+    @Test
+    public void uponRequestProfileFavorites_redirectsToThePageFavorites() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/profile/favorites"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("favorites"));
+    }
+
+    @Test
+    public void uponRequestProfileSettings_redirectsToThePageSettings() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/profile/settings"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("settings"));
+    }
 }
