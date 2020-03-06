@@ -82,8 +82,8 @@ public class SecurityConfigIntegrationTest {
     public void loginWithValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .content(asJsonString(validLoginDto))
-                .contentType("application/json;charset=UTF-8")
-                .accept("application/json"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -94,8 +94,8 @@ public class SecurityConfigIntegrationTest {
     public void loginWithNotValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .content(asJsonString(notValidLoginDto))
-                .contentType("application/json;charset=UTF-8")
-                .accept("application/json"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
@@ -194,8 +194,8 @@ public class SecurityConfigIntegrationTest {
     private String obtainToken(UserLoginDto loginDto) throws Exception {
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .content(asJsonString(loginDto))
-                .contentType("application/json;charset=UTF-8")
-                .accept("application/json"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
 
         return extractToken(result);
