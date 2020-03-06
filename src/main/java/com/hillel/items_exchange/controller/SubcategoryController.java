@@ -2,9 +2,9 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.SubcategoryService;
-import com.hillel.items_exchange.util.ExceptionTextMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Locale;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 
@@ -24,6 +25,7 @@ public class SubcategoryController {
 
     private static final String NAME_OF_CLASS = "IN the SubcategoryController: ";
     private final SubcategoryService subcategoryService;
+    private final MessageSource messageSource;
 
     @GetMapping("/{category_id}/names")
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id") long id) {
@@ -38,7 +40,9 @@ public class SubcategoryController {
     @DeleteMapping("/{subcategory_id}")
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidDtoException(ExceptionTextMessage.SUBCATEGORY_CAN_NOT_BE_DELETED + id);
+            throw new InvalidDtoException(messageSource.getMessage("subcategory.not-deletable",
+                    null,
+                    Locale.getDefault()) + id);
         }
         subcategoryService.removeSubcategoryById(id);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -57,6 +61,8 @@ public class SubcategoryController {
         log.error(NAME_OF_CLASS + e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionTextMessage.SQL_EXCEPTION + e.getLocalizedMessage());
+                .body(messageSource.getMessage("sql.exception",
+                        null,
+                        Locale.getDefault()) + e.getLocalizedMessage());
     }
 }

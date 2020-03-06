@@ -6,7 +6,6 @@ import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.SubcategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.util.ExceptionTextMessage;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +80,6 @@ public class CategoryControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(containsString(ExceptionTextMessage.NO_CATEGORY_BY_ID)))
                 .andReturn();
 
         Optional<EntityNotFoundException> entityNotFoundException =
