@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.CategoryVo;
-import com.hillel.items_exchange.exception.InvalidVoException;
+import com.hillel.items_exchange.dto.CategoryDto;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.CategoryService;
 import com.hillel.items_exchange.util.ExceptionTextMessage;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +38,8 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryVo>> getAllCategories() {
-        List<CategoryVo> categories = categoryService.findAllCategories();
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.findAllCategories();
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -47,38 +47,38 @@ public class CategoryController {
     }
 
     @GetMapping("/{category_id}")
-    public ResponseEntity<CategoryVo> getCategoryById(@PathVariable("category_id") long id) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id") long id) {
         return categoryService.findCategoryById(id)
-                .map(categoryVo -> new ResponseEntity<>(categoryVo, HttpStatus.OK))
+                .map(categoryDto -> new ResponseEntity<>(categoryDto, HttpStatus.OK))
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionTextMessage.NO_CATEGORY_BY_ID + id));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
-    public ResponseEntity<CategoryVo> createCategory(@Valid @RequestBody CategoryVo categoryVo) {
-        if (categoryService.isCategoryVoCreatable(categoryVo)) {
-            return new ResponseEntity<>(categoryService.addNewCategory(categoryVo), HttpStatus.CREATED);
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        if (categoryService.isCategoryDtoCreatable(categoryDto)) {
+            return new ResponseEntity<>(categoryService.addNewCategory(categoryDto), HttpStatus.CREATED);
         }
-        throw new InvalidVoException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
+        throw new InvalidDtoException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
-    public ResponseEntity<CategoryVo> updateCategory(@Valid @RequestBody CategoryVo categoryVo) {
-        if (categoryService.isCategoryVoUpdatable(categoryVo)) {
-            return new ResponseEntity<>(categoryService.updateCategory(categoryVo), HttpStatus.ACCEPTED);
+    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
+            return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
         }
         throw new IllegalIdentifierException(ExceptionTextMessage.SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
-    public ResponseEntity<CategoryVo> deleteCategoryById(@PathVariable("category_id") long id) {
-        if (categoryService.isCategoryVoDeletable(id)) {
+    public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id") long id) {
+        if (categoryService.isCategoryDtoDeletable(id)) {
             categoryService.removeCategoryById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        throw new InvalidVoException(ExceptionTextMessage.CATEGORY_CAN_NOT_BE_DELETED + id);
+        throw new InvalidDtoException(ExceptionTextMessage.CATEGORY_CAN_NOT_BE_DELETED + id);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -89,8 +89,8 @@ public class CategoryController {
                 .body(e.getMessage());
     }
 
-    @ExceptionHandler(InvalidVoException.class)
-    public ResponseEntity<String> handleInvalidCategoryControllerDtoException(InvalidVoException e) {
+    @ExceptionHandler(InvalidDtoException.class)
+    public ResponseEntity<String> handleInvalidCategoryControllerDtoException(InvalidDtoException e) {
         log.warn(NAME_OF_CLASS + e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

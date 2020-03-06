@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.CategoryRepository;
-import com.hillel.items_exchange.dto.CategoryVo;
+import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.mapper.CategoryMapper;
 import com.hillel.items_exchange.model.Category;
 import com.hillel.items_exchange.model.Subcategory;
@@ -29,36 +29,36 @@ public class CategoryService {
         return categoryRepository.findAllCategoriesNames();
     }
 
-    public List<CategoryVo> findAllCategories() {
+    public List<CategoryDto> findAllCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(this::mapCategoryToVo).collect(Collectors.toList());
+                .map(this::mapCategoryToDto).collect(Collectors.toList());
     }
 
-    public Optional<CategoryVo> findCategoryById(Long id) {
-        return categoryRepository.findById(id).map(this::mapCategoryToVo);
+    public Optional<CategoryDto> findCategoryById(Long id) {
+        return categoryRepository.findById(id).map(this::mapCategoryToDto);
     }
 
-    public CategoryVo addNewCategory(CategoryVo categoryVO) {
-        return categoryMapper.categoryToVo(categoryRepository
-                .save(categoryMapper.voToNewCategory(categoryVO)));
+    public CategoryDto addNewCategory(CategoryDto categoryDto) {
+        return categoryMapper.categoryToDto(categoryRepository
+                .save(categoryMapper.dtoToNewCategory(categoryDto)));
     }
 
-    public CategoryVo updateCategory(CategoryVo categoryVO) {
-        Category updatedCategory = categoryRepository.findCategoryById(categoryVO.getId());
-        return mapCategoryToVo(categoryRepository.save(categoryMapper.voToUpdatedCategory(categoryVO, updatedCategory)));
+    public CategoryDto updateCategory(CategoryDto categoryDto) {
+        Category updatedCategory = categoryRepository.findCategoryById(categoryDto.getId());
+        return mapCategoryToDto(categoryRepository.save(categoryMapper.dtoToUpdatedCategory(categoryDto, updatedCategory)));
     }
 
     public void removeCategoryById(Long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
 
-    public boolean isCategoryVoIdValid(Long categoryId) {
+    public boolean isCategoryDtoIdValid(Long categoryId) {
         return categoryId > 0 && categoryRepository.existsById(categoryId);
     }
 
-    public boolean isCategoryVoDeletable(long categoryId) {
-        return isCategoryVoIdValid(categoryId) && categoryRepository.findById(categoryId)
+    public boolean isCategoryDtoDeletable(long categoryId) {
+        return isCategoryDtoIdValid(categoryId) && categoryRepository.findById(categoryId)
                 .map(c -> c.getSubcategories().stream()
                         .map(Subcategory::getId)
                         .collect(Collectors.toList()))
@@ -66,17 +66,17 @@ public class CategoryService {
                 .allMatch(subcategoryService::isSubcategoryHasNotProducts);
     }
 
-    public boolean isCategoryVoCreatable(CategoryVo categoryVo) {
-        return isCategoryNameHasNotDuplicate(categoryVo.getName()) && (categoryVo.getId() == 0
-                && categoryVo.getSubcategories().stream()
-                .allMatch(subcategoryVo -> subcategoryVo.getId() == 0));
+    public boolean isCategoryDtoCreatable(CategoryDto categoryDto) {
+        return isCategoryNameHasNotDuplicate(categoryDto.getName()) && (categoryDto.getId() == 0
+                && categoryDto.getSubcategories().stream()
+                .allMatch(subcategoryDto -> subcategoryDto.getId() == 0));
     }
 
-    public boolean isCategoryVoUpdatable(CategoryVo categoryVo) {
-        boolean isSubcategoryHasIdZeroOrIdExists = categoryVo.getSubcategories().stream()
+    public boolean isCategoryDtoUpdatable(CategoryDto categoryDto) {
+        boolean isSubcategoryHasIdZeroOrIdExists = categoryDto.getSubcategories().stream()
                 .filter(subcategoryDto -> subcategoryDto.getId() != 0)
-                .allMatch(subcategoryVo -> subcategoryService.isSubcategoryVoIdValid(subcategoryVo.getId()));
-        return isCategoryVoIdValid(categoryVo.getId()) && isCategoryNameHasNotDuplicateExceptCurrentName(categoryVo)
+                .allMatch(subcategoryDto -> subcategoryService.isSubcategoryDtoIdValid(subcategoryDto.getId()));
+        return isCategoryDtoIdValid(categoryDto.getId()) && isCategoryNameHasNotDuplicateExceptCurrentName(categoryDto)
                 && isSubcategoryHasIdZeroOrIdExists;
     }
 
@@ -84,14 +84,14 @@ public class CategoryService {
         return !findAllCategoryNames().contains(name);
     }
 
-    public boolean isCategoryNameHasNotDuplicateExceptCurrentName(CategoryVo categoryVo) {
+    public boolean isCategoryNameHasNotDuplicateExceptCurrentName(CategoryDto categoryDto) {
         return findAllCategories().stream()
-                .filter(category -> !category.getName().equals(categoryRepository.findCategoryById(categoryVo.getId()).getName()))
-                .map(CategoryVo::getName)
-                .noneMatch(categoryName -> categoryName.equals(categoryVo.getName()));
+                .filter(category -> !category.getName().equals(categoryRepository.findCategoryById(categoryDto.getId()).getName()))
+                .map(CategoryDto::getName)
+                .noneMatch(categoryName -> categoryName.equals(categoryDto.getName()));
     }
 
-    private CategoryVo mapCategoryToVo(Category category) {
-        return modelMapper.map(category, CategoryVo.class);
+    private CategoryDto mapCategoryToDto(Category category) {
+        return modelMapper.map(category, CategoryDto.class);
     }
 }

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -25,7 +24,7 @@ public class SubcategoryService {
     }
 
     public boolean isSubcategoryDeletable(long id) {
-        return isSubcategoryVoIdValid(id)
+        return isSubcategoryDtoIdValid(id)
                 && isSubcategoryHasNotProducts(id);
     }
 
@@ -37,7 +36,7 @@ public class SubcategoryService {
         return subcategoryRepository.findById(id);
     }
 
-    public boolean isSubcategoryVoIdValid(long id) {
+    public boolean isSubcategoryDtoIdValid(long id) {
         return subcategoryRepository.existsById(id);
     }
 

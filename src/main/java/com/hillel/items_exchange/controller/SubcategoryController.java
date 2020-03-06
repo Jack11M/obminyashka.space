@@ -1,6 +1,6 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.exception.InvalidVoException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.SubcategoryService;
 import com.hillel.items_exchange.util.ExceptionTextMessage;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +38,14 @@ public class SubcategoryController {
     @DeleteMapping("/{subcategory_id}")
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidVoException(ExceptionTextMessage.SUBCATEGORY_CAN_NOT_BE_DELETED + id);
+            throw new InvalidDtoException(ExceptionTextMessage.SUBCATEGORY_CAN_NOT_BE_DELETED + id);
         }
         subcategoryService.removeSubcategoryById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler(InvalidVoException.class)
-    public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidVoException e) {
+    @ExceptionHandler(InvalidDtoException.class)
+    public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidDtoException e) {
         log.warn(NAME_OF_CLASS + e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
