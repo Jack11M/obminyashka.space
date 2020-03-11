@@ -30,6 +30,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                 Objects.requireNonNullElseGet(detailedError, () ->
-                        messageSource.getMessage("invalid.token", null, Locale.US)));
+                        messageSource.getMessage("invalid.token", null, Locale.getDefault())));
     }
 }

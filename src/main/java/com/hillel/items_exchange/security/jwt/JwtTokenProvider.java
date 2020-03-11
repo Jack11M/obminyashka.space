@@ -25,6 +25,7 @@ public class JwtTokenProvider {
 
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String EMPTY_TOKEN = "";
     private final UserDetailsService userDetailsService;
     private final MessageSource messageSource;
     @Value("${app.jwt.secret}")
@@ -63,15 +64,18 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader(AUTHORIZATION_HEADER_NAME);
-        if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
-            return bearerToken.substring(7);
+        if(bearerToken != null) {
+            if(bearerToken.startsWith(BEARER_PREFIX)) {
+                return bearerToken.substring(BEARER_PREFIX.length());
+            } else {
+                String errorMessageTokenNotStartWithBearerPrefix =
+                        messageSource.getMessage("token.not.start.with.bearer", null, Locale.getDefault());
+                log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
+                req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
+                return EMPTY_TOKEN;
+            }
         }
-        if (bearerToken != null && !bearerToken.startsWith(BEARER_PREFIX)) {
-            log.error("Unauthorized: {}", messageSource.getMessage("token.not.start.with.bearer", null, Locale.US));
-            req.setAttribute("detailedError", messageSource.getMessage("token.not.start.with.bearer", null, Locale.US));
-            return null;
-        }
-        return null;
+        return EMPTY_TOKEN;
     }
 
     public boolean validateToken(String token, HttpServletRequest req) {
