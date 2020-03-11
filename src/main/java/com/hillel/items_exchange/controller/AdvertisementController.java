@@ -67,15 +67,12 @@ public class AdvertisementController {
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         long id = dto.getId();
         long subcategoryId = dto.getProduct().getSubcategoryId();
-        boolean subcategoryIdExists = subcategoryService.existById(subcategoryId);
 
         if (id != 0) {
             throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
         }
 
-        if (subcategoryId == 0 || !subcategoryIdExists) {
-            throw new IllegalIdentifierException("Subcategory has to exist by id, but it does not with this id: " + id);
-        }
+        validateSubcategoryId(subcategoryId);
         return new ResponseEntity<>(advertisementService.createAdvertisement(dto, getUser(principal.getName())), HttpStatus.CREATED);
     }
 
@@ -84,6 +81,9 @@ public class AdvertisementController {
     ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
+        long subcategoryId = dto.getProduct().getSubcategoryId();
+        validateSubcategoryId(subcategoryId);
+
         return new ResponseEntity<>(advertisementService.updateAdvertisement(dto), HttpStatus.ACCEPTED);
     }
 
@@ -108,6 +108,14 @@ public class AdvertisementController {
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + userNameOrEmail + " not found!"));
+    }
+
+    private void validateSubcategoryId(long subcategoryId) {
+        boolean subcategoryIdExists = subcategoryService.existById(subcategoryId);
+
+        if (subcategoryId == 0 || !subcategoryIdExists) {
+            throw new IllegalIdentifierException("Subcategory has to exist by id, but it does not with this id: " + subcategoryId);
+        }
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
@@ -139,7 +147,7 @@ public class AdvertisementController {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("New advertisement does't have to contain id except 0!");
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)

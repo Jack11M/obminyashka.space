@@ -37,6 +37,7 @@ public class CategoryController {
         if (categoriesNames.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(categoriesNames, HttpStatus.OK);
     }
 
@@ -46,6 +47,7 @@ public class CategoryController {
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
@@ -64,6 +66,7 @@ public class CategoryController {
         if (categoryService.isCategoryDtoCreatable(categoryDto)) {
             return new ResponseEntity<>(categoryService.addNewCategory(categoryDto), HttpStatus.CREATED);
         }
+
         throw new InvalidDtoException(messageSource.getMessage("invalid.new-category-dto",
                 null,
                 Locale.getDefault()));
@@ -75,6 +78,7 @@ public class CategoryController {
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
             return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
         }
+
         throw new IllegalIdentifierException(messageSource.getMessage("invalid.updated-category.dto",
                 null,
                 Locale.getDefault()));
@@ -87,6 +91,7 @@ public class CategoryController {
             categoryService.removeCategoryById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+
         throw new InvalidDtoException(messageSource.getMessage("category.not-deletable",
                 null,
                 Locale.getDefault()) + id);

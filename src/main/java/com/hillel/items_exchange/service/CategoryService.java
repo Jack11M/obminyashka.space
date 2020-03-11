@@ -46,6 +46,7 @@ public class CategoryService {
 
     public CategoryDto updateCategory(CategoryDto categoryDto) {
         Category updatedCategory = categoryRepository.findCategoryById(categoryDto.getId());
+
         return mapCategoryToDto(categoryRepository.save(categoryMapper.dtoToUpdatedCategory(categoryDto, updatedCategory)));
     }
 
@@ -73,15 +74,19 @@ public class CategoryService {
     }
 
     public boolean isCategoryDtoUpdatable(CategoryDto categoryDto) {
-        boolean isSubcategoryHasIdZeroOrIdExists = categoryDto.getSubcategories().stream()
+        boolean subcategoryHasIdZeroOrIdExists = categoryDto.getSubcategories().stream()
                 .filter(subcategoryDto -> subcategoryDto.getId() != 0)
                 .allMatch(subcategoryDto -> subcategoryService.isSubcategoryDtoIdValid(subcategoryDto.getId()));
+
         return isCategoryDtoIdValid(categoryDto.getId()) && isCategoryNameHasNotDuplicateExceptCurrentName(categoryDto)
-                && isSubcategoryHasIdZeroOrIdExists;
+                && subcategoryHasIdZeroOrIdExists;
     }
 
     public boolean isCategoryNameHasNotDuplicate(String name) {
-        return !findAllCategoryNames().contains(name);
+        boolean categoryNamesHasDuplicate = findAllCategoryNames().stream()
+                .anyMatch(categoryName -> categoryName.equalsIgnoreCase(name));
+
+        return !categoryNamesHasDuplicate;
     }
 
     public boolean isCategoryNameHasNotDuplicateExceptCurrentName(CategoryDto categoryDto) {

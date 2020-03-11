@@ -60,6 +60,7 @@ public class AdvertisementService {
                 .orElseThrow(EntityNotFoundException::new);
         BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created", "updated", "status");
         fromDB.setStatus(Status.UPDATED);
+        fromDB.getProduct().setSubcategory(subcategoryService.findById(dto.getProduct().getSubcategoryId()));
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
     }

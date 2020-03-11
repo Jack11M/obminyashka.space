@@ -33,6 +33,7 @@ public class SubcategoryController {
         if (subcategoriesNames.size() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(subcategoriesNames, HttpStatus.OK);
     }
 
@@ -44,6 +45,7 @@ public class SubcategoryController {
                     null,
                     Locale.getDefault()) + id);
         }
+
         subcategoryService.removeSubcategoryById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
