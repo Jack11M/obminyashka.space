@@ -20,5 +20,4 @@ public class PageController {
         return "result";
     }
 
-
 }

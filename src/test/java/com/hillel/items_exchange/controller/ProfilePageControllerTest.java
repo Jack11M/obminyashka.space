@@ -35,7 +35,7 @@ class ProfilePageControllerTest {
 
     @Test
     public void uponRequestProfileSettings_redirectsToThePageSettings() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/settings"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/profile/settings"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("settings"));
