@@ -19,14 +19,6 @@ class PageControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void uponRequestTemp_redirectsToThePageTemp() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/temp"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("temp"));
-    }
-
-    @Test
     public void uponRequestRegistration_redirectsToThePageRegistration() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/registration"))
                 .andDo(print())
