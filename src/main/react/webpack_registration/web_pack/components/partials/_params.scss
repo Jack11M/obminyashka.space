@@ -1,0 +1,31 @@
+//Color
+$shadow: rgba(89, 102, 116, 0.1);
+$colorPopup: #FDFDFF;
+$colorButton: #12b6ed;
+$colorError: #ff4c4c;
+$colorGrey: #8E8E8E;
+$rightText: #333333;
+$colorCheckLabel: #111111;
+
+//Font
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap&subset=cyrillic');
+$fontFamily: Open Sans, sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic');
+$fontRoboto: "Roboto", sans-serif;
+
+@mixin large-screen(){
+  @media only screen and (max-width: 455px) {
+    @content
+  }
+}
+
+@mixin IphoneTen-screen(){
+  @media only screen and (max-width: 376px) {
+    @content
+  }
+}
+@mixin IphoneFife-screen(){
+  @media only screen and (max-width: 321px) {
+    @content
+  }
+}

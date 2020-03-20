@@ -1,0 +1,24 @@
+@import "../../partials/params";
+.error  {
+position: relative;
+  input {
+    border : 1px solid $colorError !important;
+  }
+  span {
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+
+    font-family: $fontFamily;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 20px;
+
+    color: $colorError;
+
+    @include large-screen {
+      bottom: -6px;
+    }
+  }
+}
