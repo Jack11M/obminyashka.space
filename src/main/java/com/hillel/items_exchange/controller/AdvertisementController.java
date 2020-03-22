@@ -2,12 +2,15 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +25,9 @@ import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/adv")
@@ -33,6 +38,7 @@ public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
     private final UserService userService;
+    private final MessageSource messageSource;
 
     @GetMapping
     public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements() {
@@ -60,7 +66,8 @@ public class AdvertisementController {
     @PostMapping("/filter")
     public @ResponseBody
     ResponseEntity<List<AdvertisementDto>> getAllBySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
-        return new ResponseEntity<>(advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto), HttpStatus.OK);
+        return new ResponseEntity<>(advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto),
+                HttpStatus.OK);
     }
 
     @PostMapping
@@ -68,15 +75,16 @@ public class AdvertisementController {
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto,
                                                          Principal principal,
                                                          HttpServletRequest request) {
-        long id = dto.getId();
+
         long subcategoryId = dto.getProduct().getSubcategoryId();
 
-        if (id != 0) {
-            throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
-        }
-
+        validateNewAdvertisementInternalEntitiesIdsAreZero(dto);
+        validateImageUrlHasHotDuplicate(dto);
         validateSubcategoryId(subcategoryId, request);
-        return new ResponseEntity<>(advertisementService.createAdvertisement(dto, getUser(principal.getName())), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(advertisementService.createAdvertisement(dto,
+                getUser(principal.getName())),
+                HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -87,7 +95,6 @@ public class AdvertisementController {
 
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
-
         long subcategoryId = dto.getProduct().getSubcategoryId();
         validateSubcategoryId(subcategoryId, request);
 
@@ -95,29 +102,55 @@ public class AdvertisementController {
     }
 
     @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
+    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto,
+                                                          Principal principal) {
+
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
         Optional<AdvertisementDto> byId = advertisementService.findById(dto.getId());
+
         if (byId.isPresent() && byId.get().equals(dto)) {
             advertisementService.remove(dto.getId());
             return ResponseEntity.status(HttpStatus.OK).build();
         }
+
         return ResponseEntity.unprocessableEntity().body(HttpStatus.CONFLICT);
     }
 
-    private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto, User owner) {
+    private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto,
+                                            User owner) {
+
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new SecurityException("User: " + owner + " don't own gained advertisement: " + dto);
+            throw new SecurityException(messageSource.getMessage("user.not-owner",
+                    null,
+                    Locale.getDefault()) + dto);
         }
     }
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + userNameOrEmail + " not found!"));
+                .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("user.not-found",
+                        null,
+                        Locale.getDefault()) + userNameOrEmail));
     }
 
-    private void validateSubcategoryId(long subcategoryId, HttpServletRequest request) {
+    private void validateImageUrlHasHotDuplicate(AdvertisementDto advertisementDto) {
+        List<String> imagesUrls = advertisementDto.getProduct().getImages().stream()
+                .map(ImageDto::getResourceUrl).collect(Collectors.toList());
+
+        imagesUrls.forEach(imageUrl -> {
+            if (advertisementService.isImageUrlHasDuplicate(imageUrl)) {
+                throw new InvalidDtoException(messageSource.getMessage("image-url.has.duplicate",
+                        null,
+                        Locale.getDefault()) + imageUrl);
+            }
+        });
+    }
+
+    private void validateSubcategoryId(long subcategoryId,
+                                       HttpServletRequest request) {
+
+        final String contextUrl = "/subcategory/exist/";
         RestTemplate restTemplate = new RestTemplate();
 
         String baseUrl = ServletUriComponentsBuilder.fromRequestUri(request)
@@ -125,14 +158,40 @@ public class AdvertisementController {
                 .build()
                 .toUriString();
 
-        String absoluteUrl = baseUrl + "/subcategory/exist/" + subcategoryId;
+        String absoluteUrl = baseUrl + contextUrl + subcategoryId;
 
         boolean isSubcategoryExists = Optional.ofNullable(restTemplate.getForObject(absoluteUrl, Boolean.class))
                 .orElse(false);
 
         if (subcategoryId == 0 || !isSubcategoryExists) {
-            throw new IllegalIdentifierException("Subcategory has to exist by id, but it does not with this id: "
-                    + subcategoryId);
+            throw new IllegalIdentifierException(messageSource.getMessage("invalid.subcategory.id",
+                    null,
+                    Locale.getDefault()) + subcategoryId);
+        }
+    }
+
+    private void validateNewAdvertisementInternalEntitiesIdsAreZero(@RequestBody @Valid AdvertisementDto dto) {
+        long advertisementId = dto.getId();
+        long locationId = dto.getLocation().getId();
+        long productId = dto.getProduct().getId();
+        List<Long> imagesIds = dto.getProduct().getImages().stream()
+                .map(ImageDto::getId)
+                .collect(Collectors.toList());
+
+        validateNewEntityIdIsZero(advertisementId, "advertisement.id.not-zero");
+        validateNewEntityIdIsZero(locationId, "");
+        validateNewEntityIdIsZero(productId, "");
+
+        imagesIds.forEach(imageId -> {
+            validateNewEntityIdIsZero(advertisementId, "");
+        });
+    }
+
+    private void validateNewEntityIdIsZero(long id, String errorMessage) {
+        if (id != 0) {
+            throw new IllegalIdentifierException(messageSource.getMessage(errorMessage,
+                    null,
+                    Locale.getDefault()) + id);
         }
     }
 
@@ -141,7 +200,7 @@ public class AdvertisementController {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body("User with such login or e-mail not found!");
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(SecurityException.class)
@@ -149,7 +208,7 @@ public class AdvertisementController {
         log.info(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body("Current user doesn't own gained advertisement!");
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -157,11 +216,21 @@ public class AdvertisementController {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Entity not found into the database!\n" + e.getLocalizedMessage());
+                .body(messageSource.getMessage("entity.not-found",
+                        null,
+                        Locale.getDefault()) + e.getLocalizedMessage());
     }
 
     @ExceptionHandler(IllegalIdentifierException.class)
     public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
+        log.warn(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidDtoException.class)
+    public ResponseEntity<String> handleInvalidAdvertisementDtoException(InvalidDtoException e) {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -173,6 +242,8 @@ public class AdvertisementController {
         log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Exception during saving object to the database!\nError message:\n" + e.getLocalizedMessage());
+                .body(messageSource.getMessage("sql.exception",
+                        null,
+                        Locale.getDefault()) + e.getLocalizedMessage());
     }
 }

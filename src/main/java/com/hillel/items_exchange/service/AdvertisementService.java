@@ -4,6 +4,7 @@ import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.Advertisement;
+import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,8 +73,17 @@ public class AdvertisementService {
         advertisementRepository.flush();
     }
 
+    public boolean isImageUrlHasDuplicate(String imageUrl) {
+        return advertisementRepository.findAll().stream()
+                .map(advertisement -> advertisement.getProduct().getImages())
+                        .flatMap(Collection::stream)
+                        .map(Image::getResourceUrl)
+                        .anyMatch(url -> url.equals(imageUrl));
+    }
+
     private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
-        return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {}.getType());
+        return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {
+        }.getType());
     }
 
     private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {

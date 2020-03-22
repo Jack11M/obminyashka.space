@@ -27,7 +27,6 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 @Slf4j
 public class CategoryController {
 
-    private static final String NAME_OF_CLASS = "IN the CategoryController: ";
     private final CategoryService categoryService;
     private final MessageSource messageSource;
 
@@ -99,7 +98,7 @@ public class CategoryController {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
@@ -107,7 +106,7 @@ public class CategoryController {
 
     @ExceptionHandler(InvalidDtoException.class)
     public ResponseEntity<String> handleInvalidCategoryControllerDtoException(InvalidDtoException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
@@ -115,7 +114,7 @@ public class CategoryController {
 
     @ExceptionHandler(IllegalIdentifierException.class)
     public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
@@ -123,7 +122,7 @@ public class CategoryController {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(NAME_OF_CLASS + e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(messageSource.getMessage("sql.exception",
