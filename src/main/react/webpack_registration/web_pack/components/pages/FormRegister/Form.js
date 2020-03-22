@@ -27,8 +27,9 @@ const Form = props => {
   const [errorsInput, setErrorsInput] = useState({});
 
   const [{ isLoading, response, errorsResponse }, doFetch] = useFetch(oneClass);
-  const [user, setUser] = useLocalStorage("user", { isLogin, isChecking });
+  const [, setUser] = useLocalStorage("user", { isLogin, isChecking });
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSingIn, setIsSingIn] = useState(false);
 
   const dataInputsState = isLogin ? loginInputs : registerInputs;
   const setDataInputsState = isLogin ? setLoginInputs : setRegisterInputs;
@@ -76,13 +77,16 @@ const Form = props => {
 
   useEffect(() => {
     if (!response) {
+      setIsSingIn(false);
       return;
     }
     if (isLogin && isChecking) {
       setUser(response);
+      setIsSingIn(true);
     }
     if (isLogin && !isChecking) {
       setUser(response);
+      setIsSingIn(true);
     }
     if (response === "user registered") {
       setIsSuccess(true);
@@ -93,14 +97,10 @@ const Form = props => {
     if (!errorsResponse) {
       return;
     }
-
     const inputs = findForm();
-
     const whatIsDataInput = arrayValueForm.find(item => {
-      return item.message === errorsResponse.message
-      }
-    );
-
+      return item.message === errorsResponse.message;
+    });
     const input = inputs.find(item => item.id === whatIsDataInput.id);
     const whatIsMessage = errorsServer.find(
       item => item.message === errorsResponse.message
@@ -111,6 +111,9 @@ const Form = props => {
 
   if (isSuccess) {
     return <Redirect to="/registration" />;
+  }
+  if (isSingIn) {
+    return (window.location.href = "http://localhost:8080");
   }
 
   const isValidInput = input => {

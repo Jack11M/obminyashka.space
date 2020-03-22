@@ -22,7 +22,6 @@ export default whatPage => {
       headers
     })
       .then(res => {
-        console.log(res.data);
         setIsLoading(false);
         setResponse(res.data);
       })

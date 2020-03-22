@@ -3,7 +3,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import NavBar from "./navbar/NavBar";
 import Routes from "./pages/routes";
 
-
 const Popup = () => {
   return (
     <div className={"popup"}>
