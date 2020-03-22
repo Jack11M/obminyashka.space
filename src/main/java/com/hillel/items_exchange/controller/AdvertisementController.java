@@ -178,12 +178,12 @@ public class AdvertisementController {
                 .map(ImageDto::getId)
                 .collect(Collectors.toList());
 
-        validateNewEntityIdIsZero(advertisementId, "advertisement.id.not-zero");
-        validateNewEntityIdIsZero(locationId, "");
-        validateNewEntityIdIsZero(productId, "");
+        validateNewEntityIdIsZero(advertisementId, "new.advertisement.id.not-zero");
+        validateNewEntityIdIsZero(locationId, "new.location.id.not-zero");
+        validateNewEntityIdIsZero(productId, "new.product.id.not-zero");
 
         imagesIds.forEach(imageId -> {
-            validateNewEntityIdIsZero(advertisementId, "");
+            validateNewEntityIdIsZero(imageId, "new.image.id.not-zero");
         });
     }
 

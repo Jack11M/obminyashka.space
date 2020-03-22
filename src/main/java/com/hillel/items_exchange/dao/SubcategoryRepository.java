@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> {
 
-    @Query(value = "SELECT name FROM subcategory WHERE category_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT name FROM subcategory WHERE category_id = ?", nativeQuery = true)
     List<String> findSubcategoriesNamesByCategory(Long categoryId);
 
     Subcategory findById(long id);
