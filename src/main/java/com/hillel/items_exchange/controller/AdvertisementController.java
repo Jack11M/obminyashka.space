@@ -4,7 +4,6 @@ import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
-import com.hillel.items_exchange.service.SubcategoryService;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -13,8 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
@@ -31,7 +33,6 @@ public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
     private final UserService userService;
-    private final SubcategoryService subcategoryService;
 
     @GetMapping
     public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements() {
@@ -64,7 +65,9 @@ public class AdvertisementController {
 
     @PostMapping
     public @ResponseBody
-    ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
+    ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto,
+                                                         Principal principal,
+                                                         HttpServletRequest request) {
         long id = dto.getId();
         long subcategoryId = dto.getProduct().getSubcategoryId();
 
@@ -72,17 +75,21 @@ public class AdvertisementController {
             throw new IllegalIdentifierException("New advertisement hasn't contain any id but it was received: " + id);
         }
 
-        validateSubcategoryId(subcategoryId);
+        validateSubcategoryId(subcategoryId, request);
         return new ResponseEntity<>(advertisementService.createAdvertisement(dto, getUser(principal.getName())), HttpStatus.CREATED);
     }
 
     @PutMapping
     public @ResponseBody
-    ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal) {
+    ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto,
+                                                         Principal principal,
+                                                         HttpServletRequest request) {
+
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
+
         long subcategoryId = dto.getProduct().getSubcategoryId();
-        validateSubcategoryId(subcategoryId);
+        validateSubcategoryId(subcategoryId, request);
 
         return new ResponseEntity<>(advertisementService.updateAdvertisement(dto), HttpStatus.ACCEPTED);
     }
@@ -110,11 +117,22 @@ public class AdvertisementController {
                 .orElseThrow(() -> new UsernameNotFoundException("User with name: " + userNameOrEmail + " not found!"));
     }
 
-    private void validateSubcategoryId(long subcategoryId) {
-        boolean subcategoryIdExists = subcategoryService.existById(subcategoryId);
+    private void validateSubcategoryId(long subcategoryId, HttpServletRequest request) {
+        RestTemplate restTemplate = new RestTemplate();
 
-        if (subcategoryId == 0 || !subcategoryIdExists) {
-            throw new IllegalIdentifierException("Subcategory has to exist by id, but it does not with this id: " + subcategoryId);
+        String baseUrl = ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath(null)
+                .build()
+                .toUriString();
+
+        String absoluteUrl = baseUrl + "/subcategory/exist/" + subcategoryId;
+
+        boolean isSubcategoryExists = Optional.ofNullable(restTemplate.getForObject(absoluteUrl, Boolean.class))
+                .orElse(false);
+
+        if (subcategoryId == 0 || !isSubcategoryExists) {
+            throw new IllegalIdentifierException("Subcategory has to exist by id, but it does not with this id: "
+                    + subcategoryId);
         }
     }
 
