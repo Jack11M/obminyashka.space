@@ -13,24 +13,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PageControllerTest {
-
+class ProductPageControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void uponRequestRegistration_redirectsToThePageRegistration() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/registration"))
+    public void uponRequestProductCreate_redirectsToThePageCreate() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/create"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("registration"));
+                .andExpect(view().name("create"));
     }
 
     @Test
-    public void uponRequestSearch_redirectsToThePageResult() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/search"))
+    public void uponRequestProductInfo_redirectsToThePageInfo() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/info"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("result"));
+                .andExpect(view().name("info"));
     }
+
 }
