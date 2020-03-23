@@ -20,8 +20,8 @@ public class ImageService {
         return imageRepository.findImageUrlsByProductId(id);
     }
 
-    public List<ImageDto> getByProductId(Long id) {
-        return mapImagesToDto(imageRepository.findImagesByProductId(id));
+    public List<ImageDto> getByAdvertisementIdAndProductId(Long advId, Long productId) {
+        return mapImagesToDto(imageRepository.findByAdvertisementIdAndProductId(advId, productId));
     }
 
     private List<ImageDto> mapImagesToDto(Iterable<Image> images) {

@@ -13,6 +13,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query(value = "SELECT resource_url FROM image WHERE  product_id = ?1", nativeQuery = true)
     List<String> findImageUrlsByProductId(Long id);
 
-    @Query(value = "SELECT id, product_id, resource_url, default_photo FROM image WHERE  product_id = ?1", nativeQuery = true)
-    List<Image> findImagesByProductId(Long id);
+    @Query(value = "SELECT i.* FROM image i, advertisement a WHERE a.id = ?1 AND a.product_id = ?2 AND i.product_id = a.product_id", nativeQuery = true)
+    List<Image> findByAdvertisementIdAndProductId(Long advId, Long productId);
 }
