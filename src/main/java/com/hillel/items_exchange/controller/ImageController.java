@@ -19,8 +19,10 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("/adv/{advertisement_id}/product/{product_id}/image-urls")
-    public ResponseEntity<List<String>> getImageUrlsByProductId(@PathVariable("product_id") long id) {
-        List<String> imageUrls = imageService.getImageUrlsByProductId(id);
+    public ResponseEntity<List<String>> getImageUrlsByAdvertisementIdAndProductId(
+            @PathVariable("advertisement_id") long advId,
+            @PathVariable("product_id") long productId) {
+        List<String> imageUrls = imageService.getImageUrlsByAdvertisementIdAndProductId(advId, productId);
         return (imageUrls.isEmpty())
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(imageUrls, HttpStatus.OK);

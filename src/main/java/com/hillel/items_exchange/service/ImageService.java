@@ -16,8 +16,8 @@ public class ImageService {
     private final ModelMapper modelMapper;
     private final ImageRepository imageRepository;
 
-    public List<String> getImageUrlsByProductId(Long id) {
-        return imageRepository.findImageUrlsByProductId(id);
+    public List<String> getImageUrlsByAdvertisementIdAndProductId(Long advId, Long productId) {
+        return imageRepository.findImageUrlsByAdvertisementIdAndProductId(advId, productId);
     }
 
     public List<ImageDto> getByAdvertisementIdAndProductId(Long advId, Long productId) {
