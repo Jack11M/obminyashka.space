@@ -21,7 +21,7 @@ public class UserRegistrationDto {
 
     @NotEmpty(message = "{empty.email}")
     @Size(max = 129, message = "{too.big.email}")
-    @Email(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$", message = "{invalid.password}")
+    @Email(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$", message = "{invalid.email}")
     private String email;
 
     @NotEmpty(message = "{empty.password}")
