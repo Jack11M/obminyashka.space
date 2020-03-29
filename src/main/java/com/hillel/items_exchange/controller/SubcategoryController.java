@@ -23,7 +23,6 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 @Slf4j
 public class SubcategoryController {
 
-    private static final String NAME_OF_CLASS = "IN the SubcategoryController: ";
     private final SubcategoryService subcategoryService;
     private final MessageSource messageSource;
 
@@ -57,7 +56,7 @@ public class SubcategoryController {
 
     @ExceptionHandler(InvalidDtoException.class)
     public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidDtoException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
@@ -65,7 +64,7 @@ public class SubcategoryController {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(NAME_OF_CLASS + e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(messageSource.getMessage("sql.exception",
