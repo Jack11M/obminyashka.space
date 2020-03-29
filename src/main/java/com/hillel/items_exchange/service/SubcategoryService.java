@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -29,10 +30,12 @@ public class SubcategoryService {
     }
 
     public boolean isSubcategoryHasNotProducts(long id) {
-        return subcategoryRepository.findById(id).getProducts().isEmpty();
+        return subcategoryRepository.findById(id)
+                .map(subcategory -> subcategory.getProducts().isEmpty())
+                .orElse(false);
     }
 
-    public Subcategory findById(long id) {
+    public Optional<Subcategory> findById(long id) {
         return subcategoryRepository.findById(id);
     }
 

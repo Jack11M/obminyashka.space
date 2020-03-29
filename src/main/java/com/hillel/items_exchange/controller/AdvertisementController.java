@@ -65,7 +65,8 @@ public class AdvertisementController {
 
     @PostMapping("/filter")
     public @ResponseBody
-    ResponseEntity<List<AdvertisementDto>> getAllBySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
+    ResponseEntity<List<AdvertisementDto>> getAllBySearchParameters(@Valid @RequestBody AdvertisementFilterDto
+                                                                            advertisementFilterDto) {
         return new ResponseEntity<>(advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto),
                 HttpStatus.OK);
     }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> {
@@ -13,5 +14,5 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
     @Query(value = "SELECT name FROM subcategory WHERE category_id = ?", nativeQuery = true)
     List<String> findSubcategoriesNamesByCategory(Long categoryId);
 
-    Subcategory findById(long id);
+    Optional<Subcategory> findById(long id);
 }

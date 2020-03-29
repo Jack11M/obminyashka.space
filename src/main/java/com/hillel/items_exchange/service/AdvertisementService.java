@@ -18,7 +18,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class AdvertisementService {
         return mapAdvertisementsToDto(advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
     }
 
-    public Optional<AdvertisementDto> findById(Long id) {
+    public Optional<AdvertisementDto> findById(long id) {
         return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
     }
 
@@ -45,7 +44,7 @@ public class AdvertisementService {
                         dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(), dto.getSubcategoryId()));
     }
 
-    public boolean isAdvertisementExists(Long id, User user) {
+    public boolean isAdvertisementExists(long id, User user) {
         return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
     }
 
@@ -53,7 +52,8 @@ public class AdvertisementService {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
-        adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId()));
+        adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId())
+                .orElseThrow(EntityNotFoundException::new));
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
@@ -61,14 +61,17 @@ public class AdvertisementService {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
-        BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created", "updated", "status");
+        BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created",
+                "updated", "status");
         fromDB.setStatus(Status.UPDATED);
-        fromDB.getProduct().setSubcategory(subcategoryService.findById(dto.getProduct().getSubcategoryId()));
+        fromDB.getProduct().setSubcategory(subcategoryService.findById(dto.getProduct().getSubcategoryId())
+                .orElseThrow(EntityNotFoundException::new));
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
     }
 
-    public void remove(Long id) {
+
+    public void remove(long id) {
         advertisementRepository.deleteById(id);
         advertisementRepository.flush();
     }
@@ -76,9 +79,9 @@ public class AdvertisementService {
     public boolean isImageUrlHasDuplicate(String imageUrl) {
         return advertisementRepository.findAll().stream()
                 .map(advertisement -> advertisement.getProduct().getImages())
-                        .flatMap(Collection::stream)
-                        .map(Image::getResourceUrl)
-                        .anyMatch(url -> url.equals(imageUrl));
+                .flatMap(Collection::stream)
+                .map(Image::getResourceUrl)
+                .anyMatch(url -> url.equals(imageUrl));
     }
 
     private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
