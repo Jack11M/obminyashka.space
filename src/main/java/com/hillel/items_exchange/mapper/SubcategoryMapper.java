@@ -28,7 +28,7 @@ public class SubcategoryMapper {
     }
 
     public Subcategory dtoToUpdatedSubcategory(SubcategoryDto subcategoryDto) {
-        Subcategory updatedSubcategory = subcategoryService.findById(subcategoryDto.getId());
+        Subcategory updatedSubcategory = subcategoryService.findById(subcategoryDto.getId()).get();
         updatedSubcategory.setName(subcategoryDto.getName());
         return updatedSubcategory;
     }

@@ -3,10 +3,10 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.CategoryService;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +16,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import java.util.Locale;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 
@@ -27,8 +26,8 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 @Slf4j
 public class CategoryController {
 
+    private final MessageSourceUtil messageSourceUtil;
     private final CategoryService categoryService;
-    private final MessageSource messageSource;
 
     @GetMapping("/names")
     public ResponseEntity<List<String>> getAllCategoriesNames() {
@@ -54,9 +53,8 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id") long id) {
         return categoryService.findCategoryById(id)
                 .map(categoryDto -> new ResponseEntity<>(categoryDto, HttpStatus.OK))
-                .orElseThrow(() -> new EntityNotFoundException(messageSource.getMessage("invalid.category.id",
-                        null,
-                        Locale.getDefault()) + id));
+                .orElseThrow(() -> new EntityNotFoundException(messageSourceUtil.getExceptionMessageSourceWithId(
+                        id, "invalid.category.id")));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -68,9 +66,7 @@ public class CategoryController {
             return new ResponseEntity<>(categoryService.addNewCategory(categoryDto), HttpStatus.CREATED);
         }
 
-        throw new InvalidDtoException(messageSource.getMessage("invalid.new-category-dto",
-                null,
-                Locale.getDefault()));
+        throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSource("invalid.new-category-dto"));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -80,9 +76,7 @@ public class CategoryController {
             return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
         }
 
-        throw new IllegalIdentifierException(messageSource.getMessage("invalid.updated-category.dto",
-                null,
-                Locale.getDefault()));
+        throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSource("invalid.updated-category.dto"));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -93,9 +87,7 @@ public class CategoryController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        throw new InvalidDtoException(messageSource.getMessage("category.not-deletable",
-                null,
-                Locale.getDefault()) + id);
+        throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSourceWithId(id, "category.not-deletable"));
     }
 
     private boolean isCategoryIdValidForCreating(CategoryDto categoryDto) {
@@ -141,8 +133,6 @@ public class CategoryController {
         log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(messageSource.getMessage("sql.exception",
-                        null,
-                        Locale.getDefault()) + e.getLocalizedMessage());
+                .body(messageSourceUtil.getExceptionMessageSource("sql.exception") + e.getLocalizedMessage());
     }
 }

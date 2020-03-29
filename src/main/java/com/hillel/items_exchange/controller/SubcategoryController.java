@@ -2,9 +2,9 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.SubcategoryService;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import java.util.Locale;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 
@@ -24,7 +23,7 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 public class SubcategoryController {
 
     private final SubcategoryService subcategoryService;
-    private final MessageSource messageSource;
+    private final MessageSourceUtil messageSourceUtil;
 
     @GetMapping("/{category_id}/names")
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id") long id) {
@@ -40,9 +39,8 @@ public class SubcategoryController {
     @DeleteMapping("/{subcategory_id}")
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidDtoException(messageSource.getMessage("subcategory.not-deletable",
-                    null,
-                    Locale.getDefault()) + id);
+            throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSourceWithId(id,
+                    "subcategory.not-deletable"));
         }
 
         subcategoryService.removeSubcategoryById(id);
@@ -67,8 +65,7 @@ public class SubcategoryController {
         log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(messageSource.getMessage("sql.exception",
-                        null,
-                        Locale.getDefault()) + e.getLocalizedMessage());
+                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("sql.exception",
+                        e.getLocalizedMessage()));
     }
 }

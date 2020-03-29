@@ -7,10 +7,10 @@ import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.UserService;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +25,6 @@ import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
     private final UserService userService;
-    private final MessageSource messageSource;
+    private final MessageSourceUtil messageSourceUtil;
 
     @GetMapping
     public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements() {
@@ -122,17 +121,14 @@ public class AdvertisementController {
                                             User owner) {
 
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new SecurityException(messageSource.getMessage("user.not-owner",
-                    null,
-                    Locale.getDefault()) + dto);
+            throw new SecurityException(messageSourceUtil.getExceptionMessageSource("user.not-owner"));
         }
     }
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException(messageSource.getMessage("user.not-found",
-                        null,
-                        Locale.getDefault()) + userNameOrEmail));
+                .orElseThrow(() -> new UsernameNotFoundException(messageSourceUtil
+                        .getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
     }
 
     private void validateImageUrlHasHotDuplicate(AdvertisementDto advertisementDto) {
@@ -141,9 +137,8 @@ public class AdvertisementController {
 
         imagesUrls.forEach(imageUrl -> {
             if (advertisementService.isImageUrlHasDuplicate(imageUrl)) {
-                throw new InvalidDtoException(messageSource.getMessage("image-url.has.duplicate",
-                        null,
-                        Locale.getDefault()) + imageUrl);
+                throw new InvalidDtoException(messageSourceUtil
+                        .getExceptionMessageSourceWithAdditionalInfo("image-url.has.duplicate", imageUrl));
             }
         });
     }
@@ -165,9 +160,8 @@ public class AdvertisementController {
                 .orElse(false);
 
         if (subcategoryId == 0 || !isSubcategoryExists) {
-            throw new IllegalIdentifierException(messageSource.getMessage("invalid.subcategory.id",
-                    null,
-                    Locale.getDefault()) + subcategoryId);
+            throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSourceWithId(subcategoryId,
+                    "invalid.subcategory.id"));
         }
     }
 
@@ -190,9 +184,7 @@ public class AdvertisementController {
 
     private void validateNewEntityIdIsZero(long id, String errorMessage) {
         if (id != 0) {
-            throw new IllegalIdentifierException(messageSource.getMessage(errorMessage,
-                    null,
-                    Locale.getDefault()) + id);
+            throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSourceWithId(id, errorMessage));
         }
     }
 
@@ -217,9 +209,8 @@ public class AdvertisementController {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(messageSource.getMessage("entity.not-found",
-                        null,
-                        Locale.getDefault()) + e.getLocalizedMessage());
+                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("entity.not-found",
+                        e.getLocalizedMessage()));
     }
 
     @ExceptionHandler(IllegalIdentifierException.class)
@@ -243,8 +234,7 @@ public class AdvertisementController {
         log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(messageSource.getMessage("sql.exception",
-                        null,
-                        Locale.getDefault()) + e.getLocalizedMessage());
+                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("sql.exception",
+                        e.getLocalizedMessage()));
     }
 }
