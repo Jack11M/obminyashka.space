@@ -10,9 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,6 +26,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 public class SubcategoryControllerIntegrationTest {
+
+    public static final long NONEXISTENT_SUBCATEGORY_ID = 333333L;
+    public static final long SUBCATEGORY_ID_FOR_DELETING = 1L;
+    public static final long EXISTENT_SUBCATEGORY_ID = 2L;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -30,7 +38,7 @@ public class SubcategoryControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getSubcategoryNamesByCategoryId_shouldReturnAllSubcategoryNamesByCategoryIdIfExists() throws Exception {
-        mockMvc.perform(get("/subcategory/{category_id}/names", 2L)
+        mockMvc.perform(get("/subcategory/{category_id}/names", EXISTENT_SUBCATEGORY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -40,8 +48,7 @@ public class SubcategoryControllerIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     public void getSubcategoryNamesByCategoryId_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
-        long nonExistentSubcategoryId = 111111L;
-        mockMvc.perform(get("/subcategory/{category_id}/names", nonExistentSubcategoryId)
+        mockMvc.perform(get("/subcategory/{category_id}/names", NONEXISTENT_SUBCATEGORY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -52,7 +59,7 @@ public class SubcategoryControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void deleteSubcategoryById_shouldDeleteExistedSubcategory() throws Exception {
-        mockMvc.perform(delete("/subcategory/{subcategory_id}", 2L)
+        mockMvc.perform(delete("/subcategory/{subcategory_id}", EXISTENT_SUBCATEGORY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -63,9 +70,32 @@ public class SubcategoryControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DataSet("database_init.yml")
     public void deleteSubcategoryById_whenSubcategoryHasProducts_shouldReturnBadRequest() throws Exception {
-        mockMvc.perform(delete("/subcategory/{subcategory_id}", 1L)
+        mockMvc.perform(delete("/subcategory/{subcategory_id}", SUBCATEGORY_ID_FOR_DELETING)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void isSubcategoryExistsById_whenSubcategoryIdExists_shouldReturnTrue() throws Exception {
+        MvcResult result = this.mockMvc.perform(get("/subcategory/exist/{subcategory_id}", SUBCATEGORY_ID_FOR_DELETING)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(result.getResponse().getContentAsString(), is("true"));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    public void isSubcategoryExistsById_whenSubcategoryIdDoesNotExist_shouldFalse() throws Exception {
+        MvcResult result = this.mockMvc.perform(get("/subcategory/exist/{subcategory_id}", NONEXISTENT_SUBCATEGORY_ID)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        assertThat(result.getResponse().getContentAsString(), is("false"));
     }
 }
