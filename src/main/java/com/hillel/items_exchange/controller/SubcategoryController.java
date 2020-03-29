@@ -29,7 +29,7 @@ public class SubcategoryController {
     @GetMapping("/{category_id}/names")
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id") long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
-        if (subcategoriesNames.size() == 0) {
+        if (subcategoriesNames.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -50,8 +50,8 @@ public class SubcategoryController {
     }
 
     @GetMapping(value = "/exist/{subcategory_id}")
-    public boolean isSubcategoryExist(@PathVariable("subcategory_id") long id) {
-        return subcategoryService.existById(id);
+    public boolean isSubcategoryExistsById(@PathVariable("subcategory_id") long id) {
+        return subcategoryService.isSubcategoryExistsById(id);
     }
 
     @ExceptionHandler(InvalidDtoException.class)

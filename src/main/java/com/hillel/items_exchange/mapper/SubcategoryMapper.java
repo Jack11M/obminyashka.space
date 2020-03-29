@@ -13,8 +13,7 @@ public class SubcategoryMapper {
 
     private final SubcategoryService subcategoryService;
 
-    public Subcategory dtoToNewSubcategory(SubcategoryDto subcategoryDto,
-                                           Category category) {
+    public Subcategory dtoToNewSubcategory(SubcategoryDto subcategoryDto, Category category) {
         Subcategory newSubcategory = new Subcategory();
         newSubcategory.setName(subcategoryDto.getName());
         newSubcategory.setCategory(category);

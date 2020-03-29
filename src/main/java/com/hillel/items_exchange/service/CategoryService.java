@@ -35,7 +35,7 @@ public class CategoryService {
                 .map(this::mapCategoryToDto).collect(Collectors.toList());
     }
 
-    public Optional<CategoryDto> findCategoryById(Long id) {
+    public Optional<CategoryDto> findCategoryById(long id) {
         return categoryRepository.findById(id).map(this::mapCategoryToDto);
     }
 
@@ -50,36 +50,28 @@ public class CategoryService {
         return mapCategoryToDto(categoryRepository.save(categoryMapper.dtoToUpdatedCategory(categoryDto, updatedCategory)));
     }
 
-    public void removeCategoryById(Long categoryId) {
+    public void removeCategoryById(long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
 
-    public boolean isCategoryDtoIdValid(Long categoryId) {
-        return categoryId > 0 && categoryRepository.existsById(categoryId);
+    public boolean isCategoryExistsById(long categoryId) {
+        return categoryRepository.existsById(categoryId);
     }
 
     public boolean isCategoryDtoDeletable(long categoryId) {
-        return isCategoryDtoIdValid(categoryId) && categoryRepository.findById(categoryId)
-                .map(c -> c.getSubcategories().stream()
-                        .map(Subcategory::getId)
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList()).stream()
-                .allMatch(subcategoryService::isSubcategoryHasNotProducts);
-    }
-
-    public boolean isCategoryDtoCreatable(CategoryDto categoryDto) {
-        return isCategoryNameHasNotDuplicate(categoryDto.getName()) && (categoryDto.getId() == 0
-                && categoryDto.getSubcategories().stream()
-                .allMatch(subcategoryDto -> subcategoryDto.getId() == 0));
+        return isCategoryExistsById(categoryId) && isInternalSubcategoriesHaveNotProducts(categoryId);
     }
 
     public boolean isCategoryDtoUpdatable(CategoryDto categoryDto) {
-        boolean subcategoryHasIdZeroOrIdExists = categoryDto.getSubcategories().stream()
-                .filter(subcategoryDto -> subcategoryDto.getId() != 0)
-                .allMatch(subcategoryDto -> subcategoryService.isSubcategoryDtoIdValid(subcategoryDto.getId()));
+        return isCategoryExistsById(categoryDto.getId())
+                && isCategoryNameHasNotDuplicateExceptCurrentName(categoryDto)
+                && isSubcategoryHasIdZeroOrIdExists(categoryDto);
+    }
 
-        return isCategoryDtoIdValid(categoryDto.getId()) && isCategoryNameHasNotDuplicateExceptCurrentName(categoryDto)
-                && subcategoryHasIdZeroOrIdExists;
+    private boolean isSubcategoryHasIdZeroOrIdExists(CategoryDto categoryDto) {
+        return categoryDto.getSubcategories().stream()
+                .filter(subcategoryDto -> subcategoryDto.getId() != 0)
+                .allMatch(subcategoryDto -> subcategoryService.isSubcategoryExistsById(subcategoryDto.getId()));
     }
 
     public boolean isCategoryNameHasNotDuplicate(String name) {
@@ -90,10 +82,22 @@ public class CategoryService {
     }
 
     public boolean isCategoryNameHasNotDuplicateExceptCurrentName(CategoryDto categoryDto) {
+        Category category = categoryRepository.findCategoryById(categoryDto
+                .getId());
+
         return findAllCategories().stream()
-                .filter(category -> !category.getName().equals(categoryRepository.findCategoryById(categoryDto.getId()).getName()))
+                .filter(dto -> !dto.getName().equals(category.getName()))
                 .map(CategoryDto::getName)
                 .noneMatch(categoryName -> categoryName.equals(categoryDto.getName()));
+    }
+
+    private boolean isInternalSubcategoriesHaveNotProducts(long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .map(c -> c.getSubcategories().stream()
+                        .map(Subcategory::getId)
+                        .collect(Collectors.toList()))
+                .orElse(Collections.emptyList()).stream()
+                .allMatch(subcategoryService::isSubcategoryHasNotProducts);
     }
 
     private CategoryDto mapCategoryToDto(Category category) {

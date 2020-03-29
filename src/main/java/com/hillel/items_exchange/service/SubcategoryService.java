@@ -24,7 +24,7 @@ public class SubcategoryService {
     }
 
     public boolean isSubcategoryDeletable(long id) {
-        return isSubcategoryDtoIdValid(id)
+        return isSubcategoryExistsById(id)
                 && isSubcategoryHasNotProducts(id);
     }
 
@@ -36,11 +36,7 @@ public class SubcategoryService {
         return subcategoryRepository.findById(id);
     }
 
-    public boolean isSubcategoryDtoIdValid(long id) {
-        return subcategoryRepository.existsById(id);
-    }
-
-    public boolean existById(long id) {
+    public boolean isSubcategoryExistsById(long id) {
         return subcategoryRepository.existsById(id);
     }
 }

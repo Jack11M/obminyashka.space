@@ -62,7 +62,9 @@ public class CategoryController {
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        if (categoryService.isCategoryDtoCreatable(categoryDto)) {
+        if (isCategoryIdValidForCreating(categoryDto)
+                && categoryService.isCategoryNameHasNotDuplicate(categoryDto.getName())) {
+
             return new ResponseEntity<>(categoryService.addNewCategory(categoryDto), HttpStatus.CREATED);
         }
 
@@ -74,7 +76,7 @@ public class CategoryController {
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
     public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
+        if (isDtoIdGreaterThanZero(categoryDto.getId()) && categoryService.isCategoryDtoUpdatable(categoryDto)) {
             return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
         }
 
@@ -86,7 +88,7 @@ public class CategoryController {
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
     public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id") long id) {
-        if (categoryService.isCategoryDtoDeletable(id)) {
+        if (isDtoIdGreaterThanZero(id) && categoryService.isCategoryDtoDeletable(id)) {
             categoryService.removeCategoryById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -94,6 +96,20 @@ public class CategoryController {
         throw new InvalidDtoException(messageSource.getMessage("category.not-deletable",
                 null,
                 Locale.getDefault()) + id);
+    }
+
+    private boolean isCategoryIdValidForCreating(CategoryDto categoryDto) {
+        return isIdEqualsZero(categoryDto.getId())
+                && categoryDto.getSubcategories().stream()
+                .allMatch(subcategoryDto -> isIdEqualsZero(subcategoryDto.getId()));
+    }
+
+    private boolean isDtoIdGreaterThanZero(long id) {
+        return id > 0;
+    }
+
+    private boolean isIdEqualsZero(long id) {
+        return id == 0;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
