@@ -19,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.security.Principal;
@@ -73,14 +72,13 @@ public class AdvertisementController {
     @PostMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> createAdvertisement(@Valid @RequestBody AdvertisementDto dto,
-                                                         Principal principal,
-                                                         HttpServletRequest request) {
+                                                         Principal principal) {
 
         long subcategoryId = dto.getProduct().getSubcategoryId();
 
         validateNewAdvertisementInternalEntitiesIdsAreZero(dto);
         validateImageUrlHasHotDuplicate(dto);
-        validateSubcategoryId(subcategoryId, request);
+        validateSubcategoryId(subcategoryId);
 
         return new ResponseEntity<>(advertisementService.createAdvertisement(dto,
                 getUser(principal.getName())),
@@ -90,13 +88,12 @@ public class AdvertisementController {
     @PutMapping
     public @ResponseBody
     ResponseEntity<AdvertisementDto> updateAdvertisement(@Valid @RequestBody AdvertisementDto dto,
-                                                         Principal principal,
-                                                         HttpServletRequest request) {
+                                                         Principal principal) {
 
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
         long subcategoryId = dto.getProduct().getSubcategoryId();
-        validateSubcategoryId(subcategoryId, request);
+        validateSubcategoryId(subcategoryId);
 
         return new ResponseEntity<>(advertisementService.updateAdvertisement(dto), HttpStatus.ACCEPTED);
     }
@@ -143,17 +140,12 @@ public class AdvertisementController {
         });
     }
 
-    private void validateSubcategoryId(long subcategoryId,
-                                       HttpServletRequest request) {
+    private void validateSubcategoryId(long subcategoryId) {
 
         final String contextUrl = "/subcategory/exist/";
         RestTemplate restTemplate = new RestTemplate();
 
-        String baseUrl = ServletUriComponentsBuilder.fromRequestUri(request)
-                .replacePath(null)
-                .build()
-                .toUriString();
-
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         String absoluteUrl = baseUrl + contextUrl + subcategoryId;
 
         boolean isSubcategoryExists = Optional.ofNullable(restTemplate.getForObject(absoluteUrl, Boolean.class))
@@ -177,9 +169,7 @@ public class AdvertisementController {
         validateNewEntityIdIsZero(locationId, "new.location.id.not-zero");
         validateNewEntityIdIsZero(productId, "new.product.id.not-zero");
 
-        imagesIds.forEach(imageId -> {
-            validateNewEntityIdIsZero(imageId, "new.image.id.not-zero");
-        });
+        imagesIds.forEach(imageId -> validateNewEntityIdIsZero(imageId, "new.image.id.not-zero"));
     }
 
     private void validateNewEntityIdIsZero(long id, String errorMessage) {
