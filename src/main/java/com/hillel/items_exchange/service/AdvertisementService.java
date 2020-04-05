@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,8 +24,9 @@ public class AdvertisementService {
     private final ModelMapper modelMapper;
     private final AdvertisementRepository advertisementRepository;
 
-    public List<AdvertisementDto> findAll() {
-        return mapAdvertisementsToDto(advertisementRepository.findAll());
+    public List<AdvertisementDto> findAll(Pageable pageable) {
+        List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
+        return mapAdvertisementsToDto(content);
     }
 
     public List<AdvertisementDto> findAllByTopic(String topic) {

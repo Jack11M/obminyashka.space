@@ -8,6 +8,7 @@ import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
@@ -31,9 +33,10 @@ public class AdvertisementController {
     private final AdvertisementService advertisementService;
     private final UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<AdvertisementDto>> getAllAdvertisements() {
-        return new ResponseEntity<>(advertisementService.findAll(), HttpStatus.OK);
+    @GetMapping(params = {"page", "size"})
+    public ResponseEntity<List<AdvertisementDto>> findPaginated(@RequestParam("page") @PositiveOrZero int page,
+                                                                @RequestParam("size") @PositiveOrZero int size) {
+        return new ResponseEntity<>(advertisementService.findAll(PageRequest.of(page, size)), HttpStatus.OK);
     }
 
     @GetMapping("/{advertisement_id}")
@@ -139,5 +142,13 @@ public class AdvertisementController {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Exception during saving object to the database!\nError message:\n" + e.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException e) {
+        log.warn(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
     }
 }
