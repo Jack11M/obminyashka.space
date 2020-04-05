@@ -5,7 +5,9 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.*;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.DealType;
+import com.hillel.items_exchange.util.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static com.hillel.items_exchange.util.TestUtil.asJsonString;
+import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,6 +44,7 @@ class AdvertisementControllerIntegrationTest {
     private AdvertisementRepository advertisementRepository;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
+    private int page, size;
 
 
     @BeforeEach
@@ -50,11 +56,30 @@ class AdvertisementControllerIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void getAllAdvertisements_shouldReturnAllAdvertisements() throws Exception {
-        mockMvc.perform(get("/adv")
+    void findPaginated_shouldReturnSelectedQuantity() throws Exception {
+        setPageAndSize(0, 2);
+        MvcResult mvcResult = mockMvc.perform(get("/adv?page={page}&size={size}", page, size)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+        String json = mvcResult.getResponse().getContentAsString();
+        Advertisement[] advertisements = JsonConverter.jsonToObject(json, Advertisement[].class);
+        assertEquals(size, advertisements.length);
+    }
+
+    @Test
+    void findPaginated_shouldBeThrownValidationException() throws Exception {
+        setPageAndSize(0, -12);
+        MvcResult mvcResult = mockMvc.perform(get("/adv?page={page}&size={size}", page, size))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Page size must not be less than one"));
+    }
+
+    private void setPageAndSize(int page, int size) {
+        this.page = page;
+        this.size = size;
     }
 
     @Test
