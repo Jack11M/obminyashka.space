@@ -1,0 +1,24 @@
+category:
+  - id: 1
+    name: 'shoes'
+  - id: 2
+    name: 'Toys'
+  - id: 3
+    name: 'books'
+
+subcategory:
+  - id: 1
+    name: 'light_shoes'
+    category_id: 1
+  - id: 2
+    name: 'dolls'
+    category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2
+  - id: 4
+    name: 'fairy tales'
+    category_id: 3
+  - id: 5
+    name: 'educational books'
+    category_id: 3
