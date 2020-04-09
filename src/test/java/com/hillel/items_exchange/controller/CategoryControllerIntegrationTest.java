@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
-import static com.hillel.items_exchange.util.TestUtil.asJsonString;
+import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
