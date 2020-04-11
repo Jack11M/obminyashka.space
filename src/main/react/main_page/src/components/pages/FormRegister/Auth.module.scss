@@ -1,0 +1,42 @@
+@import "../../partials/params";
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr,
+acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td, form {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+  outline: 0;
+}
+
+
+.popup {
+  margin: 180px auto 50px;
+  background-color: $colorPopup;
+  max-width: 806px;
+  box-shadow: 0 0 40px rgba(89, 102, 116, 0.35);
+  border-radius: 1px;
+
+  form {
+    margin: 0 44px;
+
+  }
+}
+

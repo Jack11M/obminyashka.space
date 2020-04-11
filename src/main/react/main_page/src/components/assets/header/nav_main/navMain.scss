@@ -1,0 +1,141 @@
+@import "../../../partials/params";
+
+.navbar-main-inner {
+  font-family: $fontRoboto;
+  padding: 21px 0;
+  border-radius: 0 0 20px 20px;
+  background-color: #fff;
+
+  .navbar-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo {
+      display: block;
+      min-width: 148px;
+      width: 148px;
+      height: 56px;
+      background: url("../../../../img/logo.png");
+      margin-right: 40px;
+
+      &:active {
+        @include Scale;
+      }
+    }
+
+    &__select {
+      position: absolute;
+      height: 56px;
+      font-family: $fontRoboto;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 24px;
+      color: $colorBlack;
+      margin: 30px 0 0 179px;
+      padding-bottom: 95px;
+      cursor: pointer;
+
+      &-top,
+      &-bottom {
+        transition: all 0.3s ease;
+      }
+
+      &-top {
+        opacity: 0;
+        transform: translateY(-50%);
+        position: relative;
+        bottom: -13px;
+        color: $colorButtonBlue;
+
+        &:after {
+          position: absolute;
+          right: -18px;
+          bottom: 9px;
+          content: "";
+          border: 5px solid transparent;
+          border-bottom: 5px solid $colorButtonBlue;
+        }
+      }
+
+      &-bottom {
+        position: relative;
+        bottom: 11px;
+
+        &:after {
+          position: absolute;
+          right: -18px;
+          bottom: 4px;
+          content: "";
+          border: 5px solid transparent;
+          border-top: 5px solid $colorBlack;
+        }
+      }
+
+      &:hover {
+        .navbar-main__select-top {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      &:hover {
+        .navbar-main__select-bottom {
+          opacity: 0;
+          transform: translateY(50%);
+        }
+      }
+      &:hover .navbarBurger-list {
+        left: 0;
+        transform: translateY(0);
+      }
+    }
+    .navbarBurger-list:hover {
+      left: 0;
+    }
+
+    &-search {
+      max-width: 541px;
+      width: 100%;
+      position: relative;
+      margin-left: 60px;
+      margin-right: 30px;
+
+      #search {
+        max-width: 541px;
+        width: 100%;
+        height: 50px;
+
+        border: 1px solid $colorButtonBlue;
+        border-radius: 25px;
+
+        font-family: $fontRoboto;
+        font-style: italic;
+        font-size: 16px;
+        line-height: 24px;
+
+        box-sizing: border-box;
+        padding: 10px 10px 10px 60px;
+      }
+
+      .circle {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        top: 5px;
+        left: 5px;
+        box-sizing: border-box;
+        border-radius: 20px;
+        width: 40px;
+        height: 40px;
+        background-color: $colorButtonBlue;
+        cursor: pointer;
+
+        .icon-search {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
