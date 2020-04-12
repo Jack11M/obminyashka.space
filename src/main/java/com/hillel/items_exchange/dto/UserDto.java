@@ -1,13 +1,14 @@
 package com.hillel.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hillel.items_exchange.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,6 +39,18 @@ public class UserDto {
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate lastOnlineTime;
+    private LocalDateTime lastOnlineTime;
 
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.avatarImage = user.getAvatarImage();
+        this.email = user.getEmail();
+        this.lastOnlineTime = user.getLastOnlineTime();
+        this.online = user.getOnline();
+        this.password = user.getPassword();
+
+    }
 }
