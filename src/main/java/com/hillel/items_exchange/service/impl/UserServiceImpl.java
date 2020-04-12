@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.service.impl;
 
 import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Role;
@@ -92,5 +93,14 @@ public class UserServiceImpl implements UserService {
         } else {
             log.warn("IN UserServiceImpl (registerNewUser): user: {} not registered", user);
         }
+    }
+
+    @Override
+    public UserDto getUserDtoById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()){
+            return new UserDto(userOptional.get()) ;
+        }
+        return null ;
     }
 }

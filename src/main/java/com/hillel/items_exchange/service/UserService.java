@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.service;
 
+import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
@@ -20,4 +21,6 @@ public interface UserService {
     boolean save(User user);
 
     void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role);
+
+    UserDto getUserDtoById(Long id);
 }
