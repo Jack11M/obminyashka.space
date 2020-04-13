@@ -177,7 +177,7 @@ class AdvertisementControllerIntegrationTest {
         CategoryDto shoes = new CategoryDto(1L, "shoes");
         SubcategoryDto lightShoes = new SubcategoryDto(1L, "light_shoes", shoes);
         ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes,
-                Arrays.asList(new ImageDto(1L, "one", false), new ImageDto(2L, "two", true)));
+                Arrays.asList(new ImageDto(1L, null, false), new ImageDto(2L, null, true)));
         existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress);
     }
 
@@ -186,7 +186,7 @@ class AdvertisementControllerIntegrationTest {
         CategoryDto clothes = new CategoryDto(0L, "Clothes");
         SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
         ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
-                Collections.singletonList(new ImageDto(0L, "url", false)));
+                Collections.singletonList(new ImageDto(0L, null, false)));
         nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
     }
 }

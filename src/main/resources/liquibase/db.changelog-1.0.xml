@@ -417,4 +417,15 @@
                                  referencedColumnNames="id"
                                  referencedTableName="product"/>
     </changeSet>
+
+    <changeSet id="1.0.24: image type change" author="rpkyrych">
+        <renameColumn columnDataType="VARCHAR(150)"
+                      newColumnName="resource"
+                      oldColumnName="resource_url"
+                      tableName="image"/>
+
+        <modifyDataType columnName="resource"
+                        newDataType="BINARY"
+                        tableName="image"/>
+    </changeSet>
 </databaseChangeLog>

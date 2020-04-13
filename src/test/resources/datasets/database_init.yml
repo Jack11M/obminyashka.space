@@ -123,11 +123,11 @@ product:
 
 image:
   - id: 1
-    resource_url: 'one'
+    resource: 'one'
     default_photo: 'false'
     product_id: 1
   - id: 2
-    resource_url: 'two'
+    resource: 'two'
     default_photo: 'true'
     product_id: 1
 
