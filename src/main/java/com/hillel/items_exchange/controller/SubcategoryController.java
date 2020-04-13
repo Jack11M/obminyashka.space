@@ -45,9 +45,4 @@ public class SubcategoryController {
         subcategoryService.removeSubcategoryById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @GetMapping(value = "/exist/{subcategory_id}")
-    public boolean isSubcategoryExistsById(@PathVariable("subcategory_id") long id) {
-        return subcategoryService.isSubcategoryExistsById(id);
-    }
 }
