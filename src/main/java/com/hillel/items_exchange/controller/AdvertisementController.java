@@ -6,6 +6,7 @@ import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
+import com.hillel.items_exchange.service.SubcategoryService;
 import com.hillel.items_exchange.service.UserService;
 import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
@@ -38,6 +37,7 @@ public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
     private final UserService userService;
+    private final SubcategoryService subcategoryService;
     private final MessageSourceUtil messageSourceUtil;
 
     @GetMapping(params = {"page", "size"})
@@ -144,15 +144,7 @@ public class AdvertisementController {
     }
 
     private void validateSubcategoryId(long subcategoryId) {
-
-        final String contextUrl = "/subcategory/exist/";
-        RestTemplate restTemplate = new RestTemplate();
-
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        String absoluteUrl = baseUrl + contextUrl + subcategoryId;
-
-        boolean isSubcategoryExists = Optional.ofNullable(restTemplate.getForObject(absoluteUrl, Boolean.class))
-                .orElse(false);
+        boolean isSubcategoryExists = subcategoryService.isSubcategoryExistsById(subcategoryId);
 
         if (subcategoryId == 0 || !isSubcategoryExists) {
             throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSourceWithId(subcategoryId,

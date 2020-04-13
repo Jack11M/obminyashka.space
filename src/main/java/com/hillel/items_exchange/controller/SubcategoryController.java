@@ -47,11 +47,6 @@ public class SubcategoryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/exist/{subcategory_id}")
-    public boolean isSubcategoryExistsById(@PathVariable("subcategory_id") long id) {
-        return subcategoryService.isSubcategoryExistsById(id);
-    }
-
     @ExceptionHandler(InvalidDtoException.class)
     public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidDtoException e) {
         log.warn(e.getMessage(), e);
