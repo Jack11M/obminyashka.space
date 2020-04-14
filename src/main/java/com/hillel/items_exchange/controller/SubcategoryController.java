@@ -51,21 +51,4 @@ public class SubcategoryController {
     public boolean isSubcategoryExistsById(@PathVariable("subcategory_id") long id) {
         return subcategoryService.isSubcategoryExistsById(id);
     }
-
-    @ExceptionHandler(InvalidDtoException.class)
-    public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidDtoException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("sql.exception",
-                        e.getLocalizedMessage()));
-    }
 }
