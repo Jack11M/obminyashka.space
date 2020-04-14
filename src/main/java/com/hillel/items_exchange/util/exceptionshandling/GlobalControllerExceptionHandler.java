@@ -53,13 +53,13 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e,
                                                                 ServletWebRequest request) {
 
-        ErrorMessage errorMessage = new ErrorMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
+        ErrorMessage errorMessage = new ErrorMessage(new Date(), HttpStatus.NOT_FOUND.value(),
                 messageSourceUtil.getExceptionMessageSource("entity.not-found.exception"),
                 e.getLocalizedMessage(), request.getRequest().getRequestURI(), request.getHttpMethod());
 
         log.warn(errorMessage.errorLog());
 
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalIdentifierException.class)
