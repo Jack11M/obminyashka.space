@@ -1,0 +1,16 @@
+@font-face {
+  font-family: 'Roboto';
+  @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap&subset=cyrillic');
+}
+
+@font-face {
+  font-family: 'Pollywog_Cyr';
+  src: url('Pollywog_Cyr.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@mixin font ($font) {
+  font-family: $font, san serif;
+}
