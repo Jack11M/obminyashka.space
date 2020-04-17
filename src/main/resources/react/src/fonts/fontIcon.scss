@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('icomoon.eot?6hkcwi');
-  src:  url('icomoon.eot?6hkcwi#iefix') format('embedded-opentype'),
+  src: url('icomoon.eot?6hkcwi');
+  src: url('icomoon.eot?6hkcwi#iefix') format('embedded-opentype'),
   url('icomoon.ttf?6hkcwi') format('truetype'),
   url('icomoon.woff?6hkcwi') format('woff'),
   url('icomoon.svg?6hkcwi#icomoon') format('svg');
@@ -29,48 +29,60 @@
   content: "\e90c";
   color: #12b6ed;
 }
+
 .icon-account:before {
   content: "\e900";
   color: #ccc;
 }
+
 .icon-activity:before {
   content: "\e901";
 }
+
 .icon-heart:before {
   content: "\e902";
   color: #f00;
 }
+
 .icon-home:before {
   content: "\e903";
   color: #fff;
 }
+
 .icon-logout .path1:before {
   content: "\e904";
   color: rgb(0, 0, 0);
 }
+
 .icon-logout .path2:before {
   content: "\e905";
   margin-left: -1em;
   color: rgb(17, 17, 17);
 }
+
 .icon-phone:before {
   content: "\e906";
   color: #fff;
 }
+
 .icon-profile:before {
   content: "\e907";
 }
+
 .icon-question:before {
   content: "\e908";
   color: #fff;
 }
+
 .icon-search:before {
   content: "\e909";
   color: #fff;
 }
+
 .icon-settings:before {
   content: "\e90a";
 }
+
 .icon-star:before {
   content: "\e90b";
 }

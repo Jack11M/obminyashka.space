@@ -18,8 +18,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "fake-db": "json-server srcс/components/pages/homepage/сurrentOffers/goods.json --port 4001"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
