@@ -1,0 +1,43 @@
+@import "../../partials/variables";
+
+.navbarBurger-list {
+  background-color: #fff;
+  padding: 70px;
+  color: $colorGrey;
+  z-index: -1;
+  transition: 1s all;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.08);
+  width: 100vw;
+  left: 0;
+  top: 138px;
+  position: fixed;
+  transform: translateY(-100vh);
+
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+  }
+
+  .navbarBurger-element {
+    display: grid;
+    padding: 10px;
+    justify-content: center;
+
+    img,
+    span {
+      display: block;
+    }
+
+    span {
+      text-align: center;
+      line-height: 4;
+    }
+
+    a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
