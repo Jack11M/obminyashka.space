@@ -228,6 +228,7 @@ public class AdvertisementController {
         log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
+                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("invalid.argument.exception",
+                        e.getLocalizedMessage()));
     }
 }
