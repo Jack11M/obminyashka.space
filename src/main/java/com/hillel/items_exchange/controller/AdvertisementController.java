@@ -225,10 +225,10 @@ public class AdvertisementController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException e) {
-        log.warn(e.getMessage(), e);
+        String errorMessage = e.getMessage();
+        log.warn(errorMessage, e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("invalid.argument.exception",
-                        e.getLocalizedMessage()));
+                .body(errorMessage);
     }
 }
