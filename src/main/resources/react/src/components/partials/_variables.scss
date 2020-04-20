@@ -1,0 +1,31 @@
+$shadow: rgba(89, 102, 116, 0.1);
+$colorPopup: #FDFDFF;
+$colorButtonBlue: #12b6ed;
+$colorButtonGreen: #43B05C;
+$colorError: #ff4c4c;
+$colorGrey: #8E8E8E;
+$colorDesabled: #DADADA;
+$rightText: #333333;
+$colorBlack: #111111;
+
+
+@mixin large-screen(){
+  @media only screen and (max-width: 455px) {
+    @content
+  }
+}
+
+@mixin IphoneTen-screen(){
+  @media only screen and (max-width: 376px) {
+    @content
+  }
+}
+@mixin IphoneFife-screen(){
+  @media only screen and (max-width: 321px) {
+    @content
+  }
+}
+
+@mixin Scale (){
+  transform: scale(1.03);
+}
