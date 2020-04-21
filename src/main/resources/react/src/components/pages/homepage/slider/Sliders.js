@@ -16,9 +16,8 @@ const Sliders = () => {
   const DELAY = 3000;
   const PLAY_SPEED = 2000;
   const [x, setX] = useState(0);
-  const [go, setGo] = useState(false);
-  const [play, setPlay] = useState(false);
-  const [delay, setDelay] = useState(0);
+  const [changeImage, setChangeImage] = useState(false);
+  const [startMove, setStartMove] = useState(false);
   const [isImg, setIsImg] = useState([
     {
       src: toySlider,
@@ -93,35 +92,34 @@ const Sliders = () => {
     }
     const autoPlaySpeed = setTimeout(() => {
       setX(x - (isImg[0].width + 22));
-      setDelay(PLAY_SPEED);
-      setPlay(true);
+      setStartMove(true);
     }, DELAY);
     return () => clearTimeout(autoPlaySpeed);
-  }, [go, x, isImg]);
+  }, [x, isImg]);
 
   useEffect(() => {
-    if (!play) {
+    if (!startMove) {
       return;
     }
     const playSpeed = setTimeout(() => {
-      setGo(true);
-      setPlay(false);
+      setStartMove(false);
+      setChangeImage(true);
     }, PLAY_SPEED);
     return () => clearTimeout(playSpeed);
-  }, [play]);
+  }, [startMove]);
 
   useEffect(() => {
-    if (!go) {
+    if (!changeImage) {
       return;
     }
-    setDelay(0);
+
     setX(0);
+    setChangeImage(false);
     const arr = [...isImg];
     const el = arr.shift();
     arr.push(el);
     setIsImg(() => arr);
-    setGo(false);
-  }, [go, isImg]);
+  }, [changeImage, isImg, setX]);
 
   return (
     <div className="Home-page-slider">
@@ -132,7 +130,7 @@ const Sliders = () => {
             className={"Home-page-slider__element__box"}
             style={{
               transform: `translateX(${x}px)`,
-              transition: `${delay}ms ease`
+              transition: `${PLAY_SPEED}ms ease`
             }}
             key={idx + image.title}
           >
