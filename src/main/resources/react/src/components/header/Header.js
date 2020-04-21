@@ -5,12 +5,12 @@ import NavMain from "./nav_main/NavMain.js";
 import "./Navbar.scss";
 
 const Header = () => {
-	return (
-		<header className="navbar">
-			<NavTop/>
-			<NavMain/>
-		</header>
-	);
+  return (
+    <header className="navbar">
+      <NavTop />
+      <NavMain />
+    </header>
+  );
 };
 
 export default Header;

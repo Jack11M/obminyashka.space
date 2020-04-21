@@ -6,44 +6,44 @@ import "./headerInMain.scss";
 import "./moveCloud.scss";
 
 const HeaderInMain = () => {
-	return (
-		<div className="present-section">
-			<div className="wrapper">
-				<ul className="presentSlider">
-					<li className="presentSlider-element">
-						<img src={furniture} alt="furniture"/>
-						<p className="presentSlider-element__text">
-							Накопилось много <b>детских вещей?</b>
-						</p>
-					</li>
+  return (
+    <div className="present-section">
+      <div className="wrapper">
+        <ul className="presentSlider">
+          <li className="presentSlider-element">
+            <img src={furniture} alt="furniture" />
+            <p className="presentSlider-element__text">
+              Накопилось много <b>детских вещей?</b>
+            </p>
+          </li>
 
-					<li className="presentSlider-element">
-						<img src={monitor} alt="monitor"/>
-						<p className="presentSlider-element__text">
-							Просто <b>зарегистрируйся</b> и размести <br/>
-							объявление!
-						</p>
-					</li>
-					<li className="presentSlider-element ">
-						<img src={toys} alt="toys"/>
-						<p className="presentSlider-element__text">
-							<b>Обменяйтесь</b> с другими пользователями <br/> на что-то
-							клёвое и <br/> полезное!
-						</p>
-					</li>
-				</ul>
-			</div>
+          <li className="presentSlider-element">
+            <img src={monitor} alt="monitor" />
+            <p className="presentSlider-element__text">
+              Просто <b>зарегистрируйся</b> и размести <br />
+              объявление!
+            </p>
+          </li>
+          <li className="presentSlider-element ">
+            <img src={toys} alt="toys" />
+            <p className="presentSlider-element__text">
+              <b>Обменяйтесь</b> с другими пользователями <br /> на что-то
+              клёвое и <br /> полезное!
+            </p>
+          </li>
+        </ul>
+      </div>
 
-			<div className="cloudsInner">
-				<span className="cloudOne"></span>
-				<span className="cloudTwo"></span>
-				<span className="cloudThree"></span>
-				<span className="cloudFour"></span>
-				<span className="cloudFive"></span>
-				<span className="cloudSix"></span>
-			</div>
-		</div>
-	);
+      <div className="cloudsInner">
+        <span className="cloudOne"></span>
+        <span className="cloudTwo"></span>
+        <span className="cloudThree"></span>
+        <span className="cloudFour"></span>
+        <span className="cloudFive"></span>
+        <span className="cloudSix"></span>
+      </div>
+    </div>
+  );
 };
 
 export default HeaderInMain;
