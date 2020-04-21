@@ -36,5 +36,4 @@ public class AdvertisementDto {
     private @Valid LocationDto location;
     @NotNull(message = "{invalid.not-null}")
     private @Valid ProductDto product;
-
 }

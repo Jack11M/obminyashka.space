@@ -1,8 +1,8 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.exception.InvalidVoException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.SubcategoryService;
-import com.hillel.items_exchange.util.ExceptionTextMessage;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,15 +22,16 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 @Slf4j
 public class SubcategoryController {
 
-    private static final String NAME_OF_CLASS = "IN the SubcategoryController: ";
     private final SubcategoryService subcategoryService;
+    private final MessageSourceUtil messageSourceUtil;
 
     @GetMapping("/{category_id}/names")
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id") long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
-        if (subcategoriesNames.size() == 0) {
+        if (subcategoriesNames.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(subcategoriesNames, HttpStatus.OK);
     }
 
@@ -38,15 +39,17 @@ public class SubcategoryController {
     @DeleteMapping("/{subcategory_id}")
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidVoException(ExceptionTextMessage.SUBCATEGORY_CAN_NOT_BE_DELETED + id);
+            throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSourceWithId(id,
+                    "subcategory.not-deletable"));
         }
+
         subcategoryService.removeSubcategoryById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler(InvalidVoException.class)
-    public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidVoException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
+    @ExceptionHandler(InvalidDtoException.class)
+    public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidDtoException e) {
+        log.warn(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
@@ -54,9 +57,10 @@ public class SubcategoryController {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(NAME_OF_CLASS + e.getMessage(), e);
+        log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionTextMessage.SQL_EXCEPTION + e.getLocalizedMessage());
+                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("sql.exception",
+                        e.getLocalizedMessage()));
     }
 }

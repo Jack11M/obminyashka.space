@@ -3,9 +3,9 @@ package com.hillel.items_exchange.exception;
 import lombok.Getter;
 
 @Getter
-public class InvalidVoException extends RuntimeException {
+public class InvalidDtoException extends RuntimeException {
 
-    public InvalidVoException(String message) {
+    public InvalidDtoException(String message) {
         super(message);
     }
 }
