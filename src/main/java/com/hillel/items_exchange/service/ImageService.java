@@ -9,6 +9,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +17,14 @@ public class ImageService {
     private final ModelMapper modelMapper;
     private final ImageRepository imageRepository;
 
-    public List<String> getImageUrlsByAdvertisementIdAndProductId(Long advId, Long productId) {
-        return imageRepository.findImageUrlsByAdvertisementIdAndProductId(advId, productId);
+    public List<String> getLinksByProductId(Long id) {
+        return imageRepository.findByProductId(id).stream()
+                .map(Image::getResourceUrl)
+                .collect(Collectors.toList());
     }
 
-    public List<ImageDto> getByAdvertisementIdAndProductId(Long advId, Long productId) {
-        return mapImagesToDto(imageRepository.findByAdvertisementIdAndProductId(advId, productId));
+    public List<ImageDto> getByProductId(Long id) {
+        return mapImagesToDto(imageRepository.findByProductId(id));
     }
 
     private List<ImageDto> mapImagesToDto(Iterable<Image> images) {
