@@ -29,8 +29,8 @@ public class ImageControllerTest {
 
     @Test
     @Transactional
-    void getByAdvertisementIdAndProductId_shouldReturnAllImageUrls() throws Exception {
-        mockMvc.perform(get("/adv/{advertisement_id}/product/{product_id}/images", 1L, 1L)
+    void getByProductId_shouldReturnAllImages() throws Exception {
+        mockMvc.perform(get("/image/{product_id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -43,39 +43,13 @@ public class ImageControllerTest {
 
     @Test
     @Transactional
-    void getByAdvertisementIdAndProductId_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/adv/{advertisement_id}/product/{product_id}/images", 1L, 2L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-        mockMvc.perform(get("/adv/{advertisement_id}/product/{product_id}/images", 2L, 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Transactional
-    void getImageUrlsAdvertisementIdAndProductId_shouldReturnAllImageUrls() throws Exception {
-        mockMvc.perform(get("/adv/{advertisement_id}/product/{product_id}/image-urls", 1L, 1L)
+    void getImageLinksByProductId_shouldReturnAllImageLinks() throws Exception {
+        mockMvc.perform(get("/image/{product_id}/links", 1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0]").value("one"))
                 .andExpect(jsonPath("$[1]").value("two"));
-    }
-
-    @Test
-    @Transactional
-    void getImageUrlsAdvertisementIdAndProductId_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/adv/{advertisement_id}/product/{product_id}/image-urls", 1L, 2L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-        mockMvc.perform(get("/adv/{advertisement_id}/product/{product_id}/image-urls", 2L, 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 }
