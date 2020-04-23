@@ -6,34 +6,42 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
+@RequestMapping("/image")
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class ImageController {
     private final ImageService imageService;
 
-    @GetMapping("/adv/{advertisement_id}/product/{product_id}/image-urls")
-    public ResponseEntity<List<String>> getImageUrlsByAdvertisementIdAndProductId(
-            @PathVariable("advertisement_id") long advId,
-            @PathVariable("product_id") long productId) {
-        List<String> imageUrls = imageService.getImageUrlsByAdvertisementIdAndProductId(advId, productId);
-        return (imageUrls.isEmpty())
+    @GetMapping("/{product_id}/links")
+    public ResponseEntity<List<String>> getImageLinksByProductId(@PathVariable("product_id")
+                                                                @PositiveOrZero(message = "{invalid.id}") long id) {
+        List<String> links = imageService.getLinksByProductId(id);
+        return (links.isEmpty())
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(imageUrls, HttpStatus.OK);
+                : new ResponseEntity<>(links, HttpStatus.OK);
     }
 
-    @GetMapping("/adv/{advertisement_id}/product/{product_id}/images")
-    public ResponseEntity<List<ImageDto>> getByAdvertisementIdAndProductId(@PathVariable("advertisement_id") long advId,
-                                                                           @PathVariable("product_id") long productId) {
-        List<ImageDto> images = imageService.getByAdvertisementIdAndProductId(advId, productId);
+    @GetMapping("/{product_id}")
+    public ResponseEntity<List<ImageDto>> getByProductId(@PathVariable("product_id")
+                                             @PositiveOrZero(message = "{invalid.id}") long id) {
+        List<ImageDto> images = imageService.getByProductId(id);
         return (images.isEmpty())
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(images, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
