@@ -9,11 +9,13 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
 
     @Bean
@@ -96,11 +99,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserDtoById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()){
-            return new UserDto(userOptional.get()) ;
-        }
-        return null ;
+    public Optional<UserDto> getUserDtoById(Long id) {
+        return userRepository.findById(id).map(this::mapUserToDto);
     }
+
+    private UserDto mapUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
+    }
+
+
 }

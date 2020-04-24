@@ -7,6 +7,7 @@ import com.hillel.items_exchange.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -22,5 +23,5 @@ public interface UserService {
 
     void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role);
 
-    UserDto getUserDtoById(Long id);
+    Optional<UserDto> getUserDtoById(Long id);
 }
