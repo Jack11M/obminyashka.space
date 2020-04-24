@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/webjars/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .antMatchers("/adv/**", "/category/**", "/subcategory/**").authenticated()
-                .antMatchers("/user/info/").hasRole("USER")
+                .antMatchers("/user/info/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurator(jwtTokenProvider))
