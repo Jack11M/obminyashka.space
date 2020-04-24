@@ -18,13 +18,11 @@ public class UserController {
     private final UserService userService;
 
     @RequestMapping(value = "/info/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
+    public @ResponseBody
+    ResponseEntity<UserDto> getUser(@PathVariable("id") Long id) {
 
-
-        UserDto userDto = userService.getUserDtoById(id);
-        if (userDto == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return userService.getUserDtoById(id)
+                .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
