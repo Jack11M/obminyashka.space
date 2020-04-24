@@ -15,6 +15,7 @@ import "./slider.scss";
 const Sliders = () => {
   const DELAY = 3000;
   const PLAY_SPEED = 2000;
+  const MARGIN = 22;
   const [x, setX] = useState(0);
   const [changeImage, setChangeImage] = useState(false);
   const [startMove, setStartMove] = useState(false);
@@ -91,7 +92,7 @@ const Sliders = () => {
       return;
     }
     const autoPlaySpeed = setTimeout(() => {
-      setX(x - (isImg[0].width + 22));
+      setX(x - (isImg[0].width + MARGIN));
       setStartMove(true);
     }, DELAY);
     return () => clearTimeout(autoPlaySpeed);

@@ -14,15 +14,19 @@
   transform: translateY(-100vh);
 
   .wrapper {
+    padding: 20px 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 157px;
+    grid-row-gap: 20px;
     width: 100%;
   }
 
   .navbarBurger-element {
     display: grid;
-    padding: 10px;
+
     justify-content: center;
+    align-items: center;
 
     img,
     span {
@@ -30,14 +34,25 @@
     }
 
     span {
+      margin-top: 20px;
       text-align: center;
-      line-height: 4;
     }
 
     a {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
+      width: 157px;
+      height: 157px;
+
+      &:hover {
+        border: 2px dashed #FFB641;
+        box-sizing: border-box;
+        box-shadow: 0px 4px 40px rgba(255, 199, 0, 0.4);
+        border-radius: 111px;
+      }
+
     }
   }
 }
