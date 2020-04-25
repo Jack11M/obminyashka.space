@@ -7,16 +7,16 @@ import HelpChildren from "./helpChildren/HelpChildren";
 import CurrentOffers from "./сurrentOffers/CurrentOffers";
 
 const HomePage = () => {
-	return (
-		<main className="Main-page">
-			<HeaderInMain/>
-			<div className={"wrapper"}>
-				<CurrentOffers/>
-				<Sliders/>
-				<HelpChildren/>
-			</div>
-		</main>
-	);
+  return (
+    <main className="Main-page">
+      <HeaderInMain />
+      <div className={"wrapper"}>
+        <CurrentOffers />
+        <Sliders />
+        <HelpChildren />
+      </div>
+    </main>
+  );
 };
 
 export default HomePage;
