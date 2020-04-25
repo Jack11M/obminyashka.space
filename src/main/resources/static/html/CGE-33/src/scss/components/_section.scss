@@ -1,0 +1,38 @@
+// $section-padding-vertical-m:              100px;
+// $section-padding-vertical:                $section-padding-vertical-m / 2;
+
+// $section-primaty-background:              gray;
+
+// .section {
+//   position: relative;
+//   padding: $section-padding-vertical 0;
+//   &-background {
+//     position: absolute;
+//     top: 0;
+//     right: 0;
+//     left: 0;
+//     bottom: 0;
+//     z-index: -1;
+//     img {
+//       width: 100%;
+//       height: 100%;
+//     }
+//   }
+//   &-overlay {
+//     position: absolute;
+//     top: 0;
+//     right: 0;
+//     left: 0;
+//     bottom: 0;
+//   }
+//   &-foreground {
+//     position: relative;
+//   }
+//   @media (min-width: $breakpoint-medium) {
+//     padding: $section-padding-vertical-m 0;
+//   }
+// }
+
+// .section-primary {
+//   background: $section-primaty-background;
+// }

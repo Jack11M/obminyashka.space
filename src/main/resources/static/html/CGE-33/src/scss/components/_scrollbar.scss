@@ -1,0 +1,20 @@
+//custom scrollbar
+@mixin scrollBar(){
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px; 
+      height: 10px;   
+    }
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: $scrollbar-bg;
+    }
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: $scrollbar-color;    
+    }
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: $scrollbar-hover-color;
+    }
+  }
