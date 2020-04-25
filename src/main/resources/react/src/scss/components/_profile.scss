@@ -1,4 +1,5 @@
 //myProfileTab
+@import"../../fonts/font.scss";
 @mixin myProfileTab(){  
     .main-content{
       .section-wrapper{
@@ -21,8 +22,11 @@
               .about-me-title{
                 display: inline-block;
                 width: auto;
-                font-family: 'Pollywog Cyr',serif;
+                @include font('Pollywog_Cyr');
+                font-weight: bold;
+                // font-family: 'Pollywog Cyr',serif;
                 font-size: 27px;
+                
                 line-height: 24px;                   
                 text-transform: uppercase;
                 position: relative;
@@ -33,7 +37,7 @@
                 color: #12B6ED;            
                 content:"\2022";            
                 font-size: 30px;
-                font-weight: 700;            
+                font-weight: 800;            
                 left: -27px;            
                 line-height: 18px;        
                 position: absolute;

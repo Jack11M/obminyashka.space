@@ -50,11 +50,13 @@ const CurrentOffers = () => {
               <span className="icon-location"> </span>
               {data.location.city}
             </span>
+            <div className="products-list-item__footer">
             <ButtonBlue
               text="Смотреть"
               href={"#"}
-              whatClass="products-list-item__bottom"
+              whatClass="products-list-item__footer__bottom"
             />
+            </div>
           </li>
         ))}
       </ul>

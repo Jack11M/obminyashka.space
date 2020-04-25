@@ -1,3 +1,4 @@
+@import"../../fonts/font.scss";
 // $base-body-background:                           #fff;
 // $base-body-font-family:                          $global-font-family;
 // $base-body-font-weight:                          normal;
@@ -124,7 +125,7 @@ $btn-bg-hover: #0094ff;
     width: 100%; 
     height: 100vh;
     margin:  auto 0 auto 0;  
-    font-family: 'Proxima Nova Lt',serif;      
+    @include font('Roboto');
     display: flex;    
 }
   //aside menu

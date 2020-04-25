@@ -1,3 +1,4 @@
+@import"../../fonts/font.scss";
 @mixin myActivityTab(){
     .main-content{
       .section-wrapper{
@@ -50,8 +51,8 @@
               }
             }
             &_title {
-                font-family: 'Proxima Nova', sans-serif;
-                font-size: 16px;
+              @include font('Roboto');          
+                font-size: 16px;      
                 line-height: 19px;
                 color: #111111;
                 padding: 40px 26px 0;
@@ -59,7 +60,7 @@
             }
             &_location-city {
                 display: inline-block;
-                font-family: 'Proxima Nova';
+                @include font('Roboto');          
                 font-size: 14px;
                 line-height: 24px;
                 color: #00C0FF;
@@ -70,20 +71,30 @@
                 bottom: 12px;
                 left: 8%;
                 display: flex;
-                flex-direction: row;
+                flex-direction: row;                
                 &_dialogues {
-                    background-image: url(../images/Vector.png);
-                    background-position: bottom right;
+                    background-image: url(../../img/MySettings/Vector.png);
+                    //background-position: bottom right;
+                    background-position: center;
                     background-repeat: no-repeat;
                     background-size: auto;
-                    display: inline-block;
+                    //display: inline-block;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: 16px;
+                    line-height: 22px;
+                    color: #FFFFFF;
+                    font-weight: 800;
+                    @include font('Open Sans');
                     height: 52px;
                     width: 55px;
                     transition: all 0.3s linear;
-                    &:hover {
-                      
-                      background-image: url(../images/Vector_hover.png);
+                    text-decoration: none;
+                    &:hover {                      
+                      background-image: url(../../img/MySettings/Vector_hover.png);
                     }
+                    
                     &-numbers {
                         position: absolute;
                         left: 88%;
@@ -98,6 +109,7 @@
                 border: none;
                 width: 100%;
                 max-width: 190px;
+                @include font('Roboto');
                 color: #ffffff;
                 padding: 15px 54px;
                 transition: all 0.3s linear;
@@ -133,8 +145,9 @@
             transition: all 0.3s linear;
           }
         }
+       
         &_title {
-          font-family: 'Proxima Nova', sans-serif;
+          @include font('Roboto');          
           font-size: 16px;
           line-height: 19px;
           color: #111111;
@@ -148,9 +161,10 @@
             height: 250px;
           }
         }
+        
         &_location-city {
           display: inline-block;
-          font-family: 'Proxima Nova';
+          @include font('Roboto');          
           font-size: 14px;
           line-height: 24px;
           color: #00C0FF;
@@ -165,6 +179,7 @@
           background-color: #12B6ED;
           border-radius: 63px;
           border: none;
+          @include font('Roboto');
           width: 100%;
           max-width: 222px;
           color: #ffffff;
@@ -179,7 +194,7 @@
       .title_in-cabinet {  
         display: inline-block;
         width: auto;
-        font-family: 'Pollywog Cyr',sans-serif;
+        @include font(Pollywog_Cyr);
         font-size: 27px;
         line-height: 24px;                   
         text-transform: uppercase;

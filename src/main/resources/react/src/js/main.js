@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 }); // end ready
 
+
+//TABS
 function check() {    
     if(document.getElementById('tab1').checked) {        
         document.getElementById('content1').style.display = 'block'; 
@@ -87,12 +89,5 @@ function check() {
         document.getElementById('content3').style.display = 'none';
         document.getElementById('content4').style.display = 'block';
         //document.getElementById('content5').style.display = 'none';
-    }    
-    // if(document.getElementById('tab5').checked) {        
-    //     document.getElementById('content1').style.display = 'none'; 
-    //     document.getElementById('content2').style.display = 'none';
-    //     document.getElementById('content3').style.display = 'none';
-    //     document.getElementById('content4').style.display = 'none';
-    //     document.getElementById('content5').style.display = 'block';
-    // }    
+    }       
 }
