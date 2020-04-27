@@ -8,13 +8,10 @@ import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.dto.ProductDto;
-import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.DealType;
 import com.hillel.items_exchange.util.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,8 +20,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
@@ -33,8 +28,6 @@ import java.util.Collections;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -51,20 +44,15 @@ class AdvertisementControllerIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private AdvertisementRepository advertisementRepository;
-    @Mock
-    private RestTemplate restTemplate;
-
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
     private int page, size;
 
-    private String baseUrl;
 
     @BeforeEach
     void setUp() {
         createNonExistAdvertisementDto();
         createExistAdvertisementDto();
-        initBaseUrl();
     }
 
     @Test
@@ -78,8 +66,8 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
         String json = mvcResult.getResponse().getContentAsString();
-        Advertisement[] advertisements = JsonConverter.jsonToObject(json, Advertisement[].class);
-        assertEquals(size, advertisements.length);
+        AdvertisementDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementDto[].class);
+        assertEquals(size, advertisementsDtos.length);
     }
 
     @Test
@@ -125,7 +113,8 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", 2L, Collections.emptyList());
+        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", 2L,
+                Collections.emptyList());
 
         mockMvc.perform(post("/adv/filter")
                 .content(asJsonString(productDto))
@@ -141,9 +130,6 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
-        when(restTemplate.getForObject(baseUrl
-                + "/subcategory/exist/1", Boolean.class)).thenReturn(true);
-
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -162,11 +148,6 @@ class AdvertisementControllerIntegrationTest {
         existDto.setDescription("new description");
         existDto.setTopic("new topic");
         existDto.setWishesToExchange("BMW");
-
-        RestTemplate restTemplate = new RestTemplate();
-        RestTemplate spy = Mockito.spy(restTemplate);
-        doReturn(true).when(spy.getForObject(baseUrl
-                + "/subcategory/exist/1", Boolean.class));
 
         mockMvc.perform(put("/adv")
                 .content(asJsonString(existDto))
@@ -204,9 +185,5 @@ class AdvertisementControllerIntegrationTest {
         ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", 1L,
                 Collections.singletonList(new ImageDto(0L, "url", false)));
         nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
-    }
-
-    private void initBaseUrl() {
-        baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
     }
 }

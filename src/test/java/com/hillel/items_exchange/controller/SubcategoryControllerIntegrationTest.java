@@ -10,12 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,28 +71,5 @@ public class SubcategoryControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DataSet("database_init.yml")
-    public void isSubcategoryExistsById_whenSubcategoryIdExists_shouldReturnTrue() throws Exception {
-        MvcResult result = this.mockMvc.perform(get("/subcategory/exist/{subcategory_id}", SUBCATEGORY_ID_FOR_DELETING)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString(), is("true"));
-    }
-
-    @Test
-    @DataSet("database_init.yml")
-    public void isSubcategoryExistsById_whenSubcategoryIdDoesNotExist_shouldFalse() throws Exception {
-        MvcResult result = this.mockMvc.perform(get("/subcategory/exist/{subcategory_id}", NONEXISTENT_SUBCATEGORY_ID)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andReturn();
-
-        assertThat(result.getResponse().getContentAsString(), is("false"));
     }
 }
