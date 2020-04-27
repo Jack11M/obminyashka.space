@@ -22,5 +22,5 @@ public interface UserService {
 
     void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role);
 
-    Optional<UserDto> getUserDtoById(Long id);
+    Optional<UserDto> getUserDto(Long id);
 }

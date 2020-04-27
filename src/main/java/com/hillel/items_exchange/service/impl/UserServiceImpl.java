@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> getUserDtoById(Long id) {
+    public Optional<UserDto> getUserDto(Long id) {
         return userRepository.findById(id).map(this::mapUserToDto);
     }
 
