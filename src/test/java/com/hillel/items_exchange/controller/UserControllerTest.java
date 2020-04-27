@@ -40,5 +40,11 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(status().isOk());
+
+        mockMvc.perform(get("/user/info/{id}", 2L)
+                .content(asJsonString("admin"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print());
     }
 }
