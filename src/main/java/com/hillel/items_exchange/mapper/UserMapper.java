@@ -17,7 +17,10 @@ import java.util.Collections;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
 
-    public static User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role) {
+    public static User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto,
+                                                 BCryptPasswordEncoder bCryptPasswordEncoder,
+                                                 Role role) {
+
         User user = new User();
         user.setUsername(userRegistrationDto.getUsername());
         user.setEmail(userRegistrationDto.getEmail());

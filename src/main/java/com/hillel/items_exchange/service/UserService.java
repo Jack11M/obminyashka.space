@@ -1,23 +1,59 @@
 package com.hillel.items_exchange.service;
 
-import com.hillel.items_exchange.dto.UserRegistrationDto;
-import com.hillel.items_exchange.model.Role;
-import com.hillel.items_exchange.model.User;
+import java.util.Optional;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+
+import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.mapper.UserMapper;
+import com.hillel.items_exchange.model.Role;
+import com.hillel.items_exchange.model.User;
 
 @Service
-public interface UserService {
+@RequiredArgsConstructor
+public class UserService {
 
-    boolean existsByUsernameOrEmail(String usernameOrEmail);
+    private final UserRepository userRepository;
 
-    boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String password, BCryptPasswordEncoder bCryptPasswordEncoder);
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-    Optional<User> findByUsernameOrEmail(String usernameOrEmail);
+    public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
+        if (userRepository.existsByUsername(usernameOrEmail)) {
+            return userRepository.findByUsername(usernameOrEmail);
+        } else if (userRepository.existsByEmail(usernameOrEmail)) {
+            return userRepository.findByEmail(usernameOrEmail);
+        } else {
+            return Optional.empty();
+        }
+    }
 
-    boolean save(User user);
+    public boolean registerNewUser(UserRegistrationDto userRegistrationDto,
+                                   BCryptPasswordEncoder bCryptPasswordEncoder,
+                                   Role role) {
 
-    void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role);
+        Optional<User> user = Optional.ofNullable(UserMapper.userRegistrationDtoToUser(userRegistrationDto,
+                bCryptPasswordEncoder, role));
+
+        return user.map(existentUser -> {
+            userRepository.save(existentUser);
+            return true;
+        }).orElse(false);
+    }
+
+    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail,
+                                                      String password,
+                                                      BCryptPasswordEncoder bCryptPasswordEncoder) {
+
+        return findByUsernameOrEmail(usernameOrEmail)
+                .map(existentUser -> bCryptPasswordEncoder.matches(password, existentUser.getPassword()))
+                .orElse(false);
+    }
 }
