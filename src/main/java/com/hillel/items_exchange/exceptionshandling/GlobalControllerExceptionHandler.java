@@ -1,4 +1,4 @@
-package com.hillel.items_exchange.util.exceptionshandling;
+package com.hillel.items_exchange.exceptionshandling;
 
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.util.MessageSourceUtil;

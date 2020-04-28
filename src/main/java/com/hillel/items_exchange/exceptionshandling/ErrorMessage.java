@@ -1,4 +1,4 @@
-package com.hillel.items_exchange.util.exceptionshandling;
+package com.hillel.items_exchange.exceptionshandling;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
