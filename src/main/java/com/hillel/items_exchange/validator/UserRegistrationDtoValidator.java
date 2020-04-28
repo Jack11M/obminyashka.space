@@ -1,13 +1,17 @@
 package com.hillel.items_exchange.validator;
 
+import java.util.Objects;
+
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+
+import lombok.RequiredArgsConstructor;
+
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.exception.UnprocessableEntityException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +39,7 @@ public class UserRegistrationDtoValidator implements Validator {
             throw new UnprocessableEntityException(EMAIL_DUPLICATE);
         }
 
-        if (!userRegistrationDto.getConfirmPassword().equals(userRegistrationDto.getPassword())) {
+        if (!Objects.equals(userRegistrationDto.getConfirmPassword(), userRegistrationDto.getPassword())) {
             throw new BadRequestException(DIFFERENT_PASSWORDS);
         }
     }
