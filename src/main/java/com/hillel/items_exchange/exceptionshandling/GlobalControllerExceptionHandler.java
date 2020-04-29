@@ -5,6 +5,7 @@ import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.persistence.EntityNotFoundException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 
 @ControllerAdvice
@@ -88,8 +88,8 @@ public class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<Object> handleSqlException(SQLIntegrityConstraintViolationException e,
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleSqlException(DataIntegrityViolationException e,
                                                      ServletWebRequest request) {
 
         ErrorMessage errorMessage = new ErrorMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
