@@ -13,6 +13,7 @@ const dataLogin = [
     dataError: "Неправильный пароль"
   }
 ];
+
 const dataRegister = [
   {
     id: "email",

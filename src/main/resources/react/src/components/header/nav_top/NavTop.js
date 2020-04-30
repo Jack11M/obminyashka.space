@@ -13,12 +13,12 @@ const NavTop = () => {
               О Проекте
             </Link>
             <a href="#" className="navbar-top-link">
-              <i className="icon-heart"></i>
+              <i className="icon-heart" />
               Доброе Дело
             </a>
           </div>
           <div id="personalArea">
-            <Link to="/registration">
+            <Link to="/profile">
               <Avatar />
               <span>Мой кабинет</span>
             </Link>

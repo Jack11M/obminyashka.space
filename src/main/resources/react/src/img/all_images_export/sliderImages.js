@@ -1,10 +1,10 @@
-import booksSlider from "../slider/books.jpg";
-import childSlider from "../slider/child.jpg";
-import clothesSlider from "../slider/clothes.jpg";
-import furnitureSlider from "../slider/furniture.jpg";
-import shoesSlider from "../slider/shoes.jpg";
-import toySlider from "../slider/toy.jpg";
-import strollersSlider from "../slider/strollers.jpg";
+import booksSlider from "../slider/books.png";
+import childSlider from "../slider/child.png";
+import clothesSlider from "../slider/clothes.png";
+import furnitureSlider from "../slider/furniture.png";
+import shoesSlider from "../slider/shoes.png";
+import toySlider from "../slider/toy.png";
+import strollersSlider from "../slider/strollers.png";
 export {
   booksSlider,
   childSlider,

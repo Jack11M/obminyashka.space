@@ -28,8 +28,8 @@
   }
 
   .active {
-    border-bottom: 2px solid $colorButtonBlue;
+    border-bottom: 2px solid $btn-bh-active;
     font-weight: bold;
-    color: $colorButtonBlue;
+    color: $btn-bh-active;
   }
 }

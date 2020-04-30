@@ -1,12 +1,20 @@
 $shadow: rgba(89, 102, 116, 0.1);
 $colorPopup: #FDFDFF;
-$colorButtonBlue: #12b6ed;
-$colorButtonGreen: #43B05C;
+$btn-bh-active: #12b6ed;
+$btn-bg-hover: #0094ff;
+$btn-bh-green: #43B05C;
 $colorError: #ff4c4c;
 $colorGrey: #8E8E8E;
-$colorDesabled: #DADADA;
-$rightText: #333333;
-$colorBlack: #111111;
+$btn-gb-disabled: #DADADA;
+$right-color-text: #333333;
+$black-color-text: #111111;
+
+$bg-profile: #00C0FF;
+$bg-content: #E5E5E5;
+$active-color: #00C0FF;
+$scrollbar-color: #00C0FF;
+$scrollbar-hover-color: #0094ff;
+$scrollbar-bg: #f1f1f1;
 
 
 @mixin large-screen(){
@@ -26,6 +34,10 @@ $colorBlack: #111111;
   }
 }
 
-@mixin Scale (){
-  transform: scale(1.03);
+@mixin Scale ($scale){
+  transform: scale($scale);
+}
+
+@mixin marginRight () {
+  margin-right: 1em;
 }
