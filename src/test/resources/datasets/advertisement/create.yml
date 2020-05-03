@@ -141,7 +141,7 @@ product:
     gender: 'male'
     size: 'M'
     season: 'spring'
-    subcategory_id: 2
+    subcategory_id: 1
 
 image:
   - id: 1
@@ -156,17 +156,3 @@ image:
     resource: 'url'
     default_photo: 'false'
     product_id: 6
-
-category:
-  - id: 1
-    name: 'shoes'
-  - id: 2
-    name: 'Clothes'
-
-subcategory:
-  - id: 1
-    name: 'light_shoes'
-    category_id: 1
-  - id: 2
-    name: 'dress'
-    category_id: 2

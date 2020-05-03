@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"subcategory", "images"})
+@EqualsAndHashCode(exclude = {"images"})
 public class ProductDto {
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
@@ -29,9 +29,8 @@ public class ProductDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(max = 50, message = "{invalid.max-size}")
     private String size;
-
     @NotNull(message = "{invalid.not-null}")
-    private @Valid SubcategoryDto subcategory;
+    private long subcategoryId;
     @NotNull(message = "{invalid.not-null}")
     private List<@Valid ImageDto> images;
 }

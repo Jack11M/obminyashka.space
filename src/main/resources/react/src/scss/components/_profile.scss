@@ -1,0 +1,144 @@
+//myProfileTab
+@import"../../fonts/font.scss";
+@mixin myProfileTab(){  
+    .main-content{
+      .section-wrapper{
+        .tabs__content{
+          height: 100%;
+          .child-content{
+            margin-top: 50px;        
+          }
+          .content{  
+            display: flex;                
+            flex-flow: column;
+            padding: 71px 41px;
+            height: auto;                           
+            input{
+              display: inline-block;
+            }
+            .content__about-me{
+              display: block;
+              width: 100%;
+              .about-me-title{
+                display: inline-block;
+                width: auto;
+                @include font('Pollywog_Cyr');
+                font-weight: bold;
+                // font-family: 'Pollywog Cyr',serif;
+                font-size: 27px;
+                
+                line-height: 24px;                   
+                text-transform: uppercase;
+                position: relative;
+                color: #12B6ED;
+                margin-left: 27px;
+              }
+              .about-me-title:before{
+                color: #12B6ED;            
+                content:"\2022";            
+                font-size: 30px;
+                font-weight: 800;            
+                left: -27px;            
+                line-height: 18px;        
+                position: absolute;
+                top: 0px;
+              }          
+              .about-me-title:after{
+                color: #12B6ED;            
+                content:"\2022";            
+                font-size: 30px;                
+                right: -27px;
+                font-weight: 700;            
+                line-height: 18px;        
+                position: absolute;
+                top: 0px;
+              }
+              .info-one{
+                display: block;            
+                width: 100%;
+                height: auto;                    
+                .row{
+                  position: relative;
+                  margin-top: 21px;
+                  display: flex; 
+                  width: 100%; 
+                  align-items: center; 
+                  height: 39px;
+                  //added          
+                  .add-row{
+                    margin-left: 120px;
+                    width: 230px;                      
+                    align-items: center;    
+                    display: flex;                    
+                    
+                    a{                  
+                      margin-left: 20px;
+                      display: flex;                      
+                      text-align: center;
+                      padding: auto;                      
+                      justify-content: center;
+                      align-items: center;
+                      color: white;
+                      font-size: 16px;
+                      line-height: 16px;
+                      width: 34px;
+                      height: 34px;
+                      border-radius: 50%;
+                      text-align: center;                 
+                      background-color: #43B05C;
+                      text-decoration: none;
+                    }                                      
+                  }
+                  //del
+                  .del-row{              
+                    width: 230px;
+                    //margin-left: 77px;                                     
+                    display: flex;
+                    align-items: center;               
+                    a{                                                          
+                      margin-left: 20px;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                      color: white;
+                      font-size: 14px;                
+                      line-height: 16px;
+                      width: 34px;
+                      height: 34px;
+                      border-radius: 50%;
+                      text-align: center;                 
+                      background-color: #787878;
+                      text-decoration: none;
+                    }                                      
+                  }
+                  label{                            
+                    margin-left: 0;
+                    display: inline-block;    
+                    width: auto;  
+                    font-size: 14px;
+                    line-height: 16px;        
+                    color: #111111;
+                  }  
+                  input{ 
+                    position: absolute;
+                    left: 130px;
+                    width: 414px;
+                    height: 39px;   
+                    border: 1px solid #CFCFCF;                
+                    border-radius: 2px;             
+                  }           
+                }            
+                .select-field{              
+                  margin-left: 130px;
+                  border: 1px solid #CFCFCF;
+                  border-radius: 2px;                
+                  width: 414px;
+                  height: 39px;
+                }
+              }
+            }        
+          }      
+        }
+      }
+    }       
+}

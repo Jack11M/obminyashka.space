@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.mapper;
 
-import com.hillel.items_exchange.dto.CategoryVo;
-import com.hillel.items_exchange.dto.SubcategoryVo;
+import com.hillel.items_exchange.dto.CategoryDto;
+import com.hillel.items_exchange.dto.SubcategoryDto;
 import com.hillel.items_exchange.model.Category;
 import com.hillel.items_exchange.model.Subcategory;
 import lombok.RequiredArgsConstructor;
@@ -16,29 +16,29 @@ public class CategoryMapper {
 
     private final SubcategoryMapper subcategoryMapper;
 
-    public Category voToNewCategory(CategoryVo categoryVo) {
+    public Category dtoToNewCategory(CategoryDto categoryDto) {
         Category newCategory = new Category();
-        return fillCategoryWithSubcategories(categoryVo, newCategory);
+        return fillCategoryWithSubcategories(categoryDto, newCategory);
     }
 
-    public CategoryVo categoryToVo(Category category) {
-        CategoryVo categoryVo = new CategoryVo();
-        categoryVo.setId(category.getId());
-        categoryVo.setName(category.getName());
-        List<SubcategoryVo> subcategoryDtos = category.getSubcategories().stream()
-                .map(subcategoryMapper::subcategoryToVo)
+    public CategoryDto categoryToDto(Category category) {
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setId(category.getId());
+        categoryDto.setName(category.getName());
+        List<SubcategoryDto> subcategoryDtos = category.getSubcategories().stream()
+                .map(subcategoryMapper::subcategoryToDto)
                 .collect(Collectors.toList());
-        categoryVo.setSubcategories(subcategoryDtos);
-        return categoryVo;
+        categoryDto.setSubcategories(subcategoryDtos);
+        return categoryDto;
     }
 
-    public Category voToUpdatedCategory(CategoryVo categoryVo, Category updatedCategory) {
-        return fillCategoryWithSubcategories(categoryVo, updatedCategory);
+    public Category dtoToUpdatedCategory(CategoryDto categoryDto, Category updatedCategory) {
+        return fillCategoryWithSubcategories(categoryDto, updatedCategory);
     }
 
-    private Category fillCategoryWithSubcategories(CategoryVo categoryVo, Category category) {
-        category.setName(categoryVo.getName());
-        List<Subcategory> subcategories = categoryVo.getSubcategories().stream()
+    private Category fillCategoryWithSubcategories(CategoryDto categoryDto, Category category) {
+        category.setName(categoryDto.getName());
+        List<Subcategory> subcategories = categoryDto.getSubcategories().stream()
                 .map(subcategoryDto -> subcategoryMapper.updateSubcategory(subcategoryDto, category))
                 .collect(Collectors.toList());
         category.setSubcategories(subcategories);

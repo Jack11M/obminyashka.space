@@ -156,17 +156,3 @@ image:
     resource: 'train_url'
     default_photo: 'true'
     product_id: 6
-
-category:
-  - id: 1
-    name: 'shoes'
-  - id: 2
-    name: 'Toys'
-
-subcategory:
-  - id: 1
-    name: 'light_shoes'
-    category_id: 1
-  - id: 2
-    name: 'small_toys'
-    category_id: 2

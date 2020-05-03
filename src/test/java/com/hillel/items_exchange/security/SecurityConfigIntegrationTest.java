@@ -203,10 +203,8 @@ public class SecurityConfigIntegrationTest {
 
     private void createNonExistAdvertisementDto() {
         LocationDto lviv = new LocationDto(0L, "Lviv", "District");
-        CategoryDto toys = new CategoryDto(0L, "Toys");
-        SubcategoryDto smallToys = new SubcategoryDto(0L, "small_toys", toys);
-        ProductDto toyTrain = new ProductDto(0L, "3", "male", "all", "M", smallToys,
-                Collections.singletonList(new ImageDto(0L, null, true)));
+        ProductDto toyTrain = new ProductDto(0L, "3", "male", "all", "M", 2L,
+                Collections.singletonList(new ImageDto(0L, "train_url", true)));
         nonExistDto = new AdvertisementDto(0L, "topic",
                 "description", "hat",
                 false, false, DealType.GIVEAWAY, lviv, toyTrain);
