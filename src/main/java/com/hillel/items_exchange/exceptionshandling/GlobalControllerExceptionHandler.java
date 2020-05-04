@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Log4j2
@@ -108,6 +112,23 @@ public class GlobalControllerExceptionHandler {
         ErrorMessage errorMessage = new ErrorMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
                 messageSourceUtil.getExceptionMessageSource("illegal.argument.exception"),
                 e.getLocalizedMessage(), request.getRequest().getRequestURI(), request.getHttpMethod());
+
+        log.warn(errorMessage.errorLog());
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e,
+                                                                     ServletWebRequest request) {
+
+        List<String> violations = e.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toList());
+
+        ErrorMessage errorMessage = new ErrorMessage(new Date(), HttpStatus.BAD_REQUEST.value(),
+                messageSourceUtil.getExceptionMessageSource("validation.exception"),
+                violations, request.getRequest().getRequestURI(), request.getHttpMethod());
 
         log.warn(errorMessage.errorLog());
 

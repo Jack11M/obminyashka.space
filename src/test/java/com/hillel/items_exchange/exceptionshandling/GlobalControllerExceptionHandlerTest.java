@@ -2,6 +2,7 @@ package com.hillel.items_exchange.exceptionshandling;
 
 import com.hillel.items_exchange.controller.AdvertisementController;
 import com.hillel.items_exchange.controller.CategoryController;
+import com.hillel.items_exchange.controller.ImageController;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
@@ -10,6 +11,7 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,8 +20,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolationException;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -35,6 +39,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class GlobalControllerExceptionHandlerTest {
 
+    @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
@@ -44,6 +51,9 @@ public class GlobalControllerExceptionHandlerTest {
 
     @Mock
     CategoryController categoryController;
+
+    @Mock
+    ImageController imageController;
 
     @Mock
     MessageSourceUtil messageSourceUtil;
@@ -151,5 +161,18 @@ public class GlobalControllerExceptionHandlerTest {
                 .andReturn();
 
         assertThat(result.getResolvedException(), is(instanceOf(IllegalArgumentException.class)));
+    }
+
+    @Test
+    public void testHandleConstraintViolationException() throws Exception {
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .build();
+
+        MvcResult result = mockMvc.perform(get("/image/{product_id}", -1)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertThat(result.getResolvedException(), is(instanceOf(ConstraintViolationException.class)));
     }
 }
