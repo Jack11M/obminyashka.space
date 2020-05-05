@@ -2,6 +2,10 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <include file="classpath:liquibase/db.changelog-1.0.xml"/>
-    <include file="classpath:liquibase/db.changelog-2.0.xml"/>
+
+    <changeSet id="2.0.0" author="jack.petrov">
+        <dropUniqueConstraint tableName="child"
+                              constraintName="sex"
+                              uniqueColumns="sex"/>
+    </changeSet>
 </databaseChangeLog>
