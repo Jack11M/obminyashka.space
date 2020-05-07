@@ -40,11 +40,18 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(status().isOk());
+    }
 
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void getUserDto_shouldReturnUserDtoIfExistsNegativeTest() throws Exception {
         mockMvc.perform(get("/user/info/{id}", 2L)
                 .content(asJsonString("admin"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 }
