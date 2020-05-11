@@ -98,8 +98,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> getUserDto(Long id) {
-        return userRepository.findById(id).map(this::mapUserToDto);
+    public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
     }
 
     private UserDto mapUserToDto(User user) {
