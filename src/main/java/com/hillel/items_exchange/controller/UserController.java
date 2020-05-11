@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.model.BaseEntity;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +8,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/user")
@@ -26,16 +25,14 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     public @ResponseBody
-    ResponseEntity<UserDto> getUserInfo(@PathVariable("id") long id, Principal principal) {
+    ResponseEntity<UserDto> getUserInfo(@Validated @PathVariable("id") Long id, Principal principal) {
 
-        userService.findByUsernameOrEmail(principal.getName())
-                .map(BaseEntity::getId)
-                .filter(userId -> userId == id)
-                .orElseThrow(() -> new AccessDeniedException(messageSource.getMessage("invalid.token.is.not.equal.to.your.token", null, Locale.getDefault())));
+        UserDto userDto = userService.getByUsernameOrEmail(principal.getName()).orElse(new UserDto());
+        if (!id.equals(userDto.getId())){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
 
-        return userService.getUserDto(id)
-                .map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(userDto);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
