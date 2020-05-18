@@ -2,9 +2,9 @@ package com.hillel.items_exchange.exceptionshandling;
 
 import com.hillel.items_exchange.controller.AdvertisementController;
 import com.hillel.items_exchange.controller.CategoryController;
-import com.hillel.items_exchange.controller.ImageController;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
+import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.MessageSourceUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GlobalControllerExceptionHandlerTest {
+public class GlobalExceptionHandlerTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -53,9 +53,6 @@ public class GlobalControllerExceptionHandlerTest {
     CategoryController categoryController;
 
     @Mock
-    ImageController imageController;
-
-    @Mock
     MessageSourceUtil messageSourceUtil;
 
     @BeforeEach
@@ -63,7 +60,7 @@ public class GlobalControllerExceptionHandlerTest {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController)
-                .setControllerAdvice(new GlobalControllerExceptionHandler(messageSourceUtil))
+                .setControllerAdvice(new GlobalExceptionHandler(messageSourceUtil))
                 .build();
     }
 
