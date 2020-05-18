@@ -20,6 +20,7 @@ import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class GlobalExceptionHandler {
                                                                     ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.NOT_FOUND,
-                "exception.user.not-found", List.of(e.getLocalizedMessage()));
+                "exception.user.not-found", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(WARN, errorMessage);
 
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
                                                           ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.CONFLICT,
-                "exception.security", List.of(e.getLocalizedMessage()));
+                "exception.security", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(INFO, errorMessage);
 
@@ -66,7 +67,7 @@ public class GlobalExceptionHandler {
                                                                 ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.NOT_FOUND,
-                "exception.entity.not-found", List.of(e.getLocalizedMessage()));
+                "exception.entity.not-found", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(WARN, errorMessage);
 
@@ -78,7 +79,7 @@ public class GlobalExceptionHandler {
                                                                    ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
-                "exception.illegal.id", List.of(e.getLocalizedMessage()));
+                "exception.illegal.id", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(WARN, errorMessage);
 
@@ -90,7 +91,7 @@ public class GlobalExceptionHandler {
                                                             ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
-                "exception.invalid.dto", List.of(e.getLocalizedMessage()));
+                "exception.invalid.dto", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(WARN, errorMessage);
 
@@ -102,7 +103,7 @@ public class GlobalExceptionHandler {
                                                      ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
-                "exception.sql", List.of(e.getLocalizedMessage()));
+                "exception.sql", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(ERROR, errorMessage);
 
@@ -114,7 +115,7 @@ public class GlobalExceptionHandler {
                                                                  ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
-                "exception.illegal.argument", List.of(e.getLocalizedMessage()));
+                "exception.illegal.argument", Collections.singletonList(e.getLocalizedMessage()));
 
         logErrorMessage(WARN, errorMessage);
 
