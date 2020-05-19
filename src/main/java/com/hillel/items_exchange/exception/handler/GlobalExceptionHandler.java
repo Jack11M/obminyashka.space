@@ -44,9 +44,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.NOT_FOUND,
                 "exception.user.not-found", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(WARN, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
@@ -56,9 +54,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.CONFLICT,
                 "exception.security", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(INFO, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
     }
 
@@ -68,9 +64,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.NOT_FOUND,
                 "exception.entity.not-found", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(WARN, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
@@ -80,9 +74,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
                 "exception.illegal.id", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(WARN, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -92,9 +84,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
                 "exception.invalid.dto", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(WARN, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -104,9 +94,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
                 "exception.sql", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(ERROR, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -116,9 +104,7 @@ public class GlobalExceptionHandler {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
                 "exception.illegal.argument", Collections.singletonList(e.getLocalizedMessage()));
-
         logErrorMessage(WARN, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
@@ -129,12 +115,9 @@ public class GlobalExceptionHandler {
         List<String> violations = e.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.toList());
-
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
                 "exception.validation", violations);
-
         logErrorMessage(WARN, errorMessage);
-
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 

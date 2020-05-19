@@ -71,76 +71,59 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void testHandleUserNotFoundException() throws Exception {
         when(advertisementController.createAdvertisement(any(), any())).thenThrow(UsernameNotFoundException.class);
-
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isNotFound());
-
         assertThat(result.getResolvedException(), is(instanceOf(UsernameNotFoundException.class)));
     }
 
     @Test
     public void testHandleSecurityException() throws Exception {
         when(advertisementController.updateAdvertisement(any(), any())).thenThrow(SecurityException.class);
-
         MvcResult result = getResult(HttpMethod.PUT, "/adv", nonExistDto, status().isConflict());
-
         assertThat(result.getResolvedException(), is(instanceOf(SecurityException.class)));
     }
 
     @Test
     public void testHandleEntityNotFoundException() throws Exception {
         when(categoryController.getCategoryById(anyLong())).thenThrow(EntityNotFoundException.class);
-
         MvcResult result = getResult(HttpMethod.GET, "/category/{category_id}", -1L, status().isNotFound());
-
         assertThat(result.getResolvedException(), is(instanceOf(EntityNotFoundException.class)));
     }
 
     @Test
     public void testHandleIllegalIdentifierException() throws Exception {
         when(advertisementController.updateAdvertisement(any(), any())).thenThrow(IllegalIdentifierException.class);
-
         MvcResult result = getResult(HttpMethod.PUT, "/adv", nonExistDto, status().isBadRequest());
-
         assertThat(result.getResolvedException(), is(instanceOf(IllegalIdentifierException.class)));
     }
 
     @Test
     public void testHandleInvalidDtoException() throws Exception {
         when(advertisementController.createAdvertisement(any(), any())).thenThrow(InvalidDtoException.class);
-
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isBadRequest());
-
         assertThat(result.getResolvedException(), is(instanceOf(InvalidDtoException.class)));
     }
 
     @Test
     public void testHandleSqlException() throws Exception {
         when(advertisementController.updateAdvertisement(any(), any())).thenThrow(DataIntegrityViolationException.class);
-
         MvcResult result = getResult(HttpMethod.PUT, "/adv", existDto, status().isBadRequest());
-
         assertThat(result.getResolvedException(), is(instanceOf(DataIntegrityViolationException.class)));
     }
 
     @Test
     public void testHandleIllegalArgumentException() throws Exception {
         when(advertisementController.createAdvertisement(any(), any())).thenThrow(IllegalArgumentException.class);
-
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isBadRequest());
-
         assertThat(result.getResolvedException(), is(instanceOf(IllegalArgumentException.class)));
     }
 
     @Test
     public void testHandleConstraintViolationException() throws Exception {
-        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .build();
-
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         MvcResult result = mockMvc.perform(get("/image/{product_id}", -1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-
         assertThat(result.getResolvedException(), is(instanceOf(ConstraintViolationException.class)));
     }
 
@@ -151,7 +134,6 @@ public class GlobalExceptionHandlerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(dto));
-
         return mockMvc.perform(builder).andExpect(matcher).andReturn();
     }
 
@@ -160,7 +142,6 @@ public class GlobalExceptionHandlerTest {
 
         MockHttpServletRequestBuilder builder = request(httpMethod, path, uriVars)
                 .accept(MediaType.APPLICATION_JSON);
-
         return mockMvc.perform(builder).andExpect(matcher).andReturn();
     }
 }
