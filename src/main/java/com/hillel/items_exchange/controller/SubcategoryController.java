@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
@@ -45,22 +44,5 @@ public class SubcategoryController {
 
         subcategoryService.removeSubcategoryById(id);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @ExceptionHandler(InvalidDtoException.class)
-    public ResponseEntity<String> handleInvalidSubcategoryControllerDtoException(InvalidDtoException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("sql.exception",
-                        e.getLocalizedMessage()));
     }
 }

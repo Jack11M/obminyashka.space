@@ -18,12 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -171,64 +169,5 @@ public class AdvertisementController {
         if (id != 0) {
             throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSourceWithId(id, errorMessage));
         }
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(UsernameNotFoundException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<String> handleOwnerException(SecurityException e) {
-        log.info(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleOwnerException(EntityNotFoundException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("entity.not-found",
-                        e.getLocalizedMessage()));
-    }
-
-    @ExceptionHandler(IllegalIdentifierException.class)
-    public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(InvalidDtoException.class)
-    public ResponseEntity<String> handleInvalidAdvertisementDtoException(InvalidDtoException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
-    }
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo("sql.exception",
-                        e.getLocalizedMessage()));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException e) {
-        String errorMessage = e.getMessage();
-        log.warn(errorMessage, e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorMessage);
     }
 }
