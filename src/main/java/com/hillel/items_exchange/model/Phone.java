@@ -17,6 +17,7 @@ public class Phone {
     private long id;
     @Column(name = "phone_number")
     private long phoneNumber;
+    @Column(name = "\"show\"")
     private Boolean show;
     @Column(name = "default_phone")
     private Boolean defaultPhone;
