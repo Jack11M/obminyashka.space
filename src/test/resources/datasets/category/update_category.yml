@@ -1,0 +1,19 @@
+category:
+  - id: 1
+    name: 'shoes'
+  - id: 2
+    name: 'Toys'
+
+subcategory:
+  - id: 1
+    name: 'light_shoes'
+    category_id: 1
+  - id: 2
+    name: 'dolls'
+    category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2
+  - id: 4
+    name: 'winter shoes'
+    category_id: 1

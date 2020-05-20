@@ -1,0 +1,116 @@
+/* Стили для подложки */
+
+.overlay {
+    /* Скрываем подложку  */
+    opacity: 0;
+    visibility: hidden;    
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(18, 182, 237, 0.3);
+    z-index: 20;
+    transition: all 0.3s ease-in;
+ }
+ 
+ /* Стили для модальных окон */
+ 
+ .modal {    
+    /* Скрываем окна  */
+    box-sizing: border-box;
+    position: relative;
+    opacity: 0;
+    visibility: hidden;            
+    width: 100%;    
+    height: 240px;
+    max-width: 599px;        
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 30;    
+
+    box-shadow: 0 3px 10px -.5px rgba(18, 182, 237, 0.3); 
+    text-align: center;
+    padding: 30px;
+    border-radius: 3px;
+    background-color: #fff;
+    transition: 0.3s all;
+    img{
+        position: absolute;
+        top: 39px;
+        right: 33px;
+    }
+ }
+  
+ /* Стили для активных классов подложки и окна */
+ .modal.active,
+ .overlay.active{
+    opacity: 1;
+    visibility: visible;
+ }
+ 
+ /* Стили для кнопки закрытия */
+ .modal__cross {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    fill: #444;
+    cursor: pointer;
+    background-color: #12B6ED;
+    border-radius: 50%;
+    transition: all 0.3s linear;
+    &:hover{
+        background-color: #0094ff;
+    }
+ }
+ .button{    
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;                
+    top: 148px;
+    left: 53px;
+    width: 179px;
+    height: 49px;
+    border-radius: 63px;  
+    background-color: #12B6ED;    
+    color: #FFFFFF;
+    font-size: 16px;
+    line-height: 19px;
+    cursor: pointer;  
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s linear;
+    &:hover{
+        background-color: #0094ff;
+    }
+  }
+  .modal__title{
+    position: absolute;    
+    display: block;
+    top: 24px;
+    left: 50px;
+    font-size: 20px;
+    line-height: 16px;
+    color: #111111;
+    font-weight: 600;
+    font-family: 'Proxima Nova';
+  }
+  .modal__text{
+    position: absolute;    
+    top: 55px;
+    left: 53px;
+    width: 285px;
+    height: 63px;
+    font-size: 16px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    color: #777777;
+  }
+
