@@ -2,7 +2,6 @@ package com.hillel.items_exchange.util;
 
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.SubcategoryDto;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
