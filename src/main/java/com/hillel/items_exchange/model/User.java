@@ -4,8 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
 
 @Entity
 @Getter
@@ -48,9 +48,25 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "deal_id", referencedColumnName = "id")})
     private List<Deal> deals;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Phone> phones;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Phone> phones = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Child> children;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Child> children = new ArrayList<>();
+
+    public void addChild(Child child) {
+        children.add(child);
+        child.setUser(this);
+    }
+
+    public void addPhone(Phone phone) {
+        phones.add(phone);
+        phone.setUser(this);
+    }
+
+    @PrePersist
+    public void addUser() {
+        phones.forEach(phone -> phone.setUser(this));
+        children.forEach(child -> child.setUser(this));
+    }
 }

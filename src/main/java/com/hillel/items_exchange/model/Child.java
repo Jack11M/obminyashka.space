@@ -18,6 +18,7 @@ public class Child {
     private long id;
     private String sex;
     @Column(name = "birth_date")
+    @Temporal(TemporalType.DATE)
     private Date birthDate;
 
     @ManyToOne

@@ -2,25 +2,28 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.service.UserService;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 
 @RestController
 @RequestMapping("/user")
 @CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class UserController {
 
-    private final MessageSource messageSource;
+    private final MessageSourceUtil messageSourceUtil;
     private final UserService userService;
 
     @GetMapping("/info/{id}")
@@ -35,11 +38,27 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handlerIllegalArgumentException(AccessDeniedException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
+    @PutMapping("/info/{id}")
+    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto,
+                                                  @PositiveOrZero @PathVariable("id") long id,
+                                                  Principal principal) {
+        //TODO get user Id instead of nameOrEmail
+        UserDto user = this.getUserDto(principal.getName());
+        validateInfoOwner(user.getId(), id);
+        return new ResponseEntity<>(userService.update(userDto), HttpStatus.OK);
+    }
+
+    private UserDto getUserDto(String nameOrEmail) {
+        return userService.getByUsernameOrEmail(nameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        messageSourceUtil.getExceptionMessageSourceWithAdditionalInfo(
+                                "user.not-found", nameOrEmail)
+                ));
+    }
+
+    private void validateInfoOwner(long loginUserId, long userId) {
+        if (loginUserId != userId)
+            throw new SecurityException(
+                    messageSourceUtil.getExceptionMessageSourceWithId(userId, "user.not.allowed"));
     }
 }

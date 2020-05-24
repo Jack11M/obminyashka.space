@@ -23,4 +23,6 @@ public interface UserService {
     void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder, Role role);
 
     Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail);
+
+    UserDto update(UserDto newUserDto);
 }
