@@ -1,0 +1,15 @@
+@import "../../partials/variables";
+
+.popup {
+  margin: 180px auto 50px;
+  background-color: $colorPopup;
+  max-width: 806px;
+  box-shadow: 0 0 40px rgba(89, 102, 116, 0.35);
+  border-radius: 1px;
+
+  form {
+    margin: 0 44px;
+
+  }
+}
+

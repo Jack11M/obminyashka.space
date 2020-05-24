@@ -25,19 +25,21 @@ public class SubcategoryService {
     }
 
     public boolean isSubcategoryDeletable(long id) {
-        return isSubcategoryVoIdValid(id)
+        return isSubcategoryExistsById(id)
                 && isSubcategoryHasNotProducts(id);
     }
 
     public boolean isSubcategoryHasNotProducts(long id) {
-        return subcategoryRepository.findById(id).get().getProducts().isEmpty();
+        return subcategoryRepository.findById(id)
+                .map(subcategory -> subcategory.getProducts().isEmpty())
+                .orElse(false);
     }
 
     public Optional<Subcategory> findById(long id) {
         return subcategoryRepository.findById(id);
     }
 
-    public boolean isSubcategoryVoIdValid(long id) {
+    public boolean isSubcategoryExistsById(long id) {
         return subcategoryRepository.existsById(id);
     }
 }
