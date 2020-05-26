@@ -12,10 +12,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -25,14 +25,15 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     public @ResponseBody
-    ResponseEntity<UserDto> getUserInfo(@Validated @PathVariable("id") Long id, Principal principal) {
+    ResponseEntity<UserDto> getUserInfo(@Validated @PathVariable("id") long id, Principal principal) {
 
-        UserDto userDto = userService.getByUsernameOrEmail(principal.getName()).orElse(new UserDto());
-        if (!id.equals(userDto.getId())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        }
-
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userService.getByUsernameOrEmail(principal.getName())
+                .filter(user -> user.getId() == id)
+                .orElseThrow(() -> new AccessDeniedException(messageSource.getMessage(
+                        "token.not.equal.to.your.token",
+                        null,
+                        Locale.getDefault()))
+                ));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
