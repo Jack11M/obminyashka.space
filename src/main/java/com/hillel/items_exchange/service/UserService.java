@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.service;
 
+import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.model.Role;
@@ -25,4 +26,6 @@ public interface UserService {
     Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail);
 
     UserDto update(UserDto newUserDto);
+
+    ChildDto addChild(User user, ChildDto childDto);
 }

@@ -1,10 +1,14 @@
 package com.hillel.items_exchange.service.impl;
 
+import com.hillel.items_exchange.dao.ChildRepository;
 import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.UnauthorizedException;
 import com.hillel.items_exchange.mapper.UserMapper;
+import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
@@ -22,9 +26,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.swing.text.AsyncBoxView;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -34,6 +41,7 @@ public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ChildRepository childRepository;
 
     @Override
     public boolean existsByUsernameOrEmail(String usernameOrEmail) {
@@ -111,6 +119,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ChildDto addChild(User user, ChildDto childDto) {
+        Child childToSave = mapDtoToChild(childDto);
+        childToSave.setUser(user);
+        childRepository.save(childToSave);
+        final var newUsersChildren = user.getChildren();
+        newUsersChildren.add(childToSave);
+        user.setChildren(newUsersChildren);
+        userRepository.save(user);
+        return mapChildToDto(childToSave);
+    }
+
+    @Override
     public void registerNewUser(UserRegistrationDto userRegistrationDto, BCryptPasswordEncoder bCryptPasswordEncoder,
                                 Role role) {
         User user = UserMapper.userRegistrationDtoToUser(userRegistrationDto, bCryptPasswordEncoder, role);
@@ -148,5 +168,13 @@ public class UserServiceImpl implements UserService {
         newList.stream()
                 .filter(item -> !listToUpdate.contains(item))
                 .forEach(consumer);
+    }
+
+    private Child mapDtoToChild(ChildDto childDto) {
+        return modelMapper.map(childDto, Child.class);
+    }
+
+    private ChildDto mapChildToDto(Child child) {
+        return modelMapper.map(child, ChildDto.class);
     }
 }
