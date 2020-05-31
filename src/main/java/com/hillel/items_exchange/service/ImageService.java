@@ -22,7 +22,7 @@ public class ImageService {
     private final ProductService productService;
     private final ImageRepository imageRepository;
 
-    public List<byte[]> getImageResources(Long id) {
+    public List<byte[]> getImagesResourceByProductId(Long id) {
         return imageRepository.findByProductId(id).stream()
                 .map(Image::getResource)
                 .collect(Collectors.toList());

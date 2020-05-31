@@ -36,12 +36,12 @@ public class ImageController {
     private final UserService userService;
 
     @GetMapping(value = "/{product_id}/resource")
-    public ResponseEntity<List<byte[]>> getImageLinksByProductId(@PathVariable("product_id")
+    public ResponseEntity<List<byte[]>> getImagesResource(@PathVariable("product_id")
                                                                  @PositiveOrZero(message = "{invalid.id}") long id) {
-        List<byte[]> imageResources = imageService.getImageResources(id);
-        return imageResources.isEmpty()
+        List<byte[]> imagesResource = imageService.getImagesResourceByProductId(id);
+        return imagesResource.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(imageResources, HttpStatus.OK);
+                : new ResponseEntity<>(imagesResource, HttpStatus.OK);
     }
 
     @GetMapping("/{product_id}")
