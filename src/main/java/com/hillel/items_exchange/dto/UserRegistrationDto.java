@@ -26,7 +26,7 @@ public class UserRegistrationDto {
 
     @NotEmpty(message = "{empty.password}")
     @Size(min = 8, max = 30, message = "{invalid.password}")
-    @Pattern(regexp = "(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\\S+$).+.{8,30}", message = "{invalid.password}")
+    @Pattern(regexp = "(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\\S+$).+.{7,30}", message = "{invalid.password}")
     private String password;
 
     @NotEmpty(message = "{empty.confirm.password}")
