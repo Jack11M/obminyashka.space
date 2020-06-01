@@ -64,19 +64,6 @@ advertisement:
     user_id: 1
     location_id: 1
     product_id: 5
-  - id: 6
-    topic: 'topic'
-    description: 'description'
-    deal_type: 'GIVEAWAY'
-    is_favourite: 'false'
-    ready_for_offers: 'false'
-    wishes_to_exchange: 'hat'
-    created: '[ignored]'
-    updated: '[ignored]'
-    status: 'NEW'
-    user_id: 1
-    location_id: 2
-    product_id: 6
 
 user:
   - id: 1
@@ -101,9 +88,6 @@ location:
   - id: 1
     city: 'Kharkiv'
     district: 'Kharkivska district'
-  - id: 2
-    city: 'Lviv'
-    district: 'District'
 
 product:
   - id: 1
@@ -136,23 +120,22 @@ product:
     size: 'XS'
     season: 'winter'
     subcategory_id: 1
-  - id: 6
-    age: '3'
-    gender: 'male'
-    size: 'M'
-    season: 'all'
-    subcategory_id: 2
 
 image:
+
+category:
   - id: 1
-    resource_url: 'one'
-    default_photo: 'false'
-    product_id: 1
+    name: 'shoes'
   - id: 2
-    resource_url: 'two'
-    default_photo: 'true'
-    product_id: 1
+    name: 'Toys'
+
+subcategory:
+  - id: 1
+    name: 'light_shoes'
+    category_id: 1
+  - id: 2
+    name: 'dolls'
+    category_id: 2
   - id: 3
-    resource_url: 'train_url'
-    default_photo: 'true'
-    product_id: 6
+    name: 'puzzles'
+    category_id: 2
