@@ -16,6 +16,6 @@ public class ImageDto {
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
     @NotNull(message = "{invalid.not-null}")
-    private String resourceUrl;
+    private byte[] resource;
     private boolean defaultPhoto;
 }

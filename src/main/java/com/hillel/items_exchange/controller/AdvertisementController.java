@@ -3,7 +3,6 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.ImageDto;
-import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.SubcategoryService;
@@ -78,7 +77,6 @@ public class AdvertisementController {
         long subcategoryId = dto.getProduct().getSubcategoryId();
 
         validateNewAdvertisementInternalEntitiesIdsAreZero(dto);
-        validateImageUrlHasHotDuplicate(dto);
         validateSubcategoryId(subcategoryId);
 
         return new ResponseEntity<>(advertisementService.createAdvertisement(dto,
@@ -127,18 +125,6 @@ public class AdvertisementController {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(messageSourceUtil
                         .getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
-    }
-
-    private void validateImageUrlHasHotDuplicate(AdvertisementDto advertisementDto) {
-        List<String> imagesUrls = advertisementDto.getProduct().getImages().stream()
-                .map(ImageDto::getResourceUrl).collect(Collectors.toList());
-
-        imagesUrls.forEach(imageUrl -> {
-            if (advertisementService.isImageUrlHasDuplicate(imageUrl)) {
-                throw new InvalidDtoException(messageSourceUtil
-                        .getExceptionMessageSourceWithAdditionalInfo("image-url.has.duplicate", imageUrl));
-            }
-        });
     }
 
     private void validateSubcategoryId(long subcategoryId) {

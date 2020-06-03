@@ -132,6 +132,16 @@ image:
     resource: "dGVzdCBpbWFnZSBwbmc="
     default_photo: 'true'
     product_id: 1
+  - id: 3
+    # Encoded to byte array with Base64.encodeString("test image jpeg")
+    resource: "aW1hZ2UganBlZw=="
+    default_photo: 'false'
+    product_id: 2
+  - id: 4
+    # Encoded to byte array with Base64.encodeString("test image png")
+    resource: "aW1hZ2UgcG5n"
+    default_photo: 'false'
+    product_id: 2
 
 category:
   - id: 1
