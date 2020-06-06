@@ -5,18 +5,19 @@ import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.Locale;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class UserController {
 
@@ -25,22 +26,14 @@ public class UserController {
 
     @GetMapping("/info/{id}")
     public @ResponseBody
-    ResponseEntity<UserDto> getUserInfo(@Validated @PathVariable("id") long id, Principal principal) {
+    ResponseEntity<UserDto> getUserInfo(@PositiveOrZero @PathVariable("id") long id, Principal principal) {
 
         return ResponseEntity.ok(userService.getByUsernameOrEmail(principal.getName())
                 .filter(user -> user.getId() == id)
                 .orElseThrow(() -> new AccessDeniedException(messageSource.getMessage(
-                        "token.not.equal.to.your.token",
+                        "exception.access-denied.user-data",
                         null,
                         Locale.getDefault()))
                 ));
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handlerIllegalArgumentException(AccessDeniedException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
     }
 }

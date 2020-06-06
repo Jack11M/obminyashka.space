@@ -9,6 +9,7 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -119,6 +120,14 @@ public class GlobalExceptionHandler {
                 "exception.validation", violations);
         logErrorMessage(WARN, errorMessage);
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handlerAccessDenied(AccessDeniedException e) {
+        log.warn(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,
