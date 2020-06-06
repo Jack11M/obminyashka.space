@@ -4,9 +4,9 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
-import com.hillel.items_exchange.dto.*;
-import com.hillel.items_exchange.model.Advertisement;
-import com.hillel.items_exchange.model.DealType;
+import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.ProductDto;
+import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
@@ -49,8 +48,8 @@ class AdvertisementControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        createNonExistAdvertisementDto();
-        createExistAdvertisementDto();
+        nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
+        existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
     }
 
     @Test
@@ -64,8 +63,8 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
         String json = mvcResult.getResponse().getContentAsString();
-        Advertisement[] advertisements = JsonConverter.jsonToObject(json, Advertisement[].class);
-        assertEquals(size, advertisements.length);
+        AdvertisementDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementDto[].class);
+        assertEquals(size, advertisementsDtos.length);
     }
 
     @Test
@@ -111,9 +110,8 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL",
-                new SubcategoryDto(2L, "new name",
-                        new CategoryDto(1L, "name")), Collections.emptyList());
+        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", 2L,
+                Collections.emptyList());
 
         mockMvc.perform(post("/adv/filter")
                 .content(asJsonString(productDto))
@@ -170,23 +168,5 @@ class AdvertisementControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    private void createExistAdvertisementDto() {
-        LocationDto kharkiv = new LocationDto(1L, "Kharkiv", "Kharkivska district");
-        CategoryDto shoes = new CategoryDto(1L, "shoes");
-        SubcategoryDto lightShoes = new SubcategoryDto(1L, "light_shoes", shoes);
-        ProductDto springDress = new ProductDto(1L, "16", "male", "spring", "40", lightShoes,
-                Arrays.asList(new ImageDto(1L, "one", false), new ImageDto(2L, "two", true)));
-        existDto = new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress);
-    }
-
-    private void createNonExistAdvertisementDto() {
-        LocationDto kyiv = new LocationDto(0L, "Kyiv", "District");
-        CategoryDto clothes = new CategoryDto(0L, "Clothes");
-        SubcategoryDto dress = new SubcategoryDto(0L, "dress", clothes);
-        ProductDto springDress = new ProductDto(0L, "16", "male", "spring", "M", dress,
-                Collections.singletonList(new ImageDto(0L, "url", false)));
-        nonExistDto = new AdvertisementDto(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY, kyiv, springDress);
     }
 }

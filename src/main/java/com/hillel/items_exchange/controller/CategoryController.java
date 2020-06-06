@@ -1,9 +1,9 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.CategoryVo;
-import com.hillel.items_exchange.exception.InvalidVoException;
+import com.hillel.items_exchange.dto.CategoryDto;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.CategoryService;
-import com.hillel.items_exchange.util.ExceptionTextMessage;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
@@ -25,93 +24,83 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryController {
-    private static final String NAME_OF_CLASS = "IN the CategoryController: ";
+
+    private final MessageSourceUtil messageSourceUtil;
     private final CategoryService categoryService;
 
     @GetMapping("/names")
-    public ResponseEntity<List<String>> allCategoriesNames() {
+    public ResponseEntity<List<String>> getAllCategoriesNames() {
         List<String> categoriesNames = categoryService.findAllCategoryNames();
         if (categoriesNames.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(categoriesNames, HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryVo>> getAllCategories() {
-        List<CategoryVo> categories = categoryService.findAllCategories();
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = categoryService.findAllCategories();
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("/{category_id}")
-    public ResponseEntity<CategoryVo> getCategoryById(@PathVariable("category_id") long id) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id") long id) {
         return categoryService.findCategoryById(id)
-                .map(categoryVo -> new ResponseEntity<>(categoryVo, HttpStatus.OK))
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionTextMessage.NO_CATEGORY_BY_ID + id));
+                .map(categoryDto -> new ResponseEntity<>(categoryDto, HttpStatus.OK))
+                .orElseThrow(() -> new EntityNotFoundException(messageSourceUtil.getExceptionMessageSourceWithId(
+                        id, "invalid.category.id")));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
-    public ResponseEntity<CategoryVo> addCategory(@Valid @RequestBody CategoryVo categoryVo) {
-        if (!categoryService.isCategoryVoCreatable(categoryVo)) {
-            throw new IllegalIdentifierException(ExceptionTextMessage.MUST_HAVE_ID_ZERO);
+    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        if (isCategoryIdValidForCreating(categoryDto)
+                && categoryService.isCategoryNameHasNotDuplicate(categoryDto.getName())) {
+
+            return new ResponseEntity<>(categoryService.addNewCategory(categoryDto), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(categoryService.addNewCategory(categoryVo), HttpStatus.CREATED);
+
+        throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSource("invalid.new-category-dto"));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
-    public ResponseEntity<CategoryVo> updateCategory(@Valid @RequestBody CategoryVo categoryVo) {
-        if (!categoryService.isCategoryVoUpdatable(categoryVo)) {
-            throw new IllegalIdentifierException(ExceptionTextMessage.SUBCATEGORIES_MUST_EXIST_BY_ID_OR_ZERO);
+    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        if (isDtoIdGreaterThanZero(categoryDto.getId()) && categoryService.isCategoryDtoUpdatable(categoryDto)) {
+            return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
         }
-        return categoryService.updateCategory(categoryVo)
-                .map(categoryVO -> new ResponseEntity<>(categoryVo, HttpStatus.ACCEPTED))
-                .orElseThrow(() -> new InvalidVoException(ExceptionTextMessage.CAN_NOT_BE_UPDATED + categoryVo));
+
+        throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSource("invalid.updated-category.dto"));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
-    public ResponseEntity<CategoryVo> deleteCategoryById(@PathVariable("category_id") long id) {
-        if (categoryService.isCategoryVoDeletable(id)) {
+    public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id") long id) {
+        if (isDtoIdGreaterThanZero(id) && categoryService.isCategoryDtoDeletable(id)) {
             categoryService.removeCategoryById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        throw new InvalidVoException(ExceptionTextMessage.CATEGORY_CAN_NOT_BE_DELETED + id);
+
+        throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSourceWithId(id, "category.not-deletable"));
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(e.getMessage());
+    private boolean isCategoryIdValidForCreating(CategoryDto categoryDto) {
+        return isIdEqualsZero(categoryDto.getId())
+                && categoryDto.getSubcategories().stream()
+                .allMatch(subcategoryDto -> isIdEqualsZero(subcategoryDto.getId()));
     }
 
-    @ExceptionHandler(InvalidVoException.class)
-    public ResponseEntity<String> handleInvalidCategoryControllerDtoException(InvalidVoException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
+    private boolean isDtoIdGreaterThanZero(long id) {
+        return id > 0;
     }
 
-    @ExceptionHandler(IllegalIdentifierException.class)
-    public ResponseEntity<String> handleIdException(IllegalIdentifierException e) {
-        log.warn(NAME_OF_CLASS + e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
+    private boolean isIdEqualsZero(long id) {
+        return id == 0;
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<String> handleSqlException(SQLIntegrityConstraintViolationException e) {
-        log.error(NAME_OF_CLASS + e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionTextMessage.SQL_EXCEPTION + e.getLocalizedMessage());
-    }
 }

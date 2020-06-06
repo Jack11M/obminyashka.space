@@ -4,8 +4,8 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
-import com.hillel.items_exchange.dto.*;
-import com.hillel.items_exchange.model.DealType;
+import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.UserLoginDto;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,11 +23,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import static com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -73,7 +73,7 @@ public class SecurityConfigIntegrationTest {
 
         createValidUserLoginDto();
         createNotValidUserLoginDto();
-        createNonExistAdvertisementDto();
+        nonExistDto = createNonExistAdvertisementDto();
     }
 
     @Test
@@ -121,7 +121,7 @@ public class SecurityConfigIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "security/create-advertisement.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
 
@@ -199,16 +199,5 @@ public class SecurityConfigIntegrationTest {
                 .andReturn();
 
         return extractToken(result);
-    }
-
-    private void createNonExistAdvertisementDto() {
-        LocationDto lviv = new LocationDto(0L, "Lviv", "District");
-        CategoryDto toys = new CategoryDto(0L, "Toys");
-        SubcategoryDto smallToys = new SubcategoryDto(0L, "small_toys", toys);
-        ProductDto toyTrain = new ProductDto(0L, "3", "male", "all", "M", smallToys,
-                Collections.singletonList(new ImageDto(0L, "train_url", true)));
-        nonExistDto = new AdvertisementDto(0L, "topic",
-                "description", "hat",
-                false, false, DealType.GIVEAWAY, lviv, toyTrain);
     }
 }

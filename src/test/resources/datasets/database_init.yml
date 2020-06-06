@@ -123,19 +123,29 @@ product:
 
 image:
   - id: 1
-    resource_url: 'one'
+    # Encoded to byte array with Base64.encodeString("test image jpeg")
+    resource: "dGVzdCBpbWFnZSBqcGVn="
     default_photo: 'false'
     product_id: 1
   - id: 2
-    resource_url: 'two'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    resource: "dGVzdCBpbWFnZSBwbmc="
     default_photo: 'true'
     product_id: 1
 
 category:
   - id: 1
     name: 'shoes'
+  - id: 2
+    name: 'Toys'
 
 subcategory:
   - id: 1
     name: 'light_shoes'
     category_id: 1
+  - id: 2
+    name: 'dolls'
+    category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2

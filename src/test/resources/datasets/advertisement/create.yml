@@ -141,32 +141,21 @@ product:
     gender: 'male'
     size: 'M'
     season: 'spring'
-    subcategory_id: 2
+    subcategory_id: 1
 
 image:
   - id: 1
-    resource_url: 'one'
+    # Encoded to byte array with Base64.encodeString("test image jpeg")
+    resource: "dGVzdCBpbWFnZSBqcGVn="
     default_photo: 'false'
     product_id: 1
   - id: 2
-    resource_url: 'two'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    resource: "dGVzdCBpbWFnZSBwbmc="
     default_photo: 'true'
     product_id: 1
   - id: 3
-    resource_url: 'url'
+    # Encoded to byte array with Base64.encodeString("test image gif")
+    resource: 'dGVzdCBpbWFnZSBnaWY='
     default_photo: 'false'
     product_id: 6
-
-category:
-  - id: 1
-    name: 'shoes'
-  - id: 2
-    name: 'Clothes'
-
-subcategory:
-  - id: 1
-    name: 'light_shoes'
-    category_id: 1
-  - id: 2
-    name: 'dress'
-    category_id: 2

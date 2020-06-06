@@ -1,0 +1,62 @@
+// $form-color:                 #333;
+// $form-background:            #fff;
+
+// $form-focus-color:            #333;
+// $form-focus-background:       #f5f5f5;
+
+// $form-font-size:              16px;
+// $form-padding:                0 20px;
+
+// $form-border:                 1px solid gray;
+
+// $form-height:                 44px;
+// $form-small-height:           36px;
+// $form-large-height:           56px;
+
+// .form {
+//   max-width: 500px;
+//   &-group {
+//     margin-bottom: 20px;
+//   }
+//   &-label {
+//     font-size: $form-font-size;
+//     color: #fff;
+//   }
+//   &-control {
+//     position: relative;
+//     margin-bottom: 10px;
+//     input {
+//       max-width:100%;
+//       width: 100%;
+//       font-size: $form-font-size;
+//       height: $form-height;
+//       padding: $form-padding;
+//       border: $form-border;
+//       background: $form-background;
+//       color: $form-color;
+//       &:focus {
+//         outline: none;
+//         background: $form-focus-background;
+//         color: $form-focus-color;
+//       }
+//     }
+//     .form-icon {
+//       position: absolute;
+//       right: 10px;
+//       top: 50%;
+//       transform: translateY(-50%);
+
+//     }
+//     .form-icon ~ input {
+//       padding-right: 40px;
+//     }
+//   }
+
+//   textarea {
+//     width: 100%;
+//     resize: none;
+//     height: 300px;
+//     padding: $form-padding;
+//     border: $form-border;
+//   }
+// }

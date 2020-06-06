@@ -1,0 +1,30 @@
+@import 'components/normalize.scss';
+@import 'components/fonts.scss';
+@import 'components/variables.scss';
+@import 'components/base.scss';
+@import 'components/heading.scss';
+@import 'components/button.scss';
+@import 'components/grid.scss';
+@import 'components/card.scss';
+@import 'components/section.scss';
+@import 'components/width.scss';
+@import 'components/navbar.scss';
+@import 'components/header.scss';
+@import 'components/form.scss';
+@import 'components/modal.scss';
+@import 'components/profile.scss';
+@import 'components/scrollbar.scss';
+@import 'components/tabs.scss';
+@import 'components/settings.scss';
+
+//  MAIN    
+@include content;
+@include scrollBar;
+@include main;
+@include tabs;        
+@include profile;         
+@include myActivityTab;             
+@include myProfileTab;
+@include settings;
+@include buttons;
+//
