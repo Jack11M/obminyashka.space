@@ -79,6 +79,19 @@ user:
     updated: '2019-01-01'
     status: 'ACTIVE'
     role_id: 1
+  - id: 2
+    username: 'test'
+    password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
+    email: 'test@test.com'
+    online: 'false'
+    first_name: ""
+    last_name: ""
+    avatar_image: ""
+    last_online_time: '2020-06-03 23:04:01'
+    created: '2020-06-03'
+    updated: '2020-06-03'
+    status: 'ACTIVE'
+    role_id: 2
 
 role:
   - id: 1

@@ -18,36 +18,26 @@ import com.hillel.items_exchange.model.User;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
-        if (userRepository.existsByUsername(usernameOrEmail)) {
-            return userRepository.findByUsername(usernameOrEmail);
-        } else if (userRepository.existsByEmail(usernameOrEmail)) {
-            return userRepository.findByEmail(usernameOrEmail);
-        } else {
-            return Optional.empty();
-        }
+        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
     }
 
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto,
-                                   BCryptPasswordEncoder bCryptPasswordEncoder,
-                                   Role role) {
-
-        Optional<User> user = Optional.ofNullable(UserMapper.userRegistrationDtoToUser(userRegistrationDto,
-                bCryptPasswordEncoder, role));
-
-        return user.map(existentUser -> {
-            userRepository.save(existentUser);
-            return true;
-        }).orElse(false);
+    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
+        return userRepository.existsByUsernameOrEmailAndPassword(usernameOrEmail, usernameOrEmail, encryptedPassword);
     }
 
-    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail,
-                                                      String password,
-                                                      BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
+        User registeredUser = UserMapper.userRegistrationDtoToUser(userRegistrationDto, bCryptPasswordEncoder, role);
+        return userRepository.save(registeredUser).getId() != 0;
+    }
 
-        return findByUsernameOrEmail(usernameOrEmail)
-                .map(existentUser -> bCryptPasswordEncoder.matches(password, existentUser.getPassword()))
-                .orElse(false);
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

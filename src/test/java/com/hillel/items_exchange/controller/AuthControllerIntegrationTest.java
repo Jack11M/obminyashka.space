@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
@@ -31,21 +32,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 public class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
 
-    private final MockMvc mockMvc;
-
     @Autowired
-    public AuthControllerIntegrationTest(MockMvc mockMvc) {
-        super();
-        this.mockMvc = mockMvc;
-    }
+    private MockMvc mockMvc;
 
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void register_shouldCreateNewUserAndReturnCreated() throws Exception {
-        UserRegistrationDto validUserRegistrationDto = createValidUserRegistrationDto();
+    @ExpectedDataSet(value = "auth/register_user.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
+    void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
+        UserRegistrationDto validUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
         mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(validUserRegistrationDto))
+                .content(asJsonString(validUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -53,10 +51,7 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     }
 
     @Test
-    @Transactional
-    @DataSet("database_init.yml")
     void register_whenUserRegistrationDtoIsEmpty_shouldReturnBadRequest() throws Exception {
-
         mockMvc.perform(post(REGISTER_URL, "")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -64,10 +59,7 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     }
 
     @Test
-    @Transactional
-    @DataSet("database_init.yml")
     void register_whenUserRegistrationDtoIsNull_shouldReturnBadRequest() throws Exception {
-
         mockMvc.perform(post(REGISTER_URL, (Object) null)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -77,12 +69,13 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void register_whenUserEmailExists_shouldReturnUnprocessableEntityAndThrowUnprocessableEntityException()
+    void register_whenUsernameOrEmailExists_shouldReturnUnprocessableEntityAndThrowUnprocessableEntityException()
             throws Exception {
 
-        UserRegistrationDto invalidUserRegistrationDto = createUserRegistrationDtoWithExistentEmail();
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
         MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(invalidUserRegistrationDto))
+                .content(asJsonString(existEmailUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -93,32 +86,11 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     }
 
     @Test
-    @Transactional
-    @DataSet("database_init.yml")
-    void register_whenUsernameExists_shouldReturnUnprocessableEntityAndThrowUnprocessableEntityException()
-            throws Exception {
-
-        UserRegistrationDto invalidUserRegistrationDto = createUserRegistrationDtoWithExistentUsername();
+    void register_whenDifferentConfirmPassword_shouldReturnBadRequestAndThrowBadRequestException() throws Exception {
+        UserRegistrationDto invalidConfirmPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, INVALID_PASSWORD);
         MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(invalidUserRegistrationDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
-                .andReturn();
-
-        assertThat(result.getResolvedException(), is(instanceOf(UnprocessableEntityException.class)));
-    }
-
-    @Test
-    @Transactional
-    @DataSet("database_init.yml")
-    void register_whenDifferentConfirmPassword_shouldReturnBadRequestAndThrowBadRequestException()
-            throws Exception {
-
-        UserRegistrationDto invalidUserRegistrationDto = createUserRegistrationDtoWithDifferentPasswords();
-        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(invalidUserRegistrationDto))
+                .content(asJsonString(invalidConfirmPasswordUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -129,47 +101,39 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     }
 
     @Test
-    @Transactional
-    @DataSet("database_init.yml")
-    void register_whenPasswordInvalid_shouldReturnReturnNotFound()
-            throws Exception {
-
-        UserRegistrationDto invalidUserRegistrationDto = createUserRegistrationDtoWithInvalidPassword();
+    void register_whenPasswordInvalid_shouldReturnReturnNotAcceptable() throws Exception {
+        UserRegistrationDto invalidPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
+                INVALID_PASSWORD, INVALID_PASSWORD);
         mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(invalidUserRegistrationDto))
+                .content(asJsonString(invalidPasswordUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotAcceptable());
     }
 
     @Test
-    @Transactional
-    @DataSet("database_init.yml")
-    void register_whenEmailInvalid_shouldReturnNotFound()
-            throws Exception {
-
-        UserRegistrationDto invalidUserRegistrationDto = createUserRegistrationDtoWithInvalidEmail();
+    void register_whenEmailInvalid_shouldReturnNotAcceptable() throws Exception {
+        UserRegistrationDto invalidEmailUser = createUserRegistrationDto(VALID_USERNAME, INVALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
         mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(invalidUserRegistrationDto))
+                .content(asJsonString(invalidEmailUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotAcceptable());
     }
 
     @Test
-    @Transactional
-    @DataSet("database_init.yml")
-    void register_whenUsernameInvalid_shouldReturnNotFound()
-            throws Exception {
+    void register_whenUsernameInvalid_shouldReturnNotAcceptable() throws Exception {
+        UserRegistrationDto invalidNameUser = createUserRegistrationDto(INVALID_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
 
-        UserRegistrationDto invalidUserRegistrationDto = createUserRegistrationDtoWithInvalidUsername();
         mockMvc.perform(post(REGISTER_URL)
-                .content(asJsonString(invalidUserRegistrationDto))
+                .content(asJsonString(invalidNameUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotAcceptable());
     }
 }

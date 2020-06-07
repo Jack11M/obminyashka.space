@@ -429,13 +429,11 @@
                         tableName="image"/>
     </changeSet>
 
-    <changeSet id="1.0.25: drop column sex in table child" author="jack.petrov">
+    <changeSet id="1.0.25: rebuilt column sex without unique constraint in table child" author="jack.petrov">
         <dropColumn tableName="child">
             <column name="sex"/>
         </dropColumn>
-    </changeSet>
 
-    <changeSet id="1.0.26: add column sex without unique constraint in table child" author="jack.petrov">
         <addColumn tableName="child">
             <column afterColumn="birth_date"
                     name="sex"
