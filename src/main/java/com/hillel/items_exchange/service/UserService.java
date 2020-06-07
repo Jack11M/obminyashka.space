@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
+import org.modelmapper.ModelMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final ModelMapper modelMapper;
 
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
@@ -39,5 +42,13 @@ public class UserService {
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
+    }
+
+    private UserDto mapUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 }
