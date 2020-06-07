@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.service.impl;
 
 import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Role;
@@ -8,6 +9,7 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
 
     @Bean
@@ -93,4 +96,15 @@ public class UserServiceImpl implements UserService {
             log.warn("IN UserServiceImpl (registerNewUser): user: {} not registered", user);
         }
     }
+
+    @Override
+    public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
+    }
+
+    private UserDto mapUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
+    }
+
+
 }

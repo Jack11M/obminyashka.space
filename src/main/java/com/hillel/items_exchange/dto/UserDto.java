@@ -39,5 +39,4 @@ public class UserDto {
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate lastOnlineTime;
-
 }
