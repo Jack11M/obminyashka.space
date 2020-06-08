@@ -1,18 +1,25 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.service.UserService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.security.Principal;
+import java.util.Locale;
+
+import javax.validation.constraints.PositiveOrZero;
+
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.PositiveOrZero;
-import java.security.Principal;
-import java.util.Locale;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.service.UserService;
 
 @RestController
 @RequestMapping("/user")

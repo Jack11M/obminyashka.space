@@ -52,7 +52,7 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        MvcResult result = mockMvc.perform(get("/user/info/{id}", -1L)
+        MvcResult result = mockMvc.perform(get("/user/info/{id}", 555555L)
                 .content(asJsonString("admin"))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
