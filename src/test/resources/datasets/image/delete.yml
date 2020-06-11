@@ -124,16 +124,6 @@ product:
     subcategory_id: 1
 
 image:
-  - id: 1
-    # Encoded to byte array with Base64.encodeString("test image jpeg")
-    resource: "dGVzdCBpbWFnZSBqcGVn="
-    default_photo: 'false'
-    product_id: 1
-  - id: 2
-    # Encoded to byte array with Base64.encodeString("test image png")
-    resource: "dGVzdCBpbWFnZSBwbmc="
-    default_photo: 'true'
-    product_id: 1
 
 category:
   - id: 1

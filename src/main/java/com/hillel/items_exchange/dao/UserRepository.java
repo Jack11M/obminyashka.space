@@ -12,11 +12,13 @@ public interface UserRepository extends CrudRepository<User, Long>, JpaRepositor
 
     Optional<User> findById(Long id);
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmailOrUsername(String username, String email);
 
-    Optional<User> findByUsername(String username);
+    boolean existsByUsernameOrEmailAndPassword(String username, String email, String encryptedPassword);
 
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    Optional<User> findByUsername(String usernameOrEmail);
 }
