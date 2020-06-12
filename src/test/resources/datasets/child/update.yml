@@ -82,12 +82,12 @@ user:
 
 child:
   - id: 1
-    sex: 'male'
-    birth_date: '2019-01-01'
+    sex: 'female'
+    birth_date: '2019-11-11'
     user_id: 1
   - id: 2
-    sex: 'female'
-    birth_date: '2019-02-02'
+    sex: 'male'
+    birth_date: '2019-12-12'
     user_id: 1
 
 role:

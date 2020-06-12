@@ -5,6 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.TimeZone;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonConverter {
     private static ObjectMapper objectMapper;
@@ -33,6 +35,7 @@ public class JsonConverter {
 
     private static void objectMapperInit() {
         objectMapper = new ObjectMapper();
+        objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.registerModule(new JavaTimeModule());
     }
 }

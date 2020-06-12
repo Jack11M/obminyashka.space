@@ -89,6 +89,14 @@ child:
     sex: 'female'
     birth_date: '2019-02-02'
     user_id: 1
+  - id: 3
+    sex: 'male'
+    birth_date: '2019-03-03'
+    user_id: 1
+  - id: 4
+    sex: 'female'
+    birth_date: '2019-04-04'
+    user_id: 1
 
 role:
   - id: 1

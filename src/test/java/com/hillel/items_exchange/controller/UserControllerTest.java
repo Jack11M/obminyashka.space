@@ -1,9 +1,9 @@
 package com.hillel.items_exchange.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.util.ChildDtoCreatingUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,22 +17,21 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
 
-import java.util.Date;
-
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class UserControllerTest {
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -68,21 +67,75 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "child/create.yml")
     void addChild_Success() throws Exception {
-        mockMvc.perform(put("/user/child/")
+        mockMvc.perform(post("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getValidChildDto())
+                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(getValidChildDto()));
+                .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void addChild_Fail_NotValidDto() throws Exception {
+    @ExpectedDataSet(value = "child/delete.yml")
+    void removeChild_Success() throws Exception {
+        mockMvc.perform(delete("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getValidChildDtoForDelete())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "child/update.yml")
+    void updateChild_Success() throws Exception {
+        mockMvc.perform(put("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getValidChildDtoForUpdate())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void addChild_Fail_EmptyDto() throws Exception {
+        mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void removeChild_Fail_EmptyDto() throws Exception {
+        mockMvc.perform(delete("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateChild_Fail_EmptyDto() throws Exception {
         mockMvc.perform(put("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("")
@@ -91,11 +144,107 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    private String getValidChildDto() throws JsonProcessingException {
-        ChildDto dto = new ChildDto();
-        dto.setSex("male");
-        dto.setName("some_name");
-        dto.setBirthDate(new Date());
-        return asJsonString(dto);
+    @Test
+    @WithMockUser(username = "no-such-user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void addChild_Fail_AbsentUser() throws Exception {
+        mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "no-such-user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void removeChild_Fail_AbsentUser() throws Exception {
+        mockMvc.perform(delete("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "no-such-user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateChild_Fail_AbsentUser() throws Exception {
+        mockMvc.perform(put("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void addChild_Fail_NotValidDto_IdBiggerThanZero() throws Exception {
+        mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getNotValidChildDtoForCreate())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void removeChild_Fail_NotValidDto_NoSuchChildInUser() throws Exception {
+        mockMvc.perform(delete("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getNotValidChildDtoForDelete())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateChild_Fail_NotValidDto_NoSuchChildInUser() throws Exception {
+        mockMvc.perform(put("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getNotValidChildDtoForUpdate())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void removeChild_Fail_NotValidDto_DuplicatedId() throws Exception {
+        mockMvc.perform(delete("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getNotValidChildDtoDuplicatedId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateChild_Fail_NotValidDto_DuplicatedId() throws Exception {
+        mockMvc.perform(put("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ChildDtoCreatingUtil.getNotValidChildDtoDuplicatedId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }

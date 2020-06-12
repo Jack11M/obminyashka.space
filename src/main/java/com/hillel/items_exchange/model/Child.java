@@ -17,7 +17,6 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String sex;
-    private String name;
     @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
     private Date birthDate;
