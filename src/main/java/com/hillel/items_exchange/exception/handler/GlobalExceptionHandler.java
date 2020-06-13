@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.exception.handler;
 
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.AllArgsConstructor;
@@ -123,11 +124,21 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handlerAccessDenied(AccessDeniedException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
+    public ResponseEntity<ErrorMessage> handlerAccessDenied(AccessDeniedException e,
+                                                            ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.FORBIDDEN,
+                "exception.security", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(WARN, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<ErrorMessage> handlerIllegalOperation(IllegalOperationException e,
+                                                                ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.METHOD_NOT_ALLOWED,
+                "exception.illegal.operation", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(WARN, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,
