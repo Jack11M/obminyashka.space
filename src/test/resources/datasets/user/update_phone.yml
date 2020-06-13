@@ -92,6 +92,31 @@ phone:
     phone_number: 381234567890
     show: 'true'
     default_phone: 'true'
+  - id: 2
+    user_id: 1
+    phone_number: 380502222222
+    show: 'false'
+    default_phone: 'false'
+  - id: 3
+    user_id: 1
+    phone_number: 380502222222
+    show: 'false'
+    default_phone: 'false'
+  - id: 4
+    user_id: 1
+    phone_number: 380502222222
+    show: 'false'
+    default_phone: 'false'
+  - id: 5
+    user_id: 1
+    phone_number: 380502222222
+    show: 'false'
+    default_phone: 'false'
+  - id: 6
+    user_id: 1
+    phone_number: 380502222222
+    show: 'false'
+    default_phone: 'false'
 
 role:
   - id: 1

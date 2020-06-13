@@ -69,10 +69,10 @@ user:
   - id: 1
     username: 'admin'
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
-    email: 'admin@gmail.com'
+    email: 'new.admin@gmail.com'
     online: 'false'
-    first_name: 'super'
-    last_name: 'admin'
+    first_name: 'newFirstName'
+    last_name: 'newLastName'
     avatar_image: 'empty'
     last_online_time: '2019-01-01 00:00:01'
     created: '2019-01-01'

@@ -85,6 +85,10 @@ child:
     sex: 'male'
     birth_date: '2010-01-01'
     user_id: 1
+  - id: 2
+    sex: 'female'
+    birth_date: '2020-01-01'
+    user_id: 1
 
 phone:
   - id: 1
