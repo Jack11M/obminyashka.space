@@ -54,17 +54,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Child> children = new ArrayList<>();
 
-    public void addChild(Child child) {
-        children.add(child);
-        child.setUser(this);
-    }
-
-    public void addPhone(Phone phone) {
-        phones.add(phone);
-        phone.setUser(this);
-    }
-
-    @PrePersist
+    @PreUpdate
     public void addUser() {
         phones.forEach(phone -> phone.setUser(this));
         children.forEach(child -> child.setUser(this));
