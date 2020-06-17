@@ -3,9 +3,8 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
-import com.hillel.items_exchange.model.Advertisement;
-import com.hillel.items_exchange.model.Status;
-import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.model.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +24,7 @@ public class AdvertisementService {
     private final ModelMapper modelMapper;
     private final AdvertisementRepository advertisementRepository;
     private final SubcategoryService subcategoryService;
+    private final LocationService locationService;
 
     public List<AdvertisementDto> findAll(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
@@ -54,6 +55,11 @@ public class AdvertisementService {
         adv.setStatus(Status.NEW);
         adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId())
                 .orElseThrow(EntityNotFoundException::new));
+
+        Optional<Location> location = locationService.findByCityAndDistrict(
+                adv.getLocation().getCity(), adv.getLocation().getDistrict());
+        adv.setLocation(location.orElseGet(() -> locationService.createLocation(adv.getLocation())));
+
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
@@ -66,6 +72,13 @@ public class AdvertisementService {
         fromDB.setStatus(Status.UPDATED);
         fromDB.getProduct().setSubcategory(subcategoryService.findById(dto.getProduct().getSubcategoryId())
                 .orElseThrow(EntityNotFoundException::new));
+        fromDB.getProduct().getImages()
+                .forEach(image -> image.setProduct(toUpdate.getProduct()));
+        Optional<Location> location = locationService.findByCityAndDistrict(
+                toUpdate.getLocation().getCity(), toUpdate.getLocation().getDistrict());
+        fromDB.setLocation(location.orElseGet(() -> locationService.createLocation(toUpdate.getLocation())));
+        fromDB.setDescription(toUpdate.getDescription());
+
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
     }

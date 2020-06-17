@@ -25,4 +25,12 @@ public class AdvertisementDtoCreatingUtil {
                         new ImageDto(2L, "test image png".getBytes(), true)));
         return(new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress));
     }
+
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNewLocationAndImage() {
+        LocationDto odessa = new LocationDto(0L, "Odessa", "Odessa district");
+        ProductDto springDress = new ProductDto(1L, "16", "female", "spring", "50", 1L,
+                Collections.singletonList(new ImageDto(1L, "test image jpeg".getBytes(), false)));
+        return(new AdvertisementDto(1L, "new topic", "new description",
+                "BMW", true, true, DealType.EXCHANGE, odessa, springDress));
+    }
 }

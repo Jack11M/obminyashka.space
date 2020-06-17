@@ -10,7 +10,7 @@ advertisement:
     updated: '[ignored]'
     status: 'UPDATED'
     user_id: 1
-    location_id: 1
+    location_id: 2
     product_id: 1
   - id: 2
     topic: 'Blouses'
@@ -90,6 +90,9 @@ location:
   - id: 1
     city: 'Kharkiv'
     district: 'Kharkivska district'
+  - id: 2
+    city: 'Odessa'
+    district: 'Odessa district'
 
 product:
   - id: 1

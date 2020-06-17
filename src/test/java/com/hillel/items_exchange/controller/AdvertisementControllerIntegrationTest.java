@@ -43,6 +43,7 @@ class AdvertisementControllerIntegrationTest {
     private AdvertisementRepository advertisementRepository;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
+    private AdvertisementDto existDtoForUpdate;
     private int page, size;
 
 
@@ -142,12 +143,10 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
-        existDto.setDescription("new description");
-        existDto.setTopic("new topic");
-        existDto.setWishesToExchange("BMW");
+        existDtoForUpdate = AdvertisementDtoCreatingUtil.createExistAdvertisementDtoForUpdateWithNewLocationAndImage();
 
         mockMvc.perform(put("/adv")
-                .content(asJsonString(existDto))
+                .content(asJsonString(existDtoForUpdate))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
