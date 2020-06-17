@@ -67,7 +67,7 @@ public class AdvertisementService {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
-        BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created",
+        BeanUtils.copyProperties(toUpdate, fromDB, "user", "created",
                 "updated", "status");
         fromDB.setStatus(Status.UPDATED);
         fromDB.getProduct().setSubcategory(subcategoryService.findById(dto.getProduct().getSubcategoryId())
