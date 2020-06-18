@@ -15,7 +15,7 @@ public class UserDtoUpdatingUtil {
     private static final String VALID_PHONE_NUMBER = "38(123)456-78-90";
     private static final String INVALID_PHONE_NUMBER = "38(123)456-78-90ABC";
 
-    private static final LocalDate VALID_CHILD_BIRTH_DATE = LocalDate.of(2020, 1, 1);
+    private static final LocalDate VALID_CHILD_BIRTH_DATE = LocalDate.of(2010, 1, 1);
     private static final LocalDate INVALID_CHILD_BIRTH_DATE = LocalDate.of(2030, 1, 1);
 
     public static UserDto getValidUserDto() {
