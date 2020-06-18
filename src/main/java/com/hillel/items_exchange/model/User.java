@@ -59,4 +59,14 @@ public class User extends BaseEntity {
         phones.forEach(phone -> phone.setUser(this));
         children.forEach(child -> child.setUser(this));
     }
+
+    public void addChild(Child child) {
+        children.add(child);
+        child.setUser(this);
+    }
+
+    public void addPhone(Phone phone) {
+        phones.add(phone);
+        phone.setUser(this);
+    }
 }

@@ -17,13 +17,12 @@ import java.util.List;
 public class PhoneService {
     private final MessageSourceUtil messageSourceUtil;
 
-    public void updateAll(List<Phone> updatedPhones, User currentUser) {
-        updatedPhones.forEach(phone -> {
+    public void updateAll(List<Phone> newPhoneList, User user) {
+        newPhoneList.forEach(phone -> {
             if (phone.getId() == 0) {
-                phone.setUser(currentUser);
-                currentUser.getPhones().add(phone);
+                user.addPhone(phone);
             } else {
-                Phone existedPhone = currentUser.getPhones().stream()
+                Phone existedPhone = user.getPhones().stream()
                         .filter(p -> p.getId() == phone.getId())
                         .findAny()
                         .orElseThrow(() -> new UnprocessableEntityException(
@@ -31,7 +30,7 @@ public class PhoneService {
                 BeanUtils.copyProperties(phone, existedPhone, "id", "user");
             }
         });
-        currentUser.getPhones().removeIf(phone ->
-                updatedPhones.stream().map(Phone::getId).noneMatch(id -> id == phone.getId()));
+        user.getPhones().removeIf(phone ->
+                newPhoneList.stream().map(Phone::getId).noneMatch(id -> id == phone.getId()));
     }
 }

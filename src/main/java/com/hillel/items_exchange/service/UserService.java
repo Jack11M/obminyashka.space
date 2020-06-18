@@ -61,11 +61,10 @@ public class UserService {
         BeanUtils.copyProperties(updatedUser, currentUser,
                 "id", "advertisements", "deals", "role", "password", "online", "lastOnlineTime",
                 "phones", "children", "created", "updated", "status");
-        userRepository.flush();
         childService.updateAll(updatedUser.getChildren(), currentUser);
         phoneService.updateAll(updatedUser.getPhones(), currentUser);
 
-        return mapUserToDto(userRepository.save(currentUser));
+        return mapUserToDto(userRepository.saveAndFlush(currentUser));
     }
 
     public boolean existsByUsername(String username) {

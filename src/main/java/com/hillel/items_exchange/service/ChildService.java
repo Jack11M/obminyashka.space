@@ -17,13 +17,12 @@ import java.util.List;
 public class ChildService {
     private final MessageSourceUtil messageSourceUtil;
 
-    public void updateAll(List<Child> updatedChildren, User currentUser) {
-        updatedChildren.forEach(child -> {
+    public void updateAll(List<Child> newChildrenList, User user) {
+        newChildrenList.forEach(child -> {
             if (child.getId() == 0) {
-                child.setUser(currentUser);
-                currentUser.getChildren().add(child);
+               user.addChild(child);
             } else {
-                Child existedChild = currentUser.getChildren().stream()
+                Child existedChild = user.getChildren().stream()
                         .filter(c -> c.getId() == child.getId())
                         .findAny()
                         .orElseThrow(() -> new UnprocessableEntityException(
@@ -31,7 +30,7 @@ public class ChildService {
                 BeanUtils.copyProperties(child, existedChild, "id", "user");
             }
         });
-        currentUser.getChildren().removeIf(child ->
-                updatedChildren.stream().map(Child::getId).noneMatch(id -> id == child.getId()));
+        user.getChildren().removeIf(child ->
+                newChildrenList.stream().map(Child::getId).noneMatch(id -> id == child.getId()));
     }
 }
