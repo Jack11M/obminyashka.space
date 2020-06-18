@@ -26,9 +26,9 @@ public class AdvertisementDtoCreatingUtil {
         return(new AdvertisementDto(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE, kharkiv, springDress));
     }
 
-    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNewLocationAndImage() {
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory() {
         LocationDto odessa = new LocationDto(0L, "Odessa", "Odessa district");
-        ProductDto springDress = new ProductDto(1L, "16", "female", "spring", "50", 1L,
+        ProductDto springDress = new ProductDto(1L, "16", "female", "spring", "50", 2L,
                 Collections.singletonList(new ImageDto(1L, "test image jpeg".getBytes(), false)));
         return(new AdvertisementDto(1L, "new topic", "new description",
                 "BMW", true, true, DealType.EXCHANGE, odessa, springDress));

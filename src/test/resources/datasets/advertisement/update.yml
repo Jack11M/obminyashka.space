@@ -97,10 +97,10 @@ location:
 product:
   - id: 1
     age: '16'
-    gender: 'male'
-    size: '40'
+    gender: 'female'
+    size: '50'
     season: 'spring'
-    subcategory_id: 1
+    subcategory_id: 2
   - id: 2
     age: '4'
     gender: 'female'
@@ -131,11 +131,6 @@ image:
     # Encoded to byte array with Base64.encodeString("test image jpeg")
     resource: "dGVzdCBpbWFnZSBqcGVn="
     default_photo: 'false'
-    product_id: 1
-  - id: 2
-    # Encoded to byte array with Base64.encodeString("test image png")
-    resource: "dGVzdCBpbWFnZSBwbmc="
-    default_photo: 'true'
     product_id: 1
 
 category:

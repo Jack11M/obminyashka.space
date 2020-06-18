@@ -143,7 +143,8 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
-        existDtoForUpdate = AdvertisementDtoCreatingUtil.createExistAdvertisementDtoForUpdateWithNewLocationAndImage();
+        existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory();
 
         mockMvc.perform(put("/adv")
                 .content(asJsonString(existDtoForUpdate))
