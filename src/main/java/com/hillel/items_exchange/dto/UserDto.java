@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hillel.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ public class UserDto {
     private String password;
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(max = 129, message = "{invalid.email}")
-    @Email(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$", message = "{invalid.email}")
+    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String email;
     @NotNull(message = "{invalid.not-null}")
     private Boolean online;

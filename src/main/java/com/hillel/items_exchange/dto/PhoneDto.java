@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.dto;
 
+import com.hillel.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,7 @@ public class PhoneDto {
     private long id;
     @NotNull(message = "{invalid.not-null}")
     private Boolean show;
-    @Pattern(regexp = "^\\s*(?<country>\\+?\\d{1,3})[-. (]*(?<area>\\d{3})[-. )]*(?<number>\\d{3}[-. ]*\\d{2}[-. ]*\\d{2})\\s*$",
-            message = "{invalid.phone.number}")
+    @Pattern(regexp = PatternHandler.PHONE_NUMBER, message = "{invalid.phone.number}")
     private String phoneNumber;
     @NotNull(message = "{invalid.not-null}")
     private Boolean defaultPhone;
