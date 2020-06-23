@@ -142,7 +142,7 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void testHandleIllegalOperationException() throws Exception {
-        when(userController.updateUserInfo(any(), anyLong(), any())).thenThrow(IllegalOperationException.class);
+        when(userController.updateUserInfo(any(), any())).thenThrow(IllegalOperationException.class);
         validUserDto.setPassword("new password");
         MvcResult result = getResult(HttpMethod.PUT, "/user/info/{user_id}", 1L,
                 validUserDto, status().isMethodNotAllowed());
@@ -151,7 +151,7 @@ public class GlobalExceptionHandlerTest {
 
     @Test
     public void testHandleAccessDeniedException() throws Exception {
-        when(userController.updateUserInfo(any(), anyLong(), any())).thenThrow(AccessDeniedException.class);
+        when(userController.updateUserInfo(any(), any())).thenThrow(AccessDeniedException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/user/info/{user_id}", 200L,
                 validUserDto, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));

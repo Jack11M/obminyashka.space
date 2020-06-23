@@ -43,12 +43,10 @@ public class UserController {
                 ));
     }
 
-    @PutMapping("/info/{id}")
+    @PutMapping("/info")
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto,
-                                                  @PositiveOrZero @PathVariable("id") long id,
                                                   @AuthenticationPrincipal JwtUser user) {
-        Long userId = user.getId();
-        if (userId != id || userId != userDto.getId()) {
+        if (user.getId() != userDto.getId()) {
             throw new AccessDeniedException(
                     messageSourceUtil.getExceptionMessageSource("exception.permission-denied.user-profile"));
         }
