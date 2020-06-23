@@ -50,14 +50,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<ErrorMessage> handleSecurityException(SecurityException e,
-                                                          ServletWebRequest request) {
+    @ExceptionHandler({SecurityException.class, AccessDeniedException.class})
+    public ResponseEntity<ErrorMessage> handleSecurityException(Exception e, ServletWebRequest request) {
 
-        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.CONFLICT,
+        HttpStatus httpStatus = e instanceof SecurityException ? HttpStatus.CONFLICT : HttpStatus.FORBIDDEN;
+        ErrorMessage errorMessage = getErrorMessage(request, httpStatus,
                 "exception.security", Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(INFO, errorMessage);
-        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorMessage, httpStatus);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -121,15 +121,6 @@ public class GlobalExceptionHandler {
                 "exception.validation", violations);
         logErrorMessage(WARN, errorMessage);
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorMessage> handlerAccessDenied(AccessDeniedException e,
-                                                            ServletWebRequest request) {
-        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.FORBIDDEN,
-                "exception.security", Collections.singletonList(e.getLocalizedMessage()));
-        logErrorMessage(WARN, errorMessage);
-        return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(IllegalOperationException.class)
