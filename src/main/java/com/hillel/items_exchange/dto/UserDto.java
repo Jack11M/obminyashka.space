@@ -30,10 +30,13 @@ public class UserDto {
     private String email;
     @NotNull(message = "{invalid.not-null}")
     private Boolean online;
-    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @NotNull(message = "{invalid.not-null}")
+//    @Size(min = 2, max = 50, message = "{invalid.size}")
     private String firstName;
-    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @NotNull(message = "{invalid.not-null}")
+//    @Size(min = 2, max = 50, message = "{invalid.size}")
     private String lastName;
+    @NotNull(message = "{invalid.not-null}")
     private String avatarImage;
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
