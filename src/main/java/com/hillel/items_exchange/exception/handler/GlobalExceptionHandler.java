@@ -135,10 +135,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalOperationException.class)
     public ResponseEntity<ErrorMessage> handlerIllegalOperation(IllegalOperationException e,
                                                                 ServletWebRequest request) {
-        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.METHOD_NOT_ALLOWED,
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.FORBIDDEN,
                 "exception.illegal.operation", Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(WARN, errorMessage);
-        return new ResponseEntity<>(errorMessage, HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,
