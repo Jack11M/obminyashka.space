@@ -1,10 +1,13 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.mapper.UserMapper;
+import com.hillel.items_exchange.model.Child;
+import com.hillel.items_exchange.model.Phone;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.util.MessageSourceUtil;
@@ -17,17 +20,20 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ChildService childService;
-    private final PhoneService phoneService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final MessageSourceUtil messageSourceUtil;
     private final ModelMapper modelMapper;
 
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
@@ -48,23 +54,35 @@ public class UserService {
                 .orElseThrow(IllegalStateException::new);
         User updatedUser = mapDtoToUser(newUserDto);
 
-        if (!bCryptPasswordEncoder.matches(updatedUser.getPassword(), currentUser.getPassword())) {
+        if (!currentUser.getUsername().equals(updatedUser.getUsername())) {
             throw new IllegalOperationException(
-                    messageSourceUtil.getExceptionMessageSource("exception.illegal.password.change"));
+                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", "username"));
         }
 
-        if (!updatedUser.getUsername().equals(currentUser.getUsername())) {
-            throw new IllegalOperationException(
-                    messageSourceUtil.getExceptionMessageSource("exception.illegal.username.change"));
-        }
-
-        BeanUtils.copyProperties(updatedUser, currentUser,
+        BeanUtils.copyProperties(newUserDto, currentUser,
                 "id", "advertisements", "deals", "role", "password", "online", "lastOnlineTime",
                 "phones", "children", "created", "updated", "status");
-        childService.updateAll(updatedUser.getChildren(), currentUser);
-        phoneService.updateAll(updatedUser.getPhones(), currentUser);
+        Set<Child> children = convertToModel(newUserDto.getChildren(), Child.class);
+        currentUser.getChildren().addAll(children);
+        Set<Phone> phones = newUserDto.getPhones().stream().map(this::mapPhones).collect(Collectors.toSet());
+        currentUser.getPhones().removeIf(phone -> phones.stream()
+                .map(Phone::getPhoneNumber).noneMatch(phoneNumber -> phoneNumber == phone.getPhoneNumber()));
+        currentUser.getPhones().addAll(phones);
 
         return mapUserToDto(userRepository.saveAndFlush(currentUser));
+    }
+
+    private <T, K> Set<K> convertToModel(List<T> tList, Class<K> kClass) {
+        return tList.stream().map(t -> modelMapper.map(t, kClass)).collect(Collectors.toSet());
+    }
+
+    private Phone mapPhones(PhoneDto phoneDto) {
+        Converter<String, Long> stringLongConverter = context ->
+                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
+        modelMapper.typeMap(PhoneDto.class, Phone.class)
+                .addMappings(mapper -> mapper.using(stringLongConverter)
+                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
+        return modelMapper.map(phoneDto, Phone.class);
     }
 
     public boolean existsByUsername(String username) {

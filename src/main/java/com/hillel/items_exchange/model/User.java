@@ -4,8 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -49,24 +49,14 @@ public class User extends BaseEntity {
     private List<Deal> deals;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Phone> phones = new ArrayList<>();
+    private Set<Phone> phones;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Child> children = new ArrayList<>();
+    private Set<Child> children;
 
     @PreUpdate
     public void addUser() {
-        phones.forEach(phone -> phone.setUser(this));
-        children.forEach(child -> child.setUser(this));
-    }
-
-    public void addChild(Child child) {
-        children.add(child);
-        child.setUser(this);
-    }
-
-    public void addPhone(Phone phone) {
-        phones.add(phone);
-        phone.setUser(this);
+        phones.stream().filter(phone -> phone.getUser() == null).forEach(phone -> phone.setUser(this));
+        children.stream().filter(child -> child.getUser() == null).forEach(child -> child.setUser(this));
     }
 }
