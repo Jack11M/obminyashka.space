@@ -21,6 +21,7 @@ import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,6 +62,36 @@ class UserControllerTest {
                 .andExpect(status().isForbidden())
                 .andReturn();
         assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void getChild_Success() throws Exception {
+        mockMvc.perform(get("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].sex").value("male"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].sex").value("female"));
+
+    }
+
+    @Test
+    @WithMockUser(username = "no-such-user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void getChild_Fail_NoSuchUser() throws Exception {
+        mockMvc.perform(get("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -167,7 +198,7 @@ class UserControllerTest {
                 .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

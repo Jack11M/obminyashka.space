@@ -3,6 +3,7 @@ package com.hillel.items_exchange.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -18,8 +19,7 @@ public class Child {
     private long id;
     private String sex;
     @Column(name = "birth_date")
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    private LocalDate birthDate;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

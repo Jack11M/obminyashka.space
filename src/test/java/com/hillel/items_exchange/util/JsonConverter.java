@@ -35,7 +35,6 @@ public class JsonConverter {
 
     private static void objectMapperInit() {
         objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getDefault());
         objectMapper.registerModule(new JavaTimeModule());
     }
 }

@@ -83,11 +83,11 @@ user:
 child:
   - id: 1
     sex: 'female'
-    birth_date: '2019-11-11'
+    birth_date: '2018-01-01'
     user_id: 1
   - id: 2
     sex: 'male'
-    birth_date: '2019-12-12'
+    birth_date: '2018-02-02'
     user_id: 1
 
 role:
