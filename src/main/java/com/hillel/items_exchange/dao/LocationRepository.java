@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
-    Optional<Location> findLocationByCityAndDistrict(String city, String district);
+    Optional<Location> findByCityAndDistrict(String city, String district);
 }

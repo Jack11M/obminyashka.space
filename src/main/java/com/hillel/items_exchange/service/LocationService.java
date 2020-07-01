@@ -13,7 +13,7 @@ public class LocationService {
     private final LocationRepository locationRepository;
 
     public Optional<Location> findByCityAndDistrict(String city, String district) {
-        return locationRepository.findLocationByCityAndDistrict(city, district);
+        return locationRepository.findByCityAndDistrict(city, district);
     }
 
     public Location createLocation(Location location) {

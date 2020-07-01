@@ -51,7 +51,7 @@ public class AdvertisementService {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
-        adv.setLocation(findAdvertisementLocation(adv).orElseGet(() -> locationService.createLocation(adv.getLocation())));
+        setNewExistsLocation(adv, adv.getLocation());
         adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId())
                 .orElseThrow(EntityNotFoundException::new));
 
@@ -71,8 +71,10 @@ public class AdvertisementService {
                 .orElseThrow(EntityNotFoundException::new));
 
         fromDB.setStatus(Status.UPDATED);
-        fromDB.setLocation(findAdvertisementLocation(toUpdate)
-                .orElseGet(() -> locationService.createLocation(toUpdate.getLocation())));
+        Location toUpdateLocation = toUpdate.getLocation();
+        if (!toUpdateLocation.equals(fromDB.getLocation())) {
+            setNewExistsLocation(fromDB, toUpdateLocation);
+        }
         fromDB.setProduct(product);
 
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
@@ -99,8 +101,8 @@ public class AdvertisementService {
         return modelMapper.map(advertisement, AdvertisementDto.class);
     }
 
-    private Optional<Location> findAdvertisementLocation(Advertisement advertisement) {
-        return locationService.findByCityAndDistrict(
-                advertisement.getLocation().getCity(), advertisement.getLocation().getDistrict());
+    private void setNewExistsLocation(Advertisement adv, Location toUpdateLocation) {
+        adv.setLocation(locationService.findByCityAndDistrict(toUpdateLocation.getCity(), toUpdateLocation.getDistrict())
+                .orElseGet(() -> locationService.createLocation(toUpdateLocation)));
     }
 }

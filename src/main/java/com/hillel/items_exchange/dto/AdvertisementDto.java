@@ -13,6 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 public class AdvertisementDto {
     @PositiveOrZero(message = "{invalid.id}")
