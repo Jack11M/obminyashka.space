@@ -15,21 +15,21 @@ var gulp = require('gulp'),
     reload = browserSync.reload;
 
     var path = {
-        build: { //Тут мы укажем куда складывать готовые после сборки файлы
+        build: { //Here we indicate where to put ready files after assembly
           html: 'dist/',
           js: 'dist/js/',
           css: 'dist/css/',
           img: 'dist/images/',
           fonts: 'dist/fonts/'
         },
-        src: { //Пути откуда брать исходники
-          html: 'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
-          js: 'src/js/main.js',//В стилях и скриптах нам понадобятся только main файлы
+        src: { //Ways to get sources from
+          html: 'src/*.html', //The src / *. Html syntax tells gulp that we want to take all files with a .html extension
+          js: 'src/js/main.js',//In styles and scripts we need only main files
           style: 'src/scss/main.scss',
-          img: 'src/images/**/*.*', //Синтаксис img/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
+          img: 'src/images/**/*.*', //The syntax img /**/*.* means - take all files of all extensions from the folder and from the subdirectories
           fonts: 'src/fonts/**/*.*'
         },
-        watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
+        watch: { //Here we indicate which files we want to monitor.
           html: 'src/**/*.html',
           js: 'src/js/**/*.js',
           style: 'src/scss/**/*.scss',
@@ -50,30 +50,30 @@ var gulp = require('gulp'),
 };
 
 gulp.task('html:build', async function () {
-  gulp.src(path.src.html) //Выберем файлы по нужному пути
-      .pipe(rigger()) //Прогоним через rigger
-      .pipe(gulp.dest(path.build.html)) //Выплюнем их в папку build
-      .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
+  gulp.src(path.src.html) //Select the files in the desired path
+      .pipe(rigger()) //Drive through rigger
+      .pipe(gulp.dest(path.build.html)) //Spit them out in the build folder
+      .pipe(reload({stream: true})); //And restart our server for updates
 });
 
 gulp.task('js:build', async function () {
-  gulp.src(path.src.js) //Найдем наш main файл
-      .pipe(rigger()) //Прогоним через rigger
-      .pipe(sourcemaps.init()) //Инициализируем sourcemap
-      .pipe(uglify()) //Сожмем наш js
-      .pipe(sourcemaps.write()) //Пропишем карты
-      .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
-      .pipe(reload({stream: true})); //И перезагрузим сервер
+  gulp.src(path.src.js) //Find our main file
+      .pipe(rigger()) // Drive through rigger
+      .pipe(sourcemaps.init()) //Initialize sourcemap
+      .pipe(uglify()) //Squeeze our js
+      .pipe(sourcemaps.write()) //We will write cards
+      .pipe(gulp.dest(path.build.js)) //Spit out the finished file in build
+      .pipe(reload({stream: true})); //And restart the server
 });
 
 gulp.task('style:build', async function () {
-    gulp.src(path.src.style) //Выберем наш main.scss
-        .pipe(sourcemaps.init()) //То же самое что и с js
-        .pipe(sass().on('error', sass.logError)) //Скомпилируем
-        .pipe(prefixer('last 2 versions')) //Добавим вендорные префиксы
-        .pipe(cssmin()) //Сожмем
+    gulp.src(path.src.style) //Choose our main.scss
+        .pipe(sourcemaps.init()) //Same as js
+        .pipe(sass().on('error', sass.logError)) //Compile
+        .pipe(prefixer('last 2 versions')) //Add vendor prefixes
+        .pipe(cssmin()) //Squeeze
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest(path.build.css)) //И в build
+        .pipe(gulp.dest(path.build.css)) // And in build
         .pipe(reload({stream: true}));
 });
 

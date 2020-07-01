@@ -33,11 +33,11 @@
     color: #111111;
     font-weight: 500;
   }
-  /* стили при наведении курсора на checkbox */
+  /* hover styles on checkbox */
   .custom-checkbox:not(:disabled):not(:checked)+label:hover::before {
     border-color: #b3d7ff;
   }
-  /* стили для чекбокса, находящегося в состоянии disabled */
+  /* styles for a disabled checkbox */
   .custom-checkbox:disabled+label::before {
     background-color: #e9ecef;
   }
