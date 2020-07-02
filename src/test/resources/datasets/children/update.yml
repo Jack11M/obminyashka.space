@@ -80,21 +80,21 @@ user:
     status: 'ACTIVE'
     role_id: 1
 
+child:
+  - id: 1
+    sex: 'female'
+    birth_date: '2018-01-01'
+    user_id: 1
+  - id: 2
+    sex: 'male'
+    birth_date: '2018-02-02'
+    user_id: 1
+
 role:
   - id: 1
     name: 'ROLE_ADMIN'
   - id: 2
     name: 'ROLE_USER'
-
-child:
-  - id: 1
-    sex: 'male'
-    birth_date: '2019-01-01'
-    user_id: 1
-  - id: 2
-    sex: 'female'
-    birth_date: '2019-02-02'
-    user_id: 1
 
 location:
   - id: 1
