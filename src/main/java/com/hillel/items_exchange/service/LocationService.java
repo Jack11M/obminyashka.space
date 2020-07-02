@@ -12,8 +12,8 @@ import java.util.Optional;
 public class LocationService {
     private final LocationRepository locationRepository;
 
-    public Optional<Location> findByCityAndDistrict(String city, String district) {
-        return locationRepository.findByCityAndDistrict(city, district);
+    public Optional<Location> findById(long id) {
+        return locationRepository.findById(id);
     }
 
     public Location createLocation(Location location) {

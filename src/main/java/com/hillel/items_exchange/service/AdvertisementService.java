@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,9 +52,7 @@ public class AdvertisementService {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
-        setNewExistsLocation(adv, adv.getLocation());
-        adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId())
-                .orElseThrow(EntityNotFoundException::new));
+        updateSubcategory(adv.getProduct(), advertisementDto.getProduct().getSubcategoryId());
 
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
@@ -62,23 +61,53 @@ public class AdvertisementService {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
-        Product product = toUpdate.getProduct();
 
-        BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status",
-                "location", "user", "product");
+        updateAdvertisement(toUpdate, fromDB);
 
-        product.setSubcategory(subcategoryService.findById(product.getSubcategory().getId())
-                .orElseThrow(EntityNotFoundException::new));
+        Product toUpdateProduct = toUpdate.getProduct();
+        Product fromDBProduct = fromDB.getProduct();
+        updateProduct(toUpdateProduct, fromDBProduct);
+        updateSubcategory(fromDBProduct, toUpdateProduct.getSubcategory().getId());
+        updateImages(toUpdateProduct, fromDBProduct);
+        createOrUpdateLocation(toUpdate, fromDB);
 
         fromDB.setStatus(Status.UPDATED);
-        Location toUpdateLocation = toUpdate.getLocation();
-        if (!toUpdateLocation.equals(fromDB.getLocation())) {
-            setNewExistsLocation(fromDB, toUpdateLocation);
-        }
-        fromDB.setProduct(product);
-
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
+    }
+
+    private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
+        if (!fromDB.equals(toUpdate)) {
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "product");
+        }
+    }
+
+    private void updateProduct(Product toUpdateProduct, Product fromDBProduct) {
+        if (!fromDBProduct.equals(toUpdateProduct)) {
+            BeanUtils.copyProperties(toUpdateProduct, fromDBProduct, "advertisement", "subcategory", "images");
+        }
+    }
+
+    private void updateSubcategory(Product fromDBProduct, long id) {
+        fromDBProduct.setSubcategory(subcategoryService.findById(id)
+                .orElseThrow(EntityNotFoundException::new));
+    }
+
+    private void updateImages(Product toUpdateProduct, Product fromDBProduct) {
+        List<Image> existImages = fromDBProduct.getImages();
+        List<Image> newImages = toUpdateProduct.getImages();
+        if (existImages.size() != newImages.size() || !existImages.containsAll(newImages)) {
+            existImages.retainAll(newImages);
+        }
+    }
+
+    private void createOrUpdateLocation(Advertisement toUpdate, Advertisement fromDB) {
+        Location toUpdateLocation = toUpdate.getLocation();
+        if (!toUpdateLocation.equals(fromDB.getLocation())) {
+            Location newLocation = locationService.findById(toUpdateLocation.getId())
+                    .orElse(locationService.createLocation(toUpdateLocation));
+            fromDB.setLocation(newLocation);
+        }
     }
 
 
@@ -99,10 +128,5 @@ public class AdvertisementService {
 
     private AdvertisementDto mapAdvertisementToDto(Advertisement advertisement) {
         return modelMapper.map(advertisement, AdvertisementDto.class);
-    }
-
-    private void setNewExistsLocation(Advertisement adv, Location toUpdateLocation) {
-        adv.setLocation(locationService.findByCityAndDistrict(toUpdateLocation.getCity(), toUpdateLocation.getDistrict())
-                .orElseGet(() -> locationService.createLocation(toUpdateLocation)));
     }
 }
