@@ -18,7 +18,7 @@
 
     <properties>
         <java.version>11</java.version>
-        <mysql.connetor.version>8.0.14</mysql.connetor.version>
+        <mysql.connetor.version>8.0.16</mysql.connetor.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>2.9.2</swagger.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
