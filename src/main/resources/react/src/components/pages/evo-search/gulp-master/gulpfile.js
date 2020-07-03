@@ -15,7 +15,7 @@ var gulp = require('gulp'),
     reload = browserSync.reload;
 
     var path = {
-        build: { //Here we indicate where to put ready files after assembly
+        build: { 
           html: 'dist/',
           js: 'dist/js/',
           css: 'dist/css/',
@@ -23,7 +23,7 @@ var gulp = require('gulp'),
           fonts: 'dist/fonts/'
         },
         src: { //Ways to get sources from
-          html: 'src/*.html', //The src / *. Html syntax tells gulp that we want to take all files with a .html extension
+          html: 'src/*.html', 
           js: 'src/js/main.js',//In styles and scripts we need only main files
           style: 'src/scss/main.scss',
           img: 'src/images/**/*.*', //The syntax img /**/*.* means - take all files of all extensions from the folder and from the subdirectories
@@ -82,55 +82,45 @@ gulp.task('fonts:build', async function() {
         .pipe(gulp.dest(path.build.fonts))
 });
 
-
-//compressing all images
-
 var cache = require('gulp-cache');
 var imagemin = require('gulp-imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var imageminZopfli = require('imagemin-zopfli');
-var imageminMozjpeg = require('imagemin-mozjpeg'); //need to run 'brew install libpng'
+var imageminMozjpeg = require('imagemin-mozjpeg'); 
 var imageminGiflossy = require('imagemin-giflossy');
 
 gulp.task('image:build', async function() {
   return gulp.src(path.src.img)
       .pipe(cache(imagemin([
-          //png
+          
           imageminPngquant({
               speed: 1,
-              quality: [0.95, 1] //lossy settings
+              quality: [0.95, 1] 
           }),
           imageminZopfli({
               more: true
-              // iterations: 50 // very slow but more effective
           }),
-          //gif
-          // imagemin.gifsicle({
-          //     interlaced: true,
-          //     optimizationLevel: 3
-          // }),
-          //gif very light lossy, use only one of gifsicle or Giflossy
           imageminGiflossy({
               optimizationLevel: 3,
-              optimize: 3, //keep-empty: Preserve empty transparent frames
+              optimize: 3, 
               lossy: 2
           }),
-          //svg
+         
           imagemin.svgo({
               plugins: [{
                   removeViewBox: false
               }]
           }),
-          //jpg lossless
+          
           imagemin.jpegtran({
               progressive: true
           }),
-          //jpg very light lossy, use vs jpegtran
+         
           imageminMozjpeg({
               quality: 90
           })
       ])))
-      .pipe(gulp.dest(path.build.img)); //И бросим в build
+      .pipe(gulp.dest(path.build.img)); 
 });
 
 gulp.task('build', gulp.series( 
