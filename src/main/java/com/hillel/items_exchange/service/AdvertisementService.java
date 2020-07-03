@@ -97,7 +97,7 @@ public class AdvertisementService {
         List<Image> newImages = toUpdateProduct.getImages();
         if (existImages.size() != newImages.size() || !existImages.containsAll(newImages)) {
             existImages.retainAll(newImages);
-            existImages.addAll(newImages);
+            newImages.stream().filter(image -> !existImages.contains(image)).forEach(existImages::add);
         }
     }
 
