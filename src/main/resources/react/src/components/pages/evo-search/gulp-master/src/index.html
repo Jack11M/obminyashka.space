@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Результаты поиска</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+
+  <body>
+    <div class="wrapper">
+      //= templates/header.html
+
+        <main class="main">
+          <div class="container">
+            <ul class="breadcrumbs">
+              <li class="breadcrumb-item"><a href="#">Главная</a></li>
+              <li class="breadcrumb-item"><a href="#">Поиск</a></li>
+              <li class="breadcrumb-item"><a href="#" class="is-active not-hover">Следующая страница</a></li>	
+            </ul>
+            <div class="grid">
+              <aside class="aside">
+                <div class="aside_block-1">
+                  <h3 class="title-filter">Фильтр</h3>
+                  <hr class="hr_aside">
+                  <span class="filters_dropdown_desc">Локация:</span>
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_location">Город:</button>
+                    <div class="dropdown-child dropdown-child_location">
+                      <a href="#">Харьков</a>
+                      <a href="#">Киев</a>
+                      <a href="#">Одесса</a>
+                      <a href="#">Львов</a>
+                      <a href="#">Полтава</a>
+                      <a href="#">Чернигов</a>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <button class="mainmenubtn_location">Район:</button>
+                    <div class="dropdown-child dropdown-child_location">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+                  <span class="filters_dropdown_desc">Пол:</span>
+                  <input type="checkbox" class="custom-checkbox" id="Women" name="Women" value="yes">
+                  <label for="Women">Женский</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Men" name="Men" value="yes">
+                  <label for="Men">Мужской</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Unisex" name="Unisex" value="yes">
+                  <label for="Unisex">Мальчик\Девочка</label>
+
+                  <span class="filters_dropdown_desc">Возраст:</span>
+                  <input type="checkbox" class="custom-checkbox" id="Baby" name="Baby" value="yes">
+                  <label for="Baby">0</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="One_year" name="One_year" value="yes">
+                  <label for="One_year">1 - 2</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Three_year" name="Three_year" value="yes">
+                  <label for="Three_year">2 - 4</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Five_year" name="Five_year" value="yes">
+                  <label for="Five_year">5 - 7</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Ten_year" name="Ten_year" value="yes">
+                  <label for="Ten_year">8 - 11</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Teenager" name="Teenager" value="yes">
+                  <label for="Teenager">11 - 14</label>
+
+                  <span class="filters_dropdown_desc">Размер (одежда):</span>
+                  <input type="checkbox" class="custom-checkbox" id="50sm" name="50sm" value="yes">
+                  <label for="50sm">50 - 80 см</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="80sm" name="80sm" value="yes">
+                  <label for="80sm">80 - 92 см</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="92sm" name="92sm" value="yes">
+                  <label for="92sm">92 - 104 см</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="110sm" name="110sm" value="yes">
+                  <label for="110sm">110 - 122 см</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="128sm" name="128sm" value="yes">
+                  <label for="128sm">128 - 146 см</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="146sm" name="146sm" value="yes">
+                  <label for="146sm">146 - 164 см</label>
+
+                  <span class="filters_dropdown_desc">Размер (обувь):</span>
+                  <div class="dropdown dropdown_location dropdown_size">
+                    <button class="mainmenubtn_location">Стелька (см) - Размер:</button>
+                    <div class="dropdown-child dropdown-child_size">
+                      <a href="#">9,5 см - 1</a>
+                      <a href="#">10 см - 16,5</a>
+                      <a href="#">11 см - 18</a>
+                      <a href="#">11,5 см - 19</a>
+                      <a href="#">10 см - 16,5</a>
+                      <a href="#">10,5 см - 17</a>
+                      <a href="#">11 см - 18</a>
+                      <a href="#">11,5 см - 19</a>
+                    </div>
+                  </div>
+                 
+                  <span class="filters_dropdown_desc">Сезон:</span>
+                  <input type="checkbox" class="custom-checkbox" id="DemiSeason" name="DemiSeason" value="yes">
+                  <label for="DemiSeason">Демисезон</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Summer" name="Summer" value="yes">
+                  <label for="Summer">Лето</label>
+
+                  <input type="checkbox" class="custom-checkbox" id="Winter" name="Winter" value="yes">
+                  <label for="Winter">Зима</label>
+                </div>
+                <div class="aside_block-1 second-block">
+                  <h3 class="title-filter">Категории</h3>
+                  <hr class="hr_aside">
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Одежда</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Шорты</a>
+                      <a href="#">Футболки</a>
+                      <a href="#">Свитера</a>
+                      <a href="#">Кофты</a>
+                      <a href="#">Платья</a>
+                      <a href="#">Штаны</a>
+                      <a href="#">Куртки</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Обувь</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Кросовки, Кеды</a>
+                      <a href="#">Ботинки, Сапоги</a>
+                      <a href="#">Босоножки, Тапочки</a>
+                      <a href="#">Туфли, Мокасины</a>
+                      <a href="#">Другое</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Игрушки</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Детская мебель</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Транспорт для детей</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Малыши до года</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Книги</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Карнавальные костюмы</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+
+                  <div class="dropdown dropdown_location">
+                    <button class="mainmenubtn_block-2">Другое</button>
+                    <div class="dropdown-child dropdown-child_clothes">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+                </div>
+              </aside>
+              <div class="content">
+                <div class="grid sort">
+                  <span class="icon-menu"></span>
+                  <span class="icon-list1"></span>
+                  <span class="dropdown-desc">Показать:</span>
+                  <div class="dropdown">
+                    <button class="mainmenubtn">15</button>
+                    <div class="dropdown-child">
+                      <a href="#">30</a>
+                      <a href="#">40</a>
+                      <a href="#">55</a>
+                    </div>
+                  </div>
+                  <span class="dropdown-desc">Сортировать:</span>
+                  <div class="dropdown">
+                    <button class="mainmenubtn_2">Без сортировки</button>
+                    <div class="dropdown-child dropdown_large">
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                      <a href="#">Lorem ipsum</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="titles">
+                  <h2 class="title_in-cabinet">результаты поиска</h2>
+                </div> 
+                <div class="cards_replies">
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="card_header">
+                        <img src="images/star2.png" alt="img">
+                    </div>
+                    <figure class="card_figure">
+                        <img src="images/mustang-princessa-mustang-princess-12141820-velosiped-detskii-photo-064d 1.png" alt="img">
+                    </figure>
+                    <h6 class="card_title">Велосипед детский для девочки 5 лет</h6>
+                    <img src="images/location.svg" class="card_location" alt="img">
+                    <span class="card_location-city">Харьков</span>
+                    <div class="card_footer">
+                      <button class="card_button">СМОТРЕТЬ</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+      //= templates/footer.html
+    </div>
+
+    
+    <script src="js/main.js"></script>
+  </body>
+</html>

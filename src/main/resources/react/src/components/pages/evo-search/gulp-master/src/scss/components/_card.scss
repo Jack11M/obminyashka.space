@@ -1,0 +1,101 @@
+.card {
+    position:relative;
+    padding: 0px 0px 61px;
+    background-color: #ffffff;
+    border: 2px dashed #C4C4C4;
+    border-radius: 19px;
+    width: 100%;
+    max-width: 290px;
+    text-align: center;
+    margin: 26px 11px;
+    &_header {
+        position: absolute;
+        top: 0;
+        left: 40%;
+        right: 40%;
+        padding: 5px;
+        background-color: #A0A0A0;
+        border-radius: 0 0 50% 50%;
+        transition: all 0.3s linear;
+        &:hover {
+          background-color: #D8C000;
+          cursor: pointer;
+          
+        }
+        & img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+    }
+    &_figure {
+      & img {
+        border-radius: 19px 19px 0 0;
+        width: 287px;
+        height: 250px;
+      }
+    }
+    &_title {
+        font-family: 'Proxima Nova', sans-serif;
+        font-size: 16px;
+        line-height: 19px;
+        color: #111111;
+        padding: 10px 26px 0;
+        margin: 0;
+    }
+    &_location-city {
+        display: inline-block;
+        font-family: 'Proxima Nova';
+        font-size: 14px;
+        line-height: 24px;
+        color: #00C0FF;
+        padding: 15px 0 21px 3px;
+        cursor: pointer;
+    }
+    &_footer {
+        position: absolute;
+        bottom: 12px;
+        left: 16%;
+        &_dialogues {
+            background-image: url(../images/Vector.png);
+            background-position: bottom right;
+            background-repeat: no-repeat;
+            background-size: auto;
+            display: inline-block;
+            height: 52px;
+            width: 55px;
+            transition: all 0.3s linear;
+            &:hover {
+              
+              background-image: url(../images/Vector_hover.png);
+            }
+            &-numbers {
+                position: absolute;
+                left: 88%;
+                top: 20px;
+                cursor: pointer;
+            }
+        }
+    }
+    &_button {
+        background-color: #12B6ED;
+        border-radius: 63px;
+        border: none;
+        width: 100%;
+        max-width: 190px;
+        color: #ffffff;
+        padding: 15px 54px;
+        transition: all 0.3s linear;
+        &:hover {
+            background-color: $btn-bg-hover;
+            cursor: pointer;
+        }
+    }
+  }
+
+.cards_replies {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-left: -10px;
+}
