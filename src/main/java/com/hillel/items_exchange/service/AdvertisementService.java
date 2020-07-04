@@ -3,9 +3,7 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
-import com.hillel.items_exchange.model.Advertisement;
-import com.hillel.items_exchange.model.Status;
-import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.model.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -24,6 +22,7 @@ public class AdvertisementService {
     private final ModelMapper modelMapper;
     private final AdvertisementRepository advertisementRepository;
     private final SubcategoryService subcategoryService;
+    private final LocationService locationService;
 
     public List<AdvertisementDto> findAll(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
@@ -52,8 +51,8 @@ public class AdvertisementService {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
-        adv.getProduct().setSubcategory(subcategoryService.findById(advertisementDto.getProduct().getSubcategoryId())
-                .orElseThrow(EntityNotFoundException::new));
+        updateSubcategory(adv.getProduct(), advertisementDto.getProduct().getSubcategoryId());
+
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
@@ -61,13 +60,54 @@ public class AdvertisementService {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
-        BeanUtils.copyProperties(toUpdate, fromDB, "location", "user", "product", "created",
-                "updated", "status");
+
+        updateAdvertisement(toUpdate, fromDB);
+
+        Product toUpdateProduct = toUpdate.getProduct();
+        Product fromDBProduct = fromDB.getProduct();
+        updateProduct(toUpdateProduct, fromDBProduct);
+        updateSubcategory(fromDBProduct, toUpdateProduct.getSubcategory().getId());
+        updateImages(toUpdateProduct, fromDBProduct);
+        createOrUpdateLocation(toUpdate, fromDB);
+
         fromDB.setStatus(Status.UPDATED);
-        fromDB.getProduct().setSubcategory(subcategoryService.findById(dto.getProduct().getSubcategoryId())
-                .orElseThrow(EntityNotFoundException::new));
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
+    }
+
+    private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
+        if (!fromDB.equals(toUpdate)) {
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "product");
+        }
+    }
+
+    private void updateProduct(Product toUpdateProduct, Product fromDBProduct) {
+        if (!fromDBProduct.equals(toUpdateProduct)) {
+            BeanUtils.copyProperties(toUpdateProduct, fromDBProduct, "advertisement", "subcategory", "images");
+        }
+    }
+
+    private void updateSubcategory(Product fromDBProduct, long id) {
+        fromDBProduct.setSubcategory(subcategoryService.findById(id)
+                .orElseThrow(EntityNotFoundException::new));
+    }
+
+    private void updateImages(Product toUpdateProduct, Product fromDBProduct) {
+        List<Image> existImages = fromDBProduct.getImages();
+        List<Image> newImages = toUpdateProduct.getImages();
+        if (existImages.size() != newImages.size() || !existImages.containsAll(newImages)) {
+            existImages.retainAll(newImages);
+            newImages.stream().filter(image -> !existImages.contains(image)).forEach(existImages::add);
+        }
+    }
+
+    private void createOrUpdateLocation(Advertisement toUpdate, Advertisement fromDB) {
+        Location toUpdateLocation = toUpdate.getLocation();
+        if (!toUpdateLocation.equals(fromDB.getLocation())) {
+            Location newLocation = locationService.findById(toUpdateLocation.getId())
+                    .orElse(locationService.createLocation(toUpdateLocation));
+            fromDB.setLocation(newLocation);
+        }
     }
 
 
