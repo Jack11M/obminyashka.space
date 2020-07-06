@@ -74,7 +74,7 @@ class AdvertisementControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(get("/adv?page={page}&size={size}", page, size))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Page size must not be less than one"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
     }
 
     private void setPageAndSize(int page, int size) {
