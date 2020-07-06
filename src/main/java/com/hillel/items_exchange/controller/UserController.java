@@ -12,11 +12,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.*;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @RestController
 @RequestMapping("/user")
@@ -40,7 +41,7 @@ public class UserController {
     @PutMapping("/info")
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal) {
         User user = userService.findByUsernameOrEmail(principal.getName())
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(EntityNotFoundException::new);
         if (user.getId() != userDto.getId()) {
             throw new AccessDeniedException(getExceptionMessageSource("exception.permission-denied.user-profile"));
         }
