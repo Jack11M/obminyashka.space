@@ -32,9 +32,11 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
 import com.hillel.items_exchange.service.RoleService;
 import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import com.hillel.items_exchange.validator.UserLoginDtoValidator;
 import com.hillel.items_exchange.validator.UserRegistrationDtoValidator;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @Slf4j
 @RestController
@@ -50,7 +52,6 @@ public class AuthController {
     private final UserRegistrationDtoValidator userRegistrationDtoValidator;
     private final UserLoginDtoValidator userLoginDtoValidator;
     private final AuthenticationManager authenticationManager;
-    private final MessageSourceUtil messageSourceUtil;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final RoleService roleService;
@@ -68,8 +69,8 @@ public class AuthController {
             String username = userLoginDto.getUsernameOrEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             User user = userService.findByUsernameOrEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(messageSourceUtil
-                            .getExceptionMessageSourceWithAdditionalInfo("user.not-found", username)));
+                    .orElseThrow(() -> new UsernameNotFoundException(
+                            getExceptionMessageSourceWithAdditionalInfo("user.not-found", username)));
             String token = jwtTokenProvider.createToken(username, user.getRole());
             Map<String, String> response = new HashMap<>();
             response.put(USERNAME, username);
@@ -77,8 +78,7 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(messageSourceUtil
-                    .getExceptionMessageSource("invalid.username-or-password"));
+            throw new BadCredentialsException(getExceptionMessageSource("invalid.username-or-password"));
         }
     }
 
@@ -95,6 +95,6 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
 
-        throw new BadRequestException(messageSourceUtil.getExceptionMessageSource("user.not-registered"));
+        throw new BadRequestException(getExceptionMessageSource("user.not-registered"));
     }
 }

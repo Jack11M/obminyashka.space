@@ -9,7 +9,6 @@ import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import com.hillel.items_exchange.util.UserDtoUpdatingUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,9 +51,6 @@ public class GlobalExceptionHandlerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private MessageSourceUtil messageSourceUtil;
-
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
@@ -76,7 +72,7 @@ public class GlobalExceptionHandlerTest {
         validUserDto = UserDtoUpdatingUtil.getValidUserDto();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
-                .setControllerAdvice(new GlobalExceptionHandler(messageSourceUtil))
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .build();
     }

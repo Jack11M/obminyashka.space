@@ -2,7 +2,6 @@ package com.hillel.items_exchange.exception.handler;
 
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static org.apache.logging.log4j.Level.*;
 
 @ControllerAdvice
@@ -37,8 +37,6 @@ public class GlobalExceptionHandler {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter
             .ofLocalizedDateTime(FormatStyle.MEDIUM)
             .withLocale(Locale.getDefault());
-
-    private final MessageSourceUtil messageSourceUtil;
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleUserNotFoundException(UsernameNotFoundException e,
@@ -136,7 +134,7 @@ public class GlobalExceptionHandler {
                                          String errorMessage, List<String> details) {
 
         return new ErrorMessage(dateFormat.format(LocalDateTime.now()), status.value(),
-                messageSourceUtil.getExceptionMessageSource(errorMessage), details,
+                getExceptionMessageSource(errorMessage), details,
                 request.getRequest().getRequestURI(), request.getHttpMethod());
     }
 
