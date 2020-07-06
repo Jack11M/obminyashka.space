@@ -7,10 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,10 +29,10 @@ public class UserDto {
     @NotNull(message = "{invalid.not-null}")
     private Boolean online;
     @NotNull(message = "{invalid.not-null}")
-//    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.size}")
     private String firstName;
     @NotNull(message = "{invalid.not-null}")
-//    @Size(min = 2, max = 50, message = "{invalid.size}")
+    @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.size}")
     private String lastName;
     @NotNull(message = "{invalid.not-null}")
     private String avatarImage;
@@ -42,8 +40,4 @@ public class UserDto {
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate lastOnlineTime;
-    @NotNull(message = "{invalid.not-null}")
-    private List<@Valid PhoneDto> phones;
-    @NotNull(message = "{invalid.not-null}")
-    private List<@Valid ChildDto> children;
 }
