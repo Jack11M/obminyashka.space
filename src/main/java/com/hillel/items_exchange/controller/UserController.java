@@ -1,14 +1,14 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.security.jwt.JwtUser;
+import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +38,16 @@ public class UserController {
     }
 
     @PutMapping("/info")
-    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto,
-                                                  @AuthenticationPrincipal JwtUser user) {
+    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal) {
+        User user = userService.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(IllegalStateException::new);
         if (user.getId() != userDto.getId()) {
-            throw new AccessDeniedException(
-                    getExceptionMessageSource("exception.permission-denied.user-profile"));
+            throw new AccessDeniedException(getExceptionMessageSource("exception.permission-denied.user-profile"));
         }
-        return new ResponseEntity<>(userService.update(userDto), HttpStatus.ACCEPTED);
+        try {
+            return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
+        } catch (IllegalOperationException e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 }

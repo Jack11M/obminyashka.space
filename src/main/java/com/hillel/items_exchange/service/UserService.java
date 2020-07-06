@@ -10,7 +10,6 @@ import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Phone;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.Converter;
@@ -25,7 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @Service
@@ -49,27 +47,21 @@ public class UserService {
         return userRepository.save(registeredUser).getId() != 0;
     }
 
-    public UserDto update(UserDto newUserDto) {
-        User currentUser = userRepository.findById(newUserDto.getId())
-                .orElseThrow(IllegalStateException::new);
-        User updatedUser = mapDtoToUser(newUserDto);
-
-        if (!currentUser.getUsername().equals(updatedUser.getUsername())) {
+    public UserDto update(UserDto newUserDto, User user) throws IllegalOperationException {
+        if (!newUserDto.getUsername().equals(user.getUsername())) {
             throw new IllegalOperationException(
-                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", "username"));
+                    getExceptionMessageSourceWithAdditionalInfo(
+                            "exception.illegal.field.change", "username"));
         }
-
-        BeanUtils.copyProperties(newUserDto, currentUser,
-                "id", "advertisements", "deals", "role", "password", "online", "lastOnlineTime",
-                "phones", "children", "created", "updated", "status");
-        Set<Child> children = convertToModel(newUserDto.getChildren(), Child.class);
-        currentUser.getChildren().addAll(children);
-        Set<Phone> phones = newUserDto.getPhones().stream().map(this::mapPhones).collect(Collectors.toSet());
-        currentUser.getPhones().removeIf(phone -> phones.stream()
-                .map(Phone::getPhoneNumber).noneMatch(phoneNumber -> phoneNumber == phone.getPhoneNumber()));
-        currentUser.getPhones().addAll(phones);
-
-        return mapUserToDto(userRepository.saveAndFlush(currentUser));
+        if (!bCryptPasswordEncoder.matches(newUserDto.getPassword(), user.getPassword())) {
+            throw new IllegalOperationException(
+                    getExceptionMessageSourceWithAdditionalInfo(
+                            "exception.illegal.field.change", "password"));
+        }
+        BeanUtils.copyProperties(newUserDto, user,
+                "id", "created", "updated", "status", "username", "password", "email", "online",
+                "lastOnlineTime", "role", "advertisements", "deals", "phones", "children");
+        return mapUserToDto(userRepository.saveAndFlush(user));
     }
 
     private <T, K> Set<K> convertToModel(List<T> tList, Class<K> kClass) {
