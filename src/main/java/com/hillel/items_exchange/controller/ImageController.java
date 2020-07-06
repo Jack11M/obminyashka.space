@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
@@ -66,7 +68,8 @@ public class ImageController {
         }
 
         try {
-            imageService.saveToProduct(productId, photos);
+            List<ByteArrayInputStream> compressedImages = imageService.compressImages(photos);
+            imageService.saveToProduct(productId, compressedImages);
         } catch (ClassNotFoundException e) {
             log.warn("Product not found for id {}", productId);
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
