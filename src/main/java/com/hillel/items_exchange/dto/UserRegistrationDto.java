@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.dto;
 
+import com.hillel.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,17 +17,17 @@ public class UserRegistrationDto {
 
     @NotEmpty(message = "{empty.username}")
     @Size(min = 2, max = 50, message = "{invalid.username.size}")
-    @Pattern(regexp = "(?=\\S+$).{2,50}", message = "{invalid.username}")
+    @Pattern(regexp = PatternHandler.USERNAME_MIN_2_MAX_50, message = "{invalid.username}")
     private String username;
 
     @NotEmpty(message = "{empty.email}")
     @Size(max = 129, message = "{too.big.email}")
-    @Email(regexp = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$", message = "{invalid.email}")
+    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String email;
 
     @NotEmpty(message = "{empty.password}")
     @Size(min = 8, max = 30, message = "{invalid.password}")
-    @Pattern(regexp = "(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\\S+$).+.{7,30}", message = "{invalid.password}")
+    @Pattern(regexp = PatternHandler.PASSWORD_MIN_7_MAX_30, message = "{invalid.password}")
     private String password;
 
     @NotEmpty(message = "{empty.confirm.password}")

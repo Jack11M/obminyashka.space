@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.util;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -10,19 +11,24 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class MessageSourceUtil {
 
-    private final MessageSource messageSource;
+    private static MessageSource mSource;
 
-    public String getExceptionMessageSource(String message) {
-        return messageSource.getMessage(message,
+    @Autowired
+    public void setMSource(MessageSource messageSource) {
+        mSource = messageSource;
+    }
+
+    public static String getExceptionMessageSource(String message) {
+        return mSource.getMessage(message,
                 null,
                 Locale.getDefault());
     }
 
-    public String getExceptionMessageSourceWithId(long id, String message) {
+    public static String getExceptionMessageSourceWithId(long id, String message) {
         return getExceptionMessageSource(message) + id;
     }
 
-    public String getExceptionMessageSourceWithAdditionalInfo(String message, String additionalInfo) {
+    public static String getExceptionMessageSourceWithAdditionalInfo(String message, String additionalInfo) {
         return getExceptionMessageSource(message) + additionalInfo;
     }
 }
