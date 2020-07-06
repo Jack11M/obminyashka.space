@@ -44,13 +44,8 @@ public class UserService {
                     getExceptionMessageSourceWithAdditionalInfo(
                             "exception.illegal.field.change", "username"));
         }
-        if (!bCryptPasswordEncoder.matches(newUserDto.getPassword(), user.getPassword())) {
-            throw new IllegalOperationException(
-                    getExceptionMessageSourceWithAdditionalInfo(
-                            "exception.illegal.field.change", "password"));
-        }
         BeanUtils.copyProperties(newUserDto, user,
-                "id", "created", "updated", "status", "username", "password", "email", "online",
+                "id", "created", "updated", "status", "username", "password", "online",
                 "lastOnlineTime", "role", "advertisements", "deals", "phones", "children");
         return mapUserToDto(userRepository.saveAndFlush(user));
     }

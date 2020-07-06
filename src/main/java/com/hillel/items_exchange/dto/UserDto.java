@@ -21,8 +21,6 @@ public class UserDto {
     @Size(min = 2, max = 50, message = "{invalid.size}")
     private String username;
     @NotEmpty(message = "{invalid.not-empty}")
-    private String password;
-    @NotEmpty(message = "{invalid.not-empty}")
     @Size(max = 129, message = "{invalid.email}")
     @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String email;
