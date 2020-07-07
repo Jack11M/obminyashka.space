@@ -71,27 +71,14 @@ user:
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'new.admin@gmail.com'
     online: 'false'
-    first_name: 'newFirstName'
-    last_name: 'newLastName'
+    first_name: "new'Name"
+    last_name: 'new-Name'
     avatar_image: 'empty'
     last_online_time: '2019-01-01 00:00:01'
     created: '2019-01-01'
     updated: '2019-01-01'
     status: 'ACTIVE'
     role_id: 1
-
-child:
-  - id: 1
-    sex: 'male'
-    birth_date: '2010-01-01'
-    user_id: 1
-
-phone:
-  - id: 1
-    user_id: 1
-    phone_number: 381234567890
-    show: 'true'
-    default_phone: 'true'
 
 role:
   - id: 1

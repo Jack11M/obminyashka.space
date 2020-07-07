@@ -9,7 +9,7 @@ import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
-import com.hillel.items_exchange.util.UserDtoUpdatingUtil;
+import com.hillel.items_exchange.util.UserDtoCreatingUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,8 @@ public class GlobalExceptionHandlerTest {
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
-    private UserDto validUserDto;
+    private UserDto userDtoWithNotUserId;
+    private UserDto userDtoWithChangedUsername;
 
     @Mock
     AdvertisementController advertisementController;
@@ -69,7 +70,8 @@ public class GlobalExceptionHandlerTest {
     void setup() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        validUserDto = UserDtoUpdatingUtil.getValidUserDto();
+        userDtoWithNotUserId = UserDtoCreatingUtil.createUserDtoForUpdatingWithNotUserId();
+        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsername();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -139,21 +141,18 @@ public class GlobalExceptionHandlerTest {
     @Test
     public void testHandleIllegalOperationException() throws Exception {
         when(userController.updateUserInfo(any(), any())).thenThrow(IllegalOperationException.class);
-        validUserDto.setPassword("new password");
-        MvcResult result = getResult(HttpMethod.PUT, "/user/info/{user_id}", 1L,
-                validUserDto, status().isMethodNotAllowed());
+        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
     }
 
     @Test
     public void testHandleAccessDeniedException() throws Exception {
         when(userController.updateUserInfo(any(), any())).thenThrow(AccessDeniedException.class);
-        MvcResult result = getResult(HttpMethod.PUT, "/user/info/{user_id}", 200L,
-                validUserDto, status().isForbidden());
+        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithNotUserId, status().isConflict());
         assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
     }
 
-    private MvcResult getResult(HttpMethod httpMethod, String path, AdvertisementDto dto,
+    private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,
                                  ResultMatcher matcher) throws Exception {
 
         MockHttpServletRequestBuilder builder = request(httpMethod, path)
@@ -168,16 +167,6 @@ public class GlobalExceptionHandlerTest {
 
         MockHttpServletRequestBuilder builder = request(httpMethod, path, uriVars)
                 .accept(MediaType.APPLICATION_JSON);
-        return mockMvc.perform(builder).andExpect(matcher).andReturn();
-    }
-
-    private MvcResult getResult(HttpMethod httpMethod, String path, long uriVars,
-                                UserDto dto, ResultMatcher matcher) throws Exception {
-
-        MockHttpServletRequestBuilder builder = request(httpMethod, path, uriVars)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(dto));
         return mockMvc.perform(builder).andExpect(matcher).andReturn();
     }
 }
