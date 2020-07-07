@@ -18,6 +18,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @RestController
 @RequestMapping("/user")
@@ -45,10 +46,10 @@ public class UserController {
         if (user.getId() != userDto.getId()) {
             throw new AccessDeniedException(getExceptionMessageSource("exception.permission-denied.user-profile"));
         }
-        try {
-            return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
-        } catch (IllegalOperationException e) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if (!userDto.getUsername().equals(user.getUsername())) {
+            throw new IllegalOperationException(
+                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", "username"));
         }
+        return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
     }
 }

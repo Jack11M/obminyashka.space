@@ -49,13 +49,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({SecurityException.class, AccessDeniedException.class})
-    public ResponseEntity<ErrorMessage> handleSecurityException(Exception e, ServletWebRequest request) {
+    public ResponseEntity<ErrorMessage> handleSecurityException(RuntimeException e, ServletWebRequest request) {
 
-        HttpStatus httpStatus = e instanceof SecurityException ? HttpStatus.CONFLICT : HttpStatus.FORBIDDEN;
-        ErrorMessage errorMessage = getErrorMessage(request, httpStatus,
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.CONFLICT,
                 "exception.security", Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(INFO, errorMessage);
-        return new ResponseEntity<>(errorMessage, httpStatus);
+        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

@@ -3,7 +3,6 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
-import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
@@ -14,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +35,7 @@ public class UserService {
         return userRepository.save(registeredUser).getId() != 0;
     }
 
-    public UserDto update(UserDto newUserDto, User user) throws IllegalOperationException {
-        if (!newUserDto.getUsername().equals(user.getUsername())) {
-            throw new IllegalOperationException(
-                    getExceptionMessageSourceWithAdditionalInfo(
-                            "exception.illegal.field.change", "username"));
-        }
+    public UserDto update(UserDto newUserDto, User user) {
         BeanUtils.copyProperties(newUserDto, user,
                 "id", "created", "updated", "status", "username", "password", "online",
                 "lastOnlineTime", "role", "advertisements", "deals", "phones", "children");
