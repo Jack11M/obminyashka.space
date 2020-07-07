@@ -27,10 +27,10 @@ public class UserDto {
     @NotNull(message = "{invalid.not-null}")
     private Boolean online;
     @NotNull(message = "{invalid.not-null}")
-    @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.size}")
+    @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")
     private String firstName;
     @NotNull(message = "{invalid.not-null}")
-    @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.size}")
+    @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")
     private String lastName;
     @NotNull(message = "{invalid.not-null}")
     private String avatarImage;
