@@ -1,0 +1,51 @@
+// slider style
+
+.slider {
+    position: relative;
+    width: 138px;
+    height: 100%;    
+    display: flex;
+    flex-flow: column;
+    padding-top: 35px;
+
+    & :nth-child(4) {
+        border: 2px solid #FA9E25;
+    }
+    &__image {
+        box-shadow: 0px 0px 40px rgba(89, 102, 116, 0.1);
+        width: 138px;
+        height: 138px;
+        background-color: #fff;
+        margin-bottom: 20px;
+        background-image: url(../../../images/main-image.jpg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+    .control {
+        .arrow {
+            position: absolute;            
+            width: 18px;
+            height: 9px;            
+            background-image: url(../../../images/arrowUp.svg);                                               
+        }
+        .arrow-up {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            &:hover {
+                color: #11B5ED;
+                cursor: pointer;                
+            }
+        }
+        .arrow-down {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(-180deg);
+            &:hover {
+                color: #11B5ED;                
+                cursor: pointer;
+            }
+        }
+    }
+}

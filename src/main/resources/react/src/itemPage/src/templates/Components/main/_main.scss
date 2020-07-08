@@ -1,0 +1,39 @@
+// main style
+.main-container {
+    width: 1170px;
+    margin: 104px auto 107px auto;    
+    height: auto;    
+
+    .main-wrapper {
+        margin-bottom: 100px;
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: space-between;
+        &__left {
+            display: flex;
+            flex-flow: column;            
+            width: 764px;
+            height: 933px;            
+
+            .row {
+                display: flex;
+                width: 100%;
+                height: auto;
+                justify-content: space-between;
+                flex-wrap: nowrap;
+
+                .main-photo {
+                    width: 606px;
+                    height: 682px;
+                    background-color: #fff;
+                    box-shadow: 0px 0px 40px rgba(89, 102, 116, 0.1);
+                }
+            }
+        }
+        &__right {
+            width: 385px;
+            height: 933px;            
+        }
+    }
+}

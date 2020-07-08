@@ -1,0 +1,42 @@
+// slider-news
+.slider-news {
+  width: 100%;  
+  height: auto;
+  h1 {
+    position: relative;
+    font-size: 27px;
+    line-height: 24px;
+    text-transform: uppercase;
+    color: #11b5ed;
+    margin-bottom: 50px;
+    display: inline-block;
+    width: auto;
+    margin-left: 27px;
+    &::before {
+      content: "";
+      position: absolute;      
+      left: -27px;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #12b6ed;
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      right: -27px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #12b6ed;
+    }
+  }
+  .cards {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;    
+  }
+}

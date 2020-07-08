@@ -1,0 +1,32 @@
+// normalize scss
+@import './normalize.scss';
+
+// Components
+
+// Breadcrumbs
+@import './Components/breadcrumbs/breadcrumbs.scss';
+
+// Main
+@import './Components/main/main.scss';
+
+// Slider
+@import './Components/slider/slider.scss';
+
+
+// Description
+@import './Components/description/description.scss';
+
+// Aside
+@import './Components/aside/aside.scss';
+
+// Slider-news
+@import './Components/slider-news/slider-news.scss';
+
+// Card
+@import './Components/card/card.scss';
+*{
+    box-sizing: border-box;
+}
+body {
+    background: #E5E5E5;
+}

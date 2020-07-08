@@ -1,0 +1,115 @@
+// aside
+.aside {
+  width: 100%;
+  height: 100%;
+  &__first-info {
+    width: 100%;
+    min-height: 180px;
+    height: auto;
+    padding: 10px 30px 10px 30px;
+    background-color: #fff;
+    box-shadow: 0px 0px 40px rgba(89, 102, 116, 0.1);
+    margin-bottom: 30px;
+    p {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      height: 16px;
+      color: #8f8f8f;
+      span {
+        color: black;
+      }
+    }
+  }
+  &__second-info {
+    width: 100%;
+    height: 723px;
+    padding: 10px 30px 10px 0;
+    background-color: #fff;
+    box-shadow: 0px 0px 40px rgba(89, 102, 116, 0.1);
+
+    .row {
+      width: 100%;
+      padding-left: 32px;
+      display: flex;
+      align-items: center;
+      .author-image {
+        margin-right: 13px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #c4c4c4;
+      }
+    }
+    .change-list {
+      h3 {
+        padding-left: 30px;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 26px;
+        color: #8f8f8f;
+      }
+      ul {
+        // padding-left: 0px;
+        margin-left: 18px;
+        list-style-image: url(../../../images/list-style.svg);
+        li {
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 24px;
+          color: #111111;
+        }
+      }
+      &__btn {
+        margin-top: 40px;
+        margin-left: 30px;
+        width: 251px;
+        height: 48px;
+        left: 1175px;
+        top: 753px;
+        outline: none;
+        border: none;
+        background: #00c1ff;
+        border-radius: 24px;
+        text-transform: uppercase;
+        font-style: normal;
+        // font-weight: 600;
+        font-size: 16px;
+        line-height: 26px;
+
+        color: #ffffff;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+    .description-item {
+      margin-top: 50px;
+      margin-left: 30px;
+
+      &__info {
+        width: 100%;
+        .information {
+          height: 26px;
+          display: flex;
+          flex-wrap: nowrap;
+          width: 80%;
+          justify-content: space-between;
+          align-items: center;
+          p {
+            font-size: 16px;
+            line-height: 26px;
+            font-style: normal;
+            font-weight: normal;
+            color: #8f8f8f;
+          }
+          span {
+            color: #11171f;
+          }
+        }
+      }
+    }
+  }
+}
