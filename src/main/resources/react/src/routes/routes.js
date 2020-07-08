@@ -1,6 +1,6 @@
 import { Route, Switch } from "react-router-dom";
 import React from "react";
-import HomePage from "../components/pages/HomePage/HomePage.js";
+import HomePage from "../components/pages/homepage/HomePage.js";
 import Auth from "../components/pages/FormRegister/Auth.js";
 import Profile from "../components/pages/ProfilePage/profile";
 

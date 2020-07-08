@@ -14,42 +14,6 @@
 
 }
 
-.products-title-list {
-
-  width: max-content;
-  text-transform: uppercase;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 27px;
-  letter-spacing: 1px;
-  line-height: 24px;
-  color: #11B5ED;
-  position: relative;
-  padding: 0 20px;
-  @include font(Pollywog_Cyr);
-}
-
-.products-title-list:before,
-.products-title-list::after {
-  content: '';
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #11B5ED;
-  top: 50%;
-  transform: translate(0, -50%);
-
-}
-
-.products-title-list:before {
-  left: 0;
-}
-
-.products-title-list::after {
-  right: 0;
-}
-
 .products-link-search {
   color: #00C0FF;
   text-decoration: none;

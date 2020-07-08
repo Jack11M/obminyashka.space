@@ -2,12 +2,14 @@ import React from "react";
 import { db } from "./goods";
 import "./currentOffers.scss";
 import ButtonBlue from "../../../buttonBlue/ButtonBlue.js";
+import Title_Big_Blue from '../../../title_Big_Blue/title_Big_Blue';
 
 const CurrentOffers = () => {
   return (
     <section className="products-section">
       <div className="products-header">
-        <h2 className="products-title-list">Текущие предложения</h2>
+          <Title_Big_Blue whatClass="products-title-list" text='Текущие предложени'/>
+        {/*<h2 className="products-title-list">Текущие предложения</h2>*/}
         <a href="#" className="products-link-search">
           Расширенный поиск
         </a>
