@@ -51,7 +51,7 @@ public interface ImageService {
      * Create new entity for received image, link to the Product using it's ID and store it to the DB
      * @param productId Product ID
      * @param image image that needs to be linked with the Product and saved to the DB
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException in cases when Product with such ID is not exist in the DB
      */
     void saveToProduct(long productId, byte[] image) throws ClassNotFoundException;
 
