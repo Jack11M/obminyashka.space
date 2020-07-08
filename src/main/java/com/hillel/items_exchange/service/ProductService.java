@@ -12,7 +12,7 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    Optional<Product> findById(Long id) {
+    public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }
 }

@@ -16,8 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
@@ -58,9 +56,9 @@ public class ImageController {
     @PostMapping(value = "/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> saveImages(@PathVariable("product_id")
                                                      @PositiveOrZero(message = "{invalid.id}") long productId,
-                                                 @RequestParam(value = "files") @Size(max = 10) List<MultipartFile> photos) {
+                                                 @RequestParam(value = "files") @Size(max = 10) List<MultipartFile> images) {
 
-        boolean isAllSupportedTypesReceived = photos.parallelStream()
+        boolean isAllSupportedTypesReceived = images.parallelStream()
                 .map(MultipartFile::getContentType)
                 .allMatch(SUPPORTED_TYPES::contains);
         if (!isAllSupportedTypesReceived) {
@@ -68,13 +66,13 @@ public class ImageController {
         }
 
         try {
-            List<ByteArrayInputStream> compressedImages = imageService.compressImages(photos);
+            List<byte[]> compressedImages = imageService.compressImages(images);
             imageService.saveToProduct(productId, compressedImages);
         } catch (ClassNotFoundException e) {
             log.warn("Product not found for id {}", productId);
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (IOException e) {
-            log.error("There was an error during extraction of gained photos!");
+            log.error("There was an error during extraction of gained images!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.OK);
