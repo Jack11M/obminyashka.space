@@ -53,10 +53,4 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Child> children;
-
-    @PreUpdate
-    public void addUser() {
-        phones.stream().filter(phone -> phone.getUser() == null).forEach(phone -> phone.setUser(this));
-        children.stream().filter(child -> child.getUser() == null).forEach(child -> child.setUser(this));
-    }
 }

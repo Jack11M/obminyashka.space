@@ -40,7 +40,8 @@ public class UserController {
     }
 
     @PutMapping("/info")
-    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal) {
+    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
+            throws IllegalOperationException {
         User user = userService.findByUsernameOrEmail(principal.getName())
                 .orElseThrow(EntityNotFoundException::new);
         if (user.getId() != userDto.getId()) {
