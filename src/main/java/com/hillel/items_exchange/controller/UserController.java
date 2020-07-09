@@ -1,25 +1,24 @@
 package com.hillel.items_exchange.controller;
 
-import java.security.Principal;
-import java.util.Locale;
-
-import javax.validation.constraints.PositiveOrZero;
-
-import org.springframework.context.MessageSource;
+import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
+import java.security.Principal;
 
-import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.service.UserService;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @RestController
 @RequestMapping("/user")
@@ -28,7 +27,6 @@ import com.hillel.items_exchange.service.UserService;
 @Slf4j
 public class UserController {
 
-    private final MessageSource messageSource;
     private final UserService userService;
 
     @GetMapping("/info/{id}")
@@ -37,10 +35,22 @@ public class UserController {
 
         return ResponseEntity.ok(userService.getByUsernameOrEmail(principal.getName())
                 .filter(user -> user.getId() == id)
-                .orElseThrow(() -> new AccessDeniedException(messageSource.getMessage(
-                        "exception.access-denied.user-data",
-                        null,
-                        Locale.getDefault()))
-                ));
+                .orElseThrow(() -> new AccessDeniedException(
+                        getExceptionMessageSource("exception.access-denied.user-data"))));
+    }
+
+    @PutMapping("/info")
+    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
+            throws IllegalOperationException {
+        User user = userService.findByUsernameOrEmail(principal.getName())
+                .orElseThrow(EntityNotFoundException::new);
+        if (user.getId() != userDto.getId()) {
+            throw new AccessDeniedException(getExceptionMessageSource("exception.permission-denied.user-profile"));
+        }
+        if (!userDto.getUsername().equals(user.getUsername())) {
+            throw new IllegalOperationException(
+                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", "username"));
+        }
+        return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
     }
 }

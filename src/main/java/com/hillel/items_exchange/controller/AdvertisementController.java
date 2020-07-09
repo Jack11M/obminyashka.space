@@ -7,7 +7,6 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.SubcategoryService;
 import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -26,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.hillel.items_exchange.util.MessageSourceUtil.*;
+
 @RestController
 @RequestMapping("/adv")
 @RequiredArgsConstructor
@@ -36,7 +37,6 @@ public class AdvertisementController {
     private final AdvertisementService advertisementService;
     private final UserService userService;
     private final SubcategoryService subcategoryService;
-    private final MessageSourceUtil messageSourceUtil;
 
     @GetMapping(params = {"page", "size"})
     public ResponseEntity<List<AdvertisementDto>> findPaginated(@RequestParam("page") @PositiveOrZero int page,
@@ -118,21 +118,21 @@ public class AdvertisementController {
                                             User owner) {
 
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new SecurityException(messageSourceUtil.getExceptionMessageSource("user.not-owner"));
+            throw new SecurityException(getExceptionMessageSource("user.not-owner"));
         }
     }
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException(messageSourceUtil
-                        .getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
     }
 
     private void validateSubcategoryId(long subcategoryId) {
         boolean isSubcategoryExists = subcategoryService.isSubcategoryExistsById(subcategoryId);
 
         if (subcategoryId == 0 || !isSubcategoryExists) {
-            throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSourceWithId(subcategoryId,
+            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(subcategoryId,
                     "invalid.subcategory.id"));
         }
     }
@@ -154,7 +154,7 @@ public class AdvertisementController {
 
     private void validateNewEntityIdIsZero(long id, String errorMessage) {
         if (id != 0) {
-            throw new IllegalIdentifierException(messageSourceUtil.getExceptionMessageSourceWithId(id, errorMessage));
+            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(id, errorMessage));
         }
     }
 }

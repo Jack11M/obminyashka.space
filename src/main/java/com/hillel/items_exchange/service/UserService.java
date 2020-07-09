@@ -1,19 +1,18 @@
 package com.hillel.items_exchange.service;
 
-import java.util.Optional;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
-
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +33,13 @@ public class UserService {
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
         User registeredUser = UserMapper.userRegistrationDtoToUser(userRegistrationDto, bCryptPasswordEncoder, role);
         return userRepository.save(registeredUser).getId() != 0;
+    }
+
+    public UserDto update(UserDto newUserDto, User user) {
+        BeanUtils.copyProperties(newUserDto, user,
+                "id", "created", "updated", "status", "username", "password", "online",
+                "lastOnlineTime", "role", "advertisements", "deals", "phones", "children");
+        return mapUserToDto(userRepository.saveAndFlush(user));
     }
 
     public boolean existsByUsername(String username) {
