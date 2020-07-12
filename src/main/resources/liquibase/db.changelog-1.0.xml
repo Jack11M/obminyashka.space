@@ -440,4 +440,10 @@
                     type="varchar(15)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="1.0.26: NotNull constraint set in table phone" author="lubchik">
+        <addNotNullConstraint tableName="phone"
+                              columnName="user_id"
+                              columnDataType="BIGINT"/>
+    </changeSet>
 </databaseChangeLog>

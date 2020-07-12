@@ -9,14 +9,14 @@ import lombok.RequiredArgsConstructor;
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.exception.UnauthorizedException;
 import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Component
 @RequiredArgsConstructor
 public class UserLoginDtoValidator implements Validator {
 
     private final UserService userService;
-    private final MessageSourceUtil messageSourceUtil;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -30,7 +30,7 @@ public class UserLoginDtoValidator implements Validator {
         if (!userService.existsByUsernameOrEmailAndPassword(userLoginDto.getUsernameOrEmail(),
                 userLoginDto.getPassword())) {
 
-            throw new UnauthorizedException(messageSourceUtil.getExceptionMessageSource("invalid.username-or-password"));
+            throw new UnauthorizedException(getExceptionMessageSource("invalid.username-or-password"));
         }
     }
 }

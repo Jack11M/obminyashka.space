@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import java.util.Set;
 
 @Entity
 @Getter
@@ -48,9 +48,9 @@ public class User extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "deal_id", referencedColumnName = "id")})
     private List<Deal> deals;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Phone> phones;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Phone> phones;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Child> children;
+    private Set<Child> children;
 }

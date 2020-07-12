@@ -31,9 +31,9 @@ public class UserMapper {
         user.setOnline(false);
         user.setAvatarImage("");
         user.setAdvertisements(Collections.emptyList());
-        user.setChildren(Collections.emptyList());
+        user.setChildren(Collections.emptySet());
         user.setDeals(Collections.emptyList());
-        user.setPhones(Collections.emptyList());
+        user.setPhones(Collections.emptySet());
         LocalDate now = LocalDate.now();
         user.setCreated(now);
         user.setUpdated(now);

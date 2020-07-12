@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.exception.handler;
 
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static org.apache.logging.log4j.Level.*;
 
 @ControllerAdvice
@@ -37,8 +38,6 @@ public class GlobalExceptionHandler {
             .ofLocalizedDateTime(FormatStyle.MEDIUM)
             .withLocale(Locale.getDefault());
 
-    private final MessageSourceUtil messageSourceUtil;
-
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorMessage> handleUserNotFoundException(UsernameNotFoundException e,
                                                                     ServletWebRequest request) {
@@ -49,9 +48,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<ErrorMessage> handleSecurityException(SecurityException e,
-                                                          ServletWebRequest request) {
+    @ExceptionHandler({SecurityException.class, AccessDeniedException.class})
+    public ResponseEntity<ErrorMessage> handleSecurityException(RuntimeException e, ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.CONFLICT,
                 "exception.security", Collections.singletonList(e.getLocalizedMessage()));
@@ -122,19 +120,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> handlerAccessDenied(AccessDeniedException e) {
-        log.warn(e.getMessage(), e);
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body("Exception during request!\nError message:\n" + e.getLocalizedMessage());
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<ErrorMessage> handleIllegalOperation(IllegalOperationException e,
+                                                                ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.FORBIDDEN,
+                "exception.illegal.operation", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(WARN, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,
                                          String errorMessage, List<String> details) {
 
         return new ErrorMessage(dateFormat.format(LocalDateTime.now()), status.value(),
-                messageSourceUtil.getExceptionMessageSource(errorMessage), details,
+                getExceptionMessageSource(errorMessage), details,
                 request.getRequest().getRequestURI(), request.getHttpMethod());
     }
 

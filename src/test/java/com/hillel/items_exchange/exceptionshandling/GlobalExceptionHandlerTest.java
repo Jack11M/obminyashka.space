@@ -2,11 +2,14 @@ package com.hillel.items_exchange.exceptionshandling;
 
 import com.hillel.items_exchange.controller.AdvertisementController;
 import com.hillel.items_exchange.controller.CategoryController;
+import com.hillel.items_exchange.controller.UserController;
 import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
-import com.hillel.items_exchange.util.MessageSourceUtil;
+import com.hillel.items_exchange.util.UserDtoCreatingUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -46,15 +50,17 @@ public class GlobalExceptionHandlerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private MessageSourceUtil messageSourceUtil;
-
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
+    private UserDto userDtoWithNotUserId;
+    private UserDto userDtoWithChangedUsername;
 
     @Mock
     AdvertisementController advertisementController;
+
+    @Mock
+    UserController userController;
 
     @Mock
     CategoryController categoryController;
@@ -63,8 +69,11 @@ public class GlobalExceptionHandlerTest {
     void setup() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController)
-                .setControllerAdvice(new GlobalExceptionHandler(messageSourceUtil))
+        userDtoWithNotUserId = UserDtoCreatingUtil.createUserDtoForUpdatingWithNotUserId();
+        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsername();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -127,7 +136,21 @@ public class GlobalExceptionHandlerTest {
         assertThat(result.getResolvedException(), is(instanceOf(ConstraintViolationException.class)));
     }
 
-    private MvcResult getResult(HttpMethod httpMethod, String path, AdvertisementDto dto,
+    @Test
+    public void testHandleIllegalOperationException() throws Exception {
+        when(userController.updateUserInfo(any(), any())).thenThrow(IllegalOperationException.class);
+        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
+        assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
+    }
+
+    @Test
+    public void testHandleAccessDeniedException() throws Exception {
+        when(userController.updateUserInfo(any(), any())).thenThrow(AccessDeniedException.class);
+        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithNotUserId, status().isConflict());
+        assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
+    }
+
+    private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,
                                  ResultMatcher matcher) throws Exception {
 
         MockHttpServletRequestBuilder builder = request(httpMethod, path)

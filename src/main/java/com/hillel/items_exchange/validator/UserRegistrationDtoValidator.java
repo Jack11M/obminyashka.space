@@ -12,14 +12,14 @@ import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.exception.UnprocessableEntityException;
 import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Component
 @RequiredArgsConstructor
 public class UserRegistrationDtoValidator implements Validator {
 
     private final UserService userService;
-    private final MessageSourceUtil messageSourceUtil;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -31,15 +31,15 @@ public class UserRegistrationDtoValidator implements Validator {
         UserRegistrationDto userRegistrationDto = (UserRegistrationDto) o;
 
         if (userService.existsByUsername(userRegistrationDto.getUsername())) {
-            throw new UnprocessableEntityException(messageSourceUtil.getExceptionMessageSource("username.duplicate"));
+            throw new UnprocessableEntityException(getExceptionMessageSource("username.duplicate"));
         }
 
         if (userService.existsByEmail(userRegistrationDto.getEmail())) {
-            throw new UnprocessableEntityException(messageSourceUtil.getExceptionMessageSource("email.duplicate"));
+            throw new UnprocessableEntityException(getExceptionMessageSource("email.duplicate"));
         }
 
         if (!Objects.equals(userRegistrationDto.getConfirmPassword(), userRegistrationDto.getPassword())) {
-            throw new BadRequestException(messageSourceUtil.getExceptionMessageSource("different.passwords"));
+            throw new BadRequestException(getExceptionMessageSource("different.passwords"));
         }
     }
 }

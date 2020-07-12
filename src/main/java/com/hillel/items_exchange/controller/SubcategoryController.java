@@ -2,7 +2,6 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.SubcategoryService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 
 @RestController
 @RequestMapping("/subcategory")
@@ -22,7 +22,6 @@ import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 public class SubcategoryController {
 
     private final SubcategoryService subcategoryService;
-    private final MessageSourceUtil messageSourceUtil;
 
     @GetMapping("/{category_id}/names")
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id") long id) {
@@ -38,7 +37,7 @@ public class SubcategoryController {
     @DeleteMapping("/{subcategory_id}")
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidDtoException(messageSourceUtil.getExceptionMessageSourceWithId(id,
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(id,
                     "subcategory.not-deletable"));
         }
 
