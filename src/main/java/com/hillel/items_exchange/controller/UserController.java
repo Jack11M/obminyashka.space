@@ -99,7 +99,8 @@ public class UserController {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(messageSourceUtil.getExceptionMessageSource("exception.user.not-found")));
     }
 
-    private List<Long> getUserChildrenIdList(User user) {
-        return user.getChildren().stream().map(Child::getId).collect(Collectors.toList());
+    private <T, E> List<E> mapBy(Collection<T> collection, Function<T, E> mapper) {
+        return collection.stream().map(mapper)
+                .collect(Collectors.toList());
     }
 }
