@@ -70,35 +70,41 @@ public class UserController {
     }
 
     @PostMapping("/child")
-    public ResponseEntity<HttpStatus> addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}") List<@Valid ChildDto> childrenDtoList,
+    public ResponseEntity<HttpStatus> addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+                                                          List<@Valid ChildDto> childrenDtoList,
                                                   Principal principal) {
         if (childrenDtoList.stream().anyMatch(dto -> dto.getId() > 0)) {
-            throw new IllegalIdentifierException(getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", "Bigger than zero"));
+            throw new IllegalIdentifierException(
+                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", "Zero ID is expected"));
         }
         userService.addChildren(getUser(principal.getName()), childrenDtoList);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/child")
-    public ResponseEntity<HttpStatus> removeChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}") List<@NotNull Long> childrenIdToRemoveList,
+    public ResponseEntity<HttpStatus> removeChildren(@RequestParam @Size(min = 1, message = "{exception.invalid.dto}")
+                                                             List<@NotNull Long> childrenIdToRemoveList,
                                                      Principal principal) {
         final User user = getUser(principal.getName());
         final List<Long> userChildrenIdList = mapBy(user.getChildren(), Child::getId);
         if (!userChildrenIdList.containsAll(childrenIdToRemoveList)) {
-            throw new IllegalIdentifierException(getExceptionMessageSource("exception.invalid.dto"));
+            throw new IllegalIdentifierException(
+                    getExceptionMessageSource("exception.invalid.dto"));
         }
         userService.removeChildren(user, childrenIdToRemoveList);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/child")
-    public ResponseEntity<HttpStatus> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}") List<@Valid ChildDto> childrenDtoList,
+    public ResponseEntity<HttpStatus> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+                                                                 List<@Valid ChildDto> childrenDtoList,
                                                      Principal principal) {
         final User user = getUser(principal.getName());
         final List<Long> userChildrenIdList = mapBy(user.getChildren(), Child::getId);
         final List<Long> childrenIdToUpdateList = mapBy(childrenDtoList, ChildDto::getId);
         if (!userChildrenIdList.containsAll(childrenIdToUpdateList)) {
-            throw new IllegalIdentifierException(getExceptionMessageSource("exception.invalid.dto"));
+            throw new IllegalIdentifierException(
+                    getExceptionMessageSource("exception.invalid.dto"));
         }
         userService.updateChildren(user, childrenDtoList);
         return new ResponseEntity<>(HttpStatus.OK);

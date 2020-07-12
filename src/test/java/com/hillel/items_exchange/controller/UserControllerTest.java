@@ -24,9 +24,9 @@ import javax.transaction.Transactional;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -187,7 +187,7 @@ class UserControllerTest {
     void removeChild_Success() throws Exception {
         mockMvc.perform(delete("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getValidChildDtoForDelete())
+                .param("childrenIdToRemoveList", "1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -205,84 +205,6 @@ class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    void addChild_Fail_EmptyDto() throws Exception {
-        mockMvc.perform(post("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("")
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    void removeChild_Fail_EmptyDto() throws Exception {
-        mockMvc.perform(delete("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("")
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    void updateChild_Fail_EmptyDto() throws Exception {
-        mockMvc.perform(put("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("")
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "no-such-user")
-    @Transactional
-    @DataSet("database_init.yml")
-    void addChild_Fail_AbsentUser() throws Exception {
-        mockMvc.perform(post("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(username = "no-such-user")
-    @Transactional
-    @DataSet("database_init.yml")
-    void removeChild_Fail_AbsentUser() throws Exception {
-        mockMvc.perform(delete("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "no-such-user")
-    @Transactional
-    @DataSet("database_init.yml")
-    void updateChild_Fail_AbsentUser() throws Exception {
-        mockMvc.perform(put("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 
     @Test
