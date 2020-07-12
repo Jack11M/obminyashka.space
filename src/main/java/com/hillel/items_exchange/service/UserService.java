@@ -1,16 +1,12 @@
 package com.hillel.items_exchange.service;
 
-import java.util.Optional;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
-
+import com.hillel.items_exchange.dao.ChildRepository;
 import com.hillel.items_exchange.dao.UserRepository;
+import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
+import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +15,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
+import static com.hillel.items_exchange.mapper.UtilMapper.convertToModel;
 
 @Service
 @RequiredArgsConstructor
@@ -67,23 +69,17 @@ public class UserService {
     }
 
     public List<ChildDto> getChildren(User parent) {
-        return parent.getChildren().stream()
-                .map(child -> modelMapper.map(child, ChildDto.class))
-                .collect(Collectors.toList());
+        return convertToDto(parent.getChildren(), ChildDto.class);
     }
 
     public void addChildren(User parent, List<ChildDto> childrenDtoToAddList) {
-        final List<Child> childrenToSaveList = childrenDtoToAddList.stream()
-                .map(dto -> modelMapper.map(dto, Child.class))
-                .collect(Collectors.toList());
+        final List<Child> childrenToSaveList = new ArrayList<>(convertToModel(childrenDtoToAddList, Child.class, ArrayList::new));
         childrenToSaveList.forEach(child -> child.setUser(parent));
         childRepository.saveAll(childrenToSaveList);
     }
 
     public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdateList) {
-        final var childrenToUpdate = childrenDtoToUpdateList.stream()
-                .map(childDto -> modelMapper.map(childDto, Child.class))
-                .collect(Collectors.toList());
+        final List<Child> childrenToUpdate = new ArrayList<>(convertToModel(childrenDtoToUpdateList, Child.class, ArrayList::new));
         childrenToUpdate.forEach(child -> child.setUser(parent));
         childRepository.saveAll(childrenToUpdate);
         childRepository.flush();
