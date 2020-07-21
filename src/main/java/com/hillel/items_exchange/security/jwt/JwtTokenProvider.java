@@ -5,7 +5,6 @@ import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Locale;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Slf4j
 @Component
@@ -27,7 +27,6 @@ public class JwtTokenProvider {
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String EMPTY_TOKEN = "";
     private final UserDetailsService userDetailsService;
-    private final MessageSource messageSource;
     @Value("${app.jwt.secret}")
     private String secret;
     @Value("${app.jwt.expiration.time.ms}")
@@ -69,7 +68,7 @@ public class JwtTokenProvider {
                 return bearerToken.substring(BEARER_PREFIX.length());
             } else {
                 String errorMessageTokenNotStartWithBearerPrefix =
-                        messageSource.getMessage("token.not.start.with.bearer", null, Locale.getDefault());
+                        getExceptionMessageSource("token.not.start.with.bearer");
                 log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
                 req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
                 return EMPTY_TOKEN;
