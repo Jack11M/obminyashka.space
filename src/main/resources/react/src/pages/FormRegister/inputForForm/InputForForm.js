@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputForForm = props => {
+const InputForForm = (props) => {
   const { id, text, type, dataError, errorStatus } = props.dataInput;
 
   return (

@@ -12,7 +12,7 @@ const Extra = ({ whatIsPage, setChecked }) => {
           id="check"
           name="checkbox"
           type="checkbox"
-          onChange={event => {
+          onChange={(event) => {
             event.target.checked ? setIsChecking(true) : setIsChecking(false);
           }}
         />

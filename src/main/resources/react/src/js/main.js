@@ -1,10 +1,10 @@
-!(function(e) {
+!(function (e) {
   "function" != typeof e.matches &&
     (e.matches =
       e.msMatchesSelector ||
       e.mozMatchesSelector ||
       e.webkitMatchesSelector ||
-      function(e) {
+      function (e) {
         for (
           var t = this,
             o = (t.document || t.ownerDocument).querySelectorAll(e),
@@ -16,7 +16,7 @@
         return Boolean(o[n]);
       }),
     "function" != typeof e.closest &&
-      (e.closest = function(e) {
+      (e.closest = function (e) {
         for (var t = this; t && 1 === t.nodeType; ) {
           if (t.matches(e)) return t;
           t = t.parentNode;
@@ -25,16 +25,16 @@
       });
 })(window.Element.prototype);
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   /* Записываем в переменные массив элементов-кнопок и подложку.
       Подложке зададим id, чтобы не влиять на другие элементы с классом overlay*/
   var modalButtons = document.querySelectorAll(".js-open-modal"),
     overlay = document.querySelector(".js-overlay-modal"),
     closeButtons = document.querySelectorAll(".js-modal-close");
   /* Перебираем массив кнопок */
-  modalButtons.forEach(function(item) {
+  modalButtons.forEach(function (item) {
     /* Назначаем каждой кнопке обработчик клика */
-    item.addEventListener("click", function(e) {
+    item.addEventListener("click", function (e) {
       /* Предотвращаем стандартное действие элемента. Так как кнопку разные
             люди могут сделать по-разному. Кто-то сделает ссылку, кто-то кнопку.
             Нужно подстраховаться. */
@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
    }); // end foreach
 
-  closeButtons.forEach(function(item) {
-    item.addEventListener("click", function(e) {
+  closeButtons.forEach(function (item) {
+    item.addEventListener("click", function (e) {
       var parentModal = this.closest(".modal");
 
       parentModal.classList.remove("active");
@@ -64,12 +64,12 @@ document.addEventListener("DOMContentLoaded", function() {
   }); // end foreach
   document.body.addEventListener(
     "keyup",
-    function(e) {
+    function (e) {
       var key = e.keyCode;
 
         if (key == 27) {
 
-  overlay.addEventListener("click", function() {
+  overlay.addEventListener("click", function () {
     document.querySelector(".modal.active").classList.remove("active");
     this.classList.remove("active");
   });

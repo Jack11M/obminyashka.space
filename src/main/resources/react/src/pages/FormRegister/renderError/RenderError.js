@@ -1,6 +1,6 @@
 import "./renderError.scss";
 
-const RenderError = el => {
+const RenderError = (el) => {
   return {
     showSuccess() {
       el.parentElement.classList.remove("error");
@@ -10,7 +10,7 @@ const RenderError = el => {
       el.parentElement.classList.add("error");
       el.nextElementSibling.innerHTML =
         errors || el.nextElementSibling.dataset.error;
-    }
+    },
   };
 };
 

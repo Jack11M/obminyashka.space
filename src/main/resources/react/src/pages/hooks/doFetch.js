@@ -19,21 +19,21 @@ export default (controller, whatPage) => {
       method: "post",
       url: baseUrl,
       data,
-      headers
+      headers,
     })
-      .then(res => {
+      .then((res) => {
         console.log(res.data);
         setIsLoading(false);
         setResponse(res.data);
       })
-      .catch(errors => {
+      .catch((errors) => {
         console.log("ErrorFromBase", errors.response.data);
         setIsLoading(false);
         setError(errors.response.data);
       });
   });
 
-  const doFetch = data => {
+  const doFetch = (data) => {
     setData(data);
     setIsLoading(true);
   };
