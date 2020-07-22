@@ -2,6 +2,7 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.model.Image;
+import com.hillel.items_exchange.model.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,19 +42,19 @@ public interface ImageService {
     /**
      * Create new entity for each received image, link them to the Product using it's ID and store them to the DB
      * @see Image entity as representation of all images
-     * @param productId Product ID
+     * @param product to link images with
      * @param images list of images that need to be linked with the Product and saved to the DB
      * @throws ClassNotFoundException in cases when Product with such ID is not exist in the DB
      */
-    void saveToProduct(long productId, List<byte[]> images) throws ClassNotFoundException;
+    void saveToProduct(Product product, List<byte[]> images) throws ClassNotFoundException;
 
     /**
      * Create new entity for received image, link to the Product using it's ID and store it to the DB
-     * @param productId Product ID
+     * @param product to link images with
      * @param image image that needs to be linked with the Product and saved to the DB
      * @throws ClassNotFoundException in cases when Product with such ID is not exist in the DB
      */
-    void saveToProduct(long productId, byte[] image) throws ClassNotFoundException;
+    void saveToProduct(Product product, byte[] image) throws ClassNotFoundException;
 
     /**
      * Remove received images from the DB using their ID

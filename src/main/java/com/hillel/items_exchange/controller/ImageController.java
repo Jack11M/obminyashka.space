@@ -2,8 +2,10 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.model.BaseEntity;
+import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.ImageService;
+import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ public class ImageController {
     private static final Set<String> SUPPORTED_TYPES = Set.of(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE);
     private final ImageService imageService;
     private final UserService userService;
+    private final ProductService productService;
 
     @GetMapping(value = "/{product_id}/resource")
     public ResponseEntity<List<byte[]>> getImagesResource(@PathVariable("product_id")
@@ -56,7 +59,7 @@ public class ImageController {
     @PostMapping(value = "/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> saveImages(@PathVariable("product_id")
                                                      @PositiveOrZero(message = "{invalid.id}") long productId,
-                                                 @RequestParam(value = "files") @Size(max = 10) List<MultipartFile> images) {
+                                                 @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images) {
 
         boolean isAllSupportedTypesReceived = images.parallelStream()
                 .map(MultipartFile::getContentType)
@@ -66,8 +69,9 @@ public class ImageController {
         }
 
         try {
+            Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
             List<byte[]> compressedImages = imageService.compressImages(images);
-            imageService.saveToProduct(productId, compressedImages);
+            imageService.saveToProduct(productToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
             log.warn("Product not found for id {}", productId);
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);

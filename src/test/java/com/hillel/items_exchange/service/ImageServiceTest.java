@@ -3,33 +3,45 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.ImageRepository;
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.model.Image;
+import com.hillel.items_exchange.model.Product;
+import com.hillel.items_exchange.service.basic.BasicImageCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class ImageServiceTest {
-    @MockBean
-    private ProductService productService;
+class ImageServiceTest extends BasicImageCreator{
     @MockBean
     private ImageRepository imageRepository;
     @Autowired
     private ImageService imageService;
     private Image jpeg;
+    private MockMultipartFile testJpg;
+    private MockMultipartFile testPng;
+    @Captor
+    private ArgumentCaptor<List<Image>> imageListCaptor;
+    @Captor
+    private ArgumentCaptor<Image> imageCaptor;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         jpeg = new Image(1, "test jpeg".getBytes(), false, null);
+        testJpg = getImageBytes(MediaType.IMAGE_JPEG);
+        testPng = getImageBytes(MediaType.IMAGE_PNG);
     }
 
     @Test
@@ -54,27 +66,50 @@ class ImageServiceTest {
     }
 
     @Test
-    void compressImages() {
-
+    void compressImages_shouldCompressImage_WhenValidImageTypes() throws IOException {
+        List<byte[]> compressed = imageService.compressImages(List.of(testJpg, testPng));
+        assertNotEquals(compressed.get(0).length, testJpg.getBytes().length);
+        assertNotEquals(compressed.get(1).length, testPng.getBytes().length);
     }
 
     @Test
-    void compressImage() {
+    void compressImage_shouldCompressImage_WhenValidImageType() throws IOException {
+        byte[] compressImage = imageService.compressImage(testJpg);
+        assertTrue(testJpg.getBytes().length > compressImage.length);
     }
 
     @Test
-    void saveToProduct() {
+    void saveToProduct_shouldSaveImageBytes_whenProductExists() throws IOException, ClassNotFoundException {
+        List<byte[]> testImages = List.of(testJpg.getBytes(), testPng.getBytes());
+
+        imageService.saveToProduct(new Product(), testImages);
+        verify(imageRepository).saveAll(imageListCaptor.capture());
+        assertTrue(imageListCaptor.getValue().stream()
+                .map(Image::getResource)
+                .allMatch(testImages::contains));
     }
 
     @Test
-    void testSaveToProduct() {
+    void saveToProduct_shouldSaveOneImageBytes_whenProductExists() throws IOException, ClassNotFoundException {
+        imageService.saveToProduct(new Product(), testJpg.getBytes());
+        verify(imageRepository).save(imageCaptor.capture());
+        assertArrayEquals(imageCaptor.getValue().getResource(), testJpg.getBytes());
     }
 
     @Test
-    void removeById() {
+    void removeById_shouldRemoveAllImagesWithReceivedId() {
+        List<Long> testImagesId = List.of(1L, 2L, 3L);
+
+        imageService.removeById(testImagesId);
+        testImagesId.forEach(id -> verify(imageRepository).deleteById(id));
+        verifyNoMoreInteractions(imageRepository);
     }
 
     @Test
-    void testRemoveById() {
+    void removeById_shouldRemoveOneImageWithReceivedId() {
+        long imageId = 1L;
+        imageService.removeById(imageId);
+        verify(imageRepository).deleteById(imageId);
+        verifyNoMoreInteractions(imageRepository);
     }
 }

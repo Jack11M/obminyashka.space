@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final ModelMapper modelMapper;
-    private final ProductService productService;
     private final ImageRepository imageRepository;
 
     @Override
@@ -71,7 +70,7 @@ public class ImageServiceImpl implements ImageService {
              BufferedOutputStream bos = new BufferedOutputStream(baos);
              ImageOutputStream ios = ImageIO.createImageOutputStream(bos)) {
 
-            ImageWriter writer = ImageIO.getImageWritersByFormatName(contentType).next();
+            ImageWriter writer = ImageIO.getImageWritersByMIMEType(contentType).next();
             writer.setOutput(ios);
             ImageWriteParam param = writer.getDefaultWriteParam();
 
@@ -90,20 +89,16 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveToProduct(long productId, List<byte[]> images) throws ClassNotFoundException {
+    public void saveToProduct(Product product, List<byte[]> images) throws ClassNotFoundException {
         List<Image> imagesToSave = images.stream()
-                .map(populateNewImage(productService.findById(productId)
-                        .orElseThrow(ClassNotFoundException::new)))
+                .map(populateNewImage(product))
                 .collect(Collectors.toList());
         imageRepository.saveAll(imagesToSave);
     }
 
     @Override
-    public void saveToProduct(long productId, byte[] image) throws ClassNotFoundException {
-        Image toSave = productService.findById(productId)
-                .map(this::populateNewImage)
-                .orElseThrow(ClassNotFoundException::new)
-                .apply(image);
+    public void saveToProduct(Product product, byte[] image) throws ClassNotFoundException {
+        Image toSave = populateNewImage(product).apply(image);
         imageRepository.save(toSave);
     }
 
