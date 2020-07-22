@@ -1,0 +1,134 @@
+@import "../../components/partials/variables";
+@import "../../fonts/font";
+
+.error-page {
+
+  .blockCenterImage {
+    position: relative;
+    width: 596px;
+    margin: 278px auto 73px;
+
+    &-fourOhfour {
+      position: relative;
+      z-index: 10;
+    }
+
+    &-shadow {
+      position: absolute;
+      left: calc(50% - (483px / 2));
+      bottom: -72px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 483px;
+      background-color: #E2E2E2;
+      z-index: 0;
+
+      img {
+        display: inline-flex;
+      }
+
+      &_light {
+        width: 483px;
+        position: relative;
+      }
+
+      &_dark {
+        width: 178px;
+        position: absolute;
+      }
+
+    }
+
+  }
+  .blockRightImage, .blockGreenImage, .blockOrangeImage{
+    position: absolute;
+    top: 0;
+    z-index: 0;
+    img{
+      max-width: 100%;
+      height: calc(100vh - 3px);
+    }
+
+  }
+  .blockOrangeImage{
+    left: 360px;
+  }
+  .blockGreenImage{
+    left: 0;
+  }
+  .blockRightImage{
+    right: 50px;
+  }
+
+  h2{
+    @include font(Pollywog_Cyr);
+    font-style: normal;
+    font-weight: normal;
+    font-size: 27px;
+    line-height: 24px;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #BABABA;
+    text-align: center;
+
+    margin-bottom: 27px;
+  }
+
+  .blockButtons{
+    position: relative;
+    max-width: 480px;
+    margin: 0 auto;
+    button {
+
+      border-radius: 24px;
+      border: 0;
+      outline: none;
+      width: 222px;
+      height: 50px;
+
+      @include font(Roboto) ;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 19px;
+      text-transform: uppercase;
+
+      color: #ffffff;
+
+
+    }
+    .onMain {
+      background-color: $btn-bh-active;
+      margin-right: 36px;
+      &:hover {
+        cursor: pointer;
+        background-color: #0094FF;
+      }
+      &:active {
+        background-color: darken(#0094FF, 5%);
+      }
+
+      &:disabled {
+        background-color: $btn-gb-disabled;
+      }
+    }
+    .back {
+      background-color: $btn-bh-green;
+      &:hover {
+        cursor: pointer;
+        background-color: #008B20;
+      }
+      &:active {
+        background-color: darken(#008B20, 5%);
+      }
+
+      &:disabled {
+        background-color: $btn-gb-disabled;
+      }
+    }
+  }
+}

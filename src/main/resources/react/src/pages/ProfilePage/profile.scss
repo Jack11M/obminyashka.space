@@ -1,0 +1,34 @@
+@import "../../fonts/font";
+@import "../../components/partials/variables";
+
+.container {
+  display: flex;
+
+  margin: 156px 0 auto 0;
+  width: 100%;
+  height: calc(100vh - 100px);
+  @include font('Roboto');
+
+
+  .left-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 25%;
+    height: 100vh;
+    background-color: #ffffff;
+    color: darken(rgba(173, 173, 173, 0.78),5%);
+  }
+  .main-content {
+    width: calc(100% - 25%);
+    height: 100vh;
+    background-color: $bg-content;
+
+
+    &-wrapper {
+      max-width: 588px;
+      //padding-top: 65px;
+      padding-left: 40px;
+    }
+  }
+}
