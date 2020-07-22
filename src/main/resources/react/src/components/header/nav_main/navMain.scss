@@ -23,7 +23,7 @@
       margin-right: 40px;
 
       &:active {
-        @include Scale;
+        @include Scale(1.03);
       }
     }
 
@@ -34,8 +34,8 @@
       font-size: 16px;
       font-weight: bold;
       line-height: 24px;
-      color: $colorBlack;
-      margin: 30px 0 0 179px;
+      color: $black-color-text;
+      margin: 25px 0 0 179px;
       padding-bottom: 95px;
       cursor: pointer;
 
@@ -49,7 +49,7 @@
         transform: translateY(-50%);
         position: relative;
         bottom: -13px;
-        color: $colorButtonBlue;
+        color: $btn-bh-active;
 
         &:after {
           position: absolute;
@@ -57,7 +57,7 @@
           bottom: 9px;
           content: "";
           border: 5px solid transparent;
-          border-bottom: 5px solid $colorButtonBlue;
+          border-bottom: 5px solid $btn-bh-active;
         }
       }
 
@@ -71,7 +71,7 @@
           bottom: 4px;
           content: "";
           border: 5px solid transparent;
-          border-top: 5px solid $colorBlack;
+          border-top: 5px solid $black-color-text;
         }
       }
 
@@ -112,7 +112,7 @@
         height: 50px;
         outline: none;
 
-        border: 1px solid $colorButtonBlue;
+        border: 1px solid $btn-bh-active;
         border-radius: 25px;
 
         @include font(Roboto);
@@ -135,7 +135,7 @@
         border-radius: 20px;
         width: 40px;
         height: 40px;
-        background-color: $colorButtonBlue;
+        background-color: $btn-bh-active;
         cursor: pointer;
 
         .icon-search {

@@ -112,7 +112,7 @@
     font-size: 16px;
     line-height: 24px;
 
-    color: $rightText;
+    color: $right-color-text;
 
     @include large-screen {
       margin-bottom: 12px;
@@ -132,7 +132,7 @@
     }
 
     #check:checked + label + label {
-      color: $colorBlack;
+      color: $black-color-text;
     }
 
     .check {
@@ -159,8 +159,8 @@
     }
 
     input:checked + label {
-      border: 3px solid $colorButtonBlue;
-      background: $colorButtonBlue url(../../../img/check.svg) no-repeat center;
+      border: 3px solid $btn-bh-active;
+      background: $btn-bh-active url(../../../img/check.svg) no-repeat center;
     }
   }
 
@@ -172,7 +172,7 @@
     line-height: 17px;
     text-decoration-line: none;
 
-    color: $colorButtonBlue;
+    color: $btn-bh-active;
   }
 }
 

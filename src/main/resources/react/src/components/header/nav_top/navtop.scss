@@ -16,7 +16,7 @@
 
 
     &-links {
-      color: $colorBlack;
+      color: $black-color-text;
       text-transform: uppercase;
     }
 
@@ -53,7 +53,7 @@
         }
 
         &:active {
-          @include Scale;
+          @include Scale(1.03);
         }
 
       }

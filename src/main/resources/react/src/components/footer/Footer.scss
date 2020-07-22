@@ -1,7 +1,7 @@
 @import "../partials/variables";
 
 .HomePageFooter {
-  padding-top: 200px;
+  //padding-top: 200px;
   background-image: url(../../img/footerBg.png);
   background-size: cover;
   background-position: top;
@@ -36,7 +36,7 @@
 
   & + a {
     img:active {
-      @include Scale;
+      @include Scale(1.03);
     }
   }
 
@@ -56,7 +56,6 @@
   display: block;
   font-size: 16px;
   line-height: 24px;
-  color: #fff;
   text-decoration: none;
 }
 
