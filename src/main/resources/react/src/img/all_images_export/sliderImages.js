@@ -12,5 +12,5 @@ export {
   furnitureSlider,
   shoesSlider,
   toySlider,
-  strollersSlider
+  strollersSlider,
 };

@@ -38,21 +38,21 @@ document.addEventListener("DOMContentLoaded", function() {
       /* Предотвращаем стандартное действие элемента. Так как кнопку разные
             люди могут сделать по-разному. Кто-то сделает ссылку, кто-то кнопку.
             Нужно подстраховаться. */
-      e.preventDefault();
+         e.preventDefault();
 
-      /* При каждом клике на кнопку мы будем забирать содержимое атрибута data-modal
+         /* При каждом клике на кнопку мы будем забирать содержимое атрибута data-modal
             и будем искать модальное окно с таким же атрибутом. */
-      var modalId = this.getAttribute("data-modal"),
-        modalElem = document.querySelector(
-          '.modal[data-modal="' + modalId + '"]'
-        );
+         var modalId = this.getAttribute('data-modal'),
+             modalElem = document.querySelector('.modal[data-modal="' + modalId + '"]');
 
-      /* После того как нашли нужное модальное окно, добавим классы
+
+         /* После того как нашли нужное модальное окно, добавим классы
             подложке и окну чтобы показать их. */
-      modalElem.classList.add("active");
-      overlay.classList.add("active");
-    }); // end click
-  }); // end foreach
+         modalElem.classList.add('active');
+         overlay.classList.add('active');
+      }); // end click
+
+   }); // end foreach
 
   closeButtons.forEach(function(item) {
     item.addEventListener("click", function(e) {
@@ -67,13 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function(e) {
       var key = e.keyCode;
 
-      if (key == 27) {
-        document.querySelector(".modal.active").classList.remove("active");
-        document.querySelector(".overlay").classList.remove("active");
-      }
-    },
-    false
-  );
+        if (key == 27) {
 
   overlay.addEventListener("click", function() {
     document.querySelector(".modal.active").classList.remove("active");
@@ -81,34 +75,35 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 }); // end ready
 
+
 //TABS
-function check() {
-  if (document.getElementById("tab1").checked) {
-    document.getElementById("content1").style.display = "block";
-    document.getElementById("content2").style.display = "none";
-    document.getElementById("content3").style.display = "none";
-    document.getElementById("content4").style.display = "none";
-    //document.getElementById('content5').style.display = 'none';
-  }
-  if (document.getElementById("tab2").checked) {
-    document.getElementById("content1").style.display = "none";
-    document.getElementById("content2").style.display = "block";
-    document.getElementById("content3").style.display = "none";
-    document.getElementById("content4").style.display = "none";
-    //document.getElementById('content5').style.display = 'none';
-  }
-  if (document.getElementById("tab3").checked) {
-    document.getElementById("content1").style.display = "none";
-    document.getElementById("content2").style.display = "none";
-    document.getElementById("content3").style.display = "block";
-    document.getElementById("content4").style.display = "none";
-    //document.getElementById('content5').style.display = 'none';
-  }
-  if (document.getElementById("tab4").checked) {
-    document.getElementById("content1").style.display = "none";
-    document.getElementById("content2").style.display = "none";
-    document.getElementById("content3").style.display = "none";
-    document.getElementById("content4").style.display = "block";
-    //document.getElementById('content5').style.display = 'none';
-  }
+function check() {    
+    if(document.getElementById('tab1').checked) {        
+        document.getElementById('content1').style.display = 'block'; 
+        document.getElementById('content2').style.display = 'none';
+        document.getElementById('content3').style.display = 'none';
+        document.getElementById('content4').style.display = 'none';
+        //document.getElementById('content5').style.display = 'none';          
+    }    
+    if(document.getElementById('tab2').checked) {        
+        document.getElementById('content1').style.display = 'none'; 
+        document.getElementById('content2').style.display = 'block';
+        document.getElementById('content3').style.display = 'none';
+        document.getElementById('content4').style.display = 'none';
+        //document.getElementById('content5').style.display = 'none';        
+    }    
+    if(document.getElementById('tab3').checked) {        
+        document.getElementById('content1').style.display = 'none'; 
+        document.getElementById('content2').style.display = 'none';
+        document.getElementById('content3').style.display = 'block';
+        document.getElementById('content4').style.display = 'none';
+        //document.getElementById('content5').style.display = 'none';         
+        }    
+    if(document.getElementById('tab4').checked) {        
+        document.getElementById('content1').style.display = 'none'; 
+        document.getElementById('content2').style.display = 'none';
+        document.getElementById('content3').style.display = 'none';
+        document.getElementById('content4').style.display = 'block';
+        //document.getElementById('content5').style.display = 'none';
+    }       
 }

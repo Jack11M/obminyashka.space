@@ -1,5 +1,5 @@
 import React from "react";
-import ErrorPage from "../pages/ErrorPages/ErrorPage";
+import ErrorPage from "../../pages/ErrorPages/ErrorPage";
 import { withRouter } from "react-router-dom";
 
 class ErrorBoundary extends React.Component {
@@ -11,7 +11,7 @@ class ErrorBoundary extends React.Component {
     this.setState({ hasError: true });
   }
 
-  goTo = event => {
+  goTo = (event) => {
     this.setState({ hasError: false });
     if (event.target.className === "onMain") {
       this.props.history.push("/");
