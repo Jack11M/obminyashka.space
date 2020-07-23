@@ -82,11 +82,11 @@ user:
 
 child:
   - id: 1
-    sex: 'female'
+    sex: 'male'
     birth_date: '2018-01-01'
     user_id: 1
   - id: 2
-    sex: 'male'
+    sex: 'female'
     birth_date: '2018-02-02'
     user_id: 1
 

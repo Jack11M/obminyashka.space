@@ -3,6 +3,7 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
@@ -22,10 +23,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
@@ -70,52 +68,57 @@ public class UserController {
     }
 
     @PostMapping("/child")
-    public ResponseEntity<HttpStatus> addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                                          List<@Valid ChildDto> childrenDtoList,
+    public ResponseEntity<HttpStatus> addChildren(@RequestBody
+                                                  @Size(min = 1, message = "{exception.invalid.dto}")
+                                                          List<@Valid ChildDto> childrenDto,
                                                   Principal principal) {
-        if (childrenDtoList.stream().anyMatch(dto -> dto.getId() > 0)) {
+        if (childrenDto.stream().anyMatch(dto -> dto.getId() > 0)) {
             throw new IllegalIdentifierException(
-                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", "Zero ID is expected"));
+                    getExceptionMessageSourceWithAdditionalInfo(
+                            "exception.illegal.id",
+                            "Zero ID is expected"));
         }
-        userService.addChildren(getUser(principal.getName()), childrenDtoList);
+        userService.addChildren(getUser(principal.getName()), childrenDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/child")
-    public ResponseEntity<HttpStatus> removeChildren(@RequestParam @Size(min = 1, message = "{exception.invalid.dto}")
-                                                             List<@NotNull Long> childrenIdToRemoveList,
+    public ResponseEntity<HttpStatus> removeChildren(@RequestParam
+                                                     @Size(min = 1, message = "{exception.invalid.dto}")
+                                                             List<@NotNull Long> childrenIdToRemove,
                                                      Principal principal) {
         final User user = getUser(principal.getName());
-        final List<Long> userChildrenIdList = mapBy(user.getChildren(), Child::getId);
-        if (!userChildrenIdList.containsAll(childrenIdToRemoveList)) {
+        if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSource("exception.invalid.dto"));
         }
-        userService.removeChildren(user, childrenIdToRemoveList);
+        userService.removeChildren(user, childrenIdToRemove);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/child")
-    public ResponseEntity<HttpStatus> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                                                 List<@Valid ChildDto> childrenDtoList,
+    public ResponseEntity<HttpStatus> updateChildren(@RequestBody
+                                                     @Size(min = 1, message = "{exception.invalid.dto}")
+                                                             List<@Valid ChildDto> childrenDto,
                                                      Principal principal) {
         final User user = getUser(principal.getName());
-        final List<Long> userChildrenIdList = mapBy(user.getChildren(), Child::getId);
-        final List<Long> childrenIdToUpdateList = mapBy(childrenDtoList, ChildDto::getId);
-        if (!userChildrenIdList.containsAll(childrenIdToUpdateList)) {
+        if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
-                    getExceptionMessageSource("exception.invalid.dto"));
+                    getExceptionMessageSourceWithAdditionalInfo(
+                            "exception.invalid.dto",
+                            "Not all children from dto present in User"));
         }
-        userService.updateChildren(user, childrenDtoList);
+        userService.updateChildren(user, childrenDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private User getUser(String username) {
-        return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(getExceptionMessageSource("exception.user.not-found")));
+    private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {
+        final List<Long> userChildrenId = UtilMapper.mapBy(parent.getChildren(), Child::getId);
+        return !userChildrenId.containsAll(childrenId);
     }
 
-    private <T, E> List<E> mapBy(Collection<T> collection, Function<T, E> mapper) {
-        return collection.stream().map(mapper)
-                .collect(Collectors.toList());
+    private User getUser(String username) {
+        return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
+                getExceptionMessageSource("exception.user.not-found")));
     }
 }

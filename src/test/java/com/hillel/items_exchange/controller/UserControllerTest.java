@@ -137,9 +137,8 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
-    void getChild_Success() throws Exception {
+    void getChildren_Success() throws Exception {
         mockMvc.perform(get("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -154,23 +153,10 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "no-such-user")
-    @Transactional
-    @DataSet("database_init.yml")
-    void getChild_Fail_NoSuchUser() throws Exception {
-        mockMvc.perform(get("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "children/create.yml")
-    void addChild_Success() throws Exception {
+    void addChildren_Success() throws Exception {
         mockMvc.perform(post("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
@@ -187,7 +173,7 @@ class UserControllerTest {
     void removeChild_Success() throws Exception {
         mockMvc.perform(delete("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("childrenIdToRemoveList", "1")
+                .param("childrenIdToRemove", "1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -209,9 +195,8 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
-    void addChild_Fail_NotValidDto_IdBiggerThanZero() throws Exception {
+    void addChild_Fail_NotValidDto_IdNotZero() throws Exception {
         mockMvc.perform(post("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ChildDtoCreatingUtil.getNotValidChildDtoForCreate())
@@ -222,20 +207,6 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    void removeChild_Fail_NotValidDto_NoSuchChildInUser() throws Exception {
-        mockMvc.perform(delete("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getNotValidChildDtoForDelete())
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     void updateChild_Fail_NotValidDto_NoSuchChildInUser() throws Exception {
         mockMvc.perform(put("/user/child/")
@@ -245,31 +216,4 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    void removeChild_Fail_NotValidDto_DuplicatedId() throws Exception {
-        mockMvc.perform(delete("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getNotValidChildDtoDuplicatedId())
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @Transactional
-    @DataSet("database_init.yml")
-    void updateChild_Fail_NotValidDto_DuplicatedId() throws Exception {
-        mockMvc.perform(put("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getNotValidChildDtoDuplicatedId())
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-    }
-
 }

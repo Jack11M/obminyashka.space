@@ -1,6 +1,5 @@
 package com.hillel.items_exchange.service;
 
-import com.hillel.items_exchange.dao.ChildRepository;
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToModel;
@@ -30,7 +28,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
-    private final ChildRepository childRepository;
 
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
@@ -72,24 +69,27 @@ public class UserService {
         return convertToDto(parent.getChildren(), ChildDto.class);
     }
 
-    public void addChildren(User parent, List<ChildDto> childrenDtoToAddList) {
-        final List<Child> childrenToSaveList = new ArrayList<>(convertToModel(childrenDtoToAddList, Child.class, ArrayList::new));
-        childrenToSaveList.forEach(child -> child.setUser(parent));
-        childRepository.saveAll(childrenToSaveList);
+    public void addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
+        final List<Child> childrenToSave = new ArrayList<>(convertToModel(
+                childrenDtoToAdd, Child.class, ArrayList::new));
+        childrenToSave.forEach(child -> {
+            child.setUser(parent);
+            parent.getChildren().add(child);
+            userRepository.save(parent);
+        });
     }
 
-    public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdateList) {
-        final List<Child> childrenToUpdate = new ArrayList<>(convertToModel(childrenDtoToUpdateList, Child.class, ArrayList::new));
-        childrenToUpdate.forEach(child -> child.setUser(parent));
-        childRepository.saveAll(childrenToUpdate);
-        childRepository.flush();
+    public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+        parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
+            if (pChild.getId() == uChild.getId()) {
+                BeanUtils.copyProperties(uChild, pChild);
+            }
+        }));
+        userRepository.saveAndFlush(parent);
     }
 
-    public void removeChildren(User parent, List<Long> childrenIdToRemoveList) {
-        final List<Child> userChildrenToRemoveList = parent.getChildren().stream()
-                .filter(child -> childrenIdToRemoveList.contains(child.getId()))
-                .collect(Collectors.toList());
-        userChildrenToRemoveList.forEach(child -> parent.getChildren().remove(child));
+    public void removeChildren(User parent, List<Long> childrenIdToRemove) {
+        parent.getChildren().removeIf(child -> childrenIdToRemove.contains(child.getId()));
         userRepository.saveAndFlush(parent);
     }
 }
