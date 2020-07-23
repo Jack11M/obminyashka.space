@@ -45,12 +45,20 @@ class AdvertisementControllerIntegrationTest {
     private AdvertisementDto existDto;
     private AdvertisementDto existDtoForUpdate;
     private int page, size;
+    private long validUsersAdvId;
+    private long notValidUsersAdvId;
+    private long validAdvertisementsImageId;
+    private long notValidAdvertisementsImageId;
 
 
     @BeforeEach
     void setUp() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
+        validUsersAdvId = 1L;
+        notValidUsersAdvId=999L;
+        validAdvertisementsImageId=1L;
+        notValidAdvertisementsImageId=999L;
     }
 
     @Test
@@ -169,4 +177,39 @@ class AdvertisementControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void setDefaultImage_success() throws Exception {
+        mockMvc.perform(post("/adv/setDefaultImage/"+validUsersAdvId+"/"+validAdvertisementsImageId))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void setDefaultImage_NotValidAdvertisementId_shouldBeThrownIllegalIdentifierException() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(
+                post("/adv/setDefaultImage/" + notValidUsersAdvId + "/" + validAdvertisementsImageId)
+        )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("User does not has advertisement with such id"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void setDefaultImage_NotValidImageId_shouldBeThrownIllegalIdentifierException() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(
+                post("/adv/setDefaultImage/" + validUsersAdvId + "/" + notValidAdvertisementsImageId)
+        )
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("There is no image with such id in this advertisement"));
+    }
+
 }

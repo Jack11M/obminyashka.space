@@ -116,6 +116,13 @@ public class AdvertisementService {
         advertisementRepository.flush();
     }
 
+    public void setAdvertisementDefaultImage(Advertisement advertisement, Image image) {
+        advertisement.getProduct().getImages().forEach(img->img.setDefaultPhoto(false));
+        image.setDefaultPhoto(true);
+        advertisementRepository.save(advertisement);
+        advertisementRepository.flush();
+    }
+
     private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
         return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {
         }.getType());
