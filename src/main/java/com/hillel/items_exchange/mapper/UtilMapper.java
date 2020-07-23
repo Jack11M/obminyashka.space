@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -43,8 +42,8 @@ public class UtilMapper {
         return mapper.map(phoneDto, Phone.class);
     }
 
-    public static <T, K> List<K> convertToDto(Set<T> tSet, Class<K> kClass) {
-        return tSet.stream()
+    public static <T, K> List<K> convertToDto(Collection<T> tCollection, Class<K> kClass) {
+        return tCollection.stream()
                 .map(t -> mapper.map(t, kClass))
                 .collect(Collectors.toList());
     }

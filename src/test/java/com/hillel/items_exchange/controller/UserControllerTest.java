@@ -3,8 +3,9 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
+import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.util.ChildDtoCreatingUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
@@ -42,6 +45,27 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private String validCreatingChildDtoJson;
+    private String notValidCreatingChildDtoJson;
+    private String validUpdatingChildDtoJson;
+    private String notValidUpdatingChildDtoJson;
+
+    @BeforeEach
+    void setUp() {
+        validCreatingChildDtoJson = asJsonString(List.of(
+                childDtoBuilder(0L, LocalDate.of(2019, 3, 3), "male"),
+                childDtoBuilder(0L, LocalDate.of(2019, 4, 4), "female")));
+        notValidCreatingChildDtoJson = asJsonString(List.of(
+                childDtoBuilder(111L, LocalDate.of(2019, 3, 3), "male"),
+                childDtoBuilder(222L, LocalDate.of(2019, 4, 4), "female")));
+        validUpdatingChildDtoJson = asJsonString(List.of(
+                childDtoBuilder(1L, LocalDate.of(2018, 3, 3), "male"),
+                childDtoBuilder(2L, LocalDate.of(2018, 4, 4), "female")));
+        notValidUpdatingChildDtoJson = asJsonString(List.of(
+                childDtoBuilder(1L, LocalDate.of(2018, 3, 3), "male"),
+                childDtoBuilder(9999L, LocalDate.of(2018, 4, 4), "female")));
+    }
 
     @Test
     @WithMockUser(username = "admin")
@@ -138,7 +162,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void getChildren_Success() throws Exception {
+    void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
         mockMvc.perform(get("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -156,10 +180,11 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void addChildren_Success() throws Exception {
+    @ExpectedDataSet(value = "/children/create.yml", ignoreCols = {"birth_date", "sex"})
+    void addChildren_Success_ShouldReturnHttpStatusOk() throws Exception {
         mockMvc.perform(post("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getValidChildDtoForCreate())
+                .content(validCreatingChildDtoJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -170,10 +195,9 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/delete.yml")
-    void removeChild_Success() throws Exception {
-        mockMvc.perform(delete("/user/child/")
+    void removeChild_Success_ShouldReturnHttpStatusOk() throws Exception {
+        mockMvc.perform(delete("/user/child/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("childrenIdToRemove", "1")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -184,10 +208,10 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/update.yml")
-    void updateChild_Success() throws Exception {
+    void updateChild_Success_ShouldReturnHttpStatusOk() throws Exception {
         mockMvc.perform(put("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getValidChildDtoForUpdate())
+                .content(validUpdatingChildDtoJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -196,24 +220,32 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void addChild_Fail_NotValidDto_IdNotZero() throws Exception {
-        mockMvc.perform(post("/user/child/")
+    void addChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getNotValidChildDtoForCreate())
+                .content(notValidCreatingChildDtoJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Zero ID is expected"));
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void updateChild_Fail_NotValidDto_NoSuchChildInUser() throws Exception {
-        mockMvc.perform(put("/user/child/")
+    void updateChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(put("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ChildDtoCreatingUtil.getNotValidChildDtoForUpdate())
+                .content(notValidUpdatingChildDtoJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
+    }
+
+    private ChildDto childDtoBuilder(long id, LocalDate birthDate, String sex){
+        return ChildDto.builder().id(id).birthDate(birthDate).sex(sex).build();
     }
 }

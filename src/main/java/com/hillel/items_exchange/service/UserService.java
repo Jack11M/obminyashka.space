@@ -72,11 +72,9 @@ public class UserService {
     public void addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
         final List<Child> childrenToSave = new ArrayList<>(convertToModel(
                 childrenDtoToAdd, Child.class, ArrayList::new));
-        childrenToSave.forEach(child -> {
-            child.setUser(parent);
-            parent.getChildren().add(child);
-            userRepository.save(parent);
-        });
+        childrenToSave.forEach(child -> child.setUser(parent));
+        parent.getChildren().addAll(childrenToSave);
+        userRepository.save(parent);
     }
 
     public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {

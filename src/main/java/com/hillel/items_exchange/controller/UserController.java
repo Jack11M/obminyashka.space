@@ -82,8 +82,8 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/child")
-    public ResponseEntity<HttpStatus> removeChildren(@RequestParam
+    @DeleteMapping("/child/{id}")
+    public ResponseEntity<HttpStatus> removeChildren(@PathVariable("id")
                                                      @Size(min = 1, message = "{exception.invalid.dto}")
                                                              List<@NotNull Long> childrenIdToRemove,
                                                      Principal principal) {
