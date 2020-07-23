@@ -182,6 +182,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/setDefaultImage.yml")
     void setDefaultImage_success() throws Exception {
         mockMvc.perform(post("/adv/setDefaultImage/"+validUsersAdvId+"/"+validAdvertisementsImageId))
                 .andDo(print())

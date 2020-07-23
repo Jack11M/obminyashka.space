@@ -119,7 +119,7 @@ public class AdvertisementService {
     public void setAdvertisementDefaultImage(Advertisement advertisement, Image image) {
         advertisement.getProduct().getImages().forEach(img->img.setDefaultPhoto(false));
         image.setDefaultPhoto(true);
-        advertisementRepository.save(advertisement);
+        advertisementRepository.saveAndFlush(advertisement);
     }
 
     private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
