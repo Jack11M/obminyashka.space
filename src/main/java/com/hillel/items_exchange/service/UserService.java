@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        return userRepository.existsByUsernameOrEmailAndPassword(usernameOrEmail, usernameOrEmail, encryptedPassword);
+        return existsByUsername(usernameOrEmail) || existsByEmailAndPassword(usernameOrEmail, encryptedPassword);
     }
 
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
@@ -50,6 +50,13 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    public boolean existsByEmailAndPassword(String email, String encodedPassword){
+      return userRepository.findAll().stream()
+              .anyMatch(user ->
+                      user.getEmail().equals(email)
+                              && bCryptPasswordEncoder.matches(encodedPassword, user.getPassword()));
+    }
+
     public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
     }
@@ -57,4 +64,6 @@ public class UserService {
     private UserDto mapUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }
+
+
 }
