@@ -25,7 +25,9 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
-
+  &_rules {
+    margin-bottom: 10px;
+  }
 }
 
 .footer-list__icon {
@@ -67,7 +69,7 @@
 .btn-Help-Children {
   margin-top: 40px;
   background-color: #12B6ED;
-  padding: 8px 25px;
+  padding: 1px 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: lighter;
