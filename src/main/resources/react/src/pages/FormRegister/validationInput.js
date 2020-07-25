@@ -7,8 +7,13 @@ export const RegisterValidation = (input, isLogin) => {
     password: [["notEmpty"], ["cutEmpty"]],
   };
   const register = {
-    email: [["notEmpty"], ["pattern", "email"], ["cutEmpty"]],
-    username: [["notEmpty"], ["lengthLogin"], ["cutEmpty"]],
+    email: [["notEmpty"], ["pattern", "email"], ["cutEmpty"]],//,["pattern", "checkBySymbolEmail"]
+    username: [
+      ["notEmpty"],
+      ["lengthLogin"],
+      ["pattern", "altCode"],
+      ["cutEmpty"],
+    ],
     password: [["notEmpty"], ["pattern", "password"], ["cutEmpty"]],
     confirmPassword: [["notEmpty"], ["contains", "password"]],
   };
@@ -17,8 +22,10 @@ export const RegisterValidation = (input, isLogin) => {
     MIN_LENGTH_STRING: 1,
     MAX_LENGTH_STRING: 49,
     rulesPattern: {
-      email: /.+@.+\..+/i,
+      email: /(?=^.{1,129}@.+\..+)/i,
       password: /(?=^.{8,30}$)((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*$/,
+      altCode: /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/,
+      // checkBySymbolEmail: /([@]{1,1})/,
     },
 
     notEmpty(el) {
@@ -32,13 +39,12 @@ export const RegisterValidation = (input, isLogin) => {
     },
     contains(el, el2) {
       const element2 = document.getElementById(el2);
-      return el.value === element2.value && this.notEmpty(el);
+      return el.value === element2.value
     },
     lengthLogin(el) {
       return (
         el.value.length > this.MIN_LENGTH_STRING &&
-        el.value.length < this.MAX_LENGTH_STRING &&
-        !el.value.includes(" ")
+        el.value.length < this.MAX_LENGTH_STRING
       );
     },
   };
@@ -46,9 +52,9 @@ export const RegisterValidation = (input, isLogin) => {
   const whatIsForm = isLogin ? login : register;
   let methods = whatIsForm[input.name];
 
-  let someError = methods.map((item) => {
-    return validatorMethods[item[0]](input, item[1]);
-  });
+
+  let someError = methods.map((item) => validatorMethods[item[0]](input, item[1]));
+  console.log(someError)
 
   return someError.every((ev) => ev === true);
 };
