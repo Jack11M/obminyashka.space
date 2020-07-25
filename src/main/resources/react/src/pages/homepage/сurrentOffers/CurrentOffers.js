@@ -10,7 +10,7 @@ const CurrentOffers = () => {
       <div className="products-header">
         <Title_Big_Blue
           whatClass="products-title-list"
-          text="Текущие предложени"
+          text="Текущие предложения"
         />
         <a href="#" className="products-link-search">
           Расширенный поиск
