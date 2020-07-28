@@ -6,6 +6,7 @@ import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.util.PatternHandler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +29,11 @@ public class UserService {
     }
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        return existsByUsername(usernameOrEmail) || existsByEmailAndPassword(usernameOrEmail, encryptedPassword);
+        Pattern emailPattern = Pattern.compile(PatternHandler.EMAIL);
+        if (emailPattern.matcher(usernameOrEmail).matches()) {
+            return existsByEmailAndPassword(usernameOrEmail, encryptedPassword);
+        }
+        return existsByUsernameAndPassword(usernameOrEmail, encryptedPassword);
     }
 
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
@@ -51,10 +57,13 @@ public class UserService {
     }
 
     public boolean existsByEmailAndPassword(String email, String encodedPassword){
-      return userRepository.findAll().stream()
-              .anyMatch(user ->
-                      user.getEmail().equals(email)
-                              && bCryptPasswordEncoder.matches(encodedPassword, user.getPassword()));
+        final Optional<User> user = userRepository.findByEmail(email);
+        return user.filter(u -> bCryptPasswordEncoder.matches(encodedPassword, u.getPassword())).isPresent();
+    }
+
+    public boolean existsByUsernameAndPassword(String username, String encodedPassword){
+        final Optional<User> user = userRepository.findByUsername(username);
+        return user.filter(u -> bCryptPasswordEncoder.matches(encodedPassword, u.getPassword())).isPresent();
     }
 
     public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
@@ -64,6 +73,4 @@ public class UserService {
     private UserDto mapUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
     }
-
-
 }
