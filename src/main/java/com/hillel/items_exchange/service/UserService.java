@@ -56,18 +56,22 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public boolean existsByEmailAndPassword(String email, String encodedPassword){
+    public boolean existsByEmailAndPassword(String email, String encodedPassword) {
         final Optional<User> user = userRepository.findByEmail(email);
-        return user.filter(u -> bCryptPasswordEncoder.matches(encodedPassword, u.getPassword())).isPresent();
+        return user.filter(u -> isPasswordMatches(u, encodedPassword)).isPresent();
     }
 
     public boolean existsByUsernameAndPassword(String username, String encodedPassword){
         final Optional<User> user = userRepository.findByUsername(username);
-        return user.filter(u -> bCryptPasswordEncoder.matches(encodedPassword, u.getPassword())).isPresent();
+        return user.filter(u -> isPasswordMatches(u, encodedPassword)).isPresent();
     }
 
     public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
+    }
+
+    public boolean isPasswordMatches(User user, String encodedPassword){
+        return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
     }
 
     private UserDto mapUserToDto(User user) {
