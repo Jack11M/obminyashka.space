@@ -3,8 +3,6 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.ImageDto;
-import com.hillel.items_exchange.model.Advertisement;
-import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.SubcategoryService;
@@ -116,26 +114,12 @@ public class AdvertisementController {
         return ResponseEntity.unprocessableEntity().body(HttpStatus.CONFLICT);
     }
 
-    @PostMapping("/setDefaultImage/{advertisementId}/{imageId}")
+    @PostMapping("/default-image/{advertisementId}/{imageId}")
     public ResponseEntity<HttpStatus> setAdvertisementDefaultImage(@PathVariable Long advertisementId,
                                                                    @PathVariable Long imageId,
                                                                    Principal principal) {
         User owner = getUser(principal.getName());
-        final Advertisement advertisement = owner.getAdvertisements().stream()
-                .filter(adv -> adv.getId() == advertisementId)
-                .findAny().orElseThrow(() -> new IllegalIdentifierException(
-                        getExceptionMessageSourceWithAdditionalInfo(
-                                "exception.illegal.id",
-                                "User does not has advertisement with such id"
-                        )));
-        final Image image = advertisement.getProduct().getImages().stream()
-                .filter(img -> img.getId() == imageId)
-                .findAny().orElseThrow(() -> new IllegalIdentifierException(
-                        getExceptionMessageSourceWithAdditionalInfo(
-                                "exception.illegal.id",
-                                "There is no image with such id in this advertisement"
-                        )));
-        advertisementService.setAdvertisementDefaultImage(advertisement, image);
+        advertisementService.setAdvertisementDefaultImage(advertisementId, imageId, owner);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

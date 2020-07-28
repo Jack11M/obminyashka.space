@@ -5,6 +5,7 @@ import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
 @Service
 @RequiredArgsConstructor
@@ -116,7 +119,21 @@ public class AdvertisementService {
         advertisementRepository.flush();
     }
 
-    public void setAdvertisementDefaultImage(Advertisement advertisement, Image image) {
+    public void setAdvertisementDefaultImage(Long advertisementId, Long imageId, User owner) {
+        final Advertisement advertisement = owner.getAdvertisements().stream()
+                .filter(adv -> adv.getId() == advertisementId)
+                .findFirst().orElseThrow(() -> new IllegalIdentifierException(
+                        getExceptionMessageSourceWithAdditionalInfo(
+                                "exception.illegal.id",
+                                "User does not has advertisement with such id"
+                        )));
+        final Image image = advertisement.getProduct().getImages().stream()
+                .filter(img -> img.getId() == imageId)
+                .findFirst().orElseThrow(() -> new IllegalIdentifierException(
+                        getExceptionMessageSourceWithAdditionalInfo(
+                                "exception.illegal.id",
+                                "There is no image with such id in this advertisement"
+                        )));
         advertisement.getProduct().getImages().forEach(img->img.setDefaultPhoto(false));
         image.setDefaultPhoto(true);
         advertisementRepository.saveAndFlush(advertisement);

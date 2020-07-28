@@ -184,7 +184,7 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/setDefaultImage.yml")
     void setDefaultImage_success() throws Exception {
-        mockMvc.perform(post("/adv/setDefaultImage/"+validUsersAdvId+"/"+validAdvertisementsImageId))
+        mockMvc.perform(post("/adv/default-image/"+validUsersAdvId+"/"+validAdvertisementsImageId))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -194,7 +194,7 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     void setDefaultImage_NotValidAdvertisementId_shouldBeThrownIllegalIdentifierException() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                post("/adv/setDefaultImage/" + notValidUsersAdvId + "/" + validAdvertisementsImageId)
+                post("/adv/default-image/" + notValidUsersAdvId + "/" + validAdvertisementsImageId)
         )
                 .andExpect(status().isBadRequest())
                 .andReturn();
@@ -206,7 +206,7 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     void setDefaultImage_NotValidImageId_shouldBeThrownIllegalIdentifierException() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                post("/adv/setDefaultImage/" + validUsersAdvId + "/" + notValidAdvertisementsImageId)
+                post("/adv/default-image/" + validUsersAdvId + "/" + notValidAdvertisementsImageId)
         )
                 .andExpect(status().isBadRequest())
                 .andReturn();
