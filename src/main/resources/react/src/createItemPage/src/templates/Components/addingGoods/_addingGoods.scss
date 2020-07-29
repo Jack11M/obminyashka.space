@@ -1,0 +1,510 @@
+.container {
+  width: 1220px;
+  height: 1488px;
+  margin: 100px auto;
+  background-color: #fdfcff;
+}
+
+.container {
+  .section-select {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-flow: column;
+    .title {
+      width: 100%;
+      height: auto;
+      padding: 44px 44px 0 44px;
+    }
+    .inner {
+      width: 100%;
+      padding: 0 44px;
+      display: flex;
+      justify-content: space-between;
+      .required-label {
+        position: relative;
+        display: inline-block;
+        color: gray;
+        font-size: 16px;
+        line-height: 24px;
+        &::before {
+          content: "*";
+          color: #ff0000;
+        }
+      }
+      div.dropdown-category,
+      div.dropdown-subcategory {
+        border: 1px solid #ddd;
+        width: 349px;
+        min-height: 48px;
+        height: auto;
+        border-radius: 3px;
+      }
+
+      div.dropdown-category ul,
+      div.dropdown-subcategory ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border: 0;
+      }
+
+      div.dropdown-category ul li,
+      div.dropdown-category div.textfirst,
+      div.dropdown-subcategory ul li,
+      div.dropdown-subcategory div.textfirst {
+        padding: 0;
+        color: #333;
+        border-bottom: 1px solid #ddd;
+        padding: 15px 15px;
+        height: 48px;
+        cursor: pointer;
+      }
+
+      div.dropdown-category div.textfirst img.down,
+      div.dropdown-subcategory div.textfirst img.down {
+        float: right;
+        margin-top: 5px;
+      }
+
+      div.dropdown-category ul li:last-child,
+      div.dropdown-subcategory ul li:last-child {
+        border-bottom: 0;
+      }
+
+      div.dropdown-category ul li,
+      div.dropdown-subcategory ul li {
+        display: none;
+        padding-left: 25px;
+      }
+
+      div.dropdown-category ul li.main,
+      div.dropdown-subcategory ul li.main {
+        display: block;
+      }
+
+      div.dropdown-category ul li img,
+      div.dropdown-subcategory ul li img {
+        width: 20px;
+        height: 20px;
+      }
+      #heading {
+        position: relative;
+        caret-color: #00c0ff;
+        border: 1px solid #bcbcbc;
+        outline: none;
+        box-sizing: border-box;
+        border-radius: 2px;
+        width: 349px;
+        height: 48px;
+        padding: 0 15px;
+      }
+    }
+  }
+  .section-exchange {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-flow: column;
+    .title {
+      width: 100%;
+      height: auto;
+      padding: 44px 44px 0 44px;
+    }
+    .inner {
+      width: 100%;
+      padding: 0 44px;
+      display: flex;
+      flex-flow: column;
+      label {
+        font-size: 14px;
+        line-height: 24px;
+      }
+      .required-label {
+        position: relative;
+        display: inline-block;
+        color: gray;
+        font-size: 16px;
+        line-height: 24px;
+        &::before {
+          content: "*";
+          color: #ff0000;
+        }
+      }
+      .consider-your-offer {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        margin-top: 20px;
+        input {
+          margin-right: 10px;
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
+          height: 0;
+          width: 0;
+        }
+        .checkmark {
+          position: absolute;
+          top: 7px;
+          left: 0;
+          height: 17px;
+          width: 17px;
+          background-color: #fff;
+          border: 3px solid #b8b8b8;
+          box-sizing: border-box;
+          /* Style the checkmark/indicator */
+          &::after {
+            content: " ";
+            left: -1px;
+            top: 1px;
+          }
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        input:checked ~ .checkmark {
+          background-color: #0fc4ff;
+          border: 3px solid #0fc4ff;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+          content: " ";
+          position: absolute;
+          display: none;
+        }
+
+        /* Show the checkmark when checked */
+        input:checked ~ .checkmark:after {
+          display: block;
+          background-image: url(../../../images/checkArrow.svg);
+          width: 13px;
+          height: 10px;
+          background-position: center;
+          background-size: contain;
+          background-repeat: no-repeat;
+          z-index: 10;
+        }
+      }
+    }
+  }
+  .section-specification {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-flow: column;
+    .title {
+      width: 100%;
+      height: auto;
+      padding: 44px 44px 0 44px;
+    }
+    .inner {
+      width: 100%;
+      padding: 0 44px;
+      display: flex;
+      justify-content: space-between;
+      label {
+        font-size: 14px;
+        line-height: 24px;
+      }
+      .required-label {
+        position: relative;
+        display: inline-block;
+        color: gray;
+        font-size: 16px;
+        line-height: 24px;
+        &::before {
+          content: "*";
+          color: #ff0000;
+        }
+      }
+      .spec1 {
+        display: flex;
+        flex-flow: column;
+        height: auto;
+        width: auto;
+        .specs1 {
+          display: flex;
+          width: 250px;
+          flex-flow: column;
+          position: relative;
+          padding-left: 35px;
+          margin-bottom: 12px;
+          cursor: pointer;
+          font-size: 22px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          margin-top: 20px;
+          label {
+            display: inline-block;
+            position: relative;
+            width: auto;
+          }
+          input {
+            margin-right: 10px;
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+          }
+          .checkmark {
+            position: absolute;
+            top: 2px;
+            left: -30px;
+            height: 17px;
+            width: 17px;
+            background-color: #fff;
+            border: 3px solid #b8b8b8;
+            box-sizing: border-box;
+            /* Style the checkmark/indicator */
+            &::after {
+              content: " ";
+              left: -1px;
+              top: 1px;
+            }
+          }
+          /* On mouse-over, add a grey background color */
+          // &:hover input ~ .checkmark {
+          //   background-color: #ccc;
+          // }
+
+          /* When the checkbox is checked, add a blue background */
+          input:checked ~ .checkmark {
+            background-color: #0fc4ff;
+            border: 3px solid #0fc4ff;
+          }
+
+          /* Create the checkmark/indicator (hidden when not checked) */
+          .checkmark:after {
+            content: " ";
+            position: absolute;
+            display: none;
+          }
+
+          /* Show the checkmark when checked */
+          input:checked ~ .checkmark:after {
+            display: block;
+            background-image: url(../../../images/checkArrow.svg);
+            width: 13px;
+            height: 10px;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 10;
+          }
+        }
+      }
+    }
+  }
+  .section-description {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-flow: column;
+    .title {
+      width: 100%;
+      height: auto;
+      padding: 44px 44px 0 44px;
+    }
+    .inner {
+      width: 100%;
+      padding: 0 44px;
+      display: flex;
+      flex-flow: column;
+      label {
+        font-size: 14px;
+        line-height: 24px;
+      }
+      .required-label {
+        position: relative;
+        display: inline-block;
+        color: gray;
+        font-size: 16px;
+        line-height: 24px;
+        margin-bottom: 10px;
+        &::before {
+          content: "*";
+          color: #ff0000;
+        }
+      }
+      .description {
+        height: 115px;
+        overflow-y: auto;
+        padding: 11px 45px 5px 18px;
+        border: 1px solid #bcbcbc;
+        box-sizing: border-box;
+        border-radius: 2px;
+        outline: none;
+        resize: none;
+        caret-color: #00c0ff;
+      }
+    }
+  }
+  .section-uploadImages {
+    margin-top: 40px;
+    width: 100%;
+    height: auto;
+    .title {
+      width: 100%;
+      height: auto;
+      padding: 0 44px 0 44px;
+    }
+    .inner {
+      padding: 0 44px;
+      label {
+        position: relative;
+        display: inline-block;
+        color: gray;
+        font-size: 16px;
+        line-height: 24px;
+      }
+      .upload-container {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        .image-card {
+          position: relative;
+          width: 151.75px;
+          height: 159.74px;
+          background: #ffffff;
+          border: 2px dashed #c4c4c4;
+          box-sizing: border-box;
+          box-shadow: 0px 0px 40px rgba(89, 102, 116, 0.1);
+          border-radius: 19px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-position: center;
+          position: relative;
+          z-index: 100;
+          input[type="file"] {
+            outline: 0;
+            opacity: 0;
+            pointer-events: none;
+            user-select: none;
+          }
+          .input-label {
+            width: 53.25px;
+            height: 53.25px;
+            position: relative;
+            border: 1px solid #bababa;
+            box-sizing: border-box;
+            border-radius: 50%;
+            display: block;
+            transition: border 300ms ease;
+            cursor: pointer;
+            text-align: center;
+            &::before {
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+              content: " ";
+              background-image: url(../../../images/image-plus.svg);
+              background-repeat: no-repeat;
+              background-position: center;
+              width: 28px;
+              height: 28px;
+              background-size: contain;              
+            }
+          }
+          .del-button {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 1px solid #BABABA;
+            box-sizing: border-box;
+            position: absolute;
+            right: -8px;
+            top: -8px;    
+            cursor: pointer;
+            outline: none;
+            &::before {
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+              content: ' ';
+              width: 8px;
+              height: 8px;
+              background-image: url(../../../images/image-cancel.svg);
+              background-size: contain;
+              background-position: center;
+              background-repeat: no-repeat;
+            }
+                                 
+          }
+        }
+      }
+    }
+  }
+  .section-buttons {
+    margin-top: 40px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-flow: column;
+    .inner {
+      padding: 0 44px;
+      display: flex;
+      justify-content: space-between;
+      .btn {
+        text-transform: uppercase;
+        outline: none;
+        border: none;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 26px;
+        height: 49px;
+        text-align: center;
+        transition: all 200ms ease-out;
+        &:hover {
+          cursor: pointer;
+        }
+        &.btn-add {
+          width: 289px;
+          margin-right: 30px;
+          background: #43b05c;
+          border-radius: 63px;
+          color: #fff;
+          &:hover {
+            background-color: #2f9948;
+          }
+        }
+        &.btn-show {
+          width: 222px;
+          background: #0fc4ff;
+          border-radius: 63px;
+          color: #fff;
+          &:hover {
+            background-color: #069bcc;
+          }
+        }
+        &.btn-cancel {
+          width: 160px;
+          color: #333333;
+          border-radius: 26px;
+          background-color: transparent;
+          &:hover {
+            color: #fff;
+            background-color: #000;
+          }
+        }
+      }
+    }
+  }
+}

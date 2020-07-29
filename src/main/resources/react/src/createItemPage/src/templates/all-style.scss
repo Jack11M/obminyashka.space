@@ -1,0 +1,12 @@
+// normalize scss
+@import './normalize.scss';
+
+// Components
+@import './Components/addingGoods/addingGoods.scss';
+
+*{
+    box-sizing: border-box;
+}
+body {
+    background: #E5E5E5;
+}

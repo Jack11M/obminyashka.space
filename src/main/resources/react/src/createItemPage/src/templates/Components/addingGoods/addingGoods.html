@@ -1,0 +1,235 @@
+<link rel="stylesheet" href="css/choices.css">
+<script src="js/choices.min.js"></script>
+
+<script type="text/javascript" src="../../../js/jquery-1.9.1.min.js"></script>
+<script src="../../../js/select.js"></script>
+<script defer src="../../../js/upload.js"></script>
+<div class="container">
+    <!--  -->
+    <div class="section-select">
+        <div class="title">
+            <h1>Выберите раздел</h1>
+        </div>
+        <div class="inner">
+            <div class="select-category">
+                <div class="drop-down">
+                    <label for="category" class="required-label"> Категория</label><br>
+                    <div class="dropdown-category">
+                        <div class="textfirst">Выбрать<img src="../../../images/arrow-selection.svg" width="10"
+                                height="10" class="down" /></div>
+                        <ul>
+                            <li class="input-option" data-value="1">
+                                <img src="../../../images/select-image.png" alt="" width="20" height="20" /> Одежда
+                            </li>
+                            <li class="input-option" data-value="2">
+                                <img src="../../../images/select-image.png" alt="" width="20" height="20" /> Игрушки
+                            </li>
+                            <li class="input-option" data-value="3">
+                                <img src="../../../images/select-image.png" alt="" width="20" height="20" /> Приборы
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="select-subcategory">
+                <label for="subcategory" class="required-label"> Подкатегория</label><br>
+                <div class="dropdown-subcategory">
+                    <div class="textfirst">Выбрать<img src="../../../images/arrow-selection.svg" width="10" height="10"
+                            class="down" /></div>
+                    <ul>
+                        <li class="input-option" data-value="1">Колготки, носки</li>
+                        <li class="input-option" data-value="2">Колготки, носки</li>
+                        <li class="input-option" data-value="3">Колготки, носки</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="input-heading">
+                <label for="heading" class="required-label"> Заголовок объявления</label><br>
+                <input name="heading" id="heading" type="text" placeholder="Заголовок объявления">
+            </div>
+        </div>
+    </div>
+    <!-- Поле обмена -->
+    <div class="section-exchange">
+        <div class="title">
+            <h1>Обмен</h1>
+        </div>
+        <div class="inner">
+            <div data-test-hook="remove-button">
+                <label for="choices-remove-button" class="required-label"> На что хотите обменяться?(введите фразу, а
+                    потом нажмите Enter)</label>
+                <input class="form-control" id="choices-remove-button" type="text" />
+            </div>
+            <div class="consider-your-offer">
+                <label>Рассмотрю Ваше предложение
+                    <input type="checkbox" checked="checked">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="section-specification">
+        <div class="title">
+            <h1>Характеристики</h1>
+        </div>
+        <div class="inner">
+            <div class="spec1">
+                <div class="h2">Возраст: </div>
+                <div class="specs1">
+                    <label>0
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>1 - 2
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>2 - 4
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>5 - 7
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>8 - 11
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>11 - 14
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+
+                </div>
+            </div>
+            <div class="spec1">
+                <div class="h2">Пол: </div>
+                <div class="specs1">
+                    <label>Женский
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>Мужской
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>Мальчик/Девочка
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="spec1">
+                <div class="h2">Размер (одежда): </div>
+                <div class="specs1">
+                    <label>50 - 80 см
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>80 - 92 см
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>92 - 104 см
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>110 - 122 см
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>128 - 146 см
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>146 - 164 см
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+
+                </div>
+            </div>
+            <div class="spec1">
+                <div class="h2">Сезон: </div>
+                <div class="specs1">
+                    <label>Демисезон
+                        <input type="checkbox" checked="checked">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>Лето
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label>Зима
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="section-description">
+        <div class="title">
+            <h1>Описание</h1>
+        </div>
+        <div class="inner">
+            <label class="required-label"> Опишите Вашу вещь: деффекты, особенности использования, и пр</label>
+            <textarea class="description" name="" id="" cols="30" rows="10"></textarea>
+        </div>
+    </div>
+    <!--  -->
+    <div class="section-uploadImages">
+        <div class="title">
+            <h1>Загрузите фотографии вашей вещи</h1>
+        </div>
+        <div class="inner">
+            <label> Первое фото станет обложкой карточки товара</label><br>
+            <label id="image-count">Загружено фотографий 0 из 6</label>
+            <div class="upload-container">
+                <div class="image-card" id="first-preview">
+                    <label class="input-label" ><input type="file" id="label-one"></label>
+                </div>
+                <div class="image-card" id="second-preview">
+                    <label class="input-label" ><input type="file" id="label-two"></label>
+                </div>
+                <div class="image-card" id="third-preview">
+                    <label class="input-label"><input type="file" id="label-three"></label>
+                </div>
+                <div class="image-card" id="fourth-preview">
+                    <label class="input-label"><input type="file" id="label-four"></label>
+                </div>
+                <div class="image-card" id="fifth-preview">
+                    <label class="input-label"><input type="file" id="label-five"></label>
+                </div>
+                <div class="image-card" id="sixth-preview">
+                    <label class="input-label"><input type="file" id="label-six"></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+    <div class="section-buttons">
+        <div class="inner">
+            <div class="btn-left-side">
+                <button class="btn btn-add">+ Добавить объявление</button>
+                <button class="btn btn-show">Предпросмотр</button>
+            </div>
+            <div class="btn-right-side">
+                <button class="btn btn-cancel">X Отменить все</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        new Choices('#choices-remove-button', {
+            removeItemButton: true,
+        });
+    });
+</script>
