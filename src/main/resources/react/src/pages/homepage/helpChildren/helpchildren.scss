@@ -59,3 +59,24 @@
     background-color: #0094FF
   }
 }
+
+@media (min-width: 320px) {
+  .HelpChildren {
+    display: none;
+  }
+}
+@media (min-width: 980px) {
+  .HelpChildren {
+    display: block;
+    &__text {
+      width: 250px;
+    }
+  }
+}
+@media (min-width: 1140px) {
+  .HelpChildren {
+    &__text {
+      width: 408px;
+    }
+  }
+}

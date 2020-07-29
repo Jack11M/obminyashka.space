@@ -146,13 +146,34 @@
   }
 }
 
+@media (min-width: 320px) {
+  .navbar-main-inner {
+    & .navbar-main__select {
+      display: none;
+    }
+    & .navbar-main .logo{
+      display: none;
+    }
+    & .navbar-main .btn-add{
+      display: none;
+    }
+  }
+}
+
 @media (min-width: 540px) {
   .navbar-main-inner {
     & .navbar-main__select {
+      display: block;
       margin-left: 149px;
     }
     & .navbar-main-search {
       margin-right: 8px;
+    }
+    & .navbar-main .logo{
+      display: block;
+    }
+    & .navbar-main .btn-add{
+      display: block;
     }
   }
 }
