@@ -46,10 +46,10 @@
     color: #fff;
     text-decoration: none;
     background-color: #00c0ff;
-    padding: 15px 40px;
+    padding: 16px 50px;
     border-radius: 20px;
     transition: 0.2s;
-
+    font-size: 18px;
     span {
       margin-right: 10px;
     }
@@ -57,5 +57,26 @@
 
   &__btn:hover {
     background-color: #0094FF
+  }
+}
+
+@media (min-width: 320px) {
+  .HelpChildren {
+    display: none;
+  }
+}
+@media (min-width: 980px) {
+  .HelpChildren {
+    display: block;
+    &__text {
+      width: 250px;
+    }
+  }
+}
+@media (min-width: 1140px) {
+  .HelpChildren {
+    &__text {
+      width: 408px;
+    }
   }
 }
