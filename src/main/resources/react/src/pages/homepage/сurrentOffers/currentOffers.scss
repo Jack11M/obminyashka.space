@@ -62,6 +62,7 @@
     margin-bottom: 34px;
     background-color: #fff;
     padding-bottom: 75px;
+    max-height: 420px;
 
     &__img {
       margin-bottom: 16px;
@@ -69,7 +70,7 @@
 
       &-box {
         border-radius: 20px 20px 0 0;
-        object-fit: contain;
+        object-fit: cover;
         width: 288px;
         height: 260px;
         max-height: 280px;
