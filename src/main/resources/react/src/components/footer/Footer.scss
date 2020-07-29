@@ -56,7 +56,6 @@
 
 .HomePageFooter a {
   display: block;
-  font-size: 16px;
   line-height: 24px;
   text-decoration: none;
 }
@@ -97,6 +96,7 @@
 
 .copyright > span:first-child {
   padding-right: 10px;
+  font-size: 16px;
 }
 
 .HomePageFooter > [class^="icon-"], [class*=" icon-"] {
