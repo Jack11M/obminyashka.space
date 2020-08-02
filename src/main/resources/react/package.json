@@ -35,7 +35,8 @@
     "redux": "^4.0.5",
     "rimraf": "^2.6.3",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^5.1.0"
+    "styled-components": "^5.1.0",
+    "uuid4": "^2.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -57,5 +58,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "uuid": "^8.3.0",
+    "uuidv4": "^6.2.1"
   }
 }
