@@ -1,7 +1,6 @@
 @import "../../../components/partials/variables";
 @import "../../../fonts/font";
 
-
 .products-section {
   margin-top: 90px;
 }
@@ -11,11 +10,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
-
 }
 
 .products-link-search {
-  color: #00C0FF;
+  color: #00c0ff;
   text-decoration: none;
   font-size: 19px;
   line-height: 24px;
@@ -26,11 +24,11 @@
 
 .products-link-search::after,
 .products-link-search:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 9px;
   height: 2px;
-  background-color: #11B5ED;
+  background-color: #11b5ed;
   right: 0;
 }
 
@@ -44,12 +42,10 @@
   bottom: 7px;
 }
 
-
 .products-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 20px;
-
 
   &-item {
     box-sizing: border-box;
@@ -57,16 +53,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 2px dashed #C4C4C4;
+    border: 2px dashed #c4c4c4;
     border-radius: 20px;
     margin-bottom: 34px;
     background-color: #fff;
     padding-bottom: 75px;
-    max-height: 420px;
+
 
     &__img {
       margin-bottom: 16px;
-
 
       &-box {
         border-radius: 20px 20px 0 0;
@@ -74,11 +69,10 @@
         width: 288px;
         height: 260px;
         max-height: 280px;
-
       }
     }
 
-    &__title { 
+    &__title {
       font-size: 16px;
       line-height: 19px;
       @include font(Roboto);
@@ -90,15 +84,14 @@
     &__location {
       font-size: 16px;
       line-height: 19px;
-      @include font(Roboto);
-      color: #00C0FF;
+      color: #00c0ff;
       margin-bottom: 23px;
     }
-    &__footer{
+
+    &__footer {
       position: absolute;
-      bottom: 0px;
-                
-                
+      bottom: 0;
+
       &__bottom {
         display: block;
         padding: 16px 70px 14px;
@@ -106,22 +99,20 @@
         background-color: $btn-bh-active;
         border-radius: 25px;
         bottom: 5px;
-  
+
         @include font(Roboto);
         font-size: 16px;
         line-height: 19px;
-        color: #FFFFFF;
+        color: #ffffff;
         text-transform: uppercase;
       }
     }
-   
-
 
     .product-like-this {
       position: absolute;
       width: 50px;
       height: 50px;
-      background-color: #A0A0A0;
+      background-color: #a0a0a0;
       border-radius: 0 0 50% 50%;
 
       svg {
@@ -132,7 +123,7 @@
     }
 
     .activeFavourite {
-      background-color: #FEE200;
+      background-color: #fee200;
 
       svg {
         path {

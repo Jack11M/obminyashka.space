@@ -1,10 +1,10 @@
 import React from "react";
 import "./title.scss";
 
-const Title_Big_Blue = (props) => {
+const Title_Big_Blue = ({whatClass, text}) => {
   return (
     <>
-      <h2 className={`titleBigBlue ${props.whatClass}`}>{props.text}</h2>
+      <h2 className={`titleBigBlue ${whatClass}`}>{text}</h2>
     </>
   );
 };

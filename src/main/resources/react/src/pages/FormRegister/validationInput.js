@@ -3,11 +3,11 @@
  */
 export const RegisterValidation = (input, isLogin) => {
   const login = {
-    usernameOrEmail: [["notEmpty"], ["cutEmpty"]],
+    usernameOrEmail: [["notEmpty"], ["cutEmpty"],["pattern", "altCode"]],
     password: [["notEmpty"], ["cutEmpty"]],
   };
   const register = {
-    email: [["notEmpty"], ["pattern", "email"], ["cutEmpty"]],//,["pattern", "checkBySymbolEmail"]
+    email: [["notEmpty"], ["pattern", "email"], ["cutEmpty"]],
     username: [
       ["notEmpty"],
       ["lengthLogin"],
