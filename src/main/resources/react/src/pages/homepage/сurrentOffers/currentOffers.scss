@@ -77,18 +77,20 @@
       line-height: 19px;
       @include font(Roboto);
       color: $black-color-text;
-      margin: 0 44px 12px;
+      margin: 0 44px 44px;
       text-align: center;
     }
 
     &__location {
+      display: flex;
+      justify-content: center;
       font-size: 16px;
       line-height: 19px;
       color: #00c0ff;
-      margin-bottom: 23px;
+      margin-bottom: 10px;
     }
 
-    &__footer {
+    &__footer {      
       position: absolute;
       bottom: 0;
 

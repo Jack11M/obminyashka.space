@@ -50,11 +50,12 @@ const CurrentOffers = () => {
             <div className="products-list-item__title">
               {data.description} {data.product.age} лет
             </div>
+           
+            <div className="products-list-item__footer">
             <span className="products-list-item__location">
               <span className="icon-location"> </span>
               {data.location.city}
             </span>
-            <div className="products-list-item__footer">
               <ButtonBlue
                 text="Смотреть"
                 href={"#"}
