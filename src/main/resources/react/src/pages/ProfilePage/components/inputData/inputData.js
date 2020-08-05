@@ -2,6 +2,7 @@ import React from "react";
 import "./inputData.scss";
 
 const InputData = (props) => {
+    console.log(props)
   const { fieldId, label, value } = props.data;
 
   return (

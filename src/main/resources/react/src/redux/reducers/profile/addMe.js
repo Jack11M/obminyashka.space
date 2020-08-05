@@ -1,19 +1,19 @@
 const initialState = {
   me: [
-    { fieldId: "firstName", label: "Имя", value: "Andrey" },
-    { fieldId: "lastName", label: "Фамилия", value: "Teslenko" },
-    { fieldId: "city", label: "Город", value: "Kharkov" },
-    { fieldId: "phone", label: "Телефон", value: "vodafone" },
+    { fieldId: "firstName", label: "Имя", value: "" },
+    { fieldId: "lastName", label: "Фамилия", value: "" },
+    { fieldId: "city", label: "Город", value: "" },
+    { fieldId: "phone", label: "Телефон", value: "" },
   ],
   children: [
-    [
-      { fieldId: `child_${1}`, label: "Имя", value: "Kirill" },
-      { fieldId: `ageChild_${1}`, label: "Возраст", value: 18 },
-    ],
-    [
-      { fieldId: `child_${2}`, label: "Имя", value: "Kirill" },
-      { fieldId: `ageChild_${2}`, label: "Возраст", value: 18 },
-    ],
+    {
+      childName: { fieldId: `child_${0}`, label: "Имя", value: "" },
+      childAge: { fieldId: `ageChild_${0}`, label: "Возраст", value: "" },
+    },
+    {
+      childName: { fieldId: `child_${1}`, label: "Имя", value: "" },
+      childAge: { fieldId: `ageChild_${1}`, label: "Возраст", value: "" },
+    },
   ],
 };
 
