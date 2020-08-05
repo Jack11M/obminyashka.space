@@ -54,17 +54,17 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         validCreatingChildDtoJson = asJsonString(List.of(
-                childDtoBuilder(0L, LocalDate.of(2019, 3, 3), "male"),
-                childDtoBuilder(0L, LocalDate.of(2019, 4, 4), "female")));
+                getChildDto(0L, LocalDate.of(2019, 3, 3), "male"),
+                getChildDto(0L, LocalDate.of(2019, 4, 4), "female")));
         notValidCreatingChildDtoJson = asJsonString(List.of(
-                childDtoBuilder(111L, LocalDate.of(2019, 3, 3), "male"),
-                childDtoBuilder(222L, LocalDate.of(2019, 4, 4), "female")));
+                getChildDto(111L, LocalDate.of(2019, 3, 3), "male"),
+                getChildDto(222L, LocalDate.of(2019, 4, 4), "female")));
         validUpdatingChildDtoJson = asJsonString(List.of(
-                childDtoBuilder(1L, LocalDate.of(2018, 3, 3), "male"),
-                childDtoBuilder(2L, LocalDate.of(2018, 4, 4), "female")));
+                getChildDto(1L, LocalDate.of(2018, 3, 3), "male"),
+                getChildDto(2L, LocalDate.of(2018, 4, 4), "female")));
         notValidUpdatingChildDtoJson = asJsonString(List.of(
-                childDtoBuilder(1L, LocalDate.of(2018, 3, 3), "male"),
-                childDtoBuilder(9999L, LocalDate.of(2018, 4, 4), "female")));
+                getChildDto(1L, LocalDate.of(2018, 3, 3), "male"),
+                getChildDto(9999L, LocalDate.of(2018, 4, 4), "female")));
     }
 
     @Test
@@ -245,7 +245,7 @@ class UserControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
-    private ChildDto childDtoBuilder(long id, LocalDate birthDate, String sex){
+    private ChildDto getChildDto(long id, LocalDate birthDate, String sex){
         return ChildDto.builder().id(id).birthDate(birthDate).sex(sex).build();
     }
 }
