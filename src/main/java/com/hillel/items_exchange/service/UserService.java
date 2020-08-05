@@ -30,10 +30,13 @@ public class UserService {
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
         Pattern emailPattern = Pattern.compile(PatternHandler.EMAIL);
+        Optional<User> user;
         if (emailPattern.matcher(usernameOrEmail).matches()) {
-            return existsByEmailAndPassword(usernameOrEmail, encryptedPassword);
+            user = userRepository.findByEmail(usernameOrEmail);
+        } else {
+            user = userRepository.findByUsername(usernameOrEmail);
         }
-        return existsByUsernameAndPassword(usernameOrEmail, encryptedPassword);
+        return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
     }
 
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
@@ -54,16 +57,6 @@ public class UserService {
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
-    }
-
-    public boolean existsByEmailAndPassword(String email, String encodedPassword) {
-        final Optional<User> user = userRepository.findByEmail(email);
-        return user.filter(u -> isPasswordMatches(u, encodedPassword)).isPresent();
-    }
-
-    public boolean existsByUsernameAndPassword(String username, String encodedPassword){
-        final Optional<User> user = userRepository.findByUsername(username);
-        return user.filter(u -> isPasswordMatches(u, encodedPassword)).isPresent();
     }
 
     public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {

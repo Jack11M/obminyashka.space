@@ -2,6 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import javax.transaction.Transactional;
 
+import com.hillel.items_exchange.dto.UserLoginDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -135,5 +136,17 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotAcceptable());
+    }
+
+    @Test
+    @DataSet(value = "auth/login.yml")
+    void login_Success_shouldReturnHttpOk() throws Exception {
+        UserLoginDto existingUserDto = createUserAuthenticationDto(VALID_USERNAME, VALID_PASSWORD);
+        mockMvc.perform(post(LOGIN_URL)
+                .content(asJsonString(existingUserDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
