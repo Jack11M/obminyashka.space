@@ -101,7 +101,7 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     }
 
     @Test
-    void register_whenPasswordInvalid_shouldReturnReturnNotAcceptable() throws Exception {
+    void register_whenPasswordInvalid_shouldReturnBadRequest() throws Exception {
         UserRegistrationDto invalidPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
                 INVALID_PASSWORD, INVALID_PASSWORD);
         mockMvc.perform(post(REGISTER_URL)
@@ -109,11 +109,11 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void register_whenEmailInvalid_shouldReturnNotAcceptable() throws Exception {
+    void register_whenEmailInvalid_shouldReturnBadRequest() throws Exception {
         UserRegistrationDto invalidEmailUser = createUserRegistrationDto(VALID_USERNAME, INVALID_EMAIL,
                 VALID_PASSWORD, VALID_PASSWORD);
         mockMvc.perform(post(REGISTER_URL)
@@ -121,11 +121,11 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void register_whenUsernameInvalid_shouldReturnNotAcceptable() throws Exception {
+    void register_whenUsernameInvalid_shouldReturnBadRequest() throws Exception {
         UserRegistrationDto invalidNameUser = createUserRegistrationDto(INVALID_USERNAME, VALID_EMAIL,
                 VALID_PASSWORD, VALID_PASSWORD);
 
@@ -134,6 +134,6 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
 }
