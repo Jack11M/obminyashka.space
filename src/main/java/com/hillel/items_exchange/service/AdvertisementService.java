@@ -5,7 +5,6 @@ import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
@@ -119,14 +118,14 @@ public class AdvertisementService {
         advertisementRepository.flush();
     }
 
-    public void setDefaultImage(Long advertisementId, Long imageId, User owner) {
+    public void setDefaultImage(Long advertisementId, Long imageId, User owner) throws ClassNotFoundException {
         final Advertisement advertisement = owner.getAdvertisements().stream()
                 .filter(adv -> adv.getId() == advertisementId)
-                .findFirst().orElseThrow(() -> new IllegalIdentifierException(
+                .findFirst().orElseThrow(() -> new ClassNotFoundException(
                         getExceptionMessageSource("exception.illegal.id")));
         final Image image = advertisement.getProduct().getImages().stream()
                 .filter(img -> img.getId() == imageId)
-                .findFirst().orElseThrow(() -> new IllegalIdentifierException(
+                .findFirst().orElseThrow(() -> new ClassNotFoundException(
                         getExceptionMessageSource("exception.illegal.id")));
         advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
         image.setDefaultPhoto(true);

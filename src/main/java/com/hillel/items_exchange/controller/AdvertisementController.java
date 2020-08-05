@@ -120,7 +120,13 @@ public class AdvertisementController {
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
             Principal principal) {
         User owner = getUser(principal.getName());
-        advertisementService.setDefaultImage(advertisementId, imageId, owner);
+
+        try {
+            advertisementService.setDefaultImage(advertisementId, imageId, owner);
+        } catch (ClassNotFoundException e) {
+            log.warn(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

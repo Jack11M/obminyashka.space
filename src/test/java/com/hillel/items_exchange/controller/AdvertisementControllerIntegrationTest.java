@@ -187,20 +187,20 @@ class AdvertisementControllerIntegrationTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void setDefaultImage_NotValidAdvertisementId_shouldBeThrownIllegalIdentifierException() throws Exception {
+    void setDefaultImage_shouldReturn406WhenNotValidAdvertisementId() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
                 post("/adv/default-image/{advertisementId}/{imageId}", notValidId, validId))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotAcceptable())
                 .andReturn();
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void setDefaultImage_NotValidImageId_shouldBeThrownIllegalIdentifierException() throws Exception {
+    void setDefaultImage_shouldReturn406WhenNotValidImageId() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
                 post("/adv/default-image/{advertisementId}/{imageId}", validId, notValidId))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotAcceptable())
                 .andReturn();
     }
 }
