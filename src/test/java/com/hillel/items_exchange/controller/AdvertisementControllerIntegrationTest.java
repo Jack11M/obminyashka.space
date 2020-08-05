@@ -45,20 +45,15 @@ class AdvertisementControllerIntegrationTest {
     private AdvertisementDto existDto;
     private AdvertisementDto existDtoForUpdate;
     private int page, size;
-    private long validUsersAdvId;
-    private long notValidUsersAdvId;
-    private long validAdvertisementsImageId;
-    private long notValidAdvertisementsImageId;
-
+    private long validId;
+    private long notValidId;
 
     @BeforeEach
     void setUp() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        validUsersAdvId = 1L;
-        notValidUsersAdvId=999L;
-        validAdvertisementsImageId=1L;
-        notValidAdvertisementsImageId=999L;
+        validId = 1L;
+        notValidId =999L;
     }
 
     @Test
@@ -184,7 +179,7 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/setDefaultImage.yml")
     void setDefaultImage_success() throws Exception {
-        mockMvc.perform(post("/adv/default-image/"+validUsersAdvId+"/"+validAdvertisementsImageId))
+        mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", validId, validId))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -194,11 +189,9 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     void setDefaultImage_NotValidAdvertisementId_shouldBeThrownIllegalIdentifierException() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                post("/adv/default-image/" + notValidUsersAdvId + "/" + validAdvertisementsImageId)
-        )
+                post("/adv/default-image/{advertisementId}/{imageId}", notValidId, validId))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("User does not has advertisement with such id"));
     }
 
     @Test
@@ -206,11 +199,8 @@ class AdvertisementControllerIntegrationTest {
     @DataSet("database_init.yml")
     void setDefaultImage_NotValidImageId_shouldBeThrownIllegalIdentifierException() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                post("/adv/default-image/" + validUsersAdvId + "/" + notValidAdvertisementsImageId)
-        )
+                post("/adv/default-image/{advertisementId}/{imageId}", validId, notValidId))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("There is no image with such id in this advertisement"));
     }
-
 }

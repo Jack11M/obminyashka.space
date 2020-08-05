@@ -17,7 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -119,22 +119,16 @@ public class AdvertisementService {
         advertisementRepository.flush();
     }
 
-    public void setAdvertisementDefaultImage(Long advertisementId, Long imageId, User owner) {
+    public void setDefaultImage(Long advertisementId, Long imageId, User owner) {
         final Advertisement advertisement = owner.getAdvertisements().stream()
                 .filter(adv -> adv.getId() == advertisementId)
                 .findFirst().orElseThrow(() -> new IllegalIdentifierException(
-                        getExceptionMessageSourceWithAdditionalInfo(
-                                "exception.illegal.id",
-                                "User does not has advertisement with such id"
-                        )));
+                        getExceptionMessageSource("exception.illegal.id")));
         final Image image = advertisement.getProduct().getImages().stream()
                 .filter(img -> img.getId() == imageId)
                 .findFirst().orElseThrow(() -> new IllegalIdentifierException(
-                        getExceptionMessageSourceWithAdditionalInfo(
-                                "exception.illegal.id",
-                                "There is no image with such id in this advertisement"
-                        )));
-        advertisement.getProduct().getImages().forEach(img->img.setDefaultPhoto(false));
+                        getExceptionMessageSource("exception.illegal.id")));
+        advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
         image.setDefaultPhoto(true);
         advertisementRepository.saveAndFlush(advertisement);
     }

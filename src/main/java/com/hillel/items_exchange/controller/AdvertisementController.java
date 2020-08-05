@@ -115,11 +115,12 @@ public class AdvertisementController {
     }
 
     @PostMapping("/default-image/{advertisementId}/{imageId}")
-    public ResponseEntity<HttpStatus> setAdvertisementDefaultImage(@PathVariable Long advertisementId,
-                                                                   @PathVariable Long imageId,
-                                                                   Principal principal) {
+    public ResponseEntity<HttpStatus> setDefaultImage(
+            @PathVariable @PositiveOrZero(message = "{invalid.id}") Long advertisementId,
+            @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
+            Principal principal) {
         User owner = getUser(principal.getName());
-        advertisementService.setAdvertisementDefaultImage(advertisementId, imageId, owner);
+        advertisementService.setDefaultImage(advertisementId, imageId, owner);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
