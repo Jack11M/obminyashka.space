@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Product;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,16 +29,20 @@ public interface ImageService {
      * @param images list of images for further compression
      * @return compressed images' bytes
      * @throws IOException in cases when some of received images is corrupted or it's impossible to read it properly
+     * @throws UnsupportedMediaTypeException in case receiving unsupported types
+     * @see SupportedMediaTypes supported media types
      */
-    List<byte[]> compressImages(List<MultipartFile> images) throws IOException;
+    List<byte[]> compress(List<MultipartFile> images) throws IOException, UnsupportedMediaTypeException;
 
     /**
      * Make in-memory compressing (20% of basic quality) only for supported types of images
      * @param image image for further compression
      * @return compresses image's bytes
      * @throws IOException in cases when received image is corrupted or it's impossible to read it properly
+     * @throws UnsupportedMediaTypeException in case receiving unsupported types
+     * @see SupportedMediaTypes supported media types
      */
-    byte[] compressImage(MultipartFile image) throws IOException;
+    byte[] compress(MultipartFile image) throws IOException, UnsupportedMediaTypeException;
 
     /**
      * Create new entity for each received image, link them to the Product using it's ID and store them to the DB

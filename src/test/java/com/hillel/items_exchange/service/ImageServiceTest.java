@@ -2,6 +2,7 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.ImageRepository;
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.service.basic.BasicImageCreator;
@@ -32,6 +33,8 @@ class ImageServiceTest extends BasicImageCreator{
     private Image jpeg;
     private MockMultipartFile testJpg;
     private MockMultipartFile testPng;
+    private MockMultipartFile testTxt;
+
     @Captor
     private ArgumentCaptor<List<Image>> imageListCaptor;
     @Captor
@@ -42,6 +45,7 @@ class ImageServiceTest extends BasicImageCreator{
         jpeg = new Image(1, "test jpeg".getBytes(), false, null);
         testJpg = getImageBytes(MediaType.IMAGE_JPEG);
         testPng = getImageBytes(MediaType.IMAGE_PNG);
+        testTxt = new MockMultipartFile("files", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
     }
 
     @Test
@@ -66,16 +70,21 @@ class ImageServiceTest extends BasicImageCreator{
     }
 
     @Test
-    void compressImages_shouldCompressImage_WhenValidImageTypes() throws IOException {
-        List<byte[]> compressed = imageService.compressImages(List.of(testJpg, testPng));
+    void compressImages_shouldCompressImage_WhenValidImageTypes() throws IOException, UnsupportedMediaTypeException {
+        List<byte[]> compressed = imageService.compress(List.of(testJpg, testPng));
         assertNotEquals(compressed.get(0).length, testJpg.getBytes().length);
         assertNotEquals(compressed.get(1).length, testPng.getBytes().length);
     }
 
     @Test
-    void compressImage_shouldCompressImage_WhenValidImageType() throws IOException {
-        byte[] compressImage = imageService.compressImage(testJpg);
+    void compressImage_shouldCompressImage_WhenValidImageType() throws IOException, UnsupportedMediaTypeException {
+        byte[] compressImage = imageService.compress(testJpg);
         assertTrue(testJpg.getBytes().length > compressImage.length);
+    }
+
+    @Test
+    void compressImage_shouldThrowException_WhenInvalidImageType(){
+        assertThrows(UnsupportedMediaTypeException.class, () -> imageService.compress(testTxt));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.BaseEntity;
 import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.model.User;
@@ -22,10 +23,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
-
-import static org.springframework.http.MediaType.*;
 
 @RestController
 @RequestMapping("/image")
@@ -33,7 +31,6 @@ import static org.springframework.http.MediaType.*;
 @Validated
 @Slf4j
 public class ImageController {
-    private static final Set<String> SUPPORTED_TYPES = Set.of(IMAGE_JPEG_VALUE, IMAGE_PNG_VALUE, IMAGE_GIF_VALUE);
     private final ImageService imageService;
     private final UserService userService;
     private final ProductService productService;
@@ -61,16 +58,9 @@ public class ImageController {
                                                      @PositiveOrZero(message = "{invalid.id}") long productId,
                                                  @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images) {
 
-        boolean isAllSupportedTypesReceived = images.parallelStream()
-                .map(MultipartFile::getContentType)
-                .allMatch(SUPPORTED_TYPES::contains);
-        if (!isAllSupportedTypesReceived) {
-            return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-        }
-
         try {
             Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
-            List<byte[]> compressedImages = imageService.compressImages(images);
+            List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
             log.warn("Product not found for id {}", productId);
@@ -78,6 +68,9 @@ public class ImageController {
         } catch (IOException e) {
             log.error("There was an error during extraction of gained images!");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (UnsupportedMediaTypeException e) {
+            log.warn(e.getLocalizedMessage(), e);
+            return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

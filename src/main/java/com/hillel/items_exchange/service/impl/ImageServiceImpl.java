@@ -2,10 +2,11 @@ package com.hillel.items_exchange.service.impl;
 
 import com.hillel.items_exchange.dao.ImageRepository;
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.service.ImageService;
-import com.hillel.items_exchange.service.ProductService;
+import com.hillel.items_exchange.service.SupportedMediaTypes;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -22,8 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
 public class ImageServiceImpl implements ImageService {
     private final ModelMapper modelMapper;
     private final ImageRepository imageRepository;
+    private final Set<String> supportedTypes = Arrays.stream(SupportedMediaTypes.values())
+            .map(SupportedMediaTypes::getMediaType)
+            .collect(Collectors.toSet());
 
     @Override
     public List<byte[]> getImagesResourceByProductId(long productId) {
@@ -50,16 +53,19 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<byte[]> compressImages(List<MultipartFile> images) throws IOException {
+    public List<byte[]> compress(List<MultipartFile> images) throws IOException, UnsupportedMediaTypeException {
+        validateImagesTypes(images);
+
         List<byte[]> compressedImages = new ArrayList<>();
         for (MultipartFile photo : images) {
-            compressedImages.add(compressImage(photo));
+            compressedImages.add(compress(photo));
         }
         return compressedImages;
     }
 
     @Override
-    public byte[] compressImage(MultipartFile image) throws IOException {
+    public byte[] compress(MultipartFile image) throws IOException, UnsupportedMediaTypeException {
+        validateImagesTypes(List.of(image));
 
         String contentType = image.getContentType();
         if (contentType == null || contentType.equals(MediaType.IMAGE_GIF_VALUE)) {
@@ -114,5 +120,19 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void removeById(long imageId) {
         imageRepository.deleteById(imageId);
+    }
+
+    private void validateImagesTypes(List<MultipartFile> images) throws UnsupportedMediaTypeException {
+        final Optional<String> unsupportedType = findUnsupportedType(images);
+        if (unsupportedType.isPresent()) {
+            throw new UnsupportedMediaTypeException("Received unsupported image type: " + unsupportedType.get());
+        }
+    }
+
+    private Optional<String> findUnsupportedType(List<MultipartFile> images) {
+        return images.parallelStream()
+                .map(MultipartFile::getContentType)
+                .filter(s -> !supportedTypes.contains(s))
+                .findAny();
     }
 }
