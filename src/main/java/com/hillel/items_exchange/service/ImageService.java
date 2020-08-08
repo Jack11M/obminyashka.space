@@ -49,17 +49,15 @@ public interface ImageService {
      * @see Image entity as representation of all images
      * @param product to link images with
      * @param images list of images that need to be linked with the Product and saved to the DB
-     * @throws ClassNotFoundException in cases when Product with such ID is not exist in the DB
      */
-    void saveToProduct(Product product, List<byte[]> images) throws ClassNotFoundException;
+    void saveToProduct(Product product, List<byte[]> images);
 
     /**
      * Create new entity for received image, link to the Product using it's ID and store it to the DB
      * @param product to link images with
      * @param image image that needs to be linked with the Product and saved to the DB
-     * @throws ClassNotFoundException in cases when Product with such ID is not exist in the DB
      */
-    void saveToProduct(Product product, byte[] image) throws ClassNotFoundException;
+    void saveToProduct(Product product, byte[] image);
 
     /**
      * Remove received images from the DB using their ID

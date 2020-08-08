@@ -95,7 +95,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveToProduct(Product product, List<byte[]> images) throws ClassNotFoundException {
+    public void saveToProduct(Product product, List<byte[]> images) {
         List<Image> imagesToSave = images.stream()
                 .map(populateNewImage(product))
                 .collect(Collectors.toList());
@@ -103,7 +103,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveToProduct(Product product, byte[] image) throws ClassNotFoundException {
+    public void saveToProduct(Product product, byte[] image) {
         Image toSave = populateNewImage(product).apply(image);
         imageRepository.save(toSave);
     }
