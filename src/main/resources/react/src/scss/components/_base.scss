@@ -1,107 +1,9 @@
 @import"../../fonts/font.scss";
-// $base-body-background:                           #fff;
-// $base-body-font-family:                          $global-font-family;
-// $base-body-font-weight:                          normal;
-// $base-body-font-size:                            $global-font-size;
-// $base-body-line-height:                          $global-line-height;
-// $base-body-color:                                $global-color;
 
-// $base-link-color:                                green ;
-// $base-link-text-decoration:                      none;
-// $base-link-hover-color:                          darken($base-link-color, 20%) ;
-// $base-link-hover-text-decoration:                underline ;
-
-// $base-margin-vertical:                           15px;
-
-// $base-list-padding-left:                         30px;
-
-// $base-hr-margin-vertical:                        15px;
-// $base-hr-border-width:                           $global-border-width ;
-// $base-hr-border:                                 $global-border ;
-
-
-// *, *::before, *::after {
-//   box-sizing: border-box;
-// }
-
-// html {
-//   font-family: $base-body-font-family;
-//   font-size: $base-body-font-size;
-//   font-weight: $base-body-font-weight;
-//   line-height: $base-body-line-height;
-//   background: $base-body-background;
-//   color: $base-body-color;
-//   height: 100%;
-// }
 html {
   font-family: 'Roboto', sans-serif;
 }
-// body { 
-//   margin: 0; 
-//   height: 100%;
-// }
 
-// .wrapper {
-//   display: flex;
-//   flex-direction: column;
-//   min-height: 100%;
-//   position: relative;
-//   overflow: hidden;
-// }
-
-// .main {
-//   flex: 1 0 auto;
-// }
-// .footer {
-//   flex: 0 0 auto;
-// }
-
-// a:active,
-// a:hover { outline: none; }
-
-// a, link {
-//     color: $base-link-color;
-//     text-decoration: $base-link-text-decoration;
-//     cursor: pointer;
-// }
-
-// a:hover, link:hover {
-//     color: $base-link-hover-color;
-//     text-decoration: $base-link-hover-text-decoration;
-// }
-
-
-// img, video {
-//     max-width: 100%;
-//     width: 100%;
-//     height: auto;
-// }
-
-// p,
-// ul,
-// ol,
-// figure { margin: 0 0 $base-margin-vertical 0; }
-
-// * + p,
-// * + ul,
-// * + ol,
-// * + figure { margin-top: $base-margin-vertical; }
-
-// ul,
-// ol { padding-left: $base-list-padding-left; }
-
-// ul > li > ul,
-// ul > li > ol,
-// ol > li > ol,
-// ol > li > ul { margin: 0; }
-
-// hr {
-//     box-sizing: content-box;
-//     height: 0;
-//     margin: 0 0 $base-hr-margin-vertical 0;
-//     border: 0;
-//     border-top: $base-hr-border-width solid $base-hr-border;
-// }
 figure {
   margin: 0;
   padding: 0;
@@ -185,13 +87,12 @@ $btn-bg-hover: #0094ff;
         }
     }  
 }
-// паддинги  для всех инпутов 
+// paddings for all inputs
 input[type="password"],
 input[type="email"],
 input[type="tel"],
 input[type="text"],
 input[type="number"] {
-    //padding: auto 10px auto 10px;
     padding-left: 10px;
     padding-right: 10px;
 }

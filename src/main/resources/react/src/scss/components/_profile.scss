@@ -24,7 +24,6 @@
                 width: auto;
                 @include font('Pollywog_Cyr');
                 font-weight: bold;
-                // font-family: 'Pollywog Cyr',serif;
                 font-size: 27px;
                 
                 line-height: 24px;                   
@@ -91,8 +90,7 @@
                   }
                   //del
                   .del-row{              
-                    width: 230px;
-                    //margin-left: 77px;                                     
+                    width: 230px;                                 
                     display: flex;
                     align-items: center;               
                     a{                                                          
