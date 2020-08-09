@@ -6,8 +6,6 @@
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
-            // justify-content: flex-start;
-            // margin-right: 250px;
           }
           .outgoing {
             margin-top: 80px;
@@ -18,7 +16,6 @@
             background-color: #ffffff;
             border: 2px dashed #C4C4C4;
             border-radius: 19px;
-            // width: 33.33%;
             width: 100%;
             max-width: 290px;
             text-align: center;
@@ -74,11 +71,9 @@
                 flex-direction: row;                
                 &_dialogues {
                     background-image: url(../../img/MySettings/Vector.png);
-                    //background-position: bottom right;
                     background-position: center;
                     background-repeat: no-repeat;
                     background-size: auto;
-                    //display: inline-block;
                     display: flex;
                     justify-content: center;
                     align-items: center;

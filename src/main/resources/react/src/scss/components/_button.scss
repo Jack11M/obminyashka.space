@@ -1,91 +1,6 @@
-// $button-font-size:                               $global-font-size;
-// $button-small-font-size:                         $global-small-font-size;
-// $button-large-font-size:                         $global-medium-font-size;
 
-// $button-padding:                                 8px 16px;
-// $button-small-padding:                           4px 8px;
-// $button-large-padding:                           12px 20px;
-
-// $button-primary-background:                      green;
-// $button-primary-color:                           $global-inverse-color;
-// $button-primary-hover-background:                darken($button-primary-background, 5%);
-// $button-primary-hover-color:                     $global-inverse-color;
-// $button-primary-active-background:               darken($button-primary-background, 10%);
-// $button-primary-active-color:                    $global-inverse-color ;
-
-// $button-secondary-background:                    blue;
-// $button-secondary-color:                         $global-inverse-color;
-// $button-secondary-hover-background:              darken($button-secondary-background, 5%);
-// $button-secondary-hover-color:                   $global-inverse-color;
-// $button-secondary-active-background:             darken($button-secondary-background, 10%);
-// $button-secondary-active-color:                  $global-inverse-color;
-
-
-// .button {
-//   margin: 0;
-//   border: none;
-//   text-transform: none;
-//   display: inline-block;
-//   padding: $button-padding;
-//   font-size: $button-font-size;
-//   text-align: center;
-//   text-decoration: none;
-//   cursor: pointer;
-//   &:hover {
-//     text-decoration: none;
-//   }
-  
-//   &:focus {
-//     outline: none;
-//   }
-// }
-
-// .button-primary {
-//   background-color: $button-primary-background;
-//   color: $button-primary-color;
-//   &:hover,
-//   &:focus {
-//     background-color: $button-primary-hover-background;
-//     color: $button-primary-hover-color;
-//   }
-  
-//   &:active,
-//   &.active {
-//     background-color: $button-primary-active-background;
-//     color: $button-primary-active-color;
-//   }
-
-// }
-
-// .button-secondary {
-//   background-color: $button-secondary-background;
-//   color: $button-secondary-color;
-//   &:hover,
-//   &:focus {
-//     background-color: $button-secondary-hover-background;
-//     color: $button-secondary-hover-color;
-//   }
-  
-//   &:active,
-//   &.active {
-//     background-color: $button-secondary-active-background;
-//     color: $button-secondary-active-color;
-//   }
-// }
-
-// .button-small {
-//   padding: $button-small-padding;
-//   font-size: $button-small-font-size;
-// }
-
-// .button-large {
-//   padding: $button-large-padding;
-//   font-size: $button-large-font-size;
-// }
-
-// все стили кнопок теперь тут
 @mixin buttons(){
-    // стили для кнопок кроме ширины ширина задаётся отдельными классами
+    // styles for buttons except width are set by separate classes
     .btn{
         text-align: center;
         color: #FFFFFF;
@@ -103,17 +18,17 @@
           background-color: $btn-bg-hover;
         } 
     }
-    //ширина основных кнопок
+    //width of main buttons
     .main-btn {
         margin-top: 50px;      
         width: 248px;        
       }
-      //ширина кнопки удаления аккаунта
+      // width of the account delete button
       .delete-account-btn{
         width: 248px;
         margin-top: 10px;       
     }
-    //ширина емайл кнопки 
+    //width of the email button
     .e-mail-button{
         width: 363px;
         margin-top: 50px;
