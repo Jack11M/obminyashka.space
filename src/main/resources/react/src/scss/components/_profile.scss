@@ -24,7 +24,6 @@
                 width: auto;
                 @include font('Pollywog_Cyr');
                 font-weight: bold;
-                // font-family: 'Pollywog Cyr',serif;
                 font-size: 27px;
                 
                 line-height: 24px;                   
@@ -64,7 +63,7 @@
                   width: 100%; 
                   align-items: center; 
                   height: 39px;
-                  //added          
+                           
                   .add-row{
                     margin-left: 120px;
                     width: 230px;                      
@@ -89,10 +88,9 @@
                       text-decoration: none;
                     }                                      
                   }
-                  //del
+                 
                   .del-row{              
-                    width: 230px;
-                    //margin-left: 77px;                                     
+                    width: 230px;                                  
                     display: flex;
                     align-items: center;               
                     a{                                                          

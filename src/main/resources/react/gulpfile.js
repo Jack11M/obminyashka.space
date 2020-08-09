@@ -15,21 +15,21 @@ var gulp = require('gulp'),
     reload = browserSync.reload;
 
     var path = {
-        build: { //Тут мы укажем куда складывать готовые после сборки файлы
+        build: { 
           html: 'dist/',
           js: 'dist/js/',
           css: 'dist/css/',
           img: 'dist/img/MySettings/',
           fonts: 'dist/fonts/'
         },
-        src: { //Пути откуда брать исходники
-          html: 'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
-          js: 'src/js/main.js',//В стилях и скриптах нам понадобятся только main файлы
+        src: { 
+          html: 'src/*.html', 
+          js: 'src/js/main.js',
           style: 'src/scss/main.scss',
-          img: 'src/img/MySettings/**/*.*', //Синтаксис img/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
+          img: 'src/img/MySettings/**/*.*', 
           fonts: 'src/fonts/**/*.*'
         },
-        watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
+        watch: { 
           html: 'src/**/*.html',
           js: 'src/js/**/*.js',
           style: 'src/scss/**/*.scss',
@@ -50,30 +50,30 @@ var gulp = require('gulp'),
 };
 
 gulp.task('html:build', async function () {
-  gulp.src(path.src.html) //Выберем файлы по нужному пути
-      .pipe(rigger()) //Прогоним через rigger
-      .pipe(gulp.dest(path.build.html)) //Выплюнем их в папку build
-      .pipe(reload({stream: true})); //И перезагрузим наш сервер для обновлений
+  gulp.src(path.src.html) 
+      .pipe(rigger()) 
+      .pipe(gulp.dest(path.build.html)) 
+      .pipe(reload({stream: true})); 
 });
 
 gulp.task('js:build', async function () {
-  gulp.src(path.src.js) //Найдем наш main файл
-      .pipe(rigger()) //Прогоним через rigger
-      .pipe(sourcemaps.init()) //Инициализируем sourcemap
-      .pipe(uglify()) //Сожмем наш js
-      .pipe(sourcemaps.write()) //Пропишем карты
-      .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
-      .pipe(reload({stream: true})); //И перезагрузим сервер
+  gulp.src(path.src.js)
+      .pipe(rigger())
+      .pipe(sourcemaps.init()) 
+      .pipe(uglify())
+      .pipe(sourcemaps.write()) 
+      .pipe(gulp.dest(path.build.js))
+      .pipe(reload({stream: true})); 
 });
 
 gulp.task('style:build', async function () {
-    gulp.src(path.src.style) //Выберем наш main.scss
-        .pipe(sourcemaps.init()) //То же самое что и с js
-        .pipe(sass().on('error', sass.logError)) //Скомпилируем
-        .pipe(prefixer('last 2 versions')) //Добавим вендорные префиксы
-        .pipe(cssmin()) //Сожмем
+    gulp.src(path.src.style) 
+        .pipe(sourcemaps.init()) 
+        .pipe(sass().on('error', sass.logError)) 
+        .pipe(prefixer('last 2 versions'))
+        .pipe(cssmin()) 
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest(path.build.css)) //И в build
+        .pipe(gulp.dest(path.build.css)) 
         .pipe(reload({stream: true}));
 });
 
@@ -89,7 +89,7 @@ var cache = require('gulp-cache');
 var imagemin = require('gulp-imagemin');
 var imageminPngquant = require('imagemin-pngquant');
 var imageminZopfli = require('imagemin-zopfli');
-var imageminMozjpeg = require('imagemin-mozjpeg'); //need to run 'brew install libpng'
+var imageminMozjpeg = require('imagemin-mozjpeg'); 
 var imageminGiflossy = require('imagemin-giflossy');
 
 gulp.task('image:build', async function() {
@@ -98,39 +98,33 @@ gulp.task('image:build', async function() {
           //png
           imageminPngquant({
               speed: 1,
-              quality: [0.95, 1] //lossy settings
+              quality: [0.95, 1] 
           }),
           imageminZopfli({
               more: true
-              // iterations: 50 // very slow but more effective
           }),
-          //gif
-          // imagemin.gifsicle({
-          //     interlaced: true,
-          //     optimizationLevel: 3
-          // }),
-          //gif very light lossy, use only one of gifsicle or Giflossy
+         
           imageminGiflossy({
               optimizationLevel: 3,
-              optimize: 3, //keep-empty: Preserve empty transparent frames
+              optimize: 3, 
               lossy: 2
           }),
-          //svg
+         
           imagemin.svgo({
               plugins: [{
                   removeViewBox: false
               }]
           }),
-          //jpg lossless
+          
           imagemin.jpegtran({
               progressive: true
           }),
-          //jpg very light lossy, use vs jpegtran
+          
           imageminMozjpeg({
               quality: 90
           })
       ])))
-      .pipe(gulp.dest(path.build.img)); //И бросим в build
+      .pipe(gulp.dest(path.build.img)); 
 });
 
 gulp.task('build', gulp.series( 

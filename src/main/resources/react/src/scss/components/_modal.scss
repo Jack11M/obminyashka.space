@@ -1,7 +1,4 @@
-/* Стили для подложки */
-
 .overlay {
-    /* Скрываем подложку  */
     opacity: 0;
     visibility: hidden;    
     position: fixed;
@@ -13,11 +10,9 @@
     z-index: 20;
     transition: all 0.3s ease-in;
  }
- 
- /* Стили для модальных окон */
+
  
  .modal {    
-    /* Скрываем окна  */
     box-sizing: border-box;
     position: relative;
     opacity: 0;
@@ -43,15 +38,13 @@
         right: 33px;
     }
  }
-  
- /* Стили для активных классов подложки и окна */
+ 
  .modal.active,
  .overlay.active{
     opacity: 1;
     visibility: visible;
  }
- 
- /* Стили для кнопки закрытия */
+
  .modal__cross {
     width: 30px;
     height: 30px;
