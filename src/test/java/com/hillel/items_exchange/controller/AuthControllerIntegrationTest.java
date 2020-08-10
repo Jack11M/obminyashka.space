@@ -1,8 +1,14 @@
 package com.hillel.items_exchange.controller;
 
-import javax.transaction.Transactional;
-
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.UserLoginDto;
+import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.exception.BadRequestException;
+import com.hillel.items_exchange.exception.UnprocessableEntityException;
+import com.hillel.items_exchange.util.AuthControllerIntegrationTestUtil;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,18 +17,12 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.UserRegistrationDto;
-import com.hillel.items_exchange.exception.BadRequestException;
-import com.hillel.items_exchange.exception.UnprocessableEntityException;
-import com.hillel.items_exchange.util.AuthControllerIntegrationTestUtil;
+import javax.transaction.Transactional;
+
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -141,9 +141,12 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     @Test
     @DataSet(value = "auth/login.yml")
     void login_Success_shouldReturnHttpOk() throws Exception {
-        UserLoginDto existingUserDto = createUserAuthenticationDto(VALID_USERNAME, VALID_PASSWORD);
+        final String loginDto = asJsonString(UserLoginDto.builder()
+                .usernameOrEmail(VALID_USERNAME)
+                .password(VALID_PASSWORD)
+                .build());
         mockMvc.perform(post(LOGIN_URL)
-                .content(asJsonString(existingUserDto))
+                .content(loginDto)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
