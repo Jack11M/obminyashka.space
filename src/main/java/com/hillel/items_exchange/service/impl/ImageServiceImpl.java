@@ -25,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -123,16 +124,16 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void validateImagesTypes(List<MultipartFile> images) throws UnsupportedMediaTypeException {
-        final Optional<String> unsupportedType = findUnsupportedType(images);
-        if (unsupportedType.isPresent()) {
-            throw new UnsupportedMediaTypeException("Received unsupported image type: " + unsupportedType.get());
+        final Set<String> unsupportedTypes = findUnsupportedType(images);
+        if (!unsupportedTypes.isEmpty()) {
+            throw new UnsupportedMediaTypeException("Received unsupported image types: " + String.join(" ,", unsupportedTypes));
         }
     }
 
-    private Optional<String> findUnsupportedType(List<MultipartFile> images) {
-        return images.parallelStream()
+    private Set<String> findUnsupportedType(List<MultipartFile> images) {
+        return images.stream()
                 .map(MultipartFile::getContentType)
-                .filter(s -> !supportedTypes.contains(s))
-                .findAny();
+                .filter(Predicate.not(supportedTypes::contains))
+                .collect(Collectors.toSet());
     }
 }

@@ -8,6 +8,7 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -54,7 +55,8 @@ public class ImageController {
     }
 
     @PostMapping(value = "/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpStatus> saveImages(@PathVariable("product_id")
+    @ApiOperation(value = "Save and compress up to 10 images to existed product by it's ID")
+    public ResponseEntity<String> saveImages(@PathVariable("product_id")
                                                      @PositiveOrZero(message = "{invalid.id}") long productId,
                                                  @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images) {
 
@@ -63,16 +65,18 @@ public class ImageController {
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
-            log.warn("Product not found for id {}", productId);
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            final String format = String.format("Product not found for ID=%s", productId);
+            log.warn(format, e);
+            return new ResponseEntity<>(format, HttpStatus.NOT_ACCEPTABLE);
         } catch (IOException e) {
-            log.error("There was an error during extraction of gained images!");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            final String msg = "There was an error during extraction of gained images!";
+            log.error(msg, e);
+            return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (UnsupportedMediaTypeException e) {
             log.warn(e.getLocalizedMessage(), e);
-            return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Images saved successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/{advertisement_id}")
