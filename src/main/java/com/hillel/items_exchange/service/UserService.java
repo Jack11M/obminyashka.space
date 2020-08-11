@@ -8,6 +8,7 @@ import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.util.PatternHandler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToModel;
@@ -34,7 +36,11 @@ public class UserService {
     }
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        return userRepository.existsByUsernameOrEmailAndPassword(usernameOrEmail, usernameOrEmail, encryptedPassword);
+        Pattern emailPattern = Pattern.compile(PatternHandler.EMAIL);
+        Optional<User> user = emailPattern.matcher(usernameOrEmail).matches()
+                ? userRepository.findByEmail(usernameOrEmail)
+                : userRepository.findByUsername(usernameOrEmail);
+        return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
     }
 
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
@@ -59,6 +65,10 @@ public class UserService {
 
     public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
+    }
+
+    public boolean isPasswordMatches(User user, String encodedPassword){
+        return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
     }
 
     private UserDto mapUserToDto(User user) {

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -56,9 +56,6 @@ public class SecurityConfigIntegrationTest {
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
-
-    @Autowired
-    private MessageSource messageSource;
 
     private MockMvc mockMvc;
     private UserLoginDto validLoginDto;
@@ -145,7 +142,7 @@ public class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertEquals(messageSource.getMessage("token.not.start.with.bearer", null, Locale.US), errorMessage);
+        assertEquals(getExceptionMessageSource("token.not.start.with.bearer"), errorMessage);
     }
 
     @Test
@@ -160,7 +157,7 @@ public class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertEquals(messageSource.getMessage("token.signature.not.valid", null, Locale.US), errorMessage);
+        assertEquals(getExceptionMessageSource("token.signature.not.valid"), errorMessage);
     }
 
     @Test
@@ -176,7 +173,7 @@ public class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertTrue(Objects.requireNonNull(errorMessage).startsWith(messageSource.getMessage("token.expired", null, Locale.US)));
+        assertTrue(Objects.requireNonNull(errorMessage).startsWith(getExceptionMessageSource("token.expired")));
     }
 
     private void createValidUserLoginDto() {
