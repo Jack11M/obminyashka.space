@@ -53,18 +53,10 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        validCreatingChildDtoJson = asJsonString(List.of(
-                getChildDto(0L, LocalDate.of(2019, 3, 3), "male"),
-                getChildDto(0L, LocalDate.of(2019, 4, 4), "female")));
-        notValidCreatingChildDtoJson = asJsonString(List.of(
-                getChildDto(111L, LocalDate.of(2019, 3, 3), "male"),
-                getChildDto(222L, LocalDate.of(2019, 4, 4), "female")));
-        validUpdatingChildDtoJson = asJsonString(List.of(
-                getChildDto(1L, LocalDate.of(2018, 3, 3), "male"),
-                getChildDto(2L, LocalDate.of(2018, 4, 4), "female")));
-        notValidUpdatingChildDtoJson = asJsonString(List.of(
-                getChildDto(1L, LocalDate.of(2018, 3, 3), "male"),
-                getChildDto(9999L, LocalDate.of(2018, 4, 4), "female")));
+        validCreatingChildDtoJson = getJsonOfChildrenDto(0L, 0L, 2019);
+        notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
+        validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
+        notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
     }
 
     @Test
@@ -245,7 +237,18 @@ class UserControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
-    private ChildDto getChildDto(long id, LocalDate birthDate, String sex){
-        return ChildDto.builder().id(id).birthDate(birthDate).sex(sex).build();
+    private String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
+        return asJsonString(List.of(
+                getChildDto(maleId, LocalDate.of(year, 3, 3), "male"),
+                getChildDto(femaleId, LocalDate.of(year, 4, 4), "female")
+        ));
+    }
+
+    private ChildDto getChildDto(long id, LocalDate birthDate, String sex) {
+        return ChildDto.builder()
+                .id(id)
+                .birthDate(birthDate)
+                .sex(sex)
+                .build();
     }
 }
