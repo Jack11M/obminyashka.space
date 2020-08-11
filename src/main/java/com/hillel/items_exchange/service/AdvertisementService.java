@@ -119,14 +119,14 @@ public class AdvertisementService {
     }
 
     public void setDefaultImage(Long advertisementId, Long imageId, User owner) throws ClassNotFoundException {
-        final Advertisement advertisement = owner.getAdvertisements().stream()
+        final Advertisement advertisement = owner.getAdvertisements().parallelStream()
                 .filter(adv -> adv.getId() == advertisementId)
-                .findFirst().orElseThrow(() -> new ClassNotFoundException(
-                        getExceptionMessageSource("exception.illegal.id")));
-        final Image image = advertisement.getProduct().getImages().stream()
+                .findFirst()
+                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+        final Image image = advertisement.getProduct().getImages().parallelStream()
                 .filter(img -> img.getId() == imageId)
-                .findFirst().orElseThrow(() -> new ClassNotFoundException(
-                        getExceptionMessageSource("exception.illegal.id")));
+                .findFirst()
+                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
         advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
         image.setDefaultPhoto(true);
         advertisementRepository.saveAndFlush(advertisement);
@@ -144,5 +144,13 @@ public class AdvertisementService {
 
     private AdvertisementDto mapAdvertisementToDto(Advertisement advertisement) {
         return modelMapper.map(advertisement, AdvertisementDto.class);
+    }
+
+    public boolean isAdvertisementAndImageExists(Long advertisementId, Long imageId, User owner) {
+        final Optional<Advertisement> advertisement = owner.getAdvertisements().stream()
+                .filter(adv -> adv.getId() == advertisementId)
+                .findFirst();
+        return advertisement.isPresent() && advertisement.get().getProduct().getImages().parallelStream()
+                .anyMatch(image -> image.getId() == imageId);
     }
 }

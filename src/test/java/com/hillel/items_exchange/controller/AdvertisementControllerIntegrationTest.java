@@ -188,7 +188,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void setDefaultImage_shouldReturn406WhenNotValidAdvertisementId() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(
+        mockMvc.perform(
                 post("/adv/default-image/{advertisementId}/{imageId}", notValidId, validId))
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
@@ -198,9 +198,18 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void setDefaultImage_shouldReturn406WhenNotValidImageId() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(
+        mockMvc.perform(
                 post("/adv/default-image/{advertisementId}/{imageId}", validId, notValidId))
                 .andExpect(status().isNotAcceptable())
+                .andReturn();
+    }
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void setDefaultImage_shouldReturn400WhenNegativeParameterReceived() throws Exception {
+        mockMvc.perform(
+                post("/adv/default-image/{advertisementId}/{imageId}", -1L, -2L))
+                .andExpect(status().isBadRequest())
                 .andReturn();
     }
 }
