@@ -152,7 +152,7 @@ public class AdvertisementService {
                 .filter(adv -> adv.getId() == advertisementId)
                 .map(Advertisement::getProduct)
                 .map(Product::getImages)
-                .flatMap(Collection::parallelStream)
+                .flatMap(Collection::stream)
                 .anyMatch(image -> image.getId() == imageId);
     }
 }
