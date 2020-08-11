@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Locale;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,7 +22,7 @@ public class MessageSourceUtil {
     public static String getExceptionMessageSource(String message) {
         return mSource.getMessage(message,
                 null,
-                Locale.getDefault());
+                LocaleContextHolder.getLocale());
     }
 
     public static String getExceptionMessageSourceWithId(long id, String message) {
