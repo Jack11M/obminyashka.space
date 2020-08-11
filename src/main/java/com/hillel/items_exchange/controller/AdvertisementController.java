@@ -114,6 +114,24 @@ public class AdvertisementController {
         return ResponseEntity.unprocessableEntity().body(HttpStatus.CONFLICT);
     }
 
+    @PostMapping("/default-image/{advertisementId}/{imageId}")
+    public ResponseEntity<HttpStatus> setDefaultImage(
+            @PathVariable @PositiveOrZero(message = "{invalid.id}") Long advertisementId,
+            @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
+            Principal principal) {
+        User owner = getUser(principal.getName());
+        if (!advertisementService.isAdvertisementAndImageExists(advertisementId, imageId, owner)) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+        try {
+            advertisementService.setDefaultImage(advertisementId, imageId, owner);
+        } catch (ClassNotFoundException e) {
+            log.warn(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     private void validateAdvertisementOwner(@RequestBody @Valid AdvertisementDto dto,
                                             User owner) {
 
