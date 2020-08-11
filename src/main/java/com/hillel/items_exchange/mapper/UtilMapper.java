@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -39,5 +40,16 @@ public class UtilMapper {
                 .addMappings(mapper -> mapper.using(stringLongConverter)
                         .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
         return mapper.map(phoneDto, Phone.class);
+    }
+
+    public static <T, K> List<K> convertToDto(Collection<T> tCollection, Class<K> kClass) {
+        return tCollection.stream()
+                .map(t -> mapper.map(t, kClass))
+                .collect(Collectors.toList());
+    }
+
+    public static <T, E> List<E> mapBy(Collection<T> collection, Function<T, E> mapper) {
+        return collection.stream().map(mapper)
+                .collect(Collectors.toList());
     }
 }
