@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -147,10 +148,11 @@ public class AdvertisementService {
     }
 
     public boolean isAdvertisementAndImageExists(Long advertisementId, Long imageId, User owner) {
-        final Optional<Advertisement> advertisement = owner.getAdvertisements().stream()
+        return owner.getAdvertisements().stream()
                 .filter(adv -> adv.getId() == advertisementId)
-                .findFirst();
-        return advertisement.isPresent() && advertisement.get().getProduct().getImages().parallelStream()
+                .map(Advertisement::getProduct)
+                .map(Product::getImages)
+                .flatMap(Collection::parallelStream)
                 .anyMatch(image -> image.getId() == imageId);
     }
 }
