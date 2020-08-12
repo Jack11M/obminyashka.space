@@ -14,6 +14,18 @@ const initialState = {
       childName: { fieldId: `child_${1}`, label: "Имя", value: "" },
       childAge: { fieldId: `ageChild_${1}`, label: "Возраст", value: "" },
     },
+    {
+      childName: { fieldId: `child_${1}`, label: "Имя", value: "" },
+      childAge: { fieldId: `ageChild_${1}`, label: "Возраст", value: "" },
+    },
+    {
+      childName: { fieldId: `child_${1}`, label: "Имя", value: "" },
+      childAge: { fieldId: `ageChild_${1}`, label: "Возраст", value: "" },
+    },
+    {
+      childName: { fieldId: `child_${1}`, label: "Имя", value: "" },
+      childAge: { fieldId: `ageChild_${1}`, label: "Возраст", value: "" },
+    },
   ],
 };
 
