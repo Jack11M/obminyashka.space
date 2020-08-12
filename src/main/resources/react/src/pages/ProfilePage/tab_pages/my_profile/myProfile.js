@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
-import Title_Big_Blue from "../../../../components/title_Big_Blue";
+import TitleBigBlue from "../../../../components/title_Big_Blue";
 import InputData from "../../components/inputData/inputData";
 import BlockButtons from "../../components/blockButtons";
 
@@ -19,14 +19,13 @@ const MyProfile = ({ state }) => {
 
   return (
     <form>
-      <Title_Big_Blue whatClass={"myProfile-title"} text={"О себе"} />
+      <TitleBigBlue whatClass={"myProfile-title"} text={"О себе"} />
       {me.map((input) => {
         return <InputData data={input} key={uuidv4()} addInput={addInput} />;
       })}
       <div className={"block-children"}>
-        <Title_Big_Blue whatClass={"myProfile-title"} text={"Дети"} />
+        <TitleBigBlue whatClass={"myProfile-title"} text={"Дети"} />
         {children.map((item, idx) => {
-          console.log(item);
           return (
             <div className={"block-child"} key={uuidv4()}>
               <InputData data={item.childName} />

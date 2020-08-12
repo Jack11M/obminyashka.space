@@ -2,13 +2,13 @@ import React from "react";
 
 import "./myActyvity.scss";
 import ButtonBlue from "../../../../components/buttonBlue/ButtonBlue";
-import Title_Big_Blue from "../../../../components/title_Big_Blue";
+import TitleBigBlue from "../../../../components/title_Big_Blue";
 
 const MyActivity = () => {
   return (
     <section id="content1" className="tabs__content">
       <div className="content">
-        <Title_Big_Blue text={"входящие ответы"} />
+        <TitleBigBlue text={"входящие ответы"} />
         <ul className={'products-list'}>
         <li className="products-list-item">
           <span className={`product-like-this activeFavourite`}>
@@ -111,7 +111,7 @@ const MyActivity = () => {
         </li>
         </ul>
 
-        <Title_Big_Blue text={"исходящие ответы"} />
+        <TitleBigBlue text={"исходящие ответы"} />
         <li className="products-list-item">
           <span className={`product-like-this`}>
             <svg

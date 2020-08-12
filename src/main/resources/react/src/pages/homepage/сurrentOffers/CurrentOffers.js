@@ -1,14 +1,15 @@
 import React from "react";
 import { db } from "./goods";
-import "./currentOffers.scss";
-import ButtonBlue from "../../../components/buttonBlue/ButtonBlue.js";
-import Title_Big_Blue from "../../../components/title_Big_Blue/title_Big_Blue";
 
+import ButtonBlue from "../../../components/buttonBlue/ButtonBlue.js";
+import TitleBigBlue from "../../../components/title_Big_Blue";
+
+import "./currentOffers.scss";
 const CurrentOffers = () => {
   return (
     <section className="products-section">
       <div className="products-header">
-        <Title_Big_Blue
+        <TitleBigBlue
           whatClass="products-title-list"
           text="Текущие предложения"
         />
