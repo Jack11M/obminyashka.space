@@ -64,9 +64,7 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     void getUserDto_shouldReturnUserDtoIfExists() throws Exception {
-        mockMvc.perform(get("/user/info/{id}", 1L)
-                .content(asJsonString("admin"))
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(get("/user/my-info")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(jsonPath("$.id").value(1))
@@ -74,12 +72,10 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        MvcResult result = mockMvc.perform(get("/user/info/{id}", 555555L)
-                .content(asJsonString("admin"))
+        MvcResult result = mockMvc.perform(get("/user/my-info")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andReturn();
