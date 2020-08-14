@@ -13,6 +13,7 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
 
+import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_USER;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
@@ -37,14 +39,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/info/{id}")
-    public @ResponseBody
-    ResponseEntity<UserDto> getUserInfo(@PositiveOrZero @PathVariable("id") long id, Principal principal) {
-
-        return ResponseEntity.ok(userService.getByUsernameOrEmail(principal.getName())
-                .filter(user -> user.getId() == id)
-                .orElseThrow(() -> new AccessDeniedException(
-                        getExceptionMessageSource("exception.access-denied.user-data"))));
+    @GetMapping("/my-info")
+    @PreAuthorize(HAS_ROLE_USER)
+    public ResponseEntity<UserDto> getPersonalInfo(Principal principal) {
+        return ResponseEntity.of(userService.getByUsernameOrEmail(principal.getName()));
     }
 
     @PutMapping("/info")
