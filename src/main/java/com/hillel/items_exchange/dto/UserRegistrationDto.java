@@ -22,7 +22,7 @@ public class UserRegistrationDto {
 
     @NotEmpty(message = "{empty.email}")
     @Size(max = 129, message = "{too.big.email}")
-    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
+    @Email(message = "{invalid.email}")
     private String email;
 
     @NotEmpty(message = "{empty.password}")
