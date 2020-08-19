@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,11 @@ public class UserRegistrationDtoValidator implements Validator {
 
         if (!Objects.equals(userRegistrationDto.getConfirmPassword(), userRegistrationDto.getPassword())) {
             throw new BadRequestException(getExceptionMessageSource("different.passwords"));
+        }
+
+        final FieldError emailError = errors.getFieldError("email");
+        if (emailError!=null){
+            throw new BadRequestException(emailError.getDefaultMessage());
         }
     }
 }
