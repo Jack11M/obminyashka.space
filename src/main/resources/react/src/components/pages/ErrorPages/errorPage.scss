@@ -102,7 +102,7 @@
 
     }
     .onMain {
-      background-color: $colorButtonBlue;
+      background-color: $btn-bh-active;
       margin-right: 36px;
       &:hover {
         cursor: pointer;
@@ -113,11 +113,11 @@
       }
 
       &:disabled {
-        background-color: $colorDesabled;
+        background-color: $btn-gb-disabled;
       }
     }
     .back {
-      background-color: $colorButtonGreen;
+      background-color: $btn-bh-green;
       &:hover {
         cursor: pointer;
         background-color: #008B20;
@@ -127,7 +127,7 @@
       }
 
       &:disabled {
-        background-color: $colorDesabled;
+        background-color: $btn-gb-disabled;
       }
     }
   }

@@ -28,7 +28,7 @@
 
       p {
         @include font(Roboto);
-        text-shadow: 1px 1px 10px $colorButtonBlue;
+        text-shadow: 1px 1px 10px $btn-bh-active;
         font-style: normal;
 
         font-size: 29px;
