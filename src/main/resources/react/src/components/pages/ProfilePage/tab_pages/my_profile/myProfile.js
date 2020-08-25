@@ -1,23 +1,27 @@
 import React from "react";
-import Title from "../tabs_UI/title";
-import Input from "../tabs_UI/input";
+import Title_Big_Blue from "../../../../title_Big_Blue";
+import InputData from '../../inputData';
+import InputChildren from "../../inputChildren";
 
-const MyProfile = () => {
-  return (
-    <>
-      <Title text={"О себе"} />
-      <form>
-        <Input text={"Имя:"} />
-        <Input text={"Фамилия:"} />
-        <Input text={"Город:"} />
-        <Input text={"Телефон:"} />
+import './myProfile.scss';
 
-        <Title text={"Дети"} />
-        <Input text={"Имя:"} />
-        <Input text={"Возраст:"} />
-      </form>
-    </>
-  );
+const MyProfile = ({Profile}) => {
+	const {aboutMe, children} = Profile;
+	const[me, setMe]=aboutMe;
+	const[child, setChild]= children;
+
+	return (
+		<form>
+			<Title_Big_Blue whatClass={'myProfile-title'} text={"О себе"}/>
+			{me.map(input => {
+				return (<InputData data={input} key={input.id}/>)
+			})}
+
+			<Title_Big_Blue whatClass={'myProfile-title'} text={"Дети"}/>
+			{child.map(item=>(<InputChildren data={item} key={item.id}/>))}
+
+		</form>
+	);
 };
 
 export default MyProfile;
