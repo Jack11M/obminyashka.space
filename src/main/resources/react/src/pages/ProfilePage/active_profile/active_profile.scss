@@ -1,0 +1,57 @@
+@import "../../../components/partials/variables";
+
+.active__profile {
+  padding-top: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  height: 223px;
+  width: 100%;
+  background: $bg-profile;
+  position: relative;
+
+  &__box {
+    margin-right: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-photo {
+      display: flex;
+      margin-bottom: 10px;
+
+      & img {
+        display: inline-flex;
+        border-radius: 50%;
+        width: 135px;
+        height: 135px;
+      }
+    }
+
+    &-data {
+      line-height: 16px;
+      width: 162px;
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      right: 57px;
+      top: 167px;
+      color: #FFFFFF;
+
+      &-name {
+        position: relative;
+        width: auto;
+        font-size: 14px;
+        line-height: 16px;
+      }
+
+      &-city {
+        font-size: 12px;
+        line-height: 16px;
+        display: block;
+        margin-bottom: 22px;
+      }
+    }
+  }
+}
+

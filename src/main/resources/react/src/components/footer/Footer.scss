@@ -1,7 +1,6 @@
 @import "../partials/variables";
 
 .HomePageFooter {
-  padding-top: 200px;
   background-image: url(../../img/footerBg.png);
   background-size: cover;
   background-position: top;
@@ -25,7 +24,9 @@
   display: flex;
   flex-direction: column;
   padding: 10px;
-
+  &_rules {
+    margin-bottom: 10px;
+  }
 }
 
 .footer-list__icon {
@@ -36,7 +37,7 @@
 
   & + a {
     img:active {
-      @include Scale;
+      @include Scale(1.03);
     }
   }
 
@@ -54,9 +55,7 @@
 
 .HomePageFooter a {
   display: block;
-  font-size: 16px;
   line-height: 24px;
-  color: #fff;
   text-decoration: none;
 }
 
@@ -68,7 +67,7 @@
 .btn-Help-Children {
   margin-top: 40px;
   background-color: #12B6ED;
-  padding: 8px 25px;
+  padding: 1px 16px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: lighter;
@@ -96,6 +95,7 @@
 
 .copyright > span:first-child {
   padding-right: 10px;
+  font-size: 16px;
 }
 
 .HomePageFooter > [class^="icon-"], [class*=" icon-"] {

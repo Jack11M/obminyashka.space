@@ -28,9 +28,9 @@ const Footer = () => {
           </li>
           <li className="footer-list">
             <span className="footer-list__icon icon-question"></span>
-            <a href="#">Правила безопасной сделки</a>
-            <a href="#">Благотворительные организации</a>
-            <a href="#">Часто задаваемые вопросы</a>
+            <a href="#" className="footer-list_rules">Правила безопасной сделки</a>
+            <a href="#" className="footer-list_rules">Благотворительные организации</a>
+            <a href="#" className="footer-list_rules">Часто задаваемые вопросы</a>
           </li>
           <li className="footer-list">
             <span className="footer-list__icon icon-home"></span>

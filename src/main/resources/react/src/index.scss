@@ -1,3 +1,6 @@
+@import "./components/partials/variables";
+@import "./fonts/font";
+
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -15,10 +18,10 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
-  //font-size: 100%;
   font: inherit;
   vertical-align: baseline;
   box-sizing: border-box;
+
 }
 
 article, aside, details, figcaption, figure,
@@ -36,7 +39,6 @@ blockquote, q {
 
 blockquote:before, blockquote:after,
 q:before, q:after {
-  //content: '';
   content: none;
 }
 
@@ -47,8 +49,8 @@ table {
 
 body {
   line-height: 1;
-  font-family: Roboto, sans-serif;
-  background-color: #E5E5E5;
+  @include font(Roboto);
+  background-color: $bg-content;
 }
 
 a {
@@ -62,4 +64,21 @@ a {
   padding: 0 15px;
   margin: 0 auto;
   overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+  background: $scrollbar-bg;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $scrollbar-color;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $scrollbar-hover-color;
 }

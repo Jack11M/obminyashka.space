@@ -1,10 +1,10 @@
 import React from "react";
-import Header from "./components/header/Header";
-import Routes from "./routes/routes";
-import Footer from "./components/footer/Footer";
 import { BrowserRouter as Router } from "react-router-dom";
 import ScrollToTop from "./components/scrollToTop/scrollToTop";
 import ErrorBoundary from "./components/errorBoundary/errorBoudary";
+import Header from "./components/header/Header";
+import Routes from "./routes/routes";
+import Footer from "./components/footer/Footer";
 
 const App = () => {
   return (
