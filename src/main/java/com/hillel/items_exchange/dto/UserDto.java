@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,8 +17,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class UserDto {
-    @PositiveOrZero(message = "{invalid.id}")
-    private long id;
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 2, max = 50, message = "{invalid.size}")
     private String username;
@@ -38,6 +36,6 @@ public class UserDto {
     private String avatarImage;
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate lastOnlineTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastOnlineTime;
 }

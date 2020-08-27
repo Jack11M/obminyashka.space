@@ -67,7 +67,7 @@ class UserControllerTest {
         mockMvc.perform(get("/user/my-info")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.username").value("admin"))
                 .andExpect(status().isOk());
     }
 
@@ -111,11 +111,11 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void updateUserInfo_shouldBeThrownAccessDeniedExceptionWhenNotUserId() throws Exception {
+    void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithNotUserId(), status().isConflict())
+                createUserDtoForUpdatingWithChangedLastOnlineTime(), status().isForbidden())
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("You are not allowed to perform this action"));
+        assertTrue(result.getResponse().getContentAsString().contains("You are unable to change your: LastOnlineTime"));
     }
 
     @Test
