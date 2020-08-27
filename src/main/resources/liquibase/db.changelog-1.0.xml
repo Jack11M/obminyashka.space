@@ -446,4 +446,17 @@
                               columnName="user_id"
                               columnDataType="BIGINT"/>
     </changeSet>
+
+    <changeSet id="1.0.27: SET NULL constraint update onDelete in advertisement table" author="lubchik">
+        <dropForeignKeyConstraint baseTableName="advertisement"
+                                  constraintName="fk_advertisement_to_location"/>
+
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_location"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="location"/>
+    </changeSet>
 </databaseChangeLog>
