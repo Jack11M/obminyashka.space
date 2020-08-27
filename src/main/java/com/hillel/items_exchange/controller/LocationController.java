@@ -49,8 +49,7 @@ public class LocationController {
     public ResponseEntity<LocationDto> createLocation(@Valid @RequestBody LocationDto locationDto) {
         long id = locationDto.getId();
         if (id != 0) {
-            String message = String.format("Location not created. Received ID=%s", id);
-            log.warn(message);
+            log.warn("Location not created. Received ID={}", id);
             throw new IllegalIdentifierException(getExceptionMessageSourceWithId(id, "new.location.id.not-zero"));
         }
         return new ResponseEntity<>(locationService.save(locationDto), HttpStatus.CREATED);
@@ -76,7 +75,7 @@ public class LocationController {
             String strIds = locationIds.stream()
                     .map(String::valueOf)
                     .collect(Collectors.joining(", ", ": ", ""));
-            log.warn("Received nonexistent IDs" + strIds);
+            log.warn("Received nonexistent IDs {}", strIds);
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", strIds));
         }
