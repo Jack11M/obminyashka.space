@@ -85,9 +85,6 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto, BindingResult bindingResult) {
         userRegistrationDtoValidator.validate(userRegistrationDto, bindingResult);
-        if (bindingResult.hasErrors()) {
-            throw new UserValidationException(bindingResult.toString());
-        }
 
         Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);
         if (userService.registerNewUser(userRegistrationDto, role)) {

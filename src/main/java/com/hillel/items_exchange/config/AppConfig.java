@@ -8,6 +8,8 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
@@ -31,6 +33,11 @@ public class AppConfig {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
+    }
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        return new AcceptHeaderLocaleResolver();
     }
 
     @Bean

@@ -26,19 +26,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
-public class ImageControllerTest {
+class ImageControllerIntegrationTest {
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
     @Autowired
     private MockMvc mockMvc;
     private MockMultipartFile jpeg;
-    private MockMultipartFile png;
     private MockMultipartFile txt;
 
     @BeforeEach
     void setUp() {
          jpeg = new MockMultipartFile("files", "image-jpeg.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpeg".getBytes());
-         png = new MockMultipartFile("files", "image-png.png", MediaType.IMAGE_PNG_VALUE, "image png".getBytes());
          txt = new MockMultipartFile("files", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
     }
 
@@ -67,16 +65,6 @@ public class ImageControllerTest {
                 .andExpect(jsonPath("$[1].id").value("2"))
                 .andExpect(jsonPath("$[1].resource").value(Base64.encodeString(TEST_PNG)))
                 .andExpect(jsonPath("$[1].defaultPhoto").value(true));
-    }
-
-    @WithMockUser("admin")
-    @Test
-    @ExpectedDataSet(value = "image/create.yml", ignoreCols = {"created", "updated"})
-    void saveImages_shouldWriteNewImageWhenSupportedType() throws Exception {
-        mockMvc.perform(multipart("/image/{product_id}", 2L)
-                .file(jpeg).file(png))
-                .andDo(print())
-                .andExpect(status().isOk());
     }
 
     @WithMockUser("admin")

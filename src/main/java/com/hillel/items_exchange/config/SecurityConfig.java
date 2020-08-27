@@ -24,6 +24,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
+    public static final String HAS_ROLE_USER = "hasRole('ROLE_USER')";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 

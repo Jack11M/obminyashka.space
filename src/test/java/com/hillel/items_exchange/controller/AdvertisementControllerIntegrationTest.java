@@ -45,12 +45,15 @@ class AdvertisementControllerIntegrationTest {
     private AdvertisementDto existDto;
     private AdvertisementDto existDtoForUpdate;
     private int page, size;
-
+    private long validId;
+    private long notValidId;
 
     @BeforeEach
     void setUp() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
+        validId = 1L;
+        notValidId =999L;
     }
 
     @Test
@@ -168,5 +171,45 @@ class AdvertisementControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/setDefaultImage.yml")
+    void setDefaultImage_success() throws Exception {
+        mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", validId, validId))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void setDefaultImage_shouldReturn406WhenNotValidAdvertisementId() throws Exception {
+        mockMvc.perform(
+                post("/adv/default-image/{advertisementId}/{imageId}", notValidId, validId))
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void setDefaultImage_shouldReturn406WhenNotValidImageId() throws Exception {
+        mockMvc.perform(
+                post("/adv/default-image/{advertisementId}/{imageId}", validId, notValidId))
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+    }
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void setDefaultImage_shouldReturn400WhenNegativeParameterReceived() throws Exception {
+        mockMvc.perform(
+                post("/adv/default-image/{advertisementId}/{imageId}", -1L, -2L))
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 }

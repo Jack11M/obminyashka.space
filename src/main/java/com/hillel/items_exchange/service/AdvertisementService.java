@@ -13,8 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -116,6 +119,20 @@ public class AdvertisementService {
         advertisementRepository.flush();
     }
 
+    public void setDefaultImage(Long advertisementId, Long imageId, User owner) throws ClassNotFoundException {
+        final Advertisement advertisement = owner.getAdvertisements().parallelStream()
+                .filter(adv -> adv.getId() == advertisementId)
+                .findFirst()
+                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+        final Image image = advertisement.getProduct().getImages().parallelStream()
+                .filter(img -> img.getId() == imageId)
+                .findFirst()
+                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+        advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
+        image.setDefaultPhoto(true);
+        advertisementRepository.saveAndFlush(advertisement);
+    }
+
     private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
         return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {
         }.getType());
@@ -128,5 +145,14 @@ public class AdvertisementService {
 
     private AdvertisementDto mapAdvertisementToDto(Advertisement advertisement) {
         return modelMapper.map(advertisement, AdvertisementDto.class);
+    }
+
+    public boolean isAdvertisementAndImageExists(Long advertisementId, Long imageId, User owner) {
+        return owner.getAdvertisements().stream()
+                .filter(adv -> adv.getId() == advertisementId)
+                .map(Advertisement::getProduct)
+                .map(Product::getImages)
+                .flatMap(Collection::stream)
+                .anyMatch(image -> image.getId() == imageId);
     }
 }
