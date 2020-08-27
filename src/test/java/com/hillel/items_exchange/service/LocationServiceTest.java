@@ -66,10 +66,10 @@ class LocationServiceTest {
     }
 
     @Test
-    void getById_shouldReturnLocationDto() throws ClassNotFoundException {
+    void getById_shouldReturnLocationDto() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        LocationDto foundLocation = locationService.getById(1L);
+        LocationDto foundLocation = locationService.getById(1L).get();
         assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
@@ -78,8 +78,12 @@ class LocationServiceTest {
     }
 
     @Test
-    void getById_shouldThrowException_WhenEntityNotFound() {
-        assertThrows(ClassNotFoundException.class, () -> locationService.getById(55L));
+    void getById_shouldReturn404_WhenEntityNotFound() {
+        when(locationRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        Optional<LocationDto> optionalLocationDto = locationService.getById(55L);
+        assertTrue(optionalLocationDto.isEmpty());
+        verify(locationRepository, times(1)).findById(55L);
     }
 
     @Test

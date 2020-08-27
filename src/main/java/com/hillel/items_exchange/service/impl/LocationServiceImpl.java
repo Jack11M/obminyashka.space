@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertTo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -31,10 +30,15 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public LocationDto getById(long id) throws ClassNotFoundException {
+    public List<LocationDto> findByIds(List<Long> ids) {
+        List<Location> locations = locationRepository.findByIdIn(ids);
+        return new ArrayList<>(convertAllTo(locations, LocationDto.class, ArrayList::new));
+    }
+
+    @Override
+    public Optional<LocationDto> getById(long id) {
         return findById(id)
-                .map(location -> convertTo(location, LocationDto.class))
-                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+                .map(location -> convertTo(location, LocationDto.class));
     }
 
     @Override

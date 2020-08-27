@@ -97,7 +97,7 @@ class LocationControllerIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     @ExpectedDataSet("location/create.yml")
-    void createLocation_shouldReturn201Created() throws Exception {
+    void createLocation_shouldCreateNewLocation() throws Exception {
         mockMvc.perform(post("/location")
                 .content(asJsonString(createLocationDtoWithId(0)))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -138,7 +138,7 @@ class LocationControllerIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     @ExpectedDataSet("location/update.yml")
-    void updateLocation_shouldReturn200Ok() throws Exception {
+    void updateLocation_shouldUpdateExistedLocation() throws Exception {
         mockMvc.perform(put("/location")
                 .content(asJsonString(createLocationDtoWithId(1L)))
                 .contentType(MediaType.APPLICATION_JSON)

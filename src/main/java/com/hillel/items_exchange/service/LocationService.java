@@ -16,17 +16,24 @@ public interface LocationService {
     /**
      * Retrieves a location by its id.
      * @param id Location ID.
-     * @return the location with the given id or Optional#empty() if none found.
+     * @return the location with the given id or {@link Optional#empty()} if none found.
      */
     Optional<Location> findById(long id);
 
     /**
-     * If a location exists, returns the Location DTO, otherwise throws {@code ClassNotFoundException}.
-     * @param id Location ID.
-     * @return the non-{@code null} {@link LocationDto} with given id.
-     * @throws ClassNotFoundException if no location found.
+     * Retrieves locations by its id.
+     * @param ids List of Location IDs.
+     * @return the Location DTOs with the given ids.
      */
-    LocationDto getById(long id) throws ClassNotFoundException;
+    List<LocationDto> findByIds(List<Long> ids);
+
+    /**
+     * Returns an {@code Optional} describing a {@link LocationDto} by its id, if
+     * non-{@code null}, otherwise returns an empty {@code Optional}.
+     * @param id Location ID.
+     * @return the Location DTO with the given id or {@link Optional#empty()} if none found.
+     */
+    Optional<LocationDto> getById(long id);
 
     /**
      * Creates a new record in table location in DB.
