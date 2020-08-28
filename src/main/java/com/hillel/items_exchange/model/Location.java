@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "advertisement"})
+@EqualsAndHashCode(exclude = {"id", "advertisements"})
 public class Location {
 
     @Id
@@ -20,5 +20,5 @@ public class Location {
     private String district;
 
     @OneToMany(mappedBy = "location")
-    private List<Advertisement> advertisement;
+    private List<Advertisement> advertisements;
 }

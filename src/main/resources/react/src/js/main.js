@@ -1,5 +1,29 @@
-!function(e){"function"!=typeof e.matches&&(e.matches=e.msMatchesSelector||e.mozMatchesSelector||e.webkitMatchesSelector||function(e){for(var t=this,o=(t.document||t.ownerDocument).querySelectorAll(e),n=0;o[n]&&o[n]!==t;)++n;return Boolean(o[n])}),"function"!=typeof e.closest&&(e.closest=function(e){for(var t=this;t&&1===t.nodeType;){if(t.matches(e))return t;t=t.parentNode}return null})}(window.Element.prototype);
+!(function(e) {
+  "function" != typeof e.matches &&
+    (e.matches =
+      e.msMatchesSelector ||
+      e.mozMatchesSelector ||
+      e.webkitMatchesSelector ||
+      function(e) {
+        for (
+          var t = this,
+            o = (t.document || t.ownerDocument).querySelectorAll(e),
+            n = 0;
+          o[n] && o[n] !== t;
 
+        )
+          ++n;
+        return Boolean(o[n]);
+      }),
+    "function" != typeof e.closest &&
+      (e.closest = function(e) {
+        for (var t = this; t && 1 === t.nodeType; ) {
+          if (t.matches(e)) return t;
+          t = t.parentNode;
+        }
+        return null;
+      });
+})(window.Element.prototype);
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -46,48 +70,48 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.addEventListener('keyup', function (e) {
         var key = e.keyCode;
 
-        if (key == 27) {
+      if (key == 27) {
+        document.querySelector(".modal.active").classList.remove("active");
+        document.querySelector(".overlay").classList.remove("active");
+      }
+    },
+    false
+  );
 
-            document.querySelector('.modal.active').classList.remove('active');
-            document.querySelector('.overlay').classList.remove('active');
-        };
-    }, false);
-
-    overlay.addEventListener('click', function() {
-        document.querySelector('.modal.active').classList.remove('active');
-        this.classList.remove('active');
-    });
+  overlay.addEventListener("click", function() {
+    document.querySelector(".modal.active").classList.remove("active");
+    this.classList.remove("active");
+  });
 }); // end ready
 
-
 //TABS
-function check() {    
-    if(document.getElementById('tab1').checked) {        
-        document.getElementById('content1').style.display = 'block'; 
+function check() {
+    if(document.getElementById('tab1').checked) {
+        document.getElementById('content1').style.display = 'block';
         document.getElementById('content2').style.display = 'none';
         document.getElementById('content3').style.display = 'none';
         document.getElementById('content4').style.display = 'none';
-        //document.getElementById('content5').style.display = 'none';          
-    }    
-    if(document.getElementById('tab2').checked) {        
-        document.getElementById('content1').style.display = 'none'; 
+        //document.getElementById('content5').style.display = 'none';
+    }
+    if(document.getElementById('tab2').checked) {
+        document.getElementById('content1').style.display = 'none';
         document.getElementById('content2').style.display = 'block';
         document.getElementById('content3').style.display = 'none';
         document.getElementById('content4').style.display = 'none';
-        //document.getElementById('content5').style.display = 'none';        
-    }    
-    if(document.getElementById('tab3').checked) {        
-        document.getElementById('content1').style.display = 'none'; 
+        //document.getElementById('content5').style.display = 'none';
+    }
+    if(document.getElementById('tab3').checked) {
+        document.getElementById('content1').style.display = 'none';
         document.getElementById('content2').style.display = 'none';
         document.getElementById('content3').style.display = 'block';
         document.getElementById('content4').style.display = 'none';
-        //document.getElementById('content5').style.display = 'none';         
-        }    
-    if(document.getElementById('tab4').checked) {        
-        document.getElementById('content1').style.display = 'none'; 
+        //document.getElementById('content5').style.display = 'none';
+        }
+    if(document.getElementById('tab4').checked) {
+        document.getElementById('content1').style.display = 'none';
         document.getElementById('content2').style.display = 'none';
         document.getElementById('content3').style.display = 'none';
         document.getElementById('content4').style.display = 'block';
         //document.getElementById('content5').style.display = 'none';
-    }       
+    }
 }

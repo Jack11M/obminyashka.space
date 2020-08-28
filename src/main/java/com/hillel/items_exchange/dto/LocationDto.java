@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode
 public class LocationDto {
     @PositiveOrZero(message = "{invalid.id}")

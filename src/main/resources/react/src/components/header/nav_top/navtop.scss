@@ -16,7 +16,7 @@
 
 
     &-links {
-      color: $colorBlack;
+      color: $black-color-text;
       text-transform: uppercase;
     }
 
@@ -30,6 +30,7 @@
         position: relative;
         top: 2px;
         margin-right: 8px;
+        font-size: 1.32em;
       }
 
     }
@@ -53,7 +54,7 @@
         }
 
         &:active {
-          @include Scale;
+          @include Scale(1.03);
         }
 
       }

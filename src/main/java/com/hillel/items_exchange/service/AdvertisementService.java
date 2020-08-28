@@ -108,7 +108,7 @@ public class AdvertisementService {
         Location toUpdateLocation = toUpdate.getLocation();
         if (!toUpdateLocation.equals(fromDB.getLocation())) {
             Location newLocation = locationService.findById(toUpdateLocation.getId())
-                    .orElse(locationService.createLocation(toUpdateLocation));
+                    .orElse(locationService.save(toUpdateLocation));
             fromDB.setLocation(newLocation);
         }
     }
