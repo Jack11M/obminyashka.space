@@ -1,8 +1,12 @@
 package com.hillel.items_exchange.util;
 
+import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Set;
 
 public class UserDtoCreatingUtil {
 
@@ -14,33 +18,39 @@ public class UserDtoCreatingUtil {
     public static final String NEW_INVALID_SHORT_NAME = "n";
     public static final String NEW_INVALID_TWO_WORDS_NAME = "new Name";
 
-    public static UserDto createUserDtoForUpdatingWithChangedEmailAndFirstNameApostrAndLastNameMinus() {
+    public static UserDto createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutChildrenOrPhones() {
         return getBuild("admin", NEW_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
-                NEW_VALID_NAME_WITH_HYPHEN_MINUS, "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1));
+                NEW_VALID_NAME_WITH_HYPHEN_MINUS, "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                Collections.emptySet(), Collections.emptySet());
     }
 
-    public static UserDto createUserDtoForUpdatingWithChangedUsername() {
+    public static UserDto createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones() {
         return getBuild(NEW_USERNAME, "admin@gmail.com", Boolean.FALSE, "super",
-                "admin", "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1));
+                "admin", "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                Collections.emptySet(), Collections.emptySet());
     }
 
-    public static UserDto createUserDtoForUpdatingWithChangedLastOnlineTime() {
+    public static UserDto createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutChildrenOrPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
-                "admin", "empty", NEW_LAST_ONLINE_TIME);
+                "admin", "empty", NEW_LAST_ONLINE_TIME,
+                Collections.emptySet(), Collections.emptySet());
     }
 
-    public static UserDto createUserDtoForUpdatingWithInvalidShortFirstName() {
+    public static UserDto createUserDtoForUpdatingWithInvalidShortFNameWithoutChildrenOrPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, NEW_INVALID_SHORT_NAME,
-                "admin", "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1));
+                "admin", "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                Collections.emptySet(), Collections.emptySet());
     }
 
-    public static UserDto createUserDtoForUpdatingWithInvalidLastName() {
+    public static UserDto createUserDtoForUpdatingWithInvalidLNameWithoutChildrenOrPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, NEW_INVALID_TWO_WORDS_NAME,
-                "admin", "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1));
+                "admin", "empty", LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                Collections.emptySet(), Collections.emptySet());
     }
 
     public static UserDto getBuild(String username, String email, Boolean online, String firstName,
-                                   String lastName, String avatarImage, LocalDateTime lastOnlineTime) {
+                                   String lastName, String avatarImage, LocalDateTime lastOnlineTime,
+                                   Set<ChildDto> children, Set<PhoneDto> phones) {
         return UserDto.builder()
                 .username(username)
                 .email(email)
@@ -49,6 +59,8 @@ public class UserDtoCreatingUtil {
                 .lastName(lastName)
                 .avatarImage(avatarImage)
                 .lastOnlineTime(lastOnlineTime)
+                .children(children)
+                .phones(phones)
                 .build();
     }
 }

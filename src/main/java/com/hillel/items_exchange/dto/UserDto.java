@@ -8,8 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,4 +40,8 @@ public class UserDto {
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastOnlineTime;
+    @NotNull(message = "{invalid.not-null}")
+    private Set<@Valid ChildDto> children;
+    @NotNull(message = "{invalid.not-null}")
+    private Set<@Valid PhoneDto> phones;
 }

@@ -46,8 +46,8 @@ public class UserController {
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws IllegalOperationException {
         User user = getUser(principal.getName());
-        validateFieldChange(user.getUsername(), userDto.getUsername(), "username");
-        validateFieldChange(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
+        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "username");
+        checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
 
         return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
     }
@@ -112,7 +112,7 @@ public class UserController {
                 getExceptionMessageSource("exception.user.not-found")));
     }
 
-    private <T> void validateFieldChange(T field1, T field2, String fieldName) throws IllegalOperationException {
+    private <T> void checkReadOnlyFieldUpdate(T field1, T field2, String fieldName) throws IllegalOperationException {
         if (!field1.equals(field2)) {
             log.warn("Illegal operation: field change {}", fieldName);
             throw new IllegalOperationException(
