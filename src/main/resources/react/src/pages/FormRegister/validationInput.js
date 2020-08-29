@@ -53,7 +53,6 @@ export const RegisterValidation = (input, isLogin) => {
 
 
   let someError = methods.map(item => validatorMethods[item[0]](input, item[1]));
-  console.log(someError)
 
   return someError.every(ev => ev === true);
 };

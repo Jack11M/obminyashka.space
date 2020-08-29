@@ -1,1 +1,1 @@
-// export { default as addMeProfile} from './addMe';
+export { addMeInputValue, addChildrenInputValue, deleteChild, addChild } from './myInfoInput';

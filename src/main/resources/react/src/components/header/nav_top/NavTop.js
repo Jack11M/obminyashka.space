@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Avatar from "./Avatar.js";
+import Avatar from "../../avatar/avatar.js";
 import "./navtop.scss";
 
 const NavTop = () => {
@@ -18,8 +18,8 @@ const NavTop = () => {
             </a>
           </div>
           <div id="personalArea">
-            <Link to="/profile">
-              <Avatar />
+            <Link to="/userInfo">
+              <Avatar whatIsClass={'user-photo'} width={30} height={28}/>
               <span>Мой кабинет</span>
             </Link>
           </div>

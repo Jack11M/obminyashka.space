@@ -1,1 +1,3 @@
-export { default as addMe} from './addMe';
+import profileMe from './profileMe';
+
+export {profileMe};
