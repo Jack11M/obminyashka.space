@@ -54,7 +54,7 @@ const CurrentOffers = () => {
            
             <div className="products-list-item__footer">
             <span className="products-list-item__location">
-              <span className="icon-location"> </span>
+              <span className="icon-location"/>
               {data.location.city}
             </span>
               <ButtonBlue

@@ -32,7 +32,7 @@ const MyActivity = () => {
 
           <div className="products-list-item__title">5 лет</div>
           <span className="products-list-item__location">
-            <span className="icon-location"> </span>
+            <span className="icon-location"/>
             Харьков
           </span>
           <div className="products-list-item__footer">
@@ -65,7 +65,7 @@ const MyActivity = () => {
 
           <div className="products-list-item__title">5 лет</div>
           <span className="products-list-item__location">
-            <span className="icon-location"> </span>
+            <span className="icon-location"/>
             Харьков
           </span>
           <div className="products-list-item__footer">
@@ -98,7 +98,7 @@ const MyActivity = () => {
 
           <div className="products-list-item__title">5 лет</div>
           <span className="products-list-item__location">
-            <span className="icon-location"> </span>
+            <span className="icon-location"/>
             Харьков
           </span>
           <div className="products-list-item__footer">
@@ -134,7 +134,7 @@ const MyActivity = () => {
 
           <div className="products-list-item__title">5 лет</div>
           <span className="products-list-item__location">
-            <span className="icon-location"> </span>
+            <span className="icon-location"/>
             Харьков
           </span>
           <div className="products-list-item__footer">
@@ -167,7 +167,7 @@ const MyActivity = () => {
 
           <div className="products-list-item__title">5 лет</div>
           <span className="products-list-item__location">
-            <span className="icon-location"> </span>
+            <span className="icon-location"/>
             Харьков
           </span>
           <div className="products-list-item__footer">
