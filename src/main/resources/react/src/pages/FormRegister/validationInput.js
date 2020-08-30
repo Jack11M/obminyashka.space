@@ -3,7 +3,7 @@
  */
 export const RegisterValidation = (input, isLogin) => {
   const login = {
-    usernameOrEmail: [["notEmpty"], ["cutEmpty"],["pattern", "altCode"]],
+    usernameOrEmail: [["notEmpty"], ["cutEmpty"]],
     password: [["notEmpty"], ["cutEmpty"]]
   };
   const register = {

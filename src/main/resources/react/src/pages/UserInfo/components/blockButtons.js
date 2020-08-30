@@ -10,7 +10,7 @@ function BlockButtons({index, childrenId}) {
 
 	const removeChild = useCallback(() => {
 		dispatch(deleteChild(childrenId))
-	}, [dispatch]);
+	}, [dispatch, childrenId]);
 
 	const addChildren = useCallback(() => {
 		dispatch(addChild())

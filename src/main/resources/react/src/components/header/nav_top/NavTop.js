@@ -12,10 +12,10 @@ const NavTop = () => {
             <Link to="/" className="navbar-top-link">
               О Проекте
             </Link>
-            <a href="#" className="navbar-top-link">
+            <Link to="/" className="navbar-top-link">
               <i className="icon-heart" />
               Доброе Дело
-            </a>
+            </Link>
           </div>
           <div id="personalArea">
             <Link to="/userInfo">

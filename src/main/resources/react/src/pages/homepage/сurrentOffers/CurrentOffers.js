@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import { db } from "./goods";
 
 import ButtonBlue from "../../../components/buttonBlue/ButtonBlue.js";
@@ -13,9 +14,9 @@ const CurrentOffers = () => {
           whatClass="products-title-list"
           text="Текущие предложения"
         />
-        <a href="#" className="products-link-search">
+        <Link to="/" className="products-link-search">
           Расширенный поиск
-        </a>
+        </Link>
       </div>
 
       <ul className="products-list" id="products-list">
