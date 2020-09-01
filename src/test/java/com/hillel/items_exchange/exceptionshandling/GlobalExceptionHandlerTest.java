@@ -1,14 +1,17 @@
 package com.hillel.items_exchange.exceptionshandling;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import com.hillel.items_exchange.controller.AdvertisementController;
 import com.hillel.items_exchange.controller.CategoryController;
 import com.hillel.items_exchange.controller.UserController;
 import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
+import com.hillel.items_exchange.util.CategoryControllerIntegrationTestUtil;
 import com.hillel.items_exchange.util.UserDtoCreatingUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,13 +25,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.transaction.Transactional;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
@@ -39,8 +45,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -55,6 +61,7 @@ public class GlobalExceptionHandlerTest {
     private AdvertisementDto existDto;
     private UserDto userDtoWithNotUserId;
     private UserDto userDtoWithChangedUsername;
+    private CategoryDto newCategoryDtoWithIdNotZero;
 
     @Mock
     AdvertisementController advertisementController;
@@ -71,6 +78,7 @@ public class GlobalExceptionHandlerTest {
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         userDtoWithNotUserId = UserDtoCreatingUtil.createUserDtoForUpdatingWithNotUserId();
         userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsername();
+        newCategoryDtoWithIdNotZero = CategoryControllerIntegrationTestUtil.createNonExistCategoryDtoWithInvalidId();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -148,6 +156,22 @@ public class GlobalExceptionHandlerTest {
         when(userController.updateUserInfo(any(), any())).thenThrow(AccessDeniedException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithNotUserId, status().isConflict());
         assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
+    }
+
+    @Test
+    @WithMockUser(username = CategoryControllerIntegrationTestUtil.USERNAME_ADMIN, roles = {CategoryControllerIntegrationTestUtil.ROLE_ADMIN})
+    @Transactional
+    @DataSet("database_init.yml")
+    public void testHandleMethodArgumentNotValidException() throws Exception {
+        MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        MvcResult result = mockMvc.perform(post("/category")
+                .content(asJsonString(newCategoryDtoWithIdNotZero))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        assertThat(result.getResolvedException(), is(instanceOf(MethodArgumentNotValidException.class)));
     }
 
     private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,

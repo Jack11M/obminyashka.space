@@ -1,12 +1,12 @@
 category:
   - id: 1
-    name: 'shoes'
+    name: 'footwear'
   - id: 2
     name: 'Toys'
 
 subcategory:
   - id: 1
-    name: 'light_shoes'
+    name: 'men shoes'
     category_id: 1
   - id: 2
     name: 'dolls'

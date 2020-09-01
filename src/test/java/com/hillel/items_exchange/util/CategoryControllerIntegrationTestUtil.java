@@ -21,30 +21,30 @@ public class CategoryControllerIntegrationTestUtil {
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String USERNAME_ADMIN = "admin";
 
-    protected CategoryDto createExistCategoryDto() {
+    protected static CategoryDto createExistCategoryDto() {
         SubcategoryDto lightShoes = new SubcategoryDto(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
         return new CategoryDto(EXISTING_ENTITY_ID, EXISTING_CATEGORY_NAME, Collections.singletonList(lightShoes));
     }
 
-    protected CategoryDto createNonExistValidCategoryDto() {
+    protected static CategoryDto createNonExistValidCategoryDto() {
         SubcategoryDto fairyTales = new SubcategoryDto(NEW_ENTITY_ID, "fairy tales");
         SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, "educational books");
         return new CategoryDto(NEW_ENTITY_ID, "books", Arrays.asList(fairyTales, educationalBooks));
     }
 
-    protected CategoryDto createNonExistCategoryDtoWithInvalidId() {
+    public static CategoryDto createNonExistCategoryDtoWithInvalidId() {
         return createNewInvalidCategoryDto(EXISTING_ENTITY_ID, NEW_ENTITY_ID, NEW_CATEGORY_NAME);
     }
 
-    protected CategoryDto createNonExistCategoryDtoWithInvalidSubcategoryId() {
+    protected static CategoryDto createNonExistCategoryDtoWithInvalidSubcategoryId() {
         return createNewInvalidCategoryDto(NEW_ENTITY_ID, EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
     }
 
-    protected CategoryDto createCategoryDtoWithDuplicateName() {
+    protected static CategoryDto createCategoryDtoWithDuplicateName() {
         return createNewInvalidCategoryDto(NEW_ENTITY_ID, NEW_ENTITY_ID, EXISTING_CATEGORY_NAME);
     }
 
-    protected CategoryDto getUpdatedCategoryDto(long subcategoryId, long categoryId, String updatedCategoryName) {
+    protected static CategoryDto getUpdatedCategoryDto(long subcategoryId, long categoryId, String updatedCategoryName) {
         CategoryDto updatedCategoryDto = createExistCategoryDto();
         updatedCategoryDto.setSubcategories(Arrays.asList(new SubcategoryDto(subcategoryId, "men shoes"),
                 new SubcategoryDto(NEW_ENTITY_ID, "winter shoes")));
@@ -54,7 +54,7 @@ public class CategoryControllerIntegrationTestUtil {
         return updatedCategoryDto;
     }
 
-    private CategoryDto createNewInvalidCategoryDto(long categoryId,
+    private static CategoryDto createNewInvalidCategoryDto(long categoryId,
                                                     long subcategoryId,
                                                     String categoryName) {
 

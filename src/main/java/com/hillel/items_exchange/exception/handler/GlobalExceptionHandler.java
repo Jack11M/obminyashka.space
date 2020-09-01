@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -127,6 +128,15 @@ public class GlobalExceptionHandler {
                 "exception.illegal.operation", Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(WARN, errorMessage);
         return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
+                                                                              ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
+                "exception.method.argument.not.valid", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(WARN, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,

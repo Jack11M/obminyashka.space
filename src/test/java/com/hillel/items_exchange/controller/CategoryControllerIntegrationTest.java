@@ -122,20 +122,17 @@ public class CategoryControllerIntegrationTest extends CategoryControllerIntegra
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @Transactional
     @DataSet("database_init.yml")
-    void createCategory_whenCategoryIdNotEqualsZero_shouldReturnBadRequestAndThrowInvalidDtoException()
+    void createCategory_whenCategoryIdNotEqualsZero_shouldReturnBadRequest()
             throws Exception {
 
         CategoryDto nonExistCategoryDtoWithInvalidId = createNonExistCategoryDtoWithInvalidId();
 
-        MvcResult result = mockMvc.perform(post("/category")
+        mockMvc.perform(post("/category")
                 .content(asJsonString(nonExistCategoryDtoWithInvalidId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertThat(result.getResolvedException(), is(instanceOf(InvalidDtoException.class)));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
