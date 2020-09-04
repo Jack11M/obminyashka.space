@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -104,7 +105,8 @@ class UserControllerTest {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones(), status().isForbidden())
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("You are unable to change your: username"));
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "Username"));
     }
 
     @Test
@@ -115,7 +117,8 @@ class UserControllerTest {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutChildrenOrPhones(), status().isForbidden())
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("You are unable to change your: LastOnlineTime"));
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "LastOnlineTime"));
     }
 
     @Test

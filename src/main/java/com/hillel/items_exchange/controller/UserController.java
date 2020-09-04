@@ -46,7 +46,7 @@ public class UserController {
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws IllegalOperationException {
         User user = getUser(principal.getName());
-        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "username");
+        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "Username");
         checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
 
         return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
