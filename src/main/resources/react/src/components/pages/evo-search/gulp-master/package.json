@@ -23,7 +23,7 @@
     "imagemin-pngquant": "^8.0.0",
     "imagemin-zopfli": "^6.0.0",
     "insales-uploader-autoprefixer": "^1.0.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "rimraf": "^2.6.3"
   }
 }
