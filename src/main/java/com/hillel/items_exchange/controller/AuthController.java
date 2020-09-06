@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @RequestMapping("/auth")
 @CrossOrigin(maxAge = 3600)
 @RequiredArgsConstructor
+@Validated
 public class AuthController {
 
     private static final String ROLE_USER = "ROLE_USER";
