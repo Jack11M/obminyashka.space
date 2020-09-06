@@ -64,13 +64,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public boolean isCategoryDtoUpdatable(CategoryDto categoryDto) {
         return isCategoryExistsByIdAndNameOrNotExistsByName(categoryDto.getId(),
-                categoryDto.getName()) && isSubcategoryHasIdZeroOrIdExists(categoryDto);
+                categoryDto.getName()) && isSubcategoriesExist(categoryDto);
     }
 
     @Override
     public boolean isCategoryDtoValidForCreating(CategoryDto categoryDto) {
         return isCategoryNameHasNotDuplicate(categoryDto.getName())
-                && categoryDto.getSubcategories().stream().allMatch(subcategoryDto -> subcategoryDto.getId() == 0L);
+                && categoryDto.getSubcategories().stream().allMatch(this::isSubcategoryIdEqualsZero);
+    }
+
+    private boolean isSubcategoryIdEqualsZero(SubcategoryDto subcategoryDto) {
+        return subcategoryDto.getId() == 0L;
     }
 
     private boolean isCategoryExistsById(long categoryId) {
@@ -81,16 +85,17 @@ public class CategoryServiceImpl implements CategoryService {
         return !categoryRepository.existsByNameIgnoreCase(name);
     }
 
-    private boolean isSubcategoryHasIdZeroOrIdExists(CategoryDto categoryDto) {
+    private boolean isSubcategoriesExist(CategoryDto categoryDto) {
         return categoryDto.getSubcategories().stream()
-                .filter(subcategoryDto -> subcategoryDto.getId() != 0)
+                .filter(subcategoryDto -> !isSubcategoryIdEqualsZero(subcategoryDto))
                 .allMatch(subcategoryDto -> subcategoryService.isSubcategoryExistsById(subcategoryDto.getId()));
     }
 
     private boolean isInternalSubcategoriesHaveNotProducts(long categoryId) {
         return categoryRepository.findById(categoryId)
                 .map(category -> category.getSubcategories().stream()
-                        .allMatch(subcategory -> subcategory.getProducts().isEmpty()))
+                        .map(Subcategory::getProducts)
+                        .allMatch(Collection::isEmpty))
                 .orElse(false);
     }
 

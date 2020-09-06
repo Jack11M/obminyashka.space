@@ -76,8 +76,6 @@ public class GlobalExceptionHandlerTest {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones();
-        userDtoWithNotUserId = UserDtoCreatingUtil.createUserDtoForUpdatingWithNotUserId();
-        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsername();
         newCategoryDtoWithIdNotZero = CategoryControllerIntegrationTestUtil.createNonExistCategoryDtoWithInvalidId();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)

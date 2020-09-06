@@ -14,8 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.ApiOperation;
 
-import javax.persistence.EntityNotFoundException;
-
 import java.util.List;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
@@ -30,32 +28,32 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/names")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get all names of existing categories.")
-    public ResponseEntity<List<String>> getAllCategoryNames() {
-        return new ResponseEntity<>(categoryService.findAllCategoryNames(), HttpStatus.OK);
+    public List<String> getAllCategoryNames() {
+        return categoryService.findAllCategoryNames();
     }
 
     @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get all existing categories.")
-    public ResponseEntity<List<CategoryDto>> getAllCategories() {
-        return new ResponseEntity<>(categoryService.findAllCategoryDto(), HttpStatus.OK);
+    public List<CategoryDto> getAllCategories() {
+        return categoryService.findAllCategoryDto();
     }
 
     @GetMapping("/{category_id}")
     @ApiOperation(value = "Get a category by its ID, if it exists")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id") long id) {
-        return categoryService.findCategoryDtoById(id)
-                .map(categoryDto -> new ResponseEntity<>(categoryDto, HttpStatus.OK))
-                .orElseThrow(() -> new EntityNotFoundException(getExceptionMessageSourceWithId(
-                        id, "invalid.category.id")));
+        return ResponseEntity.of(categoryService.findCategoryDtoById(id));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Save the new category if its and internal subcategory IDs are zero. Only for users authorized as admin.")
-    public ResponseEntity<CategoryDto> createCategory(@Validated(New.class) @RequestBody CategoryDto categoryDto) {
+    public CategoryDto createCategory(@Validated(New.class) @RequestBody CategoryDto categoryDto) {
         if (categoryService.isCategoryDtoValidForCreating(categoryDto)) {
-            return new ResponseEntity<>(categoryService.create(categoryDto), HttpStatus.CREATED);
+            return categoryService.create(categoryDto);
         }
 
         throw new InvalidDtoException(getExceptionMessageSource("invalid.new-category-dto"));
@@ -63,10 +61,11 @@ public class CategoryController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @ApiOperation(value = "Update an existent category. Only for users authorized as admin.")
-    public ResponseEntity<CategoryDto> updateCategory(@Validated(Exist.class) @RequestBody CategoryDto categoryDto) {
+    public CategoryDto updateCategory(@Validated(Exist.class) @RequestBody CategoryDto categoryDto) {
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
-            return new ResponseEntity<>(categoryService.update(categoryDto), HttpStatus.ACCEPTED);
+            return categoryService.update(categoryDto);
         }
 
         throw new IllegalIdentifierException(getExceptionMessageSource("invalid.updated-category.dto"));

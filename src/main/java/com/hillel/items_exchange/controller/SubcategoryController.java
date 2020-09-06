@@ -1,14 +1,11 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.mapper.tranfer.Exist;
 import com.hillel.items_exchange.service.SubcategoryService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,15 +22,10 @@ public class SubcategoryController {
     private final SubcategoryService subcategoryService;
 
     @GetMapping("/{category_id}/names")
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get subcategory names of an existing category.")
-    public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@Validated(Exist.class)
-                                                                            @PathVariable("category_id") long id) {
-        List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
-        if (subcategoriesNames.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(subcategoryService.findSubcategoryNamesByCategoryId(id), HttpStatus.OK);
+    public List<String> getSubcategoryNamesByCategoryId(@PathVariable("category_id") long id) {
+        return subcategoryService.findSubcategoryNamesByCategoryId(id);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)

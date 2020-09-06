@@ -78,16 +78,13 @@ public class CategoryControllerIntegrationTest extends CategoryControllerIntegra
 
     @Test
     @DataSet("database_init.yml")
-    void getCategoryById_whenCategoryIdDoesNotExist_shouldReturnNotFoundAndThrowEntityNotFoundException()
+    void getCategoryById_whenCategoryIdDoesNotExist_shouldReturnNotFound()
             throws Exception {
 
-        MvcResult result = this.mockMvc.perform(get("/category/{category_id}", NONEXISTENT_ENTITY_ID)
+        mockMvc.perform(get("/category/{category_id}", NONEXISTENT_ENTITY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andReturn();
-
-        assertThat(result.getResolvedException(), is(instanceOf(EntityNotFoundException.class)));
+                .andExpect(status().isNotFound());
     }
 
     @Test

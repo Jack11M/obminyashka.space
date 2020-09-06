@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 public class SubcategoryControllerIntegrationTest {
 
-    public static final long NONEXISTENT_SUBCATEGORY_ID = 333333L;
     public static final long SUBCATEGORY_ID_FOR_DELETING = 1L;
     public static final long EXISTENT_SUBCATEGORY_ID = 2L;
 
@@ -40,15 +39,6 @@ public class SubcategoryControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json("[\"dolls\",\"puzzles\"]"));
-    }
-
-    @Test
-    @DataSet("database_init.yml")
-    public void getSubcategoryNamesByCategoryId_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/subcategory/{category_id}/names", NONEXISTENT_SUBCATEGORY_ID)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotFound());
     }
 
     @Test
