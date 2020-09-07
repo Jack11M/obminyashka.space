@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.config;
 
+import com.hillel.items_exchange.security.jwt.InvalidatedTokensHolder;
 import com.hillel.items_exchange.security.jwt.JwtAuthenticationEntryPoint;
 import com.hillel.items_exchange.security.jwt.JwtConfigurator;
 import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
@@ -27,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_USER = "hasRole('ROLE_USER')";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Bean
     @Override
@@ -66,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/adv/**", "/category/**", "/subcategory/**", "/user/info/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurator(jwtTokenProvider))
+                .apply(new JwtConfigurator(jwtTokenProvider, invalidatedTokensHolder))
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }

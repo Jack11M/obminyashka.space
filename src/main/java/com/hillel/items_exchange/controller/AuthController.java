@@ -3,6 +3,7 @@ package com.hillel.items_exchange.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,13 @@ public class AuthController {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getExceptionMessageSource("invalid.username-or-password"));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<HttpStatus> logout(HttpServletRequest req){
+        final String token = jwtTokenProvider.resolveToken(req);
+        jwtTokenProvider.invalidateToken(token);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/register")

@@ -16,13 +16,16 @@ import java.io.IOException;
 public class JwtTokenFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
             throws IOException, ServletException {
 
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        if (!token.isEmpty() && jwtTokenProvider.validateToken(token, (HttpServletRequest) req)) {
+        if (!token.isEmpty()
+                && jwtTokenProvider.validateToken(token, (HttpServletRequest) req)
+                && !invalidatedTokensHolder.isInvalidated(token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
 
             if (auth != null) {

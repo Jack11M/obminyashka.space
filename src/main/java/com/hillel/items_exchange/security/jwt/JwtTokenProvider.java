@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
@@ -31,6 +32,7 @@ public class JwtTokenProvider {
     private String secret;
     @Value("${app.jwt.expiration.time.ms}")
     private long jwtTokenExpireTime;
+    private final InvalidatedTokensHolder invalidatedTokensHolder;
 
     @PostConstruct
     protected void init() {
@@ -85,6 +87,21 @@ public class JwtTokenProvider {
             log.error("Unauthorized: {}", e.getMessage());
             req.setAttribute("detailedError", e.getMessage());
             return false;
+        }
+    }
+
+    public void invalidateToken(String token) {
+        final Date expirationDate = getTokenExpirationDate(token)
+                .orElseThrow(() -> new JwtException(getExceptionMessageSource("invalid.token")));
+        invalidatedTokensHolder.add(token, expirationDate);
+    }
+
+    public Optional<Date> getTokenExpirationDate(String token) {
+        try {
+            return Optional.of(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration());
+        } catch (JwtException exception) {
+            log.error("Token parsing error {}", exception.getMessage());
+            return Optional.empty();
         }
     }
 }
