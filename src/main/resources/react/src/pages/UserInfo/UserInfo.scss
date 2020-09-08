@@ -5,7 +5,7 @@
   display: flex;
   margin: 156px 0 auto 0;
   width: 100%;
-  height: calc(100% - 100px);
+  height: calc(100vh - 100px);
   @include font('Roboto');
 
 
@@ -22,7 +22,7 @@
   .main-content {
     background-color: $bg-content;
     width: calc(100% - 25%);
-    height: 100vh;
+    //height: 100%;
     overflow-y: auto;
 
     &-wrapper {
@@ -30,7 +30,7 @@
       padding-left: 40px;
     }
   }
-  .main-content::-webkit-scrollbar {     
-    display: none; 
+  .main-content::-webkit-scrollbar {
+    display: none;
   }
 }

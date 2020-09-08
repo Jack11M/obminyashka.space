@@ -1,4 +1,12 @@
+import { types } from '../../types'
 import { addChild, addInputChildren, addInputMe, deleteChild } from '../../Utils/profileUtils';
+
+const dataInput = [
+	{name: "firstName", label: "Имя", value: ""},
+	{name: "lastName", label: "Фамилия", value: ""},
+	{name: "city", label: "Город", value: ""},
+	{name: "phone", label: "Телефон", value: ""}
+]
 
 const initialState = {
 		me: [
@@ -17,26 +25,26 @@ const initialState = {
 	}
 ;
 
-const profileMe = (state = initialState, {type, payload, id}) => {
+const profileMeReducer = (state = initialState, {type, payload, id}) => {
 	switch (type) {
-		case "ADD_ME_INPUT_VALUE": {
+		case types.ADD_ME_INPUT_VALUE: {
 			return {
 				...state,
 				me: addInputMe(state.me, payload)
 			}
 		}
-		case "ADD_CHILDREN_INPUT_VALUE": {
+		case types.ADD_CHILDREN_INPUT_VALUE: {
 			return {
 				...state,
 				children: addInputChildren(state.children, payload, id)
 			}
 		}
-		case 'ADD_CHILD':
+		case types.ADD_CHILD:
 			return {
 				...state,
 				children: addChild(state.children)
 			}
-		case 'DELETE_CHILD':
+		case types.DELETE_CHILD:
 			return {
 				...state,
 				children: deleteChild(state.children, payload)
@@ -46,4 +54,4 @@ const profileMe = (state = initialState, {type, payload, id}) => {
 	}
 };
 
-export default profileMe;
+export default profileMeReducer;

@@ -7,7 +7,7 @@ export default (controller, whatPage) => {
   const [errorsResponse, setError] = useState(null);
   const [data, setData] = useState({});
 
-  let baseUrl = `http://54.37.125.180:8080/${controller}/${whatPage}`;
+  let baseUrl = `/${controller}/${whatPage}`;
   const headers = { "Content-Type": "application/json" };
 
   useEffect(() => {

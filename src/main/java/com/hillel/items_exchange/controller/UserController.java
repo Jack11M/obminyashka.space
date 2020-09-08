@@ -35,6 +35,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @RequiredArgsConstructor
 @Validated
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     private final UserService userService;

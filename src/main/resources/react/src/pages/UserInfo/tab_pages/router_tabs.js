@@ -4,10 +4,11 @@ import MyActivity from "./my_activity";
 import MyProfile from "./my_profile/myProfile";
 import MyFavorites from "./my_favorites";
 import MySettings from "./my_settings";
+import { getUserInfo } from '../../../API/Resources/profile';
 
 const RouterTabs = (props) => {
   const { path } = props;
-
+  getUserInfo().then(res => console.log(res))
   return (
     <Switch>
       <Route path={`${path}`} component={MyActivity} exact />

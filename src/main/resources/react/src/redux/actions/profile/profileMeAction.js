@@ -1,19 +1,21 @@
+import { types } from '../../types'
+
 export const addMeInputValue = (data) => ({
-	type: "ADD_ME_INPUT_VALUE",
+	type: types.ADD_ME_INPUT_VALUE,
 	payload: data
 });
 
 export const addChildrenInputValue = (data, id) => ({
-	type: "ADD_CHILDREN_INPUT_VALUE",
+	type: types.ADD_CHILDREN_INPUT_VALUE,
 	payload: data,
 	id
 });
 
 export const deleteChild = (id) => ({
-	type: "DELETE_CHILD",
+	type: types.DELETE_CHILD,
 	payload: id
 });
 
 export const addChild = () => ({
-	type: "ADD_CHILD"
+	type: types.ADD_CHILD
 });

@@ -1,3 +1,3 @@
-import profileMe from './profileMe';
+import profileMeReducer from './profileMeReducer';
 
-export {profileMe};
+export {profileMeReducer};

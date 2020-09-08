@@ -109,7 +109,7 @@ const Form = props => {
     return <Redirect to="/registration/" />;
   }
   if (isSingIn) {
-    return <Redirect location to="/" />;
+    return <Redirect to="/" />;
   }
 
   const isValidInput = input => {
