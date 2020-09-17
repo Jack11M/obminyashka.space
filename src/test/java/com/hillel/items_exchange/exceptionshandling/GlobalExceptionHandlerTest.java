@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -139,16 +138,6 @@ public class GlobalExceptionHandlerTest {
         when(userController.updateUserInfo(any(), any())).thenThrow(IllegalOperationException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
-    }
-
-    @Test
-    void testHandleAccessDeniedException() throws Exception {
-        when(userController.getPersonalInfo(any())).thenThrow(AccessDeniedException.class);
-        MvcResult result = mockMvc.perform(get("/user/my-info")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
-                .andReturn();
-        assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
     }
 
     private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,
