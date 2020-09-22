@@ -93,7 +93,7 @@ public class JwtTokenProvider {
     public void invalidateToken(String token) {
         final Date expirationDate = getTokenExpirationDate(token)
                 .orElseThrow(() -> new JwtException(getExceptionMessageSource("invalid.token")));
-        invalidatedTokensHolder.add(token, expirationDate);
+        invalidatedTokensHolder.invalidate(token, expirationDate);
     }
 
     public Optional<Date> getTokenExpirationDate(String token) {

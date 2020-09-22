@@ -7,7 +7,10 @@ import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.exception.UnprocessableEntityException;
+import com.hillel.items_exchange.security.jwt.InvalidatedTokensHolder;
 import com.hillel.items_exchange.util.AuthControllerIntegrationTestUtil;
+import com.jayway.jsonpath.JsonPath;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,6 +38,8 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Test
     @Transactional
@@ -151,5 +156,38 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet(value = "auth/login.yml")
+    void logout_Success_ShouldReturnStatusOk() throws Exception {
+        final String token = obtainToken(createUserLoginDto());
+        mockMvc.perform(post(LOGOUT_URL)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DataSet(value = "auth/login.yml")
+    void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder() throws Exception {
+        final String token = obtainToken(createUserLoginDto());
+        mockMvc.perform(post(LOGOUT_URL)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print());
+        Assert.assertTrue(invalidatedTokensHolder.isInvalidated(token));
+    }
+
+    private String obtainToken(UserLoginDto loginDto) throws Exception {
+        MvcResult result = mockMvc.perform(post("/auth/login")
+                .content(asJsonString(loginDto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn();
+        return JsonPath.read(result.getResponse().getContentAsString(), "$.token");
     }
 }
