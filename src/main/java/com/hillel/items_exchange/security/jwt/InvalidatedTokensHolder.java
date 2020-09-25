@@ -7,16 +7,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class InvalidatedTokensHolder {
 
-    private final ConcurrentHashMap<String, Date> data = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Date> data = new ConcurrentHashMap<>();
 
     public void invalidate(final String token, final Date expireDate) {
-        data.put(token, expireDate);
+        data.computeIfAbsent(token, v -> expireDate);
     }
 
     public boolean isInvalidated(final String token) {

@@ -21,17 +21,19 @@ public class JwtTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
             throws IOException, ServletException {
-
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        if (!token.isEmpty()
-                && jwtTokenProvider.validateToken(token, (HttpServletRequest) req)
-                && !invalidatedTokensHolder.isInvalidated(token)) {
+        if (isTokenValidAndNotBlacklisted((HttpServletRequest) req, token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
-
             if (auth != null) {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
         filterChain.doFilter(req, res);
+    }
+
+    private boolean isTokenValidAndNotBlacklisted(HttpServletRequest req, String token) {
+        return !token.isEmpty()
+                && jwtTokenProvider.validateToken(token, req)
+                && !invalidatedTokensHolder.isInvalidated(token);
     }
 }

@@ -39,7 +39,7 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    InvalidatedTokensHolder invalidatedTokensHolder;
+    private InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Test
     @Transactional

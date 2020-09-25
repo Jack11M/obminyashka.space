@@ -98,7 +98,7 @@ public class JwtTokenProvider {
 
     public Optional<Date> getTokenExpirationDate(String token) {
         try {
-            return Optional.of(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration());
+            return Optional.ofNullable(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration());
         } catch (JwtException exception) {
             log.error("Token parsing error {}", exception.getMessage());
             return Optional.empty();
