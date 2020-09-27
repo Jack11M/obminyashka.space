@@ -41,7 +41,7 @@ public class UserDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastOnlineTime;
     @NotNull(message = "{invalid.not-null}")
-    private Set<@Valid ChildDto> children;
+    private Set<@Valid ChildAddDto> children;
     @NotNull(message = "{invalid.not-null}")
     private Set<@Valid PhoneDto> phones;
 }

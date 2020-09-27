@@ -1,7 +1,8 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
-import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.ChildAddDto;
+import com.hillel.items_exchange.dto.ChildUpdateDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.mapper.UserMapper;
@@ -75,11 +76,11 @@ public class UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
-    public List<ChildDto> getChildren(User parent) {
-        return convertToDto(parent.getChildren(), ChildDto.class);
+    public List<ChildUpdateDto> getChildren(User parent) {
+        return convertToDto(parent.getChildren(), ChildUpdateDto.class);
     }
 
-    public void addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
+    public void addChildren(User parent, List<ChildAddDto> childrenDtoToAdd) {
         final List<Child> childrenToSave = new ArrayList<>(convertAllTo(
                 childrenDtoToAdd, Child.class, ArrayList::new));
         childrenToSave.forEach(child -> child.setUser(parent));
@@ -87,7 +88,7 @@ public class UserService {
         userRepository.save(parent);
     }
 
-    public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+    public void updateChildren(User parent, List<ChildUpdateDto> childrenDtoToUpdate) {
         parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
             if (pChild.getId() == uChild.getId()) {
                 BeanUtils.copyProperties(uChild, pChild);

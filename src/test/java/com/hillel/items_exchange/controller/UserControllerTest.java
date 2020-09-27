@@ -3,7 +3,8 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.ChildAddDto;
+import com.hillel.items_exchange.dto.ChildUpdateDto;
 import com.hillel.items_exchange.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,9 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.transaction.Transactional;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
@@ -48,16 +51,18 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     private String validCreatingChildDtoJson;
-    private String notValidCreatingChildDtoJson;
     private String validUpdatingChildDtoJson;
     private String notValidUpdatingChildDtoJson;
+    private String badTotalAmountChildDtoJson;
+    private String badAmountChildDtoJson;
 
     @BeforeEach
     void setUp() {
         validCreatingChildDtoJson = getJsonOfChildrenDto(0L, 0L, 2019);
-        notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
         validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
+        badTotalAmountChildDtoJson = getJsonOfChildrenDto(2010, 8);
+        badAmountChildDtoJson = getJsonOfChildrenDto(2011, 11);
     }
 
     @Test
@@ -211,20 +216,6 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void addChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
-        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(notValidCreatingChildDtoJson)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Zero ID is expected"));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
     void updateChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
         final MvcResult mvcResult = mockMvc.perform(put("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -236,6 +227,34 @@ class UserControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChildren_BadTotalAmount_ShouldThrowEntityAmountException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badTotalAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("You can't add more than 10 children"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChildren_BadAmount_ShouldThrowConstraintViolationException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Validation exception"));
+    }
+
     private String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
         return asJsonString(List.of(
                 getChildDto(maleId, LocalDate.of(year, 3, 3), "male"),
@@ -243,9 +262,25 @@ class UserControllerTest {
         ));
     }
 
-    private ChildDto getChildDto(long id, LocalDate birthDate, String sex) {
-        return ChildDto.builder()
+    private String getJsonOfChildrenDto(int year, int quantity) {
+        List<ChildAddDto> childAddDtoList = new ArrayList<>();
+        for(int i = 0; i < quantity; i++) {
+            childAddDtoList.add(getChildDto(
+                    LocalDate.of(year, (int)((Math.random() * 12) + 1), (int)((Math.random() * 28) + 1)), "male"));
+        }
+        return asJsonString(childAddDtoList);
+    }
+
+    private ChildUpdateDto getChildDto(long id, LocalDate birthDate, String sex) {
+        return ChildUpdateDto.builder()
                 .id(id)
+                .birthDate(birthDate)
+                .sex(sex)
+                .build();
+    }
+
+    private ChildAddDto getChildDto(LocalDate birthDate, String sex) {
+        return ChildAddDto.builder()
                 .birthDate(birthDate)
                 .sex(sex)
                 .build();

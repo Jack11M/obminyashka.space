@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.util;
 
-import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.ChildAddDto;
+import com.hillel.items_exchange.dto.ChildUpdateDto;
 import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 
@@ -50,7 +51,7 @@ public class UserDtoCreatingUtil {
 
     public static UserDto getBuild(String username, String email, Boolean online, String firstName,
                                    String lastName, String avatarImage, LocalDateTime lastOnlineTime,
-                                   Set<ChildDto> children, Set<PhoneDto> phones) {
+                                   Set<ChildAddDto> children, Set<PhoneDto> phones) {
         return UserDto.builder()
                 .username(username)
                 .email(email)

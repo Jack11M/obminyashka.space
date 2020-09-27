@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.exception.handler;
 
+import com.hillel.items_exchange.exception.EntityAmountException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import lombok.AllArgsConstructor;
@@ -127,6 +128,15 @@ public class GlobalExceptionHandler {
                 "exception.illegal.operation", Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(WARN, errorMessage);
         return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EntityAmountException.class)
+    public ResponseEntity<ErrorMessage> handleEntityAmountException(EntityAmountException e,
+                                                                    ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.NOT_ACCEPTABLE,
+                "exception.max-amount-of-children", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(WARN, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_ACCEPTABLE);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,

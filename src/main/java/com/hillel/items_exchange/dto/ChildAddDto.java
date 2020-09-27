@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -13,9 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-public class ChildDto {
-    @PositiveOrZero(message = "{invalid.id}")
-    private long id;
+public class ChildAddDto {
     @NotNull(message = "{invalid.not-null}")
     private String sex;
     @PastOrPresent(message = "{invalid.past-or-present.date}")

@@ -1,7 +1,9 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.ChildAddDto;
+import com.hillel.items_exchange.dto.ChildUpdateDto;
 import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.EntityAmountException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.model.Child;
@@ -53,20 +55,18 @@ public class UserController {
     }
 
     @GetMapping("/child")
-    public ResponseEntity<List<ChildDto>> getChildren(Principal principal) {
+    public ResponseEntity<List<ChildUpdateDto>> getChildren(Principal principal) {
         return new ResponseEntity<>(userService.getChildren(getUser(principal.getName())), HttpStatus.OK);
     }
 
     @PostMapping("/child")
     public ResponseEntity<HttpStatus> addChildren(@RequestBody
-                                                  @Size(min = 1, message = "{exception.invalid.dto}")
-                                                          List<@Valid ChildDto> childrenDto,
+                                                  @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
+                                                          List<@Valid ChildAddDto> childrenDto,
                                                   Principal principal) {
-        if (childrenDto.stream().anyMatch(dto -> dto.getId() > 0)) {
-            throw new IllegalIdentifierException(
-                    getExceptionMessageSourceWithAdditionalInfo(
-                            "exception.illegal.id",
-                            "Zero ID is expected"));
+        if(childrenDto.size() + userService.getChildren(getUser(principal.getName())).size() >= 10) {
+            throw new EntityAmountException(
+                getExceptionMessageSource("exception.max-amount-of-children"));
         }
         userService.addChildren(getUser(principal.getName()), childrenDto);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -89,10 +89,10 @@ public class UserController {
     @PutMapping("/child")
     public ResponseEntity<HttpStatus> updateChildren(@RequestBody
                                                      @Size(min = 1, message = "{exception.invalid.dto}")
-                                                             List<@Valid ChildDto> childrenDto,
+                                                             List<@Valid ChildUpdateDto> childrenDto,
                                                      Principal principal) {
         final User user = getUser(principal.getName());
-        if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
+        if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildUpdateDto::getId))) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(
                             "exception.invalid.dto",
