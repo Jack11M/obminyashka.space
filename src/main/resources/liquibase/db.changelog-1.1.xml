@@ -124,11 +124,11 @@
             </column>
 
             <column name="type" type="VARCHAR(7)">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="file_content" type="BLOB">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
