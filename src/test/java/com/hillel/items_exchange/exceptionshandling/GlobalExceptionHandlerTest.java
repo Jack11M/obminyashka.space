@@ -22,7 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -42,7 +41,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,7 +58,6 @@ public class GlobalExceptionHandlerTest {
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
     private UserDto userDtoWithChangedUsername;
-    private CategoryDto newCategoryDtoWithIdNotZero;
 
     @Mock
     AdvertisementController advertisementController;
@@ -73,7 +73,6 @@ public class GlobalExceptionHandlerTest {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones();
-        newCategoryDtoWithIdNotZero = CategoryTestUtil.createNonExistCategoryDtoWithInvalidId();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -147,17 +146,8 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testHandleAccessDeniedException() throws Exception {
-        when(userController.getPersonalInfo(any())).thenThrow(AccessDeniedException.class);
-        MvcResult result = mockMvc.perform(get("/user/my-info")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
-                .andReturn();
-        assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
-    }
-
-    @Test
     void testHandleMethodArgumentNotValidException() throws Exception {
+        final CategoryDto newCategoryDtoWithIdNotZero = CategoryTestUtil.createNonExistCategoryDtoWithInvalidId();
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         MvcResult result = mockMvc.perform(post("/category")
                 .content(asJsonString(newCategoryDtoWithIdNotZero))
@@ -170,7 +160,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,
-                                 ResultMatcher matcher) throws Exception {
+                                ResultMatcher matcher) throws Exception {
 
         MockHttpServletRequestBuilder builder = request(httpMethod, path)
                 .contentType(MediaType.APPLICATION_JSON)
