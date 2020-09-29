@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -10,8 +11,8 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 import com.hillel.items_exchange.annotation.Zero;
-import com.hillel.items_exchange.mapper.tranfer.Exist;
-import com.hillel.items_exchange.mapper.tranfer.New;
+import com.hillel.items_exchange.mapper.transfer.Exist;
+import com.hillel.items_exchange.mapper.transfer.New;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,10 +25,14 @@ public class CategoryDto {
     @Zero(groups = New.class, message = "{invalid.new.entity.id}")
     private long id;
 
+    @ApiModelProperty(
+            value = "name of category",
+            dataType = "String",
+            example = "shoes",
+            required = true)
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 3, max = 50, message = "{invalid.size}")
     private String name;
-
     @NotNull(message = "{invalid.not-null}")
     private List<@Valid SubcategoryDto> subcategories;
 }

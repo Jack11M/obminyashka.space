@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.util.CategoryControllerIntegrationTestUtil;
+import com.hillel.items_exchange.util.CategoryTestUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-public class CategoryControllerIntegrationTest extends CategoryControllerIntegrationTestUtil {
+class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     private final MockMvc mockMvc;
 
@@ -47,7 +46,7 @@ public class CategoryControllerIntegrationTest extends CategoryControllerIntegra
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void getAllCategoriesNames_shouldReturnAllCategoriesNames() throws Exception {
+    void getAllCategoriesNames_shouldReturnAllCategoryNames() throws Exception {
         mockMvc.perform(get("/category/names")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -57,7 +56,7 @@ public class CategoryControllerIntegrationTest extends CategoryControllerIntegra
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void getAllCategories_shouldReturnAllCategories() throws Exception {
+    void getAllCategories_shouldReturnAllCategoryDtos() throws Exception {
         mockMvc.perform(get("/category/all")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())

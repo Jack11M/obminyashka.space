@@ -44,4 +44,11 @@ public interface SubcategoryService {
      * @return {@code true} if a subcategory with the given ID can be deleted, {@code false} otherwise.
      */
     boolean isSubcategoryDeletable(long id);
+
+    /**
+     * Returns all Subcategory identifiers.
+     *
+     * @return list of all subcategory identifiers from DB
+     */
+    List<Long> findAllSubcategoryIds();
 }

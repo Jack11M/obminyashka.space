@@ -131,12 +131,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
-                                                                              ServletWebRequest request) {
-        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
-                "exception.method.argument.not.valid", Collections.singletonList(e.getLocalizedMessage()));
-        logErrorMessage(WARN, errorMessage);
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException() {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,

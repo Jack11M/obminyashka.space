@@ -9,7 +9,6 @@ import com.hillel.items_exchange.service.CategoryService;
 import com.hillel.items_exchange.service.SubcategoryService;
 import java.util.*;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.*;
@@ -20,7 +19,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final SubcategoryService subcategoryService;
-    private final ModelMapper modelMapper;
 
     @Override
     public List<String> findAllCategoryNames() {
@@ -28,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> findAllCategoryDto() {
+    public List<CategoryDto> findAllCategoryDtos() {
         return new ArrayList<>(convertAllTo(categoryRepository.findAll(),
                 CategoryDto.class, ArrayList::new));
     }
@@ -40,15 +38,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto create(CategoryDto categoryDto) {
-        final Category savedCategory = saveCategory(categoryDto);
-        return convertTo(savedCategory, CategoryDto.class);
-    }
-
-    @Override
-    public CategoryDto update(CategoryDto categoryDto) {
-        final Category updatedCategory = saveCategory(categoryDto);
-        return convertTo(updatedCategory, CategoryDto.class);
+    public CategoryDto saveCategoryWithSubcategories(CategoryDto categoryDto) {
+        final Category category = saveCategory(categoryDto);
+        return convertTo(category, CategoryDto.class);
     }
 
     @Override
@@ -58,7 +50,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean isCategoryDtoDeletable(long categoryId) {
-        return isCategoryExistsById(categoryId) && isInternalSubcategoriesHaveNotProducts(categoryId);
+        return categoryRepository.findById(categoryId)
+                .map(category -> category.getSubcategories().stream()
+                        .map(Subcategory::getProducts)
+                        .allMatch(Collection::isEmpty))
+                .orElse(false);
     }
 
     @Override
@@ -77,26 +73,16 @@ public class CategoryServiceImpl implements CategoryService {
         return subcategoryDto.getId() == 0L;
     }
 
-    private boolean isCategoryExistsById(long categoryId) {
-        return categoryRepository.existsById(categoryId);
-    }
-
     private boolean isCategoryNameHasNotDuplicate(String name) {
         return !categoryRepository.existsByNameIgnoreCase(name);
     }
 
     private boolean isSubcategoriesExist(CategoryDto categoryDto) {
+        final List<Long> existingSubcategoriesIds = subcategoryService.findAllSubcategoryIds();
+
         return categoryDto.getSubcategories().stream()
                 .filter(subcategoryDto -> !isSubcategoryIdEqualsZero(subcategoryDto))
-                .allMatch(subcategoryDto -> subcategoryService.isSubcategoryExistsById(subcategoryDto.getId()));
-    }
-
-    private boolean isInternalSubcategoriesHaveNotProducts(long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .map(category -> category.getSubcategories().stream()
-                        .map(Subcategory::getProducts)
-                        .allMatch(Collection::isEmpty))
-                .orElse(false);
+                .allMatch(subcategoryDto -> existingSubcategoriesIds.contains(subcategoryDto.getId()));
     }
 
     private boolean isCategoryExistsByIdAndNameOrNotExistsByName(long categoryId, String categoryName) {
@@ -106,15 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private Category saveCategory(CategoryDto categoryDto) {
         final Category category = convertTo(categoryDto, Category.class);
-        List<Subcategory> subcategories = mapBy(categoryDto.getSubcategories(),
-                subcategoryDto -> setCategoryToSubcategory(category, subcategoryDto));
-        category.setSubcategories(subcategories);
+        category.getSubcategories().forEach(subcategory -> subcategory.setCategory(category));
         return categoryRepository.saveAndFlush(category);
-    }
-
-    private Subcategory setCategoryToSubcategory(Category category, SubcategoryDto subcategoryDto) {
-        final Subcategory subcategory = modelMapper.map(subcategoryDto, Subcategory.class);
-        subcategory.setCategory(category);
-        return subcategory;
     }
 }

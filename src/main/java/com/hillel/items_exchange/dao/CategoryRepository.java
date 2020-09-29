@@ -12,8 +12,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query(value = "SELECT name FROM category", nativeQuery = true)
     List<String> findAllCategoriesNames();
-    Category findCategoryById(long id);
-    boolean existsByName(String name);
     boolean existsByNameIgnoreCase(String name);
     boolean existsByIdAndNameIgnoreCase(long categoryId, String categoryName);
 }

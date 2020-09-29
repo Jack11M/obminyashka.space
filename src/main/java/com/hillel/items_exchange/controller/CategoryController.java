@@ -2,9 +2,10 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.mapper.tranfer.Exist;
-import com.hillel.items_exchange.mapper.tranfer.New;
+import com.hillel.items_exchange.mapper.transfer.Exist;
+import com.hillel.items_exchange.mapper.transfer.New;
 import com.hillel.items_exchange.service.CategoryService;
+import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
@@ -38,12 +39,14 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get all existing categories.")
     public List<CategoryDto> getAllCategories() {
-        return categoryService.findAllCategoryDto();
+        return categoryService.findAllCategoryDtos();
     }
 
     @GetMapping("/{category_id}")
     @ApiOperation(value = "Get a category by its ID, if it exists")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id") long id) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id")
+                                                       @Positive(message = "{invalid.exist.id}") long id) {
+
         return ResponseEntity.of(categoryService.findCategoryDtoById(id));
     }
 
@@ -53,7 +56,7 @@ public class CategoryController {
     @ApiOperation(value = "Save the new category if its and internal subcategory IDs are zero. Only for users authorized as admin.")
     public CategoryDto createCategory(@Validated(New.class) @RequestBody CategoryDto categoryDto) {
         if (categoryService.isCategoryDtoValidForCreating(categoryDto)) {
-            return categoryService.create(categoryDto);
+            return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
         throw new InvalidDtoException(getExceptionMessageSource("invalid.new-category-dto"));
@@ -65,7 +68,7 @@ public class CategoryController {
     @ApiOperation(value = "Update an existent category. Only for users authorized as admin.")
     public CategoryDto updateCategory(@Validated(Exist.class) @RequestBody CategoryDto categoryDto) {
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
-            return categoryService.update(categoryDto);
+            return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
         throw new IllegalIdentifierException(getExceptionMessageSource("invalid.updated-category.dto"));
@@ -74,7 +77,9 @@ public class CategoryController {
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
     @ApiOperation(value = "Delete category by id if it exists and internal subcategories have not products. Only for users authorized as admin.")
-    public ResponseEntity<CategoryDto> deleteCategoryById(@Validated(Exist.class) @PathVariable("category_id") long id) {
+    public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id")
+                                                          @Positive(message = "{invalid.exist.id}") long id) {
+
         if (categoryService.isCategoryDtoDeletable(id)) {
             categoryService.removeById(id);
             return new ResponseEntity<>(HttpStatus.OK);

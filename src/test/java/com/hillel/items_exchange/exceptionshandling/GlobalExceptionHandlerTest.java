@@ -1,6 +1,5 @@
 package com.hillel.items_exchange.exceptionshandling;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import com.hillel.items_exchange.controller.AdvertisementController;
 import com.hillel.items_exchange.controller.CategoryController;
 import com.hillel.items_exchange.controller.UserController;
@@ -11,7 +10,7 @@ import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
-import com.hillel.items_exchange.util.CategoryControllerIntegrationTestUtil;
+import com.hillel.items_exchange.util.CategoryTestUtil;
 import com.hillel.items_exchange.util.UserDtoCreatingUtil;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -34,7 +32,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.transaction.Transactional;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
@@ -76,7 +73,7 @@ public class GlobalExceptionHandlerTest {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones();
-        newCategoryDtoWithIdNotZero = CategoryControllerIntegrationTestUtil.createNonExistCategoryDtoWithInvalidId();
+        newCategoryDtoWithIdNotZero = CategoryTestUtil.createNonExistCategoryDtoWithInvalidId();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -160,10 +157,7 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(username = CategoryControllerIntegrationTestUtil.USERNAME_ADMIN, roles = {CategoryControllerIntegrationTestUtil.ROLE_ADMIN})
-    @Transactional
-    @DataSet("database_init.yml")
-    public void testHandleMethodArgumentNotValidException() throws Exception {
+    void testHandleMethodArgumentNotValidException() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         MvcResult result = mockMvc.perform(post("/category")
                 .content(asJsonString(newCategoryDtoWithIdNotZero))

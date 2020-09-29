@@ -1,4 +1,4 @@
-package com.hillel.items_exchange.mapper.tranfer;
+package com.hillel.items_exchange.mapper.transfer;
 
 /**
  * Indicates that the identifier of the annotated entity has to be zero.

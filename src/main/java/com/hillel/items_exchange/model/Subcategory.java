@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.model;
 
+import java.util.Collections;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +13,12 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(exclude = {"id", "category", "products"})
 public class Subcategory {
+
+    public Subcategory(long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.products = Collections.emptyList();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

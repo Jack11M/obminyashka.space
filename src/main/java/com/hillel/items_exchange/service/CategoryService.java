@@ -18,7 +18,7 @@ public interface CategoryService {
      *
      * @return list of category entities from DB that are represented as {@link CategoryDto}
      */
-    List<CategoryDto> findAllCategoryDto();
+    List<CategoryDto> findAllCategoryDtos();
 
     /**
      * Retrieves a category by its ID.
@@ -29,23 +29,16 @@ public interface CategoryService {
     Optional<CategoryDto> findCategoryDtoById(long categoryId);
 
     /**
-     * Creates a new record in table category in DB.
+     * Creates a new category in the table 'category' and subcategory child records in table 'subcategory'
+     * or updates the existing category record and subcategory child records in the database.
      *
      * @param categoryDto must not be null.
-     * @return the created Category DTO; will never be null.
+     * @return the created or updated Category DTO; will never be null.
      */
-    CategoryDto create(CategoryDto categoryDto);
+    CategoryDto saveCategoryWithSubcategories(CategoryDto categoryDto);
 
     /**
-     * Updates the existing record in table category in DB.
-     *
-     * @param categoryDto must not be null.
-     * @return the updated Category DTO; will never be null.
-     */
-    CategoryDto update(CategoryDto categoryDto);
-
-    /**
-     * Removes the category with the given ID from DB.
+     * Removes the category with the given ID and subcategory child records from DB.
      *
      * @param categoryId is Category ID to remove.
      */
