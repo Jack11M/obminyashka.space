@@ -249,14 +249,4 @@ class CategoryServiceTest {
         assertFalse(result);
         verify(categoryRepository, times(1)).existsByNameIgnoreCase(EXISTING_CATEGORY_NAME);
     }
-
-    @Test
-    void isCategoryDtoValidForCreating_whenCategoryNameHasNotDuplicateAndSomeItsSubcategoryIdsNotEqualsZero_shouldReturnFalse() {
-        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
-
-        final CategoryDto newInvalidCategoryDto = createNonExistCategoryDtoWithInvalidSubcategoryId();
-        final boolean result = categoryService.isCategoryDtoValidForCreating(newInvalidCategoryDto);
-        assertFalse(result);
-        verify(categoryRepository, times(1)).existsByNameIgnoreCase(NEW_CATEGORY_NAME);
-    }
 }

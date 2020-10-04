@@ -1,5 +1,7 @@
 package com.hillel.items_exchange.dto;
 
+import com.hillel.items_exchange.annotation.Zero;
+import com.hillel.items_exchange.mapper.transfer.New;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -14,6 +16,7 @@ import javax.validation.constraints.Size;
 @ToString
 public class SubcategoryDto {
 
+    @Zero(groups = New.class, message = "{invalid.new.entity.id}")
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
 
