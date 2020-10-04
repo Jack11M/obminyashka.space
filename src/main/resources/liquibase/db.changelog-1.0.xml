@@ -398,12 +398,12 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="resource_url" type="VARCHAR(150)">
-                <constraints nullable="true" unique="true"/>
+            <column name="resource" type="MEDIUMBLOB">
+                <constraints nullable="false"/>
             </column>
 
             <column name="default_photo" type="BOOLEAN" defaultValue="false">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -418,18 +418,7 @@
                                  referencedTableName="product"/>
     </changeSet>
 
-    <changeSet id="1.0.24: image type change" author="rpkyrych">
-        <renameColumn columnDataType="VARCHAR(150)"
-                      newColumnName="resource"
-                      oldColumnName="resource_url"
-                      tableName="image"/>
-
-        <modifyDataType columnName="resource"
-                        newDataType="BINARY"
-                        tableName="image"/>
-    </changeSet>
-
-    <changeSet id="1.0.25: rebuilt column sex without unique constraint in table child" author="jack.petrov">
+    <changeSet id="1.0.24: rebuilt column sex without unique constraint in table child" author="jack.petrov">
         <dropColumn tableName="child">
             <column name="sex"/>
         </dropColumn>
@@ -441,13 +430,13 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="1.0.26: NotNull constraint set in table phone" author="lubchik">
+    <changeSet id="1.0.25: NotNull constraint set in table phone" author="lubchik">
         <addNotNullConstraint tableName="phone"
                               columnName="user_id"
                               columnDataType="BIGINT"/>
     </changeSet>
 
-    <changeSet id="1.0.27: SET NULL constraint update onDelete in advertisement table" author="lubchik">
+    <changeSet id="1.0.26: SET NULL constraint update onDelete in advertisement table" author="lubchik">
         <dropForeignKeyConstraint baseTableName="advertisement"
                                   constraintName="fk_advertisement_to_location"/>
 
