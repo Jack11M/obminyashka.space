@@ -23,8 +23,6 @@
         <addForeignKeyConstraint baseColumnNames="advertisement_id"
                                  baseTableName="chat"
                                  constraintName="fk_chat_to_advertisement_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
                                  referencedColumnNames="id"
                                  referencedTableName="advertisement"/>
     </changeSet>
@@ -127,7 +125,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="file_content" type="BLOB">
+            <column name="file_content" type="MEDIUMBLOB">
                 <constraints nullable="false"/>
             </column>
         </createTable>
