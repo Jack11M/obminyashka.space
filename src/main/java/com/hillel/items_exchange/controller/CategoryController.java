@@ -3,16 +3,22 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.service.CategoryService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
@@ -21,14 +27,19 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 
 @RestController
 @RequestMapping("/category")
-@CrossOrigin(origins = "http://localhost:4200")
+@Api(tags = "Category")
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @GetMapping("/names")
+    @ApiOperation(value = "Find all categories' name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<String>> getAllCategoriesNames() {
         List<String> categoriesNames = categoryService.findAllCategoryNames();
         if (categoriesNames.isEmpty()) {
@@ -39,6 +50,10 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
+    @ApiOperation(value = "Find all categories")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
         List<CategoryDto> categories = categoryService.findAllCategories();
         if (categories.isEmpty()) {
@@ -49,7 +64,13 @@ public class CategoryController {
     }
 
     @GetMapping("/{category_id}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("category_id") long id) {
+    @ApiOperation(value = "Find a category its ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<CategoryDto> getCategoryById(@PositiveOrZero(message = "{invalid.id}")
+                                                           @PathVariable("category_id") long id) {
         return categoryService.findCategoryById(id)
                 .map(categoryDto -> new ResponseEntity<>(categoryDto, HttpStatus.OK))
                 .orElseThrow(() -> new EntityNotFoundException(getExceptionMessageSourceWithId(
@@ -58,6 +79,11 @@ public class CategoryController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
+    @ApiOperation(value = "Create a new category. (ADMIN ONLY)")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "CREATED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
         if (isCategoryIdValidForCreating(categoryDto)
                 && categoryService.isCategoryNameHasNotDuplicate(categoryDto.getName())) {
@@ -70,6 +96,11 @@ public class CategoryController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
+    @ApiOperation(value = "Update an existed category. (ADMIN ONLY)")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
         if (isDtoIdGreaterThanZero(categoryDto.getId()) && categoryService.isCategoryDtoUpdatable(categoryDto)) {
             return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
@@ -80,7 +111,13 @@ public class CategoryController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{category_id}")
-    public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id") long id) {
+    @ApiOperation(value = "Delete an existed category. (ADMIN ONLY)")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    public ResponseEntity<CategoryDto> deleteCategoryById(@PositiveOrZero(message = "{invalid.id}")
+                                                              @PathVariable("category_id") long id) {
         if (isDtoIdGreaterThanZero(id) && categoryService.isCategoryDtoDeletable(id)) {
             categoryService.removeCategoryById(id);
             return new ResponseEntity<>(HttpStatus.OK);

@@ -5,6 +5,10 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,7 +46,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @Slf4j
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(maxAge = 3600)
+@Api(tags = "Authorization")
 @RequiredArgsConstructor
 @Validated
 public class AuthController {
@@ -59,6 +63,12 @@ public class AuthController {
     private final RoleService roleService;
 
     @PostMapping("/login")
+    @ApiOperation(value = "Login in registered user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")
+    })
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid UserLoginDto userLoginDto,
                                                      BindingResult bindingResult) {
 
@@ -85,6 +95,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @ApiOperation(value = "Register new user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "CREATED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
+    })
     public ResponseEntity<HttpStatus> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto, BindingResult bindingResult) {
         userRegistrationDtoValidator.validate(userRegistrationDto, bindingResult);
 

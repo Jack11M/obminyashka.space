@@ -69,11 +69,11 @@ class ImageControllerIntegrationTest {
 
     @WithMockUser("admin")
     @Test
-    void saveImages_shouldReturn406WhenProductIsNotExist() throws Exception {
+    void saveImages_shouldReturn400WhenProductIsNotExist() throws Exception {
         mockMvc.perform(multipart("/image/{product_id}", 50L)
                 .file(jpeg))
                 .andDo(print())
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
 
     @WithMockUser("admin")

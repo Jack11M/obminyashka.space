@@ -7,6 +7,10 @@ import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -29,6 +33,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 
 @RestController
 @RequestMapping("/user")
+@Api(tags = "User")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -38,11 +43,21 @@ public class UserController {
 
     @GetMapping("/my-info")
     @PreAuthorize(HAS_ROLE_USER)
+    @ApiOperation(value = "Find a registered requested user's data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<UserDto> getPersonalInfo(Principal principal) {
         return ResponseEntity.of(userService.getByUsernameOrEmail(principal.getName()));
     }
 
     @PutMapping("/info")
+    @ApiOperation(value = "Update a registered requested user's data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws IllegalOperationException {
         User user = getUser(principal.getName());
@@ -53,11 +68,17 @@ public class UserController {
     }
 
     @GetMapping("/child")
-    public ResponseEntity<List<ChildDto>> getChildren(Principal principal) {
-        return new ResponseEntity<>(userService.getChildren(getUser(principal.getName())), HttpStatus.OK);
+    @ApiOperation(value = "Find a registered requested user's children data")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ChildDto> getChildren(Principal principal) {
+        return userService.getChildren(getUser(principal.getName()));
     }
 
     @PostMapping("/child")
+    @ApiOperation(value = "Add children data for a registered requested user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
     public ResponseEntity<HttpStatus> addChildren(@RequestBody
                                                   @Size(min = 1, message = "{exception.invalid.dto}")
                                                           List<@Valid ChildDto> childrenDto,
@@ -73,6 +94,10 @@ public class UserController {
     }
 
     @DeleteMapping("/child/{id}")
+    @ApiOperation(value = "Delete child data for a registered requested user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
     public ResponseEntity<HttpStatus> removeChildren(@PathVariable("id")
                                                      @Size(min = 1, message = "{exception.invalid.dto}")
                                                              List<@NotNull Long> childrenIdToRemove,
@@ -87,6 +112,10 @@ public class UserController {
     }
 
     @PutMapping("/child")
+    @ApiOperation(value = "Delete child data for a registered requested user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
     public ResponseEntity<HttpStatus> updateChildren(@RequestBody
                                                      @Size(min = 1, message = "{exception.invalid.dto}")
                                                              List<@Valid ChildDto> childrenDto,
