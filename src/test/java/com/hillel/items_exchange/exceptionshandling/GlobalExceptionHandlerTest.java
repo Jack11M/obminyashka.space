@@ -67,7 +67,7 @@ public class GlobalExceptionHandlerTest {
     void setup() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones();
+        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutPhones();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())

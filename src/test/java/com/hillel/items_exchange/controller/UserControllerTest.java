@@ -85,9 +85,9 @@ class UserControllerTest {
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutChildrenOrPhones(), status().isAccepted())
+                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(), status().isAccepted())
                 .andDo(print())
-                .andExpect(jsonPath("$.email").value(NEW_EMAIL))
+                .andExpect(jsonPath("$.email").value(NEW_VALID_EMAIL))
                 .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME_WITH_APOSTROPHE))
                 .andExpect(jsonPath("$.lastName").value(NEW_VALID_NAME_WITH_HYPHEN_MINUS));
     }
@@ -98,7 +98,7 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenUsernameIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones(), status().isForbidden())
+                createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
                 getExceptionMessageSource("exception.illegal.field.change") + "Username"));
@@ -110,7 +110,7 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutChildrenOrPhones(), status().isForbidden())
+                createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
                 getExceptionMessageSource("exception.illegal.field.change") + "LastOnlineTime"));
@@ -120,9 +120,33 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
+    void updateUserInfo_shouldReturn403WhenChildrenAreChanged() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "Children"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserInfo_shouldReturn403WhenPhonesAreChanged() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "Phones"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn400WhenShortFirstName() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidShortFNameWithoutChildrenOrPhones(), status().isBadRequest())
+                createUserDtoForUpdatingWithInvalidShortFNameWithoutPhones(), status().isBadRequest())
                 .andReturn();
     }
 
@@ -132,7 +156,16 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn400WhenLastNameContainsTwoWords() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidLNameWithoutChildrenOrPhones(), status().isBadRequest())
+                createUserDtoForUpdatingWithInvalidLNameWithoutPhones(), status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("user/update_init.yml")
+    void updateUserInfo_shouldReturn400WhenDuplicateEmail() throws Exception {
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithDuplicateEmailWithoutPhones(), status().isBadRequest())
                 .andReturn();
     }
 

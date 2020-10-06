@@ -1,8 +1,10 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
@@ -22,8 +24,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Collection;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_USER;
+import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
@@ -46,9 +51,10 @@ public class UserController {
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws IllegalOperationException {
         User user = getUser(principal.getName());
-        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "Username");
-        checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
-
+        if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
+            throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
+        }
+        checkReadOnlyFieldsUpdate(user, userDto);
         return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
     }
 
@@ -110,6 +116,20 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getExceptionMessageSource("exception.user.not-found")));
+    }
+
+    private void checkReadOnlyFieldsUpdate(User user, UserDto userDto) throws IllegalOperationException {
+        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "Username");
+
+        checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
+
+        Collection<ChildDto> children = convertAllTo(user.getChildren(), ChildDto.class, HashSet::new);
+        checkReadOnlyFieldUpdate(children, userDto.getChildren(), "Children");
+
+        Collection<PhoneDto> phones = convertAllTo(user.getPhones(), PhoneDto.class, HashSet::new);
+        userDto.getPhones().forEach(
+                phoneDto -> phoneDto.setPhoneNumber(phoneDto.getPhoneNumber().replaceAll("[^\\d]", "")));
+        checkReadOnlyFieldUpdate(phones, userDto.getPhones(), "Phones");
     }
 
     private <T> void checkReadOnlyFieldUpdate(T field1, T field2, String fieldName) throws IllegalOperationException {
