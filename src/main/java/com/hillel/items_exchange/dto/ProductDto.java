@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -17,17 +18,21 @@ import java.util.List;
 public class ProductDto {
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 50, message = "{invalid.max-size}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
     private String age;
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 50, message = "{invalid.max-size}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
     private String gender;
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 50, message = "{invalid.max-size}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
     private String season;
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 50, message = "{invalid.max-size}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
     private String size;
     @NotNull(message = "{invalid.not-null}")
     private long subcategoryId;
