@@ -23,7 +23,7 @@ public class AdvertisementDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 3, max = 70, message = "{invalid.size}")
     private String topic;
-    @ApiModelProperty
+    @ApiModelProperty(value = "can't be null, but can be empty")
     @NotNull(message = "{invalid.not-null}")
     @Size(max = 255, message = "{invalid.max-size}")
     private String description;
