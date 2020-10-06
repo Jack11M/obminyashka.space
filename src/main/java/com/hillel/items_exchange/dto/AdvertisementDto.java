@@ -21,7 +21,6 @@ public class AdvertisementDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 3, max = 70, message = "{invalid.size}")
     private String topic;
-    @NotEmpty(message = "{invalid.not-empty}")
     @Size(max = 255, message = "{invalid.max-size}")
     private String description;
     @NotNull(message = "{invalid.not-null}")
