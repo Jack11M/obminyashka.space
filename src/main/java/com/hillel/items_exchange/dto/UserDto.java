@@ -20,11 +20,13 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserDto {
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 2, max = 50, message = "{invalid.size}")
     private String username;
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 129, message = "{invalid.email}")
+    @Size(min = 1, max = 129, message = "{invalid.email}")
     @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String email;
     @NotNull(message = "{invalid.not-null}")
@@ -40,7 +42,7 @@ public class UserDto {
     private String lastName;
     @NotNull(message = "{invalid.not-null}")
     private String avatarImage;
-    @ApiModelProperty(example = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(required = true, example = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
