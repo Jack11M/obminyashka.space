@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
 public class AdvertisementDto {
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
+    @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 3, max = 70, message = "{invalid.size}")
     private String topic;
