@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.dto;
 
 import com.hillel.items_exchange.model.DealType;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.Valid;
@@ -21,6 +22,8 @@ public class AdvertisementDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 3, max = 70, message = "{invalid.size}")
     private String topic;
+    @ApiModelProperty
+    @NotNull(message = "{invalid.not-null}")
     @Size(max = 255, message = "{invalid.max-size}")
     private String description;
     @NotNull(message = "{invalid.not-null}")
