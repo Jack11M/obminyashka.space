@@ -17,7 +17,7 @@ public class UserRegistrationDto {
 
     @NotEmpty(message = "{empty.username}")
     @Size(min = 2, max = 50, message = "{invalid.username.size}")
-    @Pattern(regexp = PatternHandler.USERNAME_MIN_2_MAX_50, message = "{invalid.username}")
+    @Pattern(regexp = PatternHandler.USERNAME, message = "{invalid.username}")
     private String username;
 
     @NotEmpty(message = "{empty.email}")
@@ -26,8 +26,8 @@ public class UserRegistrationDto {
     private String email;
 
     @NotEmpty(message = "{empty.password}")
-    @Size(min = 8, max = 30, message = "{invalid.password}")
-    @Pattern(regexp = PatternHandler.PASSWORD_MIN_7_MAX_30, message = "{invalid.password}")
+    @Size(min = 8, max = 30, message = "{invalid.password.size}")
+    @Pattern(regexp = PatternHandler.PASSWORD, message = "{invalid.password}")
     private String password;
 
     @NotEmpty(message = "{empty.confirm.password}")

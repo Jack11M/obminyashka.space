@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
-import static com.hillel.items_exchange.mapper.UtilMapper.convertToModel;
 
 @Service
 @RequiredArgsConstructor
@@ -80,7 +80,7 @@ public class UserService {
     }
 
     public void addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
-        final List<Child> childrenToSave = new ArrayList<>(convertToModel(
+        final List<Child> childrenToSave = new ArrayList<>(convertAllTo(
                 childrenDtoToAdd, Child.class, ArrayList::new));
         childrenToSave.forEach(child -> child.setUser(parent));
         parent.getChildren().addAll(childrenToSave);

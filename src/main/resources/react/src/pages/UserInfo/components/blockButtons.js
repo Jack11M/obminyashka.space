@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useDispatch } from 'react-redux';
 
 import ButtonsAddRemoveChild from './buttonsAddRemoveChild/buttonsAddRemoveChild';
-import { addChild, deleteChild } from '../../../redux/actions/profile';
+import { addChild, deleteChild } from '../../../redux/profile/profileAction';
 
 
 function BlockButtons({index, childrenId}) {

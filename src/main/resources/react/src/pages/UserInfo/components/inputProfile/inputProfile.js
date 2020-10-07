@@ -1,7 +1,12 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-import "./inputProfile.scss";
+const ProfileInput = styled.div`
+ display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 21px;
+`
 
 const Label = styled.label`
   font-size: 14px;
@@ -17,21 +22,24 @@ const Input = styled.input`
   border: 1px solid #bcbcbc;
   border-radius: 2px;
   outline: none;
+  font-size: 16px;
+  line-height: 16px;
   :focus,
   :hover {
     border: 1px solid #464444;
-  }
+  };
+  font-family: inherit;
 `;
 
 const InputProfile = (props) => {
-  const { name, label, value } = props.data;
+	const {name, label, value, type} = props.data;
 
-  return (
-    <div className={"input-Profile"}>
-      <Label htmlFor={name}>{`${label}:`}</Label>
-      <Input name={name} value={value}   onChange={props.click} />
-    </div>
-  );
+	return (
+		<ProfileInput >
+			<Label htmlFor={name}>{`${label}`}</Label>
+			<Input name={name} value={value} onChange={props.click} type={type}/>
+		</ProfileInput>
+	);
 };
 
 export default InputProfile;

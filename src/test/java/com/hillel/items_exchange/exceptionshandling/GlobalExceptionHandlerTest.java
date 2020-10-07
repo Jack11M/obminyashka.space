@@ -53,7 +53,6 @@ public class GlobalExceptionHandlerTest {
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
-    private UserDto userDtoWithNotUserId;
     private UserDto userDtoWithChangedUsername;
 
     @Mock
@@ -69,8 +68,7 @@ public class GlobalExceptionHandlerTest {
     void setup() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        userDtoWithNotUserId = UserDtoCreatingUtil.createUserDtoForUpdatingWithNotUserId();
-        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsername();
+        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -144,9 +142,12 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleAccessDeniedException() throws Exception {
-        when(userController.updateUserInfo(any(), any())).thenThrow(AccessDeniedException.class);
-        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithNotUserId, status().isConflict());
+    void testHandleAccessDeniedException() throws Exception {
+        when(userController.getPersonalInfo(any())).thenThrow(AccessDeniedException.class);
+        MvcResult result = mockMvc.perform(get("/user/my-info")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andReturn();
         assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
     }
 
