@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,9 +27,6 @@ import java.util.List;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -76,11 +72,10 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        MvcResult result = mockMvc.perform(get("/user/my-info")
+        mockMvc.perform(get("/user/my-info")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnauthorized())
                 .andReturn();
-        assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
     }
 
     @Test

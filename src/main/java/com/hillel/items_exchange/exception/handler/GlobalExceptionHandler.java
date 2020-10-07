@@ -9,7 +9,6 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,8 +47,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({SecurityException.class, AccessDeniedException.class})
-    public ResponseEntity<ErrorMessage> handleSecurityException(RuntimeException e, ServletWebRequest request) {
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ErrorMessage> handleSecurityException(SecurityException e, ServletWebRequest request) {
 
         ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.CONFLICT,
                 "exception.security", Collections.singletonList(e.getLocalizedMessage()));
