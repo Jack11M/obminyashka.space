@@ -33,7 +33,7 @@ class SubcategoryServiceTest {
 
     @BeforeEach
     void setUp() {
-        existingSubcategory = new Subcategory(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
+        existingSubcategory = createSubcategory(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
     }
 
     @Test
@@ -140,7 +140,7 @@ class SubcategoryServiceTest {
 
     @Test
     void findAllSubcategoryIds_whenSubcategoriesExist_shouldReturnListSubcategoryIds() {
-        final List<Subcategory> subcategories = List.of(existingSubcategory, new Subcategory(2L,
+        final List<Subcategory> subcategories = List.of(existingSubcategory, createSubcategory(2L,
                 SUBCATEGORY_NAME_WINTER_SHOES));
         when(subcategoryRepository.findAll()).thenReturn(subcategories);
 

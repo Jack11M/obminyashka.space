@@ -90,13 +90,17 @@ public class CategoryTestUtil {
     }
 
     public static Category createNewCategory() {
-        final Subcategory fairyTales = new Subcategory(EXISTING_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
-        final Subcategory educationalBooks = new Subcategory(CATEGORY_TOYS_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
+        final Subcategory fairyTales = createSubcategory(EXISTING_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
+        final Subcategory educationalBooks = createSubcategory(CATEGORY_TOYS_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
         return new Category(EXISTING_ENTITY_ID, CATEGORY_NAME_BOOKS, List.of(fairyTales, educationalBooks));
     }
 
     public static Subcategory createSubcategory(long subcategoryId, String subcategoryName) {
-        return new Subcategory(subcategoryId, subcategoryName);
+        final Subcategory newSubcategory = new Subcategory();
+        newSubcategory.setId(subcategoryId);
+        newSubcategory.setName(subcategoryName);
+        newSubcategory.setProducts(Collections.emptyList());
+        return newSubcategory;
     }
 
     public static List<Category> createAllCategoriesList() {
