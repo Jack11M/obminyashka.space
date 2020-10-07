@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
 import java.util.HashSet;
-import java.util.Collection;
+import java.util.function.Predicate;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_USER;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
@@ -54,7 +54,10 @@ public class UserController {
         if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
             throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
         }
-        checkReadOnlyFieldsUpdate(user, userDto);
+        if (!checkReadOnlyFieldsUpdate(user, userDto)) {
+            throw new IllegalOperationException(
+                    getExceptionMessageSource("exception.illegal.field.change"));
+        }
         return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
     }
 
@@ -118,25 +121,18 @@ public class UserController {
                 getExceptionMessageSource("exception.user.not-found")));
     }
 
-    private void checkReadOnlyFieldsUpdate(User user, UserDto userDto) throws IllegalOperationException {
-        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "Username");
-
-        checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
-
-        Collection<ChildDto> children = convertAllTo(user.getChildren(), ChildDto.class, HashSet::new);
-        checkReadOnlyFieldUpdate(children, userDto.getChildren(), "Children");
-
-        Collection<PhoneDto> phones = convertAllTo(user.getPhones(), PhoneDto.class, HashSet::new);
-        userDto.getPhones().forEach(
-                phoneDto -> phoneDto.setPhoneNumber(phoneDto.getPhoneNumber().replaceAll("[^\\d]", "")));
-        checkReadOnlyFieldUpdate(phones, userDto.getPhones(), "Phones");
+    private boolean checkReadOnlyFieldsUpdate(User user, UserDto dto) {
+        Predicate<Boolean> username = b -> isEqual(user.getUsername(), dto.getUsername());
+        Predicate<Boolean> lastOnline = b -> isEqual(user.getLastOnlineTime(), dto.getLastOnlineTime());
+        Predicate<Boolean> children = b -> isEqual(
+                convertAllTo(user.getChildren(), ChildDto.class, HashSet::new), dto.getChildren());
+        dto.getPhones().forEach(phoneDto -> phoneDto.setPhoneNumber(phoneDto.getPhoneNumber().replaceAll("[^\\d]", "")));
+        Predicate<Boolean> phones = b -> isEqual(convertAllTo(user.getPhones(), PhoneDto.class, HashSet::new),
+                dto.getPhones());
+        return username.and(lastOnline).and(children).and(phones).test(true);
     }
 
-    private <T> void checkReadOnlyFieldUpdate(T field1, T field2, String fieldName) throws IllegalOperationException {
-        if (!field1.equals(field2)) {
-            log.warn("Illegal operation: field change {}", fieldName);
-            throw new IllegalOperationException(
-                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", fieldName));
-        }
+    private <T> boolean isEqual(T field1, T field2) {
+        return field1.equals(field2);
     }
 }
