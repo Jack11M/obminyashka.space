@@ -6,15 +6,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class InvalidatedTokensHolder {
 
-    private final ConcurrentMap<String, Date> data = new ConcurrentHashMap<>();
+    private final Map<String, Date> data = new ConcurrentHashMap<>();
 
     public void invalidate(final String token, final Date expireDate) {
         data.computeIfAbsent(token, v -> expireDate);
