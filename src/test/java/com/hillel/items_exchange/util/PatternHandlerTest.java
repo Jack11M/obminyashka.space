@@ -211,10 +211,11 @@ class PatternHandlerTest {
         wrongPhoneNumbers.add("+38-050-22Й-32-23");
         wrongPhoneNumbers.add("+38-050-223-3щ-23");
 
-        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-50-223", "32-23", Collections.emptyList()));
-        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.50.223", "32.23", Collections.emptyList()));
-        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-50-223-", "2-23", Collections.emptyList()));
-        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.50.223.", "2.23", Collections.emptyList()));
+        List<Character> correctCharacters = List.of('.', '-');
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-050-223", "32-23", correctCharacters));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.050.223", "32.23", correctCharacters));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-050-223-", "2-23", correctCharacters));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.050.223.", "2.23", correctCharacters));
 
         return wrongPhoneNumbers;
     }
