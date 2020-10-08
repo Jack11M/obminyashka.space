@@ -68,7 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/adv/**", "/category/**", "/subcategory/**", "/user/info/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurator(jwtTokenProvider, invalidatedTokensHolder))
+                .apply(new JwtConfigurator(jwtTokenProvider))
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }

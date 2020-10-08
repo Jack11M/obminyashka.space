@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
@@ -82,7 +81,8 @@ public class JwtTokenProvider {
     public boolean validateToken(String token, HttpServletRequest req) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            return !claims.getBody().getExpiration().before(new Date())
+                    && !invalidatedTokensHolder.isInvalidated(token);
         } catch (JwtException e) {
             log.error("Unauthorized: {}", e.getMessage());
             req.setAttribute("detailedError", e.getMessage());

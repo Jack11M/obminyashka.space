@@ -182,6 +182,18 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
         Assert.assertTrue(invalidatedTokensHolder.isInvalidated(token));
     }
 
+    @Test
+    @DataSet(value = "auth/login.yml")
+    void logout_Failure_ShouldThrowJwtExceptionAfterRequestWithInvalidToken() throws Exception{
+        final String token = "DefinitelyNotValidToken";
+        mockMvc.perform(post(LOGOUT_URL)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
     private String obtainToken(UserLoginDto loginDto) throws Exception {
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .content(asJsonString(loginDto))

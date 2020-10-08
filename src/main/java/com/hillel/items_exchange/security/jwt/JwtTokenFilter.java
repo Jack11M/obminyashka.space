@@ -16,13 +16,12 @@ import java.io.IOException;
 public class JwtTokenFilter extends GenericFilterBean {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
             throws IOException, ServletException {
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        if (isTokenValidAndNotBlacklisted((HttpServletRequest) req, token)) {
+        if (isTokenValid((HttpServletRequest) req, token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
             if (auth != null) {
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -31,9 +30,7 @@ public class JwtTokenFilter extends GenericFilterBean {
         filterChain.doFilter(req, res);
     }
 
-    private boolean isTokenValidAndNotBlacklisted(HttpServletRequest req, String token) {
-        return !token.isEmpty()
-                && jwtTokenProvider.validateToken(token, req)
-                && !invalidatedTokensHolder.isInvalidated(token);
+    private boolean isTokenValid(HttpServletRequest req, String token) {
+        return !token.isEmpty() && jwtTokenProvider.validateToken(token, req);
     }
 }
