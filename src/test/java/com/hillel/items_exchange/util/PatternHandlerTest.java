@@ -21,33 +21,45 @@ class PatternHandlerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("createIncorrectEmails")
-    void testEmailRegexp_whenEmailIsNotCorrect(String incorrectEmail) {
-        assertFalse(incorrectEmail.matches(EMAIL));
+    @MethodSource("createWrongEmails")
+    void testEmailRegexp_whenEmailIsWrong(String wrongEmail) {
+        assertFalse(wrongEmail.matches(EMAIL));
     }
 
     @ParameterizedTest
-    @MethodSource("createCorrectNames")
+    @MethodSource("createCorrectPhoneNumbers")
+    void testPhoneNumberRegexp_whenPhoneNumberIsCorrect(String correctPhoneNumber) {
+        assertTrue(correctPhoneNumber.matches(PHONE_NUMBER));
+    }
+
+    @ParameterizedTest
+    @MethodSource("createWrongPhoneNumbers")
+    void testPhoneNumberRegexp_whenPhoneNumberIsWrong(String wrongPhoneNumber) {
+        assertFalse(wrongPhoneNumber.matches(PHONE_NUMBER));
+    }
+
+    @ParameterizedTest
+    @MethodSource("createCorrectUserNames")
     void testUsernameRegexp_whenUsernameIsCorrect(String correctUserName) {
         assertTrue(correctUserName.matches(USERNAME));
     }
 
     @ParameterizedTest
-    @MethodSource("createIncorrectNames")
-    void testUsernameRegexp_whenUsernameIsNotCorrect(String incorrectUserName) {
-        assertFalse(incorrectUserName.matches(USERNAME));
+    @MethodSource("createWrongUserNames")
+    void testUsernameRegexp_whenUsernameIsWrong(String wrongName) {
+        assertFalse(wrongName.matches(USERNAME));
     }
 
     @ParameterizedTest
     @MethodSource("createCorrectWordsEmptyOrMin2Max50")
-    void testWordEmptyOrMin2Max50_isCorrect(String correctWord) {
+    void testWordEmptyOrMin2Max50_whenWordIsCorrect(String correctWord) {
         assertTrue(correctWord.matches(WORD_EMPTY_OR_MIN_2_MAX_50));
     }
 
     @ParameterizedTest
-    @MethodSource("createIncorrectWordsEmptyOrMin2Max50")
-    void testWordEmptyOrMin2Max50_isIncorrect(String incorrectWord) {
-        assertFalse(incorrectWord.matches(WORD_EMPTY_OR_MIN_2_MAX_50));
+    @MethodSource("createWrongWordsEmptyOrMin2Max50")
+    void testWordEmptyOrMin2Max50_whenWordIsWrong(String wrongWord) {
+        assertFalse(wrongWord.matches(WORD_EMPTY_OR_MIN_2_MAX_50));
     }
 
     private static List<String> createCorrectEmails() {
@@ -63,32 +75,88 @@ class PatternHandlerTest {
         return correctEmails;
     }
 
-    private static List<String> createIncorrectEmails() {
-        List<String> incorrectEmails = new ArrayList<>();
-        incorrectEmails.add("pushkin@ukr.n");
-        incorrectEmails.add(".145@gmail.com");
-        incorrectEmails.add("pushkin@@mail.ru");
-        incorrectEmails.add("1@111.11");
-        incorrectEmails.add("1@111.1u");
-        incorrectEmails.add("1@111.1ru");
-        incorrectEmails.add("1@111.ru1");
-        incorrectEmails.add("1@ma~il.ru");
+    private static List<String> createWrongEmails() {
+        List<String> wrongEmails = new ArrayList<>();
+        wrongEmails.add("pushkin@ukr.n");
+        wrongEmails.add(".145@gmail.com");
+        wrongEmails.add("pushkin@@mail.ru");
+        wrongEmails.add("1@111.11");
+        wrongEmails.add("1@111.1u");
+        wrongEmails.add("1@111.1ru");
+        wrongEmails.add("1@111.ru1");
+        wrongEmails.add("1@ma~il.ru");
 
-        List<Character> correctCharacters = List.of('.', '_', '+');
+        List<Character> correctCharacters = List.of('.', '_', '+', '-');
 
-        incorrectEmails.addAll(getStringsWithIncorrectChars("pu", "shkin@ukr.net", correctCharacters));
-        incorrectEmails.addAll(getStringsWithRussianAndUkrCharacters("pu", "shkin@ukr.net"));
+        wrongEmails.addAll(getStringsWithIncorrectChars("pu", "shkin@ukr.net", correctCharacters));
+        wrongEmails.addAll(getStringsWithRussianAndUkrCharacters("pu", "shkin@ukr.net"));
 
-        return incorrectEmails;
+        return wrongEmails;
     }
 
-    private static List<String> createCorrectNames() {
+    private static List<String> createCorrectPhoneNumbers() {
+        List<String> correctPhoneNumbers = new ArrayList<>();
+        correctPhoneNumbers.add("+38-050-223-32-23");
+        correctPhoneNumbers.add("38-050-223-32-23");
+        correctPhoneNumbers.add("     38  -  050  -  223  -  32  -  23     ");
+        correctPhoneNumbers.add("     38-050  -223-32-23     ");
+        correctPhoneNumbers.add("     38-050-223-   32-23     ");
+
+        correctPhoneNumbers.add("+38.050.223.32.23");
+        correctPhoneNumbers.add("38.050.223.32.23");
+        correctPhoneNumbers.add("     38.050.223.32.23     ");
+
+        correctPhoneNumbers.add("+38-(050)-223-32-23");
+        correctPhoneNumbers.add("+38-(050-223-32-23");
+        correctPhoneNumbers.add("+38-050)-223-32-23");
+
+        correctPhoneNumbers.add("+00-000-000-00-00");
+
+        return correctPhoneNumbers;
+    }
+
+    private static List<String> createWrongPhoneNumbers() {
+        List<String> wrongPhoneNumbers = new ArrayList<>();
+        wrongPhoneNumbers.add("+3-050-223-32-23");
+        wrongPhoneNumbers.add("+38-50-223-32-23");
+        wrongPhoneNumbers.add("+38-050-22-32-23");
+        wrongPhoneNumbers.add("+38-050-223-3-23");
+        wrongPhoneNumbers.add("+38-050-223-32-2");
+        wrongPhoneNumbers.add("+38-)050-223-32-23");
+        wrongPhoneNumbers.add("+38-050(-223-32-23");
+        wrongPhoneNumbers.add("+38-)050(-223-32-23");
+        wrongPhoneNumbers.add("+38-050-(223)-32-23");
+        wrongPhoneNumbers.add("+38-050-(223)-(32)-(23)");
+
+        wrongPhoneNumbers.add("    +  38-050-223-32-23     ");
+        wrongPhoneNumbers.add("    ++  38-050-223-32-23     ");
+        wrongPhoneNumbers.add("    +  3  8-050-223-32-23     ");
+        wrongPhoneNumbers.add("    +  38-0  50-223-32-23     ");
+        wrongPhoneNumbers.add("    +  38-050-22  3-32-23     ");
+
+        wrongPhoneNumbers.add("+38-05a-223-32-23");
+        wrongPhoneNumbers.add("+38-05O-223-32-23");
+
+        wrongPhoneNumbers.addAll(getStringsWithIncorrectChars("+38-50-223", "32-23", Collections.emptyList()));
+        wrongPhoneNumbers.addAll(getStringsWithIncorrectChars("+38-50-223-", "2-23", Collections.emptyList()));
+
+
+        return wrongPhoneNumbers;
+    }
+
+    private static List<String> createCorrectUserNames() {
         List<String> correctNames = new ArrayList<>();
         correctNames.add("pushkin");
         correctNames.add("ThisNameHasLengthMoreThan100SymbolsThisNameHasLengthMoreThan100SymbolsThisNameHasLengthMoreThan100Symbols");
         correctNames.add("~~``~~");
+        correctNames.add("`_'");
         correctNames.add("'@'\"`!");
         correctNames.add("1");
+        correctNames.add("$a");
+        correctNames.add("$");
+        correctNames.add("a$");
+        correctNames.add("$+a");
+        correctNames.add("a+$");
 
         //In this case, there are no wrong characters
         correctNames.addAll(getStringsWithIncorrectChars("pu", "shkin", Collections.emptyList()));
@@ -97,15 +165,15 @@ class PatternHandlerTest {
         return correctNames;
     }
 
-    private static List<String> createIncorrectNames() {
-        List<String> incorrectNames = new ArrayList<>();
-        incorrectNames.add("");
-        incorrectNames.add(" ");
-        incorrectNames.add("aaa bbb");
-        incorrectNames.add(" aaa");
-        incorrectNames.add("aaa ");
+    private static List<String> createWrongUserNames() {
+        List<String> wrongNames = new ArrayList<>();
+        wrongNames.add("");
+        wrongNames.add(" ");
+        wrongNames.add("aaa bbb");
+        wrongNames.add(" aaa");
+        wrongNames.add("aaa ");
 
-        return incorrectNames;
+        return wrongNames;
     }
 
     private static List<String> createCorrectWordsEmptyOrMin2Max50() {
@@ -123,21 +191,21 @@ class PatternHandlerTest {
         return correctWords;
     }
 
-    private static List<String> createIncorrectWordsEmptyOrMin2Max50() {
-        List<String> incorrectWords = new ArrayList<>();
-        incorrectWords.add("a");
-        incorrectWords.add("1");
-        incorrectWords.add("ThisWordHasLengthMoreThan50CharactersItsLengthIs51S");
+    private static List<String> createWrongWordsEmptyOrMin2Max50() {
+        List<String> wrongWords = new ArrayList<>();
+        wrongWords.add("a");
+        wrongWords.add("1");
+        wrongWords.add("ThisWordHasLengthMoreThan50CharactersItsLengthIs51S");
 
-        List<Character> correctCharacters = List.of('\'', '_', '`');
-        incorrectWords.addAll(getStringsWithIncorrectChars("aaa", "bbb", correctCharacters));
+        List<Character> correctCharacters = List.of('\'', '_', '`', '-');
+        wrongWords.addAll(getStringsWithIncorrectChars("aaa", "bbb", correctCharacters));
 
-        return incorrectWords;
+        return wrongWords;
     }
 
     private static List<String> getStringsWithIncorrectChars(String str1, String str2, List<Character> correctCharacters) {
         List<Character> incorrectChars = new ArrayList<>(List.of('`', '!', '@', '#', '$', '%', '^', '&', '*', '(',
-                ')', '+', '=', '[', ']', '{', '}', '\'', '"', ':', ';', '/', '\\', '|', '?', '.', ',', '_'));
+                ')', '+', '=', '[', ']', '{', '}', '\'', '"', ':', ';', '/', '\\', '|', '?', '.', ',', '-', '_'));
         incorrectChars.removeAll(correctCharacters);
 
         return incorrectChars.stream()
