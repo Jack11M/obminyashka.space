@@ -27,6 +27,18 @@ class PatternHandlerTest {
     }
 
     @ParameterizedTest
+    @MethodSource("createCorrectPasswords")
+    void testPasswordRegexp_whenPasswordsCorrect(String correctPassword) {
+        assertTrue(correctPassword.matches(PASSWORD));
+    }
+
+    @ParameterizedTest
+    @MethodSource("createWrongPasswords")
+    void testPasswordRegexp_whenPasswordsWrong(String wrongPassword) {
+        assertFalse(wrongPassword.matches(PASSWORD));
+    }
+
+    @ParameterizedTest
     @MethodSource("createCorrectPhoneNumbers")
     void testPhoneNumberRegexp_whenPhoneNumberIsCorrect(String correctPhoneNumber) {
         assertTrue(correctPhoneNumber.matches(PHONE_NUMBER));
@@ -81,6 +93,9 @@ class PatternHandlerTest {
         wrongEmails.add(".145@gmail.com");
         wrongEmails.add("pushkin@@mail.ru");
         wrongEmails.add("1@111.11");
+        wrongEmails.add("pushkin.11");
+        wrongEmails.add("pushkin.1u");
+        wrongEmails.add("pushkin.u1");
         wrongEmails.add("1@111.1u");
         wrongEmails.add("1@111.1ru");
         wrongEmails.add("1@111.ru1");
@@ -88,10 +103,53 @@ class PatternHandlerTest {
 
         List<Character> correctCharacters = List.of('.', '_', '+', '-');
 
-        wrongEmails.addAll(getStringsWithIncorrectChars("pu", "shkin@ukr.net", correctCharacters));
-        wrongEmails.addAll(getStringsWithRussianAndUkrCharacters("pu", "shkin@ukr.net"));
+        wrongEmails.addAll(getStringsWithSpecialSymbol("pu", "shkin@ukr.net", correctCharacters));
+        wrongEmails.addAll(getStringsWithRussianOrUkrCharacter("pu", "shkin@ukr.net"));
 
         return wrongEmails;
+    }
+
+    private static List<String> createCorrectPasswords() {
+        List<String> correctPasswords = new ArrayList<>();
+        correctPasswords.add("aA1");
+        correctPasswords.add("1aA");
+        correctPasswords.add("a1A");
+        correctPasswords.add("#aA1");
+        correctPasswords.add("aA1@");
+        correctPasswords.add("~aA1`");
+        correctPasswords.add("~`aA1`!@#$%^&*()_+-=");
+
+        correctPasswords.addAll(getStringsWithSpecialSymbol("a", "A1", Collections.emptyList()));
+
+        return correctPasswords;
+    }
+
+    private static List<String> createWrongPasswords() {
+        List<String> wrongPasswords = new ArrayList<>();
+        wrongPasswords.add("");
+        wrongPasswords.add("a");
+        wrongPasswords.add("1");
+        wrongPasswords.add("A");
+        wrongPasswords.add("a1");
+        wrongPasswords.add("aA");
+        wrongPasswords.add("A1");
+        wrongPasswords.add("aa1");
+        wrongPasswords.add("a11");
+        wrongPasswords.add("AA1");
+
+        wrongPasswords.add(" aA1");
+        wrongPasswords.add("aA1 ");
+        wrongPasswords.add(" aA1 ");
+        wrongPasswords.add("a A1");
+
+        wrongPasswords.add("a`1");
+        wrongPasswords.add("A`1");
+        wrongPasswords.add("1#A");
+        wrongPasswords.add("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~");
+
+        wrongPasswords.addAll(getStringsWithRussianOrUkrCharacter("a", "A1"));
+
+        return wrongPasswords;
     }
 
     private static List<String> createCorrectPhoneNumbers() {
@@ -109,6 +167,16 @@ class PatternHandlerTest {
         correctPhoneNumbers.add("+38-(050)-223-32-23");
         correctPhoneNumbers.add("+38-(050-223-32-23");
         correctPhoneNumbers.add("+38-050)-223-32-23");
+
+        correctPhoneNumbers.add("+38-050.223-32-23");
+        correctPhoneNumbers.add("+38-050-223.32-23");
+        correctPhoneNumbers.add("+38-050-223-32.23");
+        correctPhoneNumbers.add("+38-050.223.32.23");
+
+        correctPhoneNumbers.add("+38.050.223-32-23");
+        correctPhoneNumbers.add("+38.050-223.32-23");
+        correctPhoneNumbers.add("+38.050-223-32.23");
+        correctPhoneNumbers.add("+38.050-223-32-23");
 
         correctPhoneNumbers.add("+00-000-000-00-00");
 
@@ -136,10 +204,17 @@ class PatternHandlerTest {
 
         wrongPhoneNumbers.add("+38-05a-223-32-23");
         wrongPhoneNumbers.add("+38-05O-223-32-23");
+        wrongPhoneNumbers.add("+38-05Ы-223-32-23");
+        wrongPhoneNumbers.add("+38-05ё-223-32-23");
+        wrongPhoneNumbers.add("+38-050-22W-32-23");
+        wrongPhoneNumbers.add("+38-050-223-3w-23");
+        wrongPhoneNumbers.add("+38-050-22Й-32-23");
+        wrongPhoneNumbers.add("+38-050-223-3щ-23");
 
-        wrongPhoneNumbers.addAll(getStringsWithIncorrectChars("+38-50-223", "32-23", Collections.emptyList()));
-        wrongPhoneNumbers.addAll(getStringsWithIncorrectChars("+38-50-223-", "2-23", Collections.emptyList()));
-
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-50-223", "32-23", Collections.emptyList()));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.50.223", "32.23", Collections.emptyList()));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-50-223-", "2-23", Collections.emptyList()));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.50.223.", "2.23", Collections.emptyList()));
 
         return wrongPhoneNumbers;
     }
@@ -158,9 +233,8 @@ class PatternHandlerTest {
         correctNames.add("$+a");
         correctNames.add("a+$");
 
-        //In this case, there are no wrong characters
-        correctNames.addAll(getStringsWithIncorrectChars("pu", "shkin", Collections.emptyList()));
-        correctNames.addAll(getStringsWithRussianAndUkrCharacters("aaa", "bbb"));
+        correctNames.addAll(getStringsWithSpecialSymbol("pu", "shkin", Collections.emptyList()));
+        correctNames.addAll(getStringsWithRussianOrUkrCharacter("aaa", "bbb"));
 
         return correctNames;
     }
@@ -198,22 +272,24 @@ class PatternHandlerTest {
         wrongWords.add("ThisWordHasLengthMoreThan50CharactersItsLengthIs51S");
 
         List<Character> correctCharacters = List.of('\'', '_', '`', '-');
-        wrongWords.addAll(getStringsWithIncorrectChars("aaa", "bbb", correctCharacters));
+        wrongWords.addAll(getStringsWithSpecialSymbol("aaa", "bbb", correctCharacters));
 
         return wrongWords;
     }
 
-    private static List<String> getStringsWithIncorrectChars(String str1, String str2, List<Character> correctCharacters) {
-        List<Character> incorrectChars = new ArrayList<>(List.of('`', '!', '@', '#', '$', '%', '^', '&', '*', '(',
-                ')', '+', '=', '[', ']', '{', '}', '\'', '"', ':', ';', '/', '\\', '|', '?', '.', ',', '-', '_'));
-        incorrectChars.removeAll(correctCharacters);
+    private static List<String> getStringsWithSpecialSymbol(String str1, String str2, List<Character> deletedCharacters) {
+        List<Character> addedCharacters = new ArrayList<>(List.of(
+                '`', '~', '!', '@', '#', '$', '%', '^', '&', '*',
+                '(', ')', '+', '=', '[', ']', '{', '}', '\'', '"', ':', ';', '/', '\\', '|', '?', '.', ',', '<', '>',
+                '-', '_'));
+        addedCharacters.removeAll(deletedCharacters);
 
-        return incorrectChars.stream()
+        return addedCharacters.stream()
                 .map(character -> str1.concat(String.valueOf(character)).concat(str2))
                 .collect(Collectors.toList());
     }
 
-    private static List<String> getStringsWithRussianAndUkrCharacters(String str1, String str2) {
+    private static List<String> getStringsWithRussianOrUkrCharacter(String str1, String str2) {
         List<Character> russianChars = List.of('Й', 'й', 'Ц', 'ц', 'У', 'у', 'Г', 'г', 'Ш', 'ш', 'Щ', 'щ', 'З', 'з',
                 'Х', 'х', 'Ъ', 'ъ', 'Ф', 'ф', 'Ы', 'ы', 'П', 'п', 'Л', 'л', 'Д', 'д', 'Ж', 'ж', 'Э', 'э', 'Я', 'я',
                 'Ч', 'ч', 'М', 'м', 'Ь', 'ь', 'Б', 'б', 'Ю', 'ю', 'Ґ', 'Є', 'І', 'Ї', 'і', 'є', 'ї', 'ґ');
