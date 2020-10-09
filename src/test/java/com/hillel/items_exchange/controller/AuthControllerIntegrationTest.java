@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-public class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
+class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
 
     @Autowired
     private MockMvc mockMvc;
@@ -92,6 +92,7 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
     }
 
     @Test
+    @DataSet("database_init.yml")
     void register_whenDifferentConfirmPassword_shouldReturnBadRequestAndThrowBadRequestException() throws Exception {
         UserRegistrationDto invalidConfirmPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
                 VALID_PASSWORD, INVALID_PASSWORD);
