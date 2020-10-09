@@ -92,6 +92,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
+    @DataSet("database_init.yml")
     void register_whenDifferentConfirmPassword_shouldReturnBadRequestAndThrowBadRequestException() throws Exception {
         UserRegistrationDto invalidConfirmPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
                 VALID_PASSWORD, INVALID_PASSWORD);
@@ -100,10 +101,10 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
-        assertThat(result.getResolvedException(), is(instanceOf(UnprocessableEntityException.class)));
+        assertThat(result.getResolvedException(), is(instanceOf(BadRequestException.class)));
     }
 
     @Test
