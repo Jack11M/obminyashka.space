@@ -1,5 +1,5 @@
 import React from "react";
-import ErrorPage from "../pages/ErrorPages/ErrorPage";
+import ErrorPage from "../../pages/ErrorPages/ErrorPage";
 import { withRouter } from "react-router-dom";
 
 class ErrorBoundary extends React.Component {

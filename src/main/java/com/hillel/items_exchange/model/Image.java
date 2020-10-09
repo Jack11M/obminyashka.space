@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.model;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -17,7 +16,6 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
     private byte[] resource;
     @Column(name = "default_photo")
     private boolean defaultPhoto;

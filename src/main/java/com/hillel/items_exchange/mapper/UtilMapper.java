@@ -26,11 +26,15 @@ public class UtilMapper {
         mapper = modelMapper;
     }
 
-    public static  <T, K> Collection<K> convertToModel(List<T> tList, Class<K> kClass,
-                                                       Supplier<Collection<K>> collectionFactory) {
+    public static <T, K> Collection<K> convertAllTo(Collection<T> tList, Class<K> kClass,
+                                                    Supplier<Collection<K>> collectionFactory) {
         return tList.stream()
                 .map(t -> mapper.map(t, kClass))
                 .collect(Collectors.toCollection(collectionFactory));
+    }
+
+    public static <T, K> K convertTo(T src, Class<K> kClass) {
+        return mapper.map(src, kClass);
     }
 
     public static Phone mapPhones(PhoneDto phoneDto) {

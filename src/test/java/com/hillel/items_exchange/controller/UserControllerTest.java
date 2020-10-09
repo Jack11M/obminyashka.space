@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,10 +25,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -67,7 +64,7 @@ class UserControllerTest {
         mockMvc.perform(get("/user/my-info")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.username").value("admin"))
                 .andExpect(status().isOk());
     }
 
@@ -75,11 +72,10 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        MvcResult result = mockMvc.perform(get("/user/my-info")
+        mockMvc.perform(get("/user/my-info")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnauthorized())
                 .andReturn();
-        assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
     }
 
     @Test
@@ -89,7 +85,7 @@ class UserControllerTest {
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFirstNameApostrAndLastNameMinus(), status().isAccepted())
+                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutChildrenOrPhones(), status().isAccepted())
                 .andDo(print())
                 .andExpect(jsonPath("$.email").value(NEW_EMAIL))
                 .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME_WITH_APOSTROPHE))
@@ -102,20 +98,22 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenUsernameIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedUsername(), status().isForbidden())
+                createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones(), status().isForbidden())
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("You are unable to change your: username"));
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "Username"));
     }
 
     @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void updateUserInfo_shouldBeThrownAccessDeniedExceptionWhenNotUserId() throws Exception {
+    void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithNotUserId(), status().isConflict())
+                createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutChildrenOrPhones(), status().isForbidden())
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains("You are not allowed to perform this action"));
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "LastOnlineTime"));
     }
 
     @Test
@@ -123,8 +121,8 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn400WhenShortFirstName() throws Exception {
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidShortFirstName(), status().isBadRequest())
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithInvalidShortFNameWithoutChildrenOrPhones(), status().isBadRequest())
                 .andReturn();
     }
 
@@ -133,8 +131,8 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn400WhenLastNameContainsTwoWords() throws Exception {
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidLastName(), status().isBadRequest())
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithInvalidLNameWithoutChildrenOrPhones(), status().isBadRequest())
                 .andReturn();
     }
 

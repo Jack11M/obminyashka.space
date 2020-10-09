@@ -1,5 +1,28 @@
 package com.hillel.items_exchange.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
@@ -37,6 +60,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @RequestMapping("/auth")
 @CrossOrigin(maxAge = 3600)
 @RequiredArgsConstructor
+@Validated
 public class AuthController {
 
     private static final String ROLE_USER = "ROLE_USER";

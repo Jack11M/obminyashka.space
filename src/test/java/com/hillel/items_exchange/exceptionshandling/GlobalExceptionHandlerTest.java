@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -53,7 +52,6 @@ public class GlobalExceptionHandlerTest {
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
-    private UserDto userDtoWithNotUserId;
     private UserDto userDtoWithChangedUsername;
 
     @Mock
@@ -69,8 +67,7 @@ public class GlobalExceptionHandlerTest {
     void setup() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        userDtoWithNotUserId = UserDtoCreatingUtil.createUserDtoForUpdatingWithNotUserId();
-        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsername();
+        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones();
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -141,13 +138,6 @@ public class GlobalExceptionHandlerTest {
         when(userController.updateUserInfo(any(), any())).thenThrow(IllegalOperationException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
-    }
-
-    @Test
-    public void testHandleAccessDeniedException() throws Exception {
-        when(userController.updateUserInfo(any(), any())).thenThrow(AccessDeniedException.class);
-        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithNotUserId, status().isConflict());
-        assertThat(result.getResolvedException(), is(instanceOf(AccessDeniedException.class)));
     }
 
     private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,

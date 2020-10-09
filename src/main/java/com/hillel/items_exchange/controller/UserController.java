@@ -12,16 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
@@ -48,15 +45,10 @@ public class UserController {
     @PutMapping("/info")
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws IllegalOperationException {
-        User user = userService.findByUsernameOrEmail(principal.getName())
-                .orElseThrow(EntityNotFoundException::new);
-        if (user.getId() != userDto.getId()) {
-            throw new AccessDeniedException(getExceptionMessageSource("exception.permission-denied.user-profile"));
-        }
-        if (!userDto.getUsername().equals(user.getUsername())) {
-            throw new IllegalOperationException(
-                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", "username"));
-        }
+        User user = getUser(principal.getName());
+        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "Username");
+        checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
+
         return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
     }
 
@@ -118,5 +110,13 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getExceptionMessageSource("exception.user.not-found")));
+    }
+
+    private <T> void checkReadOnlyFieldUpdate(T field1, T field2, String fieldName) throws IllegalOperationException {
+        if (!field1.equals(field2)) {
+            log.warn("Illegal operation: field change {}", fieldName);
+            throw new IllegalOperationException(
+                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", fieldName));
+        }
     }
 }
