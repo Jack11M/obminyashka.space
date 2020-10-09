@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-public class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
+class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
 
     @Autowired
     private MockMvc mockMvc;
@@ -100,10 +100,10 @@ public class AuthControllerIntegrationTest extends AuthControllerIntegrationTest
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andReturn();
 
-        assertThat(result.getResolvedException(), is(instanceOf(BadRequestException.class)));
+        assertThat(result.getResolvedException(), is(instanceOf(UnprocessableEntityException.class)));
     }
 
     @Test
