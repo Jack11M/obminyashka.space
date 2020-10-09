@@ -1,10 +1,19 @@
 package com.hillel.items_exchange.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.Valid;
-
+import com.hillel.items_exchange.dto.UserLoginDto;
+import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.exception.BadRequestException;
+import com.hillel.items_exchange.exception.RoleNotFoundException;
+import com.hillel.items_exchange.exception.UserValidationException;
+import com.hillel.items_exchange.model.Role;
+import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
+import com.hillel.items_exchange.service.RoleService;
+import com.hillel.items_exchange.service.UserService;
+import com.hillel.items_exchange.validator.UserLoginDtoValidator;
+import com.hillel.items_exchange.validator.UserRegistrationDtoValidator;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,27 +23,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import com.hillel.items_exchange.dto.UserLoginDto;
-import com.hillel.items_exchange.dto.UserRegistrationDto;
-import com.hillel.items_exchange.exception.BadRequestException;
-import com.hillel.items_exchange.exception.UserValidationException;
-import com.hillel.items_exchange.exception.RoleNotFoundException;
-import com.hillel.items_exchange.model.Role;
-import com.hillel.items_exchange.model.User;
-import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
-import com.hillel.items_exchange.service.RoleService;
-import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.validator.UserLoginDtoValidator;
-import com.hillel.items_exchange.validator.UserRegistrationDtoValidator;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
@@ -82,6 +76,13 @@ public class AuthController {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getExceptionMessageSource("invalid.username-or-password"));
         }
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public void logout(HttpServletRequest req) {
+        final String token = jwtTokenProvider.resolveToken(req);
+        jwtTokenProvider.invalidateToken(token);
     }
 
     @PostMapping("/register")
