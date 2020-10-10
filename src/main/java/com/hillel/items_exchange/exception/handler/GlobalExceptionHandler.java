@@ -2,6 +2,7 @@ package com.hillel.items_exchange.exception.handler;
 
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -137,6 +138,15 @@ public class GlobalExceptionHandler {
                 e.getLocalizedMessage(), Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(WARN, errorMessage);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorMessage> handleJwtException(JwtException e,
+                                                               ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.UNAUTHORIZED,
+                "invalid.token", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(ERROR, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,
