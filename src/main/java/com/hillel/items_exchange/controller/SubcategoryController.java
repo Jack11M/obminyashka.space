@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,13 +24,12 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @Api(tags = "Subcategory")
 @RequiredArgsConstructor
 @Validated
-@Slf4j
 public class SubcategoryController {
 
     private final SubcategoryService subcategoryService;
 
     @GetMapping("/{category_id}/names")
-    @ApiOperation(value = "Find all subcategories name by category ID")
+    @ApiOperation(value = "Find all subcategories names by category ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
@@ -43,7 +41,7 @@ public class SubcategoryController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(subcategoriesNames, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -56,8 +54,7 @@ public class SubcategoryController {
     public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id")
                                                                 @PositiveOrZero(message = "{invalid.id}") long id) {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidDtoException(getExceptionMessageSourceWithId(id,
-                    "subcategory.not-deletable"));
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "subcategory.not-deletable"));
         }
 
         subcategoryService.removeSubcategoryById(id);

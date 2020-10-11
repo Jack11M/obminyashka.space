@@ -2,6 +2,7 @@ package com.hillel.items_exchange.exception.handler;
 
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -10,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -126,6 +128,25 @@ public class GlobalExceptionHandler {
                 "exception.illegal.operation", Collections.singletonList(e.getLocalizedMessage()));
         logErrorMessage(WARN, errorMessage);
         return new ResponseEntity<>(errorMessage, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
+                                                                              ServletWebRequest request) {
+
+        final ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.BAD_REQUEST,
+                e.getLocalizedMessage(), Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(WARN, errorMessage);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorMessage> handleJwtException(JwtException e,
+                                                               ServletWebRequest request) {
+        ErrorMessage errorMessage = getErrorMessage(request, HttpStatus.UNAUTHORIZED,
+                "invalid.token", Collections.singletonList(e.getLocalizedMessage()));
+        logErrorMessage(ERROR, errorMessage);
+        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
     }
 
     private ErrorMessage getErrorMessage(ServletWebRequest request, HttpStatus status,

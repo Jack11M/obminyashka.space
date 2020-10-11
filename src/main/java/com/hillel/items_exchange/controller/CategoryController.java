@@ -2,13 +2,14 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
+import com.hillel.items_exchange.mapper.transfer.Exist;
+import com.hillel.items_exchange.mapper.transfer.New;
 import com.hillel.items_exchange.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/names")
-    @ApiOperation(value = "Find all categories' name")
+    @ApiOperation(value = "Get all names of existing categories.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
@@ -50,12 +51,12 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    @ApiOperation(value = "Find all categories")
+    @ApiOperation(value = "Get all existing categories.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
-        List<CategoryDto> categories = categoryService.findAllCategories();
+        List<CategoryDto> categories = categoryService.findAllCategoryDtos();
         if (categories.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -64,17 +65,15 @@ public class CategoryController {
     }
 
     @GetMapping("/{category_id}")
-    @ApiOperation(value = "Find a category its ID")
+    @ApiOperation(value = "Get a category by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<CategoryDto> getCategoryById(@PositiveOrZero(message = "{invalid.id}")
+    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = "{invalid.exist.id}")
                                                            @PathVariable("category_id") long id) {
-        return categoryService.findCategoryById(id)
-                .map(categoryDto -> new ResponseEntity<>(categoryDto, HttpStatus.OK))
-                .orElseThrow(() -> new EntityNotFoundException(getExceptionMessageSourceWithId(
-                        id, "invalid.category.id")));
+
+        return ResponseEntity.of(categoryService.findCategoryDtoById(id));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -84,11 +83,9 @@ public class CategoryController {
             @ApiResponse(code = 201, message = "CREATED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        if (isCategoryIdValidForCreating(categoryDto)
-                && categoryService.isCategoryNameHasNotDuplicate(categoryDto.getName())) {
-
-            return new ResponseEntity<>(categoryService.addNewCategory(categoryDto), HttpStatus.CREATED);
+    public CategoryDto createCategory(@Validated(New.class) @RequestBody CategoryDto categoryDto) {
+        if (categoryService.isCategoryDtoValidForCreating(categoryDto)) {
+            return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
         throw new InvalidDtoException(getExceptionMessageSource("invalid.new-category-dto"));
@@ -101,9 +98,9 @@ public class CategoryController {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        if (isDtoIdGreaterThanZero(categoryDto.getId()) && categoryService.isCategoryDtoUpdatable(categoryDto)) {
-            return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.ACCEPTED);
+    public CategoryDto updateCategory(@Validated(Exist.class) @RequestBody CategoryDto categoryDto) {
+        if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
+            return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
         throw new IllegalIdentifierException(getExceptionMessageSource("invalid.updated-category.dto"));
@@ -116,28 +113,14 @@ public class CategoryController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<CategoryDto> deleteCategoryById(@PositiveOrZero(message = "{invalid.id}")
-                                                              @PathVariable("category_id") long id) {
-        if (isDtoIdGreaterThanZero(id) && categoryService.isCategoryDtoDeletable(id)) {
-            categoryService.removeCategoryById(id);
+    public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id")
+                                                          @Positive(message = "{invalid.exist.id}") long id) {
+
+        if (categoryService.isCategoryDtoDeletable(id)) {
+            categoryService.removeById(id);
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
         throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "category.not-deletable"));
     }
-
-    private boolean isCategoryIdValidForCreating(CategoryDto categoryDto) {
-        return isIdEqualsZero(categoryDto.getId())
-                && categoryDto.getSubcategories().stream()
-                .allMatch(subcategoryDto -> isIdEqualsZero(subcategoryDto.getId()));
-    }
-
-    private boolean isDtoIdGreaterThanZero(long id) {
-        return id > 0;
-    }
-
-    private boolean isIdEqualsZero(long id) {
-        return id == 0;
-    }
-
 }
