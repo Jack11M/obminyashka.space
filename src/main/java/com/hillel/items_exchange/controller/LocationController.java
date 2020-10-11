@@ -36,9 +36,11 @@ public class LocationController {
 
     @GetMapping
     @ApiOperation(value = "Get all of existed locations.")
-    @ResponseStatus(HttpStatus.OK)
-    public List<LocationDto> getAllLocations() {
-        return locationService.findAll();
+    public ResponseEntity<List<LocationDto>> getAllLocations() {
+        List<LocationDto> allLocations = locationService.findAll();
+        return allLocations.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(allLocations, HttpStatus.OK);
     }
 
     @GetMapping("/{location_id}")
@@ -54,7 +56,7 @@ public class LocationController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
-    @ApiOperation(value = "Save a new Location. (ADMIN ONLY)")
+    @ApiOperation(value = "Save a new Location", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "CREATED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
@@ -70,7 +72,7 @@ public class LocationController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
-    @ApiOperation(value = "Update an existed Location. (ADMIN ONLY)")
+    @ApiOperation(value = "Update an existed Location", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
@@ -85,7 +87,7 @@ public class LocationController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping
-    @ApiOperation(value = "Delete existed Locations by their IDs. (ADMIN ONLY)")
+    @ApiOperation(value = "Delete existed Locations by their IDs", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "NO CONTENT"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),

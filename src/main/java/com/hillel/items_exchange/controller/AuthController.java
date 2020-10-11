@@ -57,14 +57,14 @@ public class AuthController {
     private final RoleService roleService;
 
     @PostMapping("/login")
-    @ApiOperation(value = "Login in registered user")
+    @ApiOperation(value = "Login in a registered user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")
     })
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid UserLoginDto userLoginDto,
-                                                     BindingResult bindingResult) {
+                                                     BindingResult bindingResult) throws UserValidationException {
 
         userLoginDtoValidator.validate(userLoginDto, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -89,7 +89,8 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Log out a registered user")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req) {
         final String token = jwtTokenProvider.resolveToken(req);
         jwtTokenProvider.invalidateToken(token);
@@ -102,7 +103,10 @@ public class AuthController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
     })
-    public ResponseEntity<HttpStatus> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto, BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
+                                                   BindingResult bindingResult)
+            throws BadRequestException, RoleNotFoundException {
+
         userRegistrationDtoValidator.validate(userRegistrationDto, bindingResult);
 
         Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);

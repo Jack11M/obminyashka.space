@@ -37,27 +37,24 @@ public class SubcategoryController {
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id")
                                                                             @PositiveOrZero(message = "{invalid.id}") long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
-        if (subcategoriesNames.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return subcategoriesNames.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(subcategoriesNames, HttpStatus.OK);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{subcategory_id}")
-    @ApiOperation(value = "Delete an existed subcategory by its ID. (ADMIN ONLY)")
+    @ApiOperation(value = "Delete an existed subcategory by its ID", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<HttpStatus> deleteSubcategoryById(@PathVariable("subcategory_id")
-                                                                @PositiveOrZero(message = "{invalid.id}") long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteSubcategoryById(@PathVariable("subcategory_id") @PositiveOrZero(message = "{invalid.id}") long id)
+            throws InvalidDtoException {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
             throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "subcategory.not-deletable"));
         }
-
         subcategoryService.removeSubcategoryById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

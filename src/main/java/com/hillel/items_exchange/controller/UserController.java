@@ -69,9 +69,14 @@ public class UserController {
 
     @GetMapping("/child")
     @ApiOperation(value = "Find a registered requested user's children data")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> getChildren(Principal principal) {
-        return userService.getChildren(getUser(principal.getName()));
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<List<ChildDto>> getChildren(Principal principal) {
+        List<ChildDto> children = userService.getChildren(getUser(principal.getName()));
+        return children.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(children, HttpStatus.OK);
     }
 
     @PostMapping("/child")
@@ -79,10 +84,9 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST")})
-    public ResponseEntity<HttpStatus> addChildren(@RequestBody
-                                                  @Size(min = 1, message = "{exception.invalid.dto}")
-                                                          List<@Valid ChildDto> childrenDto,
-                                                  Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public void addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+                                        List<@Valid ChildDto> childrenDto, Principal principal) {
         if (childrenDto.stream().anyMatch(dto -> dto.getId() > 0)) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(
@@ -90,7 +94,6 @@ public class UserController {
                             "Zero ID is expected"));
         }
         userService.addChildren(getUser(principal.getName()), childrenDto);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/child/{id}")
@@ -98,17 +101,15 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST")})
-    public ResponseEntity<HttpStatus> removeChildren(@PathVariable("id")
-                                                     @Size(min = 1, message = "{exception.invalid.dto}")
-                                                             List<@NotNull Long> childrenIdToRemove,
-                                                     Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
+                                           List<@NotNull Long> childrenIdToRemove, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSource("exception.invalid.dto"));
         }
         userService.removeChildren(user, childrenIdToRemove);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/child")
@@ -116,10 +117,9 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST")})
-    public ResponseEntity<HttpStatus> updateChildren(@RequestBody
-                                                     @Size(min = 1, message = "{exception.invalid.dto}")
-                                                             List<@Valid ChildDto> childrenDto,
-                                                     Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public void updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+                                           List<@Valid ChildDto> childrenDto, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
@@ -128,7 +128,6 @@ public class UserController {
                             "Not all children from dto present in User"));
         }
         userService.updateChildren(user, childrenDto);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {

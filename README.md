@@ -1,8 +1,8 @@
 # Obmenyashka (Child Goods Exchange)
 
-This is the back-end part of the IT-Hillel EVO project "Obmenyashka".
+This is the back-end part of the IT School Hillel EVO project "Obmenyashka".
 
-We want to give our users opportunity to share or exchange any children clothes.  
+We want to give our users opportunity to share or exchange any children's clothes.  
 
 The technologies used:
 - Java, Spring (Boot, Web MVC, Data JPA, Security), JWT, Lombok 
@@ -22,7 +22,7 @@ The technologies used:
 
 Use a project builder [maven](https://maven.apache.org/index.html) to install the project if you fulfil the requirements.
 ```bash
-mvn install
+mvn clean install
 mvn spring-boot:run -Dspring-boot.run-arguments=--p='your_local_DB_password'
 ```
 Otherwise, use [docker](https://www.docker.com/get-started) to run the project without installation.
