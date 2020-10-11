@@ -1,31 +1,5 @@
 package com.hillel.items_exchange.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
@@ -38,6 +12,10 @@ import com.hillel.items_exchange.service.RoleService;
 import com.hillel.items_exchange.service.UserService;
 import com.hillel.items_exchange.validator.UserLoginDtoValidator;
 import com.hillel.items_exchange.validator.UserRegistrationDtoValidator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
