@@ -12,6 +12,7 @@ const Label = styled.label`
   font-size: 14px;
   line-height: 16px;
   display: inline-flex;
+  cursor: pointer;
 `;
 
 const Input = styled.input`
@@ -37,7 +38,7 @@ const InputProfile = (props) => {
 	return (
 		<ProfileInput >
 			<Label htmlFor={name}>{`${label}`}</Label>
-			<Input name={name} value={value} onChange={props.click} type={type}/>
+			<Input id={name} name={name} value={value} onChange={props.click} type={type}/>
 		</ProfileInput>
 	);
 };
