@@ -1,0 +1,111 @@
+.info-one {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  .row {
+    position: relative;
+    margin-top: 21px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: 39px;
+    //added
+    .add-row {
+      margin-left: 120px;
+      width: 230px;
+      align-items: center;
+      display: flex;
+
+      a {
+        margin-left: 20px;
+        display: flex;
+        text-align: center;
+        padding: auto;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 16px;
+        line-height: 16px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        text-align: center;
+        background-color: #43B05C;
+        text-decoration: none;
+      }
+    }
+
+    //del
+    .del-row {
+      width: 230px;
+      display: flex;
+      align-items: center;
+
+      a {
+        margin-left: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 14px;
+        line-height: 16px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        text-align: center;
+        background-color: #787878;
+        text-decoration: none;
+      }
+    }
+
+    label {
+      margin-left: 0;
+      display: inline-block;
+      width: auto;
+      font-size: 14px;
+      line-height: 16px;
+      color: #111111;
+    }
+
+    input {
+      position: absolute;
+      left: 130px;
+      width: 414px;
+      height: 39px;
+      border: 1px solid #CFCFCF;
+      border-radius: 2px;
+    }
+  }
+
+  .select-field {
+    margin-left: 130px;
+    border: 1px solid #CFCFCF;
+    border-radius: 2px;
+    width: 414px;
+    height: 39px;
+  }
+}
+
+.delete-text {
+  display: block;
+  width: 599px;
+  height: 75px;
+  font-size: 14px;
+  line-height: 23px;
+
+  a {
+    text-decoration: none;
+    color: #12B6ED;
+  }
+}
+
+.btn-profile {
+  margin-bottom: 17px;
+}
+
+.e-mail-button {
+  width: 363px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
