@@ -18,7 +18,7 @@ const Input = styled.input`
   display: inline-flex;
   box-sizing: border-box;
   width: 415px;
-  padding: 12px 16px 11px 16px;
+  padding: 9px 16px 9px 16px;
   border: 1px solid #bcbcbc;
   border-radius: 2px;
   outline: none;
