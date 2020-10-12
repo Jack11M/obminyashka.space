@@ -1,106 +1,70 @@
 package com.hillel.items_exchange.service;
 
-import com.hillel.items_exchange.dao.CategoryRepository;
 import com.hillel.items_exchange.dto.CategoryDto;
-import com.hillel.items_exchange.mapper.CategoryMapper;
-import com.hillel.items_exchange.model.Category;
-import com.hillel.items_exchange.model.Subcategory;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class CategoryService {
+public interface CategoryService {
 
-    private final CategoryRepository categoryRepository;
-    private final ModelMapper modelMapper;
-    private final CategoryMapper categoryMapper;
-    private final SubcategoryService subcategoryService;
+    /**
+     * Returns all category names.
+     *
+     * @return list of category names from DB that are represented as {@link String}
+     */
+    List<String> findAllCategoryNames();
 
-    public List<String> findAllCategoryNames() {
-        return categoryRepository.findAllCategoriesNames();
-    }
+    /**
+     * Returns all Category DTOs.
+     *
+     * @return list of category entities from DB that are represented as {@link CategoryDto}
+     */
+    List<CategoryDto> findAllCategoryDtos();
 
-    public List<CategoryDto> findAllCategories() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(this::mapCategoryToDto).collect(Collectors.toList());
-    }
+    /**
+     * Retrieves a category by its ID.
+     *
+     * @param categoryId is Category ID
+     * @return category entity from DB that is represented as {@link CategoryDto}
+     */
+    Optional<CategoryDto> findCategoryDtoById(long categoryId);
 
-    public Optional<CategoryDto> findCategoryById(long id) {
-        return categoryRepository.findById(id).map(this::mapCategoryToDto);
-    }
+    /**
+     * Creates a new category in the table 'category' and subcategory child records in table 'subcategory'
+     * or updates the existing category record and subcategory child records in the database.
+     *
+     * @param categoryDto must not be null.
+     * @return the created or updated Category DTO; will never be null.
+     */
+    CategoryDto saveCategoryWithSubcategories(CategoryDto categoryDto);
 
-    public CategoryDto addNewCategory(CategoryDto categoryDto) {
-        return categoryMapper.categoryToDto(categoryRepository
-                .save(categoryMapper.dtoToNewCategory(categoryDto)));
-    }
+    /**
+     * Removes the category with the given ID and subcategory child records from DB.
+     *
+     * @param categoryId is Category ID to remove.
+     */
+    void removeById(long categoryId);
 
-    public CategoryDto updateCategory(CategoryDto categoryDto) {
-        Category updatedCategory = categoryRepository.findCategoryById(categoryDto.getId());
+    /**
+     * Checks if a category with the given ID exists in DB and internal subcategories have not products.
+     *
+     * @param categoryId is Category ID.
+     * @return {@code true} if a category with the given ID can be deleted, {@code false} otherwise.
+     */
+    boolean isCategoryDtoDeletable(long categoryId);
 
-        return mapCategoryToDto(categoryRepository.save(categoryMapper.dtoToUpdatedCategory(categoryDto, updatedCategory)));
-    }
+    /**
+     * Checks if the category DTO ID exists in DB, updated category name has not duplicates and internal subcategories exist or have IDs equals zero.
+     *
+     * @param categoryDto must not be null.
+     * @return {@code true} if a category can be updated, {@code false} otherwise.
+     */
+    boolean isCategoryDtoUpdatable(CategoryDto categoryDto);
 
-    public void removeCategoryById(long categoryId) {
-        categoryRepository.deleteById(categoryId);
-    }
-
-    public boolean isCategoryExistsById(long categoryId) {
-        return categoryRepository.existsById(categoryId);
-    }
-
-    public boolean isCategoryDtoDeletable(long categoryId) {
-        return isCategoryExistsById(categoryId) && isInternalSubcategoriesHaveNotProducts(categoryId);
-    }
-
-    public boolean isCategoryDtoUpdatable(CategoryDto categoryDto) {
-        return isCategoryExistsById(categoryDto.getId())
-                && isCategoryNameHasNotDuplicateExceptCurrentName(categoryDto)
-                && isSubcategoryHasIdZeroOrIdExists(categoryDto);
-    }
-
-    private boolean isSubcategoryHasIdZeroOrIdExists(CategoryDto categoryDto) {
-        return categoryDto.getSubcategories().stream()
-                .filter(subcategoryDto -> subcategoryDto.getId() != 0)
-                .allMatch(subcategoryDto -> subcategoryService.isSubcategoryExistsById(subcategoryDto.getId()));
-    }
-
-    public boolean isCategoryNameHasNotDuplicate(String name) {
-        boolean categoryNamesHasDuplicate = findAllCategoryNames().stream()
-                .anyMatch(categoryName -> categoryName.equalsIgnoreCase(name));
-
-        return !categoryNamesHasDuplicate;
-    }
-
-    public boolean isCategoryNameHasNotDuplicateExceptCurrentName(CategoryDto categoryDto) {
-        Category category = categoryRepository.findCategoryById(categoryDto
-                .getId());
-
-        return findAllCategories().stream()
-                .filter(dto -> !dto.getName().equals(category.getName()))
-                .map(CategoryDto::getName)
-                .noneMatch(categoryName -> categoryName.equals(categoryDto.getName()));
-    }
-
-    private boolean isInternalSubcategoriesHaveNotProducts(long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .map(c -> c.getSubcategories().stream()
-                        .map(Subcategory::getId)
-                        .collect(Collectors.toList()))
-                .orElse(Collections.emptyList()).stream()
-                .allMatch(subcategoryService::isSubcategoryHasNotProducts);
-    }
-
-    private CategoryDto mapCategoryToDto(Category category) {
-        return modelMapper.map(category, CategoryDto.class);
-    }
+    /**
+     * Checks if the category DTO ID and internal subcategory IDs are zero and the category name has no duplicates.
+     *
+     * @param categoryDto must not be null.
+     * @return {@code true} if a category can be created, {@code false} otherwise.
+     */
+    boolean isCategoryDtoValidForCreating(CategoryDto categoryDto);
 }

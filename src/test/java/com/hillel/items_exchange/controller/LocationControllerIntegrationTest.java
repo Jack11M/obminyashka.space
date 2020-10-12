@@ -179,7 +179,7 @@ class LocationControllerIntegrationTest {
         mockMvc.perform(delete("/location")
                 .param("ids", "1"))
                 .andDo(print())
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andReturn();
     }
 }
