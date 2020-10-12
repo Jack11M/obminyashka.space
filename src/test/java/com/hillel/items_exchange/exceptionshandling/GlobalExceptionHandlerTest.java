@@ -6,8 +6,8 @@ import com.hillel.items_exchange.controller.UserController;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
-import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.CategoryTestUtil;
@@ -41,15 +41,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -87,10 +85,10 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleSecurityException() throws Exception {
-        when(advertisementController.updateAdvertisement(any(), any())).thenThrow(SecurityException.class);
+    void testHandleSecurityException() throws Exception {
+        when(advertisementController.updateAdvertisement(any(), any())).thenThrow(DataConflictException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/adv", nonExistDto, status().isConflict());
-        assertThat(result.getResolvedException(), is(instanceOf(SecurityException.class)));
+        assertThat(result.getResolvedException(), is(instanceOf(DataConflictException.class)));
     }
 
     @Test
@@ -108,10 +106,10 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleInvalidDtoException() throws Exception {
-        when(advertisementController.createAdvertisement(any(), any())).thenThrow(InvalidDtoException.class);
+    void testHandleInvalidDtoException() throws Exception {
+        when(advertisementController.createAdvertisement(any(), any())).thenThrow(IllegalIdentifierException.class);
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isBadRequest());
-        assertThat(result.getResolvedException(), is(instanceOf(InvalidDtoException.class)));
+        assertThat(result.getResolvedException(), is(instanceOf(IllegalIdentifierException.class)));
     }
 
     @Test

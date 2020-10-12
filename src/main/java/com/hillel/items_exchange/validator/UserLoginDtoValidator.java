@@ -1,14 +1,13 @@
 package com.hillel.items_exchange.validator;
 
-import org.springframework.stereotype.Component;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-
-import lombok.RequiredArgsConstructor;
-
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.exception.UnauthorizedException;
 import com.hillel.items_exchange.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
@@ -23,6 +22,7 @@ public class UserLoginDtoValidator implements Validator {
         return UserLoginDtoValidator.class.equals(aClass);
     }
 
+    @SneakyThrows(UnauthorizedException.class)
     @Override
     public void validate(Object o, Errors errors) {
         UserLoginDto userLoginDto = (UserLoginDto) o;

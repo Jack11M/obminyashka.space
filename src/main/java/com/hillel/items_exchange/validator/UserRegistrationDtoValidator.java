@@ -1,18 +1,17 @@
 package com.hillel.items_exchange.validator;
 
-import java.util.Objects;
-
+import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.exception.BadRequestException;
+import com.hillel.items_exchange.exception.UnprocessableEntityException;
+import com.hillel.items_exchange.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
-import lombok.RequiredArgsConstructor;
-
-import com.hillel.items_exchange.dto.UserRegistrationDto;
-import com.hillel.items_exchange.exception.BadRequestException;
-import com.hillel.items_exchange.exception.UnprocessableEntityException;
-import com.hillel.items_exchange.service.UserService;
+import java.util.Objects;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
@@ -27,6 +26,7 @@ public class UserRegistrationDtoValidator implements Validator {
         return UserRegistrationDto.class.equals(aClass);
     }
 
+    @SneakyThrows({BadRequestException.class, UnprocessableEntityException.class})
     @Override
     public void validate(Object o, Errors errors) {
         UserRegistrationDto userRegistrationDto = (UserRegistrationDto) o;

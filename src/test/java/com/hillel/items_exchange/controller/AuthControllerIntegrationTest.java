@@ -6,7 +6,6 @@ import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
-import com.hillel.items_exchange.exception.UnprocessableEntityException;
 import com.hillel.items_exchange.security.jwt.InvalidatedTokensHolder;
 import com.hillel.items_exchange.util.AuthControllerIntegrationTestUtil;
 import com.jayway.jsonpath.JsonPath;
@@ -21,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.UndeclaredThrowableException;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -85,10 +85,10 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andReturn();
 
-        assertThat(result.getResolvedException(), is(instanceOf(UnprocessableEntityException.class)));
+        assertThat(result.getResolvedException(), is(instanceOf(UndeclaredThrowableException.class)));
     }
 
     @Test
@@ -161,14 +161,14 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
 
     @Test
     @DataSet(value = "auth/login.yml")
-    void logout_Success_ShouldReturnStatusOk() throws Exception {
+    void logout_Success_ShouldReturnNoContent() throws Exception {
         final String token = obtainToken(createUserLoginDto());
         mockMvc.perform(post(LOGOUT_URL)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

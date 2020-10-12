@@ -7,6 +7,10 @@ import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -29,6 +33,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 
 @RestController
 @RequestMapping("/user")
+@Api(tags = "User")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -38,11 +43,21 @@ public class UserController {
 
     @GetMapping("/my-info")
     @PreAuthorize(HAS_ROLE_USER)
+    @ApiOperation(value = "Find a registered requested user's data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<UserDto> getPersonalInfo(Principal principal) {
         return ResponseEntity.of(userService.getByUsernameOrEmail(principal.getName()));
     }
 
     @PutMapping("/info")
+    @ApiOperation(value = "Update a registered requested user's data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws IllegalOperationException {
         User user = getUser(principal.getName());
@@ -53,15 +68,25 @@ public class UserController {
     }
 
     @GetMapping("/child")
+    @ApiOperation(value = "Find a registered requested user's children data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<ChildDto>> getChildren(Principal principal) {
-        return new ResponseEntity<>(userService.getChildren(getUser(principal.getName())), HttpStatus.OK);
+        List<ChildDto> children = userService.getChildren(getUser(principal.getName()));
+        return children.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(children, HttpStatus.OK);
     }
 
     @PostMapping("/child")
-    public ResponseEntity<HttpStatus> addChildren(@RequestBody
-                                                  @Size(min = 1, message = "{exception.invalid.dto}")
-                                                          List<@Valid ChildDto> childrenDto,
-                                                  Principal principal) {
+    @ApiOperation(value = "Add children data for a registered requested user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.OK)
+    public void addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+                                        List<@Valid ChildDto> childrenDto, Principal principal) {
         if (childrenDto.stream().anyMatch(dto -> dto.getId() > 0)) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(
@@ -69,28 +94,32 @@ public class UserController {
                             "Zero ID is expected"));
         }
         userService.addChildren(getUser(principal.getName()), childrenDto);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/child/{id}")
-    public ResponseEntity<HttpStatus> removeChildren(@PathVariable("id")
-                                                     @Size(min = 1, message = "{exception.invalid.dto}")
-                                                             List<@NotNull Long> childrenIdToRemove,
-                                                     Principal principal) {
+    @ApiOperation(value = "Delete child data for a registered requested user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.OK)
+    public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
+                                           List<@NotNull Long> childrenIdToRemove, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSource("exception.invalid.dto"));
         }
         userService.removeChildren(user, childrenIdToRemove);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/child")
-    public ResponseEntity<HttpStatus> updateChildren(@RequestBody
-                                                     @Size(min = 1, message = "{exception.invalid.dto}")
-                                                             List<@Valid ChildDto> childrenDto,
-                                                     Principal principal) {
+    @ApiOperation(value = "Delete child data for a registered requested user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+                                           List<@Valid ChildDto> childrenDto, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
@@ -99,7 +128,6 @@ public class UserController {
                             "Not all children from dto present in User"));
         }
         userService.updateChildren(user, childrenDto);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {
