@@ -79,20 +79,20 @@ public class LocationController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<LocationDto> updateLocation(@Valid @RequestBody LocationDto locationDto) {
-        if (!locationService.existsById(locationDto.getId())) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(locationService.update(locationDto), HttpStatus.OK);
+        return locationService.existsById(locationDto.getId()) ?
+                new ResponseEntity<>(locationService.update(locationDto), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping
     @ApiOperation(value = "Delete existed Locations by their IDs", notes = "ADMIN ONLY")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "NO CONTENT"),
+            @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<HttpStatus> deleteLocations(@RequestParam("ids") List<Long> locationIds) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteLocations(@RequestParam("ids") List<Long> locationIds) {
         List<LocationDto> locations = locationService.findByIds(locationIds);
         if (locationIds.size() != locations.size()) {
             locationIds.removeAll(UtilMapper.mapBy(locations, LocationDto::getId));
@@ -103,8 +103,6 @@ public class LocationController {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", strIds));
         }
-
         locationService.removeById(locationIds);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

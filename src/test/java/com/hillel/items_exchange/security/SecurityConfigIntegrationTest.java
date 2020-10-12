@@ -87,7 +87,7 @@ class SecurityConfigIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void loginWithNotValidUserIsOk() throws Exception {
+    void loginWithNotValidUserGetsBadRequest() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .content(asJsonString(notValidLoginDto))
                 .contentType(MediaType.APPLICATION_JSON)

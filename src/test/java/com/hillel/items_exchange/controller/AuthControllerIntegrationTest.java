@@ -161,7 +161,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
 
     @Test
     @DataSet(value = "auth/login.yml")
-    void logout_Success_ShouldReturnStatusOk() throws Exception {
+    void logout_Success_ShouldReturnNoContent() throws Exception {
         final String token = obtainToken(createUserLoginDto());
         mockMvc.perform(post(LOGOUT_URL)
                 .header("Authorization", "Bearer " + token)

@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.BaseEntity;
 import com.hillel.items_exchange.model.Product;
@@ -8,6 +9,7 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
+import com.hillel.items_exchange.util.MessageSourceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -104,15 +106,16 @@ public class ImageController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<HttpStatus> deleteImages(@PathVariable("advertisement_id")
-                                                       @PositiveOrZero(message = "{invalid.id}") long advertisementId,
-                                                   @RequestParam("ids") List<Long> imageIdList, Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteImages(@PathVariable("advertisement_id")
+                                 @PositiveOrZero(message = "{invalid.id}") long advertisementId,
+                             @RequestParam("ids") List<Long> imageIdList, Principal principal)
+            throws IllegalOperationException {
 
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            throw new IllegalOperationException(MessageSourceUtil.getExceptionMessageSource("user.not-owner"));
         }
         imageService.removeById(imageIdList);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private boolean isUserOwnsSelectedAdvertisement(long advertisementId, Principal principal) {

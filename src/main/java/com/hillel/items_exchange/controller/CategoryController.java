@@ -109,15 +109,13 @@ public class CategoryController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<CategoryDto> deleteCategoryById(@PathVariable("category_id")
-                                                          @Positive(message = "{invalid.exist.id}") long id)
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = "{invalid.exist.id}") long id)
             throws InvalidDtoException {
 
-        if (categoryService.isCategoryDtoDeletable(id)) {
-            categoryService.removeById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+        if (!categoryService.isCategoryDtoDeletable(id)) {
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "category.not-deletable"));
         }
-
-        throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "category.not-deletable"));
+        categoryService.removeById(id);
     }
 }
