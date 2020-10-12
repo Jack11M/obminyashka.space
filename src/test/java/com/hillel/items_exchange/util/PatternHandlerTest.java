@@ -263,6 +263,8 @@ class PatternHandlerTest {
         correctWords.add("aA1-a");
         correctWords.add("LengthIs50LengthIs50LengthIs50LengthIs50LengthIs50");
 
+        correctWords.addAll(getStringsWithRussianOrUkrCharacter("aa", "bb"));
+
         return correctWords;
     }
 
