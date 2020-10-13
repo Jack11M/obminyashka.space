@@ -2,7 +2,6 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
@@ -12,17 +11,19 @@ import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.util.PatternHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
@@ -35,6 +36,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
+    private static final Set<String> READONLY_FIELDS = Set.of("username", "lastOnlineTime", "children", "phones");
 
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
@@ -108,28 +110,21 @@ public class UserService {
     }
 
     private void checkReadOnlyFieldsUpdate(UserDto dto, User user) throws IllegalOperationException {
-        Set<String> fieldChanges = new HashSet<>();
-        if (!isEqual(user.getUsername(), dto.getUsername())) {
-            fieldChanges.add("Username");
-        }
-        if (!isEqual(user.getLastOnlineTime(), dto.getLastOnlineTime())) {
-            fieldChanges.add("LastOnlineTime");
-        }
-        if (!isEqual(convertAllTo(user.getChildren(), ChildDto.class, HashSet::new), dto.getChildren())) {
-            fieldChanges.add("Children");
-        }
-        dto.getPhones().forEach(phoneDto -> phoneDto.setPhoneNumber(phoneDto.getPhoneNumber().replaceAll("[^\\d]", "")));
-        if (!isEqual(convertAllTo(user.getPhones(), PhoneDto.class, HashSet::new), dto.getPhones())) {
-            fieldChanges.add("Phones");
-        }
+        User convertDto = UserMapper.convertDto(dto);
+        String errorResponse = READONLY_FIELDS.stream()
+                .filter(fieldName -> !checkReadOnlyFields(convertDto, user, fieldName))
+                .collect(Collectors.joining(", "));
 
-        if (!fieldChanges.isEmpty()) {
+        if (!errorResponse.isEmpty()) {
             throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.field.change") + String.join(", ", fieldChanges));
+                    getExceptionMessageSource("exception.illegal.field.change") + errorResponse);
         }
     }
 
-    private <T> boolean isEqual(T field1, T field2) {
-        return field1.equals(field2);
+    @SneakyThrows
+    private boolean checkReadOnlyFields(User toCompare, User original, String fieldName) {
+        Field declaredField = User.class.getDeclaredField(fieldName);
+        declaredField.setAccessible(true);
+        return declaredField.get(toCompare).equals(declaredField.get(original));
     }
 }

@@ -101,7 +101,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "Username"));
+                getExceptionMessageSource("exception.illegal.field.change") + "username"));
     }
 
     @Test
@@ -113,7 +113,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "LastOnlineTime"));
+                getExceptionMessageSource("exception.illegal.field.change") + "lastOnlineTime"));
     }
 
     @Test
@@ -125,7 +125,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "Children"));
+                getExceptionMessageSource("exception.illegal.field.change") + "children"));
     }
 
     @Test
@@ -137,7 +137,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "Phones"));
+                getExceptionMessageSource("exception.illegal.field.change") + "phones"));
     }
 
     @Test

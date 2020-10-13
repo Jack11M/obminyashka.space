@@ -1,10 +1,7 @@
 package com.hillel.items_exchange.mapper;
 
-import com.hillel.items_exchange.dto.PhoneDto;
-import com.hillel.items_exchange.model.Phone;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,15 +32,6 @@ public class UtilMapper {
 
     public static <T, K> K convertTo(T src, Class<K> kClass) {
         return mapper.map(src, kClass);
-    }
-
-    public static Phone mapPhones(PhoneDto phoneDto) {
-        Converter<String, Long> stringLongConverter = context ->
-                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
-        mapper.typeMap(PhoneDto.class, Phone.class)
-                .addMappings(mapper -> mapper.using(stringLongConverter)
-                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
-        return mapper.map(phoneDto, Phone.class);
     }
 
     public static <T, K> List<K> convertToDto(Collection<T> tCollection, Class<K> kClass) {
