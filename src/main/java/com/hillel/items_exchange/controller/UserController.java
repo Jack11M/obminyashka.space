@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
@@ -28,11 +27,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
-import java.util.HashSet;
-import java.util.function.Predicate;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_USER;
-import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
@@ -63,17 +59,14 @@ public class UserController {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
-            throws IllegalOperationException {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
+            throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
         if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
             throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
         }
-        if (!checkReadOnlyFieldsUpdate(user, userDto)) {
-            throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.field.change"));
-        }
-        return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
+        return userService.update(userDto, user);
     }
 
     @GetMapping("/child")
@@ -147,20 +140,5 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getExceptionMessageSource("exception.user.not-found")));
-    }
-
-    private boolean checkReadOnlyFieldsUpdate(User user, UserDto dto) {
-        Predicate<Boolean> username = b -> isEqual(user.getUsername(), dto.getUsername());
-        Predicate<Boolean> lastOnline = b -> isEqual(user.getLastOnlineTime(), dto.getLastOnlineTime());
-        Predicate<Boolean> children = b -> isEqual(
-                convertAllTo(user.getChildren(), ChildDto.class, HashSet::new), dto.getChildren());
-        dto.getPhones().forEach(phoneDto -> phoneDto.setPhoneNumber(phoneDto.getPhoneNumber().replaceAll("[^\\d]", "")));
-        Predicate<Boolean> phones = b -> isEqual(convertAllTo(user.getPhones(), PhoneDto.class, HashSet::new),
-                dto.getPhones());
-        return username.and(lastOnline).and(children).and(phones).test(true);
-    }
-
-    private <T> boolean isEqual(T field1, T field2) {
-        return field1.equals(field2);
     }
 }

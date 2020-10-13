@@ -2,8 +2,10 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Role;
@@ -16,12 +18,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +53,8 @@ public class UserService {
         return userRepository.save(registeredUser).getId() != 0;
     }
 
-    public UserDto update(UserDto newUserDto, User user) {
+    public UserDto update(UserDto newUserDto, User user) throws IllegalOperationException {
+        checkReadOnlyFieldsUpdate(newUserDto, user);
         BeanUtils.copyProperties(newUserDto, user,
                 "id", "created", "updated", "status", "username", "password", "online",
                 "lastOnlineTime", "role", "advertisements", "deals", "phones", "children");
@@ -99,5 +105,31 @@ public class UserService {
     public void removeChildren(User parent, List<Long> childrenIdToRemove) {
         parent.getChildren().removeIf(child -> childrenIdToRemove.contains(child.getId()));
         userRepository.saveAndFlush(parent);
+    }
+
+    private void checkReadOnlyFieldsUpdate(UserDto dto, User user) throws IllegalOperationException {
+        Set<String> fieldChanges = new HashSet<>();
+        if (!isEqual(user.getUsername(), dto.getUsername())) {
+            fieldChanges.add("Username");
+        }
+        if (!isEqual(user.getLastOnlineTime(), dto.getLastOnlineTime())) {
+            fieldChanges.add("LastOnlineTime");
+        }
+        if (!isEqual(convertAllTo(user.getChildren(), ChildDto.class, HashSet::new), dto.getChildren())) {
+            fieldChanges.add("Children");
+        }
+        dto.getPhones().forEach(phoneDto -> phoneDto.setPhoneNumber(phoneDto.getPhoneNumber().replaceAll("[^\\d]", "")));
+        if (!isEqual(convertAllTo(user.getPhones(), PhoneDto.class, HashSet::new), dto.getPhones())) {
+            fieldChanges.add("Phones");
+        }
+
+        if (!fieldChanges.isEmpty()) {
+            throw new IllegalOperationException(
+                    getExceptionMessageSource("exception.illegal.field.change") + String.join(", ", fieldChanges));
+        }
+    }
+
+    private <T> boolean isEqual(T field1, T field2) {
+        return field1.equals(field2);
     }
 }
