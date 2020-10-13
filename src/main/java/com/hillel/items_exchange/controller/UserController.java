@@ -3,6 +3,7 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
@@ -58,13 +59,14 @@ public class UserController {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<UserDto> updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
-            throws IllegalOperationException {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
+            throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
-        checkReadOnlyFieldUpdate(user.getUsername(), userDto.getUsername(), "Username");
-        checkReadOnlyFieldUpdate(user.getLastOnlineTime(), userDto.getLastOnlineTime(), "LastOnlineTime");
-
-        return new ResponseEntity<>(userService.update(userDto, user), HttpStatus.ACCEPTED);
+        if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
+            throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
+        }
+        return userService.update(userDto, user);
     }
 
     @GetMapping("/child")
@@ -138,13 +140,5 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getExceptionMessageSource("exception.user.not-found")));
-    }
-
-    private <T> void checkReadOnlyFieldUpdate(T field1, T field2, String fieldName) throws IllegalOperationException {
-        if (!field1.equals(field2)) {
-            log.warn("Illegal operation: field change {}", fieldName);
-            throw new IllegalOperationException(
-                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.field.change", fieldName));
-        }
     }
 }
