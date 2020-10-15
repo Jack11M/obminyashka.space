@@ -1,11 +1,18 @@
 package com.hillel.items_exchange.mapper;
 
+import com.hillel.items_exchange.dto.PhoneDto;
+import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.model.Phone;
 import com.hillel.items_exchange.model.Role;
 import com.hillel.items_exchange.model.Status;
 import com.hillel.items_exchange.model.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.modelmapper.Converter;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +23,12 @@ import java.util.Collections;
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
+    private static ModelMapper mapper;
+
+    @Autowired
+    public void setModelMapper(ModelMapper modelMapper) {
+        mapper = modelMapper;
+    }
 
     public static User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto,
                                                  BCryptPasswordEncoder bCryptPasswordEncoder,
@@ -40,5 +53,16 @@ public class UserMapper {
         user.setLastOnlineTime(LocalDateTime.now());
         user.setStatus(Status.ACTIVE);
         return user;
+    }
+
+    public static User convertDto(UserDto userDto) {
+        Converter<String, Long> stringLongConverter = context ->
+                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
+        mapper.typeMap(UserDto.class, User.class).addMappings(mapper -> mapper.skip(User::setRole));
+        mapper.typeMap(PhoneDto.class, Phone.class)
+                .addMappings(mapper -> mapper.using(stringLongConverter)
+                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
+        return mapper.map(userDto, User.class);
     }
 }

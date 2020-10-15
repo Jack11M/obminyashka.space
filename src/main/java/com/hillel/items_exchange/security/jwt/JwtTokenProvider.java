@@ -10,11 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
@@ -31,6 +31,7 @@ public class JwtTokenProvider {
     private String secret;
     @Value("${app.jwt.expiration.time.ms}")
     private long jwtTokenExpireTime;
+    private final InvalidatedTokensHolder invalidatedTokensHolder;
 
     @PostConstruct
     protected void init() {
@@ -80,11 +81,27 @@ public class JwtTokenProvider {
     public boolean validateToken(String token, HttpServletRequest req) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
+            return !claims.getBody().getExpiration().before(new Date())
+                    && !invalidatedTokensHolder.isInvalidated(token);
         } catch (JwtException e) {
             log.error("Unauthorized: {}", e.getMessage());
             req.setAttribute("detailedError", e.getMessage());
             return false;
+        }
+    }
+
+    public void invalidateToken(String token) {
+        final Date expirationDate = getTokenExpirationDate(token)
+                .orElseThrow(() -> new JwtException(getExceptionMessageSource("invalid.token")));
+        invalidatedTokensHolder.invalidate(token, expirationDate);
+    }
+
+    public Optional<Date> getTokenExpirationDate(String token) {
+        try {
+            return Optional.ofNullable(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration());
+        } catch (JwtException exception) {
+            log.error("Token parsing error {}", exception.getMessage());
+            return Optional.empty();
         }
     }
 }

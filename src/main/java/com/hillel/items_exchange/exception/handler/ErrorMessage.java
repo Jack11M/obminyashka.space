@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpMethod;
 
-import java.util.List;
 import java.util.StringJoiner;
 
 @Getter
@@ -14,13 +13,12 @@ import java.util.StringJoiner;
 public class ErrorMessage {
 
     private String timestamp;
-    private int status;
     private String error;
-    private List<String> details;
     private String path;
     private HttpMethod method;
 
-    public String errorLog() {
+    @Override
+    public String toString() {
         StringJoiner joiner = new StringJoiner(".", "Api error: ", ".");
         joiner.add(error);
         joiner.add(" At " + timestamp);

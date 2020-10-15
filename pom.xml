@@ -6,7 +6,7 @@
 
     <artifactId>com.hillel</artifactId>
     <description>cge</description>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
     <parent>
