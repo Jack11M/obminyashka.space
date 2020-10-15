@@ -83,7 +83,7 @@ public class ImageServiceImpl implements ImageService {
 
             if (param.canWriteCompressed()) {
                 param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                float quality = 0.20f; //percents
+                float quality = 0.30f; //percents
                 param.setCompressionQuality(quality);
             }
 
