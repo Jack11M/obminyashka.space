@@ -35,7 +35,7 @@ public interface ImageService {
     List<byte[]> compress(List<MultipartFile> images) throws IOException, UnsupportedMediaTypeException;
 
     /**
-     * Make in-memory compressing (20% of basic quality) only for supported types of images
+     * Make in-memory compressing (30% of basic quality) only for supported types of images
      * @param image image for further compression
      * @return compresses image's bytes
      * @throws IOException in cases when received image is corrupted or it's impossible to read it properly
@@ -70,4 +70,12 @@ public interface ImageService {
      * @param imageId ID image to remove
      */
     void removeById(long imageId);
+
+    /**
+     * Makes scaled image (thumbnail) from given image bytes
+     * @param bytes bytes representative of image to scale
+     * @return scaled image bytes
+     * @throws IOException in cases when received bytes impossible to read it properly
+     */
+    byte[] scale(byte[] bytes) throws IOException;
 }

@@ -19,14 +19,22 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static java.awt.Image.SCALE_REPLICATE;
+import static java.awt.Image.SCALE_SMOOTH;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +44,7 @@ public class ImageServiceImpl implements ImageService {
     private final Set<String> supportedTypes = Arrays.stream(SupportedMediaTypes.values())
             .map(SupportedMediaTypes::getMediaType)
             .collect(Collectors.toSet());
+    private static final int THUMBNAIL_EDGE = 300;
 
     @Override
     public List<byte[]> getImagesResourceByProductId(long productId) {
@@ -135,5 +144,34 @@ public class ImageServiceImpl implements ImageService {
                 .map(MultipartFile::getContentType)
                 .filter(Predicate.not(supportedTypes::contains))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public byte[] scale(byte[] bytes) throws IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            BufferedImage originImage = ImageIO.read(bais);
+            Dimension newSize = calculatePreferThumbnailSize(
+                    new Dimension(originImage.getWidth(), originImage.getHeight()));
+            BufferedImage scaledImage = getScaled(newSize, originImage);
+            String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
+            ImageIO.write(scaledImage, type, baos);
+            return baos.toByteArray();
+        }
+    }
+
+    private BufferedImage getScaled(Dimension d, BufferedImage originImage) {
+        java.awt.Image scaledInstance = originImage.getScaledInstance(d.width, d.height, SCALE_SMOOTH);
+        BufferedImage resizedImage = new BufferedImage(d.width, d.height, SCALE_REPLICATE);
+        resizedImage.getGraphics().drawImage(scaledInstance, 0, 0, d.width, d.height, Color.WHITE, null);
+        return resizedImage;
+    }
+
+    private Dimension calculatePreferThumbnailSize(Dimension origin) {
+        double w = 1.0 * THUMBNAIL_EDGE / origin.width;
+        double h = 1.0 * THUMBNAIL_EDGE / origin.height;
+        double p = Math.max(w, h);
+        return new Dimension((int) (origin.width * p), (int) (origin.height * p));
     }
 }
