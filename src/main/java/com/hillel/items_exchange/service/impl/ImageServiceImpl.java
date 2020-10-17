@@ -10,6 +10,7 @@ import com.hillel.items_exchange.service.SupportedMediaTypes;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +45,8 @@ public class ImageServiceImpl implements ImageService {
     private final Set<String> supportedTypes = Arrays.stream(SupportedMediaTypes.values())
             .map(SupportedMediaTypes::getMediaType)
             .collect(Collectors.toSet());
-    private static final int THUMBNAIL_EDGE = 300;
+    @Value("${app.image.thumbnail.edge.px}")
+    private int thumbnailEdge;
 
     @Override
     public List<byte[]> getImagesResourceByProductId(long productId) {
@@ -169,9 +171,9 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private Dimension calculatePreferThumbnailSize(Dimension origin) {
-        double w = 1.0 * THUMBNAIL_EDGE / origin.width;
-        double h = 1.0 * THUMBNAIL_EDGE / origin.height;
-        double p = Math.max(w, h);
-        return new Dimension((int) (origin.width * p), (int) (origin.height * p));
+        double tumbWidth = 1.0 * thumbnailEdge / origin.width;
+        double tumbHeight = 1.0 * thumbnailEdge / origin.height;
+        double ratio = Math.max(tumbWidth, tumbHeight);
+        return new Dimension((int) (origin.width * ratio), (int) (origin.height * ratio));
     }
 }
