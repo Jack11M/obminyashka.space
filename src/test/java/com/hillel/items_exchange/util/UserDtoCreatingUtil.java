@@ -3,6 +3,7 @@ package com.hillel.items_exchange.util;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.model.ChildGender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,8 +13,8 @@ import java.util.Set;
 public class UserDtoCreatingUtil {
 
     public static final Set<ChildDto> EXISTED_CHILDREN = Set.of(
-            new ChildDto(1L, "male", LocalDate.of(2019, 1, 1)),
-            new ChildDto(2L, "female", LocalDate.of(2019, 2, 2)));
+            new ChildDto(1L, ChildGender.MALE, LocalDate.of(2019, 1, 1)),
+            new ChildDto(2L, ChildGender.FEMALE, LocalDate.of(2019, 2, 2)));
     public static final String NEW_USERNAME = "newUsername123";
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
