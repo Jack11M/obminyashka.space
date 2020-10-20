@@ -3,7 +3,6 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,8 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
 
+import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
@@ -47,6 +45,8 @@ class UserControllerTest {
     private String notValidCreatingChildDtoJson;
     private String validUpdatingChildDtoJson;
     private String notValidUpdatingChildDtoJson;
+    private String badTotalAmountChildDtoJson;
+    private String badAmountChildDtoJson;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +54,8 @@ class UserControllerTest {
         notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
         validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
+        badTotalAmountChildDtoJson = getJsonOfChildrenDto(9);
+        badAmountChildDtoJson = getJsonOfChildrenDto(11);
     }
 
     @Test
@@ -247,7 +249,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Zero ID is expected"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("New entity must have only id equals zero"));
     }
 
     @Test
@@ -264,18 +266,31 @@ class UserControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
-    private String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
-        return asJsonString(List.of(
-                getChildDto(maleId, LocalDate.of(year, 3, 3), "male"),
-                getChildDto(femaleId, LocalDate.of(year, 4, 4), "female")
-        ));
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChild_BadAmount_ShouldThrowConstraintViolationException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid data transfer object"));
     }
 
-    private ChildDto getChildDto(long id, LocalDate birthDate, String sex) {
-        return ChildDto.builder()
-                .id(id)
-                .birthDate(birthDate)
-                .sex(sex)
-                .build();
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChild_BadTotalAmount_ShouldThrowEntityAmountException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badTotalAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("You can't add more than 10 children"));
     }
 }

@@ -5,13 +5,13 @@ import com.hillel.items_exchange.controller.CategoryController;
 import com.hillel.items_exchange.controller.UserController;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.CategoryDto;
+import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.DataConflictException;
+import com.hillel.items_exchange.exception.EntityAmountException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
-import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
-import com.hillel.items_exchange.util.CategoryTestUtil;
-import com.hillel.items_exchange.util.UserDtoCreatingUtil;
+import com.hillel.items_exchange.util.*;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,13 +34,14 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
+import java.util.List;
+
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +57,7 @@ class GlobalExceptionHandlerTest {
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
     private UserDto userDtoWithChangedUsername;
+    private List<ChildDto> childDtoList;
 
     @Mock
     AdvertisementController advertisementController;
@@ -71,6 +73,7 @@ class GlobalExceptionHandlerTest {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutPhones();
+        childDtoList = ChildDtoCreatingUtil.getChildrenDtoList(1);
 
         mockMvc = MockMvcBuilders.standaloneSetup(advertisementController, categoryController, userController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -155,6 +158,15 @@ class GlobalExceptionHandlerTest {
                 .andReturn();
 
         assertThat(result.getResolvedException(), is(instanceOf(MethodArgumentNotValidException.class)));
+    }
+
+    @Test
+    void testHandleEntityAmountException() throws Exception {
+        doThrow(new EntityAmountException(MessageSourceUtil
+                .getExceptionMessageSource("exception.max-amount-of-children")))
+                .when(userController).addChildren(any(), any());
+        MvcResult result = getResult(HttpMethod.POST, "/user/child", childDtoList, status().isNotAcceptable());
+        assertThat(result.getResolvedException(), is(instanceOf(EntityAmountException.class)));
     }
 
     private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,
