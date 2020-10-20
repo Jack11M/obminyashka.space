@@ -26,7 +26,6 @@ public class UserDto {
     private String username;
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 129, message = "{invalid.email}")
     @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String email;
     @NotNull(message = "{invalid.not-null}")
