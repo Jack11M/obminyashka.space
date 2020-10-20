@@ -23,7 +23,7 @@ The technologies used:
 Use a project builder [maven](https://maven.apache.org/index.html) to install the project if you fulfil the requirements.
 ```bash
 mvn clean install
-mvn spring-boot:run -Dspring-boot.run-arguments=--p='your_local_DB_password',--logs-path=.
+mvn spring-boot:run -Dspring-boot.run-arguments=--p='your_local_DB_password'.
 ```
 Otherwise, use [docker](https://www.docker.com/get-started) to run the project without installation.
 ```bash
