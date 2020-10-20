@@ -3,6 +3,7 @@ package com.hillel.items_exchange.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -44,4 +45,7 @@ public class Advertisement extends BaseEntity {
     private void saveProduct() {
         product.setAdvertisement(this);
     }
+
+    @OneToMany(mappedBy = "advertisement")
+    private List<Chat> chats;
 }
