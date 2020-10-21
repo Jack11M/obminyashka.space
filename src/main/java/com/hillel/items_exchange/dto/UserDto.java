@@ -40,7 +40,7 @@ public class UserDto {
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")
     private String lastName;
     @NotNull(message = "{invalid.not-null}")
-    private String avatarImage;
+    private byte[] avatarImage;
     @ApiModelProperty(required = true, example = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
