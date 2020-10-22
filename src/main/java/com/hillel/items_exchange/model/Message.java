@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,12 +31,20 @@ public class Message {
     private String text;
     @OneToMany(mappedBy = "message")
     List<Attachment> attachments;
-
-    @Column(name = "created", columnDefinition = "DATE", nullable = false, updatable = false)
-    @CreatedDate
     private LocalDateTime created;
-
-    @Column(name = "updated", columnDefinition = "DATE", nullable = false)
-    @LastModifiedDate
     private LocalDateTime updated;
+    @Enumerated(EnumType.STRING)
+    private MessageStatus status;
+
+    @PrePersist
+    private void onPrePersist() {
+        created = LocalDateTime.now();
+        updated = LocalDateTime.now();
+        status = MessageStatus.NEW;
+    }
+
+    @PreUpdate
+    private void onPreUpdate() {
+        updated = LocalDateTime.now();
+    }
 }

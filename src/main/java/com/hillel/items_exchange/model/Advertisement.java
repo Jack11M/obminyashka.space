@@ -41,11 +41,11 @@ public class Advertisement extends BaseEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
 
+    @OneToMany(mappedBy = "advertisement")
+    private List<Chat> chats;
+
     @PrePersist
     private void saveProduct() {
         product.setAdvertisement(this);
     }
-
-    @OneToMany(mappedBy = "advertisement")
-    private List<Chat> chats;
 }

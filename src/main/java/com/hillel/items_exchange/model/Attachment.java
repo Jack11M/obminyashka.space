@@ -19,6 +19,6 @@ public class Attachment {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;
-    private String type; //TODO CHECK THIS
+    private String type;
     private byte[] file_content;
 }

@@ -13,15 +13,9 @@ ADVERTISEMENT:
     UPDATED: "2019-01-01 00:00:00.0"
     STATUS: "ACTIVE"
 
-ATTACHMENT:
-
-BLACK_LIST:
-
 CATEGORY:
   - ID: 1
     NAME: "shoes"
-
-CHAT:
 
 CHILD:
 
@@ -33,8 +27,6 @@ LOCATION:
   - ID: 1
     CITY: "Kharkiv"
     DISTRICT: "Kharkivska district"
-
-MESSAGE:
 
 PHONE:
 
@@ -69,7 +61,18 @@ USER:
     CREATED: "2019-01-01 00:00:00.0"
     UPDATED: "2019-01-01 00:00:00.0"
     STATUS: "ACTIVE"
-
-USER_CHAT:
+  - ID: 2
+    ROLE_ID: 1
+    USERNAME: "test2"
+    PASSWORD: "$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6"
+    EMAIL: "test2@gmail.com"
+    FIRST_NAME: "firstname2"
+    LAST_NAME: "lastname2"
+    AVATAR_IMAGE: "empty"
+    ONLINE: "false"
+    LAST_ONLINE_TIME: "2019-01-01 00:00:01.0"
+    CREATED: "2019-01-01 00:00:00.0"
+    UPDATED: "2019-01-01 00:00:00.0"
+    STATUS: "ACTIVE"
 
 USER_DEAL:

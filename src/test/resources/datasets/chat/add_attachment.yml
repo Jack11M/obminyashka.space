@@ -1,0 +1,9 @@
+ATTACHMENT:
+  - ID: 1
+    MESSAGE_ID: 1
+    TYPE: "jpg"
+    FILE_CONTENT: "ZmlsZV9jb250ZW50"
+  - ID: 2
+    MESSAGE_ID: 1
+    TYPE: "png"
+    FILE_CONTENT: "ZmlsZV9jb250ZW50Mg=="
