@@ -10,6 +10,7 @@ import com.hillel.items_exchange.service.SupportedMediaTypes;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +20,22 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static java.awt.Image.SCALE_REPLICATE;
+import static java.awt.Image.SCALE_SMOOTH;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +45,8 @@ public class ImageServiceImpl implements ImageService {
     private final Set<String> supportedTypes = Arrays.stream(SupportedMediaTypes.values())
             .map(SupportedMediaTypes::getMediaType)
             .collect(Collectors.toSet());
+    @Value("${app.image.thumbnail.edge.px}")
+    private int thumbnailEdge;
 
     @Override
     public List<byte[]> getImagesResourceByProductId(long productId) {
@@ -83,7 +94,7 @@ public class ImageServiceImpl implements ImageService {
 
             if (param.canWriteCompressed()) {
                 param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                float quality = 0.20f; //percents
+                float quality = 0.30f; //percents
                 param.setCompressionQuality(quality);
             }
 
@@ -135,5 +146,34 @@ public class ImageServiceImpl implements ImageService {
                 .map(MultipartFile::getContentType)
                 .filter(Predicate.not(supportedTypes::contains))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public byte[] scale(byte[] bytes) throws IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+            BufferedImage originImage = ImageIO.read(bais);
+            Dimension newSize = calculatePreferThumbnailSize(
+                    new Dimension(originImage.getWidth(), originImage.getHeight()));
+            BufferedImage scaledImage = getScaled(newSize, originImage);
+            String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
+            ImageIO.write(scaledImage, type, baos);
+            return baos.toByteArray();
+        }
+    }
+
+    private BufferedImage getScaled(Dimension d, BufferedImage originImage) {
+        java.awt.Image scaledInstance = originImage.getScaledInstance(d.width, d.height, SCALE_SMOOTH);
+        BufferedImage resizedImage = new BufferedImage(d.width, d.height, SCALE_REPLICATE);
+        resizedImage.getGraphics().drawImage(scaledInstance, 0, 0, d.width, d.height, Color.WHITE, null);
+        return resizedImage;
+    }
+
+    private Dimension calculatePreferThumbnailSize(Dimension origin) {
+        double tumbWidth = 1.0 * thumbnailEdge / origin.width;
+        double tumbHeight = 1.0 * thumbnailEdge / origin.height;
+        double ratio = Math.max(tumbWidth, tumbHeight);
+        return new Dimension((int) (origin.width * ratio), (int) (origin.height * ratio));
     }
 }
