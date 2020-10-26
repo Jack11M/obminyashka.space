@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.hillel.items_exchange.util.PatternHandler.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatternHandlerTest {
+
+    private static final String BASE_PHONE_NUMBER_PATTERN =
+            "^\\s*(?<country>\\+?\\d{2})([-. (]*)(?<area>\\d{3})([-. )]*)(\\d{3})([-. ]*)(\\d{2})([-. ]*)(\\d{2})\\s*$";
 
     @ParameterizedTest
     @MethodSource("createCorrectEmails")
@@ -100,10 +104,10 @@ class PatternHandlerTest {
                 "1@111.ru1",
                 "1@ma~il.ru"));
 
-        List<Character> correctCharacters = List.of('.', '_', '+', '-');
+        List<String> correctCharacters = List.of(".", "_", "+", "-");
 
         wrongEmails.addAll(getStringsWithSpecialSymbol("pu", "shkin@ukr.net", correctCharacters));
-        wrongEmails.addAll(getStringsWithRussianOrUkrCharacter("pu", "shkin@ukr.net"));
+        wrongEmails.addAll(getStringsWithRussianOrUkrSymbol("pu", "shkin@ukr.net"));
 
         return wrongEmails;
     }
@@ -144,67 +148,82 @@ class PatternHandlerTest {
                 "1#A",
                 "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"));
 
-        wrongPasswords.addAll(getStringsWithRussianOrUkrCharacter("a", "A1"));
+        wrongPasswords.addAll(getStringsWithRussianOrUkrSymbol("a", "A1"));
 
         return wrongPasswords;
     }
 
-    private static List<String> createCorrectPhoneNumbers() {
+    private static List<String> getCorrectPhoneNumbers() {
+        List<String> correctPhoneNumbers = new ArrayList<>();
 
-        return List.of(
-                "+38-050-223-32-23",
-                "38-050-223-32-23",
-                "     38  -  050  -  223  -  32  -  23     ",
-                "     38-050  -223-32-23     ",
-                "     38-050-223-   32-23     ",
-                "+38.050.223.32.23",
-                "38.050.223.32.23",
-                "     38.050.223.32.23     ",
-                "+38-(050)-223-32-23",
-                "+38-(050-223-32-23",
-                "+38-050)-223-32-23",
-                "+38-050.223-32-23",
-                "+38-050-223.32-23",
-                "+38-050-223-32.23",
-                "+38-050.223.32.23",
-                "+38.050.223-32-23",
-                "+38.050-223.32-23",
-                "+38.050-223-32.23",
-                "+38.050-223-32-23",
-                "+00-000-000-00-00");
+        String correctNumber = "+12-345-678-90-12";
+        String correctNumber1 = "13.345.678.90.13";
+
+        correctPhoneNumbers.add(correctNumber);
+        correctPhoneNumbers.add(correctNumber1);
+
+        return correctPhoneNumbers;
+    }
+
+    private static List<String> createCorrectPhoneNumbers() {
+        List<String> correctPhoneNumbers = getCorrectPhoneNumbers();
+
+        List<String> tempList = new ArrayList<>();
+        for (String str : correctPhoneNumbers) {
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "   $1-$2-$3-$4-$5-$6-$7-$8-$9   "));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "   $1.$2.$3.$4.$5.$6.$7.$8.$9   "));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$3$5$7$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1     $3     $5     $7     $9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2($3)$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1($3)$5$7$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1(.- $3 -.)$5 -.- $7 -.- $9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2(   $3   )$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2((($3)))$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2(((((($3.-.-.)$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2(---$3...)$4$5$6$7$8$9"));
+        }
+        correctPhoneNumbers.addAll(tempList);
+
+        return correctPhoneNumbers;
     }
 
     private static List<String> createWrongPhoneNumbers() {
-        List<String> wrongPhoneNumbers = new ArrayList<>(List.of(
-                "+3-050-223-32-23",
-                "+38-50-223-32-23",
-                "+38-050-22-32-23",
-                "+38-050-223-3-23",
-                "+38-050-223-32-2",
-                "+38-)050-223-32-23",
-                "+38-050(-223-32-23",
-                "+38-)050(-223-32-23",
-                "+38-050-(223)-32-23",
-                "+38-050-(223)-(32)-(23)",
-                "    +  38-050-223-32-23     ",
-                "    ++  38-050-223-32-23     ",
-                "    +  3  8-050-223-32-23     ",
-                "    +  38-0  50-223-32-23     ",
-                "    +  38-050-22  3-32-23     ",
-                "+38-05a-223-32-23",
-                "+38-05O-223-32-23",
-                "+38-05Ы-223-32-23",
-                "+38-05ё-223-32-23",
-                "+38-050-22W-32-23",
-                "+38-050-223-3w-23",
-                "+38-050-22Й-32-23",
-                "+38-050-223-3щ-23"));
+        List<String> wrongPhoneNumbers = getCorrectPhoneNumbers();
+        List<String> tempList = new ArrayList<>();
+        for (String str : wrongPhoneNumbers) {
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, " $2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "+3$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "+ 3$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "+$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "3$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$212$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2 12$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2 12 $4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2+12$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2(12)$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2( 12)$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2(+12)$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2)$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2$3($4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2)$3($4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2$3$4($5)$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2$3$4$5($6)$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "+ 38$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "++38$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "+3 8$2$3$4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2 0 50 $4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2 05 0 $4$5$6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2$3$4 67 8 $6$7$8$9"));
+            tempList.add(str.replaceAll(BASE_PHONE_NUMBER_PATTERN, "$1$2$3$4 6 7 8 $6$7$8$9"));
+        }
+        wrongPhoneNumbers.clear();
+        wrongPhoneNumbers.addAll(tempList);
 
-        List<Character> correctCharacters = List.of('.', '-');
+        List<String> correctCharacters = List.of(".", "-");
         wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-050-223", "32-23", correctCharacters));
         wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.050.223", "32.23", correctCharacters));
-        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-050-223-", "2-23", correctCharacters));
-        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.050.223.", "2.23", correctCharacters));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38-050-223-", "2-23", Collections.emptyList()));
+        wrongPhoneNumbers.addAll(getStringsWithSpecialSymbol("+38.050.223.", "2.23", Collections.emptyList()));
 
         return wrongPhoneNumbers;
     }
@@ -224,7 +243,7 @@ class PatternHandlerTest {
                 "a+$"));
 
         correctNames.addAll(getStringsWithSpecialSymbol("pu", "shkin", Collections.emptyList()));
-        correctNames.addAll(getStringsWithRussianOrUkrCharacter("aaa", "bbb"));
+        correctNames.addAll(getStringsWithRussianOrUkrSymbol("aaa", "bbb"));
 
         return correctNames;
     }
@@ -255,8 +274,7 @@ class PatternHandlerTest {
                 "aA1_a",
                 "LengthIs50LengthIs50LengthIs50LengthIs50LengthIs50"));
 
-        correctWords.addAll(getStringsWithRussianOrUkrCharacter("aa", "bb"));
-
+        correctWords.addAll(getStringsWithRussianOrUkrSymbol("aa", "bb"));
         return correctWords;
     }
 
@@ -275,33 +293,54 @@ class PatternHandlerTest {
                 "w ",
                 "ThisWordHasLengthMoreThan50CharactersItsLengthIs51S"));
 
-        List<Character> correctCharacters = List.of('\'', '_', '`', '-');
+        List<String> correctCharacters = List.of("_", "-", "`", "'");
         wrongWords.addAll(getStringsWithSpecialSymbol("aaa", "bbb", correctCharacters));
         wrongWords.addAll(getStringsWithSpecialSymbol("", "", Collections.emptyList()));
-        wrongWords.addAll(getStringsWithRussianOrUkrCharacter("", ""));
+        wrongWords.addAll(getStringsWithRussianOrUkrSymbol("", ""));
 
         return wrongWords;
     }
 
-    private static List<String> getStringsWithSpecialSymbol(String str1, String str2, List<Character> deletedCharacters) {
-        List<Character> addedCharacters = new ArrayList<>(List.of(
-                '`', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '[', ']', '{', '}', '\'', '"',
-                ':', ';', '/', '\\', '|', '?', '.', ',', '<', '>', '-', '_'));
+    private static List<String> getStringsWithSpecialSymbol(String str1, String str2, List<String> deletedCharacters) {
+        List<String> addedCharacters = getSpecialCharacters();
         addedCharacters.removeAll(deletedCharacters);
 
         return addedCharacters.stream()
-                .map(character -> str1.concat(String.valueOf(character)).concat(str2))
+                .map(character -> str1.concat(character).concat(str2))
                 .collect(Collectors.toList());
     }
 
-    private static List<String> getStringsWithRussianOrUkrCharacter(String str1, String str2) {
-        List<Character> russianChars = List.of(
-                'Й', 'й', 'Ц', 'ц', 'У', 'у', 'Г', 'г', 'Ш', 'ш', 'Щ', 'щ', 'З', 'з', 'Х', 'х', 'Ъ', 'ъ', 'Ф', 'ф',
-                'Ы', 'ы', 'П', 'п', 'Л', 'л', 'Д', 'д', 'Ж', 'ж', 'Э', 'э', 'Я', 'я', 'Ч', 'ч', 'М', 'м', 'Ь', 'ь',
-                'Б', 'б', 'Ю', 'ю', 'Ґ', 'Є', 'І', 'Ї', 'і', 'є', 'ї', 'ґ');
+    private static List<String> getSpecialCharacters() {
+        List<String> specialCharacters = new ArrayList<>();
+
+        IntStream.range(33, 48).forEach(i -> specialCharacters.add(String.valueOf((char) i)));
+        IntStream.range(58, 65).forEach(i -> specialCharacters.add(String.valueOf((char) i)));
+        IntStream.range(91, 97).forEach(i -> specialCharacters.add(String.valueOf((char) i)));
+        IntStream.range(123, 127).forEach(i -> specialCharacters.add(String.valueOf((char) i)));
+
+        return specialCharacters;
+    }
+
+    private static List<String> getStringsWithRussianOrUkrSymbol(String str1, String str2) {
+        List<String> russianChars = getRussianAndUkrLetters();
 
         return russianChars.stream()
                 .map(character -> str1.concat(String.valueOf(character)).concat(str2))
                 .collect(Collectors.toList());
+    }
+
+    private static List<String> getRussianAndUkrLetters() {
+        List<String> russianAndUkrLetters = new ArrayList<>();
+
+        russianAndUkrLetters.add(String.valueOf((char) 1025));
+        russianAndUkrLetters.add(String.valueOf((char) 1028));
+        IntStream.range(1030, 1032).forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
+        IntStream.range(1040, 1104).forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
+        russianAndUkrLetters.add(String.valueOf((char) 1105));
+        russianAndUkrLetters.add(String.valueOf((char) 1108));
+        IntStream.range(1110, 1112).forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
+        IntStream.range(1168, 1170).forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
+
+        return russianAndUkrLetters;
     }
 }
