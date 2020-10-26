@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import javax.transaction.Transactional;
 
+import java.util.Objects;
+
 import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
@@ -277,7 +279,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid data transfer object"));
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getExceptionMessageSource("exception.invalid.dto")));
     }
 
     @Test
@@ -291,6 +294,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("You can't add more than 10 children"));
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getExceptionMessageSource("exception.max-amount-children")));
     }
 }

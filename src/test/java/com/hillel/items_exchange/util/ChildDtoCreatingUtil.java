@@ -5,6 +5,7 @@ import com.hillel.items_exchange.dto.ChildDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 
@@ -17,18 +18,13 @@ public class ChildDtoCreatingUtil {
     }
 
     public static String getJsonOfChildrenDto(int quantity) {
-        List<ChildDto> childDtoList = new ArrayList<>();
-        for(int i = 0; i < quantity; i++) {
-            childDtoList.add(getChildDto(0L, LocalDate.of(2010, 1, 1), "male"));
-        }
-        return asJsonString(childDtoList);
+        return asJsonString(getChildrenDtoList(quantity));
     }
 
     public static List<ChildDto> getChildrenDtoList(int quantity) {
         List<ChildDto> childDtoList = new ArrayList<>();
-        for(int i = 0; i < quantity; i++) {
-            childDtoList.add(getChildDto(0L, LocalDate.of(2010, 1, 1), "male"));
-        }
+        IntStream.range(0, quantity).forEach(i ->
+                childDtoList.add(getChildDto(0L, LocalDate.of(2010, 1, 1), "male")));
         return childDtoList;
     }
 

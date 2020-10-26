@@ -96,7 +96,7 @@ public class UserController {
                                  List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
         int amountOfChildren = childrenDto.size() + userService.getChildren(getUser(principal.getName())).size();
         if (amountOfChildren > 10) {
-            throw new EntityAmountException(getExceptionMessageSource("exception.max-amount-of-children"));
+            throw new EntityAmountException(getExceptionMessageSource("exception.max-amount-children"));
         }
         userService.addChildren(getUser(principal.getName()), childrenDto);
     }

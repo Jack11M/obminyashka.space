@@ -160,15 +160,6 @@ class GlobalExceptionHandlerTest {
         assertThat(result.getResolvedException(), is(instanceOf(MethodArgumentNotValidException.class)));
     }
 
-    @Test
-    void testHandleEntityAmountException() throws Exception {
-        doThrow(new EntityAmountException(MessageSourceUtil
-                .getExceptionMessageSource("exception.max-amount-of-children")))
-                .when(userController).addChildren(any(), any());
-        MvcResult result = getResult(HttpMethod.POST, "/user/child", childDtoList, status().isNotAcceptable());
-        assertThat(result.getResolvedException(), is(instanceOf(EntityAmountException.class)));
-    }
-
     private MvcResult getResult(HttpMethod httpMethod, String path, Object dto,
                                 ResultMatcher matcher) throws Exception {
 

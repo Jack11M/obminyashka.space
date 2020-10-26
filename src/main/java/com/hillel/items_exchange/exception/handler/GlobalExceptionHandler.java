@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.exception.handler;
 
 import com.hillel.items_exchange.exception.DataConflictException;
-import com.hillel.items_exchange.exception.EntityAmountException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import io.jsonwebtoken.JwtException;
@@ -65,12 +64,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
-    }
-
-    @ExceptionHandler(EntityAmountException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ErrorMessage handleEntityAmountException(RuntimeException e, ServletWebRequest request) {
-        return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
