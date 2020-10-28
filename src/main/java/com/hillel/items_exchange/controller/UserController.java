@@ -88,7 +88,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
     public void addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                    List<@Valid ChildDto> childrenDto, Principal principal) {
+                                        List<@Valid ChildDto> childrenDto, Principal principal) {
         if (childrenDto.stream().anyMatch(dto -> dto.getId() > 0)) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(
@@ -105,7 +105,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
     public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
-                                       List<@NotNull Long> childrenIdToRemove, Principal principal) {
+                                           List<@NotNull Long> childrenIdToRemove, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
@@ -121,7 +121,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
     public void updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                       List<@Valid ChildDto> childrenDto, Principal principal) {
+                                           List<@Valid ChildDto> childrenDto, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
