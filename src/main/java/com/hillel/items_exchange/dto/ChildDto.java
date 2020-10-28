@@ -5,8 +5,6 @@ import com.hillel.items_exchange.model.ChildGender;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
@@ -19,10 +17,10 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode
 public class ChildDto {
+
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
     @NotNull(message = "{invalid.not-null}")
-    @Enumerated(EnumType.STRING)
     private ChildGender sex;
     @ApiModelProperty(example = "yyyy-MM-dd")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
