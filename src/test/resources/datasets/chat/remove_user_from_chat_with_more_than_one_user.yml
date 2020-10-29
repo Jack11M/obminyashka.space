@@ -1,0 +1,85 @@
+ADVERTISEMENT:
+  - ID: 1
+    USER_ID: 1
+    LOCATION_ID: 1
+    PRODUCT_ID: 1
+    TOPIC: "topic"
+    DEAL_TYPE: "EXCHANGE"
+    IS_FAVOURITE: "true"
+    DESCRIPTION: "description"
+    WISHES_TO_EXCHANGE: "shoes"
+    READY_FOR_OFFERS: "true"
+    CREATED: "2019-01-01 00:00:00.0"
+    UPDATED: "2019-01-01 00:00:00.0"
+    STATUS: "ACTIVE"
+
+ATTACHMENT:
+  - ID: 3
+    MESSAGE_ID: 2
+    TYPE: "png"
+    FILE_CONTENT: "YWJj"
+  - ID: 4
+    MESSAGE_ID: 2
+    TYPE: "jpg"
+    FILE_CONTENT: "ZGVm"
+
+CATEGORY:
+  - ID: 1
+    NAME: "shoes"
+
+CHAT:
+  - ID: 1
+    HASH: "TestHash"
+    ADVERTISEMENT_ID: 1
+
+LOCATION:
+  - ID: 1
+    CITY: "Kharkiv"
+    DISTRICT: "Kharkivska district"
+
+MESSAGE:
+  - ID: 2
+    CHAT_ID: 1
+    USER_ID: 1
+    TEXT: "Test message text of user test"
+    STATUS: "NEW"
+    CREATED: "2020-10-29 11:02:25.42651"
+    UPDATED: "2020-10-29 11:02:25.522061"
+
+PRODUCT:
+  - ID: 1
+    SUBCATEGORY_ID: 1
+    AGE: "16"
+    GENDER: "male"
+    SIZE: "40"
+    SEASON: "spring"
+
+ROLE:
+  - ID: 1
+    NAME: "ROLE_USER"
+
+SUBCATEGORY:
+  - ID: 1
+    CATEGORY_ID: 1
+    NAME: "light_shoes"
+
+USER:
+  - ID: 1
+    ROLE_ID: 1
+    USERNAME: "test"
+    PASSWORD: "$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6"
+    EMAIL: "test@gmail.com"
+    FIRST_NAME: "firstname"
+    LAST_NAME: "lastname"
+    AVATAR_IMAGE: "empty"
+    ONLINE: "false"
+    LAST_ONLINE_TIME: "2019-01-01 00:00:01.0"
+    CREATED: "2019-01-01 00:00:00.0"
+    UPDATED: "2019-01-01 00:00:00.0"
+    STATUS: "ACTIVE"
+
+USER_CHAT:
+  - ID: 2
+    USER_ID: 1
+    CHAT_ID: 1
+

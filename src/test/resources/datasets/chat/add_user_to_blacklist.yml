@@ -1,0 +1,4 @@
+BLACK_LIST:
+  - ID: 1
+    BLOCKER_ID: 1
+    BLOCKED_ID: 2

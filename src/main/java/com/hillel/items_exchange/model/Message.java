@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,17 +17,15 @@ import java.util.List;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Chat chat;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
     private User user;
     private String text;
-    @OneToMany(mappedBy = "message")
+    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Attachment> attachments;
     private LocalDateTime created;
     private LocalDateTime updated;

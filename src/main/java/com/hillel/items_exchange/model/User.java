@@ -54,12 +54,18 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Child> children;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "user_chat",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"))
     private List<Chat> chats;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Message> messages;
+
+    @ManyToMany
+    @JoinTable(name = "black_list",
+            joinColumns = @JoinColumn(name = "blocker_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "blocked_id", referencedColumnName = "id"))
+    private List<User> blacklistedUsers;
 }

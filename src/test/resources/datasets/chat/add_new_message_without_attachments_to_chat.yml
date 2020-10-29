@@ -1,0 +1,8 @@
+MESSAGE:
+  - ID: 1
+    CHAT_ID: 1
+    USER_ID: 2
+    TEXT: "Test message text of user test2"
+    STATUS: "NEW"
+    CREATED: "2020-10-29 14:02:58.482885"
+    UPDATED: "2020-10-29 14:02:58.504797"

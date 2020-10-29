@@ -1,0 +1,12 @@
+CHAT:
+  - ID: 1
+    hash: 'TestHash'
+    ADVERTISEMENT_ID: 1
+
+USER_CHAT:
+  - ID: 1
+    USER_ID: 2
+    CHAT_ID: 1
+  - ID: 2
+    USER_ID: 1
+    CHAT_ID: 1

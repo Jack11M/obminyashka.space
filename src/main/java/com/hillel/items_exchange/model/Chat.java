@@ -16,14 +16,14 @@ import java.util.List;
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @Column(name = "hash", nullable = false, unique = true)
     private String hash;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "advertisement_id", nullable = false)
     private Advertisement advertisement;
     @ManyToMany(mappedBy = "chats")
     private List<User> users;
-    @OneToMany(mappedBy = "chat")
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages;
 }

@@ -1,0 +1,33 @@
+MESSAGE:
+  - ID: 1
+    CHAT_ID: 1
+    USER_ID: 2
+    TEXT: "Test message text of user test2"
+    STATUS: "NEW"
+    CREATED: "2020-10-29 11:02:25.365822"
+    UPDATED: "2020-10-29 11:02:25.516961"
+  - ID: 2
+    CHAT_ID: 1
+    USER_ID: 1
+    TEXT: "Test message text of user test"
+    STATUS: "NEW"
+    CREATED: "2020-10-29 11:02:25.42651"
+    UPDATED: "2020-10-29 11:02:25.522061"
+
+ATTACHMENT:
+  - ID: 1
+    MESSAGE_ID: 1
+    TYPE: "png"
+    FILE_CONTENT: "YWJj"
+  - ID: 2
+    MESSAGE_ID: 1
+    TYPE: "jpg"
+    FILE_CONTENT: "ZGVm"
+  - ID: 3
+    MESSAGE_ID: 2
+    TYPE: "png"
+    FILE_CONTENT: "YWJj"
+  - ID: 4
+    MESSAGE_ID: 2
+    TYPE: "jpg"
+    FILE_CONTENT: "ZGVm"

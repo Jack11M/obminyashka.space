@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Attachment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;
