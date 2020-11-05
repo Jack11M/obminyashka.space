@@ -43,6 +43,8 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @Slf4j
 public class UserController {
 
+    private static final int MAX_CHILDREN_AMOUNT = 10;
+
     private final UserService userService;
 
     @GetMapping("/my-info")
@@ -92,11 +94,11 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
-    public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
+    public void addChildren(@RequestBody @Size(min = 1, max = MAX_CHILDREN_AMOUNT, message = "{exception.invalid.dto}")
                                  List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
         int amountOfChildren = childrenDto.size() + userService.getChildren(getUser(principal.getName())).size();
-        if (amountOfChildren > 10) {
-            throw new EntityAmountException(getExceptionMessageSource("exception.max-amount-children"));
+        if (amountOfChildren > MAX_CHILDREN_AMOUNT) {
+            throw new EntityAmountException(getExceptionMessageSource("exception.children-amount"));
         }
         userService.addChildren(getUser(principal.getName()), childrenDto);
     }

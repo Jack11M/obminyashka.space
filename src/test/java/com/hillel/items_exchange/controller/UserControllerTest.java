@@ -43,6 +43,8 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private static final int MAX_CHILDREN_AMOUNT = 10;
+
     private String validCreatingChildDtoJson;
     private String notValidCreatingChildDtoJson;
     private String validUpdatingChildDtoJson;
@@ -56,8 +58,8 @@ class UserControllerTest {
         notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
         validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
-        badTotalAmountChildDtoJson = getJsonOfChildrenDto(9);
-        badAmountChildDtoJson = getJsonOfChildrenDto(11);
+        badTotalAmountChildDtoJson = getJsonOfChildrenDto(MAX_CHILDREN_AMOUNT - 1);
+        badAmountChildDtoJson = getJsonOfChildrenDto(MAX_CHILDREN_AMOUNT + 1);
     }
 
     @Test
@@ -251,7 +253,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("New entity must have only id equals zero"));
+        assertTrue(mvcResult.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("invalid.new.entity.id")));
     }
 
     @Test
@@ -295,6 +298,6 @@ class UserControllerTest {
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getExceptionMessageSource("exception.max-amount-children")));
+                .contains(getExceptionMessageSource("exception.children-amount")));
     }
 }
