@@ -26,6 +26,7 @@ import java.util.Objects;
 import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -298,6 +299,7 @@ class UserControllerTest {
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getExceptionMessageSource("exception.children-amount")));
+                .contains(getExceptionMessageSourceWithAdditionalInfo(
+                        "exception.children-amount", String.valueOf(MAX_CHILDREN_AMOUNT))));
     }
 }
