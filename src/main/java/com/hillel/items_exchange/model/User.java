@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     private String lastName;
 
     @Column(name = "avatar_image")
-    private String avatarImage;
+    private byte[] avatarImage;
 
     @Column(name = "last_online_time", columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime lastOnlineTime;

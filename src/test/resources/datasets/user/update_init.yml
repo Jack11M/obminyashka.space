@@ -6,7 +6,8 @@ user:
     online: 'false'
     first_name: "Мар'яна"
     last_name: "Квітка-Основ'яненко"
-    avatar_image: 'empty'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
     created: '2019-01-01'
     updated: '2019-01-01'
@@ -19,7 +20,8 @@ user:
     online: 'false'
     first_name: "first"
     last_name: "last"
-    avatar_image: "empty"
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2020-06-03 23:04:01'
     created: '2020-06-03'
     updated: '2020-06-03'
