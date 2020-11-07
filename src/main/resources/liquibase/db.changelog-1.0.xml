@@ -449,7 +449,7 @@
                                  referencedTableName="location"/>
     </changeSet>
 
-    <changeSet id="1.0.27" author="konstantin.gaevsky">
+    <changeSet id="1.0.27: Changed field type avatar_image from VARCHAR to MEDIUMBLOB" author="konstantin.gaevsky">
         <modifyDataType  tableName="user"
                          columnName="avatar_image"
                          newDataType="MEDIUMBLOB"/>
