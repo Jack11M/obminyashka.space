@@ -7,6 +7,7 @@ import com.hillel.items_exchange.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -44,7 +45,8 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final int MAX_CHILDREN_AMOUNT = 10;
+    @Value("${max.children.amount}")
+    private int maxChildrenAmount;
 
     private String validCreatingChildDtoJson;
     private String notValidCreatingChildDtoJson;
@@ -59,8 +61,8 @@ class UserControllerTest {
         notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
         validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
-        badTotalAmountChildDtoJson = getJsonOfChildrenDto(MAX_CHILDREN_AMOUNT - 1);
-        badAmountChildDtoJson = getJsonOfChildrenDto(MAX_CHILDREN_AMOUNT + 1);
+        badTotalAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount - 1);
+        badAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount + 1);
     }
 
     @Test
@@ -300,6 +302,6 @@ class UserControllerTest {
                 .andReturn();
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
                 .contains(getExceptionMessageSourceWithAdditionalInfo(
-                        "exception.children-amount", String.valueOf(MAX_CHILDREN_AMOUNT))));
+                        "exception.children-amount", String.valueOf(maxChildrenAmount))));
     }
 }

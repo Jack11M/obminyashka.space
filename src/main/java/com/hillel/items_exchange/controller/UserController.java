@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,7 +44,8 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @Slf4j
 public class UserController {
 
-    private static final int MAX_CHILDREN_AMOUNT = 10;
+    @Value("${max.children.amount}")
+    private int maxChildrenAmount;
 
     private final UserService userService;
 
@@ -94,14 +96,15 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
-    public void addChildren(@RequestBody @Size(min = 1, max = MAX_CHILDREN_AMOUNT, message = "{exception.invalid.dto}")
+    public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
                                  List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
-        int amountOfChildren = childrenDto.size() + userService.getChildren(getUser(principal.getName())).size();
-        if (amountOfChildren > MAX_CHILDREN_AMOUNT) {
+        User user = getUser(principal.getName());
+        int amountOfChildren = childrenDto.size() + user.getChildren().size();
+        if (amountOfChildren > maxChildrenAmount) {
             throw new EntityAmountException(getExceptionMessageSourceWithAdditionalInfo(
-                    "exception.children-amount", String.valueOf(MAX_CHILDREN_AMOUNT)));
+                    "exception.children-amount", String.valueOf(maxChildrenAmount)));
         }
-        userService.addChildren(getUser(principal.getName()), childrenDto);
+        userService.addChildren(user, childrenDto);
     }
 
     @DeleteMapping("/child/{id}")
