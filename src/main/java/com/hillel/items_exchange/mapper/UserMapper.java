@@ -44,7 +44,7 @@ public class UserMapper {
         user.setOnline(false);
         user.setAvatarImage(new byte[0]);
         user.setAdvertisements(Collections.emptyList());
-        user.setChildren(Collections.emptySet());
+        user.setChildren(Collections.emptyList());
         user.setDeals(Collections.emptyList());
         user.setPhones(Collections.emptySet());
         LocalDate now = LocalDate.now();

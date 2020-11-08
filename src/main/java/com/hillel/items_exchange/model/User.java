@@ -52,5 +52,5 @@ public class User extends BaseEntity {
     private Set<Phone> phones;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Child> children;
+    private List<Child> children;
 }

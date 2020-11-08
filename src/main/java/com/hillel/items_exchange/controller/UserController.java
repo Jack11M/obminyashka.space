@@ -2,9 +2,11 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.EntityAmountException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UtilMapper;
+import com.hillel.items_exchange.mapper.transfer.New;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.UserService;
@@ -15,6 +17,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
 import java.security.Principal;
 import java.util.List;
 
@@ -39,6 +43,9 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @Validated
 @Slf4j
 public class UserController {
+
+    @Value("${max.children.amount}")
+    private int maxChildrenAmount;
 
     private final UserService userService;
 
@@ -85,17 +92,19 @@ public class UserController {
     @ApiOperation(value = "Add children data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST")})
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
-    public void addChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                        List<@Valid ChildDto> childrenDto, Principal principal) {
-        if (childrenDto.stream().anyMatch(dto -> dto.getId() > 0)) {
-            throw new IllegalIdentifierException(
-                    getExceptionMessageSourceWithAdditionalInfo(
-                            "exception.illegal.id",
-                            "Zero ID is expected"));
+    @Validated({Default.class, New.class})
+    public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
+                                 List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
+        User user = getUser(principal.getName());
+        int amountOfChildren = childrenDto.size() + user.getChildren().size();
+        if (amountOfChildren > maxChildrenAmount) {
+            throw new EntityAmountException(getExceptionMessageSourceWithAdditionalInfo(
+                    "exception.children-amount", String.valueOf(maxChildrenAmount)));
         }
-        userService.addChildren(getUser(principal.getName()), childrenDto);
+        userService.addChildren(user, childrenDto);
     }
 
     @DeleteMapping("/child/{id}")
