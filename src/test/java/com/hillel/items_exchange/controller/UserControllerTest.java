@@ -5,7 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.model.ChildGender;
+import com.hillel.items_exchange.model.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,7 +193,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[0].sex").value("MALE"))
                 .andExpect(jsonPath("$[1].id").value(2L))
                 .andExpect(jsonPath("$[1].sex").value("FEMALE"));
-
     }
 
     @Test
@@ -267,12 +266,12 @@ class UserControllerTest {
 
     private String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
         return asJsonString(List.of(
-                getChildDto(maleId, LocalDate.of(year, 3, 3), ChildGender.MALE),
-                getChildDto(femaleId, LocalDate.of(year, 4, 4), ChildGender.FEMALE)
+                getChildDto(maleId, LocalDate.of(year, 3, 3), Gender.MALE),
+                getChildDto(femaleId, LocalDate.of(year, 4, 4), Gender.FEMALE)
         ));
     }
 
-    private ChildDto getChildDto(long id, LocalDate birthDate, ChildGender gender) {
+    private ChildDto getChildDto(long id, LocalDate birthDate, Gender gender) {
         return ChildDto.builder()
                 .id(id)
                 .birthDate(birthDate)

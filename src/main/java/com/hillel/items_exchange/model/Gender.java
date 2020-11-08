@@ -1,6 +1,6 @@
 package com.hillel.items_exchange.model;
 
-public enum ChildGender {
+public enum Gender {
     MALE,
     FEMALE,
     UNSELECTED

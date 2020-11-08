@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hillel.items_exchange.model.ChildGender;
+import com.hillel.items_exchange.model.Gender;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -21,7 +21,7 @@ public class ChildDto {
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
     @NotNull(message = "{invalid.not-null}")
-    private ChildGender sex;
+    private Gender sex;
     @ApiModelProperty(example = "yyyy-MM-dd")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")

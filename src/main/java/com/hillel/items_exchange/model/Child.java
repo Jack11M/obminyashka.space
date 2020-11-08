@@ -17,7 +17,7 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Enumerated(EnumType.STRING)
-    private ChildGender sex;
+    private Gender sex;
     @Column(name = "birth_date")
     private LocalDate birthDate;
 

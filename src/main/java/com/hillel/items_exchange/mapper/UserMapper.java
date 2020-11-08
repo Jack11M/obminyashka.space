@@ -23,6 +23,7 @@ import java.util.Collections;
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
+
     private static ModelMapper mapper;
 
     @Autowired
@@ -44,7 +45,7 @@ public class UserMapper {
         user.setOnline(false);
         user.setAvatarImage("");
         user.setAdvertisements(Collections.emptyList());
-        user.setChildren(Collections.emptySet());
+        user.setChildren(Collections.emptyList());
         user.setDeals(Collections.emptyList());
         user.setPhones(Collections.emptySet());
         LocalDate now = LocalDate.now();
