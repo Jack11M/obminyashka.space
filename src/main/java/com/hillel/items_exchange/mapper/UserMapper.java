@@ -42,7 +42,7 @@ public class UserMapper {
         user.setFirstName("");
         user.setLastName("");
         user.setOnline(false);
-        user.setAvatarImage("");
+        user.setAvatarImage(new byte[0]);
         user.setAdvertisements(Collections.emptyList());
         user.setChildren(Collections.emptyList());
         user.setDeals(Collections.emptyList());
