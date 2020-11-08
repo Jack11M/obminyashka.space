@@ -8,7 +8,9 @@ export function* userInfoPut(action) {
 	const body = action.payload;
 	try {
 		yield put(startFetching())
-		yield call(putUserInfoAsync, body);
+
+		const {data} = yield call(putUserInfoAsync, body);
+		console.log(data);
 		yield put(fillUserInfoSync(body));
 	} catch (e) {
 		console.log(e.response.data);

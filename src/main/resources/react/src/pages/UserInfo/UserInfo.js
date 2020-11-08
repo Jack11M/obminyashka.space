@@ -10,25 +10,29 @@ import './UserInfo.scss';
 import { fetchUserInfoAsync } from '../../redux/profile/profileAction';
 
 const UserInfo = () => {
-	let {path, url} = useRouteMatch();
-	const {profile} = useSelector(state => state.profileMe);
+	let { path, url } = useRouteMatch();
+	const { profile } = useSelector( ( state ) => state.profileMe );
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		dispatch(fetchUserInfoAsync());
-	}, [dispatch]);
+	useEffect( () => {
+		dispatch( fetchUserInfoAsync() );
+	}, [ dispatch ] );
 
-	const {firstName, lastName, avatarImage} = profile;
+	const { firstName, lastName, avatarImage } = profile;
 
 	return (
 		<div className="container">
 			<aside className="left-side">
-				<ActiveProfile firstName={firstName} lastName={lastName} avatar={avatarImage}/>
-				<Tabs url={url}/>
+				<ActiveProfile
+					firstName={ firstName }
+					lastName={ lastName }
+					avatar={ avatarImage }
+				/>
+				<Tabs url={ url }/>
 			</aside>
 			<main className="main-content">
 				<div className="main-content-wrapper">
-					<RouterTabs path={path} profile={profile}/>
+					<RouterTabs path={ path } profile={ profile }/>
 				</div>
 			</main>
 		</div>

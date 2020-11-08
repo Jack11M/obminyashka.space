@@ -1,7 +1,6 @@
 import React from "react";
 
 const Avatar = ({whatIsClass, width, height, avatar} ) => {
-  console.log(avatar)
   return (
     <div className={whatIsClass}>
       <svg
