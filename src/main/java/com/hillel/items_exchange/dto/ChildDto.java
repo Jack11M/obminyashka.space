@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hillel.items_exchange.annotation.Zero;
 import com.hillel.items_exchange.mapper.transfer.Exist;
 import com.hillel.items_exchange.mapper.transfer.New;
+import com.hillel.items_exchange.model.Gender;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -19,11 +20,12 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode
 public class ChildDto {
+
     @Positive(groups = Exist.class, message = "{invalid.exist.id}")
     @Zero(groups = New.class, message = "{invalid.new.entity.id}")
     private long id;
     @NotNull(message = "{invalid.not-null}")
-    private String sex;
+    private Gender sex;
     @ApiModelProperty(example = "yyyy-MM-dd")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")
