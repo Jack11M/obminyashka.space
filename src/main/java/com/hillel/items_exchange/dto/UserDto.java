@@ -24,7 +24,6 @@ public class UserDto {
     private String username;
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Size(max = 129, message = "{invalid.email}")
     @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String email;
     @NotNull(message = "{invalid.not-null}")
@@ -39,7 +38,7 @@ public class UserDto {
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")
     private String lastName;
     @NotNull(message = "{invalid.not-null}")
-    private String avatarImage;
+    private byte[] avatarImage;
     @ApiModelProperty(required = true, example = "yyyy-MM-dd HH:mm:ss")
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")

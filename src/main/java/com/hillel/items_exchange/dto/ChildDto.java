@@ -1,13 +1,15 @@
 package com.hillel.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hillel.items_exchange.model.Gender;
+import com.hillel.items_exchange.annotation.Zero;
+import com.hillel.items_exchange.mapper.transfer.Exist;
+import com.hillel.items_exchange.mapper.transfer.New;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -17,11 +19,11 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode
 public class ChildDto {
-
-    @PositiveOrZero(message = "{invalid.id}")
+    @Positive(groups = Exist.class, message = "{invalid.exist.id}")
+    @Zero(groups = New.class, message = "{invalid.new.entity.id}")
     private long id;
     @NotNull(message = "{invalid.not-null}")
-    private Gender sex;
+    private String sex;
     @ApiModelProperty(example = "yyyy-MM-dd")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")

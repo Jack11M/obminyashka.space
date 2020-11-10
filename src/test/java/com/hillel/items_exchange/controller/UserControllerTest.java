@@ -3,12 +3,11 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.model.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -22,11 +21,13 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
 
+import java.util.Objects;
+
+import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,10 +45,15 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Value("${max.children.amount}")
+    private int maxChildrenAmount;
+
     private String validCreatingChildDtoJson;
     private String notValidCreatingChildDtoJson;
     private String validUpdatingChildDtoJson;
     private String notValidUpdatingChildDtoJson;
+    private String badTotalAmountChildDtoJson;
+    private String badAmountChildDtoJson;
 
     @BeforeEach
     void setUp() {
@@ -55,6 +61,8 @@ class UserControllerTest {
         notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
         validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
+        badTotalAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount - 1);
+        badAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount + 1);
     }
 
     @Test
@@ -190,9 +198,10 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].sex").value("MALE"))
+                .andExpect(jsonPath("$[0].sex").value("male"))
                 .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
+                .andExpect(jsonPath("$[1].sex").value("female"));
+
     }
 
     @Test
@@ -247,7 +256,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Zero ID is expected"));
+        assertTrue(mvcResult.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("invalid.new.entity.id")));
     }
 
     @Test
@@ -264,18 +274,34 @@ class UserControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
-    private String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
-        return asJsonString(List.of(
-                getChildDto(maleId, LocalDate.of(year, 3, 3), Gender.MALE),
-                getChildDto(femaleId, LocalDate.of(year, 4, 4), Gender.FEMALE)
-        ));
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChild_BadAmount_ShouldThrowConstraintViolationException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getExceptionMessageSource("exception.invalid.dto")));
     }
 
-    private ChildDto getChildDto(long id, LocalDate birthDate, Gender gender) {
-        return ChildDto.builder()
-                .id(id)
-                .birthDate(birthDate)
-                .sex(gender)
-                .build();
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChild_BadTotalAmount_ShouldThrowEntityAmountException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badTotalAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getExceptionMessageSourceWithAdditionalInfo(
+                        "exception.children-amount", String.valueOf(maxChildrenAmount))));
     }
 }
