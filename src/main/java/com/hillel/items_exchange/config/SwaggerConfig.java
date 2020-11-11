@@ -42,7 +42,7 @@ public class SwaggerConfig {
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
+        return new ApiKey("Authorization", "Authorization", "header");
     }
 
     private SecurityContext securityContext() {
@@ -52,7 +52,7 @@ public class SwaggerConfig {
     }
 
     private List<SecurityReference> defaultAuth() {
-        return List.of(new SecurityReference("JWT",
+        return List.of(new SecurityReference("Authorization",
                 new AuthorizationScope[]{
                         new AuthorizationScope("global", "accessEverything")}));
     }
