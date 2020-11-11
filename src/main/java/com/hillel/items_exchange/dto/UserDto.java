@@ -3,15 +3,12 @@ package com.hillel.items_exchange.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hillel.items_exchange.util.PatternHandler;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -20,6 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserDto {
+
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 2, max = 50, message = "{invalid.size}")
@@ -47,7 +45,7 @@ public class UserDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastOnlineTime;
     @NotNull(message = "{invalid.not-null}")
-    private Set<@Valid ChildDto> children;
+    private List<@Valid ChildDto> children;
     @NotNull(message = "{invalid.not-null}")
     private Set<@Valid PhoneDto> phones;
 }
