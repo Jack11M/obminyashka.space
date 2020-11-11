@@ -16,7 +16,7 @@ user:
 
 child:
   - id: 2
-    sex: 'female'
+    sex: FEMALE
     birth_date: '2019-02-02'
     user_id: 1
 

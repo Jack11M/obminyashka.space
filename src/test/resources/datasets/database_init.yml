@@ -89,11 +89,11 @@ role:
 
 child:
   - id: 1
-    sex: 'male'
+    sex: MALE
     birth_date: '2019-01-01'
     user_id: 1
   - id: 2
-    sex: 'female'
+    sex: FEMALE
     birth_date: '2019-02-02'
     user_id: 1
 
