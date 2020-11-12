@@ -16,11 +16,11 @@ user:
 
 child:
   - id: 1
-    sex: 'male'
+    sex: MALE
     birth_date: '2018-03-03'
     user_id: 1
   - id: 2
-    sex: 'female'
+    sex: FEMALE
     birth_date: '2018-04-04'
     user_id: 1
 
