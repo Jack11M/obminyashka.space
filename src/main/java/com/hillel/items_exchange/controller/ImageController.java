@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.BaseEntity;
@@ -9,7 +10,6 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -30,6 +30,8 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @RestController
 @RequestMapping("/image")
@@ -78,11 +80,15 @@ public class ImageController {
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> saveImages(@PathVariable("product_id")
-                                                     @PositiveOrZero(message = "{invalid.id}") long productId,
-                                                 @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images) {
+                                             @PositiveOrZero(message = "{invalid.id}") long productId,
+                                             @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
+            throws ElementsNumberExceedException {
 
         try {
             Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
+            if (productToSaveImages.getImages().size() + images.size() > 10) {
+                throw new ElementsNumberExceedException(getExceptionMessageSource("exception.exceed.image.number"));
+            }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
@@ -113,7 +119,7 @@ public class ImageController {
             throws IllegalOperationException {
 
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
-            throw new IllegalOperationException(MessageSourceUtil.getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
         }
         imageService.removeById(imageIdList);
     }
