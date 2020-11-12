@@ -90,7 +90,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("database_init.yml")
+    @DataSet("user/update_init.yml")
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
@@ -104,7 +104,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("database_init.yml")
+    @DataSet("user/update_init.yml")
     void updateUserInfo_shouldReturn403WhenUsernameIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
@@ -116,7 +116,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("database_init.yml")
+    @DataSet("user/update_init.yml")
     void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
@@ -128,7 +128,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("database_init.yml")
+    @DataSet("user/update_init.yml")
     void updateUserInfo_shouldReturn403WhenChildrenAreChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
@@ -140,7 +140,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("database_init.yml")
+    @DataSet("user/update_init.yml")
     void updateUserInfo_shouldReturn403WhenPhonesAreChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithPhones(), status().isForbidden())
@@ -303,5 +303,42 @@ class UserControllerTest {
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
                 .contains(getExceptionMessageSourceWithAdditionalInfo(
                         "exception.children-amount", String.valueOf(maxChildrenAmount))));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("user/update_init.yml")
+    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewChildren() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("exception.illegal.field.change")));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("user/update_init.yml")
+    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewPhone() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("exception.illegal.field.change")));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    @Transactional
+    @DataSet("user/update_init.yml")
+    @ExpectedDataSet(value = "user/children_phones_update.yml", ignoreCols = "updated")
+    void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithNewChildAndPhones(), status().isAccepted())
+                .andDo(print())
+                .andExpect(jsonPath("$.children", hasSize(1)))
+                .andExpect(jsonPath("$.phones", hasSize(1)));
     }
 }

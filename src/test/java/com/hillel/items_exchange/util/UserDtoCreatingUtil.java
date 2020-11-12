@@ -7,13 +7,18 @@ import com.hillel.items_exchange.dto.UserDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class UserDtoCreatingUtil {
 
-    public static final Set<ChildDto> EXISTED_CHILDREN = Set.of(
+    public static final List<ChildDto> EXISTED_CHILDREN = List.of(
             new ChildDto(1L, "male", LocalDate.of(2019, 1, 1)),
             new ChildDto(2L, "female", LocalDate.of(2019, 2, 2)));
+    public static final List<ChildDto> NEW_CHILDREN = List.of(
+            new ChildDto(0, "male", LocalDate.of(2019, 3, 3)));
+    public static final Set<PhoneDto> NEW_PHONES = Set.of(
+            new PhoneDto(0, true, "381234567890", true));
     public static final String NEW_USERNAME = "newUsername123";
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
@@ -45,7 +50,25 @@ public class UserDtoCreatingUtil {
     public static UserDto createUserDtoForUpdatingWithChangedChildrenWithoutPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                Collections.emptySet(), Collections.emptySet());
+                Collections.emptyList(), Collections.emptySet());
+    }
+
+    public static UserDto createUserDtoForUpdatingWithChildrenWithoutPhones() {
+        return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
+                "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                NEW_CHILDREN, Collections.emptySet());
+    }
+
+    public static UserDto createUserDtoForUpdatingWithPhoneWithoutChildren() {
+        return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
+                "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                Collections.emptyList(), NEW_PHONES);
+    }
+
+    public static UserDto createUserDtoForUpdatingWithNewChildAndPhones() {
+        return getBuild("test", "test@test.com", Boolean.FALSE, "first",
+                "last", BLANK_AVATAR_IMAGE, LocalDateTime.of(2020, 6, 3, 23, 4, 1),
+                NEW_CHILDREN, NEW_PHONES);
     }
 
     public static UserDto createUserDtoForUpdatingWithPhones() {
@@ -74,7 +97,7 @@ public class UserDtoCreatingUtil {
 
     public static UserDto getBuild(String username, String email, Boolean online, String firstName,
                                    String lastName, byte[] avatarImage, LocalDateTime lastOnlineTime,
-                                   Set<ChildDto> children, Set<PhoneDto> phones) {
+                                   List<ChildDto> children, Set<PhoneDto> phones) {
         return UserDto.builder()
                 .username(username)
                 .email(email)

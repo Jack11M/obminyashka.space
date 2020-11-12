@@ -12,6 +12,7 @@ import lombok.Setter;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -47,7 +48,7 @@ public class UserDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastOnlineTime;
     @NotNull(message = "{invalid.not-null}")
-    private Set<@Valid ChildDto> children;
+    private List<@Valid ChildDto> children;
     @NotNull(message = "{invalid.not-null}")
     private Set<@Valid PhoneDto> phones;
 }
