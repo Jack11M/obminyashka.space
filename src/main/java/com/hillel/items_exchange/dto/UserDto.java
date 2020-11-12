@@ -3,11 +3,7 @@ package com.hillel.items_exchange.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hillel.items_exchange.util.PatternHandler;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -21,6 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserDto {
+
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 2, max = 50, message = "{invalid.size}")
