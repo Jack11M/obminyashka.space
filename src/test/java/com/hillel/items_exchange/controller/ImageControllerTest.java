@@ -60,7 +60,7 @@ class ImageControllerTest {
     }
 
     private void mocksInit() throws IOException, UnsupportedMediaTypeException {
-        when(productService.findById(anyLong())).thenReturn(Optional.of(product));
+        when(productService.findById(1L)).thenReturn(Optional.of(product));
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
         when(product.getImages()).thenReturn(testImages);
