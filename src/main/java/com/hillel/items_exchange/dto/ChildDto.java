@@ -20,6 +20,7 @@ import java.time.LocalDate;
 @Builder
 @EqualsAndHashCode
 public class ChildDto {
+
     @Positive(groups = Exist.class, message = "{invalid.exist.id}")
     @Zero(groups = New.class, message = "{invalid.new.entity.id}")
     private long id;

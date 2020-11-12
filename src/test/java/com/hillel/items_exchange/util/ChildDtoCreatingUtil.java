@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 
 public class ChildDtoCreatingUtil {
+
     public static String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
         return asJsonString(List.of(
                 getChildDto(maleId, LocalDate.of(year, 3, 3), Gender.MALE),

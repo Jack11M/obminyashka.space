@@ -23,6 +23,7 @@ import java.util.Collections;
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
+
     private static ModelMapper mapper;
 
     @Autowired
