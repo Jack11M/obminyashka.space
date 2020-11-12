@@ -74,7 +74,7 @@ class ImageControllerTest {
                 .file(jpeg)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotAcceptable())
                 .andReturn();
 
         verify(productService).findById(anyLong());

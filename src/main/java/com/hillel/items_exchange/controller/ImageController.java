@@ -87,7 +87,7 @@ public class ImageController {
         try {
             Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
             if (productToSaveImages.getImages().size() + images.size() > 10) {
-                throw new ElementsNumberExceedException(getExceptionMessageSource("exception.exceed.image.number"));
+                throw new ElementsNumberExceedException(getExceptionMessageSource("exception.exceed.images.number"));
             }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
