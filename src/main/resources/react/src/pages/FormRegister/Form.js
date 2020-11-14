@@ -176,6 +176,8 @@ const Form = props => {
         text={isLogin ? "Войти" : "Регистрация"}
         disabling={!readyToEnter || isLoading}
         whatClass={"btn-auth"}
+        width={'222px'}
+        height={'48px'}
       />
     </form>
   );

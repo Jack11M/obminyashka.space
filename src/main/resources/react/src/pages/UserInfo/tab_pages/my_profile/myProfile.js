@@ -101,7 +101,7 @@ const MyProfile = () => {
 					);
 				} ) }
 			</div>
-			<Button text={ 'Сохранить' } whatClass={ 'btn-profile' }/>
+			<Button text={ 'Сохранить' } whatClass={ 'btn-for-profile' } width={'248px'} height={'49px'}/>
 
 		</form>
 	);

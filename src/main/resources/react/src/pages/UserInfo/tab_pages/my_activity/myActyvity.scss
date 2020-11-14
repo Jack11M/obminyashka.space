@@ -1,4 +1,20 @@
-@import"../../../../fonts/font";
-@import "../../../../components/partials/variables";
 
+.incoming__replies-text {
+  margin: 64px 0 40px;
+}
 
+.block-of-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 28px;
+  column-gap: 20px;
+
+}
+
+.block-of-cards + * + .block-of-cards {
+  margin-bottom: 103px;
+}
+
+.outgoing__replies-text {
+  margin: 83px 0 40px;
+}

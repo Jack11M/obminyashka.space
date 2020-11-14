@@ -6,7 +6,7 @@ const ProfileInput = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 21px;
-`
+`;
 
 const Label = styled.label`
   font-size: 14px;
@@ -32,13 +32,18 @@ const Input = styled.input`
   font-family: inherit;
 `;
 
-const InputProfile = (props) => {
-	const {name, label, value, type} = props.data;
+const InputProfile = ( props ) => {
+	const { name, label, value, type } = props.data;
 
 	return (
-		<ProfileInput >
-			<Label htmlFor={name}>{`${label}`}</Label>
-			<Input id={name} name={name} value={value} onChange={props.click} type={type}/>
+		<ProfileInput>
+			<Label htmlFor={ name }>{ `${ label }` }</Label>
+			<Input id={ name }
+				type={ type }
+				name={ name }
+				value={ value }
+				onChange={ props.click }
+			/>
 		</ProfileInput>
 	);
 };
