@@ -33,6 +33,7 @@ import java.util.List;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionWithVariable;
 
 @RestController
 @RequestMapping("/user")
@@ -98,8 +99,8 @@ public class UserController {
         User user = getUser(principal.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
-            throw new EntityAmountException(getExceptionMessageSourceWithAdditionalInfo(
-                    "exception.children-amount", String.valueOf(maxChildrenAmount)));
+            throw new EntityAmountException(getExceptionWithVariable("exception.children-amount",
+                    String.valueOf(maxChildrenAmount)));
         }
         userService.addChildren(user, childrenDto);
     }
