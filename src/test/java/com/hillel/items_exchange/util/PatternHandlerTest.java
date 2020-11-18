@@ -251,19 +251,12 @@ class PatternHandlerTest {
     }
 
     private static List<String> getCorrectPhoneNumbers() {
-        List<String> correctPhoneNumbers = new ArrayList<>();
 
-        String correctNumber = "+12-345-678-90-12";
-        String correctNumber1 = "13.345.678.90.13";
-
-        correctPhoneNumbers.add(correctNumber);
-        correctPhoneNumbers.add(correctNumber1);
-
-        return correctPhoneNumbers;
+        return List.of("+12-345-678-90-12", "13.345.678.90.13");
     }
 
     private static List<String> createCorrectPhoneNumbers() {
-        List<String> correctPhoneNumbers = getCorrectPhoneNumbers();
+        List<String> correctPhoneNumbers = new ArrayList<>(getCorrectPhoneNumbers());
         List<String> replacementList = getCorrectPhoneNumbersReplacementList();
 
         List<String> tempList = new ArrayList<>();
