@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -12,16 +13,54 @@ import static com.hillel.items_exchange.util.PatternHandler.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * The class represents tests for all {@link com.hillel.items_exchange.util.PatternHandler}
+ * PatternHandlers.
+ *
+ * Some ranges of ascii character codes to get them from {@link IntStream}
+ * IntStream.range(int startInclusive, int endExclusive):
+ *
+ * Pairs of characters to get all special characters
+ * '!', '0'
+ * ':', 'A'
+ * '[', 'a'
+ * '{', '\u007F'
+ *
+ * Pairs of characters to get all russian and ukrainian letters
+ * 'Ё', 'Ђ'
+ * 'Є', 'Ѕ'
+ * 'І', 'Ј'
+ * 'А', 'ѐ'
+ * 'ё', 'ђ'
+ * 'є', 'ѕ'
+ * 'і', 'ј'
+ * 'Ґ', 'Ғ'
+ *
+ * Pair of characters to get all numbers (0 - 9)
+ * '0', ':'
+ *
+ * Pair of characters to get all english letters (uppercase and lowercase)
+ * 'A', '['  //uppercase
+ * 'a', '{'  //lowercase
+ */
 class PatternHandlerTest {
 
     private static final String REGROUPED_PHONE_NUMBER_PATTERN =
             "^\\s*(?<country>\\+?\\d{2})([-. (]*)(?<area>\\d{3})([-. )]*)(\\d{3})([-. ]*)(\\d{2})([-. ]*)(\\d{2})\\s*$";
-    public static final String REGROUPED_EMAIL_PATTERN =
+    private static final String REGROUPED_EMAIL_PATTERN =
             "^([\\w-+]+)(\\.[\\w]+)*(@)([\\w-]+)(\\.[\\w]+)*(\\.[a-zA-Z]{2,})$";
-    public static final String REGROUPED_PASSWORD_PATTERN =
+    private static final String REGROUPED_PASSWORD_PATTERN =
             "(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\\S+$)([\\w\\p{Punct}]+)";
-    public static final String ENGLISH_LETTERS_AND_NUMBERS =
-            "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    public static final String
+            REGROUPED_WORD_EMPTY_OR_MIN_2_MAX_50 = "^($|^[\\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50})$";
+    private static final String ENGLISH_LETTERS_AND_NUMBERS = getStringFromStringsList(
+            getAnySymbols(
+                    "",
+                    Collections.emptyList(),
+                    new CustomPair<>('0', ':'),
+                    new CustomPair<>('A', '['),
+                    new CustomPair<>('0', ':'),
+                    new CustomPair<>('a', '{')));
 
     @ParameterizedTest
     @MethodSource("createCorrectEmails")
@@ -109,14 +148,28 @@ class PatternHandlerTest {
                 "1@111.ru1",
                 "1@ma~il.ru"));
 
-        List<String> specialCharsAndRusUkrLetters = getSpecialCharacters("\\");
-        specialCharsAndRusUkrLetters.removeAll(List.of("\\.", "\\_", "\\+", "\\-"));
-        specialCharsAndRusUkrLetters.addAll(getRussianAndUkrLetters());
-        specialCharsAndRusUkrLetters.forEach(
-                specialChar -> createCorrectEmails().forEach(
-                        email -> wrongEmails.add(email.replaceAll(
-                                REGROUPED_EMAIL_PATTERN, "$1".concat(specialChar).concat("$2$3$4$5$6"))))
-        );
+        List<String> specialCharsAndRusUkrLetters = getAnySymbols(
+                "\\",
+                List.of("\\.", "\\_", "\\+", "\\-"),
+                new CustomPair<>('!', '0'),
+                new CustomPair<>(':', 'A'),
+                new CustomPair<>('[', 'a'),
+                new CustomPair<>('{', '\u007F'),
+                new CustomPair<>('Ё', 'Ђ'),
+                new CustomPair<>('Є', 'Ѕ'),
+                new CustomPair<>('І', 'Ј'),
+                new CustomPair<>('А', 'ѐ'),
+                new CustomPair<>('ё', 'ђ'),
+                new CustomPair<>('є', 'ѕ'),
+                new CustomPair<>('і', 'ј'),
+                new CustomPair<>('Ґ', 'Ғ'));
+
+        addReplacedStringsWithWantedSymbols(
+                wrongEmails,
+                specialCharsAndRusUkrLetters,
+                createCorrectEmails(),
+                REGROUPED_EMAIL_PATTERN,
+                "$1", "$2$3$4$5$6");
 
         return wrongEmails;
     }
@@ -126,10 +179,24 @@ class PatternHandlerTest {
         String minCorrectPassword = "aA1";
         correctPasswords.add(minCorrectPassword);
 
-        getSpecialCharacters("\\").forEach(
-                specialChar -> correctPasswords.add(minCorrectPassword.replaceAll(
-                        REGROUPED_PASSWORD_PATTERN, specialChar.concat("$1")))
-        );
+        final List<String> specialChars = getAnySymbols(
+                "\\",
+                Collections.emptyList(),
+                new CustomPair<>('!', '0'),
+                new CustomPair<>(':', 'A'),
+                new CustomPair<>('[', 'a'),
+                new CustomPair<>('{', '\u007F'));
+
+        List<String> tempList = new ArrayList<>();
+
+        addReplacedStringsWithWantedSymbols(
+                tempList,
+                specialChars,
+                correctPasswords,
+                REGROUPED_PASSWORD_PATTERN,
+                "", "$1");
+
+        correctPasswords.addAll(tempList);
 
         return correctPasswords;
     }
@@ -146,12 +213,12 @@ class PatternHandlerTest {
         ));
 
         List<String> tempList = new ArrayList<>();
-        IntStream.range(0, wrongPasswords.size()).forEach(i -> {
+        for (int i = 0; i < wrongPasswords.size(); i++) {
             for (String wrongPassword : wrongPasswords) {
                 tempList.add(wrongPasswords.get(i).concat(wrongPassword));
                 tempList.add(wrongPasswords.get(i).concat(wrongPassword).concat(wrongPasswords.get(i)));
             }
-        });
+        }
 
         wrongPasswords.addAll(tempList);
 
@@ -162,9 +229,23 @@ class PatternHandlerTest {
                 "A ".concat(minCorrectPassword)
         ));
 
-        getRussianAndUkrLetters().forEach(letter ->
-                createCorrectPasswords().forEach(password -> wrongPasswords.add(
-                        password.replaceAll(REGROUPED_PASSWORD_PATTERN, letter.concat("S1")))));
+        List<String> russianAndUkrainianSymbols = getAnySymbols("",
+                Collections.emptyList(),
+                new CustomPair<>('Ё', 'Ђ'),
+                new CustomPair<>('Є', 'Ѕ'),
+                new CustomPair<>('І', 'Ј'),
+                new CustomPair<>('А', 'ѐ'),
+                new CustomPair<>('ё', 'ђ'),
+                new CustomPair<>('є', 'ѕ'),
+                new CustomPair<>('і', 'ј'),
+                new CustomPair<>('Ґ', 'Ғ'));
+
+        addReplacedStringsWithWantedSymbols(
+                wrongPasswords,
+                russianAndUkrainianSymbols,
+                createCorrectPasswords(),
+                REGROUPED_PASSWORD_PATTERN,
+                "", "$1");
 
         return wrongPasswords;
     }
@@ -183,18 +264,7 @@ class PatternHandlerTest {
 
     private static List<String> createCorrectPhoneNumbers() {
         List<String> correctPhoneNumbers = getCorrectPhoneNumbers();
-        List<String> replacementList = List.of(
-                "   $1-$2-$3-$4-$5-$6-$7-$8-$9   ",
-                "   $1.$2.$3.$4.$5.$6.$7.$8.$9   ",
-                "$1$3$5$7$9",
-                "$1     $3     $5     $7     $9",
-                "$1$2($3)$4$5$6$7$8$9",
-                "$1($3)$5$7$9",
-                "$1(.- $3 -.)$5 -.- $7 -.- $9",
-                "$1$2(   $3   )$4$5$6$7$8$9",
-                "$1$2((($3)))$4$5$6$7$8$9",
-                "$1$2(((((($3.-.-.)$4$5$6$7$8$9",
-                "$1$2(---$3...)$4$5$6$7$8$9");
+        List<String> replacementList = getCorrectPhoneNumbersReplacementList();
 
         List<String> tempList = new ArrayList<>();
         for (String correctNumber : correctPhoneNumbers) {
@@ -206,57 +276,42 @@ class PatternHandlerTest {
     }
 
     private static List<String> createWrongPhoneNumbers() {
-        List<String> wrongPhoneNumbers = getCorrectPhoneNumbers();
-        List<String> replacementList = List.of(
-                " $2$3$4$5$6$7$8$9",
-                "+3$2$3$4$5$6$7$8$9",
-                "+ 3$2$3$4$5$6$7$8$9",
-                "+$2$3$4$5$6$7$8$9",
-                "3$2$3$4$5$6$7$8$9",
-                "$1$212$4$5$6$7$8$9",
-                "$1$2 12$4$5$6$7$8$9",
-                "$1$2 12 $4$5$6$7$8$9",
-                "$1$2+12$4$5$6$7$8$9",
-                "$1$2(12)$4$5$6$7$8$9",
-                "$1$2( 12)$4$5$6$7$8$9",
-                "$1$2(+12)$4$5$6$7$8$9",
-                "$1$2)$3$4$5$6$7$8$9",
-                "$1$2$3($4$5$6$7$8$9",
-                "$1$2)$3($4$5$6$7$8$9",
-                "$1$2$3$4($5)$6$7$8$9",
-                "$1$2$3$4$5($6)$7$8$9",
-                "+ 38$2$3$4$5$6$7$8$9",
-                "++38$2$3$4$5$6$7$8$9",
-                "+3 8$2$3$4$5$6$7$8$9",
-                "$1$2 0 50 $4$5$6$7$8$9",
-                "$1$2 05 0 $4$5$6$7$8$9",
-                "$1$2$3$4 67 8 $6$7$8$9",
-                "$1$2$3$4 6 7 8 $6$7$8$9");
+        List<String> correctPhoneNumbers = getCorrectPhoneNumbers();
+        List<String> replacementList = getWrongPhoneNumbersReplacementList();
 
-        List<String> tempList = new ArrayList<>();
-        for (String wrongNumber : wrongPhoneNumbers) {
-            addReplacedPhoneNumbers(replacementList, tempList, wrongNumber);
+        List<String> wrongPhoneNumbers = new ArrayList<>();
+
+        for (String wrongNumber : correctPhoneNumbers) {
+            addReplacedPhoneNumbers(replacementList, wrongPhoneNumbers, wrongNumber);
         }
 
-        List<String> specialChars = getSpecialCharacters("\\");
-        specialChars.removeAll(List.of("\\.", "\\-"));
+        List<String> specialChars = getAnySymbols(
+                "\\",
+                List.of("\\.", "\\-"),
+                new CustomPair<>('!', '0'),
+                new CustomPair<>(':', 'A'),
+                new CustomPair<>('[', 'a'),
+                new CustomPair<>('{', '\u007F'));
+
+        addReplacedStringsWithWantedSymbols(
+                wrongPhoneNumbers,
+                specialChars,
+                correctPhoneNumbers,
+                REGROUPED_PHONE_NUMBER_PATTERN,
+                "$1$2$3$4$5", "$7$8$9"
+        );
 
         specialChars.forEach(
-                specialChar -> wrongPhoneNumbers.forEach(
+                specialChar -> correctPhoneNumbers.forEach(
                         number -> {
-                            tempList.add(number.replaceAll(REGROUPED_PHONE_NUMBER_PATTERN,
-                                    "$1$2$3$4$5".concat(specialChar).concat("$7$8$9")));
-
                             String twoDigits = number
                                     .replaceAll(REGROUPED_PHONE_NUMBER_PATTERN, "$7");
-                            tempList.add(number.replaceAll(REGROUPED_PHONE_NUMBER_PATTERN,
-                                    "$1$2$3$4$5$6".concat("\\"
-                                            .concat(twoDigits.replaceAll("^\\d",
+
+                            wrongPhoneNumbers.add(number.replaceAll(REGROUPED_PHONE_NUMBER_PATTERN,
+                                    "$1$2$3$4$5$6".concat(
+                                            "\\".concat(twoDigits.replaceAll("^\\d",
                                                     specialChar))).concat("$8$9")));
                         }));
-
-        wrongPhoneNumbers.clear();
-        wrongPhoneNumbers.addAll(tempList);
 
         return wrongPhoneNumbers;
     }
@@ -267,8 +322,26 @@ class PatternHandlerTest {
                 getRandomString(ENGLISH_LETTERS_AND_NUMBERS, 500)));
 
         IntStream.range(0, 10).mapToObj(String::valueOf).forEach(correctNames::add);
-        List<String> specialChars = getSpecialCharacters("");
-        specialChars.addAll(getRussianAndUkrLetters());
+
+        List<String> specialChars = getAnySymbols(
+                "",
+                Collections.emptyList(),
+                new CustomPair<>('!', '0'),
+                new CustomPair<>(':', 'A'),
+                new CustomPair<>('[', 'a'),
+                new CustomPair<>('{', '\u007F'));
+
+        //add russian and ukr letters
+        specialChars.addAll(getAnySymbols("",
+                Collections.emptyList(),
+                new CustomPair<>('Ё', 'Ђ'),
+                new CustomPair<>('Є', 'Ѕ'),
+                new CustomPair<>('І', 'Ј'),
+                new CustomPair<>('А', 'ѐ'),
+                new CustomPair<>('ё', 'ђ'),
+                new CustomPair<>('є', 'ѕ'),
+                new CustomPair<>('і', 'ј'),
+                new CustomPair<>('Ґ', 'Ғ')));
 
         correctNames.addAll(specialChars);
 
@@ -299,17 +372,32 @@ class PatternHandlerTest {
 
         List<String> tempList = new ArrayList<>();
 
-        IntStream.range(0, correctSymbols.size()).forEach(i -> {
+        for (int i = 0; i < correctSymbols.size(); i++) {
             for (String correctSymbol : correctSymbols) {
                 tempList.add(correctSymbols.get(i).concat(correctSymbol));
             }
-        });
+        }
 
         List<String> correctWords = new ArrayList<>(tempList);
 
-        correctWords.forEach(word -> getRussianAndUkrLetters().forEach(
-                letter -> tempList.add(word.concat(letter))
-        ));
+        List<String> russianAndUkrainianLetters = getAnySymbols("",
+                Collections.emptyList(),
+                new CustomPair<>('Ё', 'Ђ'),
+                new CustomPair<>('Є', 'Ѕ'),
+                new CustomPair<>('І', 'Ј'),
+                new CustomPair<>('А', 'ѐ'),
+                new CustomPair<>('ё', 'ђ'),
+                new CustomPair<>('є', 'ѕ'),
+                new CustomPair<>('і', 'ј'),
+                new CustomPair<>('Ґ', 'Ғ'));
+
+        addReplacedStringsWithWantedSymbols(
+                correctWords,
+                russianAndUkrainianLetters,
+                tempList,
+                REGROUPED_WORD_EMPTY_OR_MIN_2_MAX_50,
+                "$1", ""
+        );
 
         correctWords.addAll(tempList);
         correctWords.addAll(List.of(
@@ -326,66 +414,74 @@ class PatternHandlerTest {
                 "w",
                 "W",
                 "1",
-                " ",
-                " 1",
-                " W",
-                " w",
-                "1 ",
-                "1 ",
-                "W ",
-                "w ",
-                getRandomString(ENGLISH_LETTERS_AND_NUMBERS, 51)));
+                " "));
 
-        List<String> specialChars = getSpecialCharacters("");
-        specialChars.removeAll(List.of("_", "-", "`", "'"));
+        ArrayList<String> tempList = new ArrayList<>();
+
+        for (int i = 0; i < wrongWords.size(); i++) {
+            for (String str : wrongWords) {
+                String concat = str.concat(wrongWords.get(i));
+                if (concat.contains(" ")) {
+                    tempList.add(concat);
+                }
+            }
+        }
+
+        wrongWords.addAll(tempList);
+
+        wrongWords.add(getRandomString(ENGLISH_LETTERS_AND_NUMBERS, 51));
+
+        List<String> specialChars = getAnySymbols(
+                "",
+                List.of("_", "-", "`", "'"),
+                new CustomPair<>('!', '0'),
+                new CustomPair<>(':', 'A'),
+                new CustomPair<>('[', 'a'),
+                new CustomPair<>('{', '\u007F'));
 
         specialChars.forEach(specialChar -> wrongWords.add(correctWord.concat(specialChar)));
 
         return wrongWords;
     }
 
-    private static List<String> getSpecialCharacters(String escapedSymbol) {
+    @SafeVarargs
+    private static List<String> getAnySymbols(String escapedSymbol,
+                                              List<String> deletedSymbols,
+                                              CustomPair<Character, Character>... pairs) {
         List<String> specialCharacters = new ArrayList<>();
 
-        IntStream.range(getAsciiCodeOfChar('!'), getAsciiCodeOfChar('0'))
-                .forEach(i -> specialCharacters.add(escapedSymbol + ((char) i)));
-        IntStream.range(getAsciiCodeOfChar(':'), getAsciiCodeOfChar('A'))
-                .forEach(i -> specialCharacters.add(escapedSymbol + ((char) i)));
-        IntStream.range(getAsciiCodeOfChar('['), getAsciiCodeOfChar('a'))
-                .forEach(i -> specialCharacters.add(escapedSymbol + ((char) i)));
-        IntStream.range(getAsciiCodeOfChar('{'), getAsciiCodeOfChar('\u007F'))
-                .forEach(i -> specialCharacters.add(escapedSymbol + ((char) i)));
+        for (CustomPair<Character, Character> pair : pairs) {
+            addCharactersToList(escapedSymbol, specialCharacters, pair.getT(), pair.getT1());
+        }
+
+        specialCharacters.removeAll(deletedSymbols);
 
         return specialCharacters;
     }
 
-    private static List<String> getRussianAndUkrLetters() {
-        List<String> russianAndUkrLetters = new ArrayList<>();
+    private static void addCharactersToList(String escapedSymbol, List<String> characters,
+                                            char char1, char char2) {
+        IntStream.range(getAsciiCodeOfChar(char1), getAsciiCodeOfChar(char2))
+                .forEach(i -> characters.add(escapedSymbol + ((char) i)));
+    }
 
-        russianAndUkrLetters.add(String.valueOf('Ё'));
-        russianAndUkrLetters.add(String.valueOf('Є'));
-        IntStream.range(getAsciiCodeOfChar('І'), getAsciiCodeOfChar('Ј'))
-                .forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
-        IntStream.range(getAsciiCodeOfChar('А'), getAsciiCodeOfChar('ѐ'))
-                .forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
-        russianAndUkrLetters.add(String.valueOf('ё'));
-        russianAndUkrLetters.add(String.valueOf('є'));
-        IntStream.range(getAsciiCodeOfChar('і'), getAsciiCodeOfChar('ј'))
-                .forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
-        IntStream.range(getAsciiCodeOfChar('Ґ'), getAsciiCodeOfChar('Ғ'))
-                .forEach(i -> russianAndUkrLetters.add(String.valueOf((char) i)));
-
-        return russianAndUkrLetters;
+    private static String getStringFromStringsList(List<String> stringList) {
+        String string = "";
+        for (String s : stringList) {
+            string = string.concat(s);
+        }
+        return string;
     }
 
     private static int getAsciiCodeOfChar(char character) {
         return character;
     }
 
-    private static void addReplacedPhoneNumbers(List<String> replacementList, List<String> tempList,
+    private static void addReplacedPhoneNumbers(List<String> replacementList,
+                                                List<String> listForAdding,
                                                 String replacedString) {
         for (String replacement : replacementList) {
-            tempList.add(replacedString.replaceAll(
+            listForAdding.add(replacedString.replaceAll(
                     REGROUPED_PHONE_NUMBER_PATTERN, replacement));
         }
     }
@@ -397,5 +493,62 @@ class PatternHandlerTest {
             stringBuilder.append(source.charAt(random.nextInt(source.length())));
         }
         return stringBuilder.toString();
+    }
+
+    private static void addReplacedStringsWithWantedSymbols(List<String> resultList,
+                                                            List<String> addedSymbols,
+                                                            List<String> listForAdding,
+                                                            String regroupedPasswordPattern,
+                                                            String firstPartForConcat,
+                                                            String lastPartForConcat) {
+        addedSymbols.forEach(symbol -> listForAdding
+                .forEach(changingSymbol -> resultList.add(
+                        changingSymbol.replaceAll(
+                                regroupedPasswordPattern,
+                                firstPartForConcat.concat(symbol).concat(lastPartForConcat))
+                )));
+    }
+
+    private static List<String> getCorrectPhoneNumbersReplacementList() {
+        return List.of(
+                "   $1-$2-$3-$4-$5-$6-$7-$8-$9   ",
+                "   $1.$2.$3.$4.$5.$6.$7.$8.$9   ",
+                "$1$3$5$7$9",
+                "$1     $3     $5     $7     $9",
+                "$1$2($3)$4$5$6$7$8$9",
+                "$1($3)$5$7$9",
+                "$1(.- $3 -.)$5 -.- $7 -.- $9",
+                "$1$2(   $3   )$4$5$6$7$8$9",
+                "$1$2((($3)))$4$5$6$7$8$9",
+                "$1$2(((((($3.-.-.)$4$5$6$7$8$9",
+                "$1$2(---$3...)$4$5$6$7$8$9");
+    }
+
+    private static List<String> getWrongPhoneNumbersReplacementList() {
+        return List.of(
+                " $2$3$4$5$6$7$8$9",
+                "+3$2$3$4$5$6$7$8$9",
+                "+ 3$2$3$4$5$6$7$8$9",
+                "+$2$3$4$5$6$7$8$9",
+                "3$2$3$4$5$6$7$8$9",
+                "$1$212$4$5$6$7$8$9",
+                "$1$2 12$4$5$6$7$8$9",
+                "$1$2 12 $4$5$6$7$8$9",
+                "$1$2+12$4$5$6$7$8$9",
+                "$1$2(12)$4$5$6$7$8$9",
+                "$1$2( 12)$4$5$6$7$8$9",
+                "$1$2(+12)$4$5$6$7$8$9",
+                "$1$2)$3$4$5$6$7$8$9",
+                "$1$2$3($4$5$6$7$8$9",
+                "$1$2)$3($4$5$6$7$8$9",
+                "$1$2$3$4($5)$6$7$8$9",
+                "$1$2$3$4$5($6)$7$8$9",
+                "+ 38$2$3$4$5$6$7$8$9",
+                "++38$2$3$4$5$6$7$8$9",
+                "+3 8$2$3$4$5$6$7$8$9",
+                "$1$2 0 50 $4$5$6$7$8$9",
+                "$1$2 05 0 $4$5$6$7$8$9",
+                "$1$2$3$4 67 8 $6$7$8$9",
+                "$1$2$3$4 6 7 8 $6$7$8$9");
     }
 }
