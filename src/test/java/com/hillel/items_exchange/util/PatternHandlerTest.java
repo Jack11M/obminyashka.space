@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.hillel.items_exchange.util.PatternHandler.*;
@@ -294,17 +295,18 @@ class PatternHandlerTest {
                 "$1$2$3$4$5", "$7$8$9"
         );
 
-        specialChars.forEach(
-                specialChar -> correctPhoneNumbers.forEach(
-                        number -> {
-                            String twoDigits = number
-                                    .replaceAll(REGROUPED_PHONE_NUMBER_PATTERN, "$7");
+        List<String> specialCharsWithNumber = specialChars
+                .stream()
+                .map(specialChar -> specialChar.concat("7"))
+                .collect(Collectors.toList());
 
-                            wrongPhoneNumbers.add(number.replaceAll(REGROUPED_PHONE_NUMBER_PATTERN,
-                                    "$1$2$3$4$5$6".concat(
-                                            "\\".concat(twoDigits.replaceAll("^\\d",
-                                                    specialChar))).concat("$8$9")));
-                        }));
+        addReplacedStringsWithWantedSymbols(
+                wrongPhoneNumbers,
+                specialCharsWithNumber,
+                correctPhoneNumbers,
+                REGROUPED_PHONE_NUMBER_PATTERN,
+                "$1$2$3$4$5$6", "$8$9"
+        );
 
         return wrongPhoneNumbers;
     }
@@ -316,17 +318,13 @@ class PatternHandlerTest {
 
         IntStream.range(0, 10).mapToObj(String::valueOf).forEach(correctNames::add);
 
-        List<String> specialChars = getAnySymbols(
+        List<String> specialCharsAndRusAndUkrLetters = getAnySymbols(
                 "",
                 Collections.emptyList(),
                 new CustomPair<>('!', '0'),
                 new CustomPair<>(':', 'A'),
                 new CustomPair<>('[', 'a'),
-                new CustomPair<>('{', '\u007F'));
-
-        //add russian and ukr letters
-        specialChars.addAll(getAnySymbols("",
-                Collections.emptyList(),
+                new CustomPair<>('{', '\u007F'),
                 new CustomPair<>('Ё', 'Ђ'),
                 new CustomPair<>('Є', 'Ѕ'),
                 new CustomPair<>('І', 'Ј'),
@@ -334,9 +332,9 @@ class PatternHandlerTest {
                 new CustomPair<>('ё', 'ђ'),
                 new CustomPair<>('є', 'ѕ'),
                 new CustomPair<>('і', 'ј'),
-                new CustomPair<>('Ґ', 'Ғ')));
+                new CustomPair<>('Ґ', 'Ғ'));
 
-        correctNames.addAll(specialChars);
+        correctNames.addAll(specialCharsAndRusAndUkrLetters);
 
         return correctNames;
     }
