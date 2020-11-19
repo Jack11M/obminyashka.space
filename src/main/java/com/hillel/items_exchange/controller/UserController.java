@@ -20,7 +20,6 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +31,6 @@ import javax.validation.groups.Default;
 import java.security.Principal;
 import java.util.List;
 
-import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_USER;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
@@ -50,7 +48,6 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/my-info")
-    @PreAuthorize(HAS_ROLE_USER)
     @ApiOperation(value = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
