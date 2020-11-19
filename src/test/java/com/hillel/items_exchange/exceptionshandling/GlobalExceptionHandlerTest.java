@@ -8,7 +8,6 @@ import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.DataConflictException;
-import com.hillel.items_exchange.exception.EntityAmountException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.handler.GlobalExceptionHandler;
 import com.hillel.items_exchange.util.*;

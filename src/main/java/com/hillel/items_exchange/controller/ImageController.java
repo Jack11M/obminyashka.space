@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 
 @RestController
 @RequestMapping("/image")
@@ -43,6 +45,9 @@ public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
     private final ProductService productService;
+
+    @Value("${max.images.amount}")
+    private int maxImagesAmount;
 
     @GetMapping(value = "/{product_id}/resource")
     @ApiOperation(value = "Find all byte representation of images for an existed product by its ID")
@@ -86,8 +91,9 @@ public class ImageController {
 
         try {
             Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
-            if (productToSaveImages.getImages().size() + images.size() > 10) {
-                throw new ElementsNumberExceedException(getExceptionMessageSource("exception.exceed.images.number"));
+            if (productToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
+                throw new ElementsNumberExceedException(
+                        getExceptionParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
             }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
