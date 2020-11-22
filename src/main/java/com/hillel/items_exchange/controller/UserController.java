@@ -2,7 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.exception.EntityAmountException;
+import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UtilMapper;
@@ -20,7 +20,6 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +31,6 @@ import javax.validation.groups.Default;
 import java.security.Principal;
 import java.util.List;
 
-import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_USER;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 
@@ -50,7 +48,6 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/my-info")
-    @PreAuthorize(HAS_ROLE_USER)
     @ApiOperation(value = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -97,11 +94,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
     public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                 List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
+                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
         User user = getUser(principal.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
-            throw new EntityAmountException(getExceptionMessageSourceWithAdditionalInfo(
+            throw new ElementsNumberExceedException(getExceptionMessageSourceWithAdditionalInfo(
                     "exception.children-amount", String.valueOf(maxChildrenAmount)));
         }
         userService.addChildren(user, childrenDto);

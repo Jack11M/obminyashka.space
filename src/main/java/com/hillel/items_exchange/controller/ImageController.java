@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.BaseEntity;
@@ -9,13 +10,13 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
-import com.hillel.items_exchange.util.MessageSourceUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+
 @RestController
 @RequestMapping("/image")
 @Api(tags = "Image")
@@ -41,6 +45,9 @@ public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
     private final ProductService productService;
+
+    @Value("${max.images.amount}")
+    private int maxImagesAmount;
 
     @GetMapping(value = "/{product_id}/resource")
     @ApiOperation(value = "Find all byte representation of images for an existed product by its ID")
@@ -78,11 +85,16 @@ public class ImageController {
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> saveImages(@PathVariable("product_id")
-                                                     @PositiveOrZero(message = "{invalid.id}") long productId,
-                                                 @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images) {
+                                             @PositiveOrZero(message = "{invalid.id}") long productId,
+                                             @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
+            throws ElementsNumberExceedException {
 
         try {
             Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
+            if (productToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
+                throw new ElementsNumberExceedException(
+                        getExceptionParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
+            }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
@@ -113,7 +125,7 @@ public class ImageController {
             throws IllegalOperationException {
 
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
-            throw new IllegalOperationException(MessageSourceUtil.getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
         }
         imageService.removeById(imageIdList);
     }
