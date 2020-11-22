@@ -1,32 +1,50 @@
-import React, { useCallback } from "react";
+import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 
 import ButtonsAddRemoveChild from './buttonsAddRemoveChild/buttonsAddRemoveChild';
 import { addChild, deleteChild } from '../../../redux/profile/profileAction';
 
 
-function BlockButtons({index, childrenId}) {
+const ButtonsBlock = styled.div`
+	display: flex;
+  justify-content: flex-end;
+`;
+
+const AddRemoveDiv = styled.div`
+	width: 415px;
+	display: flex;
+	justify-content: space-between;
+`
+
+function BlockButtons( { index, childrenId } ) {
 	const dispatch = useDispatch();
 
-	const removeChild = useCallback(() => {
-		dispatch(deleteChild(childrenId))
-	}, [dispatch, childrenId]);
+	const removeChild = useCallback( () => {
+		dispatch( deleteChild( childrenId ) );
+	}, [ dispatch, childrenId ] );
 
-	const addChildren = useCallback(() => {
-		dispatch(addChild())
-	}, [dispatch]);
+	const addChildren = useCallback( () => {
+		dispatch( addChild() );
+	}, [ dispatch ] );
 
 	return (
-		<div className={"block-buttons"}>
-			<div className={"block-buttons__add-remove"}>
-				<ButtonsAddRemoveChild whatIsClass={"block-buttons__add-remove-item"} text={'Добавить поле'} classSpan={"add"}
-					click={addChildren}/>
-				{Boolean(index) && (
-					<ButtonsAddRemoveChild whatIsClass={"block-buttons__add-remove-item"} text={'Удалить поле'} classSpan={"remove"}
-						click={removeChild}/>
-				)}
-			</div>
-		</div>
+		<ButtonsBlock>
+			<AddRemoveDiv>
+				<ButtonsAddRemoveChild
+					text={ 'Добавить поле' }
+					addRemove={ 'add' }
+					click={ addChildren }
+				/>
+				{ Boolean( index ) && (
+					<ButtonsAddRemoveChild
+						text={ 'Удалить поле' }
+						addRemove={ 'remove' }
+						click={ removeChild }
+					/>
+				) }
+			</AddRemoveDiv>
+		</ButtonsBlock>
 	);
 }
 

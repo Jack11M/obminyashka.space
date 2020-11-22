@@ -5,6 +5,7 @@ import TitleBigBlue from '../../../../components/title_Big_Blue';
 import InputProfile from '../../components/inputProfile/inputProfile';
 import BlockButtons from '../../components/blockButtons';
 import Button from '../../../../components/button/Button';
+import CheckBox from '../../../../components/checkbox';
 
 import './myProfile.scss';
 import './buttonForProfile.scss';
@@ -32,78 +33,94 @@ const MyProfile = () => {
 		dispatch( addChildrenInputValue( { [e.target.name]: e.target.value }, id ) );
 	}, [ dispatch ] );
 
-	const submitForm = ( e ) => {
+	const submitFormAboutMe = ( e ) => {
+		e.preventDefault();
+		dispatch( putUserInfoAsync( profile ) );
+	};
+
+	const submitFormChildren = ( e ) => {
 		e.preventDefault();
 		dispatch( putUserInfoAsync( profile ) );
 	};
 
 	return (
-		<form onSubmit={ submitForm }>
-			<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'О себе' }/>
-			<InputProfile
-				data={ {
-					name: 'firstName',
-					label: 'Имя:',
-					value: profile.firstName,
-					type: 'text'
-				} }
-				click={ addInputMe }/>
-			<InputProfile
-				data={ {
-					name: 'lastName',
-					label: 'Фамилия:',
-					value: profile.lastName,
-					type: 'text'
-				} }
-				click={ addInputMe }/>
-			<InputProfile data={ {
-				name: 'city',
-				label: 'Город:',
-				value: profile.city,
-				type: 'text'
-			} }
-				click={ addInputCity } disabled/>
-
-			{ profile.phones.map( ( phone, index ) => {
-				return <InputProfile
+		<>
+			<form onSubmit={ submitFormAboutMe }>
+				<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'О себе' }/>
+				<InputProfile
 					data={ {
-						name: 'phoneNumber',
-						label: `${ !index ? 'Телефон:' : '' } `,
-						value: phone.phoneNumber, type: 'phone'
+						name: 'firstName',
+						label: 'Имя:',
+						value: profile.firstName,
+						type: 'text'
 					} }
-					key={ index }
-					click={ ( e ) => addInputPhone( e, phone.id ) }/>;
-			} ) }
+					click={ addInputMe }
+				/>
+				<InputProfile
+					data={ {
+						name: 'lastName',
+						label: 'Фамилия:',
+						value: profile.lastName,
+						type: 'text'
+					} }
+					click={ addInputMe }
+				/>
+				<InputProfile data={ {
+					name: 'city',
+					label: 'Город:',
+					value: profile.city,
+					type: 'text'
+				} }
+					click={ addInputCity } disabled
+				/>
 
-			<div className={ 'block-children' }>
-				<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'Дети' }/>
-				{ profile.children.map( ( child, idx ) => {
-					return (
-						<div className={ 'block-child' } key={ `${ child.id }_child` }>
-							<InputProfile
-								data={ {
-									name: 'sex',
-									label: 'Имя:',
-									value: child.sex,
-									type: 'text'
-								} }
-								click={ ( e ) => addInputChildren( e, child.id ) }/>
-							<InputProfile
-								data={ {
-									name: 'birthDate',
-									label: 'Возраст:',
-									value: child.birthDate,
-									type: 'date'
-								} }
-								click={ ( e ) => addInputChildren( e, child.id ) }/>
-							<BlockButtons index={ idx } childrenId={ child.id }/>
-						</div>
-					);
+				{ profile.phones.map( ( phone, index ) => {
+					return <InputProfile
+						data={ {
+							name: 'phoneNumber',
+							label: `${ !index ? 'Телефон:' : '' } `,
+							value: phone.phoneNumber, type: 'phone'
+						} }
+						key={ index }
+						click={ ( e ) => addInputPhone( e, phone.id ) }/>;
 				} ) }
-			</div>
-			<Button text={ 'Сохранить' } whatClass={ 'btn-for-profile' } width={'248px'} height={'49px'}/>
 
-		</form>
+				<CheckBox margin={ '0 0 18px 133px' }/>
+				<BlockButtons index={ 0 } childrenId={ 10 }/>
+				<Button text={ 'Сохранить' } whatClass={ 'btn-profile' }/>
+			</form>
+
+			<form onSubmit={ submitFormChildren } >
+				<div className={ 'block-children' }>
+					<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'Дети' }/>
+					{ profile.children.map( ( child, idx ) => {
+						return (
+							<div className={ 'block-child' } key={ `${ child.id }_child` }>
+								<InputProfile
+									data={ {
+										name: 'sex',
+										label: 'Имя:',
+										value: child.sex,
+										type: 'text'
+									} }
+									click={ ( e ) => addInputChildren( e, child.id ) }/>
+								<InputProfile
+									data={ {
+										name: 'birthDate',
+										label: 'Возраст:',
+										value: child.birthDate,
+										type: 'date'
+									} }
+									click={ ( e ) => addInputChildren( e, child.id ) }/>
+								<BlockButtons index={ idx } childrenId={ child.id }/>
+							</div>
+						);
+					} ) }
+				</div>
+				<Button text={ 'Сохранить' } whatClass={ 'btn-profile' }/>
+
+			</form>
+		</>
 	);
 };
 
