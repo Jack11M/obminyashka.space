@@ -55,20 +55,20 @@ public class UserDtoCreatingUtil {
     }
 
     public static UserDto createUserDtoForUpdatingWithChildrenWithoutPhones() {
-        return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
-                "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+        return getBuild("test", "test@test.com", Boolean.FALSE, "first",
+                "last", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
                 NEW_CHILDREN, Collections.emptySet());
     }
 
     public static UserDto createUserDtoForUpdatingWithPhoneWithoutChildren() {
-        return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
-                "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+        return getBuild("test", "test@test.com", Boolean.FALSE, "first",
+                "last", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
                 Collections.emptyList(), NEW_PHONES);
     }
 
     public static UserDto createUserDtoForUpdatingWithNewChildAndPhones() {
-        return getBuild("test", "test@test.com", Boolean.FALSE, "first",
-                "last", BLANK_AVATAR_IMAGE, LocalDateTime.of(2020, 6, 3, 23, 4, 1),
+        return getBuild("new_user", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
+                NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
                 NEW_CHILDREN, NEW_PHONES);
     }
 

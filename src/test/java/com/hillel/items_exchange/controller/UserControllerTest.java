@@ -89,7 +89,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
@@ -103,7 +103,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenUsernameIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
@@ -115,7 +115,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
@@ -127,7 +127,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenChildrenAreChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
@@ -139,7 +139,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenPhonesAreChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithPhones(), status().isForbidden())
@@ -170,7 +170,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @DataSet("user/update_init.yml")
+    @DataSet({"database_init.yml", "user/update_init.yml"})
     void updateUserInfo_shouldReturn400WhenDuplicateEmail() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithDuplicateEmailWithoutPhones(), status().isBadRequest())
@@ -304,9 +304,9 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = "test")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet({"database_init.yml", "user/update_init.yml"})
     void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewChildren() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
@@ -316,9 +316,9 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = "test")
     @Transactional
-    @DataSet("user/update_init.yml")
+    @DataSet({"database_init.yml", "user/update_init.yml"})
     void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewPhone() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
@@ -328,10 +328,10 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "test")
+    @WithMockUser(username = "new_user")
     @Transactional
-    @DataSet("user/update_init.yml")
-    @ExpectedDataSet(value = "user/children_phones_update.yml", ignoreCols = "updated")
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    @ExpectedDataSet(value = {"database_init.yml", "user/children_phones_update.yml"}, ignoreCols = "updated")
     void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithNewChildAndPhones(), status().isAccepted())
