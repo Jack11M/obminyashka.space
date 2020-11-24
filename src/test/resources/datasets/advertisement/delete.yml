@@ -66,6 +66,20 @@ user:
     updated: '2019-01-01'
     status: 'ACTIVE'
     role_id: 1
+  - id: 2
+    username: 'user'
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'user@gmail.com'
+    online: 'false'
+    first_name: 'plain'
+    last_name: 'user'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    role_id: 2
 
 role:
   - id: 1
