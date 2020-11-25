@@ -41,7 +41,7 @@ public class Advertisement extends BaseEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "advertisement")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "advertisement")
     private Set<Chat> chats;
 
     @PrePersist

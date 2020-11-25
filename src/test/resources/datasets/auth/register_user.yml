@@ -6,8 +6,8 @@ advertisement:
     is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -19,8 +19,8 @@ advertisement:
     is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -32,8 +32,8 @@ advertisement:
     is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -45,8 +45,8 @@ advertisement:
     is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -58,8 +58,8 @@ advertisement:
     is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -76,8 +76,8 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     role_id: 1
   - id: 2
@@ -90,8 +90,8 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     role_id: 2
   - id: 3
