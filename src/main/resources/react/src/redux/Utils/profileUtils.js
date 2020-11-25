@@ -38,7 +38,6 @@ export const fillUserInfo = ( data ) => {
 };
 
 export const addPhone = ( data ) => {
-	console.log(data[data.length - 1]);
 	if (data.length >= PHONE_MAX || data[data.length - 1].phoneNumber === '' ) {
 		return data;
 	}
