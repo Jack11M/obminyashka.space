@@ -312,7 +312,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString()
-                .contains(getExceptionMessageSource("exception.illegal.field.change")));
+                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
     }
 
     @Test
@@ -324,7 +324,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString()
-                .contains(getExceptionMessageSource("exception.illegal.field.change")));
+                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
     }
 
     @Test

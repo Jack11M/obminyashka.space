@@ -145,7 +145,7 @@ public class UserService {
         boolean isNewUser = user.getUpdated().equals(user.getCreated());
         if ((!isNewUser) && (hasNewChildren || hasNewPhones)) {
             throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.field.change") + "children or phones");
+                    getExceptionMessageSource("exception.illegal.children.phones.change"));
         }
     }
 
