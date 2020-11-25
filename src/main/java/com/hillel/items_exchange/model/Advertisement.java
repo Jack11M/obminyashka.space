@@ -3,6 +3,7 @@ package com.hillel.items_exchange.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -39,6 +40,9 @@ public class Advertisement extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     private Product product;
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "advertisement")
+    private Set<Chat> chats;
 
     @PrePersist
     private void saveProduct() {

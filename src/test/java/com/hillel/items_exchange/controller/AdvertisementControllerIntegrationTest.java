@@ -1,7 +1,9 @@
 package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.DataSetFormat;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.core.api.exporter.ExportDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
@@ -144,7 +146,8 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
+    //@ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
+    @ExportDataSet(format = DataSetFormat.YML, outputName = "123321.yml")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         existDtoForUpdate = AdvertisementDtoCreatingUtil
                 .createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory();
