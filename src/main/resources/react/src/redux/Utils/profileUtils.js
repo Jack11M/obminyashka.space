@@ -1,3 +1,6 @@
+const CHILDREN_MAX = 10;
+const PHONE_MAX = 5;
+
 export const addInputPhoneOrChildren = ( state, input, id ) => {
 	return state.map( item => {
 		if (item.id === id) {
@@ -7,17 +10,18 @@ export const addInputPhoneOrChildren = ( state, input, id ) => {
 	} );
 };
 
-export const deleteChild = ( state, id ) => {
+export const deleteItem = ( state, id ) => {
 	return state.filter( item => item.id !== id );
 };
 
 export const addChild = ( state ) => {
-	if (!state[state.length - 1].birthDate ||!state[state.length - 1].sex || state.length >= 10) {
+	if (state.length >= CHILDREN_MAX || !state[state.length - 1].birthDate || !state[state.length - 1].name ) {
 		return state;
 	}
-	let newChild = {
-		'birthDate': '',
-		'sex': '',
+	const newChild = {
+		name: '',
+		birthDate: '',
+		sex: 'boy',
 		id: state[state.length - 1].id + 1
 	};
 	return [ ...state, newChild ];
@@ -31,4 +35,24 @@ export const fillUserInfo = ( data ) => {
 	if (!phones.length) {
 		return { ...children, ...rest };
 	}
+};
+
+export const addPhone = ( data ) => {
+	console.log(data[data.length - 1]);
+	if (data.length >= PHONE_MAX || data[data.length - 1].phoneNumber === '' ) {
+		return data;
+	}
+	const newPhone = {
+		defaultPhone: false,
+		id: data[data.length - 1].id + 1,
+		phoneNumber: '',
+		show: true
+	};
+	return [ ...data, newPhone ];
+};
+
+export const deleteLastPhone = ( data ) => {
+	let newData = [...data]
+	newData.pop()
+	return newData
 };

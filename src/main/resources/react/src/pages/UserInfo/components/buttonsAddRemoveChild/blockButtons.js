@@ -1,46 +1,44 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
-import ButtonsAddRemoveChild from './buttonsAddRemoveChild/buttonsAddRemoveChild';
-import { addChild, deleteChild } from '../../../redux/profile/profileAction';
+import ButtonsAddRemoveChild from './buttonsAddRemoveChild';
 
 
 const ButtonsBlock = styled.div`
 	display: flex;
   justify-content: flex-end;
+  margin-bottom: ${ props => props.mb };
 `;
 
 const AddRemoveDiv = styled.div`
 	width: 415px;
 	display: flex;
 	justify-content: space-between;
-`
+`;
 
-function BlockButtons( { index, childrenId } ) {
-	const dispatch = useDispatch();
+function BlockButtons( { mb, index, id, add, remove } ) {
 
-	const removeChild = useCallback( () => {
-		dispatch( deleteChild( childrenId ) );
-	}, [ dispatch, childrenId ] );
+	const itemAdd = useCallback( () => {
+		add();
+	}, [ add ] );
 
-	const addChildren = useCallback( () => {
-		dispatch( addChild() );
-	}, [ dispatch ] );
+	const itemRemove = useCallback( () => {
+		remove( id );
+	}, [ remove, id ] );
 
 	return (
-		<ButtonsBlock>
+		<ButtonsBlock mb={ mb }>
 			<AddRemoveDiv>
 				<ButtonsAddRemoveChild
 					text={ 'Добавить поле' }
 					addRemove={ 'add' }
-					click={ addChildren }
+					click={ itemAdd }
 				/>
 				{ Boolean( index ) && (
 					<ButtonsAddRemoveChild
 						text={ 'Удалить поле' }
 						addRemove={ 'remove' }
-						click={ removeChild }
+						click={ itemRemove }
 					/>
 				) }
 			</AddRemoveDiv>

@@ -105,7 +105,6 @@ export const InboxDiv = styled.div`
 	  }
 	 }
 	 };
-	
 `;
 
 export const InboxSpan = styled.span`

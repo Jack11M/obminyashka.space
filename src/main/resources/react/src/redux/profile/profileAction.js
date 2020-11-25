@@ -11,6 +11,15 @@ export const addPhoneInputValue = (data, id) => ({
 	id
 });
 
+export const deletePhone = (id) => ({
+	type: types.DELETE_PHONE,
+	payload: id
+});
+
+export const addPhone = () => ({
+	type: types.ADD_PHONE
+});
+
 export const addChildrenInputValue = (data, id) => ({
 	type: types.ADD_CHILDREN_INPUT_VALUE,
 	payload: data,

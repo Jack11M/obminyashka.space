@@ -1,6 +1,6 @@
 import { types } from './types';
-import { addChild, addInputPhoneOrChildren, deleteChild } from '../Utils/';
-import { fillUserInfo } from '../Utils/profileUtils';
+import { addChild, addInputPhoneOrChildren, addPhone, deleteItem, deleteLastPhone, fillUserInfo } from '../Utils';
+
 
 const initialState = {
 	profile: {
@@ -19,9 +19,10 @@ const initialState = {
 		],
 		children: [
 			{
+				name: '',
 				birthDate: '',
 				id: 0,
-				sex: ''
+				sex: 'boy'
 			}
 		],
 		online: '',
@@ -32,7 +33,6 @@ const initialState = {
 
 const profileReducer = ( state = initialState, { type, payload, id } ) => {
 	switch (type) {
-
 		case types.FILL_USER_INFO_SYNC:
 			return {
 				...state,
@@ -51,6 +51,18 @@ const profileReducer = ( state = initialState, { type, payload, id } ) => {
 				profile: { ...state.profile, phones: addInputPhoneOrChildren( state.profile.phones, payload, id ) }
 			};
 
+		case types.ADD_PHONE:
+			return {
+				...state,
+				profile: { ...state.profile, phones: addPhone( state.profile.phones ) }
+			};
+
+		case types.DELETE_PHONE:
+			return {
+				...state,
+				profile: { ...state.profile, phones: deleteLastPhone( state.profile.phones ) }
+			};
+
 		case types.ADD_CHILDREN_INPUT_VALUE: {
 			return {
 				...state,
@@ -67,7 +79,7 @@ const profileReducer = ( state = initialState, { type, payload, id } ) => {
 		case types.DELETE_CHILD:
 			return {
 				...state,
-				profile: { ...state.profile, children: deleteChild( state.profile.children, payload ) }
+				profile: { ...state.profile, children: deleteItem( state.profile.children, payload ) }
 			};
 
 		default:

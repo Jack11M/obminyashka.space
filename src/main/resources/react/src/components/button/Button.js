@@ -35,7 +35,7 @@ const ButtonBlue = styled.button`
 `
 
 
-const Button = ({ whatClass = null, disabling, text, click = null, width, height}) => {
+const Button = ({ whatClass = null, disabling, text, click = null, width}) => {
   return (
     <Fragment>
       <ButtonBlue
@@ -43,7 +43,6 @@ const Button = ({ whatClass = null, disabling, text, click = null, width, height
         disabled={disabling || null}
         onClick={click}
         width={width}
-        height={height}
       >
         {text}
       </ButtonBlue>

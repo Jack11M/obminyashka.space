@@ -1,1 +1,1 @@
-export {addInputPhoneOrChildren, deleteChild, addChild} from './profileUtils'
+export { addInputPhoneOrChildren, deleteItem, addChild, fillUserInfo, addPhone, deleteLastPhone } from './profileUtils';

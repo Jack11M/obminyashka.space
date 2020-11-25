@@ -3,14 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import TitleBigBlue from '../../../../components/title_Big_Blue';
 import InputProfile from '../../components/inputProfile/inputProfile';
-import BlockButtons from '../../components/blockButtons';
+import BlockButtons from '../../components/buttonsAddRemoveChild/blockButtons';
 import Button from '../../../../components/button/Button';
+import InputGender from '../../components/inputProfile/inputGender';
 import CheckBox from '../../../../components/checkbox';
 
 import './myProfile.scss';
-import './buttonForProfile.scss';
 
-import { addChildrenInputValue, addMeInputValue, addPhoneInputValue, putUserInfoAsync } from '../../../../redux/profile/profileAction';
+import {
+	addChild,
+	addChildrenInputValue,
+	addMeInputValue, addPhone,
+	addPhoneInputValue,
+	deleteChild, deletePhone,
+	putUserInfoAsync
+} from '../../../../redux/profile/profileAction';
 
 
 const MyProfile = () => {
@@ -29,8 +36,32 @@ const MyProfile = () => {
 		dispatch( addPhoneInputValue( { [e.target.name]: e.target.value }, id ) );
 	}, [ dispatch ] );
 
+	const phoneAdd = useCallback(()=> {
+		dispatch(addPhone())
+	},[dispatch])
+
+	const phoneRemove = useCallback(()=> {
+		dispatch(deletePhone())
+	},[dispatch])
+
+	const showPhone = useCallback( ( value, id ) => {
+		dispatch( addPhoneInputValue( { show: !value }, id ) );
+	}, [ dispatch ] );
+
 	const addInputChildren = useCallback( ( e, id ) => {
 		dispatch( addChildrenInputValue( { [e.target.name]: e.target.value }, id ) );
+	}, [ dispatch ] );
+
+	const pickBoyOrGirl = useCallback( ( id, gender ) => {
+		dispatch( addChildrenInputValue( { sex: gender }, id ) );
+	}, [ dispatch ] );
+
+	const childDelete = useCallback( ( childrenId ) => {
+		dispatch( deleteChild( childrenId ) );
+	}, [ dispatch ] );
+
+	const childAdd = useCallback( id => {
+		dispatch( addChild() );
 	}, [ dispatch ] );
 
 	const submitFormAboutMe = ( e ) => {
@@ -71,26 +102,48 @@ const MyProfile = () => {
 					value: profile.city,
 					type: 'text'
 				} }
-					click={ addInputCity } disabled
+					click={ addInputCity }
 				/>
 
-				{ profile.phones.map( ( phone, index ) => {
-					return <InputProfile
-						data={ {
-							name: 'phoneNumber',
-							label: `${ !index ? 'Телефон:' : '' } `,
-							value: phone.phoneNumber, type: 'phone'
-						} }
-						key={ index }
-						click={ ( e ) => addInputPhone( e, phone.id ) }/>;
-				} ) }
+				<div>
+					{ profile.phones.map( ( phone, index ) => {
+						return (
+							<div key={ `${ phone.id }_phone` }>
+								<InputProfile
+									data={ {
+										name: 'phoneNumber',
+										label: `${ !index ? 'Телефон:' : '' } `,
+										value: phone.phoneNumber,
+										type: 'phone',
+										id: phone.id
+									} }
+									click={ ( e ) => addInputPhone( e, phone.id ) }
+								/>
+								<CheckBox
+									margin={ '-10px 0 18px 134px' }
+									checked={ phone.show }
+									click={ () => showPhone( phone.show, phone.id ) }
+									distanceBetween
+								/>
+							</div>
+						);
+					} ) }
+				</div>
+				<BlockButtons
+					mb={ '34px' }
+					index={ profile.phones.length - 1 }
+					add={ phoneAdd }
+					remove={ phoneRemove}
+				/>
 
-				<CheckBox margin={ '0 0 18px 133px' }/>
-				<BlockButtons index={ 0 } childrenId={ 10 }/>
-				<Button text={ 'Сохранить' } whatClass={ 'btn-profile' }/>
+
+				<Button
+					text={ 'Сохранить' }
+					width={ '248px' }
+					whatClass={ 'btn-form-about-me' }/>
 			</form>
 
-			<form onSubmit={ submitFormChildren } >
+			<form onSubmit={ submitFormChildren }>
 				<div className={ 'block-children' }>
 					<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'Дети' }/>
 					{ profile.children.map( ( child, idx ) => {
@@ -98,9 +151,9 @@ const MyProfile = () => {
 							<div className={ 'block-child' } key={ `${ child.id }_child` }>
 								<InputProfile
 									data={ {
-										name: 'sex',
+										name: 'name',
 										label: 'Имя:',
-										value: child.sex,
+										value: child.name,
 										type: 'text'
 									} }
 									click={ ( e ) => addInputChildren( e, child.id ) }/>
@@ -112,13 +165,28 @@ const MyProfile = () => {
 										type: 'date'
 									} }
 									click={ ( e ) => addInputChildren( e, child.id ) }/>
-								<BlockButtons index={ idx } childrenId={ child.id }/>
+								<InputGender
+									data={ {
+										gender: child.sex,
+										id: child.id
+									} }
+									click={ pickBoyOrGirl }/>
+								<BlockButtons
+									mb={ '37px' }
+									index={ idx }
+									id={ child.id }
+									add={ childAdd }
+									remove={ childDelete }
+								/>
 							</div>
 						);
 					} ) }
 				</div>
-				<Button text={ 'Сохранить' } whatClass={ 'btn-profile' }/>
-
+				<Button
+					text={ 'Сохранить' }
+					width={ '248px' }
+					whatClass={ 'btn-form-children' }
+				/>
 			</form>
 		</>
 	);

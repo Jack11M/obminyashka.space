@@ -33,12 +33,13 @@ const Input = styled.input`
 `;
 
 const InputProfile = ( props ) => {
-	const { name, label, value, type } = props.data;
+	const { id = '', name, label, value, type } = props.data;
 
 	return (
 		<ProfileInput>
-			<Label htmlFor={ name }>{ `${ label }` }</Label>
-			<Input id={ name }
+			<Label htmlFor={ name + id }>{ `${ label }` }</Label>
+			<Input
+				id={ name + id }
 				type={ type }
 				name={ name }
 				value={ value }

@@ -52,7 +52,6 @@ const ButtonsAddRemoveChild = ( props ) => {
 		<AddRemoveItem>
 			<span>{ text }</span>
 			<Span
-
 				addRemove={ addRemove === 'add' }
 				onClick={ click }
 			/>
