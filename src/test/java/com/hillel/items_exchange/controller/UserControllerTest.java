@@ -213,7 +213,14 @@ class UserControllerTest {
                 .content(validCreatingChildDtoJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value("3"))
+                .andExpect(jsonPath("$[0].birthDate").value("2019-03-03"))
+                .andExpect(jsonPath("$[0].sex").value("MALE"))
+                .andExpect(jsonPath("$[1].id").value("4"))
+                .andExpect(jsonPath("$[1].birthDate").value("2019-04-04"))
+                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
     }
 
     @Test
@@ -226,7 +233,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -240,7 +247,14 @@ class UserControllerTest {
                 .content(validUpdatingChildDtoJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].birthDate").value("2018-03-03"))
+                .andExpect(jsonPath("$[0].sex").value("MALE"))
+                .andExpect(jsonPath("$[1].id").value("2"))
+                .andExpect(jsonPath("$[1].birthDate").value("2018-04-04"))
+                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
     }
 
     @Test

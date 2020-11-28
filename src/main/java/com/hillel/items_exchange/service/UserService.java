@@ -87,21 +87,24 @@ public class UserService {
         return convertToDto(parent.getChildren(), ChildDto.class);
     }
 
-    public void addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
+    public List<ChildDto> addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
         final List<Child> childrenToSave = new ArrayList<>(convertAllTo(
                 childrenDtoToAdd, Child.class, ArrayList::new));
         childrenToSave.forEach(child -> child.setUser(parent));
         parent.getChildren().addAll(childrenToSave);
         userRepository.save(parent);
+        return findDuplicatedChildAndConvertToDto(parent.getChildren(), childrenToSave);
     }
 
-    public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+    public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
         parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
             if (pChild.getId() == uChild.getId()) {
                 BeanUtils.copyProperties(uChild, pChild);
             }
         }));
         userRepository.saveAndFlush(parent);
+        return findDuplicatedChildAndConvertToDto(parent.getChildren(),
+            new ArrayList<>(convertAllTo(childrenDtoToUpdate, Child.class, ArrayList::new)));
     }
 
     public void removeChildren(User parent, List<Long> childrenIdToRemove) {
@@ -126,5 +129,12 @@ public class UserService {
         Field declaredField = User.class.getDeclaredField(fieldName);
         declaredField.setAccessible(true);
         return declaredField.get(toCompare).equals(declaredField.get(original));
+    }
+
+    private List<ChildDto> findDuplicatedChildAndConvertToDto(List<Child> fromDB, List<Child> fromRequest) {
+        return fromDB.stream()
+            .filter(fromRequest::contains)
+            .map(child -> modelMapper.map(child, ChildDto.class))
+            .collect(Collectors.toList());
     }
 }

@@ -94,7 +94,7 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
-    public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
+    public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
                                  List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
         User user = getUser(principal.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
@@ -102,15 +102,15 @@ public class UserController {
             throw new EntityAmountException(getExceptionWithVariable("exception.children-amount",
                     String.valueOf(maxChildrenAmount)));
         }
-        userService.addChildren(user, childrenDto);
+        return userService.addChildren(user, childrenDto);
     }
 
     @DeleteMapping("/child/{id}")
     @ApiOperation(value = "Delete child data for a registered requested user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 204, message = "NO CONTENT"),
             @ApiResponse(code = 400, message = "BAD REQUEST")})
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
                                            List<@NotNull Long> childrenIdToRemove, Principal principal) {
         final User user = getUser(principal.getName());
@@ -127,7 +127,7 @@ public class UserController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
-    public void updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
+    public List<ChildDto> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
                                            List<@Valid ChildDto> childrenDto, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
@@ -136,7 +136,7 @@ public class UserController {
                             "exception.invalid.dto",
                             "Not all children from dto present in User"));
         }
-        userService.updateChildren(user, childrenDto);
+        return userService.updateChildren(user, childrenDto);
     }
 
     private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {
