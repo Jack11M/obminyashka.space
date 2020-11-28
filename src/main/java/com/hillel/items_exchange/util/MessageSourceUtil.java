@@ -40,8 +40,4 @@ public class MessageSourceUtil {
     public static String getExceptionMessageSourceWithAdditionalInfo(String message, String additionalInfo) {
         return getExceptionMessageSource(message) + additionalInfo;
     }
-
-    public static String getExceptionWithVariable(String message, String var) {
-        return MessageFormat.format(getExceptionMessageSource(message), var);
-    }
 }

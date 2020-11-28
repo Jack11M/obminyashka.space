@@ -33,6 +33,7 @@ import java.util.List;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 
 @RestController
 @RequestMapping("/user")
@@ -93,13 +94,13 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
-    public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
+    public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
                                  List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
         User user = getUser(principal.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
-            throw new ElementsNumberExceedException(getExceptionMessageSourceWithAdditionalInfo(
-                    "exception.children-amount", String.valueOf(maxChildrenAmount)));
+            throw new ElementsNumberExceedException(getExceptionParametrizedMessageSource(
+                    "exception.children-amount", maxChildrenAmount));
         }
         return userService.addChildren(user, childrenDto);
     }
