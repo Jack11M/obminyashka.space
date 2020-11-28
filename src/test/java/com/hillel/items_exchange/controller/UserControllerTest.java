@@ -170,7 +170,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @DataSet("user/update_init.yml")
+    @DataSet({"database_init.yml", "user/update_init.yml"})
     void updateUserInfo_shouldReturn400WhenDuplicateEmail() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
                 createUserDtoForUpdatingWithDuplicateEmailWithoutPhones(), status().isBadRequest())
@@ -315,5 +315,42 @@ class UserControllerTest {
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
                 .contains(getExceptionWithVariable("exception.children-amount",
                         String.valueOf(maxChildrenAmount))));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    @Transactional
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewChildren() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    @Transactional
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewPhone() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
+    }
+
+    @Test
+    @WithMockUser(username = "new_user")
+    @Transactional
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    @ExpectedDataSet(value = {"database_init.yml", "user/children_phones_update.yml"}, ignoreCols = "updated")
+    void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithNewChildAndPhones(), status().isAccepted())
+                .andDo(print())
+                .andExpect(jsonPath("$.children", hasSize(1)))
+                .andExpect(jsonPath("$.phones", hasSize(1)));
     }
 }

@@ -26,7 +26,8 @@ public class ChildDto {
     private long id;
     @NotNull(message = "{invalid.not-null}")
     private Gender sex;
-    @ApiModelProperty(example = "yyyy-MM-dd")
+    @ApiModelProperty(required = true, example = "yyyy-MM-dd")
+    @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;

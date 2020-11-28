@@ -2,7 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.exception.EntityAmountException;
+import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UtilMapper;
@@ -33,7 +33,6 @@ import java.util.List;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionWithVariable;
 
 @RestController
 @RequestMapping("/user")
@@ -94,13 +93,13 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
-    public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                 List<@Valid ChildDto> childrenDto, Principal principal) throws EntityAmountException {
+    public void addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
+                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
         User user = getUser(principal.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
-            throw new EntityAmountException(getExceptionWithVariable("exception.children-amount",
-                    String.valueOf(maxChildrenAmount)));
+            throw new ElementsNumberExceedException(getExceptionMessageSourceWithAdditionalInfo(
+                    "exception.children-amount", String.valueOf(maxChildrenAmount)));
         }
         return userService.addChildren(user, childrenDto);
     }
