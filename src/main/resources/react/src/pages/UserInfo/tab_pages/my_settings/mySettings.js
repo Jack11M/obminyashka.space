@@ -27,7 +27,9 @@ const MySettings = () => {
                 и многие функции перестанут быть доступными. Вы можете поменять контактные данные и номера телефонов
                 в разделе меню <a href="#">Профиль</a>
             </p>
-            <Button text={"Удалить аккаунт"} whatClass={"btn-profile"} width={'248px'}/>
+            <div className={"btn-wrapper"}>
+                <Button text={"Удалить аккаунт"} whatClass={"btn-profile"} width={'248px'}/>
+            </div>
         </form>
     )
 };

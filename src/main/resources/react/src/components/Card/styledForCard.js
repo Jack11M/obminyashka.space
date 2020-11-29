@@ -7,6 +7,7 @@ export const Card = styled.div`
   border-radius: 20px;
   border: 2px dotted #C4C4C4;
   background-color: #fff;
+  margin: 10px 14px;
 `;
 
 export const FavoriteMarker = styled.span`
