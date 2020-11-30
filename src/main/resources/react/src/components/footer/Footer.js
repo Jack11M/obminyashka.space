@@ -13,7 +13,7 @@ const Footer = () => {
       <div className="wrapper">
         <ul className="footer-blocks">
           <li className="footer-list">
-            <span className="footer-list__icon icon-phone"></span>
+            <span className="footer-list__icon icon-phone"/>
             <a href="mailto:&#101;&#109;&#97;&#105;&#108;&#46;&#111;&#98;&#109;&#101;&#110;&#121;&#97;&#115;&#104;&#107;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">
               &#101;&#109;&#97;&#105;&#108;&#46;&#111;&#98;&#109;&#101;&#110;&#121;&#97;&#115;&#104;&#107;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;
             </a>
@@ -27,13 +27,13 @@ const Footer = () => {
             </div>
           </li>
           <li className="footer-list">
-            <span className="footer-list__icon icon-question"></span>
-            <a href="#" className="footer-list_rules">Правила безопасной сделки</a>
-            <a href="#" className="footer-list_rules">Благотворительные организации</a>
-            <a href="#" className="footer-list_rules">Часто задаваемые вопросы</a>
+            <span className="footer-list__icon icon-question"/>
+            <Link to={'/'} className="footer-list_rules">Правила безопасной сделки</Link>
+            <Link to={'/'} className="footer-list_rules">Благотворительные организации</Link>
+            <Link to={'/'} className="footer-list_rules">Часто задаваемые вопросы</Link>
           </li>
           <li className="footer-list">
-            <span className="footer-list__icon icon-home"></span>
+            <span className="footer-list__icon icon-home"/>
             <Link to="/">
               <img src={logoFooter} alt="Logo" />
             </Link>

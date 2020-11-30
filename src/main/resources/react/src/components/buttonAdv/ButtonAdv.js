@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import "./buttonAdv.scss";
 
 const ButtonAdv = () => {
   return (
-    <a href="#" className="btn-adv">
+    <Link to={'/'} className="btn-adv">
       <span>Добавить объявление</span>
-    </a>
+    </Link>
   );
 };
 

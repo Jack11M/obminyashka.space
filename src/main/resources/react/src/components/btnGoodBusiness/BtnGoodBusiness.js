@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const BtnGoodBusiness = props => {
   return (
     <Link to={props.href} className={props.whatClass}>
-      <span className="icon-heart"></span>
+      <span className="icon-heart"/>
       {props.text}
     </Link>
   );
