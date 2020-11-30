@@ -106,7 +106,7 @@ public class UserService {
                 childrenDtoToAdd, Child.class, ArrayList::new));
         addNewChildren(parent, childrenToSave);
         userRepository.save(parent);
-        return findDuplicatedChildAndConvertToDto(parent.getChildren(), childrenToSave);
+        return convertToDto(findDuplicatedChildren(parent.getChildren(), childrenToSave), ChildDto.class);
     }
 
     public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
@@ -116,8 +116,9 @@ public class UserService {
             }
         }));
         userRepository.saveAndFlush(parent);
-        return findDuplicatedChildAndConvertToDto(parent.getChildren(),
-            new ArrayList<>(convertAllTo(childrenDtoToUpdate, Child.class, ArrayList::new)));
+        final List<Child> childrenToUpdate = new ArrayList<>(convertAllTo(
+            childrenDtoToUpdate, Child.class, ArrayList::new));
+        return convertToDto(findDuplicatedChildren(parent.getChildren(), childrenToUpdate), ChildDto.class);
     }
 
     public void removeChildren(User parent, List<Long> childrenIdToRemove) {
@@ -162,10 +163,9 @@ public class UserService {
         user.getPhones().addAll(phones);
     }
 
-    private List<ChildDto> findDuplicatedChildAndConvertToDto(List<Child> fromDB, List<Child> fromRequest) {
+    private List<Child> findDuplicatedChildren(List<Child> fromDB, List<Child> fromRequest) {
         return fromDB.stream()
             .filter(fromRequest::contains)
-            .map(child -> modelMapper.map(child, ChildDto.class))
             .collect(Collectors.toList());
     }
 }
