@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-public class SecurityConfigIntegrationTest {
+class SecurityConfigIntegrationTest {
 
     private static final String VALID_USERNAME = "admin";
     private static final String VALID_PASSWORD = "@kuIOIY*h986";
@@ -88,13 +87,13 @@ public class SecurityConfigIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    public void loginWithNotValidUserIsOk() throws Exception {
+    void loginWithNotValidUserGetsBadRequest() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .content(asJsonString(notValidLoginDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

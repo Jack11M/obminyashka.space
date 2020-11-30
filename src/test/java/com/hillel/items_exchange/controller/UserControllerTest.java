@@ -3,11 +3,11 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
@@ -21,11 +21,12 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
+import java.util.Objects;
 
+import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,10 +44,15 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Value("${max.children.amount}")
+    private int maxChildrenAmount;
+
     private String validCreatingChildDtoJson;
     private String notValidCreatingChildDtoJson;
     private String validUpdatingChildDtoJson;
     private String notValidUpdatingChildDtoJson;
+    private String badTotalAmountChildDtoJson;
+    private String badAmountChildDtoJson;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +60,8 @@ class UserControllerTest {
         notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
         validUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 2L, 2018);
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
+        badTotalAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount - 1);
+        badAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount + 1);
     }
 
     @Test
@@ -85,9 +93,9 @@ class UserControllerTest {
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutChildrenOrPhones(), status().isAccepted())
+                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(), status().isAccepted())
                 .andDo(print())
-                .andExpect(jsonPath("$.email").value(NEW_EMAIL))
+                .andExpect(jsonPath("$.email").value(NEW_VALID_EMAIL))
                 .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME_WITH_APOSTROPHE))
                 .andExpect(jsonPath("$.lastName").value(NEW_VALID_NAME_WITH_HYPHEN_MINUS));
     }
@@ -98,10 +106,10 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenUsernameIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedUsernameWithoutChildrenOrPhones(), status().isForbidden())
+                createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "Username"));
+                getExceptionMessageSource("exception.illegal.field.change") + "username"));
     }
 
     @Test
@@ -110,10 +118,34 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
         MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutChildrenOrPhones(), status().isForbidden())
+                createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "LastOnlineTime"));
+                getExceptionMessageSource("exception.illegal.field.change") + "lastOnlineTime"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserInfo_shouldReturn403WhenChildrenAreChanged() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "children"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserInfo_shouldReturn403WhenPhonesAreChanged() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString().contains(
+                getExceptionMessageSource("exception.illegal.field.change") + "phones"));
     }
 
     @Test
@@ -122,7 +154,7 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn400WhenShortFirstName() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidShortFNameWithoutChildrenOrPhones(), status().isBadRequest())
+                createUserDtoForUpdatingWithInvalidShortFNameWithoutPhones(), status().isBadRequest())
                 .andReturn();
     }
 
@@ -132,7 +164,16 @@ class UserControllerTest {
     @DataSet("database_init.yml")
     void updateUserInfo_shouldReturn400WhenLastNameContainsTwoWords() throws Exception {
         getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidLNameWithoutChildrenOrPhones(), status().isBadRequest())
+                createUserDtoForUpdatingWithInvalidLNameWithoutPhones(), status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    void updateUserInfo_shouldReturn400WhenDuplicateEmail() throws Exception {
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithDuplicateEmailWithoutPhones(), status().isBadRequest())
                 .andReturn();
     }
 
@@ -156,10 +197,9 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].sex").value("male"))
+                .andExpect(jsonPath("$[0].sex").value("MALE"))
                 .andExpect(jsonPath("$[1].id").value(2L))
-                .andExpect(jsonPath("$[1].sex").value("female"));
-
+                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
     }
 
     @Test
@@ -214,7 +254,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Zero ID is expected"));
+        assertTrue(mvcResult.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("invalid.new.entity.id")));
     }
 
     @Test
@@ -231,18 +272,71 @@ class UserControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
-    private String getJsonOfChildrenDto(long maleId, long femaleId, int year) {
-        return asJsonString(List.of(
-                getChildDto(maleId, LocalDate.of(year, 3, 3), "male"),
-                getChildDto(femaleId, LocalDate.of(year, 4, 4), "female")
-        ));
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChild_BadAmount_ShouldThrowConstraintViolationException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getExceptionMessageSource("exception.invalid.dto")));
     }
 
-    private ChildDto getChildDto(long id, LocalDate birthDate, String sex) {
-        return ChildDto.builder()
-                .id(id)
-                .birthDate(birthDate)
-                .sex(sex)
-                .build();
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void addChild_BadTotalAmount_ShouldThrowEntityAmountException() throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(badTotalAmountChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getExceptionMessageSourceWithAdditionalInfo(
+                        "exception.children-amount", String.valueOf(maxChildrenAmount))));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    @Transactional
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewChildren() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    @Transactional
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewPhone() throws Exception {
+        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
+                .andReturn();
+        assertTrue(result.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
+    }
+
+    @Test
+    @WithMockUser(username = "new_user")
+    @Transactional
+    @DataSet({"database_init.yml", "user/update_init.yml"})
+    @ExpectedDataSet(value = {"database_init.yml", "user/children_phones_update.yml"}, ignoreCols = "updated")
+    void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
+        getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithNewChildAndPhones(), status().isAccepted())
+                .andDo(print())
+                .andExpect(jsonPath("$.children", hasSize(1)))
+                .andExpect(jsonPath("$.phones", hasSize(1)));
     }
 }

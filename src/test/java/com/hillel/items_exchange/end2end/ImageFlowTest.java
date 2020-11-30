@@ -1,4 +1,4 @@
-package com.hillel.items_exchange.controller;
+package com.hillel.items_exchange.end2end;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
@@ -26,17 +26,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
-class ImageControllerIntegrationTest {
+class ImageFlowTest {
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
     @Autowired
     private MockMvc mockMvc;
-    private MockMultipartFile jpeg;
     private MockMultipartFile txt;
 
     @BeforeEach
     void setUp() {
-         jpeg = new MockMultipartFile("files", "image-jpeg.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpeg".getBytes());
          txt = new MockMultipartFile("files", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
     }
 
@@ -65,15 +63,6 @@ class ImageControllerIntegrationTest {
                 .andExpect(jsonPath("$[1].id").value("2"))
                 .andExpect(jsonPath("$[1].resource").value(Base64.encodeString(TEST_PNG)))
                 .andExpect(jsonPath("$[1].defaultPhoto").value(true));
-    }
-
-    @WithMockUser("admin")
-    @Test
-    void saveImages_shouldReturn406WhenProductIsNotExist() throws Exception {
-        mockMvc.perform(multipart("/image/{product_id}", 50L)
-                .file(jpeg))
-                .andDo(print())
-                .andExpect(status().isNotAcceptable());
     }
 
     @WithMockUser("admin")

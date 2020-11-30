@@ -1,0 +1,41 @@
+user:
+  - id: 2
+    username: 'test'
+    password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
+    email: 'test@test.com'
+    online: 'false'
+    first_name: "first"
+    last_name: "last"
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2020-06-03 23:04:01'
+    created: '2020-06-03'
+    updated: '2020-06-04'
+    status: 'ACTIVE'
+    role_id: 2
+  - id: 3
+    username: 'new_user'
+    password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
+    email: 'new.admin@gmail.com'
+    online: 'false'
+    first_name: "Мар'яна"
+    last_name: "Квітка-Основ'яненко"
+    # Encoded to byte array with Base64.encodeString("test image png") MUST BE SOME BYTES
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2020-06-03'
+    updated: '2020-06-03'
+    status: 'ACTIVE'
+    role_id: 2
+
+child:
+  - id: 3
+    sex: MALE
+    birth_date: '2019-03-03'
+    user_id: 3
+
+phone:
+  - id: 1
+    phone_number: '381234567890'
+    show: true
+    default_phone: true

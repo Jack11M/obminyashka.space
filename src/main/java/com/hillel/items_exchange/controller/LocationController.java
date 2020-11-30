@@ -3,7 +3,10 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.service.LocationService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -24,6 +27,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 
 @RestController
 @RequestMapping("/location")
+@Api(tags = "Location")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -33,11 +37,18 @@ public class LocationController {
     @GetMapping
     @ApiOperation(value = "Get all of existed locations.")
     public ResponseEntity<List<LocationDto>> getAllLocations() {
-        return new ResponseEntity<>(locationService.findAll(), HttpStatus.OK);
+        List<LocationDto> allLocations = locationService.findAll();
+        return allLocations.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(allLocations, HttpStatus.OK);
     }
 
     @GetMapping("/{location_id}")
     @ApiOperation(value = "Get an existed location by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<LocationDto> getLocation(@PathVariable("location_id")
                                                    @PositiveOrZero(message = "{invalid.id}") long id) {
         return ResponseEntity.of(locationService.getById(id));
@@ -45,7 +56,11 @@ public class LocationController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping
-    @ApiOperation(value = "Save a new Location. Only for users authorized as admin.")
+    @ApiOperation(value = "Save a new Location", notes = "ADMIN ONLY")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "CREATED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     public ResponseEntity<LocationDto> createLocation(@Valid @RequestBody LocationDto locationDto) {
         long id = locationDto.getId();
         if (id != 0) {
@@ -57,18 +72,27 @@ public class LocationController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping
-    @ApiOperation(value = "Update an existed Location. Only for users authorized as admin.")
+    @ApiOperation(value = "Update an existed Location", notes = "ADMIN ONLY")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<LocationDto> updateLocation(@Valid @RequestBody LocationDto locationDto) {
-        if (!locationService.existsById(locationDto.getId())) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(locationService.update(locationDto), HttpStatus.OK);
+        return locationService.existsById(locationDto.getId()) ?
+                new ResponseEntity<>(locationService.update(locationDto), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping
-    @ApiOperation(value = "Delete existed Locations by their IDs. Only for users authorized as admin.")
-    public ResponseEntity<HttpStatus> deleteLocations(@RequestParam("ids") List<Long> locationIds) {
+    @ApiOperation(value = "Delete existed Locations by their IDs", notes = "ADMIN ONLY")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteLocations(@RequestParam("ids") List<Long> locationIds) {
         List<LocationDto> locations = locationService.findByIds(locationIds);
         if (locationIds.size() != locations.size()) {
             locationIds.removeAll(UtilMapper.mapBy(locations, LocationDto::getId));
@@ -79,8 +103,6 @@ public class LocationController {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", strIds));
         }
-
         locationService.removeById(locationIds);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

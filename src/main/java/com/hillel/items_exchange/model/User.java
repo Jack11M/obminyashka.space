@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     private String lastName;
 
     @Column(name = "avatar_image")
-    private String avatarImage;
+    private byte[] avatarImage;
 
     @Column(name = "last_online_time", columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime lastOnlineTime;
@@ -52,5 +52,5 @@ public class User extends BaseEntity {
     private Set<Phone> phones;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Child> children;
+    private List<Child> children;
 }

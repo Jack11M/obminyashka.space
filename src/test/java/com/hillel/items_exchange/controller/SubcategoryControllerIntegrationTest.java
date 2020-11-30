@@ -22,11 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-public class SubcategoryControllerIntegrationTest {
+class SubcategoryControllerIntegrationTest {
 
-    public static final long NONEXISTENT_SUBCATEGORY_ID = 333333L;
     public static final long SUBCATEGORY_ID_FOR_DELETING = 1L;
     public static final long EXISTENT_SUBCATEGORY_ID = 2L;
+    public static final long NONEXISTENT_CATEGORY_ID = 22222L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,18 +34,20 @@ public class SubcategoryControllerIntegrationTest {
     @Test
     @Transactional
     @DataSet("database_init.yml")
-    void getSubcategoryNamesByCategoryId_shouldReturnAllSubcategoryNamesByCategoryIdIfExists() throws Exception {
+    void getSubcategoryNamesByCategoryId_whenSubcategoryDoesNotExist_shouldReturnOkStstusAndAllSubcategoryNames()
+            throws Exception {
+
         mockMvc.perform(get("/subcategory/{category_id}/names", EXISTENT_SUBCATEGORY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json("[\"dolls\",\"puzzles\"]"));
+                .andExpect(status().isOk());
     }
 
     @Test
+    @Transactional
     @DataSet("database_init.yml")
-    public void getSubcategoryNamesByCategoryId_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/subcategory/{category_id}/names", NONEXISTENT_SUBCATEGORY_ID)
+    void getSubcategoryNamesByCategoryId_whenSubcategoryDoesNotExist_shouldReturnNotFound() throws Exception {
+        mockMvc.perform(get("/subcategory/{category_id}/names", NONEXISTENT_CATEGORY_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -66,7 +68,7 @@ public class SubcategoryControllerIntegrationTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DataSet("database_init.yml")
-    public void deleteSubcategoryById_whenSubcategoryHasProducts_shouldReturnBadRequest() throws Exception {
+    void deleteSubcategoryById_whenSubcategoryHasProducts_shouldReturnBadRequest() throws Exception {
         mockMvc.perform(delete("/subcategory/{subcategory_id}", SUBCATEGORY_ID_FOR_DELETING)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())

@@ -1,6 +1,8 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.ElementsNumberExceedException;
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.BaseEntity;
 import com.hillel.items_exchange.model.Product;
@@ -8,9 +10,13 @@ import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +32,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+
 @RestController
 @RequestMapping("/image")
+@Api(tags = "Image")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -36,7 +46,15 @@ public class ImageController {
     private final UserService userService;
     private final ProductService productService;
 
+    @Value("${max.images.amount}")
+    private int maxImagesAmount;
+
     @GetMapping(value = "/{product_id}/resource")
+    @ApiOperation(value = "Find all byte representation of images for an existed product by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<byte[]>> getImagesResource(@PathVariable("product_id")
                                                                  @PositiveOrZero(message = "{invalid.id}") long id) {
         List<byte[]> imagesResource = imageService.getImagesResourceByProductId(id);
@@ -46,6 +64,11 @@ public class ImageController {
     }
 
     @GetMapping("/{product_id}")
+    @ApiOperation(value = "Find all images for an existed product by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<ImageDto>> getByProductId(@PathVariable("product_id")
                                              @PositiveOrZero(message = "{invalid.id}") long id) {
         List<ImageDto> images = imageService.getByProductId(id);
@@ -55,23 +78,33 @@ public class ImageController {
     }
 
     @PostMapping(value = "/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "Save and compress up to 10 images to existed product by it's ID")
+    @ApiOperation(value = "Save and compress up to 10 images to an existed product by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
+            @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> saveImages(@PathVariable("product_id")
-                                                     @PositiveOrZero(message = "{invalid.id}") long productId,
-                                                 @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images) {
+                                             @PositiveOrZero(message = "{invalid.id}") long productId,
+                                             @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
+            throws ElementsNumberExceedException {
 
         try {
             Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
+            if (productToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
+                throw new ElementsNumberExceedException(
+                        getExceptionParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
+            }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToProduct(productToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
             final String format = String.format("Product not found for ID=%s", productId);
             log.warn(format, e);
-            return new ResponseEntity<>(format, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(format, HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
             final String msg = "There was an error during extraction of gained images!";
             log.error(msg, e);
-            return new ResponseEntity<>(msg, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(msg, HttpStatus.NOT_ACCEPTABLE);
         } catch (UnsupportedMediaTypeException e) {
             log.warn(e.getLocalizedMessage(), e);
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
@@ -80,15 +113,21 @@ public class ImageController {
     }
 
     @DeleteMapping("/{advertisement_id}")
-    public ResponseEntity<HttpStatus> deleteImages(@PathVariable("advertisement_id")
-                                                       @PositiveOrZero(message = "{invalid.id}") long advertisementId,
-                                                   @RequestParam("ids") List<Long> imageIdList, Principal principal) {
+    @ApiOperation(value = "Delete images from an advertisement by its ID and images ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteImages(@PathVariable("advertisement_id")
+                                 @PositiveOrZero(message = "{invalid.id}") long advertisementId,
+                             @RequestParam("ids") List<Long> imageIdList, Principal principal)
+            throws IllegalOperationException {
 
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
         }
         imageService.removeById(imageIdList);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private boolean isUserOwnsSelectedAdvertisement(long advertisementId, Principal principal) {

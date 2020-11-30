@@ -121,4 +121,18 @@ class ImageServiceTest extends BasicImageCreator{
         verify(imageRepository).deleteById(imageId);
         verifyNoMoreInteractions(imageRepository);
     }
+
+    @Test
+    void scale_shouldReturnScaledImage() throws IOException {
+        byte[] bytes = testPng.getBytes();
+        byte[] result = imageService.scale(bytes);
+        assertTrue(bytes.length >= result.length, "Images' resources should have a smaller size");
+    }
+
+    @Test
+    void scale_shouldReturnScaledJpegImage() throws IOException {
+        byte[] bytes = testJpg.getBytes();
+        byte[] result = imageService.scale(bytes);
+        assertTrue(bytes.length >= result.length, "Images' resources should have a smaller size");
+    }
 }

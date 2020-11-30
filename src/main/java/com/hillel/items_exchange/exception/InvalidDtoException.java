@@ -1,9 +1,10 @@
 package com.hillel.items_exchange.exception;
 
-import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@Getter
-public class InvalidDtoException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class InvalidDtoException extends Exception {
 
     public InvalidDtoException(String message) {
         super(message);

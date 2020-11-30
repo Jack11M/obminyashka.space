@@ -1,45 +1,54 @@
 package com.hillel.items_exchange.service;
 
-import com.hillel.items_exchange.dao.SubcategoryRepository;
 import com.hillel.items_exchange.model.Subcategory;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class SubcategoryService {
+public interface SubcategoryService {
 
-    private final SubcategoryRepository subcategoryRepository;
+    /**
+     * Returns all subcategory names by given Category ID.
+     *
+     * @param categoryId is Category ID.
+     * @return list of subcategory names from DB that are represented as {@link String}
+     */
+    List<String> findSubcategoryNamesByCategoryId(long categoryId);
 
-    public void removeSubcategoryById(long subcategoryId) {
-        subcategoryRepository.deleteById(subcategoryId);
-    }
+    /**
+     * Removes the subcategory with the given ID from DB.
+     *
+     * @param subcategoryId is Subcategory ID to remove.
+     */
+    void removeSubcategoryById(long subcategoryId);
 
-    public List<String> findSubcategoryNamesByCategoryId(long categoryId) {
-        return subcategoryRepository.findSubcategoriesNamesByCategory(categoryId);
-    }
+    /**
+     * Retrieves a category by its ID.
+     *
+     * @param id is Subcategory ID
+     * @return {@link Subcategory} entity from DB
+     */
+    Optional<Subcategory> findById(long id);
 
-    public boolean isSubcategoryDeletable(long id) {
-        return isSubcategoryExistsById(id)
-                && isSubcategoryHasNotProducts(id);
-    }
+    /**
+     * If a subcategory exists, returns {@code true}, otherwise {@code false}.
+     *
+     * @param id is Subcategory ID.
+     * @return true if a subcategory with the given id exists, false otherwise.
+     */
+    boolean isSubcategoryExistsById(long id);
 
-    public boolean isSubcategoryHasNotProducts(long id) {
-        return subcategoryRepository.findById(id)
-                .map(subcategory -> subcategory.getProducts().isEmpty())
-                .orElse(false);
-    }
+    /**
+     * Checks if a subcategory with the given ID exists in DB and has not products.
+     *
+     * @param id is Subcategory ID.
+     * @return {@code true} if a subcategory with the given ID can be deleted, {@code false} otherwise.
+     */
+    boolean isSubcategoryDeletable(long id);
 
-    public Optional<Subcategory> findById(long id) {
-        return subcategoryRepository.findById(id);
-    }
-
-    public boolean isSubcategoryExistsById(long id) {
-        return subcategoryRepository.existsById(id);
-    }
+    /**
+     * Returns all Subcategory identifiers.
+     *
+     * @return list of all subcategory identifiers from DB
+     */
+    List<Long> findAllSubcategoryIds();
 }
