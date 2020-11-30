@@ -5,7 +5,17 @@ import SvgStar from './FavoriteMarker';
 import InboxMessageSvg from './inboxMessageSvg';
 import Avatar from '../avatar/avatar';
 
-import { ButtonBlock, Card, CardContent, CitySpan, DivPicture, FavoriteMarker, LocationIcon, Picture, TextContent } from './styledForCard';
+import {
+  ButtonBlock,
+  Card,
+  CardContent,
+  CitySpan,
+  DivPicture,
+  FavoriteMarker,
+  LocationIcon,
+  Picture,
+  TextContent
+} from './styledForCard';
 
 import './avatarForCard.scss';
 
