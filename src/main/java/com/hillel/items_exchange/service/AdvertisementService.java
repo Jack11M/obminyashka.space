@@ -27,7 +27,6 @@ public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
-    private final ImageService imageService;
 
     public List<AdvertisementDto> findAll(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
