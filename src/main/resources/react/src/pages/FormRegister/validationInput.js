@@ -14,7 +14,12 @@ export const RegisterValidation = (input, isLogin) => {
       ["pattern", "altCode"],
       ["cutEmpty"]
     ],
-    password: [["notEmpty"], ["pattern", "password"], ["cutEmpty"]],
+    password: [
+      ["notEmpty"],
+      ["pattern", "password"],
+      ["pattern", "altCode"],
+      ["cutEmpty"]
+    ],
     confirmPassword: [["notEmpty"], ["contains", "password"]]
   };
 
