@@ -101,20 +101,26 @@ public class UserService {
         return convertToDto(parent.getChildren(), ChildDto.class);
     }
 
-    public void addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
+    public List<ChildDto> addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
         final List<Child> childrenToSave = new ArrayList<>(convertAllTo(
                 childrenDtoToAdd, Child.class, ArrayList::new));
         addNewChildren(parent, childrenToSave);
         userRepository.save(parent);
+        List<Child> children = parent.getChildren();
+        children.retainAll(childrenToSave);
+        return convertToDto(children, ChildDto.class);
     }
 
-    public void updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+    public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+        List<Child> updatedChildren = new ArrayList<>();
         parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
             if (pChild.getId() == uChild.getId()) {
                 BeanUtils.copyProperties(uChild, pChild);
+                updatedChildren.add(pChild);
             }
         }));
         userRepository.saveAndFlush(parent);
+        return convertToDto(updatedChildren, ChildDto.class);
     }
 
     public void removeChildren(User parent, List<Long> childrenIdToRemove) {
