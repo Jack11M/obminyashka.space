@@ -106,19 +106,21 @@ public class UserService {
                 childrenDtoToAdd, Child.class, ArrayList::new));
         addNewChildren(parent, childrenToSave);
         userRepository.save(parent);
-        return convertToDto(findDuplicatedChildren(parent.getChildren(), childrenToSave), ChildDto.class);
+        List<Child> children = parent.getChildren();
+        children.retainAll(childrenToSave);
+        return convertToDto(children, ChildDto.class);
     }
 
     public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+        List<Child> updatedChildren = new ArrayList<>();
         parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
             if (pChild.getId() == uChild.getId()) {
                 BeanUtils.copyProperties(uChild, pChild);
+                updatedChildren.add(pChild);
             }
         }));
         userRepository.saveAndFlush(parent);
-        final List<Child> childrenToUpdate = new ArrayList<>(convertAllTo(
-            childrenDtoToUpdate, Child.class, ArrayList::new));
-        return convertToDto(findDuplicatedChildren(parent.getChildren(), childrenToUpdate), ChildDto.class);
+        return convertToDto(updatedChildren, ChildDto.class);
     }
 
     public void removeChildren(User parent, List<Long> childrenIdToRemove) {
@@ -161,11 +163,5 @@ public class UserService {
     private void addNewPhones(User user, Collection<Phone> phones) {
         phones.forEach(phone -> phone.setUser(user));
         user.getPhones().addAll(phones);
-    }
-
-    private List<Child> findDuplicatedChildren(List<Child> fromDB, List<Child> fromRequest) {
-        return fromDB.stream()
-            .filter(fromRequest::contains)
-            .collect(Collectors.toList());
     }
 }
