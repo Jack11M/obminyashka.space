@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import "./navCategory.scss";
 import {
   clothes,
@@ -16,59 +17,59 @@ const NavCategory = () => {
     <ul className="navbarBurger-list">
       <div className="wrapper">
         <li className="navbarBurger-element navbarBurger-element-clothes">
-          <a href="#">
+          <Link to={'/'}>
             <img src={clothes} alt="clothes" />
             <span>одежда</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-shoes">
-          <a href="#">
+          <Link to={'/'}>
             <img src={shoes} alt="shoes" />
             <span>обувь</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-toys">
-          <a href="#">
+          <Link to={'/'}>
             <img src={toys} alt="toys" />
             <span>игрушки</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-transportForChildren">
-          <a href="#">
+          <Link to={'/'}>
             <img src={transportForChildren} alt="transportForChildren" />
             <span>транспорт для детей</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-furniture">
-          <a href="#">
+          <Link to={'/'}>
             <img src={furniture} alt="furniture" />
             <span>детская мебель</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-kidsUpToYear">
-          <a href="#">
+          <Link to={'/'}>
             <img src={kidsUpToYear} alt="kidsUpToYear" />
             <span>малыши до года</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-books">
-          <a href="#">
+          <Link to={'/'}>
             <img src={books} alt="books" />
             <span>книги</span>
-          </a>
+          </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-other">
-          <a href="#">
+          <Link to={'/'}>
             <img src={other} alt="other" />
             <span>другое</span>
-          </a>
+          </Link>
         </li>
       </div>
     </ul>

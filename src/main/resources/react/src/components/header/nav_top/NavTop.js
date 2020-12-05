@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Avatar from "./Avatar.js";
+import Avatar from "../../avatar/avatar.js";
 import "./navtop.scss";
 
 const NavTop = () => {
@@ -12,14 +12,14 @@ const NavTop = () => {
             <Link to="/" className="navbar-top-link">
               О Проекте
             </Link>
-            <a href="#" className="navbar-top-link">
+            <Link to="/" className="navbar-top-link">
               <i className="icon-heart" />
               Доброе Дело
-            </a>
+            </Link>
           </div>
           <div id="personalArea">
-            <Link to="/profile">
-              <Avatar />
+            <Link to="/userInfo">
+              <Avatar whatIsClass={'user-photo'} width={30} height={28}/>
               <span>Мой кабинет</span>
             </Link>
           </div>

@@ -35,12 +35,12 @@ const HeaderInMain = () => {
       </div>
 
       <div className="cloudsInner">
-        <span className="cloudOne"></span>
-        <span className="cloudTwo"></span>
-        <span className="cloudThree"></span>
-        <span className="cloudFour"></span>
-        <span className="cloudFive"></span>
-        <span className="cloudSix"></span>
+        <span className="cloudOne"/>
+        <span className="cloudTwo"/>
+        <span className="cloudThree"/>
+        <span className="cloudFour"/>
+        <span className="cloudFive"/>
+        <span className="cloudSix"/>
       </div>
     </div>
   );
