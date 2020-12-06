@@ -11,13 +11,13 @@ export const RegisterValidation = (input, isLogin) => {
     username: [
       ["notEmpty"],
       ["lengthLogin"],
-      ["pattern", "altCode"],
+      ["pattern", "altCodeLogin"],
       ["cutEmpty"]
     ],
     password: [
+      ["pattern", "altCodePassword"],
       ["notEmpty"],
       ["pattern", "password"],
-      ["pattern", "altCode"],
       ["cutEmpty"]
     ],
     confirmPassword: [["notEmpty"], ["contains", "password"]]
@@ -29,7 +29,8 @@ export const RegisterValidation = (input, isLogin) => {
     rulesPattern: {
       email: /(?=^.{1,129}@.+\..+)/i,
       password: /(?=^.{8,30}$)((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*$/,
-      altCode: /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
+      altCodePassword: /^[A-Za-z0-9 ]*[A-Za-z0-9][A-Za-z0-9 ]*$/,
+      altCodeLogin: /^[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/]*[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9][А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+-,@#$^&\[\]\{\}\'\"\.<>`~₴\\|/]*$/
     },
 
     notEmpty(el) {
