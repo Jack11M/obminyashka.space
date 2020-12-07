@@ -110,9 +110,7 @@ public class AdvertisementService {
         if (!toUpdateLocation.equals(fromDB.getLocation())) {
             Location newLocation = locationService.findById(toUpdateLocation.getId())
                     .orElseGet(() -> locationService.save(toUpdateLocation));
-
             BeanUtils.copyProperties(toUpdateLocation, newLocation);
-
             fromDB.setLocation(newLocation);
         }
     }
