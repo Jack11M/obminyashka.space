@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
@@ -55,7 +54,7 @@ class AdvertisementControllerIntegrationTest {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         validId = 1L;
-        notValidId =999L;
+        notValidId = 999L;
     }
 
     @Test
@@ -146,9 +145,8 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    //@ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
-    @ExportDataSet(format = DataSetFormat.YML, outputName = "123321.yml")
-    void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
+    @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
+    void updateAdvertisement_shouldUpdateExistedAdvertisementWithNewLocation() throws Exception {
         existDtoForUpdate = AdvertisementDtoCreatingUtil
                 .createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory();
 
@@ -160,7 +158,31 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.description").value("new description"))
                 .andExpect(jsonPath("$.topic").value("new topic"))
-                .andExpect(jsonPath("$.wishesToExchange").value("BMW"));
+                .andExpect(jsonPath("$.wishesToExchange").value("BMW"))
+                .andExpect(jsonPath("$.location.city").value("Odessa"))
+                .andExpect(jsonPath("$.location.district").value("Odessa district"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/updateAdvLocation.yml", ignoreCols = "updated")
+    void updateAdvertisement_shouldUpdateExistedAdvertisementWithUpdatedLocation() throws Exception {
+        existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory();
+
+        mockMvc.perform(put("/adv")
+                .content(asJsonString(existDtoForUpdate))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.description").value("new description"))
+                .andExpect(jsonPath("$.topic").value("new topic"))
+                .andExpect(jsonPath("$.wishesToExchange").value("BMW"))
+                .andExpect(jsonPath("$.location.city").value("New Vasyuki"))
+                .andExpect(jsonPath("$.location.district").value("New Vasyuki district"));
     }
 
     @Test
@@ -206,6 +228,7 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
     }
+
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")

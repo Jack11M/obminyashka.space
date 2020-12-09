@@ -65,26 +65,36 @@
 
 .icon-activity:before {
   content: "\e901";
+  font-size: 17px;
+  vertical-align: bottom;
   @include marginRight();
 }
 
 .icon-profile:before {
   content: "\e907";
+  font-size: 16px;
+  vertical-align: bottom;
   @include marginRight();
 }
 
 .icon-star:before {
   content: "\e90b";
+  font-size: 16px;
+  vertical-align: bottom;
   @include marginRight();
 }
 
 .icon-settings:before {
   content: "\e90a";
+  font-size: 17px;
+  vertical-align: bottom;
   @include marginRight();
 }
 
 
 .icon-logout:before {
   content: "\e905";
+  font-size: 17px;
+  vertical-align: bottom;
   @include marginRight();
 }

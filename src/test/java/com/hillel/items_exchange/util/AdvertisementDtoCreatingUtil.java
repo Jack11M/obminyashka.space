@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AdvertisementDtoCreatingUtil {
+
     private static final String MALE = "male";
     private static final String FEMALE = "female";
     private static final ImageDto GIF = new ImageDto(0L, "test image gif".getBytes(), false);
@@ -19,21 +20,27 @@ public class AdvertisementDtoCreatingUtil {
     private static final LocationDto KYIV = new LocationDto(0L, "Kyiv", "District");
     private static final LocationDto KHARKIV = new LocationDto(1L, "Kharkiv", "Kharkivska district");
     private static final LocationDto ODESSA = new LocationDto(0L, "Odessa", "Odessa district");
-
+    private static final LocationDto CHANGEDLOCATION =
+            new LocationDto(1L, "New Vasyuki", "New Vasyuki district");
 
     public static AdvertisementDto createNonExistAdvertisementDto() {
-        return getBuild(0L,"topic", "description", "hat", false, false, DealType.GIVEAWAY,
+        return getBuild(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY,
                 KYIV, 0L, MALE, "M", 1L, Collections.singletonList(GIF));
     }
 
     public static AdvertisementDto createExistAdvertisementDto() {
-        return getBuild(1L,"topic", "description", "shoes", true, true, DealType.EXCHANGE,
+        return getBuild(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE,
                 KHARKIV, 1L, MALE, "40", 1L, Arrays.asList(JPEG, PNG));
     }
 
     public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory() {
         return getBuild(1L, "new topic", "new description", "BMW", true, true, DealType.EXCHANGE,
                 ODESSA, 1L, FEMALE, "50", 2L, Collections.singletonList(JPEG));
+    }
+
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory() {
+        return getBuild(1L, "new topic", "new description", "BMW", true, true, DealType.EXCHANGE,
+                CHANGEDLOCATION, 1L, FEMALE, "50", 2L, Collections.singletonList(JPEG));
     }
 
     private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer, boolean fav, DealType exchange,

@@ -1,0 +1,148 @@
+advertisement:
+  - id: 1
+    topic: 'new topic'
+    description: 'new description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'BMW'
+    created: '2019-01-01'
+    updated: '[ignored]'
+    status: 'UPDATED'
+    user_id: 1
+    location_id: 1
+    product_id: 1
+  - id: 2
+    topic: 'Blouses'
+    description: 'Blouses description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 2
+  - id: 3
+    topic: 'Dresses'
+    description: 'Dresses description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 3
+  - id: 4
+    topic: 'Skirts'
+    description: 'Skirts description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 4
+  - id: 5
+    topic: 'Pajamas'
+    description: 'Pajamas description'
+    deal_type: 'EXCHANGE'
+    is_favourite: 'true'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    user_id: 1
+    location_id: 1
+    product_id: 5
+
+user:
+  - id: 1
+    username: 'admin'
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'admin@gmail.com'
+    online: 'false'
+    first_name: 'super'
+    last_name: 'admin'
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-01'
+    updated: '2019-01-01'
+    status: 'ACTIVE'
+    role_id: 1
+
+role:
+  - id: 1
+    name: 'ROLE_ADMIN'
+  - id: 2
+    name: 'ROLE_USER'
+
+location:
+  - id: 1
+    city: 'New Vasyuki'
+    district: 'New Vasyuki district'
+
+product:
+  - id: 1
+    age: '16'
+    gender: 'female'
+    size: '50'
+    season: 'spring'
+    subcategory_id: 2
+  - id: 2
+    age: '4'
+    gender: 'female'
+    size: '28'
+    season: 'summer'
+    subcategory_id: 1
+  - id: 3
+    age: '8'
+    gender: 'female'
+    size: '40'
+    season: 'summer'
+    subcategory_id: 1
+  - id: 4
+    age: '11'
+    gender: 'female'
+    size: 'M'
+    season: 'spring'
+    subcategory_id: 1
+  - id: 5
+    age: '13'
+    gender: 'unisex'
+    size: 'XS'
+    season: 'winter'
+    subcategory_id: 1
+
+image:
+  - id: 1
+    # Encoded to byte array with Base64.encodeString("test image jpeg")
+    resource: "dGVzdCBpbWFnZSBqcGVn="
+    default_photo: 'false'
+    product_id: 1
+
+category:
+  - id: 1
+    name: 'shoes'
+  - id: 2
+    name: 'Toys'
+
+subcategory:
+  - id: 1
+    name: 'light_shoes'
+    category_id: 1
+  - id: 2
+    name: 'dolls'
+    category_id: 2
+  - id: 3
+    name: 'puzzles'
+    category_id: 2

@@ -3,7 +3,7 @@
  */
 export const RegisterValidation = (input, isLogin) => {
   const login = {
-    usernameOrEmail: [["notEmpty"], ["cutEmpty"],["pattern", "altCode"]],
+    usernameOrEmail: [["notEmpty"], ["cutEmpty"]],
     password: [["notEmpty"], ["cutEmpty"]]
   };
   const register = {
@@ -11,10 +11,15 @@ export const RegisterValidation = (input, isLogin) => {
     username: [
       ["notEmpty"],
       ["lengthLogin"],
-      ["pattern", "altCode"],
+      ["pattern", "altCodeLogin"],
       ["cutEmpty"]
     ],
-    password: [["notEmpty"], ["pattern", "password"], ["cutEmpty"]],
+    password: [
+      ["pattern", "altCodePassword"],
+      ["notEmpty"],
+      ["pattern", "password"],
+      ["cutEmpty"]
+    ],
     confirmPassword: [["notEmpty"], ["contains", "password"]]
   };
 
@@ -22,9 +27,10 @@ export const RegisterValidation = (input, isLogin) => {
     MIN_LENGTH_STRING: 1,
     MAX_LENGTH_STRING: 49,
     rulesPattern: {
-      email: /(?=^.{1,129}@.+\..+)/i,
-      password: /(?=^.{8,30}$)((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z]).*$/,
-      altCode: /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
+      email: /^[A-Z0-9._%+-]{1,129}@[A-Z0-9-]+.+.[A-Z]{2,4}$/i,
+      password: /(?=^.{8,30}$)((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$/,
+      altCodePassword: /^[A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*[A-Za-z0-9][A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*$/,
+      altCodeLogin: /^[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9][А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\'\"\.<>`~₴\\|/=]*$/
     },
 
     notEmpty(el) {
@@ -53,7 +59,6 @@ export const RegisterValidation = (input, isLogin) => {
 
 
   let someError = methods.map(item => validatorMethods[item[0]](input, item[1]));
-  console.log(someError)
 
   return someError.every(ev => ev === true);
 };

@@ -1,18 +1,4 @@
 user:
-  - id: 1
-    username: 'admin'
-    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
-    email: 'new.admin@gmail.com'
-    online: 'false'
-    first_name: "Мар'яна"
-    last_name: "Квітка-Основ'яненко"
-    # Encoded to byte array with Base64.encodeString("test image png")
-    avatar_image: "dGVzdCBpbWFnZSBwbmc="
-    last_online_time: '2019-01-01 00:00:01'
-    created: '2019-01-01 00:00:01'
-    updated: '2019-01-01 00:00:01'
-    status: 'ACTIVE'
-    role_id: 1
   - id: 2
     username: 'test'
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
@@ -23,6 +9,20 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2020-06-03 23:04:01'
+    created: '2020-06-03'
+    updated: '2020-06-04'
+    status: 'ACTIVE'
+    role_id: 2
+  - id: 3
+    username: 'new_user'
+    password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
+    email: 'new.user@test.com'
+    online: 'false'
+    first_name: "first"
+    last_name: "last"
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
     created: '2020-06-03'
     updated: '2020-06-03'
     status: 'ACTIVE'

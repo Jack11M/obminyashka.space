@@ -22,6 +22,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @Service
 @RequiredArgsConstructor
 public class AdvertisementService {
+
     private final ModelMapper modelMapper;
     private final AdvertisementRepository advertisementRepository;
     private final SubcategoryService subcategoryService;
@@ -108,11 +109,11 @@ public class AdvertisementService {
         Location toUpdateLocation = toUpdate.getLocation();
         if (!toUpdateLocation.equals(fromDB.getLocation())) {
             Location newLocation = locationService.findById(toUpdateLocation.getId())
-                    .orElse(locationService.save(toUpdateLocation));
+                    .orElseGet(() -> locationService.save(toUpdateLocation));
+            BeanUtils.copyProperties(toUpdateLocation, newLocation);
             fromDB.setLocation(newLocation);
         }
     }
-
 
     public void remove(long id) {
         advertisementRepository.deleteById(id);
