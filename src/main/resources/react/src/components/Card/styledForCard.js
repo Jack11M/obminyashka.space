@@ -76,6 +76,8 @@ export const LocationIcon = styled.div`
 
 `;
 export const CitySpan = styled.span`
+	color: ${( { theme: { colors } } ) => colors['btn-blue-hover']};
+	font-size: 14px;
 	margin-left: 9px;
 `
 
