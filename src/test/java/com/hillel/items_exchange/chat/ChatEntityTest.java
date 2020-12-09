@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.chat;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.ChatRepository;
 import com.hillel.items_exchange.dao.UserRepository;
@@ -18,6 +17,8 @@ import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @DBRider
 @SpringBootTest
@@ -33,8 +34,7 @@ class ChatEntityTest {
     UserRepository userRepository;
 
     @Test
-    @DataSet("chat/db_init.yml")
-    @ExpectedDataSet("chat/new_chat.yml")
+    @DataSet("database_init.yml")
     void shouldAddNewChat() {
         User admin = userRepository.findByUsername("admin").orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findByUsername("user").orElseThrow(EntityNotFoundException::new);
@@ -47,12 +47,12 @@ class ChatEntityTest {
         Chat savedChat = admin.getChats().stream()
                 .filter(c -> c.getHash().equals(TEST_CHAT_HASH))
                 .findAny().orElseThrow(EntityNotFoundException::new);
-        user.getChats().add(savedChat);
-        userRepository.saveAndFlush(user);
+        assertNotEquals(0L, savedChat.getId(), "Saved chat ID must be greater than 0");
+        assertEquals(2, chatRepository.count());
+        assertTrue(chatRepository.findByHash(TEST_CHAT_HASH).isPresent());
     }
 
     private Chat createChat(Advertisement advertisement, List<User> users) {
         return new Chat(0L, TEST_CHAT_HASH, advertisement, users, Collections.emptyList());
     }
 }
-

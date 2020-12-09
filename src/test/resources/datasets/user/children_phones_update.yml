@@ -1,5 +1,5 @@
 user:
-  - id: 2
+  - id: 3
     username: 'test'
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
     email: 'test@test.com'
@@ -13,7 +13,7 @@ user:
     updated: '2020-06-04'
     status: 'ACTIVE'
     role_id: 2
-  - id: 3
+  - id: 4
     username: 'new_user'
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
     email: 'new.admin@gmail.com'
