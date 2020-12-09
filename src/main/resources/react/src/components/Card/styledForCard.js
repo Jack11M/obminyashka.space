@@ -57,11 +57,11 @@ export const CardContent = styled.div`
 `;
 
 export const TextContent = styled.h6`
-	height: 35px;
+	height: 37px;
   font-size: 16px;
   line-height: 19px;
   color: ${ ( { theme: { colors } } ) => colors['black-color-text'] };
-  margin: 0 44px 12px;
+  margin: -5px 44px 10px;
   text-align: center;
   
  -webkit-line-clamp: 2; 
@@ -76,6 +76,8 @@ export const LocationIcon = styled.div`
 
 `;
 export const CitySpan = styled.span`
+	color: ${( { theme: { colors } } ) => colors['btn-blue-hover']};
+	font-size: 14px;
 	margin-left: 9px;
 `
 

@@ -34,7 +34,7 @@ const Label = styled.span`
  	margin-left: ${ props => props.distanceBetween ? '9px' : '22px' };
   cursor: pointer;
   color: ${ ( { theme: { colors }, checked } ) => {
-	return checked ? colors['black-color-text'] : colors.colorGrey ;
+	return checked ? colors['black-color-text'] : colors.colorTextDisabled ;
 } };;
 `;
 

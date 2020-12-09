@@ -11,9 +11,9 @@ const ButtonBlue = styled.button`
 
   font-family:  'Roboto', sans-serif;
   font-style: normal;
-  font-weight: bold;
+  font-weight: ${(props)=>props.bold ? 'bold': 'normal' };
   font-size: 16px;
-  line-height: 24px;
+  line-height: 20px;
   text-transform: uppercase;
   transition: background-color 0.3s ease;
 

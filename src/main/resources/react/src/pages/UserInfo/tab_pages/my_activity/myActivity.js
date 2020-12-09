@@ -16,7 +16,7 @@ const MyActivity = () => {
 			<div className={ 'block-of-cards' }>
 				<ProductCard
 					city={ 'Харьков' }
-					text={ `Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет` }
+					text={ `Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет` }
 					picture={ lot3 }
 					inboxMessage={ 12 }
 					avatar={ '' }
@@ -62,7 +62,7 @@ const MyActivity = () => {
 			<div className={ 'block-of-cards' }>
 				<ProductCard isFavorite={ isFavorite }
 					picture={ lot3 } city={ 'Харьков' }
-					text={ `Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет` }
+					text={ `Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет` }
 					inboxMessage={ 3 }
 				/>
 				<ProductCard
@@ -81,7 +81,7 @@ const MyActivity = () => {
 				<ProductCard
 					picture={ lot3 }
 					city={ 'Харьков' }
-					text={ `Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет` }
+					text={ `Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет` }
 					inboxMessage={ 3 }
 				/>
 				<ProductCard
@@ -100,7 +100,7 @@ const MyActivity = () => {
 					isFavorite={ isFavorite }
 					picture={ lot3 }
 					city={ 'Харьков' }
-					text={ `Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет` }
+					text={ `Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет` }
 					inboxMessage={ 3 }
 				/>
 				<ProductCard
