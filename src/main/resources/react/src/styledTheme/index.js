@@ -10,6 +10,7 @@ export const theme = {
 		'btn-green-active': 'hsl(134, 100%, 27%)', // -> #008a20
 		'colorError': '#ff4c4c',
 		colorGrey: '#8E8E8E',
+		colorTextDisabled:'#A3A3A3',
 		'btn-gb-disabled': '#DADADA',
 		'right-color-text': '#333333',
 		'black-color-text': '#111111',
