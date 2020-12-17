@@ -129,7 +129,7 @@ product:
 image:
   - id: 1
     # Encoded to byte array with Base64.encodeString("test image jpeg")
-    resource: "dGVzdCBpbWFnZSBqcGVn="
+    resource: "dGVzdCBpbWFnZSBqcGVn"
     default_photo: 'false'
     product_id: 1
 

@@ -40,7 +40,7 @@ public class AdvertisementDtoCreatingUtil {
 
     public static AdvertisementDto createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory() {
         return getBuild(1L, "new topic", "new description", "BMW", true, true, DealType.EXCHANGE,
-                CHANGEDLOCATION, 1L, FEMALE, "50", 2L, Collections.singletonList(JPEG));
+                CHANGEDLOCATION, 1L, FEMALE, "50", 2L, List.of(JPEG, PNG, GIF));
     }
 
     private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer, boolean fav, DealType exchange,

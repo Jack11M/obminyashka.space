@@ -158,7 +158,11 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(jsonPath("$.topic").value("new topic"))
                 .andExpect(jsonPath("$.wishesToExchange").value("BMW"))
                 .andExpect(jsonPath("$.location.city").value("Odessa"))
-                .andExpect(jsonPath("$.location.district").value("Odessa district"));
+                .andExpect(jsonPath("$.location.district").value("Odessa district"))
+                .andExpect(jsonPath("$.product.season").value("spring"))
+                .andExpect(jsonPath("$.product.images[0].resource").value("dGVzdCBpbWFnZSBqcGVn"))
+                .andExpect(jsonPath("$.product.images[0].id").value(1))
+                .andExpect(jsonPath("$.product.images[0].defaultPhoto").value(false));
     }
 
     @Test
@@ -166,7 +170,7 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/updateAdvLocation.yml", ignoreCols = "updated")
-    void updateAdvertisement_shouldUpdateExistedAdvertisementWithUpdatedLocation() throws Exception {
+    void updateAdvertisement_shouldUpdateExistedAdvertisementWithUpdatedLocationAndAddedImage() throws Exception {
         existDtoForUpdate = AdvertisementDtoCreatingUtil
                 .createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory();
 
@@ -180,7 +184,16 @@ class AdvertisementControllerIntegrationTest {
                 .andExpect(jsonPath("$.topic").value("new topic"))
                 .andExpect(jsonPath("$.wishesToExchange").value("BMW"))
                 .andExpect(jsonPath("$.location.city").value("New Vasyuki"))
-                .andExpect(jsonPath("$.location.district").value("New Vasyuki district"));
+                .andExpect(jsonPath("$.location.district").value("New Vasyuki district"))
+                .andExpect(jsonPath("$.product.images[0].resource").value("dGVzdCBpbWFnZSBqcGVn"))
+                .andExpect(jsonPath("$.product.images[0].id").value(1))
+                .andExpect(jsonPath("$.product.images[0].defaultPhoto").value(false))
+                .andExpect(jsonPath("$.product.images[1].resource").value("dGVzdCBpbWFnZSBwbmc="))
+                .andExpect(jsonPath("$.product.images[1].id").value(2))
+                .andExpect(jsonPath("$.product.images[1].defaultPhoto").value(true))
+                .andExpect(jsonPath("$.product.images[2].resource").value("dGVzdCBpbWFnZSBnaWY="))
+                .andExpect(jsonPath("$.product.images[2].id").value(3))
+                .andExpect(jsonPath("$.product.images[2].defaultPhoto").value(false));
     }
 
     @Test

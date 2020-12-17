@@ -126,7 +126,17 @@ product:
 image:
   - id: 1
     # Encoded to byte array with Base64.encodeString("test image jpeg")
-    resource: "dGVzdCBpbWFnZSBqcGVn="
+    resource: "dGVzdCBpbWFnZSBqcGVn"
+    default_photo: 'false'
+    product_id: 1
+  - id: 2
+    # Encoded to byte array with Base64.encodeString("test image png")
+    resource: "dGVzdCBpbWFnZSBwbmc="
+    default_photo: 'true'
+    product_id: 1
+  - id: 3
+    # Encoded to byte array with Base64.encodeString("test image gif")
+    resource: "dGVzdCBpbWFnZSBnaWY="
     default_photo: 'false'
     product_id: 1
 
