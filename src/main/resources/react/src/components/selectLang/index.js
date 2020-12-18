@@ -10,7 +10,7 @@ const SelectLanguage = styled.div`
 
 const LanguageLabel = styled.div`
   position: relative;
-  font-family: Open Sans;
+  font-family: inherit;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
@@ -46,7 +46,7 @@ const DropDownMenu = styled.div`
 
 const DivOption = styled.div`
   text-transform: uppercase;
-  font-family: Open Sans, monospace;
+  font-family: inherit;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
