@@ -60,9 +60,9 @@ public class UserMapper {
                 Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         mapper.typeMap(UserDto.class, User.class).addMappings(mapper -> mapper.skip(User::setRole));
-//        mapper.typeMap(PhoneDto.class, Phone.class)
-//                .addMappings(mapper -> mapper.using(stringLongConverter)
-//                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
+        mapper.typeMap(PhoneDto.class, Phone.class)
+                .addMappings(mapper -> mapper.using(stringLongConverter)
+                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
         return mapper.map(userDto, User.class);
     }
 }
