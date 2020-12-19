@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from '../../avatar/avatar.js';
 import SelectLang from '../../selectLang';
+import { getTranslatedText } from '../../local/localisation';
 
 import './navtop.scss';
-import { getTranslatedText } from '../../local/localisation';
 
 const NavTop = () => {
 	return (

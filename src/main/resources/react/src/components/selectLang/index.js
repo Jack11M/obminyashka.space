@@ -16,7 +16,7 @@ const LanguageLabel = styled.div`
   font-weight: 400;
   line-height: 19px;
   color: #777777;
-  //text-transform: uppercase;
+  text-transform: uppercase;
   cursor: pointer;
 
   &:after {

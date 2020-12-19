@@ -1,16 +1,28 @@
 const en = {
 	button: {
-		addAdv: 'To add an advert'
+		addAdv: 'Add new advertisement'
 	},
 	header: {
 		about: 'About the project',
-		goodness: 'Good deed',
-		myOffice: 'My office',
+		goodness: 'Good deals',
+		myOffice: 'Personal area',
 		categories: 'Categories',
-		iSearch: 'I\'m looking for',
-		addAdv: 'To add an advert'
+		iSearch: 'Search',
+		clothes:'clothes',
+		shoes: 'shoes',
+		toys: 'toys',
+		vehicles: 'Transport for children',
+		furniture: 'children\'s furniture',
+		babies: 'babies to 1 year',
+		books: 'books',
+		another: 'another'
 	},
-	footer: {}
+	footer: {
+		rules: 'Safe deal rules',
+		charity: 'Charity organisations',
+		questions: 'Frequently asked Questions',
+		protect: 'All rights reserved'
+	}
 };
 
 export default en;

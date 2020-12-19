@@ -8,9 +8,21 @@ const ru = {
 		myOffice: 'Мой кабинет',
 		categories: 'Категории',
 		iSearch: 'Я ищу',
-
+		clothes:'Одежда',
+		shoes: 'Обувь',
+		toys: 'Игрушки',
+		vehicles: 'Транспорт для детей',
+		furniture: 'Детская мебель',
+		babies: 'Малыши до года',
+		books: 'Книги',
+		another: 'Другое'
 	},
-	footer: {}
+	footer: {
+		rules: 'Правила безопасной сделки',
+		charity: 'Благотворительные организации',
+		questions: 'Часто задаваемые вопросы',
+		protect: 'Все права защищены'
+	}
 };
 
 export default ru;
