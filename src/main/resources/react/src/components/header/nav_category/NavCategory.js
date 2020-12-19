@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import "./navCategory.scss";
 import {
   clothes,
   shoes,
@@ -11,6 +10,9 @@ import {
   books,
   other
 } from "../../../img/all_images_export/navItems";
+import { getTranslatedText } from '../../local/localisation';
+
+import "./navCategory.scss";
 
 const NavCategory = () => {
   return (
@@ -19,56 +21,56 @@ const NavCategory = () => {
         <li className="navbarBurger-element navbarBurger-element-clothes">
           <Link to={'/'}>
             <img src={clothes} alt="clothes" />
-            <span>одежда</span>
+            <span>{getTranslatedText('header.clothes')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-shoes">
           <Link to={'/'}>
             <img src={shoes} alt="shoes" />
-            <span>обувь</span>
+            <span>{getTranslatedText('header.shoes')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-toys">
           <Link to={'/'}>
             <img src={toys} alt="toys" />
-            <span>игрушки</span>
+            <span>{getTranslatedText('header.toys')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-transportForChildren">
           <Link to={'/'}>
             <img src={transportForChildren} alt="transportForChildren" />
-            <span>транспорт для детей</span>
+            <span>{getTranslatedText('header.vehicles')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-furniture">
           <Link to={'/'}>
             <img src={furniture} alt="furniture" />
-            <span>детская мебель</span>
+            <span>{getTranslatedText('header.furniture')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-kidsUpToYear">
           <Link to={'/'}>
             <img src={kidsUpToYear} alt="kidsUpToYear" />
-            <span>малыши до года</span>
+            <span>{getTranslatedText('header.babies')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-books">
           <Link to={'/'}>
             <img src={books} alt="books" />
-            <span>книги</span>
+            <span>{getTranslatedText('header.books')}</span>
           </Link>
         </li>
 
         <li className="navbarBurger-element navbarBurger-element-other">
           <Link to={'/'}>
             <img src={other} alt="other" />
-            <span>другое</span>
+            <span>{getTranslatedText('header.another')}</span>
           </Link>
         </li>
       </div>

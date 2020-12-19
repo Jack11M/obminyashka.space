@@ -21,6 +21,3 @@ export const theme = {
 		'scrollbar-bg': '#f1f1f1'
 	}
 };
-
-
-

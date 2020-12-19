@@ -1,8 +1,10 @@
 import React from "react";
-import "./Footer.scss";
 import logoFooter from "../../img/Logo-footer.png";
 import { Link } from "react-router-dom";
 import BtnGoodBusiness from "../btnGoodBusiness/BtnGoodBusiness.js";
+import { getTranslatedText } from '../local/localisation';
+
+import "./Footer.scss";
 
 const Footer = () => {
   const timeDate = new Date();
@@ -28,9 +30,10 @@ const Footer = () => {
           </li>
           <li className="footer-list">
             <span className="footer-list__icon icon-question"/>
-            <Link to={'/'} className="footer-list_rules">Правила безопасной сделки</Link>
-            <Link to={'/'} className="footer-list_rules">Благотворительные организации</Link>
-            <Link to={'/'} className="footer-list_rules">Часто задаваемые вопросы</Link>
+            <Link to={'/'} className="footer-list_rules">{getTranslatedText('footer.rules')}</Link>
+
+            <Link to={'/'} className="footer-list_rules">{ getTranslatedText('footer.charity') }</Link>
+            <Link to={'/'} className="footer-list_rules">{ getTranslatedText('footer.questions') }</Link>
           </li>
           <li className="footer-list">
             <span className="footer-list__icon icon-home"/>
@@ -38,7 +41,7 @@ const Footer = () => {
               <img src={logoFooter} alt="Logo" />
             </Link>
             <BtnGoodBusiness
-              text={"Доброе дело"}
+              text={getTranslatedText('header.goodness')}
               href={"/registration"}
               whatClass={"btn-Help-Children"}
             />
@@ -47,7 +50,7 @@ const Footer = () => {
       </div>
 
       <div className="copyright">
-        <span>&copy; Все права защищены </span>
+        <span>&copy; { getTranslatedText('footer.protect') } </span>
         <span id="dataYear">{yearNow} / Обменяшка</span>
       </div>
     </footer>

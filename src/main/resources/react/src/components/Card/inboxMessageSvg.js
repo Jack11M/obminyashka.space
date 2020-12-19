@@ -16,4 +16,4 @@ const InboxMessageSvg = (props) => {
 		</InboxDiv>
 	)
 }
-export default InboxMessageSvg
+export default InboxMessageSvg;
