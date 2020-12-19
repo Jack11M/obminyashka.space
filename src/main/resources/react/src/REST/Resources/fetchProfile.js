@@ -6,4 +6,3 @@ export const getUserInfo = () => {
 export const putUserInfo = (body) => {
 	return axiosInstance('put', 'user', {categories: 'info', body});
 };
-

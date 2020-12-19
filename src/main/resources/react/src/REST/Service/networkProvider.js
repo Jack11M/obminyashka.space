@@ -19,4 +19,3 @@ export const axiosInstance = async ( method, resource, { categories = '', id = '
 	instance.defaults.headers.common['accept-language'] = 'en';
 	return await instance[method]( `/${ resource }/${ categories }/${ id }`, body );
 };
-

@@ -5,7 +5,6 @@
   background-color: #f2f4f7;
   @include font(Roboto);
 
-
   .navbar-top {
     display: flex;
     justify-content: space-between;
@@ -36,12 +35,16 @@
     }
 
     #personalArea {
+      display: flex;
+
       a {
+        position: relative;
         transition: 0.2s;
         display: flex;
         align-items: center;
         padding: 16px 0 10px;
         cursor: pointer;
+
 
         div {
           width: 30px;
@@ -56,8 +59,9 @@
         &:active {
           @include Scale(1.03);
         }
-
       }
+
+
     }
 
   }
