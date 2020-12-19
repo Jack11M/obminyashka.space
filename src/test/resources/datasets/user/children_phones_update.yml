@@ -32,7 +32,7 @@ child:
   - id: 3
     sex: MALE
     birth_date: '2019-03-03'
-    user_id: 3
+    user_id: 4
 
 phone:
   - id: 1
