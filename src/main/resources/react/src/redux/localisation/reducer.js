@@ -1,6 +1,6 @@
 import { types } from './types';
 
-const initialState =  localStorage.getItem('lang') || navigator.language.split('-')[0];
+const initialState =  localStorage.getItem('lang') || 'ru';
 
 export const languageReducer = (state = initialState, action) => {
 	switch (action.type) {
