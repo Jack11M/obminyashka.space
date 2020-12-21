@@ -42,7 +42,7 @@ const Footer = () => {
             </Link>
             <BtnGoodBusiness
               text={getTranslatedText('header.goodness')}
-              href={"/registration"}
+              href={"/userInfo"}
               whatClass={"btn-Help-Children"}
             />
           </li>

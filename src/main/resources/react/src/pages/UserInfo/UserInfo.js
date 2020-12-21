@@ -5,9 +5,9 @@ import { useRouteMatch } from 'react-router-dom';
 import Tabs from './tabs';
 import RouterTabs from './tab_pages/router_tabs';
 import ActiveProfile from './active_profile';
+import { fetchUserInfoAsync } from '../../redux/profile/profileAction';
 
 import './UserInfo.scss';
-import { fetchUserInfoAsync } from '../../redux/profile/profileAction';
 
 const UserInfo = () => {
 	let { path, url } = useRouteMatch();

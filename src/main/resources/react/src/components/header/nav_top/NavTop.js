@@ -5,8 +5,10 @@ import SelectLang from '../../selectLang';
 import { getTranslatedText } from '../../local/localisation';
 
 import './navtop.scss';
+import { useSelector } from 'react-redux';
 
 const NavTop = () => {
+	const {isAuthenticated} = useSelector(state => state.auth);
 	return (
 		<div className="navbar-top-inner">
 			<div className="wrapper">
@@ -21,7 +23,7 @@ const NavTop = () => {
 						</Link>
 					</div>
 					<div id="personalArea">
-						<Link to="/userInfo">
+						<Link to={ isAuthenticated ? '/userInfo/activity':'/logIn' }>
 							<Avatar whatIsClass={ 'user-photo' } width={ 30 } height={ 28 }/>
 							<span>{getTranslatedText('header.myOffice')}</span>
 						</Link>

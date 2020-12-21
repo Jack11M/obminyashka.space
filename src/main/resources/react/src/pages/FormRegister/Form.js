@@ -12,7 +12,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import "./form.scss";
 
 const Form = props => {
-  const isLogin = props.match.path === "/registration/";
+  const isLogin = props.match.path === "/logIn/";
   let arrayValueForm = isLogin ? dataLogin : dataRegister;
   const oneClass = isLogin ? "login" : "register";
 
@@ -106,7 +106,7 @@ const Form = props => {
   }, [errorsResponse]);
 
   if (isSuccess) {
-    return <Redirect to="/registration/" />;
+    return <Redirect to="/logIn/" />;
   }
   if (isSingIn) {
     return <Redirect to="/" />;
