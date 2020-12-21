@@ -1,61 +1,23 @@
 import React from 'react';
-import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { getTranslatedText } from '../../components/local/localisation';
 import CheckBox from '../../components/checkbox';
 import Button from '../../components/button/Button';
 import InputForAuth from './InputForAuth';
+import { getTranslatedText } from '../../components/local/localisation';
+import { toggleCheckBox } from '../../redux/auth/action';
 
-// const Div = styled.div`
-//
-// `
-//
-// const InputDiv = styled.div`
-//   margin-bottom: 22px;
-//
-//   &:last-child {
-//     margin-bottom: 32px;
-//   }
-// `;
-//
-// const Label = styled.label`
-//   font-style: normal;
-//   font-weight: normal;
-//   font-size: 14px;
-//   line-height: 22px;
-//   color: ${ ( { theme: { colors } } ) => colors.colorGrey };
-//   cursor: pointer;
-// `;
-//
-// const InputAuth = styled.input`
-//   padding: 12px 16px;
-//   width: 100%;
-//   border: 1px solid hsl(0, 0%, 74%);;
-//   border-radius: 2px;
-//   box-sizing: border-box;
-//   font-family: Roboto, sans-serif;
-//   font-style: normal;
-//   font-weight: normal;
-//   font-size: 16px;
-//   line-height: 24px;
-//   outline: none;
-//   color: ${ ( { theme: { colors } } ) => colors['right-color-text'] };
-//
-//   &:focus {
-//     border-color: hsl(0, 0%, 44%);
-//   }
-// `;
+import { Extra } from './loginStyle';
 
-const Extra = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
 
-const Check = styled( CheckBox )`
-  ${ ( CheckBox ) => console.log( CheckBox ) }
-
-`;
 const SignUp = () => {
+	const dispatch = useDispatch();
+	const {regCheckbox} = useSelector(state => state.auth)
+
+	const changeCheckBox = () => {
+		dispatch( toggleCheckBox( { regCheckbox: !regCheckbox }) );
+	};
+
 	return (
 		<form>
 			<div>
@@ -85,11 +47,12 @@ const SignUp = () => {
 				/>
 			</div>
 			<Extra>
-				<Check
-					text={ getTranslatedText('auth.agreement') }
+				<CheckBox
+					text={ getTranslatedText( 'auth.agreement' ) }
 					margin={ '0 0 44px 0' }
 					fs={ '14px' }
-					checked={ true }
+					checked={ regCheckbox }
+					click={changeCheckBox}
 				/>
 			</Extra>
 			<Button

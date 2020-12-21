@@ -1,3 +1,3 @@
 export const types = {
-	TYPE: 'TYPE',
+	CHANGE_CHECKBOX: 'CHANGE_CHECKBOX',
 };
