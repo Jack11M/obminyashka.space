@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 const Div = styled.div`
   margin: ${ props => props.margin };
+  display: flex;
 `;
 
 const LabelSquare = styled.span`
@@ -13,7 +14,7 @@ const LabelSquare = styled.span`
   display: -ms-inline-flexbox;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  width: 17px;
+  width: 22px;
   height: 17px;
   border: 3px solid ${ ( { theme: { colors }, checked } ) => {
     return checked ? colors['btn-blue-normal'] : colors.colorGrey;
