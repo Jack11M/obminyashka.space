@@ -7,14 +7,11 @@ const Div = styled.div`
   display: flex;
 `;
 
-const LabelSquare = styled.span`
+const LabelSquare = styled.div`
   position: relative;
-  display: inline-flex;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  width: 22px;
+  width: 17px;
   height: 17px;
   border: 3px solid ${ ( { theme: { colors }, checked } ) => {
     return checked ? colors['btn-blue-normal'] : colors.colorGrey;
@@ -33,13 +30,13 @@ const Svg = styled.svg`
   transform: translate(-50%, -50%);
 `;
 
-const Label = styled.span`
-  display: inline-flex;
+const Label = styled.p`
   margin-left: ${ props => props.distanceBetween ? '9px' : '22px' };
   font-size: ${ ( { fs } ) => fs ? fs : '16px' };
 	line-height: 17px;
   vertical-align: middle;
   cursor: pointer;
+  max-width: 679px;
   color: ${ ( { theme: { colors }, checked } ) => {
     return checked ? colors['black-color-text'] : colors.colorTextDisabled;
   } };
