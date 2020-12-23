@@ -2,9 +2,10 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const InputDiv = styled.div`
-  margin-bottom:  ${({path}) => path ? '42px' : '22px'};
+  margin-bottom: ${ ( { path } ) => path ? '42px' : '22px' };
+
   &:last-child {
-    margin-bottom: ${({path}) => path? '26px' : '32px'};
+    margin-bottom: ${ ( { path } ) => path ? '26px' : '32px' };
   }
 `;
 
@@ -20,7 +21,6 @@ export const Label = styled.label`
 export const InputAuth = styled.input`
   padding: 12px 16px;
   width: 100%;
-  border: 1px solid hsl(0, 0%, 74%);;
   border-radius: 2px;
   box-sizing: border-box;
   font-family: Roboto, sans-serif;
@@ -29,11 +29,25 @@ export const InputAuth = styled.input`
   font-size: 16px;
   line-height: 24px;
   outline: none;
+  border: 1px solid ${ ( { theme: { colors }, error } ) => error ? colors['colorError']: 'hsl(0, 0%, 74%)' };
   color: ${ ( { theme: { colors } } ) => colors['right-color-text'] };
 
   &:focus {
-    border-color: hsl(0, 0%, 44%);
+    border-color: ${ ( { theme: { colors }, error } ) => error ? colors['colorError']:'hsl(0, 0%, 44%)'};
   }
+`;
+
+export const SpanError = styled.span`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+
+  ${ InputAuth } {
+    border-color: ${ ( { theme: { colors }, error } ) => error && colors['colorError'] };
+  }
+;
+  color: ${ ( { theme: { colors } } ) => colors['colorError'] };
 `;
 
 export const Extra = styled.div`

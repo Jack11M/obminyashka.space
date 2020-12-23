@@ -1,12 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { fourOhFour, greenDots, loop, orangeDots, shadow, shadowDark } from '../../img/all_images_export/errorPage';
 import Button from '../../components/button/Button';
 import { getTranslatedText } from '../../components/local/localisation';
+import { fourOhFour, greenDots, loop, orangeDots, shadow, shadowDark } from '../../img/all_images_export/errorPage';
 
 import './errorPage.scss';
 
 const FourOhFourPage = () => {
+	const { lang } =useSelector(state => state.auth)
 	let history = useHistory();
 	const goTo = (event) => {
 		if(event.target.className.includes("onMain") ){
@@ -44,10 +46,10 @@ const FourOhFourPage = () => {
 			<div className={ 'blockRightImage' }>
 				<img src={ loop } alt={ 'loop' }/>
 			</div>
-			<h2>{ getTranslatedText('fourOhFour.noPage') }</h2>
+			<h2>{ getTranslatedText('fourOhFour.noPage', lang) }</h2>
 			<div className={ 'blockButtons' }>
-				<Button whatClass={ 'onMain' } text={ getTranslatedText('fourOhFour.mainPage') } click={ goTo }/>
-				<Button whatClass={ 'back' } text={ getTranslatedText('fourOhFour.backPage') } click={ goTo }/>
+				<Button whatClass={ 'onMain' } text={ getTranslatedText('fourOhFour.mainPage', lang) } click={ goTo }/>
+				<Button whatClass={ 'back' } text={ getTranslatedText('fourOhFour.backPage', lang) } click={ goTo }/>
 			</div>
 		</div>
 	);

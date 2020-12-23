@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { chooseLanguage } from '../../redux/localisation/action';
+import {useLocation} from 'react-router-dom';
+import styled from 'styled-components';
+import { chooseLanguage } from '../../redux/auth/action';
 
 const SelectLanguage = styled.div`
   width: 29px;
@@ -68,9 +69,10 @@ const languageArray = [
 ];
 
 const CustomSelect = () => {
+	const location = useLocation();
 
 	const dispatch = useDispatch();
-	const language = useSelector(state => state.lang);
+	const { lang: language } = useSelector(state => state.auth)
 	const catchRef = useRef();
 
 	const selectedOption = languageArray.map( lang => lang.value === language ? { ...lang, checked: true } : { ...lang, checked: false } );
@@ -80,6 +82,7 @@ const CustomSelect = () => {
 
 
 	const handleCatch = ( e ) => {
+
 		const path = e.path || (e.composedPath && e.composedPath());
 		if (!path.includes( catchRef.current )) {
 			setOpen( false );
@@ -91,7 +94,12 @@ const CustomSelect = () => {
 	}, [] );
 
 	const handleOpen = () => {
-		setOpen( prevOpen => !prevOpen );
+		const noToggle = location.pathname === '/logIn/'||location.pathname === '/logIn/signUp';
+		if(noToggle){
+			setOpen(false)
+		}else{
+			setOpen( prevOpen => !prevOpen );
+		}
 	};
 
 	const handleSelected = ( lang ) => {

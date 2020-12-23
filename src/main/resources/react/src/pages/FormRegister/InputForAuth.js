@@ -1,17 +1,17 @@
 import React from 'react';
-import {  useLocation } from 'react-router-dom';
-import { InputAuth, InputDiv, Label } from './loginStyle';
+import { useLocation } from 'react-router-dom';
+import { InputAuth, InputDiv, Label, SpanError } from './loginStyle';
 
-const InputForAuth = ( { text, name, type, error, click } ) => {
+const InputForAuth = ( { text, name, type, value, error, click } ) => {
 	const location = useLocation();
 	const path = location.pathname === '/logIn/';
 
 	return (
-		<InputDiv path={path}>
+		<InputDiv path={ path }>
 			<Label>{ text }
-				<InputAuth name={ name } type={ type } onChange={click}/>
+				<InputAuth name={ name } type={ type } value={ value } error={ error } onChange={ click }/>
 			</Label>
-			<span>{ error }</span>
+			<SpanError >{ error }</SpanError>
 		</InputDiv>
 	);
 };

@@ -12,6 +12,14 @@ const en = {
 		noLogin: 'Can\'t login?',
 		agreement: '* I agree to the terms of use of the service, as well as to the transfer and processing of my data. I confirm that I am of legal age and responsible for posting ads.'
 	},
+	errors: {
+		logEmail: 'Please enter a valid username or email',
+		logPassword: 'Invalid password',
+		regEmail: 'Please enter a valid email address',
+		regNick: 'More than 2 and less than 50 characters, no spaces',
+		regPassword: 'Latin letters large, small and numbers from 8 to 30 characters',
+		regConfirm: 'Passwords must match'
+	},
 	button: {
 		addAdv: 'Add new advertisement',
 		enter: 'Enter'
