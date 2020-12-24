@@ -45,7 +45,7 @@ public interface CategoryService {
     void removeById(long categoryId);
 
     /**
-     * Checks if a category with the given ID exists in DB and internal subcategories have not products.
+     * Checks if a category with the given ID exists in DB and internal subcategories have not advertisements.
      *
      * @param categoryId is Category ID.
      * @return {@code true} if a category with the given ID can be deleted, {@code false} otherwise.

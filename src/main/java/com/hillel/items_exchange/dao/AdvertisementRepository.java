@@ -14,5 +14,5 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     Iterable<Advertisement> findFirst10ByTopicIgnoreCaseContaining(String topic);
 
-    Iterable<Advertisement> findFirst10ByProductAgeOrProductGenderOrProductSizeOrProductSeasonOrProductSubcategoryId(String age, String gender, String size, String season, long subcategoryId);
+    Iterable<Advertisement> findFirst10ByAgeOrGenderOrSizeOrSeasonOrSubcategoryId(String age, String gender, String size, String season, long subcategoryId);
 }

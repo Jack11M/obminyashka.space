@@ -1,6 +1,11 @@
 package com.hillel.items_exchange.dto;
 
-import com.hillel.items_exchange.model.DealType;
+import java.util.List;
+
+import com.hillel.items_exchange.model.enums.AgeRange;
+import com.hillel.items_exchange.model.enums.DealType;
+import com.hillel.items_exchange.model.enums.Gender;
+import com.hillel.items_exchange.model.enums.Season;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -30,14 +35,35 @@ public class AdvertisementDto {
     @NotNull(message = "{invalid.not-null}")
     @Size(max = 210, message = "{invalid.max-size}")
     private String wishesToExchange;
+
     @NotNull(message = "{invalid.not-null}")
-    private Boolean readyForOffers;
-    @NotNull(message = "{invalid.not-null}")
-    private Boolean isFavourite;
+    private boolean readyForOffers;
+
     @NotNull(message = "{invalid.not-null}")
     private DealType dealType;
+
     @NotNull(message = "{invalid.not-null}")
     private @Valid LocationDto location;
+
     @NotNull(message = "{invalid.not-null}")
-    private @Valid ProductDto product;
+    @Size(min = 1, max = 50, message = "{invalid.size}")
+    private AgeRange age;
+
+    @NotNull(message = "{invalid.not-null}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
+    private Gender gender;
+
+    @NotNull(message = "{invalid.not-null}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
+    private Season season;
+
+    @NotNull(message = "{invalid.not-null}")
+    @Size(min = 1, max = 50, message = "{invalid.size}")
+    private String size;
+
+    @NotNull(message = "{invalid.not-null}")
+    private long subcategoryId;
+
+    @NotNull(message = "{invalid.not-null}")
+    private List<@Valid ImageDto> images;
 }
