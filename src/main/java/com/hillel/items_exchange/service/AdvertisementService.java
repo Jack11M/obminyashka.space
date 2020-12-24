@@ -5,6 +5,8 @@ import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.*;
 import lombok.RequiredArgsConstructor;
+
+import com.hillel.items_exchange.model.enums.Status;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,7 @@ public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
+    private final ImageService imageService;
 
     public List<AdvertisementDto> findAll(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
@@ -37,14 +41,19 @@ public class AdvertisementService {
         return mapAdvertisementsToDto(advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
     }
 
-    public Optional<AdvertisementDto> findById(long id) {
-        return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
+    public Optional<Advertisement> findById(long advertisementId) {
+        return advertisementRepository.findById(advertisementId);
+    }
+
+    public Optional<AdvertisementDto> findDtoById(long id) {
+        return findById(id).map(this::mapAdvertisementToDto);
     }
 
     public List<AdvertisementDto> findAdvertisementsByMultipleParams(AdvertisementFilterDto dto) {
         return mapAdvertisementsToDto(
-                advertisementRepository.findFirst10ByProductAgeOrProductGenderOrProductSizeOrProductSeasonOrProductSubcategoryId(
-                        dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(), dto.getSubcategoryId()));
+                advertisementRepository.findFirst10ByAgeOrGenderOrSizeOrSeasonOrSubcategoryId(
+                        dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(),
+                        dto.getSubcategoryId()));
     }
 
     public boolean isAdvertisementExists(long id, User user) {
@@ -55,7 +64,7 @@ public class AdvertisementService {
         Advertisement adv = mapDtoToAdvertisement(advertisementDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
-        updateSubcategory(adv.getProduct(), advertisementDto.getProduct().getSubcategoryId());
+        updateSubcategory(adv, advertisementDto.getSubcategoryId());
 
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
@@ -66,12 +75,8 @@ public class AdvertisementService {
                 .orElseThrow(EntityNotFoundException::new);
 
         updateAdvertisement(toUpdate, fromDB);
-
-        Product toUpdateProduct = toUpdate.getProduct();
-        Product fromDBProduct = fromDB.getProduct();
-        updateProduct(toUpdateProduct, fromDBProduct);
-        updateSubcategory(fromDBProduct, toUpdateProduct.getSubcategory().getId());
-        updateImages(toUpdateProduct, fromDBProduct);
+        updateSubcategory(fromDB, toUpdate.getSubcategory().getId());
+        updateImages(toUpdate, fromDB);
         createOrUpdateLocation(toUpdate, fromDB);
 
         fromDB.setStatus(Status.UPDATED);
@@ -81,24 +86,18 @@ public class AdvertisementService {
 
     private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
         if (!fromDB.equals(toUpdate)) {
-            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "product");
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images");
         }
     }
 
-    private void updateProduct(Product toUpdateProduct, Product fromDBProduct) {
-        if (!fromDBProduct.equals(toUpdateProduct)) {
-            BeanUtils.copyProperties(toUpdateProduct, fromDBProduct, "advertisement", "subcategory", "images");
-        }
-    }
-
-    private void updateSubcategory(Product fromDBProduct, long id) {
-        fromDBProduct.setSubcategory(subcategoryService.findById(id)
+    private void updateSubcategory(Advertisement fromDBAdvertisement, long id) {
+        fromDBAdvertisement.setSubcategory(subcategoryService.findById(id)
                 .orElseThrow(EntityNotFoundException::new));
     }
 
-    private void updateImages(Product toUpdateProduct, Product fromDBProduct) {
-        List<Image> existImages = fromDBProduct.getImages();
-        List<Image> newImages = toUpdateProduct.getImages();
+    private void updateImages(Advertisement toUpdateAdvertisement, Advertisement fromDBAdvertisement) {
+        List<Image> existImages = fromDBAdvertisement.getImages();
+        List<Image> newImages = toUpdateAdvertisement.getImages();
         if (existImages.size() != newImages.size() || !existImages.containsAll(newImages)) {
             existImages.retainAll(newImages);
             newImages.stream().filter(image -> !existImages.contains(image)).forEach(existImages::add);
@@ -125,12 +124,13 @@ public class AdvertisementService {
                 .filter(adv -> adv.getId() == advertisementId)
                 .findFirst()
                 .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
-        final Image image = advertisement.getProduct().getImages().parallelStream()
+
+        final Image image = advertisement.getImages().parallelStream()
                 .filter(img -> img.getId() == imageId)
                 .findFirst()
                 .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
-        advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
-        image.setDefaultPhoto(true);
+
+        advertisement.setDefaultPhoto(imageService.scale(image.getResource()));
         advertisementRepository.saveAndFlush(advertisement);
     }
 
@@ -151,8 +151,7 @@ public class AdvertisementService {
     public boolean isAdvertisementAndImageExists(Long advertisementId, Long imageId, User owner) {
         return owner.getAdvertisements().stream()
                 .filter(adv -> adv.getId() == advertisementId)
-                .map(Advertisement::getProduct)
-                .map(Product::getImages)
+                .map(Advertisement::getImages)
                 .flatMap(Collection::stream)
                 .anyMatch(image -> image.getId() == imageId);
     }

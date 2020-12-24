@@ -11,6 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import com.hillel.items_exchange.model.enums.Status;
+
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor

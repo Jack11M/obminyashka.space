@@ -4,11 +4,11 @@ import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.BaseEntity;
-import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.ImageService;
-import com.hillel.items_exchange.service.ProductService;
 import com.hillel.items_exchange.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,61 +44,62 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParam
 public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
-    private final ProductService productService;
+    private final AdvertisementService advertisementService;
 
     @Value("${max.images.amount}")
     private int maxImagesAmount;
 
-    @GetMapping(value = "/{product_id}/resource")
-    @ApiOperation(value = "Find all byte representation of images for an existed product by its ID")
+    @GetMapping(value = "/{advertisement_id}/resource")
+    @ApiOperation(value = "Find all byte representation of images for an existed advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<byte[]>> getImagesResource(@PathVariable("product_id")
+    public ResponseEntity<List<byte[]>> getImagesResource(@PathVariable("advertisement_id")
                                                                  @PositiveOrZero(message = "{invalid.id}") long id) {
-        List<byte[]> imagesResource = imageService.getImagesResourceByProductId(id);
+        List<byte[]> imagesResource = imageService.getImagesResourceByAdvertisementId(id);
         return imagesResource.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(imagesResource, HttpStatus.OK);
     }
 
-    @GetMapping("/{product_id}")
-    @ApiOperation(value = "Find all images for an existed product by its ID")
+    @GetMapping("/{advertisement_id}")
+    @ApiOperation(value = "Find all images for an existed advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<ImageDto>> getByProductId(@PathVariable("product_id")
+    public ResponseEntity<List<ImageDto>> getByAdvertisementId(@PathVariable("advertisement_id")
                                              @PositiveOrZero(message = "{invalid.id}") long id) {
-        List<ImageDto> images = imageService.getByProductId(id);
+        List<ImageDto> images = imageService.getByAdvertisementId(id);
         return images.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(images, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/{product_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "Save and compress up to 10 images to an existed product by its ID")
+    @PostMapping(value = "/{advertisement_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "Save and compress up to 10 images to an existed advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
-    public ResponseEntity<String> saveImages(@PathVariable("product_id")
-                                             @PositiveOrZero(message = "{invalid.id}") long productId,
+    public ResponseEntity<String> saveImages(@PathVariable("advertisement_id")
+                                             @PositiveOrZero(message = "{invalid.id}") long advertisementId,
                                              @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
             throws ElementsNumberExceedException {
 
         try {
-            Product productToSaveImages = productService.findById(productId).orElseThrow(ClassNotFoundException::new);
-            if (productToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
+            final Advertisement advToSaveImages = advertisementService.findById(advertisementId)
+                    .orElseThrow(ClassNotFoundException::new);
+            if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
                 throw new ElementsNumberExceedException(
                         getExceptionParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
             }
             List<byte[]> compressedImages = imageService.compress(images);
-            imageService.saveToProduct(productToSaveImages, compressedImages);
+            imageService.saveToAdvertisement(advToSaveImages, compressedImages);
         } catch (ClassNotFoundException e) {
-            final String format = String.format("Product not found for ID=%s", productId);
+            final String format = String.format("Advertisement not found for ID=%s", advertisementId);
             log.warn(format, e);
             return new ResponseEntity<>(format, HttpStatus.BAD_REQUEST);
         } catch (IOException e) {

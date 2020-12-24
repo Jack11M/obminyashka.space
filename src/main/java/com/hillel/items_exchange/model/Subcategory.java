@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "category", "products"})
+@EqualsAndHashCode(exclude = {"id", "category", "advertisements"})
 public class Subcategory {
 
     @Id
@@ -21,5 +21,5 @@ public class Subcategory {
     @JoinColumn(name = "category_id")
     private Category category;
     @OneToMany(mappedBy = "subcategory")
-    private List<Product> products;
+    private List<Advertisement> advertisements;
 }

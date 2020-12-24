@@ -5,7 +5,7 @@ import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.model.Phone;
 import com.hillel.items_exchange.model.Role;
-import com.hillel.items_exchange.model.Status;
+import com.hillel.items_exchange.model.enums.Status;
 import com.hillel.items_exchange.model.User;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

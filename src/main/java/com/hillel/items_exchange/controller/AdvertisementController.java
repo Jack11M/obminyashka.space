@@ -68,7 +68,7 @@ public class AdvertisementController {
     public ResponseEntity<AdvertisementDto> getAdvertisement(
             @ApiParam(value = "ID of existed advertisement")
             @PathVariable("advertisement_id") @PositiveOrZero(message = "{invalid.id}") Long id) {
-        return ResponseEntity.of(advertisementService.findById(id));
+        return ResponseEntity.of(advertisementService.findDtoById(id));
     }
 
     @GetMapping("/topic/{topic}")
@@ -107,7 +107,7 @@ public class AdvertisementController {
     public AdvertisementDto createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal)
             throws IllegalIdentifierException {
 
-        long subcategoryId = dto.getProduct().getSubcategoryId();
+        long subcategoryId = dto.getSubcategoryId();
 
         validateNewAdvertisementInternalEntitiesIdsAreZero(dto);
         validateSubcategoryId(subcategoryId);
@@ -128,7 +128,7 @@ public class AdvertisementController {
 
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
-        long subcategoryId = dto.getProduct().getSubcategoryId();
+        long subcategoryId = dto.getSubcategoryId();
         validateSubcategoryId(subcategoryId);
 
         return advertisementService.updateAdvertisement(dto);
@@ -146,7 +146,7 @@ public class AdvertisementController {
 
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
-        Optional<AdvertisementDto> byId = advertisementService.findById(dto.getId());
+        Optional<AdvertisementDto> byId = advertisementService.findDtoById(dto.getId());
 
         if (byId.isPresent() && byId.get().equals(dto)) {
             advertisementService.remove(dto.getId());
@@ -206,14 +206,12 @@ public class AdvertisementController {
     private void validateNewAdvertisementInternalEntitiesIdsAreZero(AdvertisementDto dto) throws IllegalIdentifierException {
         long advertisementId = dto.getId();
         long locationId = dto.getLocation().getId();
-        long productId = dto.getProduct().getId();
-        List<Long> imagesIds = dto.getProduct().getImages().stream()
+        List<Long> imagesIds = dto.getImages().stream()
                 .map(ImageDto::getId)
                 .collect(Collectors.toList());
 
         validateNewEntityIdIsZero(advertisementId, "new.advertisement.id.not-zero");
         validateNewEntityIdIsZero(locationId, "new.location.id.not-zero");
-        validateNewEntityIdIsZero(productId, "new.product.id.not-zero");
 
         boolean isAllIdsEqualZero = imagesIds.stream().allMatch(imageId -> imageId == 0);
         if(!isAllIdsEqualZero){
