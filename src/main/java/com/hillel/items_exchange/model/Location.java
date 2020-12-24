@@ -11,7 +11,7 @@ import com.hillel.items_exchange.model.enums.Lang;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"advertisements"})
+@EqualsAndHashCode(exclude = {"id", "advertisements"})
 public class Location {
 
     @Id
