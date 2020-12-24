@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import com.hillel.items_exchange.dao.SubcategoryRepository;
-import com.hillel.items_exchange.model.Product;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Subcategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,7 +111,7 @@ class SubcategoryServiceTest {
     }
 
     @Test
-    void isSubcategoryDeletable_whenSubcategoryExistsByIdAndHasNotProducts_shouldReturnTrue() {
+    void isSubcategoryDeletable_whenSubcategoryExistsByIdAndHasNotAdvertisement_shouldReturnTrue() {
         when(subcategoryRepository.findById(anyLong())).thenReturn(Optional.of(existingSubcategory));
 
         final boolean result = subcategoryService.isSubcategoryDeletable(EXISTING_ENTITY_ID);
@@ -129,8 +129,8 @@ class SubcategoryServiceTest {
     }
 
     @Test
-    void isSubcategoryDeletable_whenSubcategoryExistsByIdAndHasProducts_shouldReturnFalse() {
-        existingSubcategory.setProducts(List.of(new Product(), new Product()));
+    void isSubcategoryDeletable_whenSubcategoryExistsByIdAndHasAdvertisements_shouldReturnFalse() {
+        existingSubcategory.setAdvertisements(List.of(new Advertisement(), new Advertisement()));
         when(subcategoryRepository.findById(anyLong())).thenReturn(Optional.of(existingSubcategory));
 
         final boolean result = subcategoryService.isSubcategoryDeletable(EXISTING_ENTITY_ID);

@@ -3,6 +3,8 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.LocationRepository;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.model.Location;
+import com.hillel.items_exchange.model.enums.Lang;
+import com.mysql.cj.xdevapi.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +39,7 @@ class LocationServiceTest {
 
     @BeforeEach
     void setUp() {
-        location = new Location(1L, "Kharkiv", "Kharkivska district", null);
+        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", Lang.EN, Collections.emptyList());
         locationDto = convertTo(location, LocationDto.class);
     }
 

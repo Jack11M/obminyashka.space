@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
-import com.hillel.items_exchange.dto.ProductDto;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,11 +112,11 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", 2L,
-                Collections.emptyList());
+//        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", 2L,
+//                Collections.emptyList());
 
         mockMvc.perform(post("/adv/filter")
-                .content(asJsonString(productDto))
+//                .content(asJsonString(productDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
