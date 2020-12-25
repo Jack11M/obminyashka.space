@@ -5,8 +5,8 @@ advertisement:
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -22,8 +22,8 @@ advertisement:
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -39,8 +39,8 @@ advertisement:
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -55,8 +55,8 @@ advertisement:
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -72,8 +72,8 @@ advertisement:
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
@@ -95,10 +95,24 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
-    created: '2019-01-01'
-    updated: '2019-01-01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
     role_id: 1
+  - id: 2
+    username: 'user'
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'user@gmail.com'
+    online: 'false'
+    first_name: 'plain'
+    last_name: 'user'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    role_id: 2
 
 role:
   - id: 1
@@ -149,3 +163,28 @@ subcategory:
   - id: 3
     name: 'puzzles'
     category_id: 2
+
+chat:
+  - id: 1
+    hash: 'ChatHash'
+    advertisement_id: 2
+
+user_chat:
+  - id: 1
+    user_id: 1
+    chat_id: 1
+
+message:
+  - id: 1
+    chat_id: 1
+    user_id: 1
+    text: 'message text'
+    status: 'NEW'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
+
+attachment:
+  - id: 1
+    message_id: 1
+    type: 'jpg'
+    file_content: 'YWJj'

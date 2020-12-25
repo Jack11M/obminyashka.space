@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -48,7 +47,7 @@ public class UserMapper {
         user.setChildren(Collections.emptyList());
         user.setDeals(Collections.emptyList());
         user.setPhones(Collections.emptySet());
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         user.setCreated(now);
         user.setUpdated(now);
         user.setLastOnlineTime(LocalDateTime.now());

@@ -86,7 +86,7 @@ public class AdvertisementService {
 
     private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
         if (!fromDB.equals(toUpdate)) {
-            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images");
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images", "chats");
         }
     }
 

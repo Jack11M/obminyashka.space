@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 import com.hillel.items_exchange.model.enums.AgeRange;
 import com.hillel.items_exchange.model.enums.DealType;
@@ -63,6 +64,9 @@ public class Advertisement extends BaseEntity {
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "advertisement")
+    private Set<Chat> chats;
 
     @PrePersist
     private void addAdvertisementReferences() {

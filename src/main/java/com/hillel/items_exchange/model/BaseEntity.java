@@ -9,7 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.hillel.items_exchange.model.enums.Status;
 
@@ -27,11 +27,11 @@ public abstract class BaseEntity {
 
     @Column(name = "created", columnDefinition = "DATE", nullable = false, updatable = false)
     @CreatedDate
-    private LocalDate created;
+    private LocalDateTime created;
 
     @Column(name = "updated", columnDefinition = "DATE", nullable = false)
     @LastModifiedDate
-    private LocalDate updated;
+    private LocalDateTime updated;
 
     @Enumerated(EnumType.STRING)
     private Status status;

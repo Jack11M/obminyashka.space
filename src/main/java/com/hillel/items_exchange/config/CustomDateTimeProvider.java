@@ -4,7 +4,7 @@ import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
 
@@ -13,6 +13,6 @@ public class CustomDateTimeProvider implements DateTimeProvider {
     @Override
     @NotNull
     public Optional<TemporalAccessor> getNow() {
-        return Optional.of(LocalDate.now());
+        return Optional.of(LocalDateTime.now());
     }
 }
