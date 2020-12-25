@@ -6,7 +6,14 @@ import CheckBox from '../../components/checkbox';
 import Button from '../../components/button/Button';
 import InputForAuth from './InputForAuth';
 import { getTranslatedText } from '../../components/local/localisation';
-import { clearValueSignUp, inputChangeAuth, toggleCheckBox } from '../../redux/auth/action';
+import {
+	clearValueLogin,
+	clearValueSignUp,
+	inputChangeAuth,
+	postAuthRegisterAsync,
+	toggleCheckBox,
+	toggleDisableButtonReg
+} from '../../redux/auth/action';
 
 import { Extra } from './loginStyle';
 
@@ -14,11 +21,16 @@ import { Extra } from './loginStyle';
 const SignUp = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
-	const { lang, regEmail, regNick, regPassword, regConfirm, regCheckbox } = useSelector( state => state.auth );
+	const { lang, regEmail, regNick, regPassword, regConfirm, regCheckbox, disableReg } = useSelector( state => state.auth );
 
 	useEffect( () => {
-	 dispatch( clearValueSignUp() );
-	}, [dispatch, location.pathname] );
+		dispatch( clearValueSignUp() );
+		dispatch( clearValueLogin() );
+	}, [ dispatch, location.pathname ] );
+
+	useEffect( () => {
+		dispatch( toggleDisableButtonReg() );
+	}, [ dispatch, regEmail, regNick, regPassword, regConfirm, regCheckbox ] );
 
 	const changeRegInput = ( e ) => {
 		dispatch( inputChangeAuth( [ e.target.name, e.target.value ] ) );
@@ -28,9 +40,18 @@ const SignUp = () => {
 		dispatch( toggleCheckBox( { regCheckbox: !regCheckbox } ) );
 	};
 
+	const submitForm = ( e ) => {
+		e.preventDefault();
+		dispatch( postAuthRegisterAsync( {
+			confirmPassword: regConfirm.value,
+			email: regEmail.value,
+			password: regPassword.value,
+			username: regNick.value
+		} ) );
+	};
 
 	return (
-		<form>
+		<form onSubmit={ submitForm }>
 			<div>
 				<InputForAuth
 					text={ getTranslatedText( 'auth.regEmail', lang ) }
@@ -76,7 +97,7 @@ const SignUp = () => {
 			</Extra>
 			<Button
 				text={ getTranslatedText( 'auth.signUp', lang ) }
-				disabling={ false }
+				disabling={ disableReg }
 				mb={ '44px' }
 				bold
 				lHeight={ '24px' }

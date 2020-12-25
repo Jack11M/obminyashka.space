@@ -39,7 +39,7 @@ export const authValidation = ( state, keyInput, value ) => {
 			return this.rulesPattern[pattern].test( el );
 		},
 		contains( el ) {
-			return el === state.regPassword;
+			return el === state.regPassword.value;
 		},
 		lengthLogin( el ) {
 			return (

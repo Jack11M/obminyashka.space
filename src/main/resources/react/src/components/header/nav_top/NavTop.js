@@ -8,7 +8,9 @@ import './navtop.scss';
 import { useSelector } from 'react-redux';
 
 const NavTop = () => {
-	const {lang, isAuthenticated} = useSelector(state => state.auth);
+	const {lang, isAuthenticated, username, usernameOrEmail} = useSelector(state => state.auth);
+
+	const myName = username|| usernameOrEmail
 
 	return (
 		<div className="navbar-top-inner">
@@ -26,7 +28,7 @@ const NavTop = () => {
 					<div id="personalArea">
 						<Link to={ isAuthenticated ? '/userInfo/activity':'/logIn/' }>
 							<Avatar whatIsClass={ 'user-photo' } width={ 30 } height={ 28 }/>
-							<span>{getTranslatedText('header.myOffice', lang)}</span>
+							<span>{myName || getTranslatedText('header.myOffice', lang)}</span>
 						</Link>
 						<SelectLang/>
 					</div>

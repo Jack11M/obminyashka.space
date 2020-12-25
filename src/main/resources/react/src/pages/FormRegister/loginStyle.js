@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const InputDiv = styled.div`
+  position: relative;
   margin-bottom: ${ ( { path } ) => path ? '42px' : '22px' };
-
   &:last-child {
     margin-bottom: ${ ( { path } ) => path ? '26px' : '32px' };
   }
@@ -38,6 +38,9 @@ export const InputAuth = styled.input`
 `;
 
 export const SpanError = styled.span`
+  position: absolute;
+  top: 67px;
+  left: 0;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;

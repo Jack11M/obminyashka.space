@@ -6,18 +6,32 @@ import { getTranslatedText } from '../../components/local/localisation';
 import CheckBox from '../../components/checkbox';
 import Button from '../../components/button/Button';
 import InputForAuth from './InputForAuth';
-import { clearValueLogin, inputChangeAuth, toggleCheckBox } from '../../redux/auth/action';
+import {
+	clearValueLogin,
+	clearValueSignUp,
+	inputChangeAuth,
+	postAuthLoginAsync,
+	toggleCheckBox,
+	toggleDisableButtonLog
+} from '../../redux/auth/action';
 
 import { Extra, ExtraLink } from './loginStyle';
 
 const LogIn = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
-	const { lang, logEmail, logPassword, logCheckbox } = useSelector( state => state.auth );
+	const { lang, logEmail, logPassword, logCheckbox, disableLog } = useSelector( state => state.auth );
+
 
 	useEffect( () => {
-		 dispatch( clearValueLogin() );
-	}, [dispatch, location.pathname] );
+		dispatch( clearValueLogin() );
+		dispatch( clearValueSignUp() );
+	}, [ dispatch, location.pathname ] );
+
+	useEffect( () => {
+		dispatch( toggleDisableButtonLog() );
+	}, [ dispatch, logEmail, logPassword ] );
+
 
 	const changeInput = ( e ) => {
 		dispatch( inputChangeAuth( [ e.target.name, e.target.value ] ) );
@@ -27,8 +41,16 @@ const LogIn = () => {
 		dispatch( toggleCheckBox( { logCheckbox: !logCheckbox } ) );
 	};
 
+	const submitForm = ( e ) => {
+		e.preventDefault();
+		dispatch( postAuthLoginAsync( {
+			usernameOrEmail: logEmail.value,
+			password: logPassword.value
+		} ) );
+	};
+
 	return (
-		<form>
+		<form onSubmit={ submitForm }>
 			<div>
 				<InputForAuth
 					text={ getTranslatedText( 'auth.logEmail', lang ) }
@@ -61,7 +83,7 @@ const LogIn = () => {
 			</Extra>
 			<Button
 				text={ getTranslatedText( 'button.enter', lang ) }
-				disabling={ false }
+				disabling={ disableLog }
 				mb={ '64px' }
 				bold
 				lHeight={ '24px' }

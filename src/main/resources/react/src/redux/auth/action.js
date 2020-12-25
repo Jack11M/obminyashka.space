@@ -6,11 +6,11 @@ export const chooseLanguage = (lang) => ({
 });
 
 export const clearValueLogin  = () => ({
-	type: types.CLEAR_VALUE_LOGIN,
+	type: types.CLEAR_VALUE_LOGIN
 });
 
 export const clearValueSignUp  = () => ({
-	type: types.CLEAR_VALUE_SIGNUP,
+	type: types.CLEAR_VALUE_SIGNUP
 });
 
 export const inputChangeAuth = ( input ) => ({
@@ -21,4 +21,27 @@ export const inputChangeAuth = ( input ) => ({
 export const toggleCheckBox = ( toggle ) => ({
 	type: types.CHANGE_CHECKBOX,
 	payload: toggle
+});
+
+export const toggleDisableButtonLog  = () => ({
+	type: types.TOGGLE_DISABLE_BUTTON_LOG
+});
+
+export const toggleDisableButtonReg  = () => ({
+	type: types.TOGGLE_DISABLE_BUTTON_REG
+});
+
+export const postAuthLoginAsync = ( body ) => ({
+	type: types.POST_AUTH_LOGIN_ASYNC,
+	payload: body
+});
+
+export const postAuthRegisterAsync = ( body ) => ({
+	type: types.POST_AUTH_REGISTER_ASYNC,
+	payload: body
+});
+
+export const putTokenLocalStorage = ( body ) => ({
+	type: types.PUT_TOKEN_LOCALSTORAGE,
+	payload: body
 });
