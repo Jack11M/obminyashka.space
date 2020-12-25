@@ -20,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -71,7 +71,7 @@ public class UserService {
         checkReadOnlyFieldsUpdate(updatedUser, user);
 
         BeanUtil.copyProperties(updatedUser, user, "email", "firstName", "lastName", "avatarImage");
-        user.setUpdated(LocalDate.now());
+        user.setUpdated(LocalDateTime.now());
         addNewChildren(user, newChildren);
         addNewPhones(user, newPhones);
         return mapUserToDto(userRepository.saveAndFlush(user));
