@@ -8,6 +8,7 @@ import com.hillel.items_exchange.model.enums.DealType;
 import com.hillel.items_exchange.model.enums.Gender;
 import com.hillel.items_exchange.model.enums.Lang;
 import com.hillel.items_exchange.model.enums.Season;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,27 +26,29 @@ public class AdvertisementDtoCreatingUtil {
             new LocationDto(1L, "Kyivska", "New Vasyuki district", "New Vasyuki", Lang.EN);
 
     public static AdvertisementDto createNonExistAdvertisementDto() {
-        return getBuild(0L, "topic", "description", "hat", false, false, DealType.GIVEAWAY,
-                KYIV, Gender.MALE, "M", 1L, Collections.singletonList(GIF));
+        return getBuild(0L, "topic", "description", "hat",false, DealType.GIVEAWAY,
+                KYIV, AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L, null
+                , Collections.singletonList(GIF));
     }
 
     public static AdvertisementDto createExistAdvertisementDto() {
-        return getBuild(1L, "topic", "description", "shoes", true, true, DealType.EXCHANGE,
-                KHARKIV, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
+        return getBuild(1L, "topic", "description", "shoes", true, DealType.EXCHANGE,
+                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, null, Arrays.asList(JPEG, PNG));
     }
 
     public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory() {
-        return getBuild(1L, "new topic", "new description", "BMW", true, true, DealType.EXCHANGE,
-                ODESSA, Gender.FEMALE, "50", 2L, Collections.singletonList(JPEG));
+        return getBuild(1L, "new topic", "new description", "BMW",true, DealType.EXCHANGE,
+                ODESSA, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L, null, Collections.singletonList(JPEG));
     }
 
     public static AdvertisementDto createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory() {
-        return getBuild(1L, "new topic", "new description", "BMW", true, true, DealType.EXCHANGE,
-                CHANGEDLOCATION, Gender.FEMALE, "50", 2L, Collections.singletonList(JPEG));
+        return getBuild(1L, "new topic", "new description", "BMW",true, DealType.EXCHANGE,
+                CHANGEDLOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L, null, Collections.singletonList(JPEG));
     }
 
-    private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer, boolean fav, DealType exchange,
-                                             LocationDto city, Gender gender, String size, long subcatId, List<ImageDto> images) {
+    private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer,
+                                             DealType exchange, LocationDto city, AgeRange age, Season season,
+                                             Gender gender, String size, long subcatId, MultipartFile defaultPhoto, List<ImageDto> images) {
         return AdvertisementDto.builder()
                 .id(aId)
                 .topic(topic)
@@ -54,11 +57,12 @@ public class AdvertisementDtoCreatingUtil {
                 .readyForOffers(offer)
                 .dealType(exchange)
                 .location(city)
-                .age(AgeRange.OLDER_THAN_14)
-                .season(Season.SUMMER)
+                .age(age)
+                .season(season)
                 .gender(gender)
                 .size(size)
                 .subcategoryId(subcatId)
+                .defaultPhoto(defaultPhoto)
                 .images(images)
                 .build();
     }

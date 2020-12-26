@@ -5,6 +5,8 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
+import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.model.enums.AgeRange;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,15 +114,23 @@ class AdvertisementControllerIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-//        ProductDto productDto = new ProductDto(0L, "16", "male", "spring", "XL", 2L,
-//                Collections.emptyList());
+        AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
+                .age(AgeRange.OLDER_THAN_14)
+                .build();
 
-        mockMvc.perform(post("/adv/filter")
-//                .content(asJsonString(productDto))
+        MvcResult mvcResult = mockMvc.perform(post("/adv/filter")
+                .content(asJsonString(dto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        AdvertisementDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString, AdvertisementDto[].class);
+        assertEquals(1, advertisementDtos.length);
+        assertEquals(1, advertisementDtos[0].getId());
+        assertEquals(AgeRange.OLDER_THAN_14, advertisementDtos[0].getAge());
     }
 
     @Test
@@ -199,7 +209,7 @@ class AdvertisementControllerIntegrationTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/setDefaultImage.yml")
+    @ExpectedDataSet(value = "advertisement/setDefaultImage.yml", ignoreCols = {"created", "updated"})
     void setDefaultImage_success() throws Exception {
         mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", validId, validId))
                 .andDo(print())
