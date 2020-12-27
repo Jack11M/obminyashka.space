@@ -72,26 +72,26 @@ public class AdvertisementController {
     }
 
     @GetMapping("/topic/{topic}")
-    @ApiOperation(value = "Find advertisements by topic")
+    @ApiOperation(value = "Find first 10 advertisements by topic")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementDto>> getAllAdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
-        List<AdvertisementDto> allByTopic = advertisementService.findAllByTopic(topic);
+    public ResponseEntity<List<AdvertisementDto>> getFirst10AdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
+        List<AdvertisementDto> allByTopic = advertisementService.findFirst10ByTopic(topic);
         return allByTopic.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allByTopic, HttpStatus.OK);
     }
 
     @PostMapping("/filter")
-    @ApiOperation(value = "Filter advertisements by multiple params")
+    @ApiOperation(value = "Filter advertisements by multiple params and return up to 10 results")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementDto>> getAllBySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
-        List<AdvertisementDto> advertisementsByMultipleParams = advertisementService.findAdvertisementsByMultipleParams(advertisementFilterDto);
+    public ResponseEntity<List<AdvertisementDto>> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
+        List<AdvertisementDto> advertisementsByMultipleParams = advertisementService.findFirst10AdvertisementsByMultipleParams(advertisementFilterDto);
         return advertisementsByMultipleParams.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(advertisementsByMultipleParams, HttpStatus.OK);
@@ -169,7 +169,7 @@ public class AdvertisementController {
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
             Principal principal) {
         User owner = getUser(principal.getName());
-        if (!advertisementService.isAdvertisementAndImageExists(advertisementId, imageId, owner)) {
+        if (!advertisementService.isUserHasAdvertisementAndItHasImageById(advertisementId, imageId, owner)) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
         try {
@@ -183,7 +183,7 @@ public class AdvertisementController {
 
     private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws DataConflictException {
 
-        if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
+        if (!advertisementService.isUserHasAdvertisementWithId(dto.getId(), owner)) {
             throw new DataConflictException(getExceptionMessageSource("user.not-owner"));
         }
     }

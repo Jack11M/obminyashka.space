@@ -131,7 +131,7 @@ class GlobalExceptionHandlerTest {
     @Test
     public void testHandleConstraintViolationException() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-        MvcResult result = mockMvc.perform(get("/image/{product_id}", -1L)
+        MvcResult result = mockMvc.perform(get("/image/{advertisement_id}", -1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();

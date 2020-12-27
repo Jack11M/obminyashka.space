@@ -2,10 +2,10 @@ package com.hillel.items_exchange.dto;
 
 import com.hillel.items_exchange.model.enums.Lang;
 import io.swagger.annotations.ApiModelProperty;
-
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
@@ -36,7 +36,6 @@ public class LocationDto {
     private String city;
 
     @ApiModelProperty(required = true)
-    @NotEmpty(message = "{invalid.not-null}")
-    @Size(min = 1, max = 10, message = "{invalid.size}")
+    @NotNull(message = "{invalid.not-null}")
     private Lang lang;
 }

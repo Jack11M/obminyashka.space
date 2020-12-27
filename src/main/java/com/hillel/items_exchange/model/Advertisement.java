@@ -17,7 +17,7 @@ import com.hillel.items_exchange.model.enums.Season;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true, exclude = {"user", "subcategory", "location", "images"})
+@EqualsAndHashCode(callSuper = true, exclude = {"user", "subcategory", "location", "images", "chats"})
 public class Advertisement extends BaseEntity {
 
     private String topic;
