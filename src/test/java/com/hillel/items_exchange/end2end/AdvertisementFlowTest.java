@@ -1,9 +1,8 @@
-package com.hillel.items_exchange.controller;
+package com.hillel.items_exchange.end2end;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.enums.AgeRange;
@@ -21,11 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -35,32 +32,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-class AdvertisementControllerIntegrationTest {
+class AdvertisementFlowTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private AdvertisementRepository advertisementRepository;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
     private AdvertisementDto existDtoForUpdate;
-    private int page, size;
     private long validId;
-    private long notValidId;
 
     @BeforeEach
     void setUp() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         validId = 1L;
-        notValidId = 999L;
     }
 
     @Test
     @Transactional
     @DataSet("database_init.yml")
     void findPaginated_shouldReturnSelectedQuantity() throws Exception {
-        setPageAndSize(0, 2);
+        int page = 0;
+        int size = 2;
         MvcResult mvcResult = mockMvc.perform(get("/adv?page={page}&size={size}", page, size)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -69,20 +62,6 @@ class AdvertisementControllerIntegrationTest {
         String json = mvcResult.getResponse().getContentAsString();
         AdvertisementDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementDto[].class);
         assertEquals(size, advertisementsDtos.length);
-    }
-
-    @Test
-    void findPaginated_shouldBeThrownValidationException() throws Exception {
-        setPageAndSize(0, -12);
-        MvcResult mvcResult = mockMvc.perform(get("/adv?page={page}&size={size}", page, size))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
-    }
-
-    private void setPageAndSize(int page, int size) {
-        this.page = page;
-        this.size = size;
     }
 
     @Test
@@ -214,35 +193,5 @@ class AdvertisementControllerIntegrationTest {
         mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", validId, validId))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    void setDefaultImage_shouldReturn406WhenNotValidAdvertisementId() throws Exception {
-        mockMvc.perform(
-                post("/adv/default-image/{advertisementId}/{imageId}", notValidId, validId))
-                .andExpect(status().isNotAcceptable())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    void setDefaultImage_shouldReturn406WhenNotValidImageId() throws Exception {
-        mockMvc.perform(
-                post("/adv/default-image/{advertisementId}/{imageId}", validId, notValidId))
-                .andExpect(status().isNotAcceptable())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    void setDefaultImage_shouldReturn400WhenNegativeParameterReceived() throws Exception {
-        mockMvc.perform(
-                post("/adv/default-image/{advertisementId}/{imageId}", -1L, -2L))
-                .andExpect(status().isBadRequest())
-                .andReturn();
     }
 }
