@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
-        if (e.getClass().equals(UndeclaredThrowableException.class)){
+        if (e instanceof UndeclaredThrowableException) {
             e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
         }
         ErrorMessage errorMessage = new ErrorMessage(dateFormat.format(LocalDateTime.now()),
