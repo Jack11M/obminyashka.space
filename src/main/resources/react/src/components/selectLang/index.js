@@ -82,7 +82,6 @@ const CustomSelect = () => {
 
 
 	const handleCatch = ( e ) => {
-
 		const path = e.path || (e.composedPath && e.composedPath());
 		if (!path.includes( catchRef.current )) {
 			setOpen( false );
