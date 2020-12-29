@@ -82,7 +82,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleUserNotFoundException() throws Exception {
+    void testHandleUserNotFoundException() throws Exception {
         when(advertisementController.createAdvertisement(any(), any())).thenThrow(UsernameNotFoundException.class);
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isNotFound());
         assertThat(result.getResolvedException(), is(instanceOf(UsernameNotFoundException.class)));
@@ -96,14 +96,14 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleEntityNotFoundException() throws Exception {
+    void testHandleEntityNotFoundException() throws Exception {
         when(categoryController.getCategoryById(anyLong())).thenThrow(EntityNotFoundException.class);
         MvcResult result = getResult(HttpMethod.GET, "/category/{category_id}", -1L, status().isNotFound());
         assertThat(result.getResolvedException(), is(instanceOf(EntityNotFoundException.class)));
     }
 
     @Test
-    public void testHandleIllegalIdentifierException() throws Exception {
+    void testHandleIllegalIdentifierException() throws Exception {
         when(advertisementController.updateAdvertisement(any(), any())).thenThrow(IllegalIdentifierException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/adv", nonExistDto, status().isBadRequest());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalIdentifierException.class)));
@@ -117,21 +117,21 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleSqlException() throws Exception {
+    void testHandleSqlException() throws Exception {
         when(advertisementController.updateAdvertisement(any(), any())).thenThrow(DataIntegrityViolationException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/adv", existDto, status().isBadRequest());
         assertThat(result.getResolvedException(), is(instanceOf(DataIntegrityViolationException.class)));
     }
 
     @Test
-    public void testHandleIllegalArgumentException() throws Exception {
+    void testHandleIllegalArgumentException() throws Exception {
         when(advertisementController.createAdvertisement(any(), any())).thenThrow(IllegalArgumentException.class);
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isBadRequest());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalArgumentException.class)));
     }
 
     @Test
-    public void testHandleConstraintViolationException() throws Exception {
+    void testHandleConstraintViolationException() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         MvcResult result = mockMvc.perform(get("/image/{product_id}", -1L)
                 .accept(MediaType.APPLICATION_JSON))
@@ -141,7 +141,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleIllegalOperationException() throws Exception {
+    void testHandleIllegalOperationException() throws Exception {
         when(userController.updateUserInfo(any(), any())).thenThrow(IllegalOperationException.class);
         MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
