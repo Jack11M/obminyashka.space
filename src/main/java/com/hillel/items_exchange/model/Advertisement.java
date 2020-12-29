@@ -17,7 +17,7 @@ import com.hillel.items_exchange.model.enums.Season;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true, exclude = {"user", "subcategory", "location", "images", "chats"})
+@EqualsAndHashCode(callSuper = true, exclude = {"defaultPhoto", "user", "subcategory", "location", "images", "chats"})
 public class Advertisement extends BaseEntity {
 
     private String topic;
@@ -70,6 +70,8 @@ public class Advertisement extends BaseEntity {
 
     @PrePersist
     private void addAdvertisementReferences() {
-        images.forEach(image -> image.setAdvertisement(this));
+        if(images != null) {
+            images.forEach(image -> image.setAdvertisement(this));
+        }
     }
 }

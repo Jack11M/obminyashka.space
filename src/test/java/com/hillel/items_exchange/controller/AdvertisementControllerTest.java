@@ -48,20 +48,20 @@ class AdvertisementControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void setDefaultImage_shouldReturn406WhenNotValidAdvertisementId() throws Exception {
+    void setDefaultImage_shouldReturn400WhenNotValidAdvertisementId() throws Exception {
         mockMvc.perform(
                 post("/adv/default-image/{advertisementId}/{imageId}", notValidId, validId))
-                .andExpect(status().isNotAcceptable())
+                .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void setDefaultImage_shouldReturn406WhenNotValidImageId() throws Exception {
+    void setDefaultImage_shouldReturn400WhenNotValidImageId() throws Exception {
         mockMvc.perform(
                 post("/adv/default-image/{advertisementId}/{imageId}", validId, notValidId))
-                .andExpect(status().isNotAcceptable())
+                .andExpect(status().isBadRequest())
                 .andReturn();
     }
 

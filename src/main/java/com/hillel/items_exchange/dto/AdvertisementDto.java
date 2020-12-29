@@ -1,29 +1,31 @@
 package com.hillel.items_exchange.dto;
 
-import java.util.List;
-
+import com.hillel.items_exchange.annotation.Zero;
+import com.hillel.items_exchange.mapper.transfer.Exist;
+import com.hillel.items_exchange.mapper.transfer.New;
 import com.hillel.items_exchange.model.enums.AgeRange;
 import com.hillel.items_exchange.model.enums.DealType;
 import com.hillel.items_exchange.model.enums.Gender;
 import com.hillel.items_exchange.model.enums.Season;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(exclude = {"id", "defaultPhoto", "location", "images"})
+@EqualsAndHashCode(exclude = {"id", "location", "images"})
 public class AdvertisementDto {
-    @PositiveOrZero(message = "{invalid.id}")
+    @Positive(groups = Exist.class, message = "{invalid.exist.id}")
+    @Zero(groups = New.class, message = "{new.advertisement.id.not-zero}")
     private long id;
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
@@ -54,8 +56,6 @@ public class AdvertisementDto {
     @NotNull(message = "{invalid.not-null}")
     private Season season;
 
-    private MultipartFile defaultPhoto;
-
     @NotNull(message = "{invalid.not-null}")
     @Size(min = 1, max = 50, message = "{invalid.size}")
     private String size;
@@ -65,6 +65,5 @@ public class AdvertisementDto {
     @NotNull(message = "{invalid.not-null}")
     private @Valid LocationDto location;
 
-    @NotNull(message = "{invalid.not-null}")
     private List<@Valid ImageDto> images;
 }

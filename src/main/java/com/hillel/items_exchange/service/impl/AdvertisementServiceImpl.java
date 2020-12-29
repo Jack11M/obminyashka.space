@@ -23,9 +23,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -111,7 +110,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private void updateImages(Advertisement toUpdateAdvertisement, Advertisement fromDBAdvertisement) {
         List<Image> existImages = fromDBAdvertisement.getImages();
         List<Image> newImages = toUpdateAdvertisement.getImages();
-        if (existImages.size() != newImages.size() || !existImages.containsAll(newImages)) {
+        if (existImages != null && !Objects.equals(newImages, existImages)) {
             existImages.retainAll(newImages);
             newImages.stream().filter(image -> !existImages.contains(image)).forEach(existImages::add);
         }
@@ -134,18 +133,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public void setDefaultImage(Long advertisementId, Long imageId, User owner) throws ClassNotFoundException {
-        final Advertisement advertisement = owner.getAdvertisements().parallelStream()
-                .filter(adv -> adv.getId() == advertisementId)
-                .findFirst()
-                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
-
-        final Image image = advertisement.getImages().parallelStream()
+    public void setDefaultImage(Advertisement advertisement, Long imageId, User owner) {
+        advertisement.getImages().stream()
                 .filter(img -> img.getId() == imageId)
                 .findFirst()
-                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+                .map(Image::getResource)
+                .map(imageService::scale)
+                .ifPresent(advertisement::setDefaultPhoto);
 
-        advertisement.setDefaultPhoto(imageService.scale(image.getResource()));
         advertisementRepository.saveAndFlush(advertisement);
     }
 
@@ -160,11 +155,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     private AdvertisementDto mapAdvertisementToDto(Advertisement advertisement) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper.map(advertisement, AdvertisementDto.class);
     }
 
     @Override
-    public boolean isUserHasAdvertisementAndItHasImageById(Long advertisementId, Long imageId, User owner) {
+    public boolean isUserHasAdvertisementAndItHasImageWithId(Long advertisementId, Long imageId, User owner) {
         return owner.getAdvertisements().stream()
                 .filter(adv -> adv.getId() == advertisementId)
                 .map(Advertisement::getImages)

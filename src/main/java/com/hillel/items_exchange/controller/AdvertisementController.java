@@ -3,8 +3,11 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.IllegalIdentifierException;
+import com.hillel.items_exchange.mapper.transfer.Exist;
+import com.hillel.items_exchange.mapper.transfer.New;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.SubcategoryService;
@@ -26,7 +29,6 @@ import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
@@ -104,7 +106,7 @@ public class AdvertisementController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
-    public AdvertisementDto createAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal)
+    public AdvertisementDto createAdvertisement(@Validated(New.class) @RequestBody AdvertisementDto dto, Principal principal)
             throws IllegalIdentifierException {
 
         long subcategoryId = dto.getSubcategoryId();
@@ -123,7 +125,7 @@ public class AdvertisementController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public AdvertisementDto updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal)
+    public AdvertisementDto updateAdvertisement(@Validated(Exist.class) @RequestBody AdvertisementDto dto, Principal principal)
             throws DataConflictException, IllegalIdentifierException {
 
         User owner = getUser(principal.getName());
@@ -160,25 +162,22 @@ public class AdvertisementController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 406, message = "NOT ACCEPTABLE")})
-    public ResponseEntity<HttpStatus> setDefaultImage(
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public void setDefaultImage(
             @ApiParam(value = "ID of existed advertisement")
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long advertisementId,
             @ApiParam(value = "ID of existed image")
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
-            Principal principal) {
+            Principal principal) throws BadRequestException {
         User owner = getUser(principal.getName());
-        if (!advertisementService.isUserHasAdvertisementAndItHasImageById(advertisementId, imageId, owner)) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
+            throw new BadRequestException(getExceptionMessageSource("exception.advertisement-image.id.not-found"));
         }
-        try {
-            advertisementService.setDefaultImage(advertisementId, imageId, owner);
-        } catch (ClassNotFoundException e) {
-            log.warn(e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+        owner.getAdvertisements().parallelStream()
+                .filter(advertisement -> advertisement.getId() == advertisementId)
+                .findFirst()
+                .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId, owner));
     }
 
     private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws DataConflictException {
@@ -204,24 +203,16 @@ public class AdvertisementController {
     }
 
     private void validateNewAdvertisementInternalEntitiesIdsAreZero(AdvertisementDto dto) throws IllegalIdentifierException {
-        long advertisementId = dto.getId();
         long locationId = dto.getLocation().getId();
-        List<Long> imagesIds = dto.getImages().stream()
+        if (locationId != 0) {
+            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(locationId, "new.location.id.not-zero"));
+        }
+
+        boolean isAllIdsEqualZero = dto.getImages().stream()
                 .map(ImageDto::getId)
-                .collect(Collectors.toList());
-
-        validateNewEntityIdIsZero(advertisementId, "new.advertisement.id.not-zero");
-        validateNewEntityIdIsZero(locationId, "new.location.id.not-zero");
-
-        boolean isAllIdsEqualZero = imagesIds.stream().allMatch(imageId -> imageId == 0);
+                .allMatch(imageId -> imageId == 0);
         if(!isAllIdsEqualZero){
             throw new IllegalIdentifierException(MessageSourceUtil.getExceptionMessageSource("new.image.id.not-zero"));
-        }
-    }
-
-    private void validateNewEntityIdIsZero(long id, String errorMessage) throws IllegalIdentifierException {
-        if (id != 0) {
-            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(id, errorMessage));
         }
     }
 }
