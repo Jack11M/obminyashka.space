@@ -77,12 +77,11 @@ public interface AdvertisementService {
 
     /**
      * Set an image as title image of an advertisement
-     * @param advertisementId advertisement id
+     * @param advertisement advertisement for setting the title image
      * @param imageId id of an image that planned to be set as title image
      * @param owner user-author of selected advertisement
-     * @throws ClassNotFoundException when neither advertisement nor image found with selected id
      */
-    void setDefaultImage(Long advertisementId, Long imageId, User owner) throws ClassNotFoundException;
+    void setDefaultImage(Advertisement advertisement, Long imageId, User owner);
 
     /**
      * Check if a user owns such advertisement and it has selected image
@@ -91,5 +90,5 @@ public interface AdvertisementService {
      * @param owner user to check the advertisement and the image
      * @return result of the check
      */
-    boolean isUserHasAdvertisementAndItHasImageById(Long advertisementId, Long imageId, User owner);
+    boolean isUserHasAdvertisementAndItHasImageWithId(Long advertisementId, Long imageId, User owner);
 }
