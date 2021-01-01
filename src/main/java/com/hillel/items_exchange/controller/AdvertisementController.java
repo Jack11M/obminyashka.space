@@ -3,8 +3,8 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.ImageDto;
-import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.IllegalIdentifierException;
+import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.SubcategoryService;
@@ -50,9 +50,9 @@ public class AdvertisementController {
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<AdvertisementDto>> findPaginated(
             @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
-                @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @ApiParam(value = "Number of records per page. Default value: 12")
-                @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         List<AdvertisementDto> dtoList = advertisementService.findAll(PageRequest.of(page, size));
         return dtoList.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -120,11 +120,10 @@ public class AdvertisementController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 409, message = "CONFLICT")})
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AdvertisementDto updateAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal)
-            throws DataConflictException, IllegalIdentifierException {
+            throws IllegalIdentifierException, IllegalOperationException {
 
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
@@ -139,10 +138,9 @@ public class AdvertisementController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 409, message = "CONFLICT")})
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal)
-            throws DataConflictException {
+            throws IllegalOperationException {
 
         User owner = getUser(principal.getName());
         validateAdvertisementOwner(dto, owner);
@@ -152,7 +150,7 @@ public class AdvertisementController {
             advertisementService.remove(dto.getId());
             return ResponseEntity.status(HttpStatus.OK).build();
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PostMapping("/default-image/{advertisementId}/{imageId}")
@@ -181,10 +179,10 @@ public class AdvertisementController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws DataConflictException {
+    private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws IllegalOperationException {
 
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new DataConflictException(getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
         }
     }
 
@@ -216,7 +214,7 @@ public class AdvertisementController {
         validateNewEntityIdIsZero(productId, "new.product.id.not-zero");
 
         boolean isAllIdsEqualZero = imagesIds.stream().allMatch(imageId -> imageId == 0);
-        if(!isAllIdsEqualZero){
+        if (!isAllIdsEqualZero) {
             throw new IllegalIdentifierException(MessageSourceUtil.getExceptionMessageSource("new.image.id.not-zero"));
         }
     }
