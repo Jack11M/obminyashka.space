@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+
 import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
-import store from './redux/store';
+import store   from './redux/store';
+
 
 import ScrollToTop from './components/scrollToTop/scrollToTop';
 import ErrorBoundary from './components/errorBoundary/errorBoudary';
@@ -18,7 +20,7 @@ const App = () => {
 		<Provider store={ store }>
 			<ThemeProvider theme={ theme }>
 				<GlobalFonts/>
-				<Router>
+				<Router >
 					<ErrorBoundary>
 						<ScrollToTop/>
 						<Header/>

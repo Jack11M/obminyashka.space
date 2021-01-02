@@ -42,7 +42,6 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 @Api(tags = "Authorization")
 @RequiredArgsConstructor
 @Validated
- @CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private static final String ROLE_USER = "ROLE_USER";

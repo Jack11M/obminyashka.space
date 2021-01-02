@@ -45,3 +45,17 @@ export const putTokenLocalStorage = ( body ) => ({
 	type: types.PUT_TOKEN_LOCALSTORAGE,
 	payload: body
 });
+
+export const showErrorLogin  = (body) => ({
+	type: types.SHOW_ERROR_LOGIN,
+	payload: body
+});
+
+export const showErrorRegister  = (body) => ({
+	type: types.SHOW_ERROR_REGISTER,
+	payload: body
+});
+
+export const successReg  = () => ({
+	type: types.SUCCESS_REGISTER
+});

@@ -1,4 +1,4 @@
-export const getStorage = ( option ) => {
+export const getStorageUser = ( option ) => {
 	const local = JSON.parse( localStorage.getItem( 'user' ) ) || '';
 	const session = JSON.parse( sessionStorage.getItem( 'user' ) ) || '';
 	return (local && local[option] ) || (session && session[option]) || '';

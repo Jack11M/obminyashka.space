@@ -1,13 +1,13 @@
 import { types } from './types';
-import { authValidation, getStorage, getStorageLang, toggleButtonLog, toggleButtonReg } from '../Utils';
+import { authValidation, getStorageLang, getStorageUser, toggleButtonLog, toggleButtonReg } from '../Utils';
 import { getTranslatedText } from '../../components/local/localisation';
 
 
 const initialState = {
 	lang: getStorageLang(),
-	isAuthenticated: !!getStorage( 'token' ),
-	username: getStorage( 'username' ),
-	token: getStorage( 'token' ),
+	isAuthenticated: !!getStorageUser( 'token' ),
+	username: getStorageUser( 'username' ),
+	token: getStorageUser( 'token' ),
 	logEmail: {
 		value: '',
 		error: ''
@@ -36,13 +36,19 @@ const initialState = {
 	logCheckbox: false,
 	regCheckbox: false,
 	disableLog: true,
-	disableReg: true
+	disableReg: true,
+	successRegister: false
 };
 
 export const authReducer = ( state = initialState, action ) => {
 	switch (action.type) {
 		case types.CHOOSE_LANGUAGE:
-			localStorage.setItem( 'lang', action.payload );
+			try {
+				localStorage.setItem( 'lang', action.payload );
+			} catch (e) {
+				console.log( e );
+				console.log( 'You need to enable a localStorage' );
+			}
 			return {
 				...state,
 				lang: action.payload
@@ -58,6 +64,62 @@ export const authReducer = ( state = initialState, action ) => {
 				[keyInput]: { value, error: newError }
 			};
 
+		case types.CHANGE_CHECKBOX:
+			return {
+				...state,
+				...action.payload
+			};
+
+		case types.TOGGLE_DISABLE_BUTTON_LOG:
+			return {
+				...state,
+				disableLog: !toggleButtonLog( state )
+			};
+
+		case types.TOGGLE_DISABLE_BUTTON_REG:
+			return {
+				...state,
+				disableReg: !toggleButtonReg( state )
+			};
+
+		case types.PUT_TOKEN_LOCALSTORAGE:
+			try {
+				if (state.logCheckbox) {
+					localStorage.setItem( 'user', JSON.stringify( action.payload ) );
+				} else {
+					sessionStorage.setItem( 'user', JSON.stringify( action.payload ) );
+				}
+			} catch (e) {
+				console.log( e );
+				console.log( 'You need to enable a localStorage' );
+			}
+			const { username, token } = action.payload;
+			return {
+				...state,
+				isAuthenticated: true,
+				username,
+				token
+			};
+
+		case types.SHOW_ERROR_LOGIN:
+			return {
+				...state,
+				logEmail: { ...state.logEmail, error: action.payload }
+			};
+
+		case types.SHOW_ERROR_REGISTER:
+			const nameError = action.payload.includes( 'login' ) || action.payload.includes( 'имя' );
+			const errorFromReg = nameError ? { regNick: { ...state.regNick, error: action.payload } } : {
+				regEmail: {
+					...state.regEmail,
+					error: action.payload
+				}
+			};
+
+			return {
+				...state,
+				...errorFromReg
+			};
 
 		case types.CLEAR_VALUE_LOGIN:
 			return {
@@ -71,7 +133,8 @@ export const authReducer = ( state = initialState, action ) => {
 					error: ''
 				},
 				logCheckbox: false,
-				disableLog: true
+				disableLog: true,
+				successRegister: false
 			};
 
 		case types.CLEAR_VALUE_SIGNUP:
@@ -97,37 +160,12 @@ export const authReducer = ( state = initialState, action ) => {
 				disableReg: true
 			};
 
-		case types.CHANGE_CHECKBOX:
+		case types.SUCCESS_REGISTER:
 			return {
 				...state,
-				...action.payload
+				successRegister: true
 			};
 
-		case types.TOGGLE_DISABLE_BUTTON_LOG:
-			return {
-				...state,
-				disableLog: !toggleButtonLog( state )
-			};
-
-		case types.TOGGLE_DISABLE_BUTTON_REG:
-			return {
-				...state,
-				disableReg: !toggleButtonReg( state )
-			};
-
-		case types.PUT_TOKEN_LOCALSTORAGE:
-			if (state.logCheckbox) {
-				localStorage.setItem( 'user', JSON.stringify( action.payload ) );
-			} else {
-				sessionStorage.setItem( 'user', JSON.stringify( action.payload ) );
-			}
-			const { username, token } = action.payload;
-			return {
-				...state,
-				isAuthenticated: true,
-				username,
-				token
-			};
 		default:
 			return state;
 	}

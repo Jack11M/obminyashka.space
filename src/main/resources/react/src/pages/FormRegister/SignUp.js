@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import CheckBox from '../../components/checkbox';
 import Button from '../../components/button/Button';
@@ -14,14 +14,21 @@ import {
 	toggleCheckBox,
 	toggleDisableButtonReg
 } from '../../redux/auth/action';
+import SpinnerForAuthBtn from '../../components/spinner/spinnerForAuthBtn';
 
 import { Extra } from './loginStyle';
 
 
 const SignUp = () => {
+	const history = useHistory();
 	const location = useLocation();
 	const dispatch = useDispatch();
-	const { lang, regEmail, regNick, regPassword, regConfirm, regCheckbox, disableReg } = useSelector( state => state.auth );
+	const { lang, regEmail, regNick, regPassword, regConfirm, regCheckbox, disableReg, successRegister } = useSelector( state => state.auth );
+	const { isFetching } = useSelector( state => state.ui );
+
+	useEffect( () => {
+		if (successRegister) history.push( '/logIn/' );
+	}, [ history, successRegister ] );
 
 	useEffect( () => {
 		dispatch( clearValueSignUp() );
@@ -31,6 +38,10 @@ const SignUp = () => {
 	useEffect( () => {
 		dispatch( toggleDisableButtonReg() );
 	}, [ dispatch, regEmail, regNick, regPassword, regConfirm, regCheckbox ] );
+
+	useEffect( () => {
+		dispatch( inputChangeAuth( [ 'regConfirm', regConfirm.value ] ) );
+	}, [ dispatch, regPassword, regConfirm.value ] );
 
 	const changeRegInput = ( e ) => {
 		dispatch( inputChangeAuth( [ e.target.name, e.target.value ] ) );
@@ -96,7 +107,7 @@ const SignUp = () => {
 				/>
 			</Extra>
 			<Button
-				text={ getTranslatedText( 'auth.signUp', lang ) }
+				text={ isFetching ? <SpinnerForAuthBtn/> : getTranslatedText( 'auth.signUp', lang ) }
 				disabling={ disableReg }
 				mb={ '44px' }
 				bold

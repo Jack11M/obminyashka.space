@@ -16,11 +16,13 @@ import {
 } from '../../redux/auth/action';
 
 import { Extra, ExtraLink } from './loginStyle';
+import SpinnerForAuthBtn from '../../components/spinner/spinnerForAuthBtn';
 
 const LogIn = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
 	const { lang, logEmail, logPassword, logCheckbox, disableLog } = useSelector( state => state.auth );
+	const { isFetching } = useSelector( state => state.ui );
 
 
 	useEffect( () => {
@@ -32,8 +34,8 @@ const LogIn = () => {
 		dispatch( toggleDisableButtonLog() );
 	}, [ dispatch, logEmail, logPassword ] );
 
-
 	const changeInput = ( e ) => {
+		if (e.target.name === 'logPassword') dispatch( inputChangeAuth( [ 'logEmail', logEmail.value ] ) );
 		dispatch( inputChangeAuth( [ e.target.name, e.target.value ] ) );
 	};
 
@@ -82,7 +84,7 @@ const LogIn = () => {
 				</ExtraLink>
 			</Extra>
 			<Button
-				text={ getTranslatedText( 'button.enter', lang ) }
+				text={ isFetching? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
 				disabling={ disableLog }
 				mb={ '64px' }
 				bold

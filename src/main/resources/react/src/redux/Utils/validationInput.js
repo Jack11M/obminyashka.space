@@ -1,7 +1,7 @@
 export const authValidation = ( state, keyInput, value ) => {
 
 	const allVerified = {
-		logEmail: [ [ 'notEmpty' ], [ 'cutEmpty' ] ],
+		logEmail: [ [ 'notEmpty' ], [ 'cutEmpty' ], [ 'lengthLogin' ] ],
 		logPassword: [ [ 'notEmpty' ], [ 'cutEmpty' ] ],
 		regEmail: [ [ 'notEmpty' ], [ 'pattern', 'email' ], [ 'cutEmpty' ] ],
 		regNick: [
@@ -16,7 +16,7 @@ export const authValidation = ( state, keyInput, value ) => {
 			[ 'pattern', 'password' ],
 			[ 'cutEmpty' ]
 		],
-		regConfirm: [ [ 'notEmpty' ], [ 'contains', 'regPassword' ] ]
+		regConfirm: [ [ 'contains', 'regPassword' ] ]
 	};
 
 	const verificationMethods = {
@@ -38,8 +38,9 @@ export const authValidation = ( state, keyInput, value ) => {
 		pattern( el, pattern ) {
 			return this.rulesPattern[pattern].test( el );
 		},
-		contains( el ) {
-			return el === state.regPassword.value;
+		contains( el, el2 ) {
+			if (el === '') return true;
+			return el === state[el2].value;
 		},
 		lengthLogin( el ) {
 			return (

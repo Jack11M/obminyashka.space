@@ -8,6 +8,9 @@ export const Card = styled.div`
   border: 2px dotted #C4C4C4;
   background-color: #fff;
   margin: 10px 14px;
+  -webkit-box-shadow: 7px 7px 22px 0 rgba(48, 50, 50, 0.5);
+  -moz-box-shadow:    7px 7px 22px 0 rgba(48, 50, 50, 0.5);
+  box-shadow:         7px 7px 22px 0 rgba(48, 50, 50, 0.5);
 `;
 
 export const FavoriteMarker = styled.span`
