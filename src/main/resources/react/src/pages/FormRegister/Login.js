@@ -79,7 +79,7 @@ const Login = () => {
 					checked={ logCheckbox }
 					click={ changeCheckBox }
 				/>
-				<ExtraLink to={ '/logIn/signup' }>
+				<ExtraLink to={ '/login/signup' }>
 					{ getTranslatedText( 'auth.noLogin', lang ) }
 				</ExtraLink>
 			</Extra>

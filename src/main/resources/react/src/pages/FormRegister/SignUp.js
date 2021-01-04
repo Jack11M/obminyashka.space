@@ -27,7 +27,7 @@ const SignUp = () => {
 	const { isFetching } = useSelector( state => state.ui );
 
 	useEffect( () => {
-		if (successRegister) history.push( '/logIn/' );
+		if (successRegister) history.push( '/login/' );
 	}, [ history, successRegister ] );
 
 	useEffect( () => {
