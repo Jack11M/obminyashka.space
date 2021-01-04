@@ -18,8 +18,8 @@ export default () => {
 	) : (
 		<Switch>
 			<Route path="/" component={ HomePage } exact/>
-			<Route path="/logIn/" component={ Auth }/>
-			<Redirect to={ '/logIn/' }/>
+			<Route path="/login/" component={ Auth }/>
+			<Redirect to={ '/login/' }/>
 		</Switch>
 	);
 };

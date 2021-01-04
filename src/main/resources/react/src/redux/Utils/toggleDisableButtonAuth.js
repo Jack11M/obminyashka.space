@@ -1,9 +1,14 @@
+const isValueExistWithoutError = ( data ) => {
+	return data.value !== '' && data.error === '';
+};
+
+
 export const toggleButtonLog = ( state ) => {
 	const { logEmail, logPassword } = state;
-	return (logEmail.value !== '' && logEmail.error === '' && logPassword.value !== '' && logPassword.error === '');
+	return (isValueExistWithoutError( logEmail ) && isValueExistWithoutError( logPassword ));
 };
 
 export const toggleButtonReg = ( state ) => {
 	const { regEmail, regNick, regPassword, regConfirm, regCheckbox } = state;
-	return (regEmail.value !== '' && regEmail.error === '' && regNick.value !== '' && regNick.error === '' && regPassword.value !== '' && regPassword.error === '' && regConfirm.value !== '' && regConfirm.error === '' && regCheckbox);
+	return (isValueExistWithoutError( regEmail ) && isValueExistWithoutError( regNick ) && isValueExistWithoutError( regPassword ) && isValueExistWithoutError( regConfirm ) && regCheckbox);
 };

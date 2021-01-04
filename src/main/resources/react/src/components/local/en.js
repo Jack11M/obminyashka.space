@@ -1,6 +1,6 @@
 const en = {
 	auth: {
-		logIn: 'log In',
+		login: 'log In',
 		signUp: 'Sign Up',
 		logEmail: 'Enter your E-mail or login',
 		logPassword: 'Enter your password',
@@ -17,7 +17,7 @@ const en = {
 		logPassword: 'Invalid password',
 		regEmail: 'Please enter a valid email address',
 		regNick: 'More than 2 and less than 50 characters, no spaces',
-		regPassword: 'Latin letters large, small and numbers from 8 to 30 characters',
+		regPassword: 'Uppercase and lowercase Latin letters and numbers. Length from 8 to 30 characters',
 		regConfirm: 'Passwords must match'
 	},
 	button: {

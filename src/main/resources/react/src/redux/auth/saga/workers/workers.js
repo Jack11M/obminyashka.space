@@ -24,8 +24,7 @@ export function* workerPostAuthRegister( action ) {
 	const body = action.payload;
 	try {
 		yield put( startFetching() );
-		const { data } = yield call( postAuthRegister, body );
-		console.log( data );
+		yield call( postAuthRegister, body );
 		yield put( successReg() );
 	} catch (e) {
 		if (e.response.status === 400) {

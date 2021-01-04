@@ -1,14 +1,14 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import LogIn from './LogIn';
+import Login from './Login';
 import SignUp from './SignUp';
 
 export default () => {
   return (
     <Switch>
-      <Route path="/logIn/" exact component={LogIn} />
-      <Route path="/logIn/signUp" component={SignUp} />
+      <Route path="/login/" exact component={Login} />
+      <Route path="/login/signup" component={SignUp} />
     </Switch>
   );
 };

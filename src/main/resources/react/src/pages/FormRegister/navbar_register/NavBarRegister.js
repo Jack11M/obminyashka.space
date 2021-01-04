@@ -8,10 +8,10 @@ const NavBarRegister = () => {
 	const { lang } = useSelector( state => state.auth );
 	return (
 		<div className={ cls.tabs }>
-			<NavLink to="/logIn/" exact activeClassName={ cls.active }>
-				{ getTranslatedText( 'auth.logIn', lang ) }
+			<NavLink to="/login/" exact activeClassName={ cls.active }>
+				{ getTranslatedText( 'auth.login', lang ) }
 			</NavLink>
-			<NavLink to="/logIn/signUp" activeClassName={ cls.active }>
+			<NavLink to="/login/signup" activeClassName={ cls.active }>
 				{ getTranslatedText( 'auth.signUp', lang ) }
 			</NavLink>
 		</div>

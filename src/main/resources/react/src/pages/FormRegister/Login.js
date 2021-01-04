@@ -18,7 +18,7 @@ import {
 import { Extra, ExtraLink } from './loginStyle';
 import SpinnerForAuthBtn from '../../components/spinner/spinnerForAuthBtn';
 
-const LogIn = () => {
+const Login = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
 	const { lang, logEmail, logPassword, logCheckbox, disableLog } = useSelector( state => state.auth );
@@ -79,7 +79,7 @@ const LogIn = () => {
 					checked={ logCheckbox }
 					click={ changeCheckBox }
 				/>
-				<ExtraLink to={ '/logIn/signUp' }>
+				<ExtraLink to={ '/logIn/signup' }>
 					{ getTranslatedText( 'auth.noLogin', lang ) }
 				</ExtraLink>
 			</Extra>
@@ -95,4 +95,4 @@ const LogIn = () => {
 	);
 };
 
-export default LogIn;
+export default Login;

@@ -12,6 +12,5 @@ const instance = axios.create( {
 export const axiosInstance = async ( method, url, body = null, id = '' ) => {
 	instance.defaults.headers.common['Authorization'] = 'Bearer ' + getStorageUser( 'token' );
 	instance.defaults.headers.common['accept-language'] = getStorageLang();
-console.log(body)
 	return await instance[method]( `${ url }/${ id }`, body );
 };
