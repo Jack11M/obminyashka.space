@@ -3,7 +3,7 @@ import { getStorageUser, getStorageLang } from '../../redux/Utils';
 
 
 const instance = axios.create( {
-	baseURL: '',
+	baseURL: '/',
 	headers: {
 		'Content-Type': 'application/json'
 	}
