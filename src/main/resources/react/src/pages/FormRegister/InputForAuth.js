@@ -4,7 +4,7 @@ import { InputAuth, InputDiv, Label, SpanError } from './loginStyle';
 
 const InputForAuth = ( { text, name, type, value, error, click } ) => {
 	const location = useLocation();
-	const path = location.pathname === '/logIn/';
+	const path = location.pathname === '/login/';
 
 	return (
 		<InputDiv path={ path }>
