@@ -3,12 +3,13 @@ import { NavLink } from "react-router-dom";
 
 import "./tabs.scss";
 
+
 const Tabs = props => {
   const { url } = props;
 
   return (
     <div className="tabs">
-      <NavLink to={`${url}`} exact>
+      <NavLink to={`${url}/activity`} exact >
         <i className={"icon-activity"} />
         Моя активность
         <i className="active__cycle" />

@@ -10,7 +10,6 @@
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-i18next": "^11.8.4",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
@@ -43,8 +42,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "uuid": "^8.3.0",
-    "uuidv4": "^6.2.1"
-  }
+  "devDependencies": {}
 }

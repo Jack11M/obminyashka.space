@@ -1,10 +1,6 @@
 import axios from 'axios';
+import { getStorageUser, getStorageLang } from '../../redux/Utils';
 
-const getToken = () => {
-	const LOCAL_STORAGE = JSON.parse( localStorage.getItem( 'user' ) ) || '';
-	const SESSION_STORAGE = JSON.parse( sessionStorage.getItem( 'user' ) ) || '';
-	return LOCAL_STORAGE.token || SESSION_STORAGE.token;
-};
 
 const instance = axios.create( {
 	baseURL: '',
@@ -13,9 +9,8 @@ const instance = axios.create( {
 	}
 } );
 
-export const axiosInstance = async ( method, resource, { categories = '', id = '', body } ) => {
-
-	instance.defaults.headers.common['Authorization'] = 'Bearer ' + getToken();
-	instance.defaults.headers.common['accept-language'] = 'en';
-	return await instance[method]( `/${ resource }/${ categories }/${ id }`, body );
+export const axiosInstance = async ( method, url, body = null, id = '' ) => {
+	instance.defaults.headers.common['Authorization'] = 'Bearer ' + getStorageUser( 'token' );
+	instance.defaults.headers.common['accept-language'] = getStorageLang();
+	return await instance[method]( `${ url }/${ id }`, body );
 };
