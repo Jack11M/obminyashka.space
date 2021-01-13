@@ -4,6 +4,7 @@ import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.AdvertisementTitleDto;
+import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Location;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.hillel.items_exchange.mapper.UtilMapper.convertTo;
 
 @Service
 @RequiredArgsConstructor
@@ -158,16 +161,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
-        return advertisements.stream().map(advertisement ->
-                AdvertisementTitleDto.builder()
-                        .advertisementId(advertisement.getId())
-                        .image(advertisement.getDefaultPhoto())
-                        .title(advertisement.getTopic())
-                        .location(advertisement.getLocation())
-                        .ownerName(advertisement.getUser().getUsername())
-                        .ownerAvatar(advertisement.getUser().getAvatarImage())
-                        .build()
-        ).collect(Collectors.toList());
+        return advertisements.stream().map(this::buildAdvertisementTitle).collect(Collectors.toList());
     }
 
     private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {
@@ -187,5 +181,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)
                 .anyMatch(image -> image.getId() == imageId);
+    }
+
+    private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
+        Location advLocation = advertisement.getLocation();
+        return AdvertisementTitleDto.builder()
+                .advertisementId(advertisement.getId())
+                .image(advertisement.getDefaultPhoto())
+                .title(advertisement.getTopic())
+                .location(convertTo(advLocation, LocationDto.class))
+                .ownerName(advertisement.getUser().getUsername())
+                .ownerAvatar(advertisement.getUser().getAvatarImage())
+                .build();
     }
 }
