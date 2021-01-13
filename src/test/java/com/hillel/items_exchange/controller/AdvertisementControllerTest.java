@@ -46,6 +46,16 @@ class AdvertisementControllerTest {
     }
 
     @Test
+    void findPaginatedAsThumbnails_shouldBeThrownValidationException() throws Exception {
+        int page = 0;
+        int size = -12;
+        MvcResult mvcResult = mockMvc.perform(get("/adv/thumbnail?page={page}&size={size}", page, size))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void setDefaultImage_shouldReturn400WhenNotValidAdvertisementId() throws Exception {

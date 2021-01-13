@@ -2,6 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.dto.AdvertisementTitleDto;
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.exception.DataConflictException;
@@ -56,6 +57,23 @@ public class AdvertisementController {
             @ApiParam(value = "Number of records per page. Default value: 12")
                 @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
         List<AdvertisementDto> dtoList = advertisementService.findAll(PageRequest.of(page, size));
+        return dtoList.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/thumbnail")
+    @ApiOperation(value = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<List<AdvertisementTitleDto>> findPaginatedAsThumbnails(
+            @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @ApiParam(value = "Number of records per page. Default value: 12")
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
+        List<AdvertisementTitleDto> dtoList = advertisementService.findAllThumbnails(PageRequest.of(page, size));
         return dtoList.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(dtoList, HttpStatus.OK);

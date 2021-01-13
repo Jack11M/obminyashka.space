@@ -3,6 +3,7 @@ package com.hillel.items_exchange.service.impl;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.dto.AdvertisementTitleDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Location;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +42,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public List<AdvertisementDto> findAll(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
         return mapAdvertisementsToDto(content);
+    }
+
+    @Override
+    public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
+        List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
+        return mapAdvertisementsToTitleDto(content);
     }
 
     @Override
@@ -147,6 +155,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
         return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {
         }.getType());
+    }
+
+    private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
+        return advertisements.stream().map(advertisement ->
+                AdvertisementTitleDto.builder()
+                        .advertisementId(advertisement.getId())
+                        .image(advertisement.getDefaultPhoto())
+                        .title(advertisement.getTopic())
+                        .location(advertisement.getLocation())
+                        .ownerName(advertisement.getUser().getUsername())
+                        .ownerAvatar(advertisement.getUser().getAvatarImage())
+                        .build()
+        ).collect(Collectors.toList());
     }
 
     private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {
