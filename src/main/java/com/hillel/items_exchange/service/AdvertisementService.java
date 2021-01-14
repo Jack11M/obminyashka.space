@@ -2,6 +2,7 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.dto.AdvertisementTitleDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.User;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,13 @@ public interface AdvertisementService {
      * @return wanted quantity of advertisement on a page
      */
     List<AdvertisementDto> findAll(Pageable pageable);
+
+    /**
+     * Find all advertisements as thumbnails and return them by requested quantity (size) and page
+     * @param pageable see {@link Pageable} for more details
+     * @return wanted quantity of advertisement on a page
+     */
+    List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
 
     /**
      * Find first 10 advertisements having requested topic

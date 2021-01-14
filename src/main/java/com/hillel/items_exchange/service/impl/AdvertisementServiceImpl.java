@@ -3,6 +3,8 @@ package com.hillel.items_exchange.service.impl;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
+import com.hillel.items_exchange.dto.AdvertisementTitleDto;
+import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Location;
@@ -25,6 +27,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.hillel.items_exchange.mapper.UtilMapper.convertTo;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +45,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public List<AdvertisementDto> findAll(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
         return mapAdvertisementsToDto(content);
+    }
+
+    @Override
+    public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
+        List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
+        return mapAdvertisementsToTitleDto(content);
     }
 
     @Override
@@ -149,6 +160,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }.getType());
     }
 
+    private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
+        return advertisements.stream().map(this::buildAdvertisementTitle).collect(Collectors.toList());
+    }
+
     private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper.map(dto, Advertisement.class);
@@ -166,5 +181,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)
                 .anyMatch(image -> image.getId() == imageId);
+    }
+
+    private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
+        Location advLocation = advertisement.getLocation();
+        return AdvertisementTitleDto.builder()
+                .advertisementId(advertisement.getId())
+                .image(advertisement.getDefaultPhoto())
+                .title(advertisement.getTopic())
+                .location(convertTo(advLocation, LocationDto.class))
+                .ownerName(advertisement.getUser().getUsername())
+                .ownerAvatar(advertisement.getUser().getAvatarImage())
+                .build();
     }
 }
