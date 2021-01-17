@@ -37,6 +37,7 @@ const Label = styled.p`
   vertical-align: middle;
   cursor: pointer;
   max-width: 679px;
+  width: 100%;
   color: ${ ( { theme: { colors }, checked } ) => {
     return checked ? colors['black-color-text'] : colors.colorTextDisabled;
   } };
@@ -57,7 +58,9 @@ const CheckBox = ( { margin, click, checked, distanceBetween, fs, text } ) => {
 				</Svg>) }
 
 			</LabelSquare>
-			<Label checked={ checked } distanceBetween={ distanceBetween } fs={ fs }>{ text }</Label>
+			<div>
+				<Label checked={ checked } distanceBetween={ distanceBetween } fs={ fs }>{ text }</Label>
+			</div>
 		</Div>
 	);
 };
