@@ -3,8 +3,7 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.LocationRepository;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.model.Location;
-import com.hillel.items_exchange.model.enums.Lang;
-import com.mysql.cj.xdevapi.Collection;
+import com.hillel.items_exchange.model.enums.I18n;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,7 +38,7 @@ class LocationServiceTest {
 
     @BeforeEach
     void setUp() {
-        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", Lang.EN, Collections.emptyList());
+        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", I18n.EN, Collections.emptyList());
         locationDto = convertTo(location, LocationDto.class);
     }
 
@@ -60,7 +59,7 @@ class LocationServiceTest {
     void findById_shouldReturnLocation() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        Location foundLocation = locationService.findById(1L).get();
+        Location foundLocation = locationService.findById(1L).orElseGet(Location::new);
         assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
@@ -72,7 +71,7 @@ class LocationServiceTest {
     void getById_shouldReturnLocationDto() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        LocationDto foundLocation = locationService.getById(1L).get();
+        LocationDto foundLocation = locationService.getById(1L).orElseGet(LocationDto::new);
         assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
