@@ -59,11 +59,10 @@ class LocationServiceTest {
     void findById_shouldReturnLocation() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        Location foundLocation = locationService.findById(1L).orElseGet(Location::new);
-        assertAll("Checking objects' data equal",
+        locationService.getById(1L).ifPresent(location -> assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
-                () -> assertEquals(location.getDistrict(), foundLocation.getDistrict()));
+                () -> assertEquals(location.getDistrict(), foundLocation.getDistrict())));
         verify(locationRepository, times(1)).findById(anyLong());
     }
 
@@ -71,11 +70,10 @@ class LocationServiceTest {
     void getById_shouldReturnLocationDto() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        LocationDto foundLocation = locationService.getById(1L).orElseGet(LocationDto::new);
-        assertAll("Checking objects' data equal",
+        locationService.getById(1L).ifPresent(location -> assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
-                () -> assertEquals(location.getDistrict(), foundLocation.getDistrict()));
+                () -> assertEquals(location.getDistrict(), foundLocation.getDistrict())));
         verify(locationRepository, times(1)).findById(anyLong());
     }
 
