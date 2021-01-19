@@ -136,7 +136,7 @@ location:
     area: 'Kharkivska'
     city: 'Kharkiv'
     district: 'Kharkivska district'
-    lang: "EN"
+    i18n: "EN"
 
 image:
   - id: 1

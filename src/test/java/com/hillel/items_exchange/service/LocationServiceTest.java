@@ -59,7 +59,7 @@ class LocationServiceTest {
     void findById_shouldReturnLocation() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        locationService.getById(1L).ifPresent(location -> assertAll("Checking objects' data equal",
+        locationService.getById(1L).ifPresent(foundLocation -> assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
                 () -> assertEquals(location.getDistrict(), foundLocation.getDistrict())));
@@ -70,7 +70,7 @@ class LocationServiceTest {
     void getById_shouldReturnLocationDto() {
         when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
 
-        locationService.getById(1L).ifPresent(location -> assertAll("Checking objects' data equal",
+        locationService.getById(1L).ifPresent(foundLocation -> assertAll("Checking objects' data equal",
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
                 () -> assertEquals(location.getDistrict(), foundLocation.getDistrict())));
