@@ -22,7 +22,6 @@ public class Location {
     private String city;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "i18n")
     private I18n i18n;
 
     @OneToMany(mappedBy = "location")
