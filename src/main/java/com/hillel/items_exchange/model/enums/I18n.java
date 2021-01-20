@@ -3,14 +3,14 @@ package com.hillel.items_exchange.model.enums;
 import lombok.Getter;
 
 @Getter
-public enum Lang {
-    UA("ua"),
-    EN("en"),
-    RU("ru");
+public enum I18n {
+    UA("UA_uk"),
+    EN("EN_en"),
+    RU("RU_ru");
 
     private final String value;
 
-    Lang(String value) {
+    I18n(String value) {
         this.value = value;
     }
 }

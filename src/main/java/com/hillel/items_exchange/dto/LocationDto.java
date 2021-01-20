@@ -1,6 +1,6 @@
 package com.hillel.items_exchange.dto;
 
-import com.hillel.items_exchange.model.enums.Lang;
+import com.hillel.items_exchange.model.enums.I18n;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -37,5 +37,5 @@ public class LocationDto {
 
     @ApiModelProperty(required = true)
     @NotNull(message = "{invalid.not-null}")
-    private Lang lang;
+    private I18n i18N;
 }
