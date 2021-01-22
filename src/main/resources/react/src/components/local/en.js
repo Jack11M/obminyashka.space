@@ -51,7 +51,7 @@ const en = {
 		backPage: 'Back'
 	},
 	somethingBad: {
-		error: 'Error! What do we do?',
+		error: 'Error! What should we do the next?',
 		mainPage: 'To the main',
 		backPage: 'Back'
 	}
