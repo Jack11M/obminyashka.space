@@ -49,6 +49,11 @@ const ua = {
 		noPage: 'Сторінку не знайдено!',
 		mainPage: 'На головну',
 		backPage: 'Назад'
+	},
+	somethingBad: {
+		error: 'Помилка! Що будемо робити?',
+		mainPage: 'На головну',
+		backPage: 'Назад'
 	}
 };
 
