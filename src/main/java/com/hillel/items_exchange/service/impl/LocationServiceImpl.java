@@ -97,17 +97,18 @@ public class LocationServiceImpl implements LocationService {
             throws IOException, InvalidLocationInitFileCreatingDataException {
         File file = new File(PATH_LOCATION_INIT_FILE);
         List<Location> locations = mapCreatingDataToLocations(creatingData);
-        String initString = "INSERT INTO `evo_exchange`.`location` (`id`, `city`, `district`, `area`, `lang`) VALUES";
+        String initString = "INSERT INTO `evo_exchange`.`location` (`id`, `city`, `district`, `area`, `i18n`) VALUES";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
             writer.append(initString);
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
-                writer.append(String.format(" ('%s', '%s','%s','%s','%s'),",
+                writer.append(String.format(" ('%s', '%s','%s','%s','%s')",
                         i + 1,
                         location.getCity().replace("'", "\\'"),
                         location.getDistrict().replace("'", "\\'"),
                         location.getArea().replace("'", "\\'"),
-                        location.getLang()));
+                        location.getI18n()));
+                if (i < locations.size()-1) writer.append(",");
             }
         }
         return Files.readString(Path.of(file.getAbsolutePath()));
