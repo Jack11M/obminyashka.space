@@ -306,7 +306,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="lang" type="VARCHAR(10)">
+            <column name="i18n" type="VARCHAR(10)">
                 <constraints nullable="true"/>
             </column>
         </createTable>

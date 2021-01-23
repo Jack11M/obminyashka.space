@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-import com.hillel.items_exchange.model.enums.Lang;
+import com.hillel.items_exchange.model.enums.I18n;
 
 @Entity
 @NoArgsConstructor
@@ -22,8 +22,7 @@ public class Location {
     private String city;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "lang")
-    private Lang lang;
+    private I18n i18n;
 
     @OneToMany(mappedBy = "location")
     private List<Advertisement> advertisements;

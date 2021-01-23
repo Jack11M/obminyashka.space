@@ -78,7 +78,7 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    age: 'FROM_13_TO_14'
+    age: 'FROM_12_TO_14'
     gender: 'UNSELECTED'
     size: 'XS'
     season: 'WINTER'

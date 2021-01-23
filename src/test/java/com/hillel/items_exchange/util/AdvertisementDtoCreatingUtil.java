@@ -6,9 +6,8 @@ import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.model.enums.AgeRange;
 import com.hillel.items_exchange.model.enums.DealType;
 import com.hillel.items_exchange.model.enums.Gender;
-import com.hillel.items_exchange.model.enums.Lang;
+import com.hillel.items_exchange.model.enums.I18n;
 import com.hillel.items_exchange.model.enums.Season;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,11 +18,11 @@ public class AdvertisementDtoCreatingUtil {
     private static final ImageDto GIF = new ImageDto(0L, "test image gif".getBytes());
     private static final ImageDto JPEG = new ImageDto(1L, "test image jpeg".getBytes());
     private static final ImageDto PNG = new ImageDto(2L, "test image png".getBytes());
-    private static final LocationDto KYIV = new LocationDto(0L, "Kyivska", "District", "Kyiv", Lang.EN);
-    private static final LocationDto KHARKIV = new LocationDto(1L, "Kharkivska", "Kharkivska district", "Kharkiv", Lang.EN);
-    private static final LocationDto ODESSA = new LocationDto(0L, "Odesska", "Odessa district", "Odessa", Lang.EN);
+    private static final LocationDto KYIV = new LocationDto(0L, "Kyivska", "District", "Kyiv", I18n.EN);
+    private static final LocationDto KHARKIV = new LocationDto(1L, "Kharkivska", "Kharkivska district", "Kharkiv", I18n.EN);
+    private static final LocationDto ODESSA = new LocationDto(0L, "Odesska", "Odessa district", "Odessa", I18n.EN);
     private static final LocationDto CHANGEDLOCATION =
-            new LocationDto(1L, "Kyivska", "New Vasyuki district", "New Vasyuki", Lang.EN);
+            new LocationDto(1L, "Kyivska", "New Vasyuki district", "New Vasyuki", I18n.EN);
 
     public static AdvertisementDto createNonExistAdvertisementDto() {
         return getBuild(0L, "topic", "description", "hat",false, DealType.GIVEAWAY,
