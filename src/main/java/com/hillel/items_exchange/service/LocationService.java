@@ -1,8 +1,10 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dto.LocationDto;
+import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import com.hillel.items_exchange.model.Location;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,4 +76,18 @@ public interface LocationService {
      * @return the updated Location DTO; will never be null.
      */
     LocationDto update(LocationDto locationDto);
+
+    /**
+     * Creates file to initialize locations in database.
+     * @param creatingData must match the regular expression for creating of initialization file.
+     * @return content of newly created file.
+     */
+    String createFileToInitLocations(String creatingData) throws IOException, InvalidLocationInitFileCreatingDataException;
+
+    /**
+     * Checks a parameter against a pattern of creating of initialization file.
+     * @param creatingData must match the regular expression for creating of initialization file.
+     * @return true if parameter matches the regular expression, false if it's not.
+     */
+    boolean isLocationDataValid(String creatingData);
 }
