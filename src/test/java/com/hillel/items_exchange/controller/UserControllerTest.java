@@ -3,6 +3,8 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
+import com.hillel.items_exchange.dto.UserChangeEmailDto;
+import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,8 +44,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class UserControllerTest {
 
+    public static final String PATH_USER_INFO_CHANGE_PASSWORD = "/user/info/change-password";
+    public static final String PATH_USER_INFO_CHANGE_EMAIL = "/user/info/change-email";
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
@@ -352,5 +359,102 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.children", hasSize(1)))
                 .andExpect(jsonPath("$.phones", hasSize(1)));
+            }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/changing_password_or_email/changing_password_or_email_init.yml"})
+    @ExpectedDataSet(value = {"database_init.yml",
+            "user/changing_password_or_email/changing_password_or_email_expected.yml"},
+            ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
+    void updateUserPassword_Successfully() throws Exception {
+        getResultActionsPasswordDto(HttpMethod.PUT, PATH_USER_INFO_CHANGE_PASSWORD,
+                createUserChangePasswordDtoWithCorrectData(), status().isAccepted())
+                .andDo(print());
+        assertTrue(bCryptPasswordEncoder.matches(
+                createUserChangePasswordDtoWithCorrectData().getNewPassword(),
+                "$2a$10$cQvCmoVUukbO/1vTCxeu3OmwJBwAf1S5wabTrL8vUsEZn5DBzlYLW"));
+    }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/changing_password_or_email/changing_password_or_email_init.yml"})
+    void updateUserPassword_WhenOldPasswordWrong_ShouldThrowInvalidDtoException() throws Exception {
+        final MvcResult mvcResult = getResultActionsPasswordDto(HttpMethod.PUT,
+                PATH_USER_INFO_CHANGE_PASSWORD,
+                createUserChangePasswordDtoWithWrongOldPassword(), status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource("not.your.password")));
+    }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/changing_password_or_email/changing_password_or_email_init.yml"})
+    void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException()
+            throws Exception {
+        final MvcResult mvcResult = getResultActionsPasswordDto(HttpMethod.PUT,
+                PATH_USER_INFO_CHANGE_PASSWORD,
+                createUserChangePasswordDtoWithWrongPasswordConfirmation(), status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+
+        final String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getExceptionMessageSource("invalid.confirm.password")));
+    }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/changing_password_or_email/changing_password_or_email_init.yml"})
+    @ExpectedDataSet(value = {"database_init.yml",
+            "user/changing_password_or_email/changing_password_or_email_expected.yml"},
+            ignoreCols = {"password", "lastOnlineTime", "updated"})
+    void updateUserEmail_Successfully() throws Exception {
+        getResultActionsEmailDto(HttpMethod.PUT, PATH_USER_INFO_CHANGE_EMAIL,
+                createUserChangeEmailDtoWithCorrectData(), status().isAccepted())
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/changing_password_or_email/changing_password_or_email_init.yml"})
+    void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException()
+            throws Exception {
+        final MvcResult mvcResult = getResultActionsEmailDto(HttpMethod.PUT,
+                PATH_USER_INFO_CHANGE_EMAIL,
+                createUserChangeEmailDtoWithWrongEmailConfirmation(), status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+
+        final String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getExceptionMessageSource("invalid.confirm.email")));
+    }
+
+    private ResultActions getResultActionsPasswordDto(HttpMethod httpMethod, String path,
+                                                      UserChangePasswordDto dto,
+                                                      ResultMatcher matcher) throws Exception {
+        MockHttpServletRequestBuilder builder = request(httpMethod, path)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(dto));
+        return mockMvc.perform(builder).andExpect(matcher);
+    }
+
+    private ResultActions getResultActionsEmailDto(HttpMethod httpMethod, String path,
+                                                   UserChangeEmailDto dto,
+                                                   ResultMatcher matcher) throws Exception {
+        MockHttpServletRequestBuilder builder = request(httpMethod, path)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(dto));
+        return mockMvc.perform(builder).andExpect(matcher);
     }
 }

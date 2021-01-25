@@ -1,6 +1,8 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.UserChangeEmailDto;
+import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
@@ -31,9 +33,7 @@ import javax.validation.groups.Default;
 import java.security.Principal;
 import java.util.List;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
 @RequestMapping("/user")
@@ -72,6 +72,32 @@ public class UserController {
             throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
         }
         return userService.update(userDto, user);
+    }
+
+    @PutMapping("/info/change-password")
+    @ApiOperation(value = "Update a user password")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public UserDto updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
+                                      Principal principal) throws InvalidDtoException {
+        User user = getUser(principal.getName());
+
+        return userService.updateUserPassword(userChangePasswordDto, user);
+    }
+
+    @PutMapping("/info/change-email")
+    @ApiOperation(value = "Update a user email")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public UserDto updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto,
+                                   Principal principal) {
+        User user = getUser(principal.getName());
+
+        return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
     @GetMapping("/child")

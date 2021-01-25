@@ -1,8 +1,6 @@
 package com.hillel.items_exchange.util;
 
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.PhoneDto;
-import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.model.Gender;
 
 import java.time.LocalDate;
@@ -29,6 +27,10 @@ public class UserDtoCreatingUtil {
     public static final String NEW_INVALID_SHORT_NAME = "n";
     public static final String NEW_INVALID_TWO_WORDS_NAME = "new Name";
     public static final byte[] BLANK_AVATAR_IMAGE = "test image png".getBytes();
+    public static final String CORRECT_OLD_PASSWORD = "123456xX";
+    public static final String WRONG_OLD_PASSWORD = "123456wWWW";
+    public static final String NEW_PASSWORD = "123456wW";
+    public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
 
     public static UserDto createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones() {
         return getBuild("admin", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
@@ -110,5 +112,47 @@ public class UserDtoCreatingUtil {
                 .children(children)
                 .phones(phones)
                 .build();
+    }
+
+    public static UserChangePasswordDto createUserChangePasswordDtoWithCorrectData() {
+
+        return createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
+                NEW_PASSWORD,
+                NEW_PASSWORD);
+    }
+
+    public static UserChangePasswordDto createUserChangePasswordDtoWithWrongOldPassword() {
+
+        return createUserChangePasswordDto(WRONG_OLD_PASSWORD,
+                NEW_PASSWORD,
+                NEW_PASSWORD);
+    }
+
+    public static UserChangePasswordDto createUserChangePasswordDtoWithWrongPasswordConfirmation() {
+
+        return createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
+                NEW_PASSWORD,
+                WRONG_NEW_PASSWORD_CONFIRMATION);
+    }
+
+    public static UserChangeEmailDto createUserChangeEmailDtoWithCorrectData() {
+
+        return createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
+    }
+
+    public static UserChangeEmailDto createUserChangeEmailDtoWithWrongEmailConfirmation() {
+
+        return createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
+    }
+
+    private static UserChangePasswordDto createUserChangePasswordDto(String password,
+                                                                     String newPassword,
+                                                                     String confirmNewPassword) {
+        return new UserChangePasswordDto(password, newPassword, confirmNewPassword);
+    }
+
+    private static UserChangeEmailDto createUserChangeEmailDto(String newEmail,
+                                                               String newEmailConfirmation) {
+        return new UserChangeEmailDto(newEmail, newEmailConfirmation);
     }
 }

@@ -1,10 +1,9 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Phone;
@@ -21,12 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -74,6 +68,24 @@ public class UserService {
         user.setUpdated(LocalDateTime.now());
         addNewChildren(user, newChildren);
         addNewPhones(user, newPhones);
+        return mapUserToDto(userRepository.saveAndFlush(user));
+    }
+
+    public UserDto updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user)
+            throws InvalidDtoException {
+        if (!isPasswordMatches(user, userChangePasswordDto.getPassword())) {
+            throw new InvalidDtoException(getExceptionMessageSource("not.your.password"));
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
+
+        return mapUserToDto(userRepository.saveAndFlush(user));
+    }
+
+    public UserDto updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
+
+        user.setEmail(userChangeEmailDto.getNewEmail());
+
         return mapUserToDto(userRepository.saveAndFlush(user));
     }
 
