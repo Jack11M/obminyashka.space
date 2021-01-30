@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import com.hillel.items_exchange.model.Location;
@@ -81,8 +82,11 @@ public interface LocationService {
      * Creates file to initialize locations in database.
      * @param creatingData must match the regular expression for creating of initialization file.
      * @return content of newly created file.
+     * @throws InvalidLocationInitFileCreatingDataException when data to parse not matching to regular expression.
+     * @throws JsonProcessingException (extends IOException) when there is error of mapping data to location entity.
+     * @throws IOException when there is error of writing data to newly created locations file.
      */
-    String createFileToInitLocations(String creatingData) throws IOException, InvalidLocationInitFileCreatingDataException;
+    String createParsedLocationsFile(String creatingData) throws IOException, InvalidLocationInitFileCreatingDataException;
 
     /**
      * Checks a parameter against a pattern of creating of initialization file.

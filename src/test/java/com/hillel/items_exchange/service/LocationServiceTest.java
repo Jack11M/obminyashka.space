@@ -158,14 +158,14 @@ class LocationServiceTest {
     void createFileToInitLocations_shouldReturnProperData()
             throws IOException, InvalidLocationInitFileCreatingDataException {
         String locationsString = Files.readString(pathToFileParseLocationsFrom);
-        String createdFileContent = locationService.createFileToInitLocations(locationsString);
+        String createdFileContent = locationService.createParsedLocationsFile(locationsString);
         assertTrue(createdFileContent.contains("2580"));
     }
 
     @Test
     void createFileToInitLocations_shouldCreateNotEmptyFileToInitLocationsInDB()
             throws IOException, InvalidLocationInitFileCreatingDataException {
-        locationService.createFileToInitLocations(Files.readString(pathToFileParseLocationsFrom));
+        locationService.createParsedLocationsFile(Files.readString(pathToFileParseLocationsFrom));
         assertTrue(Files.exists(pathToCreateLocationsInitFile));
         assertTrue(Files.size(pathToCreateLocationsInitFile) > 0);
     }

@@ -195,7 +195,7 @@ class LocationControllerIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsValid_shouldCreateFileAndReturnItsContent() throws Exception {
-        MvcResult response = mockMvc.perform(post("/location/create-init-file")
+        MvcResult response = mockMvc.perform(post("/location/locations-init")
                 .param("data", Files.readString(pathToFileParseLocationsFrom)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -209,7 +209,7 @@ class LocationControllerIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsNotValid_shouldReturnBadRequest() throws Exception {
-        mockMvc.perform(post("/location/create-init-file")
+        mockMvc.perform(post("/location/locations-init")
                 .param("data", "NOT VALID DATA"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());

@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import java.io.IOException;
 import java.util.List;
@@ -108,18 +109,20 @@ public class LocationController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping("/create-init-file")
+    @PostMapping("/locations-init")
     @ApiOperation(value = "Setting up locations from request", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestParam("data") String rawData) throws InvalidLocationInitFileCreatingDataException {
-        if (!locationService.isLocationDataValid(rawData)) throw new InvalidLocationInitFileCreatingDataException(
-                getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+    public ResponseEntity<String> createLocationsInitFile(@RequestParam("data") @NotEmpty String rawData) throws InvalidLocationInitFileCreatingDataException {
+        if (!locationService.isLocationDataValid(rawData)) {
+            throw new InvalidLocationInitFileCreatingDataException(
+                    getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+        }
         try {
-            return new ResponseEntity<>(locationService.createFileToInitLocations(rawData), HttpStatus.OK);
+            return new ResponseEntity<>(locationService.createParsedLocationsFile(rawData), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

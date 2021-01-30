@@ -118,32 +118,32 @@ public class LocationServiceImpl implements LocationService {
     public boolean isLocationDataValid(String locationDataString) {
         Pattern pattern = Pattern.compile(LOCATION_INIT_FILE_CREATE_DATA_PATTERN);
         return Arrays.stream(locationDataString.split("},"))
-                .map(s -> s.replace("[", ""))
-                .map(s -> s.replace("]", ""))
-                .map(s -> s.replace("{", ""))
-                .map(s -> s.replace("}", ""))
+                .map(s -> s.replaceAll("[\\[\\]{}]", ""))
                 .allMatch(s -> pattern.matcher(s).matches());
     }
 
     private List<Location> mapCreatingDataToLocations(String creatingData)
-            throws InvalidLocationInitFileCreatingDataException, JsonProcessingException {
+            throws InvalidLocationInitFileCreatingDataException {
         ObjectMapper mapper = new ObjectMapper();
-        if (!isLocationDataValid(creatingData)) throw new InvalidLocationInitFileCreatingDataException(
-                getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
-        List<String> stringsToMap = Arrays.stream(creatingData.split("},"))
-                .map(s -> s.replace("[", ""))
-                .map(s -> s.replace("]", ""))
+        if (!isLocationDataValid(creatingData)) {
+            throw new InvalidLocationInitFileCreatingDataException(
+                    getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+        }
+        return Arrays.stream(creatingData.split("},"))
+                .map(s -> s.replaceAll("[\\[\\]]", ""))
                 .map(s -> s.replace("{\"en\":", "{\"lang\":\"EN\""))
                 .map(s -> s.replace("\"ua\":", "{\"lang\":\"UA\""))
                 .map(s -> s.replace("\"ru\":", "{\"lang\":\"RU\""))
                 .map(s -> s + "}")
                 .map(s -> s.replace("}}", "}"))
                 .map(s -> s.replace("{\"city\"", ",\"city\""))
+                .map(s -> {
+                    try {
+                        return mapper.readValue(s, Location.class);
+                    } catch (JsonProcessingException e) {
+                        return null;
+                    }
+                })
                 .collect(Collectors.toList());
-        List<Location> result = new ArrayList<>();
-        for (String s : stringsToMap) {
-            result.add(mapper.readValue(s, Location.class));
-        }
-        return result;
     }
 }
