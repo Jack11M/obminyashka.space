@@ -1,6 +1,5 @@
 package com.hillel.items_exchange.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hillel.items_exchange.dao.LocationRepository;
 import com.hillel.items_exchange.dto.LocationDto;
@@ -8,6 +7,7 @@ import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataEx
 import com.hillel.items_exchange.model.Location;
 import com.hillel.items_exchange.service.LocationService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -32,10 +33,12 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 public class LocationServiceImpl implements LocationService {
 
     public static final String PATH_LOCATION_INIT_FILE = "src/main/resources/sql/fill-table-location.sql";
-    public static final String LOCATION_INIT_FILE_CREATE_DATA_PATTERN =
-            "\"[a-z][a-z]\":\"city\":\"[ A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"," +
-                    "\"district\":\"[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"," +
-                    "\"area\":\"[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"";
+    private static final String LANG_PATTERN = "\"[a-z]{2}\"";
+    private static final String LETTERS_PATTERN = "\"[ A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"";
+    public static final String LOCATION_INIT_FILE_CREATE_DATA_PATTERN = LANG_PATTERN +
+            ":\"city\":" + LETTERS_PATTERN +
+            ",\"district\":" + LETTERS_PATTERN +
+            ",\"area\":" + LETTERS_PATTERN;
 
     private final LocationRepository locationRepository;
 
@@ -120,33 +123,36 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public boolean isLocationDataValid(String locationDataString) {
         Pattern pattern = Pattern.compile(LOCATION_INIT_FILE_CREATE_DATA_PATTERN);
-        return Arrays.stream(locationDataString.split("},"))
-                .map(s -> s.replaceAll("[\\[\\]{}]", ""))
+        locationStings = new ArrayList<>();
+        return Arrays.stream(locationDataString.substring(1, locationDataString.length() - 1).split("},"))
+                .map(s -> s.replaceAll("\\{|\\}", ""))
+                .peek(locationStings::add)
                 .allMatch(s -> pattern.matcher(s).matches());
     }
 
     private List<Location> mapCreatingDataToLocations(String creatingData)
             throws InvalidLocationInitFileCreatingDataException {
-        ObjectMapper mapper = new ObjectMapper();
-        if (!isLocationDataValid(creatingData)) {
-            throw new InvalidLocationInitFileCreatingDataException(
-                    getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
-        }
-        return Arrays.stream(creatingData.split("},"))
-                .map(s -> s.replaceAll("[\\[\\]]", ""))
-                .map(s -> s.replace("{\"en\":", "{\"lang\":\"EN\""))
-                .map(s -> s.replace("\"ua\":", "{\"lang\":\"UA\""))
-                .map(s -> s.replace("\"ru\":", "{\"lang\":\"RU\""))
-                .map(s -> s + "}")
-                .map(s -> s.replace("}}", "}"))
-                .map(s -> s.replace("{\"city\"", ",\"city\""))
-                .map(s -> {
-                    try {
-                        return mapper.readValue(s, Location.class);
-                    } catch (JsonProcessingException e) {
-                        return null;
-                    }
-                })
+        if (!isLocationDataValid(creatingData)) throw new InvalidLocationInitFileCreatingDataException(
+                getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+        return locationStings
+                .stream()
+                .map(this::prepareLocation)
+                .map(this::parseLocation)
                 .collect(Collectors.toList());
+    }
+
+    private String prepareLocation(String locationLine) {
+        Matcher matcher = Pattern.compile(LANG_PATTERN).matcher(locationLine);
+        if (matcher.find()) {
+            String i18nString = locationLine.substring(matcher.start(), matcher.end());
+            String replacePattern = "{\"lang\":%s,";
+            return locationLine.replaceAll(LANG_PATTERN + ":", String.format(replacePattern, i18nString.toUpperCase())) + "}";
+        }
+        return locationLine;
+    }
+
+    @SneakyThrows
+    private Location parseLocation(String location) {
+        return mapper.readValue(location, Location.class);
     }
 }
