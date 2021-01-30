@@ -32,7 +32,10 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 public class LocationServiceImpl implements LocationService {
 
     public static final String PATH_LOCATION_INIT_FILE = "src/main/resources/sql/fill-table-location.sql";
-    public static final String LOCATION_INIT_FILE_CREATE_DATA_PATTERN = "\"[a-z][a-z]\":\"city\":\"[ A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\",\"district\":\"[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\",\"area\":\"[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"";
+    public static final String LOCATION_INIT_FILE_CREATE_DATA_PATTERN =
+            "\"[a-z][a-z]\":\"city\":\"[ A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"," +
+                    "\"district\":\"[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"," +
+                    "\"area\":\"[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"";
 
     private final LocationRepository locationRepository;
 
@@ -93,7 +96,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public String createFileToInitLocations(String creatingData)
+    public String createParsedLocationsFile(String creatingData)
             throws IOException, InvalidLocationInitFileCreatingDataException {
         File file = new File(PATH_LOCATION_INIT_FILE);
         List<Location> locations = mapCreatingDataToLocations(creatingData);
