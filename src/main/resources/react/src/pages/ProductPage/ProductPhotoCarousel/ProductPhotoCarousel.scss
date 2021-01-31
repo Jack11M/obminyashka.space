@@ -60,10 +60,10 @@
 
   .slick-slide:hover {
     transform: scale(1.1);
-    //box-shadow: 0 0 24px 10px rgba(48, 50, 50, 0.30);
+    //box-shadow: 0 0 24px 5px rgba(48, 50, 50, 0.5);
   }
 }
 
-//.slick-active {
-//  border: 2px solid #FA9E25 !important;
-//}
+.selected {
+  border: 2px solid #FA9E25;
+}

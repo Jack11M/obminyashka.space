@@ -1,49 +1,50 @@
-import React , { Component } from 'react';
+import React , { useState } from 'react';
 import './ProductPhotoCarousel.scss';
 import Slider from 'react-slick';
+import ProductDB from '../MokDB';
 
-import { lot1, lot2, lot3, lot4, lot5, lot6, lot7 } from '../../../img/all_images_export/cards'
-
-export default class ProductPhotoCarousel extends Component {
-
-	render() {
-		const settings = {
-			dots: false,
-			infinite: true,
-			slidesToShow: 4,
-			slidesToScroll: 1,
-			centerMode: false,
-			vertical: true,
-			verticalSwiping: true,
-		};
-		return (
-			<div className = 'carouselBox'>
-				<div className = 'sliderPosition' >
-					<Slider { ...settings } className = 'productPhotoSlider'  >
-						<div>
-							<img src = {lot1} alt = '1'/>
+const ProductPhotoCarousel = () => {
+	
+	const [ state , setState ] = useState( {
+		photos : ProductDB.photo ,
+		bigPhoto : ProductDB.photo[0]
+	} );
+	
+	const settings = {
+		dots : false ,
+		infinite : true ,
+		slidesToShow : 4 ,
+		slidesToScroll : 1 ,
+		centerMode : false ,
+		vertical : true ,
+		verticalSwiping : true ,
+	};
+	
+	const showBigImg = ( id ) => {
+		setState( { ...state , bigPhoto : ProductDB.photo[id] } );
+	};
+	
+	return (
+		<div className = 'carouselBox'>
+			<div className = 'sliderPosition'>
+				<Slider { ...settings } className = 'productPhotoSlider'>
+					{ state.photos.map( ( photo , idx ) =>
+						<div key = { `index-${ idx }` }>
+							<img
+								src = { photo }
+								alt = { idx }
+								onClick = { () => showBigImg( idx ) }
+								className = { state.bigPhoto === photo ? 'selected' : '' }
+							/>
 						</div>
-						<div>
-							<img src = {lot2} alt = '2'/>
-						</div>
-						<div>
-							<img src = {lot3} alt = '3'/>
-						</div>
-						<div>
-							<img src = {lot4} alt = '4'/>
-						</div>
-						<div>
-							<img src = {lot5} alt = '5'/>
-						</div>
-						<div>
-							<img src = {lot6} alt = '6'/>
-						</div>
-					</Slider>
-				</div>
-				<div className = 'productPhotoSlideBig'>
-					<img src = {lot7} alt = '6'/>
-				</div>
+					) }
+				</Slider>
 			</div>
-		);
-	}
-}
+			<div className = 'productPhotoSlideBig'>
+				<img src = { state.bigPhoto } alt = 'activeSlide'/>
+			</div>
+		</div>
+	);
+};
+
+export default ProductPhotoCarousel;

@@ -1,15 +1,17 @@
 import React from 'react';
 import './ProductOwnerData.scss';
+import ProductDB from '../MokDB';
 
 const ProductOwnerData = () => {
 	return (
 		<div className = 'productOwnerDataBox'>
 			<div className = 'productOwner'>
 				<div className = 'productOwnerAvatar'>
-					<img src = 'https://static.toiimg.com/photo/72975551.cms' alt = 'ownerAva'/>
+					{/*вместо картинки передаётся путь*/}
+					<img src = { ProductDB.owner.avatar } alt = 'ownerAva'/>
 				</div>
 				<div className = 'productOwnerName'>
-					<h2>Марина Васильева</h2>
+					<h2>{ ProductDB.owner.name }</h2>
 				</div>
 			</div>
 			<div className = 'postData'>
@@ -22,9 +24,9 @@ const ProductOwnerData = () => {
 				</div>
 				<div className = 'postResData'>
 					<ul>
-						<li>03.09.2019</li>
-						<li>Харьков, Холоногорский</li>
-						<li>093 546 09 32</li>
+						<li>{ ProductDB.postData.date }</li>
+						<li>{ ProductDB.postData.city }</li>
+						<li>{ ProductDB.postData.telephone }</li>
 					</ul>
 				</div>
 			</div>
