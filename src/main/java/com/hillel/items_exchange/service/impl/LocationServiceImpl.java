@@ -41,6 +41,8 @@ public class LocationServiceImpl implements LocationService {
             ",\"area\":" + LETTERS_PATTERN;
 
     private final LocationRepository locationRepository;
+    private ArrayList<String> locationStings;
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public List<LocationDto> findAll() {
