@@ -105,13 +105,14 @@ public class AdvertisementController {
     }
 
     @PostMapping("/filter")
-    @ApiOperation(value = "Filter advertisements by multiple params and return up to 10 results")
+    @ApiOperation(value = "Filter advertisements by multiple params and return up to 10 results.\n" +
+            "Fill only needed parameters.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementDto>> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto advertisementFilterDto) {
-        List<AdvertisementDto> advertisementsByMultipleParams = advertisementService.findFirst10AdvertisementsByMultipleParams(advertisementFilterDto);
+    public ResponseEntity<List<AdvertisementDto>> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto filterDto) {
+        List<AdvertisementDto> advertisementsByMultipleParams = advertisementService.findFirst10ByFilter(filterDto);
         return advertisementsByMultipleParams.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(advertisementsByMultipleParams, HttpStatus.OK);
