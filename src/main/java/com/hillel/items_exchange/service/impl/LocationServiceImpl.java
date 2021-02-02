@@ -112,7 +112,7 @@ public class LocationServiceImpl implements LocationService {
             writer.append(initString);
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
-                writer.append(String.format(" ('%s', '%s','%s','%s','%s')",
+                writer.append(String.format(" ('%s','%s','%s','%s','%s')",
                         i + 1,
                         location.getCity().replace("'", "\\'"),
                         location.getDistrict().replace("'", "\\'"),
