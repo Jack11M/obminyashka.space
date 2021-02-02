@@ -160,7 +160,10 @@ class LocationServiceTest {
             throws IOException, InvalidLocationInitFileCreatingDataException {
         String locationsString = Files.readString(Path.of(pathToFileParseLocationsFrom));
         String createdFileContent = locationService.createParsedLocationsFile(locationsString);
-        assertTrue(createdFileContent.contains("2580"));
+        String[] parsedLocationsQuantity = createdFileContent.split("\\), \\(");
+        int lastId = Integer.parseInt(parsedLocationsQuantity[parsedLocationsQuantity.length - 1].substring(1, 5));
+        int locationsInThreeLanguages = locationsString.split("\\},\\{").length;
+        assertEquals(locationsInThreeLanguages * 3, lastId);
     }
 
     @Test

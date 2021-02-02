@@ -206,7 +206,10 @@ class LocationControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-        assertTrue(response.getResponse().getContentAsString().contains("2580"));
+        String[] parsedLocationsQuantity = response.getResponse().getContentAsString().split("\\), \\(");
+        int lastId = Integer.parseInt(parsedLocationsQuantity[parsedLocationsQuantity.length - 1].substring(1, 5));
+        int locationsInThreeLanguages = (response.getResponse().getContentAsString().substring(88).split("\\),").length)/3;
+        assertEquals(locationsInThreeLanguages * 3, lastId);
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
