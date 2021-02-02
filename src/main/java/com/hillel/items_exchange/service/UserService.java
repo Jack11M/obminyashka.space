@@ -3,6 +3,7 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Phone;

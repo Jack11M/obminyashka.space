@@ -390,6 +390,85 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/delete_user/delete_user_init.yml"})
+    @ExpectedDataSet(value = {"database_init.yml", "user/delete_user/delete_user_expected.yml"},
+            ignoreCols = {"password", "lastOnlineTime", "updated"})
+    void deleteUser_Successfully() throws Exception {
+        getResultActionsDeleteDto(
+                createUserDeleteDtoWithCorrectData(), status().isAccepted())
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/delete_user/delete_user_init.yml"})
+    void deleteUser_WhenOldPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException()
+            throws Exception {
+        MvcResult mvcResult = getResultActionsDeleteDto(
+                createUserDeleteDtoWithWrongOldPasswordAndTheSameConfirmation(),
+                status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString()
+                .contains(getExceptionMessageSource(NOT_YOUR_PASSWORD)));
+    }
+
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/delete_user/delete_user_init.yml"})
+    void deleteUser_WhenOldPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
+            throws Exception {
+        MvcResult mvcResult = getResultActionsDeleteDto(
+                createUserDeleteDtoWithCorrectOldPasswordAndWrongConfirmation(),
+                status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getExceptionMessageSource(INVALID_CONFIRM_PASSWORD)));
+    }
+
+    /**
+     * In this case annotation
+     * {@link com.hillel.items_exchange.annotation.FieldMatch}
+     * has to work before than
+     * {@link com.hillel.items_exchange.service.UserService#isPasswordMatches(User, String)}
+     * in
+     * {@link com.hillel.items_exchange.service.UserService#deleteUser(UserDeleteDto, User)}
+     */
+    @Test
+    @WithMockUser(username = "trump")
+    @Transactional
+    @DataSet({"database_init.yml", "user/delete_user/delete_user_init.yml"})
+    void deleteUser_WhenOldPasswordWrongAndPasswordConfirmationWrong_ShouldThrowIllegalArgumentException()
+            throws Exception {
+        MvcResult mvcResult = getResultActionsDeleteDto(
+                createUserDeleteDtoWithWrongOldPasswordAndWrongConfirmation(),
+                status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getExceptionMessageSource(INVALID_CONFIRM_PASSWORD)));
+    }
+
+    private ResultActions getResultActionsDeleteDto(UserDeleteDto dto,
+                                                    ResultMatcher matcher) throws Exception {
+        MockHttpServletRequestBuilder builder = request(HttpMethod.PUT,
+                UserControllerTest.PATH_USER_INFO_DELETE)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(dto));
+        return mockMvc.perform(builder).andExpect(matcher);
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet({"database_init.yml"})
