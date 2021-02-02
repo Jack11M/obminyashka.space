@@ -3,6 +3,7 @@ package com.hillel.items_exchange.exception.handler;
 import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
+import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -64,6 +65,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
+    }
+
+    @ExceptionHandler(InvalidLocationInitFileCreatingDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleInvalidLocationInitFileCreatingDataException(Exception e, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {

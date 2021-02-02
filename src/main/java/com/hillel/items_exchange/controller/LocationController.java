@@ -124,7 +124,7 @@ public class LocationController {
         try {
             return new ResponseEntity<>(locationService.createParsedLocationsFile(rawData), HttpStatus.OK);
         } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

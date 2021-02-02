@@ -5,8 +5,10 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,7 +19,9 @@ import java.nio.file.Path;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.LocationDtoCreatingUtil.*;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,8 +35,10 @@ class LocationControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    Path pathToFileParseLocationsFrom = Path.of("src/test/resources/LocationCities.txt");
-    Path pathToCreateLocationsInitFile = Path.of("src/main/resources/sql/fill-table-location.sql");
+    @Value("${test.data.location.init.file.path}")
+    private String pathToFileParseLocationsFrom;
+    @Value("${location.init.file.path}")
+    private String pathToCreateLocationsInitFile;
 
     @Test
     @DataSet("database_init.yml")
@@ -196,22 +202,23 @@ class LocationControllerIntegrationTest {
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsValid_shouldCreateFileAndReturnItsContent() throws Exception {
         MvcResult response = mockMvc.perform(post("/location/locations-init")
-                .param("data", Files.readString(pathToFileParseLocationsFrom)))
+                .param("data", Files.readString(Path.of(pathToFileParseLocationsFrom))))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
         assertTrue(response.getResponse().getContentAsString().contains("2580"));
-        assertTrue(Files.exists(pathToCreateLocationsInitFile));
-        assertTrue(Files.size(pathToCreateLocationsInitFile) > 0);
+        assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     @DataSet("database_init.yml")
-    void createLocationsInitFile_whenDataIsNotValid_shouldReturnBadRequest() throws Exception {
-        mockMvc.perform(post("/location/locations-init")
+    void createLocationsInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(post("/location/locations-init")
                 .param("data", "NOT VALID DATA"))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andDo(print()).andReturn();
+        assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
+        String stringToSearch = getExceptionMessageSource("exception.invalid.locations.file.creating.data");
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(stringToSearch));
     }
 }

@@ -8,6 +8,7 @@ import com.hillel.items_exchange.model.Location;
 import com.hillel.items_exchange.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
@@ -32,7 +33,6 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessa
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
 
-    public static final String PATH_LOCATION_INIT_FILE = "src/main/resources/sql/fill-table-location.sql";
     private static final String LANG_PATTERN = "\"[a-z]{2}\"";
     private static final String LETTERS_PATTERN = "\"[ A-Za-zА-Яа-яЁёЇїІіЄєҐґ'’-]{0,30}\"";
     public static final String LOCATION_INIT_FILE_CREATE_DATA_PATTERN = LANG_PATTERN +
@@ -41,8 +41,10 @@ public class LocationServiceImpl implements LocationService {
             ",\"area\":" + LETTERS_PATTERN;
 
     private final LocationRepository locationRepository;
-    private ArrayList<String> locationStings;
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
+    private List<String> locationStings;
+    @Value("${location.init.file.path}")
+    private String locationInitFilePath;
 
     @Override
     public List<LocationDto> findAll() {
@@ -103,7 +105,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public String createParsedLocationsFile(String creatingData)
             throws IOException, InvalidLocationInitFileCreatingDataException {
-        File file = new File(PATH_LOCATION_INIT_FILE);
+        File file = new File(locationInitFilePath);
         List<Location> locations = mapCreatingDataToLocations(creatingData);
         String initString = "INSERT INTO `evo_exchange`.`location` (`id`, `city`, `district`, `area`, `i18n`) VALUES";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
