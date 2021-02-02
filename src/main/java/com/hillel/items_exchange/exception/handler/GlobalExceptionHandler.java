@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
        return logAndGetErrorMessage(request, e, Level.INFO);
     }
 
-    @ExceptionHandler(InvalidDtoException.class)
+    @ExceptionHandler({InvalidDtoException.class, InvalidLocationInitFileCreatingDataException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleInvalidDtoException(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
@@ -65,12 +65,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
-    }
-
-    @ExceptionHandler(InvalidLocationInitFileCreatingDataException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleInvalidLocationInitFileCreatingDataException(Exception e, ServletWebRequest request) {
-        return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
