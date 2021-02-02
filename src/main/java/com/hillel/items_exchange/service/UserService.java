@@ -3,6 +3,7 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.Phone;
@@ -14,10 +15,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 import static com.hillel.items_exchange.mapper.UserMapper.convertDto;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
+import static com.hillel.items_exchange.model.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -33,6 +37,9 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 @RequiredArgsConstructor
 public class UserService {
 
+    public static final String PASSWORD_FOR_DELETED_USERS = "eyJ74zdW!Ii51$?)@OiDEyMz*Q1kBt";
+    public static final int NUMBER_OF_DAYS_TO_SAVE_DELETED_USERS = 7;
+    public static final String ONE_TIME_PER_DAY_AT_1AM = "0 0 1 * * * ";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
@@ -82,6 +89,31 @@ public class UserService {
         userRepository.saveAndFlush(user);
 
         return getMessageSource("email.changed");
+    }
+
+    public UserDto deleteUser(UserDeleteDto userDeleteDto, User user)
+            throws InvalidDtoException {
+        if (!isPasswordMatches(user, userDeleteDto.getOldPassword())) {
+            throw new InvalidDtoException(getExceptionMessageSource("not.your.password"));
+        }
+        user.setStatus(DELETED);
+        user.setPassword(bCryptPasswordEncoder.encode(PASSWORD_FOR_DELETED_USERS));
+
+        return mapUserToDto(userRepository.saveAndFlush(user));
+    }
+
+    @Scheduled(cron = ONE_TIME_PER_DAY_AT_1AM)
+    public void permanentlyDeleteUsers() {
+        userRepository.findAll().stream()
+                .filter(user -> user.getStatus().equals(DELETED) &&
+                        isDurationMoreThanNumberOfDaysToSaveDeletedUser(user.getLastOnlineTime()))
+                .forEach(userRepository::delete);
+    }
+
+    private boolean isDurationMoreThanNumberOfDaysToSaveDeletedUser(LocalDateTime localDateTime) {
+        Duration duration = Duration.between(localDateTime, LocalDateTime.now());
+
+        return duration.toDays() > NUMBER_OF_DAYS_TO_SAVE_DELETED_USERS;
     }
 
     public boolean existsByUsername(String username) {

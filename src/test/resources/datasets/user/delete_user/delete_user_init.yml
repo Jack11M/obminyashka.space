@@ -1,0 +1,17 @@
+
+user:
+  - id: 5
+    username: 'trump'
+    # Password encoded from string "123456xX"
+    password: '$2a$10$/7CCDppcfjSJ5oRoZlwpR.AHzy3ViyEczjtJO2bWgArBoe1YeqbTO'
+    email: 'trump@gmail.com'
+    online: 'false'
+    first_name: 'donald'
+    last_name: 'trump'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    role_id: 1

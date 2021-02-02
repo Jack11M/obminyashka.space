@@ -2,6 +2,11 @@ package com.hillel.items_exchange.util;
 
 import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.model.enums.Gender;
+import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.PhoneDto;
+import com.hillel.items_exchange.dto.UserDeleteDto;
+import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.model.Gender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -128,5 +133,25 @@ public class UserDtoCreatingUtil {
                 .newEmail(newEmail)
                 .newEmailConfirmation(newEmailConfirmation)
                 .build();
+    }
+
+    public static UserDeleteDto createUserDeleteDtoWithCorrectData() {
+        return createUserDeleteDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
+    }
+
+    public static UserDeleteDto createUserDeleteDtoWithWrongOldPasswordAndTheSameConfirmation() {
+        return createUserDeleteDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
+    }
+
+    public static UserDeleteDto createUserDeleteDtoWithCorrectOldPasswordAndWrongConfirmation() {
+        return createUserDeleteDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
+    }
+
+    public static UserDeleteDto createUserDeleteDtoWithWrongOldPasswordAndWrongConfirmation() {
+        return createUserDeleteDto(WRONG_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
+    }
+
+    private static UserDeleteDto createUserDeleteDto(String password, String confirmPassword) {
+        return new UserDeleteDto(password, confirmPassword);
     }
 }

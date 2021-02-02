@@ -104,6 +104,20 @@ public class UserController {
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
+    @PutMapping("/info/delete")
+    @ApiOperation(value = "Delete user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public UserDto deleteUser(@Valid @RequestBody UserDeleteDto userDeleteDto,
+                              Principal principal) throws InvalidDtoException {
+        User user = getUser(principal.getName());
+
+        return userService.deleteUser(userDeleteDto, user);
+    }
+
     @GetMapping("/child")
     @ApiOperation(value = "Find a registered requested user's children data")
     @ApiResponses(value = {
