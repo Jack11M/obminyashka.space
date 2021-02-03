@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({InvalidDtoException.class, InvalidLocationInitFileCreatingDataException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleInvalidDtoException(Exception e, ServletWebRequest request) {
+    public ErrorMessage handleBadRequestExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
