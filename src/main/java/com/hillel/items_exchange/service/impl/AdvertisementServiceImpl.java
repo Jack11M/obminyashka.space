@@ -69,11 +69,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementDto> findFirst10AdvertisementsByMultipleParams(AdvertisementFilterDto dto) {
+    public List<AdvertisementDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
         return mapAdvertisementsToDto(
-                advertisementRepository.findFirst10ByAgeOrGenderOrSizeOrSeasonOrSubcategoryId(
-                        dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(),
-                        dto.getSubcategoryId()));
+                advertisementRepository.findFirst10ByParams(
+                        dto.getAge(),
+                        dto.getGender(),
+                        dto.getSize(),
+                        dto.getSeason(),
+                        dto.getSubcategoryId(),
+                        dto.getCategoryId(),
+                        dto.getLocationId()));
     }
 
     @Override

@@ -52,7 +52,7 @@ public interface AdvertisementService {
      * @param dto an object that contains all parameters to search
      * @return result of the request
      */
-    List<AdvertisementDto> findFirst10AdvertisementsByMultipleParams(AdvertisementFilterDto dto);
+    List<AdvertisementDto> findFirst10ByFilter(AdvertisementFilterDto dto);
 
     /**
      * Check whenever user has an advertisement with selected id

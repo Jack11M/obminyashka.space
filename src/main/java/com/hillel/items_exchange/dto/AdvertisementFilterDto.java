@@ -5,7 +5,6 @@ import com.hillel.items_exchange.model.enums.Gender;
 import com.hillel.items_exchange.model.enums.Season;
 import lombok.*;
 
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @NoArgsConstructor
@@ -19,10 +18,7 @@ public class AdvertisementFilterDto {
     private Season season;
     @Size(max = 50, message = "{invalid.max-size}")
     private String size;
-    @PositiveOrZero(message = "{invalid.id}")
-    private long subcategoryId;
-    @PositiveOrZero(message = "{invalid.id}")
-    private long categoryId;
-    @PositiveOrZero(message = "{invalid.id}")
-    private long locationId;
+    private Long subcategoryId;
+    private Long categoryId;
+    private Long locationId;
 }

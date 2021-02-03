@@ -6,6 +6,8 @@ import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.enums.AgeRange;
+import com.hillel.items_exchange.model.enums.Gender;
+import com.hillel.items_exchange.model.enums.Season;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.JsonConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +96,9 @@ class AdvertisementFlowTest {
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
         AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
-                .age(AgeRange.OLDER_THAN_14)
+                .season(Season.SUMMER)
+                .gender(Gender.FEMALE)
+                .age(AgeRange.FROM_10_TO_12)
                 .build();
 
         MvcResult mvcResult = mockMvc.perform(post("/adv/filter")
@@ -108,8 +112,10 @@ class AdvertisementFlowTest {
         String contentAsString = mvcResult.getResponse().getContentAsString();
         AdvertisementDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString, AdvertisementDto[].class);
         assertEquals(1, advertisementDtos.length);
-        assertEquals(1, advertisementDtos[0].getId());
-        assertEquals(AgeRange.OLDER_THAN_14, advertisementDtos[0].getAge());
+        assertEquals(4, advertisementDtos[0].getId());
+        assertEquals(AgeRange.FROM_10_TO_12, advertisementDtos[0].getAge());
+        assertEquals(Gender.FEMALE, advertisementDtos[0].getGender());
+        assertEquals(Season.SUMMER, advertisementDtos[0].getSeason());
     }
 
     @Test
