@@ -1,12 +1,14 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import Form from "./Form.js";
+
+import Login from './Login';
+import SignUp from './SignUp';
 
 export default () => {
   return (
     <Switch>
-      <Route path="/registration/" exact component={Form} />
-      <Route path="/registration/register" component={Form} />
+      <Route path="/login/" exact component={Login} />
+      <Route path="/login/signup" component={SignUp} />
     </Switch>
   );
 };

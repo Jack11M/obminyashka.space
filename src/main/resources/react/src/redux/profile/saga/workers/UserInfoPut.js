@@ -11,7 +11,7 @@ export function* userInfoPut(action) {
 
 		const {data} = yield call(putUserInfoAsync, body);
 		console.log(data);
-		yield put(fillUserInfoSync(body));
+		yield put(fillUserInfoSync(data));
 	} catch (e) {
 		console.log(e.response.data);
 	}finally {

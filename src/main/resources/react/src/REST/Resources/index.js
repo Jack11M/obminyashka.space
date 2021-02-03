@@ -1,1 +1,1 @@
-export { getUserInfo, putUserInfo } from './fetchProfile';
+export { postAuthLogin, postAuthRegister, getUserInfo, putUserInfo } from './fetchProfile';

@@ -9,7 +9,6 @@ import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.security.jwt.InvalidatedTokensHolder;
 import com.hillel.items_exchange.util.AuthControllerIntegrationTestUtil;
 import com.jayway.jsonpath.JsonPath;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,13 +20,19 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Objects;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -54,6 +59,22 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessage() throws Exception {
+        UserRegistrationDto validUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
+        MvcResult result = mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(validUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print()).andReturn();
+
+        String seekingResponse = getExceptionParametrizedMessageSource("user.created", validUser.getUsername());
+        assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
     }
 
     @Test
@@ -92,6 +113,42 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenUsernameExists_shouldReturnSpecificErrorMessage()
+            throws Exception {
+
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
+        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(existEmailUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        assertTrue(result.getResponse().getContentAsString().contains(getExceptionMessageSource("username.duplicate")));
+    }
+
+    @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenEmailExists_shouldReturnSpecificErrorMessage()
+            throws Exception {
+
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
+        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(existEmailUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        assertTrue(result.getResponse().getContentAsString().contains(getExceptionMessageSource("email.duplicate")));
+    }
+
+    @Test
     @DataSet("database_init.yml")
     void register_whenDifferentConfirmPassword_shouldReturnBadRequestAndThrowBadRequestException() throws Exception {
         UserRegistrationDto invalidConfirmPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
@@ -108,6 +165,25 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenDifferentConfirmPassword_shouldReturnSpecificErrorMessage()
+            throws Exception {
+
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, INVALID_PASSWORD);
+        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(existEmailUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
+        assertEquals(getExceptionMessageSource("different.passwords"), receivedMessage);
+    }
+
+    @Test
     void register_whenPasswordInvalid_shouldReturnBadRequest() throws Exception {
         UserRegistrationDto invalidPasswordUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
                 INVALID_PASSWORD, INVALID_PASSWORD);
@@ -120,6 +196,25 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenPasswordInvalid_shouldReturnSpecificErrorMessage()
+            throws Exception {
+
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
+                INVALID_PASSWORD, INVALID_PASSWORD);
+        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(existEmailUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
+        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.password")));
+    }
+
+    @Test
     void register_whenEmailInvalid_shouldReturnBadRequest() throws Exception {
         UserRegistrationDto invalidEmailUser = createUserRegistrationDto(VALID_USERNAME, INVALID_EMAIL,
                 VALID_PASSWORD, VALID_PASSWORD);
@@ -129,6 +224,25 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenEmailInvalid_shouldReturnSpecificErrorMessage()
+            throws Exception {
+
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(VALID_USERNAME, INVALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
+        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(existEmailUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
+        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.email")));
     }
 
     @Test
@@ -145,6 +259,25 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
+    @Transactional
+    @DataSet("database_init.yml")
+    void register_whenUsernameInvalid_shouldReturnSpecificErrorMessage()
+            throws Exception {
+
+        UserRegistrationDto existEmailUser = createUserRegistrationDto(INVALID_USERNAME, VALID_EMAIL,
+                VALID_PASSWORD, VALID_PASSWORD);
+        MvcResult result = this.mockMvc.perform(post(REGISTER_URL)
+                .content(asJsonString(existEmailUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andReturn();
+
+        String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
+        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.username")));
+    }
+
+    @Test
     @DataSet(value = "auth/login.yml")
     void login_Success_shouldReturnHttpOk() throws Exception {
         final String loginDto = asJsonString(UserLoginDto.builder()
@@ -156,7 +289,10 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("{'firstname':'firstname'}"))
+                .andExpect(content().json("{'lastname':'lastname'}"))
+                .andExpect(content().json("{'avatarImage':'dGVzdCBpbWFnZSBwbmc='}"));
     }
 
     @Test
@@ -180,7 +316,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print());
-        Assert.assertTrue(invalidatedTokensHolder.isInvalidated(token));
+        assertTrue(invalidatedTokensHolder.isInvalidated(token));
     }
 
     @Test

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { chooseLanguage } from '../../redux/localisation/action';
+import styled from 'styled-components';
+import { chooseLanguage, clearValueLogin, clearValueSignUp } from '../../redux/auth/action';
 
 const SelectLanguage = styled.div`
   width: 29px;
@@ -62,20 +62,19 @@ const DivOption = styled.div`
 `;
 
 const languageArray = [
-	{ value: 'ru', checked: false},
+	{ value: 'ru', checked: false },
 	{ value: 'ua', checked: false },
 	{ value: 'en', checked: false }
 ];
 
 const CustomSelect = () => {
-
 	const dispatch = useDispatch();
-	const language = useSelector(state => state.lang);
+	const { lang: language } = useSelector( state => state.auth );
 	const catchRef = useRef();
 
 	const selectedOption = languageArray.map( lang => lang.value === language ? { ...lang, checked: true } : { ...lang, checked: false } );
 
-	const pickLanguage = selectedOption.find( option => option.checked )
+	const pickLanguage = selectedOption.find( option => option.checked );
 	const [ open, setOpen ] = useState( false );
 
 
@@ -95,15 +94,17 @@ const CustomSelect = () => {
 	};
 
 	const handleSelected = ( lang ) => {
-		dispatch(chooseLanguage(lang))
-		};
+		dispatch( clearValueSignUp() );
+		dispatch( clearValueLogin() );
+		dispatch( chooseLanguage( lang ) );
+	};
 
 	return (
-		<SelectLanguage ref={ catchRef } onClick={ handleOpen } >
+		<SelectLanguage ref={ catchRef } onClick={ handleOpen }>
 			<LanguageLabel>{ pickLanguage.value }</LanguageLabel>
 			{ open && <DropDownMenu>
 				{ selectedOption.map( option => <DivOption key={ option.value } onClick={ () => handleSelected( option.value ) }
-					checked={ option.checked }>{ option.value}</DivOption> ) }
+					checked={ option.checked }>{ option.value }</DivOption> ) }
 			</DropDownMenu> }
 		</SelectLanguage>
 	);

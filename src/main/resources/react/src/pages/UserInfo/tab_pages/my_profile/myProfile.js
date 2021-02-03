@@ -120,10 +120,11 @@ const MyProfile = () => {
 									click={ ( e ) => addInputPhone( e, phone.id ) }
 								/>
 								<CheckBox
+									text={'Разрешаю отображать на сайте'}
 									margin={ '-10px 0 18px 134px' }
 									checked={ phone.show }
 									click={ () => showPhone( phone.show, phone.id ) }
-									distanceBetween
+									distanceBetween={'9px'}
 								/>
 							</div>
 						);

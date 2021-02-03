@@ -1,8 +1,17 @@
 import { axiosInstance } from '../Service/networkProvider';
 
-export const getUserInfo = () => {
-	return axiosInstance('get', 'user', {categories: 'my-info'});
+export const postAuthLogin = ( data ) => {
+	return axiosInstance( 'post', 'auth/login', data );
 };
-export const putUserInfo = (body) => {
-	return axiosInstance('put', 'user', {categories: 'info', body});
+
+export const postAuthRegister = ( data ) => {
+	return axiosInstance( 'post', 'auth/register', data );
+};
+
+export const getUserInfo = () => {
+	return axiosInstance( 'get', 'user/my-info', {} );
+};
+
+export const putUserInfo = ( data ) => {
+	return axiosInstance( 'put', 'user/info', data );
 };

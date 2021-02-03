@@ -1,6 +1,6 @@
 import React from "react";
-import ErrorPage from "../../pages/ErrorPages/ErrorPage";
 import { withRouter } from "react-router-dom";
+import SomethingBad from '../../pages/ErrorPages/SomethingBad';
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false };
@@ -11,18 +11,14 @@ class ErrorBoundary extends React.Component {
     this.setState({ hasError: true });
   }
 
-  goTo = event => {
-    this.setState({ hasError: false });
-    if (event.target.className === "onMain") {
-      this.props.history.push("/");
-    } else {
-      this.props.history.push(this.props.location.pathname);
-    }
+
+  deactivateError = (value) => {
+    this.setState({ hasError: value });
   };
 
   render() {
     if (this.state.hasError) {
-      return <ErrorPage goTo={this.goTo} />;
+      return <SomethingBad deactivateError={this.deactivateError} />;
     }
     return this.props.children;
   }

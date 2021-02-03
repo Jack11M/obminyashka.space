@@ -31,11 +31,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
+import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
 @Slf4j
 @RestController
@@ -47,6 +47,9 @@ public class AuthController {
 
     private static final String ROLE_USER = "ROLE_USER";
     private static final String USERNAME = "username";
+    private static final String FIRSTNAME = "firstname";
+    private static final String LASTNAME = "lastname";
+    private static final String AVATARIMAGE = "avatarImage";
     private static final String TOKEN = "token";
 
     private final UserRegistrationDtoValidator userRegistrationDtoValidator;
@@ -77,9 +80,15 @@ public class AuthController {
             User user = userService.findByUsernameOrEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException(
                             getExceptionMessageSourceWithAdditionalInfo("user.not-found", username)));
+            String userFirstName = user.getFirstName();
+            String userLastName = user.getLastName();
+            String avatarImage = Base64.getEncoder().encodeToString(user.getAvatarImage());
             String token = jwtTokenProvider.createToken(username, user.getRole());
             Map<String, String> response = new HashMap<>();
             response.put(USERNAME, username);
+            response.put(FIRSTNAME, userFirstName);
+            response.put(LASTNAME, userLastName);
+            response.put(AVATARIMAGE, avatarImage);
             response.put(TOKEN, token);
 
             return ResponseEntity.ok(response);
@@ -103,7 +112,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
     })
-    public ResponseEntity<HttpStatus> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
+    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
                                                    BindingResult bindingResult)
             throws BadRequestException, RoleNotFoundException {
 
@@ -112,7 +121,8 @@ public class AuthController {
         Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);
         if (userService.registerNewUser(userRegistrationDto, role)) {
             log.info("User with email: {} successfully registered", userRegistrationDto.getEmail());
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(getExceptionParametrizedMessageSource(
+                    "user.created", userRegistrationDto.getUsername()), HttpStatus.CREATED);
         }
 
         throw new BadRequestException(getExceptionMessageSource("user.not-registered"));

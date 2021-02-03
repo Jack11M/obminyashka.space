@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.persistence.EntityNotFoundException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -68,7 +69,9 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
-
+        if (e instanceof UndeclaredThrowableException) {
+            e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
+        }
         ErrorMessage errorMessage = new ErrorMessage(dateFormat.format(LocalDateTime.now()),
                 e.getLocalizedMessage(),
                 request.getRequest().getRequestURI(),
