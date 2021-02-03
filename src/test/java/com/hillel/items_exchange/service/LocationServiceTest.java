@@ -2,16 +2,20 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.LocationRepository;
 import com.hillel.items_exchange.dto.LocationDto;
+import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import com.hillel.items_exchange.model.Location;
 import com.hillel.items_exchange.model.enums.I18n;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +36,11 @@ class LocationServiceTest {
     private LocationService locationService;
     private Location location;
     private LocationDto locationDto;
+
+    @Value("${test.data.location.init.file.path}")
+    private String pathToFileParseLocationsFrom;
+    @Value("${location.init.file.path}")
+    private String pathToCreateLocationsInitFile;
 
     @Captor
     private ArgumentCaptor<Location> locationCaptor;
@@ -144,5 +153,33 @@ class LocationServiceTest {
                 () -> assertEquals(locationCaptor.getValue().getId(), updatedLocationDto.getId()),
                 () -> assertEquals(locationCaptor.getValue().getCity(), updatedLocationDto.getCity()),
                 () -> assertEquals(locationCaptor.getValue().getDistrict(), updatedLocationDto.getDistrict()));
+    }
+
+    @Test
+    void createFileToInitLocations_shouldReturnProperData()
+            throws IOException, InvalidLocationInitFileCreatingDataException {
+        String locationsString = Files.readString(Path.of(pathToFileParseLocationsFrom));
+        String createdFileContent = locationService.createParsedLocationsFile(locationsString);
+        String[] parsedLocationsQuantity = createdFileContent.split("\\), \\(");
+        int lastId = Integer.parseInt(parsedLocationsQuantity[parsedLocationsQuantity.length - 1].substring(1, 5));
+        int locationsInThreeLanguages = locationsString.split("\\},\\{").length;
+        assertEquals(locationsInThreeLanguages * 3, lastId);
+    }
+
+    @Test
+    void createFileToInitLocations_shouldCreateNotEmptyFileToInitLocationsInDB()
+            throws IOException, InvalidLocationInitFileCreatingDataException {
+        locationService.createParsedLocationsFile(Files.readString(Path.of(pathToFileParseLocationsFrom)));
+        assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
+    }
+
+    @Test
+    void isLocationDataValid_whenDataIsValid_shouldReturnTrue() throws IOException {
+        assertTrue(locationService.isLocationDataValid(Files.readString(Path.of(pathToFileParseLocationsFrom))));
+    }
+
+    @Test
+    void isLocationDataValid_whenDataIsNotValid_shouldReturnFalse() {
+        assertFalse(locationService.isLocationDataValid("INVALID DATA"));
     }
 }

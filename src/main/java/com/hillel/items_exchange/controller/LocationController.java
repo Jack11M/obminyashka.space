@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.LocationDto;
+import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.service.LocationService;
 import io.swagger.annotations.Api;
@@ -17,13 +18,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
+import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
 @RequestMapping("/location")
@@ -104,5 +106,25 @@ public class LocationController {
                     getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", strIds));
         }
         locationService.removeById(locationIds);
+    }
+
+    @PreAuthorize(HAS_ROLE_ADMIN)
+    @PostMapping("/locations-init")
+    @ApiOperation(value = "Setting up locations from request", notes = "ADMIN ONLY")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> createLocationsInitFile(@RequestParam("data") @NotEmpty String rawData) throws InvalidLocationInitFileCreatingDataException {
+        if (!locationService.isLocationDataValid(rawData)) {
+            throw new InvalidLocationInitFileCreatingDataException(
+                    getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+        }
+        try {
+            return new ResponseEntity<>(locationService.createParsedLocationsFile(rawData), HttpStatus.OK);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

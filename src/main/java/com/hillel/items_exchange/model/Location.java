@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Location {
     private String district;
     private String city;
 
+    @JsonAlias("lang")
     @Enumerated(EnumType.STRING)
     private I18n i18n;
 
