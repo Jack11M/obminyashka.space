@@ -21,8 +21,8 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 
 import static com.hillel.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
 @RequestMapping("/category")
@@ -83,7 +83,7 @@ public class CategoryController {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
-        throw new InvalidDtoException(getExceptionMessageSource("invalid.new-category-dto"));
+        throw new InvalidDtoException(getMessageSource("invalid.new-category-dto"));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -99,7 +99,7 @@ public class CategoryController {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
-        throw new IllegalIdentifierException(getExceptionMessageSource("invalid.updated-category.dto"));
+        throw new IllegalIdentifierException(getMessageSource("invalid.updated-category.dto"));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)

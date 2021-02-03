@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
 @RequestMapping("/image")
@@ -125,7 +125,7 @@ public class ImageController {
             throws IllegalOperationException {
 
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
-            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
         imageService.removeById(imageIdList);
     }

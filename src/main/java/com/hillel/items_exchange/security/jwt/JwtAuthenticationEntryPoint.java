@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -23,6 +23,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                 Objects.requireNonNullElseGet(detailedError, () ->
-                        getExceptionMessageSource("invalid.token")));
+                        getMessageSource("invalid.token")));
     }
 }

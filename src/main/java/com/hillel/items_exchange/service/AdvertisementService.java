@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -124,11 +124,11 @@ public class AdvertisementService {
         final Advertisement advertisement = owner.getAdvertisements().parallelStream()
                 .filter(adv -> adv.getId() == advertisementId)
                 .findFirst()
-                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+                .orElseThrow(() -> new ClassNotFoundException(getMessageSource("exception.illegal.id")));
         final Image image = advertisement.getProduct().getImages().parallelStream()
                 .filter(img -> img.getId() == imageId)
                 .findFirst()
-                .orElseThrow(() -> new ClassNotFoundException(getExceptionMessageSource("exception.illegal.id")));
+                .orElseThrow(() -> new ClassNotFoundException(getMessageSource("exception.illegal.id")));
         advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
         image.setDefaultPhoto(true);
         advertisementRepository.saveAndFlush(advertisement);

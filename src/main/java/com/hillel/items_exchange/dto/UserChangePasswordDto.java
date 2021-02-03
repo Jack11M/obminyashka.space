@@ -3,18 +3,19 @@ package com.hillel.items_exchange.dto;
 import com.hillel.items_exchange.annotation.FieldMatch;
 import com.hillel.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Data
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldMatch(first = "newPassword", second = "confirmNewPassword",
-        message = "{invalid.confirm.password}")
+@FieldMatch(first = "newPassword", second = "confirmNewPassword", message = "{different.passwords}")
 public class UserChangePasswordDto {
 
     @NotEmpty(message = "{empty.password}")

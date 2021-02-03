@@ -182,7 +182,7 @@ public class AdvertisementController {
     private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws IllegalOperationException {
 
         if (!advertisementService.isAdvertisementExists(dto.getId(), owner)) {
-            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
     }
 
@@ -215,7 +215,7 @@ public class AdvertisementController {
 
         boolean isAllIdsEqualZero = imagesIds.stream().allMatch(imageId -> imageId == 0);
         if (!isAllIdsEqualZero) {
-            throw new IllegalIdentifierException(MessageSourceUtil.getExceptionMessageSource("new.image.id.not-zero"));
+            throw new IllegalIdentifierException(MessageSourceUtil.getMessageSource("new.image.id.not-zero"));
         }
     }
 

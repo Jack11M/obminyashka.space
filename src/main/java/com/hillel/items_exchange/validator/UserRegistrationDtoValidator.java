@@ -13,7 +13,7 @@ import org.springframework.validation.Validator;
 
 import java.util.Objects;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Component
 @RequiredArgsConstructor
@@ -32,15 +32,15 @@ public class UserRegistrationDtoValidator implements Validator {
         UserRegistrationDto userRegistrationDto = (UserRegistrationDto) o;
 
         if (userService.existsByUsername(userRegistrationDto.getUsername())) {
-            throw new UnprocessableEntityException(getExceptionMessageSource("username.duplicate"));
+            throw new UnprocessableEntityException(getMessageSource("username.duplicate"));
         }
 
         if (userService.existsByEmail(userRegistrationDto.getEmail())) {
-            throw new UnprocessableEntityException(getExceptionMessageSource("email.duplicate"));
+            throw new UnprocessableEntityException(getMessageSource("email.duplicate"));
         }
 
         if (!Objects.equals(userRegistrationDto.getConfirmPassword(), userRegistrationDto.getPassword())) {
-            throw new BadRequestException(getExceptionMessageSource("different.passwords"));
+            throw new BadRequestException(getMessageSource("different.passwords"));
         }
 
         final FieldError emailError = errors.getFieldError("email");

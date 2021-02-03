@@ -69,32 +69,36 @@ public class UserController {
             throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
         if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
-            throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
+            throw new InvalidDtoException(getMessageSource("email.duplicate"));
         }
         return userService.update(userDto, user);
     }
 
-    @PutMapping("/info/change-password")
+    @PutMapping("/service/pass")
     @ApiOperation(value = "Update a user password")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST")})
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                      Principal principal) throws InvalidDtoException {
+    public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
+                                     Principal principal) throws InvalidDtoException {
         User user = getUser(principal.getName());
+        if (!userService.isPasswordMatches(user, userChangePasswordDto.getPassword())) {
+            throw new InvalidDtoException(getMessageSource("incorrect.password"));
+        }
 
         return userService.updateUserPassword(userChangePasswordDto, user);
     }
 
-    @PutMapping("/info/change-email")
+    @PutMapping("/service/email")
     @ApiOperation(value = "Update a user email")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST")})
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto,
-                                   Principal principal) {
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal) {
         User user = getUser(principal.getName());
 
         return userService.updateUserEmail(userChangeEmailDto, user);
@@ -142,7 +146,7 @@ public class UserController {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
-                    getExceptionMessageSource("exception.invalid.dto"));
+                    getMessageSource("exception.invalid.dto"));
         }
         userService.removeChildren(user, childrenIdToRemove);
     }
@@ -172,6 +176,6 @@ public class UserController {
 
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
-                getExceptionMessageSource("exception.user.not-found")));
+                getMessageSource("exception.user.not-found")));
     }
 }

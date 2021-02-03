@@ -27,7 +27,7 @@ public class UserDtoCreatingUtil {
     public static final String NEW_INVALID_SHORT_NAME = "n";
     public static final String NEW_INVALID_TWO_WORDS_NAME = "new Name";
     public static final byte[] BLANK_AVATAR_IMAGE = "test image png".getBytes();
-    public static final String CORRECT_OLD_PASSWORD = "123456xX";
+    public static final String CORRECT_OLD_PASSWORD = "@kuIOIY*h986";
     public static final String WRONG_OLD_PASSWORD = "123456wWWW";
     public static final String NEW_PASSWORD = "123456wW";
     public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
@@ -145,14 +145,19 @@ public class UserDtoCreatingUtil {
         return createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
     }
 
-    private static UserChangePasswordDto createUserChangePasswordDto(String password,
-                                                                     String newPassword,
-                                                                     String confirmNewPassword) {
-        return new UserChangePasswordDto(password, newPassword, confirmNewPassword);
+    public static UserChangePasswordDto createUserChangePasswordDto(String password, String newPassword,
+                                                                    String confirmNewPassword) {
+        return UserChangePasswordDto.builder()
+                .password(password)
+                .newPassword(newPassword)
+                .confirmNewPassword(confirmNewPassword)
+                .build();
     }
 
-    private static UserChangeEmailDto createUserChangeEmailDto(String newEmail,
-                                                               String newEmailConfirmation) {
-        return new UserChangeEmailDto(newEmail, newEmailConfirmation);
+    public static UserChangeEmailDto createUserChangeEmailDto(String newEmail, String newEmailConfirmation) {
+        return UserChangeEmailDto.builder()
+                .newEmail(newEmail)
+                .newEmailConfirmation(newEmailConfirmation)
+                .build();
     }
 }
