@@ -3,11 +3,13 @@ package com.hillel.items_exchange.service.impl;
 import com.hillel.items_exchange.dao.ImageRepository;
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
-import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.SupportedMediaTypes;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 import static java.awt.Image.SCALE_REPLICATE;
 import static java.awt.Image.SCALE_SMOOTH;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
@@ -49,15 +52,15 @@ public class ImageServiceImpl implements ImageService {
     private int thumbnailEdge;
 
     @Override
-    public List<byte[]> getImagesResourceByProductId(long productId) {
-        return imageRepository.findByProductId(productId).stream()
+    public List<byte[]> getImagesResourceByAdvertisementId(long advertisementId) {
+        return imageRepository.findByAdvertisementId(advertisementId).stream()
                 .map(Image::getResource)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ImageDto> getByProductId(long productId) {
-        return mapImagesToDto(imageRepository.findByProductId(productId));
+    public List<ImageDto> getByAdvertisementId(long advertisementId) {
+        return mapImagesToDto(imageRepository.findByAdvertisementId(advertisementId));
     }
 
     private List<ImageDto> mapImagesToDto(Iterable<Image> images) {
@@ -107,21 +110,21 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveToProduct(Product product, List<byte[]> images) {
+    public void saveToAdvertisement(Advertisement advertisement, List<byte[]> images) {
         List<Image> imagesToSave = images.stream()
-                .map(populateNewImage(product))
+                .map(populateNewImage(advertisement))
                 .collect(Collectors.toList());
         imageRepository.saveAll(imagesToSave);
     }
 
     @Override
-    public void saveToProduct(Product product, byte[] image) {
-        Image toSave = populateNewImage(product).apply(image);
+    public void saveToAdvertisement(Advertisement advertisement, byte[] image) {
+        Image toSave = populateNewImage(advertisement).apply(image);
         imageRepository.save(toSave);
     }
 
-    private Function<byte[], Image> populateNewImage(Product ownerProduct) {
-        return bytes -> new Image(0, bytes, false, ownerProduct);
+    private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
+        return bytes -> new Image(0, bytes, ownerAdvertisement);
     }
 
     @Override
@@ -149,17 +152,22 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public byte[] scale(byte[] bytes) throws IOException {
+    public byte[] scale(byte[] bytes) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
             BufferedImage originImage = ImageIO.read(bais);
-            Dimension newSize = calculatePreferThumbnailSize(
-                    new Dimension(originImage.getWidth(), originImage.getHeight()));
-            BufferedImage scaledImage = getScaled(newSize, originImage);
-            String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
-            ImageIO.write(scaledImage, type, baos);
+            if (originImage != null) {
+                Dimension newSize = calculatePreferThumbnailSize(
+                        new Dimension(originImage.getWidth(), originImage.getHeight()));
+                BufferedImage scaledImage = getScaled(newSize, originImage);
+                String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
+                ImageIO.write(scaledImage, type, baos);
+            }
             return baos.toByteArray();
+        } catch (IOException e) {
+            log.error("An error occurred while scale an image", e);
+            return bytes;
         }
     }
 

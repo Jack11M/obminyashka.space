@@ -1,3 +1,3 @@
 INSERT INTO `evo_exchange`.`category` (`id`, `name`)
-VALUES ('1', 'Одежда'), ('2', 'Обувь'), ('3', 'Игрушки'), ('4', 'Детская мебель'), ('5', 'Транспорт для детей'),
-('6', 'Малыши до года'), ('7', 'Книги'), ('8', 'Другое');
+VALUES ('1', 'Clothing'), ('2', 'Shoes'), ('3', 'Toys'), ('4', 'Children`S Furniture'), ('5', 'Vehicles For Children'),
+('6', 'Kids Until Year'), ('7', 'Books'), ('8', 'Other');

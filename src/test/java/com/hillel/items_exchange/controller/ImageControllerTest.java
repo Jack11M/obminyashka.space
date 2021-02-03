@@ -2,10 +2,10 @@ package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
-import com.hillel.items_exchange.model.Product;
+import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.ImageService;
-import com.hillel.items_exchange.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -43,11 +43,11 @@ class ImageControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private ProductService productService;
+    private AdvertisementService advertisementService;
     @MockBean
     private ImageService imageService;
     @Mock
-    private Product product;
+    private Advertisement advertisement;
     @Captor
     private ArgumentCaptor<List<byte[]>> listArgumentCaptor;
     private ArrayList<Image> testImages;
@@ -60,24 +60,24 @@ class ImageControllerTest {
     }
 
     private void mocksInit() throws IOException, UnsupportedMediaTypeException {
-        when(productService.findById(1L)).thenReturn(Optional.of(product));
+        when(advertisementService.findById(1L)).thenReturn(Optional.of(advertisement));
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
-        when(product.getImages()).thenReturn(testImages);
+        when(advertisement.getImages()).thenReturn(testImages);
         when(imageService.compress(List.of(jpeg))).thenReturn(List.of(jpeg.getBytes()));
     }
 
     @WithMockUser("admin")
     @Test
     void saveImages_shouldThrowExceptionWhenTotalAmountMoreThan10() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(multipart("/image/{product_id}", 1L)
+        MvcResult mvcResult = mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
                 .file(jpeg)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
 
-        verify(productService).findById(anyLong());
+        verify(advertisementService).findById(anyLong());
         assertThat(mvcResult.getResolvedException(), is(instanceOf(ElementsNumberExceedException.class)));
     }
 
@@ -86,21 +86,21 @@ class ImageControllerTest {
     void saveImages_shouldSaveImagesWhenTotalAmountLessThan10() throws Exception {
         testImages.remove(0);
 
-        mockMvc.perform(multipart("/image/{product_id}", 1L)
+        mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
                 .file(jpeg)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
         verify(imageService).compress(anyList());
-        verify(imageService).saveToProduct(any(), listArgumentCaptor.capture());
+        verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
         assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0));
     }
 
     @WithMockUser("admin")
     @Test
-    void saveImages_shouldReturn400WhenProductIsNotExist() throws Exception {
-        mockMvc.perform(multipart("/image/{product_id}", 50L)
+    void saveImages_shouldReturn400WhenAdvertisementIsNotExist() throws Exception {
+        mockMvc.perform(multipart("/image/{advertisement_id}", 50L)
                 .file(jpeg))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
