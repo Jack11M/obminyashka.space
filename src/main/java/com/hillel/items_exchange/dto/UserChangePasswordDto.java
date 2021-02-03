@@ -21,7 +21,7 @@ public class UserChangePasswordDto {
     @NotEmpty(message = "{empty.password}")
     @Size(min = 8, max = 30, message = "{invalid.password.size}")
     @Pattern(regexp = PatternHandler.PASSWORD, message = "{invalid.password}")
-    private String password;
+    private String oldPassword;
 
     @NotEmpty(message = "{empty.password}")
     @Size(min = 8, max = 30, message = "{invalid.password.size}")

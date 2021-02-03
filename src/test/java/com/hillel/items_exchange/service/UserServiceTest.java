@@ -39,7 +39,7 @@ class UserServiceTest {
     @Test
     void testUpdateUserPassword_WhenDataCorrect_Successfully() {
         UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder()
-                .password(CORRECT_OLD_PASSWORD)
+                .oldPassword(CORRECT_OLD_PASSWORD)
                 .newPassword(NEW_PASSWORD)
                 .confirmNewPassword(NEW_PASSWORD)
                 .build();

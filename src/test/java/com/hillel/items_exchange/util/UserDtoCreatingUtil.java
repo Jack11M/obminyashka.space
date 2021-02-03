@@ -148,7 +148,7 @@ public class UserDtoCreatingUtil {
     public static UserChangePasswordDto createUserChangePasswordDto(String password, String newPassword,
                                                                     String confirmNewPassword) {
         return UserChangePasswordDto.builder()
-                .password(password)
+                .oldPassword(password)
                 .newPassword(newPassword)
                 .confirmNewPassword(confirmNewPassword)
                 .build();

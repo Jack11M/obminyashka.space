@@ -84,7 +84,7 @@ public class UserController {
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
                                      Principal principal) throws InvalidDtoException {
         User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, userChangePasswordDto.getPassword())) {
+        if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
             throw new InvalidDtoException(getMessageSource("incorrect.password"));
         }
 
