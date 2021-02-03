@@ -72,8 +72,8 @@ class GlobalExceptionHandlerTest {
     @WithMockUser(username = "user")
     @DataSet("database_init.yml")
     void testHandleSecurityException() throws Exception {
-        MvcResult result = getResult(HttpMethod.PUT, "/adv", existDto, status().isConflict());
-        assertThat(result.getResolvedException(), is(instanceOf(DataConflictException.class)));
+        MvcResult result = getResult(HttpMethod.PUT, "/adv", existDto, status().isForbidden());
+        assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
     }
 
     @Test
