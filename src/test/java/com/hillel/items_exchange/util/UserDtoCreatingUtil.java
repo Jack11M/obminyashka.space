@@ -1,10 +1,7 @@
 package com.hillel.items_exchange.util;
 
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.PhoneDto;
-import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.model.enums.Gender;
 import com.hillel.items_exchange.dto.*;
+import com.hillel.items_exchange.model.enums.Gender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -115,37 +112,6 @@ public class UserDtoCreatingUtil {
                 .children(children)
                 .phones(phones)
                 .build();
-    }
-
-    public static UserChangePasswordDto createUserChangePasswordDtoWithCorrectData() {
-
-        return createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
-                NEW_PASSWORD,
-                NEW_PASSWORD);
-    }
-
-    public static UserChangePasswordDto createUserChangePasswordDtoWithWrongOldPassword() {
-
-        return createUserChangePasswordDto(WRONG_OLD_PASSWORD,
-                NEW_PASSWORD,
-                NEW_PASSWORD);
-    }
-
-    public static UserChangePasswordDto createUserChangePasswordDtoWithWrongPasswordConfirmation() {
-
-        return createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
-                NEW_PASSWORD,
-                WRONG_NEW_PASSWORD_CONFIRMATION);
-    }
-
-    public static UserChangeEmailDto createUserChangeEmailDtoWithCorrectData() {
-
-        return createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
-    }
-
-    public static UserChangeEmailDto createUserChangeEmailDtoWithWrongEmailConfirmation() {
-
-        return createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
     }
 
     public static UserChangePasswordDto createUserChangePasswordDto(String password, String newPassword,

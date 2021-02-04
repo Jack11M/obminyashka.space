@@ -189,7 +189,7 @@ public class AdvertisementController {
             Principal principal) throws BadRequestException {
         User owner = getUser(principal.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
-            throw new BadRequestException(getExceptionMessageSource("exception.advertisement-image.id.not-found"));
+            throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
         }
         owner.getAdvertisements().parallelStream()
                 .filter(advertisement -> advertisement.getId() == advertisementId)
