@@ -3,7 +3,6 @@ advertisement:
     topic: 'topic'
     description: 'description'
     deal_type: 'EXCHANGE'
-    is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
     created: '2019-01-01 00:00:01'
@@ -11,12 +10,16 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    product_id: 1
+    age: 'OLDER_THAN_14'
+    gender: 'MALE'
+    size: '40'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
   - id: 2
     topic: 'Blouses'
     description: 'Blouses description'
     deal_type: 'EXCHANGE'
-    is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
     created: '2019-01-01 00:00:01'
@@ -24,12 +27,16 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    product_id: 2
+    age: 'FROM_3_TO_5'
+    gender: 'FEMALE'
+    size: '28'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
   - id: 3
     topic: 'Dresses'
     description: 'Dresses description'
     deal_type: 'EXCHANGE'
-    is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
     created: '2019-01-01 00:00:01'
@@ -37,12 +44,16 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    product_id: 3
+    age: 'FROM_6_TO_9'
+    gender: 'FEMALE'
+    size: '40'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
   - id: 4
     topic: 'Skirts'
     description: 'Skirts description'
     deal_type: 'EXCHANGE'
-    is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
     created: '2019-01-01 00:00:01'
@@ -50,12 +61,16 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    product_id: 4
+    age: 'FROM_10_TO_12'
+    gender: 'FEMALE'
+    size: 'M'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
   - id: 5
     topic: 'Pajamas'
     description: 'Pajamas description'
     deal_type: 'EXCHANGE'
-    is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
     created: '2019-01-01 00:00:01'
@@ -63,7 +78,12 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    product_id: 5
+    age: 'FROM_12_TO_14'
+    gender: 'UNSELECTED'
+    size: 'XS'
+    season: 'WINTER'
+    subcategory_id: 1
+    default_photo: null
 
 user:
   - id: 1
@@ -114,52 +134,20 @@ child:
 
 location:
   - id: 1
+    area: 'Kharkivska'
     city: 'Kharkiv'
     district: 'Kharkivska district'
-
-product:
-  - id: 1
-    age: '16'
-    gender: 'male'
-    size: '40'
-    season: 'spring'
-    subcategory_id: 1
-  - id: 2
-    age: '4'
-    gender: 'female'
-    size: '28'
-    season: 'summer'
-    subcategory_id: 1
-  - id: 3
-    age: '8'
-    gender: 'female'
-    size: '40'
-    season: 'summer'
-    subcategory_id: 1
-  - id: 4
-    age: '11'
-    gender: 'female'
-    size: 'M'
-    season: 'spring'
-    subcategory_id: 1
-  - id: 5
-    age: '13'
-    gender: 'unisex'
-    size: 'XS'
-    season: 'winter'
-    subcategory_id: 1
+    i18n: "EN"
 
 image:
   - id: 1
     # Encoded to byte array with Base64.encodeString("test image jpeg")
     resource: "dGVzdCBpbWFnZSBqcGVn="
-    default_photo: 'false'
-    product_id: 1
+    advertisement_id: 1
   - id: 2
     # Encoded to byte array with Base64.encodeString("test image png")
     resource: "dGVzdCBpbWFnZSBwbmc="
-    default_photo: 'true'
-    product_id: 1
+    advertisement_id: 1
 
 category:
   - id: 1

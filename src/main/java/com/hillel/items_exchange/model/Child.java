@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+import com.hillel.items_exchange.model.enums.Gender;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

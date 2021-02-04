@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Button from '../../components/button/Button';
 import { getTranslatedText } from '../../components/local/localisation';
-import { fourOhFour, greenDots, loop, orangeDots, shadow, shadowDark } from '../../img/all_images_export/errorPage';
+import { somethingBad, greenDots, loop, orangeDots } from '../../img/all_images_export/errorPage';
 
-import './errorPage.scss';
+import './somethingBad.scss';
 
 const SomethingBad = ({deactivateError}) => {
 	const { lang } =useSelector(state => state.auth)
@@ -23,20 +23,8 @@ const SomethingBad = ({deactivateError}) => {
 	return (
 		<div className={ 'error-page' }>
 			<div className={ 'blockCenterImage' }>
-				<div className={ 'blockCenterImage-fourOhfour' }>
-					<img src={ fourOhFour } alt={ '404' }/>
-				</div>
-				<div className={ 'blockCenterImage-shadow' }>
-					<img
-						className={ 'blockCenterImage-shadow_light' }
-						src={ shadow }
-						alt={ 'shadow' }
-					/>
-					<img
-						className={ 'blockCenterImage-shadow_dark' }
-						src={ shadowDark }
-						alt={ 'shadow dark' }
-					/>
+				<div className={ 'blockCenterImage-somethingBad' }>
+					<img src={ somethingBad } alt={ 'somethingBad' }/>
 				</div>
 			</div>
 			<div className={ 'blockOrangeImage' }>
@@ -48,7 +36,7 @@ const SomethingBad = ({deactivateError}) => {
 			<div className={ 'blockRightImage' }>
 				<img src={ loop } alt={ 'loop' }/>
 			</div>
-			<h2>{ getTranslatedText('fourOhFour.noPage', lang) }</h2>
+			<h2>{ getTranslatedText('somethingBad.error', lang) }</h2>
 			<div className={ 'blockButtons' }>
 				<Button whatClass={ 'onMain' } text={ getTranslatedText('fourOhFour.mainPage', lang) } click={ goTo }/>
 				<Button whatClass={ 'back' } text={ getTranslatedText('fourOhFour.backPage', lang) } click={ goTo }/>

@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="1.0.0" author="jack.petrov">
+    <changeSet id="1.0.0: Create table 'user'" author="jack.petrov">
         <createTable tableName="user">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -58,29 +58,27 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.1" author="jack.petrov">
+    <changeSet id="1.0.1: Create table 'role'" author="jack.petrov">
         <createTable tableName="role">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
             <column name="name" type="VARCHAR(30)">
-                <constraints nullable="true" unique="true"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.2" author="jack.petrov">
+    <changeSet id="1.0.2: Create a foreign key between 'user' and 'role' tables (many-to-one relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="role_id"
                                  baseTableName="user"
                                  constraintName="fk_user_to_role_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
                                  referencedColumnNames="id"
                                  referencedTableName="role"/>
     </changeSet>
 
-    <changeSet id="1.0.3" author="jack.petrov">
+    <changeSet id="1.0.3: INSERT INTO role (name) VALUES(ROLE_USER, ROLE_ADMIN, ROLE_MODERATOR)" author="jack.petrov">
         <insert tableName="role">
             <column name="name" value="ROLE_USER"/>
         </insert>
@@ -94,7 +92,7 @@
         </insert>
     </changeSet>
 
-    <changeSet id="1.0.4" author="jack.petrov">
+    <changeSet id="1.0.4: Create table 'phone'" author="jack.petrov">
         <createTable tableName="phone">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -108,17 +106,13 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="show" type="BOOLEAN" defaultValue="true">
-                <constraints nullable="true"/>
-            </column>
-
             <column name="default_phone" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.5" author="jack.petrov">
+    <changeSet id="1.0.5: Create a foreign key between 'phone' and 'user' tables (many-to-one relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="phone"
                                  constraintName="fk_phone_to_user_id"
@@ -128,7 +122,7 @@
                                  referencedTableName="user"/>
     </changeSet>
 
-    <changeSet id="1.0.6" author="jack.petrov">
+    <changeSet id="1.0.6: Create table 'child'" author="jack.petrov">
         <createTable tableName="child">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -148,7 +142,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.7" author="jack.petrov">
+    <changeSet id="1.0.7: Create a foreign key between 'child' and 'user' tables (many-to-one relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="child"
                                  constraintName="fk_child_to_user_id"
@@ -158,7 +152,7 @@
                                  referencedTableName="user"/>
     </changeSet>
 
-    <changeSet id="1.0.8" author="jack.petrov">
+    <changeSet id="1.0.8: Create table 'deal'" author="jack.petrov">
         <createTable tableName="deal">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -178,7 +172,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.9" author="jack.petrov">
+    <changeSet id="1.0.9: Create an intermediate table 'user_deal' (many-to-many relationship)" author="jack.petrov">
         <createTable tableName="user_deal">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -194,7 +188,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.10" author="jack.petrov">
+    <changeSet id="1.0.10: Create a foreign key between 'user_deal' and 'user' tables (many-to-many relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="user_deal"
                                  constraintName="fk_user_deal_to_user_id"
@@ -204,7 +198,7 @@
                                  referencedTableName="user"/>
     </changeSet>
 
-    <changeSet id="1.0.11" author="jack.petrov">
+    <changeSet id="1.0.11: Create a foreign key between 'user_deal' and 'deal' tables (many-to-many relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="deal_id"
                                  baseTableName="user_deal"
                                  constraintName="fk_user_deal_to_deal_id"
@@ -212,22 +206,22 @@
                                  referencedTableName="deal"/>
     </changeSet>
 
-    <changeSet id="1.0.12" author="jack.petrov">
+    <changeSet id="1.0.12: Create table 'advertisement'" author="jack.petrov">
         <createTable tableName="advertisement">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
             <column name="user_id" type="BIGINT">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="location_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="product_id" type="BIGINT">
-                <constraints nullable="false"/>
+            <column name="subcategory_id" type="BIGINT">
+                <constraints nullable="true"/>
             </column>
 
             <column name="topic" type="VARCHAR(70)">
@@ -235,10 +229,6 @@
             </column>
 
             <column name="deal_type" type="VARCHAR(45)">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="is_favourite" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="true"/>
             </column>
 
@@ -251,66 +241,6 @@
             </column>
 
             <column name="ready_for_offers" type="BOOLEAN" defaultValue="false">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="status" type="VARCHAR(45)">
-                <constraints nullable="true"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="1.0.13" author="jack.petrov">
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="advertisement"
-                                 constraintName="fk_advertisement_to_user_id"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
-                                 referencedColumnNames="id"
-                                 referencedTableName="user"/>
-    </changeSet>
-
-    <changeSet id="1.0.14" author="jack.petrov">
-        <createTable tableName="location">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" unique="true" nullable="false"/>
-            </column>
-
-            <column name="city" type="VARCHAR(100)">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="district" type="VARCHAR(100)">
-                <constraints nullable="true"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet id="1.0.15" author="jack.petrov">
-        <addForeignKeyConstraint baseColumnNames="location_id"
-                                 baseTableName="advertisement"
-                                 constraintName="fk_advertisement_to_location"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
-                                 referencedColumnNames="id"
-                                 referencedTableName="location"/>
-    </changeSet>
-
-    <changeSet id="1.0.16" author="jack.petrov">
-        <createTable tableName="product">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" unique="true" nullable="false"/>
-            </column>
-
-            <column name="subcategory_id" type="BIGINT">
                 <constraints nullable="true"/>
             </column>
 
@@ -329,10 +259,70 @@
             <column name="season" type="VARCHAR(50)">
                 <constraints nullable="true"/>
             </column>
+
+            <column name="default_photo" type="MEDIUMBLOB">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(45)">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.17" author="jack.petrov">
+    <changeSet id="1.0.13: Create a foreign key between 'advertisement' and 'user' tables (many-to-one relationship)" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet id="1.0.14: Create table 'location'" author="jack.petrov">
+        <createTable tableName="location">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="district" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="area" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="i18n" type="VARCHAR(10)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.15: Create a foreign key between 'advertisement' and 'location' tables (many-to-one relationship)" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_location"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="location"/>
+    </changeSet>
+
+    <changeSet id="1.0.16: Create table 'subcategory'" author="jack.petrov">
         <createTable tableName="subcategory">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -348,7 +338,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.18" author="jack.petrov">
+    <changeSet id="1.0.17: Create table 'category'" author="jack.petrov">
         <createTable tableName="category">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -360,15 +350,17 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.19" author="jack.petrov">
+    <changeSet id="1.0.18: Create a foreign key between 'advertisement' and 'subcategory' tables (many-to-one relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="subcategory_id"
-                                 baseTableName="product"
-                                 constraintName="fk_product_to_subcategory_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_subcategory_id"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
                                  referencedColumnNames="id"
                                  referencedTableName="subcategory"/>
     </changeSet>
 
-    <changeSet id="1.0.20" author="jack.petrov">
+    <changeSet id="1.0.19: Create a foreign key between 'subcategory' and 'category' tables (many-to-one relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="category_id"
                                  baseTableName="subcategory"
                                  constraintName="fk_subcategory_to_category_id"
@@ -378,47 +370,33 @@
                                  referencedTableName="category"/>
     </changeSet>
 
-    <changeSet id="1.0.21" author="jack.petrov">
-        <addForeignKeyConstraint baseColumnNames="product_id"
-                                 baseTableName="advertisement"
-                                 constraintName="fk_advertisement_to_product"
-                                 onDelete="CASCADE"
-                                 onUpdate="RESTRICT"
-                                 referencedColumnNames="id"
-                                 referencedTableName="product"/>
-    </changeSet>
-
-    <changeSet id="1.0.22" author="jack.petrov">
+    <changeSet id="1.0.20: Create table 'image'" author="jack.petrov">
         <createTable tableName="image">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="product_id" type="BIGINT">
+            <column name="advertisement_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
 
             <column name="resource" type="MEDIUMBLOB">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="default_photo" type="BOOLEAN" defaultValue="false">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.23" author="jack.petrov">
-        <addForeignKeyConstraint baseColumnNames="product_id"
+    <changeSet id="1.0.21: Create a foreign key between 'image' and 'advertisement' tables (many-to-one relationship)" author="jack.petrov">
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
                                  baseTableName="image"
-                                 constraintName="fk_image_to_product_id"
+                                 constraintName="fk_image_to_advertisement_id"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="product"/>
+                                 referencedTableName="advertisement"/>
     </changeSet>
 
-    <changeSet id="1.0.24: rebuilt column sex without unique constraint in table child" author="jack.petrov">
+    <changeSet id="1.0.22: rebuilt column sex without unique constraint in table child" author="jack.petrov">
         <dropColumn tableName="child">
             <column name="sex"/>
         </dropColumn>
@@ -430,13 +408,13 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="1.0.25: NotNull constraint set in table phone" author="lubchik">
+    <changeSet id="1.0.23: NotNull constraint set in table phone" author="lubchik">
         <addNotNullConstraint tableName="phone"
                               columnName="user_id"
                               columnDataType="BIGINT"/>
     </changeSet>
 
-    <changeSet id="1.0.26: SET NULL constraint update onDelete in advertisement table" author="lubchik">
+    <changeSet id="1.0.24: SET NULL constraint update onDelete in advertisement table" author="lubchik">
         <dropForeignKeyConstraint baseTableName="advertisement"
                                   constraintName="fk_advertisement_to_location"/>
 
@@ -449,7 +427,7 @@
                                  referencedTableName="location"/>
     </changeSet>
 
-    <changeSet id="1.0.27: Changed field type avatar_image from VARCHAR to MEDIUMBLOB" author="konstantin.gaevsky">
+    <changeSet id="1.0.25: Changed field type avatar_image from VARCHAR to MEDIUMBLOB" author="konstantin.gaevsky">
         <modifyDataType  tableName="user"
                          columnName="avatar_image"
                          newDataType="MEDIUMBLOB"/>

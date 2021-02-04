@@ -1,159 +1,102 @@
 package com.hillel.items_exchange.service;
 
-import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
-import com.hillel.items_exchange.model.*;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.BeanUtils;
+import com.hillel.items_exchange.dto.AdvertisementTitleDto;
+import com.hillel.items_exchange.model.Advertisement;
+import com.hillel.items_exchange.model.User;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+public interface AdvertisementService {
 
-@Service
-@RequiredArgsConstructor
-public class AdvertisementService {
+    /**
+     * Find all advertisements and return them by requested quantity (size) and page
+     * @param pageable see {@link Pageable} for more details
+     * @return wanted quantity of advertisement on a page
+     */
+    List<AdvertisementDto> findAll(Pageable pageable);
 
-    private final ModelMapper modelMapper;
-    private final AdvertisementRepository advertisementRepository;
-    private final SubcategoryService subcategoryService;
-    private final LocationService locationService;
+    /**
+     * Find all advertisements as thumbnails and return them by requested quantity (size) and page
+     * @param pageable see {@link Pageable} for more details
+     * @return wanted quantity of advertisement on a page
+     */
+    List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
 
-    public List<AdvertisementDto> findAll(Pageable pageable) {
-        List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
-        return mapAdvertisementsToDto(content);
-    }
+    /**
+     * Find first 10 advertisements having requested topic
+     * @param topic - searched topic
+     * @return result of the request
+     */
+    List<AdvertisementDto> findFirst10ByTopic(String topic);
 
-    public List<AdvertisementDto> findAllByTopic(String topic) {
-        return mapAdvertisementsToDto(advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
-    }
+    /**
+     * Find an advertisement by id
+     * @param advertisementId advertisement id
+     * @return {@link Optional} as result
+     */
+    Optional<Advertisement> findById(long advertisementId);
 
-    public Optional<AdvertisementDto> findById(long id) {
-        return advertisementRepository.findById(id).map(this::mapAdvertisementToDto);
-    }
+    /**
+     * Find an advertisement DTO by id
+     * @param id advertisement id
+     * @return {@link Optional} as result
+     */
+    Optional<AdvertisementDto> findDtoById(long id);
 
-    public List<AdvertisementDto> findAdvertisementsByMultipleParams(AdvertisementFilterDto dto) {
-        return mapAdvertisementsToDto(
-                advertisementRepository.findFirst10ByProductAgeOrProductGenderOrProductSizeOrProductSeasonOrProductSubcategoryId(
-                        dto.getAge(), dto.getGender(), dto.getSize(), dto.getSeason(), dto.getSubcategoryId()));
-    }
+    /**
+     * Find first 10 matched advertisements by one of received parameters of the request DTO
+     * @param dto an object that contains all parameters to search
+     * @return result of the request
+     */
+    List<AdvertisementDto> findFirst10ByFilter(AdvertisementFilterDto dto);
 
-    public boolean isAdvertisementExists(long id, User user) {
-        return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
-    }
+    /**
+     * Check whenever user has an advertisement with selected id
+     * @param id advertisement id
+     * @param user for checking authority
+     * @return result of the check
+     */
+    boolean isUserHasAdvertisementWithId(long id, User user);
 
-    public AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto, User user) {
-        Advertisement adv = mapDtoToAdvertisement(advertisementDto);
-        adv.setUser(user);
-        adv.setStatus(Status.NEW);
-        updateSubcategory(adv.getProduct(), advertisementDto.getProduct().getSubcategoryId());
+    /**
+     * Create a new advertisement
+     * @param advertisementDto DTO for converting and saving
+     * @param user owner of a new advertisement
+     * @return saved advertisement DTO with updated id
+     */
+    AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto, User user);
 
-        return mapAdvertisementToDto(advertisementRepository.save(adv));
-    }
+    /**
+     * Update existed advertisement
+     * @param dto advertisement DTO for converting and updating
+     * @return updated advertisement DTO
+     */
+    AdvertisementDto updateAdvertisement(AdvertisementDto dto);
 
-    public AdvertisementDto updateAdvertisement(AdvertisementDto dto) {
-        Advertisement toUpdate = mapDtoToAdvertisement(dto);
-        Advertisement fromDB = advertisementRepository.findById(dto.getId())
-                .orElseThrow(EntityNotFoundException::new);
+    /**
+     * Remove an advertisement by it's id
+     * @param id id of the advertisement to remove
+     */
+    void remove(long id);
 
-        updateAdvertisement(toUpdate, fromDB);
+    /**
+     * Set an image as title image of an advertisement
+     * @param advertisement advertisement for setting the title image
+     * @param imageId id of an image that planned to be set as title image
+     * @param owner user-author of selected advertisement
+     */
+    void setDefaultImage(Advertisement advertisement, Long imageId, User owner);
 
-        Product toUpdateProduct = toUpdate.getProduct();
-        Product fromDBProduct = fromDB.getProduct();
-        updateProduct(toUpdateProduct, fromDBProduct);
-        updateSubcategory(fromDBProduct, toUpdateProduct.getSubcategory().getId());
-        updateImages(toUpdateProduct, fromDBProduct);
-        createOrUpdateLocation(toUpdate, fromDB);
-
-        fromDB.setStatus(Status.UPDATED);
-        Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
-        return mapAdvertisementToDto(updatedAdvertisement);
-    }
-
-    private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
-        if (!fromDB.equals(toUpdate)) {
-            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "product", "chats");
-        }
-    }
-
-    private void updateProduct(Product toUpdateProduct, Product fromDBProduct) {
-        if (!fromDBProduct.equals(toUpdateProduct)) {
-            BeanUtils.copyProperties(toUpdateProduct, fromDBProduct, "advertisement", "subcategory", "images");
-        }
-    }
-
-    private void updateSubcategory(Product fromDBProduct, long id) {
-        fromDBProduct.setSubcategory(subcategoryService.findById(id)
-                .orElseThrow(EntityNotFoundException::new));
-    }
-
-    private void updateImages(Product toUpdateProduct, Product fromDBProduct) {
-        List<Image> existImages = fromDBProduct.getImages();
-        List<Image> newImages = toUpdateProduct.getImages();
-        if (existImages.size() != newImages.size() || !existImages.containsAll(newImages)) {
-            existImages.retainAll(newImages);
-            newImages.stream().filter(image -> !existImages.contains(image)).forEach(existImages::add);
-        }
-    }
-
-    private void createOrUpdateLocation(Advertisement toUpdate, Advertisement fromDB) {
-        Location toUpdateLocation = toUpdate.getLocation();
-        if (!toUpdateLocation.equals(fromDB.getLocation())) {
-            Location newLocation = locationService.findById(toUpdateLocation.getId())
-                    .orElseGet(() -> locationService.save(toUpdateLocation));
-            BeanUtils.copyProperties(toUpdateLocation, newLocation);
-            fromDB.setLocation(newLocation);
-        }
-    }
-
-    public void remove(long id) {
-        advertisementRepository.deleteById(id);
-        advertisementRepository.flush();
-    }
-
-    public void setDefaultImage(Long advertisementId, Long imageId, User owner) throws ClassNotFoundException {
-        final Advertisement advertisement = owner.getAdvertisements().parallelStream()
-                .filter(adv -> adv.getId() == advertisementId)
-                .findFirst()
-                .orElseThrow(() -> new ClassNotFoundException(getMessageSource("exception.illegal.id")));
-        final Image image = advertisement.getProduct().getImages().parallelStream()
-                .filter(img -> img.getId() == imageId)
-                .findFirst()
-                .orElseThrow(() -> new ClassNotFoundException(getMessageSource("exception.illegal.id")));
-        advertisement.getProduct().getImages().forEach(img -> img.setDefaultPhoto(false));
-        image.setDefaultPhoto(true);
-        advertisementRepository.saveAndFlush(advertisement);
-    }
-
-    private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
-        return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {
-        }.getType());
-    }
-
-    private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return modelMapper.map(dto, Advertisement.class);
-    }
-
-    private AdvertisementDto mapAdvertisementToDto(Advertisement advertisement) {
-        return modelMapper.map(advertisement, AdvertisementDto.class);
-    }
-
-    public boolean isAdvertisementAndImageExists(Long advertisementId, Long imageId, User owner) {
-        return owner.getAdvertisements().stream()
-                .filter(adv -> adv.getId() == advertisementId)
-                .map(Advertisement::getProduct)
-                .map(Product::getImages)
-                .flatMap(Collection::stream)
-                .anyMatch(image -> image.getId() == imageId);
-    }
+    /**
+     * Check if a user owns such advertisement and it has selected image
+     * @param advertisementId id of selected advertisement to check
+     * @param imageId id of an image to check into the advertisement
+     * @param owner user to check the advertisement and the image
+     * @return result of the check
+     */
+    boolean isUserHasAdvertisementAndItHasImageWithId(Long advertisementId, Long imageId, User owner);
 }
