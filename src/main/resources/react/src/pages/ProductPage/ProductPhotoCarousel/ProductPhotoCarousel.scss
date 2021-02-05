@@ -30,6 +30,10 @@
     width: 138px;
   }
 
+  img:hover {
+    box-shadow: 0 0 3px 2px rgba(48, 50, 50, 0.4);
+  }
+
   .slick-next {
     top: 4px;
     right: 70px;
@@ -54,13 +58,12 @@
 
   .slick-slide {
     margin: 0;
-    transition: 0.2s;
+    transition: 0.5s;
     padding: 9px 0;
   }
 
   .slick-slide:hover {
     transform: scale(1.1);
-    //box-shadow: 0 0 24px 5px rgba(48, 50, 50, 0.5);
   }
 }
 

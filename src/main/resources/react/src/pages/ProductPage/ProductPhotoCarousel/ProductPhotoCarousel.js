@@ -1,7 +1,8 @@
 import React , { useState } from 'react';
-import './ProductPhotoCarousel.scss';
 import Slider from 'react-slick';
+
 import ProductDB from '../MokDB';
+import './ProductPhotoCarousel.scss';
 
 const ProductPhotoCarousel = () => {
 	
