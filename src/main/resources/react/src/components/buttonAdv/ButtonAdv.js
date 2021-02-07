@@ -8,7 +8,7 @@ import "./buttonAdv.scss";
 const ButtonAdv = () => {
   const { lang } =useSelector(state => state.auth)
   return (
-    <Link to={'/'} className="btn-adv">
+    <Link to={'/AddGoods'} className="btn-adv">
       <span>{ getTranslatedText('button.addAdv', lang) }</span>
     </Link>
   );

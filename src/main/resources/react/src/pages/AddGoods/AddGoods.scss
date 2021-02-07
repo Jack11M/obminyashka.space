@@ -1,0 +1,57 @@
+.add {
+    padding-top: 200px;
+    padding-bottom: 50px;
+
+    .add_container {
+        max-width: 1200px;
+        margin: auto;
+
+        .add_inner {
+            min-height: 600px;   
+            width: 100%;
+            background: #ffffff; 
+            padding: 40px;
+
+            h3 {
+                font-family: Roboto;
+                font-size: 26px;
+                font-weight: 600;
+                margin-bottom: 10px;
+                line-height: 40px;
+            }
+
+            .add_choose {
+                margin-bottom: 50px;
+            }
+
+            .characteristics_items {
+                display: flex;
+                justify-content: space-around;
+                margin-bottom: 30px;
+
+                h4 {
+                    font-size: 22px;
+                    margin-bottom: 13px;
+                }
+            }
+
+            .description {
+                .description_subtitile {
+                    color: #8E8E8E;
+                    margin-bottom: 10px;
+                }
+
+
+                .description_textarea {
+                    font-family: Roboto;
+                    resize: none;
+                    width: 100%;
+                    min-height: 115px;
+                    font-size: 16px;
+                    outline: none;
+                    padding: 10px;
+                }
+            }
+        }
+    }
+}

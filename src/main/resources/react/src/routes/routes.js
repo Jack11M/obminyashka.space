@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import HomePage from '../pages/homepage/HomePage.js';
 import Auth from '../pages/FormRegister/Auth.js';
 import UserInfo from '../pages/UserInfo/UserInfo';
+import AddGoods from '../pages/AddGoods/AddGoods.js';
 
 export default () => {
 	const { isAuthenticated } = useSelector( state => state.auth );
@@ -19,6 +20,8 @@ export default () => {
 		<Switch>
 			<Route path="/" component={ HomePage } exact/>
 			<Route path="/login/" component={ Auth }/>
+			<Route path="/AddGoods/" component={ AddGoods }/>
+
 			<Redirect to={ '/login/' }/>
 		</Switch>
 	);
