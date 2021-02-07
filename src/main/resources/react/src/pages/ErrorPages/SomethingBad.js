@@ -21,7 +21,7 @@ const SomethingBad = ({deactivateError}) => {
 	};
 
 	return (
-		<div className={ 'error-page' }>
+		<div className={ 'somethingBad' }> 
 			<div className={ 'blockCenterImage' }>
 				<div className={ 'blockCenterImage-somethingBad' }>
 					<img src={ somethingBad } alt={ 'somethingBad' }/>
