@@ -3,7 +3,6 @@ advertisement:
     topic: 'topic'
     description: 'description'
     deal_type: 'EXCHANGE'
-    is_favourite: 'true'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
     created: '2019-01-01 00:00:01'
@@ -11,20 +10,29 @@ advertisement:
     status: 'ACTIVE'
     user_id: 1
     location_id: 1
-    product_id: 1
+    age: 'OLDER_THAN_14'
+    gender: 'MALE'
+    size: '40'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
   - id: 2
-    topic: 'topic'
-    description: 'description'
-    deal_type: 'GIVEAWAY'
-    is_favourite: 'false'
-    ready_for_offers: 'false'
-    wishes_to_exchange: 'hat'
-    created: '[ignored]'
-    updated: '[ignored]'
-    status: 'NEW'
+    topic: 'Blouses'
+    description: 'Blouses description'
+    deal_type: 'EXCHANGE'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
     user_id: 1
-    location_id: 2
-    product_id: 2
+    location_id: 1
+    age: 'FROM_3_TO_5'
+    gender: 'FEMALE'
+    size: '28'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
 
 user:
   - id: 1
@@ -55,33 +63,19 @@ location:
     city: 'Lviv'
     district: 'District'
 
-product:
-  - id: 1
-    age: '16'
-    gender: 'male'
-    size: '40'
-    season: 'spring'
-    subcategory_id: 1
-  - id: 2
-    age: '3'
-    gender: 'male'
-    size: 'M'
-    season: 'all'
-    subcategory_id: 2
-
 image:
   - id: 1
     resource_url: 'one'
     default_photo: 'false'
-    product_id: 1
+    advertisement_id: 1
   - id: 2
     resource_url: 'two'
     default_photo: 'true'
-    product_id: 1
+    advertisement_id: 1
   - id: 4
     resource_url: 'train_url'
     default_photo: 'true'
-    product_id: 2
+    advertisement_id: 2
 
 category:
   - id: 1

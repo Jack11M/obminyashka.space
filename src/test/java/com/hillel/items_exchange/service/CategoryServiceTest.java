@@ -131,7 +131,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void isCategoryDtoDeletable_whenCategoryExistsByIdAndInternalSubcategoriesHaveNotProducts_shouldReturnTrue() {
+    void isCategoryDtoDeletable_whenCategoryExistsByIdAndInternalSubcategoriesHaveNotAdvertisements_shouldReturnTrue() {
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(categoryShoes));
         final boolean result = categoryService.isCategoryDtoDeletable(EXISTING_ENTITY_ID);
         verify(categoryRepository, times(1)).findById(EXISTING_ENTITY_ID);

@@ -3,7 +3,7 @@ package com.hillel.items_exchange.util;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.PhoneDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.model.Gender;
+import com.hillel.items_exchange.model.enums.Gender;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class UserDtoCreatingUtil {
     public static final List<ChildDto> NEW_CHILDREN = List.of(
             new ChildDto(0, Gender.MALE, LocalDate.of(2019, 3, 3)));
     public static final Set<PhoneDto> NEW_PHONES = Set.of(
-            new PhoneDto(0, true, "381234567890", true));
+            new PhoneDto(0, "381234567890", true));
     public static final String NEW_USERNAME = "newUsername123";
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
@@ -75,7 +75,7 @@ public class UserDtoCreatingUtil {
     public static UserDto createUserDtoForUpdatingWithPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Set.of(new PhoneDto(1L, true, "+381234567890", true)));
+                EXISTED_CHILDREN, Set.of(new PhoneDto(1L, "+381234567890", true)));
     }
 
     public static UserDto createUserDtoForUpdatingWithInvalidShortFNameWithoutPhones() {

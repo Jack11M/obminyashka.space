@@ -3,8 +3,8 @@ package com.hillel.items_exchange.service;
 import com.hillel.items_exchange.dao.ImageRepository;
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
-import com.hillel.items_exchange.model.Product;
 import com.hillel.items_exchange.service.basic.BasicImageCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,31 +42,30 @@ class ImageServiceTest extends BasicImageCreator{
 
     @BeforeEach
     void setUp() throws IOException {
-        jpeg = new Image(1, "test jpeg".getBytes(), false, null);
+        jpeg = new Image(1, "test jpeg".getBytes(), null);
         testJpg = getImageBytes(MediaType.IMAGE_JPEG);
         testPng = getImageBytes(MediaType.IMAGE_PNG);
         testTxt = new MockMultipartFile("files", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
     }
 
     @Test
-    void getImagesResourceByProductId_shouldReturnAllImagesLinkedToProduct_WhenProductExistsAndContainsImages() {
-        when(imageRepository.findByProductId(any())).thenReturn(List.of(jpeg));
+    void getImagesResourceByAdvertisementId_shouldReturnAllImagesLinkedToAdvertisement_whenAdvertisementExistsAndContainsImages() {
+        when(imageRepository.findByAdvertisementId(any())).thenReturn(List.of(jpeg));
 
-        List<byte[]> result = imageService.getImagesResourceByProductId(1L);
+        List<byte[]> result = imageService.getImagesResourceByAdvertisementId(1L);
         assertEquals(jpeg.getResource(), result.get(0), "Images' resources should be equal");
-        verify(imageRepository).findByProductId(anyLong());
+        verify(imageRepository).findByAdvertisementId(anyLong());
     }
 
     @Test
-    void getByProductId_shouldReturnPopulatedImageDto_WhenProductExistsAndContainsImage() {
-        when(imageRepository.findByProductId(any())).thenReturn(List.of(jpeg));
+    void getByAdvertisementId_shouldReturnPopulatedImageDto_whenAdvertisementExistsAndContainsImage() {
+        when(imageRepository.findByAdvertisementId(any())).thenReturn(List.of(jpeg));
 
-        ImageDto imageDto = imageService.getByProductId(1L).get(0);
+        ImageDto imageDto = imageService.getByAdvertisementId(1L).get(0);
         assertAll("Checking objects' data equal",
                 () -> assertEquals(jpeg.getId(), imageDto.getId()),
-                () -> assertArrayEquals(jpeg.getResource(), imageDto.getResource()),
-                () -> assertEquals(jpeg.isDefaultPhoto(), imageDto.isDefaultPhoto()));
-        verify(imageRepository).findByProductId(anyLong());
+                () -> assertArrayEquals(jpeg.getResource(), imageDto.getResource()));
+        verify(imageRepository).findByAdvertisementId(anyLong());
     }
 
     @Test
@@ -88,10 +87,10 @@ class ImageServiceTest extends BasicImageCreator{
     }
 
     @Test
-    void saveToProduct_shouldSaveImageBytes_whenProductExists() throws IOException, ClassNotFoundException {
+    void saveToAdvertisement_shouldSaveImageBytes_whenAdvertisementExists() throws IOException {
         List<byte[]> testImages = List.of(testJpg.getBytes(), testPng.getBytes());
 
-        imageService.saveToProduct(new Product(), testImages);
+        imageService.saveToAdvertisement(new Advertisement(), testImages);
         verify(imageRepository).saveAll(imageListCaptor.capture());
         assertTrue(imageListCaptor.getValue().stream()
                 .map(Image::getResource)
@@ -99,8 +98,8 @@ class ImageServiceTest extends BasicImageCreator{
     }
 
     @Test
-    void saveToProduct_shouldSaveOneImageBytes_whenProductExists() throws IOException, ClassNotFoundException {
-        imageService.saveToProduct(new Product(), testJpg.getBytes());
+    void saveToAdvertisement_shouldSaveOneImageBytes_whenAdvertisementExists() throws IOException {
+        imageService.saveToAdvertisement(new Advertisement(), testJpg.getBytes());
         verify(imageRepository).save(imageCaptor.capture());
         assertArrayEquals(imageCaptor.getValue().getResource(), testJpg.getBytes());
     }
