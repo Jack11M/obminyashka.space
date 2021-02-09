@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import TitleBigBlue from "../../../../components/title_Big_Blue/title_Big_Blue";
 import Button from '../../../../components/button/Button';
 import InputProfile from '../../components/inputProfile/inputProfile';
+import { route } from '../../../../routes/routeConstants';
+
 import "./mySettings.scss";
 
 const MySettings = () => {
@@ -26,7 +28,7 @@ const MySettings = () => {
             <p className="delete-text">
                 Внимание! После удаления учетной записи, ваш профиль будет полностью удален из каталога сайта
                 и многие функции перестанут быть доступными. Вы можете поменять контактные данные и номера телефонов
-                в разделе меню <Link to={'/'}>Профиль</Link>
+                в разделе меню <Link to={ route.home  }>Профиль</Link>
             </p>
             <div className={"btn-wrapper"}>
                 <Button text={"Удалить аккаунт"} whatClass={"btn-profile"} width={'248px'}/>
