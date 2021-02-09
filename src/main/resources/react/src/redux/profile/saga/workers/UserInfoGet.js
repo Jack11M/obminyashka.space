@@ -8,7 +8,6 @@ export function* userInfoGet() {
 	try {
 		yield put( startFetching() );
 		const { data } = yield call( getUserInfoAsync );
-		console.log(data);
 		yield put( fillUserInfoSync( data ) );
 	} catch (e) {
 		console.log( e.response.data.error );
