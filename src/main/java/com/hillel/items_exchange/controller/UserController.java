@@ -1,9 +1,7 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.UserChangeEmailDto;
-import com.hillel.items_exchange.dto.UserChangePasswordDto;
-import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.dto.*;
+import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
@@ -33,6 +31,7 @@ import javax.validation.groups.Default;
 import java.security.Principal;
 import java.util.List;
 
+import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
@@ -41,8 +40,9 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class UserController {
+public class UserController extends BaseController{
 
+    public static final String INCORRECT_PASSWORD = "incorrect.password";
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
 
@@ -85,7 +85,7 @@ public class UserController {
                                      Principal principal) throws InvalidDtoException {
         User user = getUser(principal.getName());
         if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
-            throw new InvalidDtoException(getMessageSource("incorrect.password"));
+            throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
         }
 
         return userService.updateUserPassword(userChangePasswordDto, user);
@@ -96,26 +96,55 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal) {
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
+            throws DataConflictException, IllegalOperationException {
         User user = getUser(principal.getName());
+//        checkUserStatusDeleted(user);
+        if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
+            throw new DataConflictException(getMessageSource("email.duplicate"));
+        }
 
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
-    @PutMapping("/info/delete")
+    @DeleteMapping("/service/delete")
     @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto deleteUser(@Valid @RequestBody UserDeleteDto userDeleteDto,
-                              Principal principal) throws InvalidDtoException {
+    public String deleteUser(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
+            throws InvalidDtoException {
         User user = getUser(principal.getName());
+        if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword())) {
+            throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
+        }
 
-        return userService.deleteUser(userDeleteDto, user);
+        return userService.deleteUser(user);
+    }
+
+    @PutMapping("/service/restore")
+    @ApiOperation("Restore user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String restoreUser(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
+            throws InvalidDtoException, IllegalOperationException {
+        User user = getUser(principal.getName());
+        if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword())) {
+            throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
+        }
+        if (!user.getStatus().equals(DELETED)) {
+            throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
+        }
+
+        return userService.restoreUser(user);
     }
 
     @GetMapping("/child")

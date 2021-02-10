@@ -1,6 +1,7 @@
 package com.hillel.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hillel.items_exchange.model.enums.Status;
 import com.hillel.items_exchange.util.PatternHandler;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -48,4 +49,8 @@ public class UserDto {
     private List<@Valid ChildDto> children;
     @NotNull(message = "{invalid.not-null}")
     private Set<@Valid PhoneDto> phones;
+    @NotNull(message = "{invalid.not-null}")
+    private Status status;
+    @NotNull(message = "{invalid.not-null}")
+    private LocalDateTime updated;
 }
