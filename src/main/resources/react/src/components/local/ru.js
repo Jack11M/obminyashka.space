@@ -49,6 +49,11 @@ const ru = {
 		noPage: 'Страница не существует!',
 		mainPage: 'На главную',
 		backPage: 'Назад'
+	},
+	somethingBad: {
+		error: 'Ошибка! Что будем делать?',
+		mainPage: 'На главную',
+		backPage: 'Назад'
 	}
 };
 

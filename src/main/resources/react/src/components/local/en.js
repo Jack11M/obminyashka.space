@@ -49,6 +49,11 @@ const en = {
 		noPage: 'The page does not exist!',
 		mainPage: 'To the main',
 		backPage: 'Back'
+	},
+	somethingBad: {
+		error: 'Error! What should we do the next?',
+		mainPage: 'To the main',
+		backPage: 'Back'
 	}
 };
 

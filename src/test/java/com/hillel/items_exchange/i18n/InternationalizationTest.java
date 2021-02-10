@@ -23,7 +23,7 @@ class InternationalizationTest {
 
     @Test
     void testDefaultLocalizationWithNotExistedAccept_LanguageHeader() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/image/{product_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get("/image/{advertisement_id}", -100L)
                 .header("Accept-Language", "notExisted")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -35,7 +35,7 @@ class InternationalizationTest {
 
     @Test
     void testDefaultLocalizationWithoutAccept_LanguageHeader() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/image/{product_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get("/image/{advertisement_id}", -100L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
@@ -46,7 +46,7 @@ class InternationalizationTest {
 
     @Test
     void testRussianLocalizationWithAccept_LanguageHeaderIsRu() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/image/{product_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get("/image/{advertisement_id}", -100L)
                 .header("Accept-Language", "ru")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -58,7 +58,7 @@ class InternationalizationTest {
 
     @Test
     void testRussianLocalizationWithAccept_LanguageHeaderIsRu_Ru() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/image/{product_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get("/image/{advertisement_id}", -100L)
                 .header("Accept-Language", "ru-Ru")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())

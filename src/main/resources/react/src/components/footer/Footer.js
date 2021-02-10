@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import BtnGoodBusiness from '../btnGoodBusiness/BtnGoodBusiness.js';
 import { getTranslatedText } from '../local/localisation';
 import logoFooter from '../../img/Logo-footer.png';
+import { route } from '../../routes/routeConstants';
 
 import './Footer.scss';
 
@@ -33,19 +34,19 @@ const Footer = () => {
 					</li>
 					<li className="footer-list">
 						<span className="footer-list__icon icon-question"/>
-						<Link to={ '/' } className="footer-list_rules">{ getTranslatedText( 'footer.rules', lang ) }</Link>
+						<Link to={ route.home } className="footer-list_rules">{ getTranslatedText( 'footer.rules', lang ) }</Link>
 
-						<Link to={ '/' } className="footer-list_rules">{ getTranslatedText( 'footer.charity', lang ) }</Link>
-						<Link to={ '/' } className="footer-list_rules">{ getTranslatedText( 'footer.questions', lang ) }</Link>
+						<Link to={ route.home  } className="footer-list_rules">{ getTranslatedText( 'footer.charity', lang ) }</Link>
+						<Link to={ route.home  } className="footer-list_rules">{ getTranslatedText( 'footer.questions', lang ) }</Link>
 					</li>
 					<li className="footer-list">
 						<span className="footer-list__icon icon-home"/>
-						<Link to="/">
+						<Link to={ route.home  }>
 							<img src={ logoFooter } alt="Logo"/>
 						</Link>
 						<BtnGoodBusiness
 							text={ getTranslatedText( 'header.goodness', lang ) }
-							href={ '/product_page' }
+							href={ route.home  }
 							whatClass={ 'btn-Help-Children' }
 						/>
 					</li>

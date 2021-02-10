@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.dto;
 
+import com.hillel.items_exchange.model.enums.I18n;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -15,12 +16,26 @@ import javax.validation.constraints.Size;
 @Builder
 @EqualsAndHashCode
 public class LocationDto {
+
     @PositiveOrZero(message = "{invalid.id}")
     private long id;
+
+    @ApiModelProperty(required = true)
+    @NotEmpty(message = "{invalid.not-null}")
+    @Size(min = 2, max = 100, message = "{invalid.size}")
+    private String area;
+
+    @ApiModelProperty(required = true)
+    @NotEmpty(message = "{invalid.not-null}")
+    @Size(min = 2, max = 100, message = "{invalid.size}")
+    private String district;
+
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
     @Size(min = 2, max = 100, message = "{invalid.size}")
     private String city;
+
+    @ApiModelProperty(required = true)
     @NotNull(message = "{invalid.not-null}")
-    private String district;
+    private I18n i18N;
 }

@@ -17,5 +17,4 @@ public class ImageDto {
     private long id;
     @NotNull(message = "{invalid.not-null}")
     private byte[] resource;
-    private boolean defaultPhoto;
 }
