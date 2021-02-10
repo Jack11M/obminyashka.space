@@ -1,14 +1,23 @@
-import React from 'react';
+import React , { useEffect } from 'react';
 
-import './ProductPage.scss';
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 import ProductDescription from './ProductDescription/ProductDescription';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductPostData from './ProductPostData/ProductPostData';
 import ProductOffers from './ProductOffers/ProductOffers';
 import TitleBigBlue from '../../components/title_Big_Blue';
+import { getProduct } from '../../REST/Resources/fetchProfile';
+
+import './ProductPage.scss';
 
 const ProductPage = () => {
+	
+	useEffect(() => {
+		getProduct(46).then(({data})=>{
+			console.log(data);
+		})
+	}, [])
+	
 	return (
 		<div>
 			<section className = 'topSection'>

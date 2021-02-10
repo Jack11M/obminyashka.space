@@ -15,3 +15,7 @@ export const getUserInfo = () => {
 export const putUserInfo = ( data ) => {
 	return axiosInstance( 'put', 'user/info', data );
 };
+
+export const getProduct = (id) => {
+	return axiosInstance('get', 'adv', null, id)
+}
