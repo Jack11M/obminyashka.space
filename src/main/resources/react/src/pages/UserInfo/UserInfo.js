@@ -10,9 +10,9 @@ import { fetchUserInfoAsync } from '../../redux/profile/profileAction';
 import './UserInfo.scss';
 
 const UserInfo = () => {
-	let { path, url } = useRouteMatch();
-	const { profile } = useSelector( ( state ) => state.profileMe );
 	const dispatch = useDispatch();
+	let {  url } = useRouteMatch();
+	const { profile } = useSelector( ( state ) => state.profileMe );
 
 	useEffect( () => {
 		dispatch( fetchUserInfoAsync() );
@@ -32,7 +32,7 @@ const UserInfo = () => {
 			</aside>
 			<main className="main-content">
 				<div className="main-content-wrapper">
-					<RouterTabs path={ path } profile={ profile }/>
+					<RouterTabs url={ url } profile={ profile }/>
 				</div>
 			</main>
 		</div>
