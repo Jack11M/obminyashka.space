@@ -45,7 +45,7 @@ class UserServiceTest {
                 .build();
         String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
 
-        assertEquals(getMessageSource("password.changed"), message);
+        assertEquals(getMessageSource("user.password.changed"), message);
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
 
@@ -57,7 +57,7 @@ class UserServiceTest {
                 .build();
         String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
 
-        assertEquals(getMessageSource("email.changed"), message);
+        assertEquals(getMessageSource("user.email.changed"), message);
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
 

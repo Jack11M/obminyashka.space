@@ -363,7 +363,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet({"database_init.yml"})
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = {"user/changing_password_or_email_expected.yml"},
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserPassword_WhenDataCorrect_Successfully() throws Exception {
@@ -377,13 +377,13 @@ class UserControllerTest {
 
         assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(),
                 "$2a$10$cQvCmoVUukbO/1vTCxeu3OmwJBwAf1S5wabTrL8vUsEZn5DBzlYLW"));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("password.changed")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("user.password.changed")));
     }
 
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet({"database_init.yml"})
+    @DataSet("database_init.yml")
     void updateUserPassword_WhenOldPasswordWrong_ShouldThrowInvalidDtoException() throws Exception {
         UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(WRONG_OLD_PASSWORD,
                 NEW_PASSWORD,
@@ -399,7 +399,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @Transactional
-    @DataSet({"database_init.yml"})
+    @DataSet("database_init.yml")
     void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
         UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
                 NEW_PASSWORD,
@@ -416,7 +416,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "user")
     @Transactional
-    @DataSet({"database_init.yml"})
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = {"user/changing_password_or_email_expected.yml"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
@@ -426,13 +426,13 @@ class UserControllerTest {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("email.changed")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("user.email.changed")));
     }
 
     @Test
     @WithMockUser(username = "user")
     @Transactional
-    @DataSet({"database_init.yml"})
+    @DataSet("database_init.yml")
     void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
         UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
@@ -442,5 +442,35 @@ class UserControllerTest {
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("invalid.confirm.email")));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
+        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
+                status().isConflict())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("email.old")));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserEmail_WhenUserEnteredExistedEmail_ShouldThrowDataConflictException() throws Exception {
+        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
+                status().isConflict())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("email.duplicate")));
     }
 }

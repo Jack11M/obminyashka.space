@@ -4,6 +4,7 @@ import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
@@ -96,10 +97,18 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal) {
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
+            throws DataConflictException {
         User user = getUser(principal.getName());
+        if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
+            throw new DataConflictException(getMessageSource("email.old"));
+        }
+        if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
+            throw new DataConflictException(getMessageSource("email.duplicate"));
+        }
 
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
