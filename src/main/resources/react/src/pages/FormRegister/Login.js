@@ -14,9 +14,10 @@ import {
 	toggleCheckBox,
 	toggleDisableButtonLog
 } from '../../redux/auth/action';
-import SpinnerForAuthBtn from '../../components/spinner/spinnerForAuthBtn';
 
 import { Extra, ExtraLink } from './loginStyle';
+import SpinnerForAuthBtn from '../../components/spinner/spinnerForAuthBtn';
+import { route } from '../../routes/routeConstants';
 
 const Login = () => {
 	const location = useLocation();
@@ -78,7 +79,7 @@ const Login = () => {
 					checked={ logCheckbox }
 					click={ changeCheckBox }
 				/>
-				<ExtraLink to={ '/login/signup' }>
+				<ExtraLink to={ `${route.login}${route.signUp}` }>
 					{ getTranslatedText( 'auth.noLogin', lang ) }
 				</ExtraLink>
 			</Extra>
