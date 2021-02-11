@@ -23,7 +23,7 @@ export default () => {
 			path={ route.userInfo }
 			component={ UserInfo }
 			permission={ isAuthenticated }
-			redirect={ route.home }/>
+			redirect={ route.login }/>
 		<Route path={ route.noMatch } component={ FourOhFourPage }/>
 	</Switch>;
 };
