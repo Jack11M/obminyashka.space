@@ -85,14 +85,14 @@ public class UserService {
         user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("password.changed");
+        return getMessageSource("user.password.changed");
     }
 
     public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
         user.setEmail(userChangeEmailDto.getNewEmail());
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("email.changed");
+        return getMessageSource("user.email.changed");
     }
 
     public String deleteUser(User user) {

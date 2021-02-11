@@ -24,6 +24,8 @@ public class UserDtoCreatingUtil {
     public static final String NEW_USERNAME = "newUsername123";
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
+    public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
+    public static final String OLD_ADMIN_VALID_EMAIL = "admin@gmail.com";
     public static final LocalDateTime NEW_LAST_ONLINE_TIME = LocalDateTime.now();
     public static final String NEW_VALID_NAME_WITH_APOSTROPHE = "Мар'яна";
     public static final String NEW_VALID_NAME_WITH_HYPHEN_MINUS = "Квітка-Основ'яненко";
