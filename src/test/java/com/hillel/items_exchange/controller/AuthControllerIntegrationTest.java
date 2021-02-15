@@ -23,8 +23,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Objects;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -127,7 +127,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(result.getResponse().getContentAsString().contains(getExceptionMessageSource("username.duplicate")));
+        assertTrue(result.getResponse().getContentAsString().contains(getMessageSource("username.duplicate")));
     }
 
     @Test
@@ -145,7 +145,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(result.getResponse().getContentAsString().contains(getExceptionMessageSource("email.duplicate")));
+        assertTrue(result.getResponse().getContentAsString().contains(getMessageSource("email.duplicate")));
     }
 
     @Test
@@ -180,7 +180,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertEquals(getExceptionMessageSource("different.passwords"), receivedMessage);
+        assertEquals(getMessageSource("different.passwords"), receivedMessage);
     }
 
     @Test
@@ -211,7 +211,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.password")));
+        assertTrue(receivedMessage.contains(getMessageSource("invalid.password")));
     }
 
     @Test
@@ -242,7 +242,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.email")));
+        assertTrue(receivedMessage.contains(getMessageSource("invalid.email")));
     }
 
     @Test
@@ -274,7 +274,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.username")));
+        assertTrue(receivedMessage.contains(getMessageSource("invalid.username")));
     }
 
     @Test
