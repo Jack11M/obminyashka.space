@@ -74,14 +74,14 @@ public class UserService {
         user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("user.password.changed");
+        return getMessageSource("changed.user.password");
     }
 
     public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
         user.setEmail(userChangeEmailDto.getNewEmail());
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("user.email.changed");
+        return getMessageSource("changed.user.email");
     }
 
     public boolean existsByUsername(String username) {
