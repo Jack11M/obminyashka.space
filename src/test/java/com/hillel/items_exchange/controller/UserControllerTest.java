@@ -386,7 +386,7 @@ class UserControllerTest {
 
         assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(),
                 "$2a$10$cQvCmoVUukbO/1vTCxeu3OmwJBwAf1S5wabTrL8vUsEZn5DBzlYLW"));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("password.changed")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.password")));
     }
 
     @Test
@@ -435,7 +435,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("email.changed")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.email")));
     }
 
     @Test

@@ -104,7 +104,7 @@ public class UserController extends BaseController{
         User user = getUser(principal.getName());
         checkUserStatusIsDeleted(user);
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
-            throw new DataConflictException(getMessageSource("email.old"));
+            throw new DataConflictException(getMessageSource("exception.email.old"));
         }
         if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("email.duplicate"));

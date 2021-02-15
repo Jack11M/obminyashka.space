@@ -69,7 +69,7 @@ class UserServiceTest {
                 .build();
         String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
 
-        assertEquals(getMessageSource("email.changed"), message);
+        assertEquals(getMessageSource("changed.user.email"), message);
         assertEquals(NEW_USER_EMAIL, userWithOldPassword.getEmail());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
