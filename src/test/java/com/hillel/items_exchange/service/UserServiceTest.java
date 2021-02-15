@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
@@ -90,8 +90,8 @@ class UserServiceTest {
     void testDeleteUser_WhenDataCorrect_Successfully() {
         String message = userService.deleteUser(userWithOldPassword);
 
-        assertEquals(getExceptionParametrizedMessageSource("account.deleted",
-                LocalDate.now().plusDays(numberOfDaysToKeepDeletedUsers), userService.getTimeWhenUserShouldBeDeleted()), message);
+        assertEquals(getExceptionParametrizedMessageSource("account.deleted", numberOfDaysToKeepDeletedUsers),
+                message);
         assertEquals(DELETED, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }

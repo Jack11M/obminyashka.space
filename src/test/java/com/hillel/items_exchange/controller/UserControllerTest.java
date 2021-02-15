@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
@@ -534,7 +533,7 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = {"user/delete_user_expected.yml"}, ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void deleteUser_Successfully() throws Exception {
+    void deleteUser_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, PATH_USER_DELETE, userDeleteOrRestoreDto,
@@ -543,8 +542,7 @@ class UserControllerTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getExceptionParametrizedMessageSource("account.deleted",
-                        LocalDate.now().plusDays(numberOfDaysToKeepDeletedUsers), userService.getTimeWhenUserShouldBeDeleted())));
+                getExceptionParametrizedMessageSource("account.deleted", numberOfDaysToKeepDeletedUsers)));
     }
 
     @Test
