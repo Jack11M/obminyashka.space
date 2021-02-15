@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -35,12 +34,13 @@ import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    public static final String ONE_TIME_PER_DAY_AT_1AM = "0 0 1 * * * ";
+    public static final String ONE_TIME_PER_DAY_AT_1AM = "0 0 3 * * * ";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
@@ -99,30 +99,18 @@ public class UserService {
         user.setStatus(DELETED);
         userRepository.saveAndFlush(user);
 
-        return getExceptionParametrizedMessageSource("account.deleted",
-                LocalDate.now().plusDays(numberOfDaysToKeepDeletedUsers), getTimeWhenUserShouldBeDeleted());
+        return getExceptionParametrizedMessageSource("account.deleted", getDaysBeforeDeletion(user));
     }
 
-    public String getTimeWhenUserShouldBeDeleted() {
-        StringBuilder stringBuilder = new StringBuilder();
-        String[] strings = ONE_TIME_PER_DAY_AT_1AM.split("\\s");
-        String[] result = new String[3];
-        for (int i = 0; i < 3; i++) {
-            String str = strings[i];
-            if (str.length() == 1) {
-                str = "0".concat(str);
-                result[i] = str;
-            }
-        }
-
-        return stringBuilder.append(result[2]).append(":").append(result[1]).append(":").append(result[0]).toString();
+    public long getDaysBeforeDeletion(User user) {
+        return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
     }
 
     @Scheduled(cron = ONE_TIME_PER_DAY_AT_1AM)
     public void permanentlyDeleteUsers() {
         userRepository.findAll().stream()
                 .filter(user -> user.getStatus().equals(DELETED) &&
-                        isDurationMoreThanNumberOfDaysToKeepDeletedUser(user.getLastOnlineTime()))
+                        isDurationMoreThanNumberOfDaysToKeepDeletedUser(user.getUpdated()))
                 .forEach(userRepository::delete);
     }
 

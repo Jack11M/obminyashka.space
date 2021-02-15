@@ -102,7 +102,10 @@ public class UserController extends BaseController{
     public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
             throws DataConflictException, IllegalOperationException {
         User user = getUser(principal.getName());
-//        checkUserStatusDeleted(user);
+        checkUserStatusIsDeleted(user);
+        if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
+            throw new DataConflictException(getMessageSource("email.old"));
+        }
         if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("email.duplicate"));
         }

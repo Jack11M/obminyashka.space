@@ -4,6 +4,7 @@ import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.model.enums.Status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +13,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
@@ -75,17 +78,46 @@ class UserServiceTest {
     void testDeleteUser_WhenDataCorrect_Successfully() {
         String message = userService.deleteUser(userWithOldPassword);
 
-        assertEquals(getExceptionParametrizedMessageSource("account.deleted",
-                LocalDate.now().plusDays(numberOfDaysToKeepDeletedUsers), userService.getTimeWhenUserShouldBeDeleted()), message);
+        assertEquals(getExceptionParametrizedMessageSource("account.deleted", numberOfDaysToKeepDeletedUsers),
+                message);
         assertEquals(DELETED, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
+    }
+
+    @Test
+    void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
+        User shouldBeDeleted = createUserForDeleting(DELETED,
+                LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers + 1));
+        User shouldNotBeDeleted0 = createUserForDeleting(ACTIVE, LocalDateTime.now());
+        User shouldNotBeDeleted1 = createUserForDeleting(DELETED,
+                LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers - 1));
+        User shouldNotBeDeleted2 = createUserForDeleting(ACTIVE,
+                LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers + 1));
+        List<User> users = List.of(shouldBeDeleted, shouldNotBeDeleted0, shouldNotBeDeleted1, shouldNotBeDeleted2);
+
+        when(userRepository.findAll()).thenReturn(users);
+        userService.permanentlyDeleteUsers();
+
+        verify(userRepository).delete(shouldBeDeleted);
+        verify(userRepository, never()).delete(shouldNotBeDeleted0);
+        verify(userRepository, never()).delete(shouldNotBeDeleted1);
+        verify(userRepository, never()).delete(shouldNotBeDeleted2);
     }
 
     private User createUserWithOldPassword() {
         userWithOldPassword = new User();
         userWithOldPassword.setPassword(bCryptPasswordEncoder.encode(CORRECT_OLD_PASSWORD));
+        userWithOldPassword.setUpdated(LocalDateTime.now());
 
         return userWithOldPassword;
+    }
+
+    private User createUserForDeleting(Status status, LocalDateTime updated) {
+        User user = new User();
+        user.setStatus(status);
+        user.setUpdated(updated);
+
+        return user;
     }
 }
 
