@@ -10,7 +10,7 @@ import { getProduct } from '../../REST/Resources/fetchProfile';
 
 import './ProductPage.scss';
 
-	const ProductPage = () => {
+const ProductPage = () => {
 	
 	const [ product , setProduct ] = useState( {} );
 	const [ photos , setPhotos ] = useState( [] );
