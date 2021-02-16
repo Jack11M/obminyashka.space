@@ -1,4 +1,4 @@
-import React , { useEffect } from 'react';
+import React , { useEffect , useState } from 'react';
 
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 import ProductDescription from './ProductDescription/ProductDescription';
@@ -10,28 +10,56 @@ import { getProduct } from '../../REST/Resources/fetchProfile';
 
 import './ProductPage.scss';
 
-const ProductPage = () => {
+	const ProductPage = () => {
 	
-	useEffect(() => {
-		getProduct(46).then(({data})=>{
-			console.log(data);
-		})
-	}, [])
+	const [ product , setProduct ] = useState( {} );
+	const [ photos , setPhotos ] = useState( [] );
+	const [ wishes , setWishes ] = useState( [] );
+	
+	useEffect( () => {
+		getProduct( 3 )
+			.then( ( { data } ) => {
+				const { images , wishesToExchange , ...rest } = data;
+				const arrWishes = wishesToExchange.split( ', ' );
+				if ( rest.readyForOffers ) {
+					arrWishes.push( 'ваши предложения' );
+				}
+				setWishes( arrWishes );
+				setPhotos( images );
+				setProduct( rest );
+			} )
+			.catch( e => { console.log( e ); } );
+	} , [] );
 	
 	return (
 		<div>
 			<section className = 'topSection'>
 				<div className = 'productPageContainer'>
-					<div className = 'breadСrumbs'>Категории / Детские вещи / Унисекс / <span>Кофта детская с кроликом</span>
+					<div className = 'breadСrumbs'>Категории /
+						Категория/
+						{ product.subcategoryId } /
+						<span>{ product.topic }</span>
 					</div>
 					<div className = 'productPageInner'>
 						<div className = 'carouselAndDescription'>
-							<ProductPhotoCarousel/>
-							<ProductDescription/>
+							<ProductPhotoCarousel photos = { photos }/>
+							<ProductDescription
+								title = { product.topic }
+								description = { product.description }
+							/>
 						</div>
 						<div className = 'ownerAndPost'>
-							<ProductOwnerData/>
-							<ProductPostData/>
+							<ProductOwnerData
+							
+							/>
+							<ProductPostData
+								title = { product.topic }
+								wishes = { wishes }
+								size = { product.size }
+								gender = { product.gender }
+								age = { product.age }
+								season = { product.season }
+							/>
 						</div>
 					</div>
 				</div>

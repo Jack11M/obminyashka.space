@@ -19,3 +19,7 @@ export const putUserInfo = ( data ) => {
 export const getProduct = (id) => {
 	return axiosInstance('get', 'adv', null, id)
 }
+
+export const createProduct = (data) => {
+	return axiosInstance('post', 'adv', data)
+}

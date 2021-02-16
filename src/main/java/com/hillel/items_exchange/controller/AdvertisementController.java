@@ -39,6 +39,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
+@CrossOrigin(origins = "http://localhost:3000") // return for begin
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;

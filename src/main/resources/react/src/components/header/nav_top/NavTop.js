@@ -8,6 +8,10 @@ import { getTranslatedText } from '../../local/localisation';
 import { route } from '../../../routes/routeConstants';
 
 import './navtop.scss';
+import { createProduct } from '../../../REST/Resources/fetchProfile';
+import { toggleButtonLog } from '../../../redux/Utils';
+
+// remove
 
 const NavTop = () => {
 	const {lang, isAuthenticated, username, usernameOrEmail} = useSelector(state => state.auth);
@@ -23,7 +27,32 @@ const NavTop = () => {
 							{ getTranslatedText('header.about', lang)}
 						</Link>
 						<Link to="/" className="navbar-top-link">
-							<i className="icon-heart"/>
+							<i className="icon-heart"
+							   onClick={()=> {
+								createProduct(JSON.stringify({
+										"age": "FROM_3_TO_5",
+										"dealType": "EXCHANGE",
+										"description": "Продам фліску з Кроликом в ідеалі!! Без дефектів і плям! Розмір вказаний 2/3 роки, ріст 92/98 см, можна одягати раніше! Є багато одягу, в оголошенні не все, запитуйте, скину фото)",
+										"gender": "FEMALE",
+										"id": 0,
+										"images": [],
+										"location": {
+											"area": "string",
+											"city": "string",
+											"district": "string",
+											"i18N": "EN",
+											"id": 0
+										},
+										"readyForOffers": true,
+										"season": "DEMI_SEASON",
+										"size": "110см",
+										"subcategoryId": 15,
+										"topic": "Кофта детская с кроликом",
+										"wishesToExchange": "ботинки зимние 250 мм на девочку, колготки 120см, шапочка для басейна, кофта для 7 лет, квартира в центре"
+									})
+								)
+									.then(data => console.log('created: ', data))
+							}}/>
 							{getTranslatedText('header.goodness', lang)}
 						</Link>
 					</div>

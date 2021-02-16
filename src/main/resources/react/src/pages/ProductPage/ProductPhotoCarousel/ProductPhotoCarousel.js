@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import ProductDB from '../MokDB';
 import './ProductPhotoCarousel.scss';
 
-const ProductPhotoCarousel = () => {
+const ProductPhotoCarousel = ({photos}) => {
 	
 	const [ state , setState ] = useState( {
 		photos : ProductDB.photo ,
