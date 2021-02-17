@@ -1,6 +1,6 @@
 import React from 'react';
 import './ProductDescription.scss';
-import ProductDB from '../MokDB';
+import { ProductDB } from '../MokDB';
 
 const ProductDescription = ( { title , description } ) => {
 	return (

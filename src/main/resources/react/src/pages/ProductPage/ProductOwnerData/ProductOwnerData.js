@@ -1,13 +1,13 @@
 import React from 'react';
+import { ProductDB } from '../MokDB';
+
 import './ProductOwnerData.scss';
-import ProductDB from '../MokDB';
 
 const ProductOwnerData = () => {
 	return (
 		<div className = 'productOwnerDataBox'>
 			<div className = 'productOwner'>
 				<div className = 'productOwnerAvatar'>
-					{/*вместо картинки передаётся путь*/}
 					<img src = { ProductDB.owner.avatar } alt = 'ownerAva'/>
 				</div>
 				<div className = 'productOwnerName'>
