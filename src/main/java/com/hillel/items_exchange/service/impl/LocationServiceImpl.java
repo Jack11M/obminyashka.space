@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertTo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -137,7 +137,7 @@ public class LocationServiceImpl implements LocationService {
     private List<Location> mapCreatingDataToLocations(String creatingData)
             throws InvalidLocationInitFileCreatingDataException {
         if (!isLocationDataValid(creatingData)) throw new InvalidLocationInitFileCreatingDataException(
-                getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+                getMessageSource("exception.invalid.locations.file.creating.data"));
         return locationStings
                 .stream()
                 .map(this::prepareLocation)

@@ -94,7 +94,7 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getExceptionMessageSource("invalid.username-or-password"));
+            throw new BadCredentialsException(getMessageSource("invalid.username-or-password"));
         }
     }
 
@@ -126,6 +126,6 @@ public class AuthController {
                     "user.created", userRegistrationDto.getUsername()), HttpStatus.CREATED);
         }
 
-        throw new BadRequestException(getExceptionMessageSource("user.not-registered"));
+        throw new BadRequestException(getMessageSource("user.not-registered"));
     }
 }

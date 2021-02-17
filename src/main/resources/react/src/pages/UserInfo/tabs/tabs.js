@@ -11,7 +11,7 @@ const Tabs = props => {
 
   return (
     <div className="tabs">
-      <NavLink to={`${url}${route.activity}`} exact >
+      <NavLink to={`${url}`} exact >
         <i className={"icon-activity"} />
         Моя активность
         <i className="active__cycle" />

@@ -25,7 +25,6 @@ const Login = () => {
 	const { lang, logEmail, logPassword, logCheckbox, disableLog } = useSelector( state => state.auth );
 	const { isFetching } = useSelector( state => state.ui );
 
-
 	useEffect( () => {
 		dispatch( clearValueLogin() );
 		dispatch( clearValueSignUp() );
@@ -85,7 +84,7 @@ const Login = () => {
 				</ExtraLink>
 			</Extra>
 			<Button
-				text={ isFetching? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
+				text={ isFetching ? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
 				disabling={ disableLog }
 				mb={ '64px' }
 				bold

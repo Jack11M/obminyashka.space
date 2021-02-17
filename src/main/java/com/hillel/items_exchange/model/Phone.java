@@ -17,9 +17,8 @@ public class Phone {
     private long id;
     @Column(name = "phone_number")
     private long phoneNumber;
-    private Boolean show;
     @Column(name = "default_phone")
-    private Boolean defaultPhone;
+    private boolean defaultPhone;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

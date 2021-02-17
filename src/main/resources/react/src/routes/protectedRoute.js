@@ -1,21 +1,12 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 
-import HomePage from '../pages/homepage/HomePage';
-import UserInfo from '../pages/UserInfo/UserInfo';
-import FourOhFourPage from '../pages/ErrorPages/FourOhFourPage';
-import { route } from './routeConstants';
-import ProductPage from '../pages/ProductPage/ProductPage';
+const Protected = ( { path, component, permission, redirect } ) => {
 
-const Protected = () => {
-	return (
-		<Switch>
-			<Route path={ route.home } component={ HomePage } exact/>
-			<Route path={route.userInfo} component={ UserInfo }/>
-			<Route path={route.productPage} component={ ProductPage }/>
-			<Route path={route.noMatch} component={ FourOhFourPage }/>
-		</Switch>
+	return permission ? (
+		<Route path={ path } component={ component }/>
+	) : (
+		<Redirect to={ redirect }/>
 	);
 };
-
 export default Protected;

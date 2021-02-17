@@ -1,7 +1,10 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.ChildDto;
+import com.hillel.items_exchange.dto.UserChangeEmailDto;
+import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.exception.DataConflictException;
 import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.exception.InvalidDtoException;
@@ -31,9 +34,7 @@ import javax.validation.groups.Default;
 import java.security.Principal;
 import java.util.List;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
 @RequestMapping("/user")
@@ -69,9 +70,47 @@ public class UserController {
             throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
         if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
-            throw new InvalidDtoException(getExceptionMessageSource("email.duplicate"));
+            throw new InvalidDtoException(getMessageSource("email.duplicate"));
         }
         return userService.update(userDto, user);
+    }
+
+    @PutMapping("/service/pass")
+    @ApiOperation(value = "Update a user password")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
+                                     Principal principal) throws InvalidDtoException {
+        User user = getUser(principal.getName());
+        if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
+            throw new InvalidDtoException(getMessageSource("incorrect.password"));
+        }
+
+        return userService.updateUserPassword(userChangePasswordDto, user);
+    }
+
+    @PutMapping("/service/email")
+    @ApiOperation(value = "Update a user email")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 409, message = "CONFLICT")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
+            throws DataConflictException {
+        User user = getUser(principal.getName());
+        if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
+            throw new DataConflictException(getMessageSource("exception.email.old"));
+        }
+        if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
+            throw new DataConflictException(getMessageSource("email.duplicate"));
+        }
+
+        return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
     @GetMapping("/child")
@@ -116,7 +155,7 @@ public class UserController {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
-                    getExceptionMessageSource("exception.invalid.dto"));
+                    getMessageSource("exception.invalid.dto"));
         }
         userService.removeChildren(user, childrenIdToRemove);
     }
@@ -146,6 +185,6 @@ public class UserController {
 
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
-                getExceptionMessageSource("exception.user.not-found")));
+                getMessageSource("exception.user.not-found")));
     }
 }

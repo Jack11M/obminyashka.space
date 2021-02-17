@@ -57,7 +57,7 @@ const NavTop = () => {
 						</Link>
 					</div>
 					<div id="personalArea">
-						<Link to={ isAuthenticated ? `${route.userInfo}${route.activity}`:route.login }>
+						<Link to={ isAuthenticated ? route.userInfo : route.login }>
 							<Avatar whatIsClass={ 'user-photo' } width={ 30 } height={ 28 }/>
 							<span>{myName || getTranslatedText('header.myOffice', lang)}</span>
 						</Link>
