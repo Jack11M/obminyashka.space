@@ -1,5 +1,16 @@
 package com.hillel.items_exchange.end2end;
 
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
@@ -10,22 +21,14 @@ import com.hillel.items_exchange.model.enums.Gender;
 import com.hillel.items_exchange.model.enums.Season;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.JsonConverter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import javax.transaction.Transactional;
-
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,14 +42,12 @@ class AdvertisementFlowTest {
     @Autowired
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
-    private AdvertisementDto existDto;
     private AdvertisementDto existDtoForUpdate;
     private long validId;
 
     @BeforeEach
     void setUp() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
-        existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
         validId = 1L;
     }
 
@@ -85,8 +86,11 @@ class AdvertisementFlowTest {
         mockMvc.perform(get("/adv/{advertisement_id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.advertisementId").value(1))
                 .andExpect(jsonPath("$.topic").value("topic"))
+                .andExpect(jsonPath("$.ownerName").value("super admin"))
+                .andExpect(jsonPath("$.age").value("14+"))
+                .andExpect(jsonPath("$.createdDate").value("01.01.2019"))
                 .andExpect(status().isOk());
     }
 
@@ -184,7 +188,7 @@ class AdvertisementFlowTest {
     @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
         mockMvc.perform(delete("/adv")
-                .content(asJsonString(existDto))
+                .content(asJsonString(validId))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());

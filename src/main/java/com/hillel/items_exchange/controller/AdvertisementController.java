@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.controller;
 
+import com.hillel.items_exchange.dto.AdvertisementDisplayDto;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.AdvertisementTitleDto;
@@ -29,7 +30,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 
@@ -85,7 +85,7 @@ public class AdvertisementController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<AdvertisementDto> getAdvertisement(
+    public ResponseEntity<AdvertisementDisplayDto> getAdvertisement(
             @ApiParam(value = "ID of existed advertisement")
             @PathVariable("advertisement_id") @PositiveOrZero(message = "{invalid.id}") Long id) {
         return ResponseEntity.of(advertisementService.findDtoById(id));
@@ -147,7 +147,7 @@ public class AdvertisementController {
             throws IllegalIdentifierException, IllegalOperationException {
 
         User owner = getUser(principal.getName());
-        validateAdvertisementOwner(dto, owner);
+        validateAdvertisementOwner(dto.getId(), owner);
         long subcategoryId = dto.getSubcategoryId();
         validateSubcategoryId(subcategoryId);
 
@@ -160,15 +160,13 @@ public class AdvertisementController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody AdvertisementDto dto, Principal principal)
+    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody Long advertisementId, Principal principal)
             throws IllegalOperationException {
 
         User owner = getUser(principal.getName());
-        validateAdvertisementOwner(dto, owner);
-        Optional<AdvertisementDto> byId = advertisementService.findDtoById(dto.getId());
-
-        if (byId.isPresent() && byId.get().equals(dto)) {
-            advertisementService.remove(dto.getId());
+        validateAdvertisementOwner(advertisementId, owner);
+        if (advertisementService.existById(advertisementId)) {
+            advertisementService.remove(advertisementId);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -197,9 +195,8 @@ public class AdvertisementController {
                 .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId, owner));
     }
 
-    private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws IllegalOperationException {
-
-        if (!advertisementService.isUserHasAdvertisementWithId(dto.getId(), owner)) {
+    private void validateAdvertisementOwner(long advertisementId, User owner) throws IllegalOperationException {
+        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, owner)) {
             throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
         }
     }
