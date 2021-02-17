@@ -95,11 +95,11 @@ public class UserService {
         return getMessageSource("changed.user.email");
     }
 
-    public String deleteUser(User user) {
+    public String deleteUserFirst(User user) {
         user.setStatus(DELETED);
         userRepository.saveAndFlush(user);
 
-        return getExceptionParametrizedMessageSource("account.deleted", getDaysBeforeDeletion(user));
+        return getExceptionParametrizedMessageSource("account.deleted.first", getDaysBeforeDeletion(user));
     }
 
     public long getDaysBeforeDeletion(User user) {

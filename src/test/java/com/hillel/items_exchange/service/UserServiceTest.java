@@ -23,8 +23,6 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
@@ -58,7 +56,7 @@ class UserServiceTest {
                 .build();
         String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
 
-        assertEquals(getMessageSource("password.changed"), message);
+        assertEquals(getMessageSource("changed.user.password"), message);
         assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
@@ -77,20 +75,10 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteUser_WhenDataCorrect_Successfully() {
-        String message = userService.deleteUser(userWithOldPassword);
+    void testDeleteUserFirst_WhenDataCorrect_Successfully() {
+        String message = userService.deleteUserFirst(userWithOldPassword);
 
-        assertEquals(getExceptionParametrizedMessageSource("account.deleted", numberOfDaysToKeepDeletedUsers),
-                message);
-        assertEquals(DELETED, userWithOldPassword.getStatus());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
-    }
-
-    @Test
-    void testDeleteUser_WhenDataCorrect_Successfully() {
-        String message = userService.deleteUser(userWithOldPassword);
-
-        assertEquals(getExceptionParametrizedMessageSource("account.deleted", numberOfDaysToKeepDeletedUsers),
+        assertEquals(getExceptionParametrizedMessageSource("account.deleted.first", numberOfDaysToKeepDeletedUsers),
                 message);
         assertEquals(DELETED, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
@@ -114,6 +102,15 @@ class UserServiceTest {
         verify(userRepository, never()).delete(shouldNotBeDeleted0);
         verify(userRepository, never()).delete(shouldNotBeDeleted1);
         verify(userRepository, never()).delete(shouldNotBeDeleted2);
+    }
+
+    @Test
+    void testRestoreUser_WhenDataCorrect_Successfully() {
+        String message = userService.restoreUser(userWithOldPassword);
+
+        assertEquals(getExceptionParametrizedMessageSource("account.restored"), message);
+        assertEquals(ACTIVE, userWithOldPassword.getStatus());
+        verify(userRepository).saveAndFlush(userWithOldPassword);
     }
 
     private User createUserWithOldPassword() {

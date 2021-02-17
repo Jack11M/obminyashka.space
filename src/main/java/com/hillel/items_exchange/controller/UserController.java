@@ -102,7 +102,7 @@ public class UserController extends BaseController{
     public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
             throws DataConflictException, IllegalOperationException {
         User user = getUser(principal.getName());
-        checkUserStatusIsDeleted(user);
+        checkIfUserStatusIsDeleted(user);
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("exception.email.old"));
         }
@@ -113,7 +113,7 @@ public class UserController extends BaseController{
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
-    @DeleteMapping("/service/delete")
+    @DeleteMapping("/service/delOrRest")
     @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -127,11 +127,11 @@ public class UserController extends BaseController{
             throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
         }
 
-        return userService.deleteUser(user);
+        return userService.deleteUserFirst(user);
     }
 
-    @PutMapping("/service/restore")
-    @ApiOperation("Restore user")
+    @PutMapping("/service/delOrRest")
+    @ApiOperation(value = "Restore user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
