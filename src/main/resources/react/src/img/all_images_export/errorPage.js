@@ -4,5 +4,6 @@ import orangeDots from "../errorPage/orange_dots.png";
 import shadow from "../errorPage/shadow.png";
 import shadowDark from "../errorPage/shadow_dark.png";
 import fourOhFour from "../errorPage/404.png";
+import somethingBad from "../errorPage/SomethingBad.png";
 
-export { greenDots, loop, orangeDots, shadow, shadowDark, fourOhFour };
+export { greenDots, loop, orangeDots, shadow, shadowDark, fourOhFour, somethingBad };

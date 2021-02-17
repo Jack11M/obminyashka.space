@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.util;
 
 import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.model.Gender;
+import com.hillel.items_exchange.model.enums.Gender;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

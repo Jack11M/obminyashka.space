@@ -39,7 +39,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     @Override
     public boolean isSubcategoryDeletable(long id) {
         return subcategoryRepository.findById(id)
-                .map(subcategory -> subcategory.getProducts().isEmpty())
+                .map(subcategory -> subcategory.getAdvertisements().isEmpty())
                 .orElse(false);
     }
 

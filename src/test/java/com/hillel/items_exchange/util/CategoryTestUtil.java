@@ -99,7 +99,7 @@ public class CategoryTestUtil {
         final Subcategory newSubcategory = new Subcategory();
         newSubcategory.setId(subcategoryId);
         newSubcategory.setName(subcategoryName);
-        newSubcategory.setProducts(Collections.emptyList());
+        newSubcategory.setAdvertisements(Collections.emptyList());
         return newSubcategory;
     }
 

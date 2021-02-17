@@ -68,7 +68,7 @@ class SubcategoryControllerIntegrationTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @DataSet("database_init.yml")
-    void deleteSubcategoryById_whenSubcategoryHasProducts_shouldReturnBadRequest() throws Exception {
+    void deleteSubcategoryById_whenSubcategoryHasAdvertisements_shouldReturnBadRequest() throws Exception {
         mockMvc.perform(delete("/subcategory/{subcategory_id}", SUBCATEGORY_ID_FOR_DELETING)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())

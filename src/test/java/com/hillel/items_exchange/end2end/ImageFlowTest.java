@@ -40,8 +40,8 @@ class ImageFlowTest {
 
     @Test
     @Transactional
-    void getByProductId_shouldReturnAllImages() throws Exception {
-        mockMvc.perform(get("/image/{product_id}/resource", 1L))
+    void getByAdvertisementId_shouldReturnAllImages() throws Exception {
+        mockMvc.perform(get("/image/{advertisement_id}/resource", 1L))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -51,24 +51,22 @@ class ImageFlowTest {
 
     @Test
     @Transactional
-    void getImageLinksByProductId_shouldReturnAllImageLinks() throws Exception {
-        mockMvc.perform(get("/image/{product_id}", 1L)
+    void getImageLinksByAdvertisementId_shouldReturnAllImageLinks() throws Exception {
+        mockMvc.perform(get("/image/{advertisement_id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].resource").value(Base64.encodeString(TEST_JPEG)))
-                .andExpect(jsonPath("$[0].defaultPhoto").value(false))
                 .andExpect(jsonPath("$[1].id").value("2"))
-                .andExpect(jsonPath("$[1].resource").value(Base64.encodeString(TEST_PNG)))
-                .andExpect(jsonPath("$[1].defaultPhoto").value(true));
+                .andExpect(jsonPath("$[1].resource").value(Base64.encodeString(TEST_PNG)));
     }
 
     @WithMockUser("admin")
     @Test
     void saveImages_shouldReturn415WhenNotSupportedType() throws Exception {
-        mockMvc.perform(multipart("/image/{product_id}", 1L)
+        mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
                 .file(txt))
                 .andDo(print())
                 .andExpect(status().isUnsupportedMediaType());

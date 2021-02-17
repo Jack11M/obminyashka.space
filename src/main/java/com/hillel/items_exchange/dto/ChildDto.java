@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hillel.items_exchange.annotation.Zero;
 import com.hillel.items_exchange.mapper.transfer.Exist;
 import com.hillel.items_exchange.mapper.transfer.New;
-import com.hillel.items_exchange.model.Gender;
+import com.hillel.items_exchange.model.enums.Gender;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
