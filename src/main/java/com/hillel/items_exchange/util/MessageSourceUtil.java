@@ -18,7 +18,7 @@ public class MessageSourceUtil {
         mSource = messageSource;
     }
 
-    public static String getExceptionMessageSource(String message) {
+    public static String getMessageSource(String message) {
         return mSource.getMessage(message,
                 null,
                 LocaleContextHolder.getLocale());
@@ -31,10 +31,10 @@ public class MessageSourceUtil {
     }
 
     public static String getExceptionMessageSourceWithId(long id, String message) {
-        return getExceptionMessageSource(message) + id;
+        return getMessageSource(message) + id;
     }
 
     public static String getExceptionMessageSourceWithAdditionalInfo(String message, String additionalInfo) {
-        return getExceptionMessageSource(message) + additionalInfo;
+        return getMessageSource(message) + additionalInfo;
     }
 }

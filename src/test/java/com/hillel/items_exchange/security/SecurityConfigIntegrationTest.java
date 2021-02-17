@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -141,7 +141,7 @@ class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertEquals(getExceptionMessageSource("token.not.start.with.bearer"), errorMessage);
+        assertEquals(getMessageSource("token.not.start.with.bearer"), errorMessage);
     }
 
     @Test
@@ -156,7 +156,7 @@ class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertEquals(getExceptionMessageSource("token.signature.not.valid"), errorMessage);
+        assertEquals(getMessageSource("token.signature.not.valid"), errorMessage);
     }
 
     @Test
@@ -172,7 +172,7 @@ class SecurityConfigIntegrationTest {
                 .getResponse()
                 .getErrorMessage();
 
-        assertTrue(Objects.requireNonNull(errorMessage).startsWith(getExceptionMessageSource("token.expired")));
+        assertTrue(Objects.requireNonNull(errorMessage).startsWith(getMessageSource("token.expired")));
     }
 
     private void createValidUserLoginDto() {

@@ -119,7 +119,7 @@ public class LocationController {
     public ResponseEntity<String> createLocationsInitFile(@RequestParam("data") @NotEmpty String rawData) throws InvalidLocationInitFileCreatingDataException {
         if (!locationService.isLocationDataValid(rawData)) {
             throw new InvalidLocationInitFileCreatingDataException(
-                    getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+                    getMessageSource("exception.invalid.locations.file.creating.data"));
         }
         try {
             return new ResponseEntity<>(locationService.createParsedLocationsFile(rawData), HttpStatus.OK);

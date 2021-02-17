@@ -88,6 +88,7 @@ advertisement:
 user:
   - id: 1
     username: 'admin'
+    # Password encoded from string "@kuIOIY*h986"
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'admin@gmail.com'
     online: 'false'

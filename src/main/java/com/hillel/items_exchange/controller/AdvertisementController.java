@@ -189,7 +189,7 @@ public class AdvertisementController {
             Principal principal) throws BadRequestException {
         User owner = getUser(principal.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
-            throw new BadRequestException(getExceptionMessageSource("exception.advertisement-image.id.not-found"));
+            throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
         }
         owner.getAdvertisements().parallelStream()
                 .filter(advertisement -> advertisement.getId() == advertisementId)
@@ -200,7 +200,7 @@ public class AdvertisementController {
     private void validateAdvertisementOwner(AdvertisementDto dto, User owner) throws IllegalOperationException {
 
         if (!advertisementService.isUserHasAdvertisementWithId(dto.getId(), owner)) {
-            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
     }
 
@@ -229,7 +229,7 @@ public class AdvertisementController {
                 .map(ImageDto::getId)
                 .allMatch(imageId -> imageId == 0);
         if (!isAllIdsEqualZero) {
-            throw new IllegalIdentifierException(MessageSourceUtil.getExceptionMessageSource("new.image.id.not-zero"));
+            throw new IllegalIdentifierException(MessageSourceUtil.getMessageSource("new.image.id.not-zero"));
         }
     }
 }

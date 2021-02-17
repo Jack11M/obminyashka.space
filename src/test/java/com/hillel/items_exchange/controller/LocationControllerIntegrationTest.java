@@ -19,7 +19,7 @@ import java.nio.file.Path;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.LocationDtoCreatingUtil.*;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -221,7 +221,7 @@ class LocationControllerIntegrationTest {
                 .param("data", "NOT VALID DATA"))
                 .andDo(print()).andReturn();
         assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
-        String stringToSearch = getExceptionMessageSource("exception.invalid.locations.file.creating.data");
+        String stringToSearch = getMessageSource("exception.invalid.locations.file.creating.data");
         assertTrue(mvcResult.getResponse().getContentAsString().contains(stringToSearch));
     }
 }

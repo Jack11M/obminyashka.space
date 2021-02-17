@@ -1,9 +1,7 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
@@ -21,12 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -34,7 +27,7 @@ import static com.hillel.items_exchange.mapper.UserMapper.convertDto;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
 import static com.hillel.items_exchange.util.Collections.extractAll;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +68,20 @@ public class UserService {
         addNewChildren(user, newChildren);
         addNewPhones(user, newPhones);
         return mapUserToDto(userRepository.saveAndFlush(user));
+    }
+
+    public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
+        userRepository.saveAndFlush(user);
+
+        return getMessageSource("changed.user.password");
+    }
+
+    public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
+        user.setEmail(userChangeEmailDto.getNewEmail());
+        userRepository.saveAndFlush(user);
+
+        return getMessageSource("changed.user.email");
     }
 
     public boolean existsByUsername(String username) {
@@ -135,7 +142,7 @@ public class UserService {
 
         if (!errorResponse.isEmpty()) {
             throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.field.change") + errorResponse);
+                    getMessageSource("exception.illegal.field.change") + errorResponse);
         }
     }
 
@@ -151,7 +158,7 @@ public class UserService {
         boolean isNewUser = user.getUpdated().equals(user.getCreated());
         if ((!isNewUser) && (hasNewChildren || hasNewPhones)) {
             throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.children.phones.change"));
+                    getMessageSource("exception.illegal.children.phones.change"));
         }
     }
 
