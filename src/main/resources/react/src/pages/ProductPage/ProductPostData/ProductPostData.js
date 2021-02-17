@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProductPostData.scss';
 import Button from '../../../components/button/Button';
-import ProductDB from '../MokDB';
+import { ProductDB } from '../MokDB';
 
 const ProductPostData = () => {
 	return (
