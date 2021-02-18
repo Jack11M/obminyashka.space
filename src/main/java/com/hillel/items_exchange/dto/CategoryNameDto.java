@@ -8,17 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import com.hillel.items_exchange.annotation.Zero;
 import com.hillel.items_exchange.mapper.transfer.New;
 import io.swagger.annotations.ApiModelProperty;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryNameDto {
 
     @Zero(groups = New.class, message = "{invalid.new.entity.id}")

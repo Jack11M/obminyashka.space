@@ -7,11 +7,9 @@ import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.AdvertisementTitleDto;
 import com.hillel.items_exchange.dto.CategoryNameDto;
 import com.hillel.items_exchange.dto.LocationDto;
-import com.hillel.items_exchange.dto.SubcategoryDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Location;
-import com.hillel.items_exchange.model.Subcategory;
 import com.hillel.items_exchange.model.User;
 import com.hillel.items_exchange.model.enums.AgeRange;
 import com.hillel.items_exchange.model.enums.Status;
@@ -219,45 +217,34 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     private AdvertisementDisplayDto buildAdvertisementDisplayDto(Advertisement advertisement) {
-        Location advLocation = advertisement.getLocation();
-        long id = advertisement.getId();
-        Subcategory subcategory = advertisement.getSubcategory();
         String createdDate = advertisement.getCreated().format(DateTimeFormatter.ofPattern(dateFormat));
         String age = Optional.ofNullable(advertisement.getAge()).map(AgeRange::getValue).orElse("");
-        return AdvertisementDisplayDto.builder()
-                .advertisementId(id)
-                .images(imageService.getByAdvertisementId(id))
-                .topic(advertisement.getTopic())
-                .description(advertisement.getDescription())
-                .location(convertTo(advLocation, LocationDto.class))
-                .ownerName(getOwnerFullName(advertisement))
+        AdvertisementDisplayDto displayDto = AdvertisementDisplayDto.builder()
+                .advertisementId(advertisement.getId())
+                .ownerName(getOwnerFullName(advertisement.getUser()))
                 .ownerAvatar(advertisement.getUser().getAvatarImage())
                 .age(age)
-                .dealType(advertisement.getDealType())
-                .season(advertisement.getSeason())
-                .size(advertisement.getSize())
-                .gender(advertisement.getGender())
-                .phone(getOwnerPhone(advertisement))
-                .readyForOffers(advertisement.isReadyForOffers())
-                .wishesToExchange(advertisement.getWishesToExchange())
-                .subcategory(convertTo(subcategory, SubcategoryDto.class))
-                .category(convertTo(subcategory.getCategory(), CategoryNameDto.class))
+                .phone(getOwnerPhone(advertisement.getUser()))
+                .category(convertTo(advertisement.getSubcategory().getCategory(), CategoryNameDto.class))
                 .createdDate(createdDate)
                 .build();
+
+        AdvertisementDisplayDto mappedDto = modelMapper.map(advertisement, AdvertisementDisplayDto.class);
+        BeanUtils.copyProperties(mappedDto, displayDto, "createdDate", "phone", "age", "ownerName",
+                "category");
+        return displayDto;
     }
 
-    private String getOwnerPhone(Advertisement advertisement) {
-        return advertisement.getUser().getPhones().stream()
+    private String getOwnerPhone(User user) {
+        var phones = user.getPhones();
+        return phones.stream()
                 .findFirst()
                 .map(phone -> String.valueOf(phone.getPhoneNumber()))
                 .orElse("");
     }
 
-    private String getOwnerFullName(Advertisement advertisement) {
-        User owner = advertisement.getUser();
-        String firstName = Optional.of(owner.getFirstName()).orElse("");
-        String lastName = Optional.of(owner.getLastName()).orElse("");
-        String ownerName = String.format("%s %s", firstName, lastName).trim();
-        return !ownerName.isBlank() ? ownerName : owner.getUsername();
+    private String getOwnerFullName(User user) {
+        String formatted = String.format("%s %s", user.getFirstName(), user.getLastName());
+        return formatted.isBlank() ? user.getUsername() : formatted.trim();
     }
 }

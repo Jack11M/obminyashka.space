@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.List;
@@ -154,22 +155,20 @@ public class AdvertisementController {
         return advertisementService.updateAdvertisement(dto);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{advertisement_id}")
     @ApiOperation(value = "Delete an existed advertisement")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
-    public ResponseEntity<HttpStatus> deleteAdvertisement(@Valid @RequestBody Long advertisementId, Principal principal)
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAdvertisement(@PathVariable("advertisement_id") @Positive(message = "{invalid.exist.id}") long id,
+                                    Principal principal)
             throws IllegalOperationException {
 
         User owner = getUser(principal.getName());
-        validateAdvertisementOwner(advertisementId, owner);
-        if (advertisementService.existById(advertisementId)) {
-            advertisementService.remove(advertisementId);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        validateAdvertisementOwner(id, owner);
+        advertisementService.remove(id);
     }
 
     @PostMapping("/default-image/{advertisementId}/{imageId}")
