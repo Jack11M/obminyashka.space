@@ -4,14 +4,12 @@ import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.exception.DataConflictException;
-import com.hillel.items_exchange.exception.ElementsNumberExceedException;
-import com.hillel.items_exchange.exception.IllegalOperationException;
-import com.hillel.items_exchange.exception.InvalidDtoException;
+import com.hillel.items_exchange.exception.*;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.mapper.transfer.New;
 import com.hillel.items_exchange.model.Child;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,11 +24,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -48,6 +48,7 @@ public class UserController {
     private int maxChildrenAmount;
 
     private final UserService userService;
+    private final ImageService imageService;
 
     @GetMapping("/my-info")
     @ApiOperation(value = "Find a registered requested user's data")
@@ -176,6 +177,29 @@ public class UserController {
                             "Not all children from dto present in User"));
         }
         return userService.updateChildren(user, childrenDto);
+    }
+
+    @PutMapping("/service/avatar")
+    @ApiOperation(value = "Update a user avatar image")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "ACCEPTED"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
+            @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
+    public ResponseEntity<String> updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) {
+        User user = getUser(principal.getName());
+        try {
+            byte[] newAvatarImage = imageService.compress(image);
+            userService.setUserAvatar(newAvatarImage, user);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IOException e) {
+            final String msg = "There was an error during extraction of gained images!";
+            log.error(msg, e);
+            return new ResponseEntity<>(msg, HttpStatus.NOT_ACCEPTABLE);
+        } catch (UnsupportedMediaTypeException e) {
+            log.warn(e.getLocalizedMessage(), e);
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
     }
 
     private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {
