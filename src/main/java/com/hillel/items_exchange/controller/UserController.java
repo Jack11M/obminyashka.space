@@ -179,7 +179,7 @@ public class UserController {
         return userService.updateChildren(user, childrenDto);
     }
 
-    @PutMapping("/service/avatar")
+    @PostMapping("/service/avatar")
     @ApiOperation(value = "Update a user avatar image")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
