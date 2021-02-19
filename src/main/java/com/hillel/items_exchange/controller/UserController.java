@@ -186,20 +186,11 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
-    public ResponseEntity<String> updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) {
+    @ResponseStatus(HttpStatus.OK)
+    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) throws IOException, UnsupportedMediaTypeException {
         User user = getUser(principal.getName());
-        try {
-            byte[] newAvatarImage = imageService.compress(image);
-            userService.setUserAvatar(newAvatarImage, user);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IOException e) {
-            final String msg = "There was an error during extraction of gained images!";
-            log.error(msg, e);
-            return new ResponseEntity<>(msg, HttpStatus.NOT_ACCEPTABLE);
-        } catch (UnsupportedMediaTypeException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-        }
+        byte[] newAvatarImage = imageService.compress(image);
+        userService.setUserAvatar(newAvatarImage, user);
     }
 
     private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {

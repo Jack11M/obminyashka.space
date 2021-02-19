@@ -484,11 +484,12 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void setUserAvatar_whenReceivedBMPImage_shouldThrowUnsupportedMediaTypeException() throws Exception {
         MockMultipartFile bmp = new MockMultipartFile("file", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
-        mockMvc.perform(multipart(PATH_USER_CHANGE_AVATAR)
+        MvcResult mvcResult = mockMvc.perform(multipart(PATH_USER_CHANGE_AVATAR)
                 .file(bmp)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isUnsupportedMediaType())
                 .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Received unsupported image types: image/bmp"));
     }
 }
