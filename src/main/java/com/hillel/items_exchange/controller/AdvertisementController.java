@@ -39,7 +39,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class AdvertisementController {
+public class AdvertisementController extends BaseController {
 
     private final AdvertisementService advertisementService;
     private final UserService userService;
@@ -126,10 +126,12 @@ public class AdvertisementController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
     public AdvertisementDto createAdvertisement(@Validated(New.class) @RequestBody AdvertisementDto dto, Principal principal)
-            throws IllegalIdentifierException {
+            throws IllegalIdentifierException, IllegalOperationException {
 
         long subcategoryId = dto.getSubcategoryId();
 
+        User owner = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(owner);
         validateNewAdvertisementInternalEntitiesIdsAreZero(dto);
         validateSubcategoryId(subcategoryId);
 
@@ -147,6 +149,7 @@ public class AdvertisementController {
             throws IllegalIdentifierException, IllegalOperationException {
 
         User owner = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(owner);
         validateAdvertisementOwner(dto, owner);
         long subcategoryId = dto.getSubcategoryId();
         validateSubcategoryId(subcategoryId);
@@ -164,6 +167,7 @@ public class AdvertisementController {
             throws IllegalOperationException {
 
         User owner = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(owner);
         validateAdvertisementOwner(dto, owner);
         Optional<AdvertisementDto> byId = advertisementService.findDtoById(dto.getId());
 
@@ -186,8 +190,9 @@ public class AdvertisementController {
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long advertisementId,
             @ApiParam(value = "ID of existed image")
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
-            Principal principal) throws BadRequestException {
+            Principal principal) throws BadRequestException, IllegalOperationException {
         User owner = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(owner);
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
             throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
         }

@@ -68,6 +68,7 @@ public class UserController extends BaseController{
     public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
             throw new InvalidDtoException(getMessageSource("email.duplicate"));
         }
@@ -82,8 +83,9 @@ public class UserController extends BaseController{
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     Principal principal) throws InvalidDtoException {
+                                     Principal principal) throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
             throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
         }
@@ -113,16 +115,17 @@ public class UserController extends BaseController{
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
-    @DeleteMapping("/service/delOrRest")
+    @DeleteMapping("/service/delete")
     @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String deleteUser(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
-            throws InvalidDtoException {
+    public String deleteUserFirst(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
+            throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword())) {
             throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
         }
@@ -130,7 +133,7 @@ public class UserController extends BaseController{
         return userService.deleteUserFirst(user);
     }
 
-    @PutMapping("/service/delOrRest")
+    @PutMapping("/service/restore")
     @ApiOperation(value = "Restore user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -167,12 +170,15 @@ public class UserController extends BaseController{
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
     public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
+                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException,
+            IllegalOperationException {
         User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
             throw new ElementsNumberExceedException(getExceptionParametrizedMessageSource(
@@ -185,11 +191,14 @@ public class UserController extends BaseController{
     @ApiOperation(value = "Delete child data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "NO CONTENT"),
-            @ApiResponse(code = 400, message = "BAD REQUEST")})
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
-                                           List<@NotNull Long> childrenIdToRemove, Principal principal) {
+                                           List<@NotNull Long> childrenIdToRemove, Principal principal)
+            throws IllegalOperationException {
         final User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
                     getMessageSource("exception.invalid.dto"));
@@ -201,11 +210,14 @@ public class UserController extends BaseController{
     @ApiOperation(value = "Delete child data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST")})
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                           List<@Valid ChildDto> childrenDto, Principal principal) {
+                                           List<@Valid ChildDto> childrenDto, Principal principal)
+            throws IllegalOperationException {
         final User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(

@@ -3,7 +3,6 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dao.UserRepository;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDeleteOrRestoreDto;
@@ -50,7 +49,8 @@ class UserControllerTest {
 
     public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
     public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
-    public static final String USER_SERVICE_DEL_OR_REST = "/user/service/delOrRest";
+    public static final String USER_SERVICE_DELETE = "/user/service/delete";
+    public static final String USER_SERVICE_RESTORE = "/user/service/restore";
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,8 +58,6 @@ class UserControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
 
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
@@ -72,7 +70,6 @@ class UserControllerTest {
     private String notValidUpdatingChildDtoJson;
     private String badTotalAmountChildDtoJson;
     private String badAmountChildDtoJson;
-    private User deletedUser;
 
     @BeforeEach
     void setUp() {
@@ -82,7 +79,6 @@ class UserControllerTest {
         notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
         badTotalAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount - 1);
         badAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount + 1);
-        deletedUser = userRepository.findByEmail("deletedUser@gmail.com").orElseThrow();
     }
 
     @Test
@@ -208,6 +204,25 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void updateUserInfo_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
+                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(),
+                status().isForbidden())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
@@ -245,6 +260,28 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void addChildren_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(post("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validCreatingChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
@@ -255,6 +292,27 @@ class UserControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void removeChild_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(delete("/user/child/3")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
     @Test
@@ -276,6 +334,29 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[1].id").value("2"))
                 .andExpect(jsonPath("$[1].birthDate").value("2018-04-04"))
                 .andExpect(jsonPath("$[1].sex").value("FEMALE"));
+    }
+
+
+    @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void updateChild_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(put("/user/child/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(validUpdatingChildDtoJson)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
     @Test
@@ -429,6 +510,27 @@ class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void updateUserPassword_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
+                NEW_PASSWORD,
+                NEW_PASSWORD);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
+                status().isForbidden())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
+    }
+
+    @Test
     @WithMockUser(username = "user")
     @Transactional
     @DataSet({"database_init.yml"})
@@ -500,6 +602,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andReturn();
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
@@ -515,7 +618,7 @@ class UserControllerTest {
     void deleteUserFirst_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteOrRestoreDto,
                 status().isAccepted())
                 .andDo(print())
                 .andReturn();
@@ -533,7 +636,7 @@ class UserControllerTest {
             throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteOrRestoreDto,
                 status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -549,7 +652,7 @@ class UserControllerTest {
             throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteOrRestoreDto,
                 status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -564,7 +667,7 @@ class UserControllerTest {
      * has to work before than condition
      * if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword()))}
      * in
-     * {@link com.hillel.items_exchange.controller.UserController#deleteUser(UserDeleteOrRestoreDto, Principal)}
+     * {@link com.hillel.items_exchange.controller.UserController#deleteUserFirst(UserDeleteOrRestoreDto, Principal)}
      */
     @Test
     @WithMockUser(username = "admin")
@@ -574,7 +677,7 @@ class UserControllerTest {
             throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteOrRestoreDto,
                 status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -587,12 +690,32 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void deleteUserFirst_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
+                CORRECT_OLD_PASSWORD);
+        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteOrRestoreDto,
+                status().isForbidden())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
+    }
+
+    @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = {"database_init.yml", "user/deleted_user_restore_expected.yml"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void restoreUser_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteOrRestoreDto,
                 status().isAccepted())
                 .andDo(print())
                 .andReturn();
@@ -607,7 +730,7 @@ class UserControllerTest {
     void restoreUser_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteOrRestoreDto,
                 status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -623,7 +746,7 @@ class UserControllerTest {
             throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteOrRestoreDto,
                 status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -640,7 +763,7 @@ class UserControllerTest {
             throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteOrRestoreDto,
                 status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -656,7 +779,7 @@ class UserControllerTest {
     void restoreUser_WhenUserHasNotStatusDeletedShouldThrowIllegalOperationException() throws Exception {
         UserDeleteOrRestoreDto userDeleteOrRestoreDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_DEL_OR_REST, userDeleteOrRestoreDto,
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteOrRestoreDto,
                 status().isForbidden())
                 .andDo(print())
                 .andReturn();

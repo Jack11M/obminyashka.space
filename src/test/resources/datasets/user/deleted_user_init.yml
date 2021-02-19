@@ -1,3 +1,22 @@
+advertisement:
+  - id: 6
+    topic: 'topic'
+    description: 'description'
+    deal_type: 'EXCHANGE'
+    ready_for_offers: 'true'
+    wishes_to_exchange: 'shoes'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    user_id: 5
+    location_id: 1
+    age: 'OLDER_THAN_14'
+    gender: 'MALE'
+    size: '40'
+    season: 'SUMMER'
+    subcategory_id: 1
+    default_photo: null
+
 user:
   - id: 5
     username: 'deletedUser'
@@ -13,4 +32,10 @@ user:
     created: '2019-01-01 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'DELETED'
-    role_id: 1
+    role_id: 2
+
+child:
+  - id: 3
+    sex: MALE
+    birth_date: '2019-01-01'
+    user_id: 5
