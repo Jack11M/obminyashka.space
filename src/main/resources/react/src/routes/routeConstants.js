@@ -7,5 +7,6 @@ export const route = {
 	myFavorite: '/favorites',
 	mySettings: '/settings',
 	exit: '/exit',
+	productPage: '/product_page',
 	noMatch: '*'
 };

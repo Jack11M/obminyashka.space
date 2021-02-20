@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class UserLoginDtoValidator implements Validator {
         if (!userService.existsByUsernameOrEmailAndPassword(userLoginDto.getUsernameOrEmail(),
                 userLoginDto.getPassword())) {
 
-            throw new UnauthorizedException(getExceptionMessageSource("invalid.username-or-password"));
+            throw new UnauthorizedException(getMessageSource("invalid.username-or-password"));
         }
     }
 }

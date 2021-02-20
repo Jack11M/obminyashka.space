@@ -186,7 +186,7 @@ public class AdvertisementController {
             Principal principal) throws BadRequestException {
         User owner = getUser(principal.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
-            throw new BadRequestException(getExceptionMessageSource("exception.advertisement-image.id.not-found"));
+            throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
         }
         owner.getAdvertisements().parallelStream()
                 .filter(advertisement -> advertisement.getId() == advertisementId)
@@ -225,7 +225,7 @@ public class AdvertisementController {
                 .map(ImageDto::getId)
                 .allMatch(imageId -> imageId == 0);
         if (!isAllIdsEqualZero) {
-            throw new IllegalIdentifierException(MessageSourceUtil.getExceptionMessageSource("new.image.id.not-zero"));
+            throw new IllegalIdentifierException(MessageSourceUtil.getMessageSource("new.image.id.not-zero"));
         }
     }
 }

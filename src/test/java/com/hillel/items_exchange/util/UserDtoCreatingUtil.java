@@ -1,8 +1,6 @@
 package com.hillel.items_exchange.util;
 
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.PhoneDto;
-import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.model.enums.Gender;
 
 import java.time.LocalDate;
@@ -23,12 +21,18 @@ public class UserDtoCreatingUtil {
     public static final String NEW_USERNAME = "newUsername123";
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
+    public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
+    public static final String OLD_ADMIN_VALID_EMAIL = "admin@gmail.com";
     public static final LocalDateTime NEW_LAST_ONLINE_TIME = LocalDateTime.now();
     public static final String NEW_VALID_NAME_WITH_APOSTROPHE = "Мар'яна";
     public static final String NEW_VALID_NAME_WITH_HYPHEN_MINUS = "Квітка-Основ'яненко";
     public static final String NEW_INVALID_SHORT_NAME = "n";
     public static final String NEW_INVALID_TWO_WORDS_NAME = "new Name";
     public static final byte[] BLANK_AVATAR_IMAGE = "test image png".getBytes();
+    public static final String CORRECT_OLD_PASSWORD = "@kuIOIY*h986";
+    public static final String WRONG_OLD_PASSWORD = "123456wWWW";
+    public static final String NEW_PASSWORD = "123456wW";
+    public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
 
     public static UserDto createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones() {
         return getBuild("admin", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
@@ -109,6 +113,22 @@ public class UserDtoCreatingUtil {
                 .lastOnlineTime(lastOnlineTime)
                 .children(children)
                 .phones(phones)
+                .build();
+    }
+
+    public static UserChangePasswordDto createUserChangePasswordDto(String password, String newPassword,
+                                                                    String confirmNewPassword) {
+        return UserChangePasswordDto.builder()
+                .oldPassword(password)
+                .newPassword(newPassword)
+                .confirmNewPassword(confirmNewPassword)
+                .build();
+    }
+
+    public static UserChangeEmailDto createUserChangeEmailDto(String newEmail, String newEmailConfirmation) {
+        return UserChangeEmailDto.builder()
+                .newEmail(newEmail)
+                .newEmailConfirmation(newEmailConfirmation)
                 .build();
     }
 }

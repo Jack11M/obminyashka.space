@@ -3,7 +3,8 @@ package com.hillel.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.dto.UserDto;
+import com.hillel.items_exchange.dto.UserChangeEmailDto;
+import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,8 +27,8 @@ import java.util.Objects;
 
 import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,8 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class UserControllerTest {
 
+    public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
+    public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
@@ -109,7 +115,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "username"));
+                getMessageSource("exception.illegal.field.change") + "username"));
     }
 
     @Test
@@ -121,7 +127,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "lastOnlineTime"));
+                getMessageSource("exception.illegal.field.change") + "lastOnlineTime"));
     }
 
     @Test
@@ -133,7 +139,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "children"));
+                getMessageSource("exception.illegal.field.change") + "children"));
     }
 
     @Test
@@ -145,7 +151,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString().contains(
-                getExceptionMessageSource("exception.illegal.field.change") + "phones"));
+                getMessageSource("exception.illegal.field.change") + "phones"));
     }
 
     @Test
@@ -177,8 +183,8 @@ class UserControllerTest {
                 .andReturn();
     }
 
-    private ResultActions getResultActions(HttpMethod httpMethod, String path,
-                                           UserDto dto, ResultMatcher matcher) throws Exception {
+    private <T> ResultActions getResultActions(HttpMethod httpMethod, String path,
+                                           T dto, ResultMatcher matcher) throws Exception {
         MockHttpServletRequestBuilder builder = request(httpMethod, path)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -269,7 +275,7 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
         assertTrue(mvcResult.getResponse().getContentAsString()
-                .contains(getExceptionMessageSource("invalid.new.entity.id")));
+                .contains(getMessageSource("invalid.new.entity.id")));
     }
 
     @Test
@@ -298,7 +304,7 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getExceptionMessageSource("exception.invalid.dto")));
+                .contains(getMessageSource("exception.invalid.dto")));
     }
 
     @Test
@@ -326,7 +332,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString()
-                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
+                .contains(getMessageSource("exception.illegal.children.phones.change")));
     }
 
     @Test
@@ -338,7 +344,7 @@ class UserControllerTest {
                 createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
                 .andReturn();
         assertTrue(result.getResponse().getContentAsString()
-                .contains(getExceptionMessageSource("exception.illegal.children.phones.change")));
+                .contains(getMessageSource("exception.illegal.children.phones.change")));
     }
 
     @Test
@@ -352,5 +358,119 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.children", hasSize(1)))
                 .andExpect(jsonPath("$.phones", hasSize(1)));
+            }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = {"user/changing_password_or_email_expected.yml"},
+            ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
+    void updateUserPassword_WhenDataCorrect_Successfully() throws Exception {
+        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
+                NEW_PASSWORD,
+                NEW_PASSWORD);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
+                status().isAccepted())
+                .andDo(print())
+                .andReturn();
+
+        assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(),
+                "$2a$10$cQvCmoVUukbO/1vTCxeu3OmwJBwAf1S5wabTrL8vUsEZn5DBzlYLW"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.password")));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserPassword_WhenOldPasswordWrong_ShouldThrowInvalidDtoException() throws Exception {
+        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(WRONG_OLD_PASSWORD,
+                NEW_PASSWORD,
+                NEW_PASSWORD);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
+                status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
+        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
+                NEW_PASSWORD,
+                WRONG_NEW_PASSWORD_CONFIRMATION);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
+                status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("different.passwords")));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @Transactional
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = {"user/changing_password_or_email_expected.yml"},
+            ignoreCols = {"password", "lastOnlineTime", "updated"})
+    void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
+        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
+                status().isAccepted())
+                .andDo(print())
+                .andReturn();
+
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.email")));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
+        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
+                status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("invalid.confirm.email")));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
+        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
+                status().isConflict())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("exception.email.old")));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @Transactional
+    @DataSet("database_init.yml")
+    void updateUserEmail_WhenUserEnteredExistedEmail_ShouldThrowDataConflictException() throws Exception {
+        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL);
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
+                status().isConflict())
+                .andDo(print())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("email.duplicate")));
     }
 }

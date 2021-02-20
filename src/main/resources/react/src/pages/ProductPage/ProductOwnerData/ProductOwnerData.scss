@@ -1,0 +1,60 @@
+
+.productOwnerDataBox {
+  background-color: #FDFCFF;
+  height: 200px;
+}
+
+.productOwner {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.productOwnerAvatar {
+  padding: 35px 15px 20px 35px;
+}
+
+.productOwnerAvatar img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #C4C4C4;
+}
+
+.productOwnerName {
+  padding-top: 30px;
+}
+
+.productOwnerName h2 {
+  font-family: Roboto, sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 40px;
+}
+
+.postData {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.postReqData {
+  padding: 5px 20px 15px 30px;
+}
+
+.postResData {
+  padding: 5px 20px 15px 30px;
+}
+
+.postData ul {
+  font-family: Roboto, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.postReqData span {
+  color: #8F8F8F;
+}
