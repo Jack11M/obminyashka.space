@@ -187,8 +187,7 @@ class AdvertisementFlowTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
-        mockMvc.perform(delete("/adv")
-                .content(asJsonString(validId))
+        mockMvc.perform(delete("/adv/{advertisement_id}", validId)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());

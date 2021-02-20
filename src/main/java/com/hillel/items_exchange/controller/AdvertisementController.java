@@ -196,7 +196,7 @@ public class AdvertisementController {
 
     private void validateAdvertisementOwner(long advertisementId, User owner) throws IllegalOperationException {
         if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, owner)) {
-            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
     }
 
