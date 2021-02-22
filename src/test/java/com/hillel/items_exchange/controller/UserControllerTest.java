@@ -1,7 +1,9 @@
 package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.DataSetFormat;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import com.github.database.rider.core.api.exporter.ExportDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
@@ -49,6 +52,8 @@ class UserControllerTest {
 
     public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
     public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
+    public static final String PATH_USER_CHANGE_AVATAR = "/user/service/avatar";
+
     public static final String USER_SERVICE_DELETE = "/user/service/delete";
     public static final String USER_SERVICE_RESTORE = "/user/service/restore";
 
@@ -589,6 +594,19 @@ class UserControllerTest {
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("email.duplicate")));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    @WithMockUser(username = "admin")
+    void setUserAvatar_whenReceivedBMPImage_shouldThrowUnsupportedMediaTypeException() throws Exception {
+        MockMultipartFile bmp = new MockMultipartFile("file", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
+        MvcResult mvcResult = mockMvc.perform(multipart(PATH_USER_CHANGE_AVATAR)
+                .file(bmp)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isUnsupportedMediaType())
+                .andReturn();
     }
 
     @Test
