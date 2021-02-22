@@ -490,6 +490,5 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnsupportedMediaType())
                 .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Received unsupported image types: image/bmp"));
     }
 }
