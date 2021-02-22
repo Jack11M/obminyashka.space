@@ -1,6 +1,8 @@
-import React , { useEffect , useState } from 'react';
-import './ProductPostData.scss';
+import React from 'react';
+
 import Button from '../../../components/button/Button';
+
+import './ProductPostData.scss';
 
 const ProductPostData = ( { title , wishes , gender , age , season , size } ) => {
 	

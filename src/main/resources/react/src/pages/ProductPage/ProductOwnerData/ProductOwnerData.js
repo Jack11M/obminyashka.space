@@ -1,17 +1,16 @@
 import React from 'react';
-import { ProductDB } from '../MokDB';
 
 import './ProductOwnerData.scss';
 
-const ProductOwnerData = () => {
+const ProductOwnerData = ( { ava , name , date , city , phone } ) => {
 	return (
 		<div className = 'productOwnerDataBox'>
 			<div className = 'productOwner'>
 				<div className = 'productOwnerAvatar'>
-					<img src = { ProductDB.owner.avatar } alt = 'ownerAva'/>
+					<img src = { ava } alt = 'ownerAva'/>
 				</div>
 				<div className = 'productOwnerName'>
-					<h2>{ ProductDB.owner.name }</h2>
+					<h2>{ name }</h2>
 				</div>
 			</div>
 			<div className = 'postData'>
@@ -24,9 +23,9 @@ const ProductOwnerData = () => {
 				</div>
 				<div className = 'postResData'>
 					<ul>
-						<li>{ ProductDB.postData.date }</li>
-						<li>{ ProductDB.postData.city }</li>
-						<li>{ ProductDB.postData.telephone }</li>
+						<li>{ date }</li>
+						<li>{ city }</li>
+						<li>{ phone }</li>
 					</ul>
 				</div>
 			</div>

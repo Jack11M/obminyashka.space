@@ -17,13 +17,10 @@ const MappingArr = ( { photos , showBigImg , bigPhoto } ) => {
 	let variable;
 	
 	if ( !photos.length ) {
-		console.log( 'zero' );
 		variable = <NoPhoto/>;
-		
 	}
 	else
 		if ( photos.length < 5 ) {
-			console.log( 'small' );
 			variable = <>
 				{ photos.map( ( photo , idx ) =>
 					<div key = { `index-${ idx }` }>
@@ -38,7 +35,6 @@ const MappingArr = ( { photos , showBigImg , bigPhoto } ) => {
 			</>;
 		}
 		else {
-			console.log( 'big' );
 			variable = <Slider { ...settings } className = 'productPhotoSlider'>
 				{ photos.map( ( photo , idx ) =>
 					<div key = { `index-${ idx }` }>
@@ -52,7 +48,6 @@ const MappingArr = ( { photos , showBigImg , bigPhoto } ) => {
 				) }
 			</Slider>;
 		}
-	
 	return (
 		variable
 	);

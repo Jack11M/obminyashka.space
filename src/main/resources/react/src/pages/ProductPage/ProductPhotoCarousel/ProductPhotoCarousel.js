@@ -1,24 +1,24 @@
 import React , { useState } from 'react';
 
-import { ProductDB } from '../MokDB';
 import MappingArr from '../mappingArr';
-
-import './ProductPhotoCarousel.scss';
 import NoPhoto from './NoPhoto';
 
-const ProductPhotoCarousel = () => {
+import './ProductPhotoCarousel.scss';
+
+const ProductPhotoCarousel = ( photos ) => {
 	
 	const [ state , setState ] = useState( {
-		photos : ProductDB.photo ,
-		bigPhoto : ProductDB.photo[0]
+		photos : photos ,
+		bigPhoto : photos[0]
 	} );
 	
 	const showBigImg = ( id ) => {
-		setState( { ...state , bigPhoto : ProductDB.photo[id] } );
+		setState( { ...state , bigPhoto : photos[id] } );
 	};
+	
 	let noArr;
 	if ( !state.photos.length ) {
-		noArr = <NoPhoto noPhoto='bigNoPhoto'/>;
+		noArr = <NoPhoto noPhoto = 'bigNoPhoto' noPhotoImg = 'bigNoPhotoImg'/>;
 	}
 	else {
 		noArr = <img src = { state.bigPhoto } alt = 'activeSlide'/>;
