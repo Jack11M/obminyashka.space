@@ -40,7 +40,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @RequiredArgsConstructor
 public class UserService {
 
-    public static final String ONE_TIME_PER_DAY_AT_1AM = "0 0 3 * * * ";
+    public static final String ONE_TIME_PER_DAY_AT_3_AM = "0 0 3 * * * ";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
@@ -106,7 +106,7 @@ public class UserService {
         return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
     }
 
-    @Scheduled(cron = ONE_TIME_PER_DAY_AT_1AM)
+    @Scheduled(cron = ONE_TIME_PER_DAY_AT_3_AM)
     public void permanentlyDeleteUsers() {
         userRepository.findAll().stream()
                 .filter(user -> user.getStatus().equals(DELETED) &&
