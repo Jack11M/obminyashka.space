@@ -10,9 +10,12 @@
   justify-content: space-between;
 }
 
-.productPhotoSlideBig img {
-  width: 600px;
-  height: 680px;
+.productPhotoSlideBig {
+
+  img {
+    width: 600px;
+    height: 680px;
+  }
 }
 
 .sliderPosition {
@@ -69,4 +72,17 @@
 
 .selected {
   border: 2px solid #FA9E25;
+}
+
+.noPhoto {
+  margin: 10px 0;
+  width: 138px;
+  height: 138px;
+  background-color: #FFFFFF;
+
+  .noPhotoImg {
+    width: 40%;
+    height: 40%;
+    margin: 30% 30%;
+  }
 }

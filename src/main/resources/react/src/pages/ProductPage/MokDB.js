@@ -1,7 +1,7 @@
 import { lot1 , lot10 , lot2 , lot3 , lot4 , lot5 , lot6 } from '../../img/all_images_export/cards';
 
 export const ProductDB = {
-	photo : [ lot1 , lot2 , lot3 , lot4 , lot5 , lot6 ] ,
+	photo : [] ,
 	title : 'some text' ,
 	description : [ 'some text' , 'some text some text some text some text' ] ,
 	owner : {

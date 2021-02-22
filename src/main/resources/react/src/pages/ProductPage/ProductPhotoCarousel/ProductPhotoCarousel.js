@@ -1,51 +1,42 @@
 import React , { useState } from 'react';
-import Slider from 'react-slick';
 
 import { ProductDB } from '../MokDB';
-import './ProductPhotoCarousel.scss';
+import MappingArr from '../mappingArr';
 
-const ProductPhotoCarousel = ({photos}) => {
+import './ProductPhotoCarousel.scss';
+import NoPhoto from './NoPhoto';
+
+const ProductPhotoCarousel = () => {
 	
 	const [ state , setState ] = useState( {
 		photos : ProductDB.photo ,
 		bigPhoto : ProductDB.photo[0]
 	} );
 	
-	const settings = {
-		dots : false ,
-		infinite : true ,
-		slidesToShow : 4 ,
-		slidesToScroll : 1 ,
-		centerMode : false ,
-		vertical : true ,
-		verticalSwiping : true ,
-	};
-	
 	const showBigImg = ( id ) => {
 		setState( { ...state , bigPhoto : ProductDB.photo[id] } );
 	};
+	let noArr;
+	if ( !state.photos.length ) {
+		noArr = <NoPhoto noPhoto='bigNoPhoto'/>;
+	}
+	else {
+		noArr = <img src = { state.bigPhoto } alt = 'activeSlide'/>;
+	}
 	
 	return (
 		<div className = 'carouselBox'>
 			<div className = 'sliderPosition'>
-				<Slider { ...settings } className = 'productPhotoSlider'>
-					{ state.photos.map( ( photo , idx ) =>
-						<div key = { `index-${ idx }` }>
-							<img
-								src = { photo }
-								alt = { idx }
-								onClick = { () => showBigImg( idx ) }
-								className = { state.bigPhoto === photo ? 'selected' : '' }
-							/>
-						</div>
-					) }
-				</Slider>
+				<MappingArr
+					photos = { state.photos }
+					showBigImg = { showBigImg }
+					bigPhoto = { state.bigPhoto }
+				/>
 			</div>
 			<div className = 'productPhotoSlideBig'>
-				<img src = { state.bigPhoto } alt = 'activeSlide'/>
+				{ noArr }
 			</div>
 		</div>
 	);
 };
-
 export default ProductPhotoCarousel;
