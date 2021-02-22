@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import javax.transaction.Transactional;
 import java.util.Objects;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -99,7 +99,7 @@ class ImageFlowTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -129,7 +129,7 @@ class ImageFlowTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 }

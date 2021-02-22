@@ -18,8 +18,8 @@ import java.util.List;
 
 import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 import static com.hillel.items_exchange.model.enums.Status.DELETED;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -78,7 +78,7 @@ class UserServiceTest {
     void testDeleteUserFirst_WhenDataCorrect_Successfully() {
         String message = userService.deleteUserFirst(userWithOldPassword);
 
-        assertEquals(getExceptionParametrizedMessageSource("account.deleted.first", numberOfDaysToKeepDeletedUsers),
+        assertEquals(getParametrizedMessageSource("account.deleted.first", numberOfDaysToKeepDeletedUsers),
                 message);
         assertEquals(DELETED, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
@@ -108,7 +108,7 @@ class UserServiceTest {
     void testRestoreUser_WhenDataCorrect_Successfully() {
         String message = userService.restoreUser(userWithOldPassword);
 
-        assertEquals(getExceptionParametrizedMessageSource("account.restored"), message);
+        assertEquals(getMessageSource("account.restored"), message);
         assertEquals(ACTIVE, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }

@@ -1,14 +1,6 @@
 package com.hillel.items_exchange.controller;
 
 import com.hillel.items_exchange.dto.*;
-import com.hillel.items_exchange.exception.DataConflictException;
-import com.hillel.items_exchange.exception.ElementsNumberExceedException;
-import com.hillel.items_exchange.exception.IllegalOperationException;
-import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.UserChangeEmailDto;
-import com.hillel.items_exchange.dto.UserChangePasswordDto;
-import com.hillel.items_exchange.dto.UserDto;
 import com.hillel.items_exchange.exception.*;
 import com.hillel.items_exchange.mapper.UtilMapper;
 import com.hillel.items_exchange.mapper.transfer.New;
@@ -190,7 +182,7 @@ public class UserController extends BaseController{
         checkIfUserStatusIsDeleted(user);
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
-            throw new ElementsNumberExceedException(getExceptionParametrizedMessageSource(
+            throw new ElementsNumberExceedException(getParametrizedMessageSource(
                     "exception.children-amount", maxChildrenAmount));
         }
         return userService.addChildren(user, childrenDto);
@@ -244,8 +236,9 @@ public class UserController extends BaseController{
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) throws IOException, UnsupportedMediaTypeException {
+    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) throws IOException, UnsupportedMediaTypeException, IllegalOperationException {
         User user = getUser(principal.getName());
+        checkIfUserStatusIsDeleted(user);
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
     }

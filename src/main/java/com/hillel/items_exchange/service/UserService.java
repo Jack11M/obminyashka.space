@@ -32,8 +32,8 @@ import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
 import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
@@ -99,7 +99,7 @@ public class UserService {
         user.setStatus(DELETED);
         userRepository.saveAndFlush(user);
 
-        return getExceptionParametrizedMessageSource("account.deleted.first", getDaysBeforeDeletion(user));
+        return getParametrizedMessageSource("account.deleted.first", getDaysBeforeDeletion(user));
     }
 
     public long getDaysBeforeDeletion(User user) {

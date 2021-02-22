@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
 @RequestMapping("/image")
@@ -97,7 +97,7 @@ public class ImageController extends BaseController {
                     .orElseThrow(ClassNotFoundException::new);
             if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
                 throw new ElementsNumberExceedException(
-                        getExceptionParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
+                        getParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
             }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToAdvertisement(advToSaveImages, compressedImages);
