@@ -1,9 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.DataSetFormat;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.core.api.exporter.ExportDataSet;
 import com.github.database.rider.spring.api.DBRider;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
@@ -34,8 +32,8 @@ import java.util.Objects;
 
 import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static com.hillel.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -53,7 +51,6 @@ class UserControllerTest {
     public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
     public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
     public static final String PATH_USER_CHANGE_AVATAR = "/user/service/avatar";
-
     public static final String USER_SERVICE_DELETE = "/user/service/delete";
     public static final String USER_SERVICE_RESTORE = "/user/service/restore";
 
@@ -223,7 +220,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -282,7 +279,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -316,7 +313,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -360,7 +357,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -420,7 +417,7 @@ class UserControllerTest {
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getExceptionParametrizedMessageSource("exception.children-amount",
+                .contains(getParametrizedMessageSource("exception.children-amount",
                         maxChildrenAmount)));
     }
 
@@ -531,7 +528,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -613,6 +610,28 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
+    void setUserAvatar_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+        MockMultipartFile bmp = new MockMultipartFile("file", "image-bmp.bmp",
+                "image/bmp", "image bmp".getBytes());
+        MvcResult mvcResult = mockMvc.perform(multipart(PATH_USER_CHANGE_AVATAR)
+                .file(bmp)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andReturn();
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+
+        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
+    }
+
+    @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     void updateUserEmail_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
         UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
@@ -624,7 +643,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
@@ -642,7 +661,7 @@ class UserControllerTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getExceptionParametrizedMessageSource("account.deleted.first",
+                getParametrizedMessageSource("account.deleted.first",
                         numberOfDaysToKeepDeletedUsers)));
     }
 
@@ -720,7 +739,7 @@ class UserControllerTest {
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getExceptionParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
     }
 
