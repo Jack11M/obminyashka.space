@@ -41,7 +41,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class ImageController {
+public class ImageController extends BaseController {
     private final ImageService imageService;
     private final UserService userService;
     private final AdvertisementService advertisementService;
@@ -82,13 +82,16 @@ public class ImageController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> saveImages(@PathVariable("advertisement_id")
                                              @PositiveOrZero(message = "{invalid.id}") long advertisementId,
                                              @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
-            throws ElementsNumberExceedException {
+            throws ElementsNumberExceedException, IllegalOperationException {
 
+        User owner = advertisementService.findById(advertisementId).orElseThrow().getUser();
+        checkIfUserStatusIsDeleted(owner);
         try {
             final Advertisement advToSaveImages = advertisementService.findById(advertisementId)
                     .orElseThrow(ClassNotFoundException::new);
@@ -125,6 +128,8 @@ public class ImageController {
                              @RequestParam("ids") List<Long> imageIdList, Principal principal)
             throws IllegalOperationException {
 
+        User owner = userService.findByUsernameOrEmail(principal.getName()).orElseThrow();
+        checkIfUserStatusIsDeleted(owner);
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
             throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
