@@ -52,6 +52,38 @@
                     padding: 10px;
                 }
             }
+
+            .files {
+                .file-input {
+                    display: none;
+                }
+
+                .files_label {
+                    position: relative;
+                    display: block;
+                    width: 152px;
+                    height: 159px;
+                    border: 2px dashed #C4C4C4;
+                    border-radius: 19px;
+                    background: url(../../img/cards/lot15.jpg);
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    background-position: center;
+
+                    span {
+                        position: absolute;
+                        top: -5px;
+                        right: -5px;
+                        display: block;
+                        width: 22px;
+                        height: 22px;
+                        background:#fff;
+                        border-radius: 50%;
+                        border: 1px solid #BABABA;
+                    }
+
+                }
+            }
         }
     }
 }
