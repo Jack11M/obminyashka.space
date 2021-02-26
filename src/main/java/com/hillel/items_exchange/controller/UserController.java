@@ -40,7 +40,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class UserController extends BaseController{
+public class UserController {
 
     public static final String INCORRECT_PASSWORD = "incorrect.password";
     @Value("${max.children.amount}")
@@ -69,7 +69,6 @@ public class UserController extends BaseController{
     public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
             throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
             throw new InvalidDtoException(getMessageSource("email.duplicate"));
         }
@@ -84,9 +83,8 @@ public class UserController extends BaseController{
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     Principal principal) throws InvalidDtoException, IllegalOperationException {
+                                     Principal principal) throws InvalidDtoException {
         User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
             throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
         }
@@ -103,9 +101,8 @@ public class UserController extends BaseController{
             @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
-            throws DataConflictException, IllegalOperationException {
+            throws DataConflictException {
         User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("exception.email.old"));
         }
@@ -124,9 +121,8 @@ public class UserController extends BaseController{
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String deleteUserFirst(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
-            throws InvalidDtoException, IllegalOperationException {
+            throws InvalidDtoException {
         User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword())) {
             throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
         }
@@ -176,10 +172,8 @@ public class UserController extends BaseController{
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
     public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException,
-            IllegalOperationException {
+                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
         User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
             throw new ElementsNumberExceedException(getParametrizedMessageSource(
@@ -196,10 +190,8 @@ public class UserController extends BaseController{
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
-                                           List<@NotNull Long> childrenIdToRemove, Principal principal)
-            throws IllegalOperationException {
+                                           List<@NotNull Long> childrenIdToRemove, Principal principal) {
         final User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
                     getMessageSource("exception.invalid.dto"));
@@ -215,10 +207,8 @@ public class UserController extends BaseController{
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                           List<@Valid ChildDto> childrenDto, Principal principal)
-            throws IllegalOperationException {
+                                           List<@Valid ChildDto> childrenDto, Principal principal) {
         final User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(
@@ -236,9 +226,8 @@ public class UserController extends BaseController{
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) throws IOException, UnsupportedMediaTypeException, IllegalOperationException {
+    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) throws IOException, UnsupportedMediaTypeException {
         User user = getUser(principal.getName());
-        checkIfUserStatusIsDeleted(user);
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
     }

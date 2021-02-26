@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -131,6 +130,34 @@ class AdvertisementFlowTest {
     }
 
     @Test
+    @WithMockUser(username = "deletedUser")
+    @Transactional
+    @DataSet({"database_init.yml", "user/deleted_user_init.yml"})
+    void getFirst10BySearchParameters_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
+        AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
+                .season(Season.SUMMER)
+                .gender(Gender.FEMALE)
+                .age(AgeRange.FROM_10_TO_12)
+                .build();
+
+        MvcResult mvcResult = mockMvc.perform(post("/adv/filter")
+                .content(asJsonString(dto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
+                .concat(". ")
+                .concat(getParametrizedMessageSource("account.deleted.first",
+                        userService.getDaysBeforeDeletion(deletedUser)))));
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
@@ -149,7 +176,7 @@ class AdvertisementFlowTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet({"database_init.yml", "user/deleted_user_init.yml"})
-    void createAdvertisement_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+    void createAdvertisement_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,10 +184,11 @@ class AdvertisementFlowTest {
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
 
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
@@ -214,7 +242,7 @@ class AdvertisementFlowTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet({"database_init.yml", "user/deleted_user_init.yml"})
-    void updateAdvertisement_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+    void updateAdvertisement_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         existDtoForUpdate = AdvertisementDtoCreatingUtil
                 .createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory();
 
@@ -225,10 +253,11 @@ class AdvertisementFlowTest {
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
 
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
@@ -250,7 +279,7 @@ class AdvertisementFlowTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet({"database_init.yml", "user/deleted_user_init.yml"})
-    void deleteAdvertisement_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+    void deleteAdvertisement_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         AdvertisementDto existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
 
         MvcResult mvcResult = mockMvc.perform(delete("/adv/{advertisementId}", validId6)
@@ -259,10 +288,11 @@ class AdvertisementFlowTest {
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
 
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
@@ -283,16 +313,17 @@ class AdvertisementFlowTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet({"database_init.yml", "user/deleted_user_init.yml"})
-    void setDefaultImage_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+    void setDefaultImage_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}",
                 validId6, validId))
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
 
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));

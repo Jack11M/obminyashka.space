@@ -41,7 +41,7 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMe
 @RequiredArgsConstructor
 @Validated
 @Slf4j
-public class ImageController extends BaseController {
+public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
     private final AdvertisementService advertisementService;
@@ -90,8 +90,6 @@ public class ImageController extends BaseController {
                                              @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
             throws ElementsNumberExceedException, IllegalOperationException {
 
-        User owner = advertisementService.findById(advertisementId).orElseThrow().getUser();
-        checkIfUserStatusIsDeleted(owner);
         try {
             final Advertisement advToSaveImages = advertisementService.findById(advertisementId)
                     .orElseThrow(ClassNotFoundException::new);
@@ -128,8 +126,6 @@ public class ImageController extends BaseController {
                              @RequestParam("ids") List<Long> imageIdList, Principal principal)
             throws IllegalOperationException {
 
-        User owner = userService.findByUsernameOrEmail(principal.getName()).orElseThrow();
-        checkIfUserStatusIsDeleted(owner);
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
             throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }

@@ -1,8 +1,10 @@
 package com.hillel.items_exchange.config;
 
+import com.hillel.items_exchange.security.jwt.DeletedUserFilterConfigurator;
 import com.hillel.items_exchange.security.jwt.JwtAuthenticationEntryPoint;
 import com.hillel.items_exchange.security.jwt.JwtConfigurator;
 import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
+import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_USER = "hasRole('ROLE_USER')";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final UserService userService;
 
     @Bean
     @Override
@@ -68,6 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurator(jwtTokenProvider))
+                .and()
+                .apply(new DeletedUserFilterConfigurator(userService))
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }

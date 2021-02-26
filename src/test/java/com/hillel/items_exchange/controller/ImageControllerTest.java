@@ -83,7 +83,7 @@ class ImageControllerTest {
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
 
-        verify(advertisementService, times(2)).findById(anyLong());
+        verify(advertisementService).findById(anyLong());
         assertThat(mvcResult.getResolvedException(), is(instanceOf(ElementsNumberExceedException.class)));
     }
 
@@ -100,7 +100,7 @@ class ImageControllerTest {
 
         verify(imageService).compress(anyList());
         verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
-        verify(advertisementService, times(2)).findById(anyLong());
+        verify(advertisementService).findById(anyLong());
         assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0));
     }
 
@@ -111,8 +111,6 @@ class ImageControllerTest {
                 .file(jpeg))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-
-        verify(advertisementService).findById(anyLong());
     }
 
     private User createUser() {

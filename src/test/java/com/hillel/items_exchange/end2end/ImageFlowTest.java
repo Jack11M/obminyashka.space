@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
@@ -87,17 +86,17 @@ class ImageFlowTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void saveImages_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+    void saveImages_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         MvcResult mvcResult = mockMvc.perform(multipart("/image/{advertisement_id}",
                 DELETED_USER_ADVERTISEMENT_NUMBER)
                 .file(txt))
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
         User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
 
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
@@ -117,17 +116,18 @@ class ImageFlowTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void deleteImages_WhenUserHasStatusDeleted_ShouldThrowIllegalOperationException() throws Exception {
+    void deleteImages_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         MvcResult mvcResult = mockMvc.perform(delete("/image/{advertisement_id}",
                 DELETED_USER_ADVERTISEMENT_NUMBER)
                 .param("ids", "6"))
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
 
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")
+        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+
+        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
                         userService.getDaysBeforeDeletion(deletedUser)))));
