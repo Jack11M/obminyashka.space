@@ -139,8 +139,8 @@ public class UserDtoCreatingUtil {
                 .build();
     }
 
-    public static UserDeleteOrRestoreDto createUserDeleteOrRestoreDto(String password, String confirmPassword) {
-        return UserDeleteOrRestoreDto.builder()
+    public static UserDeleteFlowDto createUserDeleteOrRestoreDto(String password, String confirmPassword) {
+        return UserDeleteFlowDto.builder()
                 .password(password)
                 .confirmPassword(confirmPassword)
                 .build();

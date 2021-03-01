@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldMatch(first = "password", second = "confirmPassword", message = "{different.passwords}")
-public class UserDeleteOrRestoreDto {
+public class UserDeleteFlowDto {
 
     @NotEmpty(message = "{empty.password}")
     @Size(min = 8, max = 30, message = "{invalid.password.size}")

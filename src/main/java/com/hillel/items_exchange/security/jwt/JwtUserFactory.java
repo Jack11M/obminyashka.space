@@ -33,11 +33,8 @@ public final class JwtUserFactory {
     }
 
     private static boolean isUserEnabled(User user) {
-        boolean isUserEnabled = false;
-        if (user.getStatus().equals(Status.ACTIVE) || user.getStatus().equals(Status.DELETED)) {
-            isUserEnabled = true;
-        }
+        Status userStatus = user.getStatus();
 
-        return isUserEnabled;
+        return userStatus.equals(Status.ACTIVE) || userStatus.equals(Status.DELETED);
     }
 }

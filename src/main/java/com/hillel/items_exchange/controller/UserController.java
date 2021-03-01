@@ -42,7 +42,8 @@ import static com.hillel.items_exchange.util.MessageSourceUtil.*;
 @Slf4j
 public class UserController {
 
-    public static final String INCORRECT_PASSWORD = "incorrect.password";
+    @Value("incorrect.password")
+    public String incorrectPassword;
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
 
@@ -86,7 +87,7 @@ public class UserController {
                                      Principal principal) throws InvalidDtoException {
         User user = getUser(principal.getName());
         if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
-            throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
+            throw new InvalidDtoException(getMessageSource(incorrectPassword));
         }
 
         return userService.updateUserPassword(userChangePasswordDto, user);
@@ -120,11 +121,11 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String deleteUserFirst(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
+    public String deleteUserFirst(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
             throws InvalidDtoException {
         User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword())) {
-            throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
+        if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
+            throw new InvalidDtoException(getMessageSource(incorrectPassword));
         }
 
         return userService.deleteUserFirst(user);
@@ -137,11 +138,11 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String restoreUser(@Valid @RequestBody UserDeleteOrRestoreDto userDeleteOrRestoreDto, Principal principal)
+    public String restoreUser(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
             throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword())) {
-            throw new InvalidDtoException(getMessageSource(INCORRECT_PASSWORD));
+        if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
+            throw new InvalidDtoException(getMessageSource(incorrectPassword));
         }
         if (!user.getStatus().equals(DELETED)) {
             throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
