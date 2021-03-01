@@ -96,10 +96,7 @@ class ImageFlowTest {
         User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
         String contentAsString = mvcResult.getResponse().getContentAsString();
 
-        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
-                .concat(". ")
-                .concat(getParametrizedMessageSource("account.deleted.first",
-                        userService.getDaysBeforeDeletion(deletedUser)))));
+        assertTrue(contentAsString.contains(getIllegalOperationMessage(deletedUser)));
     }
 
     @WithMockUser("admin")
@@ -127,9 +124,13 @@ class ImageFlowTest {
         User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
         String contentAsString = mvcResult.getResponse().getContentAsString();
 
-        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
+        assertTrue(contentAsString.contains(getIllegalOperationMessage(deletedUser)));
+    }
+
+    private String getIllegalOperationMessage(User deletedUser) {
+        return getMessageSource("exception.illegal.operation")
                 .concat(". ")
                 .concat(getParametrizedMessageSource("account.deleted.first",
-                        userService.getDaysBeforeDeletion(deletedUser)))));
+                        userService.getDaysBeforeDeletion(deletedUser)));
     }
 }
