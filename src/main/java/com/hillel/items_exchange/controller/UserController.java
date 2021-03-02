@@ -201,7 +201,7 @@ public class UserController {
     }
 
     @PutMapping("/child")
-    @ApiOperation(value = "Delete child data for a registered requested user")
+    @ApiOperation(value = "Update child data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),

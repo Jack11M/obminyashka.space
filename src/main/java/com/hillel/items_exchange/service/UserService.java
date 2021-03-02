@@ -40,6 +40,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @RequiredArgsConstructor
 public class UserService {
 
+    //TODO move this constant to application.properties
     public static final String ONE_TIME_PER_DAY_AT_3_AM = "0 0 3 * * * ";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;

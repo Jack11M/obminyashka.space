@@ -15,6 +15,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Optional;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -34,15 +35,16 @@ public class DeletedUserFilter extends GenericFilterBean {
 
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String username = userDetails.getUsername();
 
+            String username = userDetails.getUsername();
             Optional<User> userOptional = userService.findByUsernameOrEmail(username);
+            PrintWriter writer = response.getWriter();
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 if (user.getStatus().equals(Status.DELETED) &&
                         !isUserAllowedToDoOperation(request, requestedURL)) {
-                    response.getWriter().write(getMessageSource("exception.illegal.operation")
+                    writer.write(getMessageSource("exception.illegal.operation")
                             .concat(". ")
                             .concat(getParametrizedMessageSource("account.deleted.first",
                                     userService.getDaysBeforeDeletion(user))));
@@ -58,12 +60,7 @@ public class DeletedUserFilter extends GenericFilterBean {
     }
 
     private boolean isUserAllowedToDoOperation(HttpServletRequest request, String requestedURL) {
-        boolean isUserAllowedToDoOperation = false;
-        if (request.getMethod().equals("PUT") && requestedURL.contains("/user/service/restore") ||
-                request.getMethod().equals("GET")) {
-            isUserAllowedToDoOperation = true;
-        }
-
-        return isUserAllowedToDoOperation;
+        return request.getMethod().equals("PUT") && requestedURL.contains("/user/service/restore") ||
+                request.getMethod().equals("GET");
     }
 }
