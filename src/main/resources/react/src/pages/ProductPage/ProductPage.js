@@ -10,8 +10,6 @@ import { getProduct } from '../../REST/Resources/fetchProfile';
 
 import './ProductPage.scss';
 
-import { lot3 } from '../../img/all_images_export/cards';
-
 const ProductPage = () => {
 	
 	const [ product , setProduct ] = useState( {} );
@@ -20,11 +18,12 @@ const ProductPage = () => {
 	const [ location , setLocation ] = useState( {} );
 	const [ category , setCategory ] = useState( {} );
 	const [ subcategory , setSubcategory ] = useState( {} );
+	// const [ ownerAvatar , setOwnerAvatar ] = useState( );
 	
 	useEffect( () => {
 		getProduct( 4 )
 			.then( ( { data } ) => {
-				const { images , wishesToExchange , category , subcategory , location, ...rest } = data;
+				const { images , wishesToExchange , category , subcategory , location , ...rest } = data;
 				const arrWishes = wishesToExchange.split( ', ' );
 				if ( rest.readyForOffers ) {
 					arrWishes.push( 'your suggestions' );
@@ -33,8 +32,10 @@ const ProductPage = () => {
 				setPhotos( images );
 				setProduct( rest );
 				setCategory( category );
-				setSubcategory(subcategory);
-				setLocation(location);
+				setSubcategory( subcategory );
+				setLocation( location );
+				// setOwnerAvatar( ownerAvatar );
+				
 			} )
 			.catch( e => { console.log( e ); } );
 	} , [] );
@@ -55,7 +56,7 @@ const ProductPage = () => {
 						</div>
 						<div className = 'ownerAndPost'>
 							<ProductOwnerData
-								ava = {lot3}
+								ava = { product.ownerAvatar }
 								name = { product.ownerName }
 								date = { product.createdDate }
 								city = { location.city }
