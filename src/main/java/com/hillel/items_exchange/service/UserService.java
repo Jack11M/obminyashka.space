@@ -40,8 +40,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @RequiredArgsConstructor
 public class UserService {
 
-    //TODO move this constant to application.properties
-    public static final String ONE_TIME_PER_DAY_AT_3_AM = "0 0 3 * * * ";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
@@ -96,18 +94,18 @@ public class UserService {
         return getMessageSource("changed.user.email");
     }
 
-    public String deleteUserFirst(User user) {
+    public String selfDeleteRequest(User user) {
         user.setStatus(DELETED);
         userRepository.saveAndFlush(user);
 
-        return getParametrizedMessageSource("account.deleted.first", getDaysBeforeDeletion(user));
+        return getParametrizedMessageSource("account.self.delete.request", getDaysBeforeDeletion(user));
     }
 
     public long getDaysBeforeDeletion(User user) {
         return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
     }
 
-    @Scheduled(cron = ONE_TIME_PER_DAY_AT_3_AM)
+    @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
         userRepository.findAll().stream()
                 .filter(user -> user.getStatus().equals(DELETED) &&
@@ -121,11 +119,11 @@ public class UserService {
         return duration.toDays() > numberOfDaysToKeepDeletedUsers;
     }
 
-    public String restoreUser(User user) {
+    public String makeAccountActiveAgain(User user) {
         user.setStatus(ACTIVE);
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("account.restored");
+        return getMessageSource("account.made.active.again");
     }
 
     public boolean existsByUsername(String username) {

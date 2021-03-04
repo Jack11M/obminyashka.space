@@ -130,7 +130,7 @@ class ImageFlowTest {
     private String getIllegalOperationMessage(User deletedUser) {
         return getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.self.delete.request",
                         userService.getDaysBeforeDeletion(deletedUser)));
     }
 }

@@ -15,7 +15,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Optional;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -38,15 +37,14 @@ public class DeletedUserFilter extends GenericFilterBean {
 
             String username = userDetails.getUsername();
             Optional<User> userOptional = userService.findByUsernameOrEmail(username);
-            PrintWriter writer = response.getWriter();
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 if (user.getStatus().equals(Status.DELETED) &&
                         !isUserAllowedToDoOperation(request, requestedURL)) {
-                    writer.write(getMessageSource("exception.illegal.operation")
+                    response.getWriter().write(getMessageSource("exception.illegal.operation")
                             .concat(". ")
-                            .concat(getParametrizedMessageSource("account.deleted.first",
+                            .concat(getParametrizedMessageSource("account.self.delete.request",
                                     userService.getDaysBeforeDeletion(user))));
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 }

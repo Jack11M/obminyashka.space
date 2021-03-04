@@ -197,7 +197,7 @@ class UserControllerTest {
     }
 
     private <T> ResultActions getResultActions(HttpMethod httpMethod, String path,
-                                               T dto, ResultMatcher matcher) throws Exception {
+                                           T dto, ResultMatcher matcher) throws Exception {
         MockHttpServletRequestBuilder builder = request(httpMethod, path)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -635,7 +635,7 @@ class UserControllerTest {
     @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = {"user/delete_user_first_expected.yml"}, ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void deleteUserFirst_WhenDataCorrect_Successfully() throws Exception {
+    void selfDeleteRequest_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
@@ -644,14 +644,14 @@ class UserControllerTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getParametrizedMessageSource("account.deleted.first", numberOfDaysToKeepDeletedUsers)));
+                getParametrizedMessageSource("account.self.delete.request", numberOfDaysToKeepDeletedUsers)));
     }
 
     @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void deleteUserFirst_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException()
+    void selfDeleteRequest_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException()
             throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
@@ -667,7 +667,7 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void deleteUserFirst_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
+    void selfDeleteRequest_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
             throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
@@ -686,13 +686,13 @@ class UserControllerTest {
      * has to work before than condition
      * if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword()))}
      * in
-     * {@link com.hillel.items_exchange.controller.UserController#deleteUserFirst(UserDeleteFlowDto, Principal)}
+     * {@link com.hillel.items_exchange.controller.UserController#selfDeleteRequest(UserDeleteFlowDto, Principal)}
      */
     @Test
     @WithMockUser(username = "admin")
     @Transactional
     @DataSet("database_init.yml")
-    void deleteUserFirst_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
+    void selfDeleteRequest_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
             throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
@@ -709,7 +709,7 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void deleteUserFirst_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
+    void selfDeleteRequest_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
@@ -729,7 +729,7 @@ class UserControllerTest {
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = {"database_init.yml", "user/deleted_user_restore_expected.yml"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void restoreUser_WhenDataCorrect_Successfully() throws Exception {
+    void makeAccountActiveAgain_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
@@ -737,14 +737,14 @@ class UserControllerTest {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("account.restored")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("account.made.active.again")));
     }
 
     @Test
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void restoreUser_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
+    void makeAccountActiveAgain_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
@@ -759,7 +759,7 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void restoreUser_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
+    void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
             throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 WRONG_OLD_PASSWORD);
@@ -776,7 +776,7 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void restoreUser_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
+    void makeAccountActiveAgain_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
             throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
@@ -793,7 +793,7 @@ class UserControllerTest {
     @WithMockUser("admin")
     @Transactional
     @DataSet("database_init.yml")
-    void restoreUser_WhenUserHasNotStatusDeletedShouldThrowIllegalOperationException() throws Exception {
+    void makeAccountActiveAgain_WhenUserHasNotStatusDeletedShouldThrowIllegalOperationException() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
                 CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
@@ -808,7 +808,7 @@ class UserControllerTest {
     private String getIllegalOperationMessage(User deletedUser) {
         return getMessageSource("exception.illegal.operation")
                 .concat(". ")
-                .concat(getParametrizedMessageSource("account.deleted.first",
+                .concat(getParametrizedMessageSource("account.self.delete.request",
                         userService.getDaysBeforeDeletion(deletedUser)));
     }
 }

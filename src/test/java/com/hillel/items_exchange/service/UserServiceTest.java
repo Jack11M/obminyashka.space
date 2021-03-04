@@ -75,10 +75,10 @@ class UserServiceTest {
     }
 
     @Test
-    void testDeleteUserFirst_WhenDataCorrect_Successfully() {
-        String message = userService.deleteUserFirst(userWithOldPassword);
+    void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
+        String message = userService.selfDeleteRequest(userWithOldPassword);
 
-        assertEquals(getParametrizedMessageSource("account.deleted.first", numberOfDaysToKeepDeletedUsers),
+        assertEquals(getParametrizedMessageSource("account.self.delete.request", numberOfDaysToKeepDeletedUsers),
                 message);
         assertEquals(DELETED, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
@@ -105,10 +105,10 @@ class UserServiceTest {
     }
 
     @Test
-    void testRestoreUser_WhenDataCorrect_Successfully() {
-        String message = userService.restoreUser(userWithOldPassword);
+    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
+        String message = userService.makeAccountActiveAgain(userWithOldPassword);
 
-        assertEquals(getMessageSource("account.restored"), message);
+        assertEquals(getMessageSource("account.made.active.again"), message);
         assertEquals(ACTIVE, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
