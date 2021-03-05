@@ -127,8 +127,9 @@ public class UserController {
         if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
             throw new InvalidDtoException(getMessageSource(incorrectPassword));
         }
+        userService.selfDeleteRequest(user);
 
-        return userService.selfDeleteRequest(user);
+        return getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user));
     }
 
     @PutMapping("/service/restore")
@@ -147,8 +148,9 @@ public class UserController {
         if (!user.getStatus().equals(DELETED)) {
             throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
         }
+        userService.makeAccountActiveAgain(user);
 
-        return userService.makeAccountActiveAgain(user);
+        return getMessageSource("account.made.active.again");
     }
 
     @GetMapping("/child")

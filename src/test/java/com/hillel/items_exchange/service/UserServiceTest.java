@@ -19,7 +19,6 @@ import java.util.List;
 import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -76,10 +75,8 @@ class UserServiceTest {
 
     @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
-        String message = userService.selfDeleteRequest(userWithOldPassword);
+        userService.selfDeleteRequest(userWithOldPassword);
 
-        assertEquals(getParametrizedMessageSource("account.self.delete.request", numberOfDaysToKeepDeletedUsers),
-                message);
         assertEquals(DELETED, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
@@ -106,9 +103,8 @@ class UserServiceTest {
 
     @Test
     void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
-        String message = userService.makeAccountActiveAgain(userWithOldPassword);
+        userService.makeAccountActiveAgain(userWithOldPassword);
 
-        assertEquals(getMessageSource("account.made.active.again"), message);
         assertEquals(ACTIVE, userWithOldPassword.getStatus());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }

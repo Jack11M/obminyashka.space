@@ -33,7 +33,6 @@ import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
@@ -94,11 +93,9 @@ public class UserService {
         return getMessageSource("changed.user.email");
     }
 
-    public String selfDeleteRequest(User user) {
+    public void selfDeleteRequest(User user) {
         user.setStatus(DELETED);
         userRepository.saveAndFlush(user);
-
-        return getParametrizedMessageSource("account.self.delete.request", getDaysBeforeDeletion(user));
     }
 
     public long getDaysBeforeDeletion(User user) {
@@ -119,11 +116,9 @@ public class UserService {
         return duration.toDays() > numberOfDaysToKeepDeletedUsers;
     }
 
-    public String makeAccountActiveAgain(User user) {
+    public void makeAccountActiveAgain(User user) {
         user.setStatus(ACTIVE);
         userRepository.saveAndFlush(user);
-
-        return getMessageSource("account.made.active.again");
     }
 
     public boolean existsByUsername(String username) {
