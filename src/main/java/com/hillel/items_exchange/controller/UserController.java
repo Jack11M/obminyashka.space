@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,7 +85,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     Principal principal) throws InvalidDtoException {
+                                     BindingResult bindingResult, Principal principal) throws InvalidDtoException {
         User user = getUser(principal.getName());
         if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
             throw new InvalidDtoException(getMessageSource("incorrect.password"));

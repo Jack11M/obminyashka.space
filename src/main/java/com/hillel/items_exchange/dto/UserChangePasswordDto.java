@@ -19,8 +19,6 @@ import javax.validation.constraints.Size;
 public class UserChangePasswordDto {
 
     @NotEmpty(message = "{empty.password}")
-    @Size(min = 8, max = 30, message = "{invalid.password.size}")
-    @Pattern(regexp = PatternHandler.PASSWORD, message = "{invalid.password}")
     private String oldPassword;
 
     @NotEmpty(message = "{empty.password}")
@@ -29,7 +27,5 @@ public class UserChangePasswordDto {
     private String newPassword;
 
     @NotEmpty(message = "{empty.confirm.password}")
-    @Size(min = 8, max = 30, message = "{invalid.password.size}")
-    @Pattern(regexp = PatternHandler.PASSWORD, message = "{invalid.password}")
     private String confirmNewPassword;
 }
