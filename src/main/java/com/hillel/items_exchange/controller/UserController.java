@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,8 +102,8 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
-            throws DataConflictException {
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, BindingResult bindingResult,
+                                  Principal principal) throws DataConflictException {
         User user = getUser(principal.getName());
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("exception.email.old"));
