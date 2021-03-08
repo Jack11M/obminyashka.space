@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -105,13 +106,13 @@ public class UserService {
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
         userRepository.findAll().stream()
-                .filter(user -> user.getStatus().equals(DELETED) &&
-                        isDurationMoreThanNumberOfDaysToKeepDeletedUser(user.getUpdated()))
+                .filter(Predicate.not(User::isEnabled))
+                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
                 .forEach(userRepository::delete);
     }
 
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(LocalDateTime localDateTime) {
-        Duration duration = Duration.between(localDateTime, LocalDateTime.now());
+    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
+        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
 
         return duration.toDays() > numberOfDaysToKeepDeletedUsers;
     }
