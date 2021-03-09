@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Getter
 @Builder
@@ -18,10 +19,10 @@ import javax.validation.constraints.NotEmpty;
 public class UserChangeEmailDto {
 
     @NotEmpty(message = "{invalid.not-empty}")
+    @Size(max = 129, message = "{too.big.email}")
     @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String newEmail;
 
     @NotEmpty(message = "{invalid.not-empty}")
-    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String newEmailConfirmation;
 }

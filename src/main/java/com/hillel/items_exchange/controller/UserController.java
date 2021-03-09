@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,7 +84,11 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     Principal principal) throws InvalidDtoException {
+                                     BindingResult bindingResult, Principal principal) throws InvalidDtoException,
+            DataConflictException {
+        if (bindingResult.hasErrors()) {
+            throw new DataConflictException(bindingResult.toString());
+        }
         User user = getUser(principal.getName());
         if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
             throw new InvalidDtoException(getMessageSource("incorrect.password"));
@@ -100,8 +105,11 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
-            throws DataConflictException {
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, BindingResult bindingResult,
+                                  Principal principal) throws DataConflictException {
+        if (bindingResult.hasErrors()) {
+            throw new DataConflictException(bindingResult.toString());
+        }
         User user = getUser(principal.getName());
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("exception.email.old"));
