@@ -83,22 +83,17 @@ class UserServiceTest {
 
     @Test
     void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
-        User shouldBeDeleted = createUserForDeleting(DELETED,
-                LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers + 1));
-        User shouldNotBeDeleted0 = createUserForDeleting(ACTIVE, LocalDateTime.now());
-        User shouldNotBeDeleted1 = createUserForDeleting(DELETED,
-                LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers - 1));
-        User shouldNotBeDeleted2 = createUserForDeleting(ACTIVE,
-                LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers + 1));
-        List<User> users = List.of(shouldBeDeleted, shouldNotBeDeleted0, shouldNotBeDeleted1, shouldNotBeDeleted2);
+        List<User> users = createTestUsers();
+        assertEquals(4, users.size());
 
         when(userRepository.findAll()).thenReturn(users);
         userService.permanentlyDeleteUsers();
 
-        verify(userRepository).delete(shouldBeDeleted);
-        verify(userRepository, never()).delete(shouldNotBeDeleted0);
-        verify(userRepository, never()).delete(shouldNotBeDeleted1);
-        verify(userRepository, never()).delete(shouldNotBeDeleted2);
+        verify(userRepository).delete(users.get(0));
+
+        for (int i = 1; i < users.size(); i++) {
+            verify(userRepository, never()).delete(users.get(i));
+        }
     }
 
     @Test
@@ -117,10 +112,19 @@ class UserServiceTest {
         return userWithOldPassword;
     }
 
-    private User createUserForDeleting(Status status, LocalDateTime updated) {
+    private List<User> createTestUsers() {
+        User shouldBeDeleted = createUserForDeleting(DELETED, numberOfDaysToKeepDeletedUsers + 1);
+        User shouldNotBeDeleted0 = createUserForDeleting(ACTIVE, 0);
+        User shouldNotBeDeleted1 = createUserForDeleting(DELETED, numberOfDaysToKeepDeletedUsers - 1);
+        User shouldNotBeDeleted2 = createUserForDeleting(ACTIVE, numberOfDaysToKeepDeletedUsers + 1);
+
+        return List.of(shouldBeDeleted, shouldNotBeDeleted0, shouldNotBeDeleted1, shouldNotBeDeleted2);
+    }
+
+    private User createUserForDeleting(Status status, int delay) {
         User user = new User();
         user.setStatus(status);
-        user.setUpdated(updated);
+        user.setUpdated(LocalDateTime.now().minusDays(delay));
 
         return user;
     }
