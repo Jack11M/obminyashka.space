@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean isCategoryDtoDeletable(long categoryId) {
         return categoryRepository.findById(categoryId)
                 .map(category -> category.getSubcategories().stream()
-                        .map(Subcategory::getProducts)
+                        .map(Subcategory::getAdvertisements)
                         .allMatch(Collection::isEmpty))
                 .orElse(false);
     }

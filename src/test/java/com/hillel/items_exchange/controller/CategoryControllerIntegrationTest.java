@@ -259,7 +259,7 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @Transactional
     @DataSet("database_init.yml")
-    void deleteCategory_whenInternalSubcategoryHasProducts_shouldReturnBadRequest()
+    void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnBadRequest()
             throws Exception {
 
         mockMvc.perform(delete("/category/{category_id}", EXISTING_ENTITY_ID)

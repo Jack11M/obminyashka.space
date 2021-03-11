@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -288,7 +289,10 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("{'firstname':'firstname'}"))
+                .andExpect(content().json("{'lastname':'lastname'}"))
+                .andExpect(content().json("{'avatarImage':'dGVzdCBpbWFnZSBwbmc='}"));
     }
 
     @Test

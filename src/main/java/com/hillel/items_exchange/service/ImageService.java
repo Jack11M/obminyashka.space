@@ -2,8 +2,8 @@ package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dto.ImageDto;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
+import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
-import com.hillel.items_exchange.model.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,18 +11,18 @@ import java.util.List;
 
 public interface ImageService {
     /**
-     * Return byte representative of images for received Product ID
-     * @param productId Product ID
-     * @return all images that are linked to the Product
+     * Return byte representative of images for received Advertisement ID
+     * @param advertisementId Advertisement ID
+     * @return all images that are linked to the Advertisement
      */
-    List<byte[]> getImagesResourceByProductId(long productId);
+    List<byte[]> getImagesResourceByAdvertisementId(long advertisementId);
 
     /**
-     * Return all Image DTO for received Product ID
-     * @param productId Product ID
+     * Return all Image DTO for received Advertisement ID
+     * @param advertisementId Advertisement ID
      * @return list of ImageDTO that are linked
      */
-    List<ImageDto> getByProductId(long productId);
+    List<ImageDto> getByAdvertisementId(long advertisementId);
 
     /**
      * Make in-memory compressing (20% of basic quality) only for supported types of images
@@ -45,19 +45,19 @@ public interface ImageService {
     byte[] compress(MultipartFile image) throws IOException, UnsupportedMediaTypeException;
 
     /**
-     * Create new entity for each received image, link them to the Product using it's ID and store them to the DB
+     * Create new entity for each received image, link them to the Advertisement using it's ID and store them to the DB
      * @see Image entity as representation of all images
-     * @param product to link images with
-     * @param images list of images that need to be linked with the Product and saved to the DB
+     * @param advertisement to link images with
+     * @param images list of images that need to be linked with the Advertisement and saved to the DB
      */
-    void saveToProduct(Product product, List<byte[]> images);
+    void saveToAdvertisement(Advertisement advertisement, List<byte[]> images);
 
     /**
-     * Create new entity for received image, link to the Product using it's ID and store it to the DB
-     * @param product to link images with
-     * @param image image that needs to be linked with the Product and saved to the DB
+     * Create new entity for received image, link to the Advertisement using it's ID and store it to the DB
+     * @param advertisement advertisement to link images with
+     * @param image image that needs to be linked with the Advertisement and saved to the DB
      */
-    void saveToProduct(Product product, byte[] image);
+    void saveToAdvertisement(Advertisement advertisement, byte[] image);
 
     /**
      * Remove received images from the DB using their ID
@@ -75,7 +75,6 @@ public interface ImageService {
      * Makes scaled image (thumbnail) from given image bytes
      * @param bytes bytes representative of image to scale
      * @return scaled image bytes
-     * @throws IOException in cases when received bytes impossible to read it properly
      */
-    byte[] scale(byte[] bytes) throws IOException;
+    byte[] scale(byte[] bytes);
 }
