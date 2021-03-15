@@ -6,7 +6,10 @@ import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.ChildDto;
 import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.exception.*;
+import com.hillel.items_exchange.exception.ElementsNumberExceedException;
+import com.hillel.items_exchange.exception.IllegalIdentifierException;
+import com.hillel.items_exchange.exception.IllegalOperationException;
+import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.util.AdvertisementDtoCreatingUtil;
 import com.hillel.items_exchange.util.CategoryTestUtil;
 import com.hillel.items_exchange.util.ChildDtoCreatingUtil;
@@ -63,6 +66,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     @WithMockUser(username = "anonymous")
+    @DataSet("database_init.yml")
     void testHandleUserNotFoundException() throws Exception {
         MvcResult result = getResult(HttpMethod.POST, "/adv", nonExistDto, status().isNotFound());
         assertThat(result.getResolvedException(), is(instanceOf(UsernameNotFoundException.class)));

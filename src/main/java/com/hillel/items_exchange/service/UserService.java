@@ -14,20 +14,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UserMapper.convertDto;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
+import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
+import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +44,9 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
     private static final Set<String> READONLY_FIELDS = Set.of("username", "lastOnlineTime", "children", "phones");
+
+    @Value("${number.of.days.to.keep.deleted.users}")
+    private int numberOfDaysToKeepDeletedUsers;
 
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
@@ -82,6 +92,34 @@ public class UserService {
         userRepository.saveAndFlush(user);
 
         return getMessageSource("changed.user.email");
+    }
+
+    public void selfDeleteRequest(User user) {
+        user.setStatus(DELETED);
+        userRepository.saveAndFlush(user);
+    }
+
+    public long getDaysBeforeDeletion(User user) {
+        return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
+    }
+
+    @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
+    public void permanentlyDeleteUsers() {
+        userRepository.findAll().stream()
+                .filter(Predicate.not(User::isEnabled))
+                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
+                .forEach(userRepository::delete);
+    }
+
+    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
+        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
+
+        return duration.toDays() > numberOfDaysToKeepDeletedUsers;
+    }
+
+    public void makeAccountActiveAgain(User user) {
+        user.setStatus(ACTIVE);
+        userRepository.saveAndFlush(user);
     }
 
     public boolean existsByUsername(String username) {

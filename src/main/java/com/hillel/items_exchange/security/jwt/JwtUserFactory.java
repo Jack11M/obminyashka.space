@@ -1,8 +1,8 @@
 package com.hillel.items_exchange.security.jwt;
 
 import com.hillel.items_exchange.model.Role;
-import com.hillel.items_exchange.model.enums.Status;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.model.enums.Status;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

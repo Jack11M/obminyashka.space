@@ -2,12 +2,15 @@ package com.hillel.items_exchange.util;
 
 import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.model.enums.Gender;
+import com.hillel.items_exchange.model.enums.Status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 
 public class UserDtoCreatingUtil {
 
@@ -37,72 +40,74 @@ public class UserDtoCreatingUtil {
     public static UserDto createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones() {
         return getBuild("admin", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
                 NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Collections.emptySet());
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithChangedUsernameWithoutPhones() {
         return getBuild(NEW_USERNAME, "admin@gmail.com", Boolean.FALSE, "super",
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Collections.emptySet());
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
                 "admin", BLANK_AVATAR_IMAGE, NEW_LAST_ONLINE_TIME,
-                EXISTED_CHILDREN, Collections.emptySet());
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithChangedChildrenWithoutPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                Collections.emptyList(), Collections.emptySet());
+                Collections.emptyList(), Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithChildrenWithoutPhones() {
         return getBuild("test", "test@test.com", Boolean.FALSE, "first",
                 "last", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                NEW_CHILDREN, Collections.emptySet());
+                NEW_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithPhoneWithoutChildren() {
         return getBuild("test", "test@test.com", Boolean.FALSE, "first",
                 "last", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                Collections.emptyList(), NEW_PHONES);
+                Collections.emptyList(), NEW_PHONES, ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithNewChildAndPhones() {
         return getBuild("new_user", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
                 NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                NEW_CHILDREN, NEW_PHONES);
+                NEW_CHILDREN, NEW_PHONES, ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, "super",
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Set.of(new PhoneDto(1L, "+381234567890", true)));
+                EXISTED_CHILDREN, Set.of(new PhoneDto(1L, "+381234567890", true)), ACTIVE,
+                LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithInvalidShortFNameWithoutPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, NEW_INVALID_SHORT_NAME,
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Collections.emptySet());
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
-    public static UserDto createUserDtoForUpdatingWithInvalidLNameWithoutPhones() {
+    public static UserDto createUserDtoForUpdatingWithInvalidFNameWithoutPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, NEW_INVALID_TWO_WORDS_NAME,
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Collections.emptySet());
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto createUserDtoForUpdatingWithDuplicateEmailWithoutPhones() {
         return getBuild("admin", NEW_INVALID_DUPLICATE_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
                 NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Collections.emptySet());
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto getBuild(String username, String email, Boolean online, String firstName,
                                    String lastName, byte[] avatarImage, LocalDateTime lastOnlineTime,
-                                   List<ChildDto> children, Set<PhoneDto> phones) {
+                                   List<ChildDto> children, Set<PhoneDto> phones, Status status,
+                                   LocalDateTime updated) {
         return UserDto.builder()
                 .username(username)
                 .email(email)
@@ -113,6 +118,8 @@ public class UserDtoCreatingUtil {
                 .lastOnlineTime(lastOnlineTime)
                 .children(children)
                 .phones(phones)
+                .status(status)
+                .updated(updated)
                 .build();
     }
 
@@ -129,6 +136,13 @@ public class UserDtoCreatingUtil {
         return UserChangeEmailDto.builder()
                 .newEmail(newEmail)
                 .newEmailConfirmation(newEmailConfirmation)
+                .build();
+    }
+
+    public static UserDeleteFlowDto createUserDeleteOrRestoreDto(String password, String confirmPassword) {
+        return UserDeleteFlowDto.builder()
+                .password(password)
+                .confirmPassword(confirmPassword)
                 .build();
     }
 }

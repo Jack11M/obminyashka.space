@@ -4,6 +4,8 @@ import com.hillel.items_exchange.exception.ElementsNumberExceedException;
 import com.hillel.items_exchange.exception.UnsupportedMediaTypeException;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
+import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.model.enums.Status;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.ImageService;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +50,8 @@ class ImageControllerTest {
     private ImageService imageService;
     @Mock
     private Advertisement advertisement;
+    @Mock
+    private User user;
     @Captor
     private ArgumentCaptor<List<byte[]>> listArgumentCaptor;
     private ArrayList<Image> testImages;
@@ -55,6 +59,8 @@ class ImageControllerTest {
 
     @BeforeEach
     void setUp() throws IOException, UnsupportedMediaTypeException {
+        user = new User();
+        user.setStatus(Status.ACTIVE);
         jpeg = new MockMultipartFile("files", "image-jpeg.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpeg".getBytes());
         mocksInit();
     }
@@ -64,6 +70,7 @@ class ImageControllerTest {
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
         when(advertisement.getImages()).thenReturn(testImages);
+        when(advertisement.getUser()).thenReturn(user);
         when(imageService.compress(List.of(jpeg))).thenReturn(List.of(jpeg.getBytes()));
     }
 
@@ -94,6 +101,7 @@ class ImageControllerTest {
 
         verify(imageService).compress(anyList());
         verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
+        verify(advertisementService).findById(anyLong());
         assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0));
     }
 
@@ -105,5 +113,4 @@ class ImageControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
-
 }
