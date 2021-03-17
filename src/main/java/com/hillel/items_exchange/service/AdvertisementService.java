@@ -1,5 +1,6 @@
 package com.hillel.items_exchange.service;
 
+import com.hillel.items_exchange.dto.AdvertisementDisplayDto;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.AdvertisementTitleDto;
@@ -41,11 +42,11 @@ public interface AdvertisementService {
     Optional<Advertisement> findById(long advertisementId);
 
     /**
-     * Find an advertisement DTO by id
+     * Find an advertisement Display DTO by id
      * @param id advertisement id
      * @return {@link Optional} as result
      */
-    Optional<AdvertisementDto> findDtoById(long id);
+    Optional<AdvertisementDisplayDto> findDtoById(long id);
 
     /**
      * Find first 10 matched advertisements by one of received parameters of the request DTO
@@ -99,4 +100,12 @@ public interface AdvertisementService {
      * @return result of the check
      */
     boolean isUserHasAdvertisementAndItHasImageWithId(Long advertisementId, Long imageId, User owner);
+
+    /**
+     * Returns whether an advertisement with the given id exists.
+     *
+     * @param id must not be {@literal null}.
+     * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
+     */
+    boolean existById(Long id);
 }

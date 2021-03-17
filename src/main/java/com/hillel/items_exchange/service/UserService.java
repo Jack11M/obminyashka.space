@@ -135,6 +135,11 @@ public class UserService {
         userRepository.saveAndFlush(parent);
     }
 
+    public void setUserAvatar(byte[] newAvatarImage, User user) {
+        user.setAvatarImage(newAvatarImage);
+        userRepository.saveAndFlush(user);
+    }
+
     private void checkReadOnlyFieldsUpdate(User toCompare, User original) throws IllegalOperationException {
         String errorResponse = READONLY_FIELDS.stream()
                 .filter(fieldName -> !checkReadOnlyFields(toCompare, original, fieldName))

@@ -3,15 +3,16 @@ import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { getTranslatedText } from '../../../components/local/localisation';
 import cls from './registerTabs.module.scss';
+import { route } from '../../../routes/routeConstants';
 
 const NavBarRegister = () => {
 	const { lang } = useSelector( state => state.auth );
 	return (
 		<div className={ cls.tabs }>
-			<NavLink to="/login/" exact activeClassName={ cls.active }>
+			<NavLink to={route.login} exact activeClassName={ cls.active }>
 				{ getTranslatedText( 'auth.login', lang ) }
 			</NavLink>
-			<NavLink to="/login/signup" activeClassName={ cls.active }>
+			<NavLink to={ `${route.login}${route.signUp}` } activeClassName={ cls.active }>
 				{ getTranslatedText( 'auth.signUp', lang ) }
 			</NavLink>
 		</div>
