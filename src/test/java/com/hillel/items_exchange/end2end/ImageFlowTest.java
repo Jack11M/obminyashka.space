@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
 class ImageFlowTest {
+
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
     @Autowired

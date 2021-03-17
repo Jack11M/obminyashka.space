@@ -121,7 +121,7 @@ public class AuthController {
         Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);
         if (userService.registerNewUser(userRegistrationDto, role)) {
             log.info("User with email: {} successfully registered", userRegistrationDto.getEmail());
-            return new ResponseEntity<>(getExceptionParametrizedMessageSource(
+            return new ResponseEntity<>(getParametrizedMessageSource(
                     "user.created", userRegistrationDto.getUsername()), HttpStatus.CREATED);
         }
 

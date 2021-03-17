@@ -24,7 +24,7 @@ public class MessageSourceUtil {
                 LocaleContextHolder.getLocale());
     }
 
-    public static String getExceptionParametrizedMessageSource(String message, Object... parameters) {
+    public static String getParametrizedMessageSource(String message, Object... parameters) {
         return mSource.getMessage(message,
                 parameters,
                 LocaleContextHolder.getLocale());

@@ -1,10 +1,6 @@
 package com.hillel.items_exchange.controller;
 
-import com.hillel.items_exchange.dto.AdvertisementDisplayDto;
-import com.hillel.items_exchange.dto.AdvertisementDto;
-import com.hillel.items_exchange.dto.AdvertisementFilterDto;
-import com.hillel.items_exchange.dto.AdvertisementTitleDto;
-import com.hillel.items_exchange.dto.ImageDto;
+import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.exception.BadRequestException;
 import com.hillel.items_exchange.exception.IllegalIdentifierException;
 import com.hillel.items_exchange.exception.IllegalOperationException;

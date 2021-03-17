@@ -23,8 +23,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Objects;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -73,7 +73,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print()).andReturn();
 
-        String seekingResponse = getExceptionParametrizedMessageSource("user.created", validUser.getUsername());
+        String seekingResponse = getParametrizedMessageSource("user.created", validUser.getUsername());
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
     }
 

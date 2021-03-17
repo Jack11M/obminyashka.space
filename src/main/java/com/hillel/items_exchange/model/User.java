@@ -1,9 +1,15 @@
 package com.hillel.items_exchange.model;
 
+import com.hillel.items_exchange.model.enums.Status;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true, exclude = {"advertisements", "phones", "deals", "children"})
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true)
     private String username;
@@ -68,4 +74,29 @@ public class User extends BaseEntity {
             joinColumns = @JoinColumn(name = "blocker_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "blocked_id", referencedColumnName = "id"))
     private List<User> blacklistedUsers;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(getRole().getName()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.getStatus() != Status.BANNED;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.getStatus() == Status.ACTIVE;
+    }
 }
