@@ -25,7 +25,7 @@ public class UserDto {
     private String username;
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
-    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
+    @Email(message = "{invalid.email}")
     private String email;
     @NotNull(message = "{invalid.not-null}")
     private Boolean online;
