@@ -1,8 +1,9 @@
 package com.hillel.items_exchange.end2end;
 
+
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.model.enums.AgeRange;
@@ -20,8 +21,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import javax.transaction.Transactional;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +49,6 @@ class AdvertisementFlowTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void findPaginated_shouldReturnSelectedQuantity() throws Exception {
         int page = 0;
@@ -66,7 +64,6 @@ class AdvertisementFlowTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getAllAdvertisements_shouldReturnAdvertisementsByTopic() throws Exception {
         mockMvc.perform(get("/adv/topic/{topic}", "ses")
@@ -78,7 +75,6 @@ class AdvertisementFlowTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementIfExists() throws Exception {
         mockMvc.perform(get("/adv/{advertisement_id}", 1L)
@@ -94,7 +90,6 @@ class AdvertisementFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
         AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
@@ -122,7 +117,6 @@ class AdvertisementFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
@@ -137,7 +131,6 @@ class AdvertisementFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisementWithNewLocation() throws Exception {
@@ -159,7 +152,6 @@ class AdvertisementFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/updateAdvLocation.yml", ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisementWithUpdatedLocation() throws Exception {
@@ -181,7 +173,6 @@ class AdvertisementFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
@@ -193,7 +184,6 @@ class AdvertisementFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/setDefaultImage.yml", ignoreCols = {"created", "updated"})
     void setDefaultImage_success() throws Exception {
