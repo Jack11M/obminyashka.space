@@ -53,10 +53,11 @@ public class UserService {
     }
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        Pattern emailPattern = Pattern.compile(PatternHandler.EMAIL);
-        Optional<User> user = emailPattern.matcher(usernameOrEmail).matches()
-                ? userRepository.findByEmail(usernameOrEmail)
-                : userRepository.findByUsername(usernameOrEmail);
+        Pattern usernamePattern = Pattern.compile(PatternHandler.USERNAME);
+        Optional<User> user = usernamePattern.matcher(usernameOrEmail).matches()
+                ? userRepository.findByUsername(usernameOrEmail)
+                : userRepository.findByEmail(usernameOrEmail);
+
         return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
     }
 
