@@ -1,31 +1,32 @@
 @import "../../components/partials/variables";
 @import "../../fonts/font";
 
-.error-page {
+.somethingBad {
+  min-height: 100vh;
+  position: relative;
+  background: url(../../img/errorPage/SomethingBad.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 
-  .blockCenterImage {
-    position: relative;
+  @media (max-width: 576px){
+    background-size: 300%;
+    background-position: top;
+    background-position-y: 15%;
+  }
+
+  .blockControls {
+    position: absolute;
     left: 0;
     right: 0;
-    &-somethingBad {
-      padding-top: 3%;
-      position: relative;
-      z-index: 10;
+    bottom: 10%;
+  }
 
-      @media (max-width: 576px){
-        padding-top: 30%;
-      }
-      img {
-        width: 100%;
-      }
-    }
-
-
-    }
+  
   .blockRightImage, .blockGreenImage, .blockOrangeImage{
     position: absolute;
     top: 0;
-    z-index: 0;
+    z-index: -1;
     img{
       max-width: 100%;
       height: calc(100vh - 3px);
