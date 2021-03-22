@@ -8,7 +8,7 @@ import { route } from '../../routes/routeConstants';
 
 import './somethingBad.scss';
 
-const SomethingBad = ( {deactivateError} ) => {
+const SomethingBad = ( { deactivateError } ) => {
 	const { lang } = useSelector( state => state.auth );
 	let history = useHistory();
 
