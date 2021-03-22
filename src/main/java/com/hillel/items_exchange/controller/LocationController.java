@@ -116,7 +116,7 @@ public class LocationController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestParam("data") @NotEmpty String rawData) throws InvalidLocationInitFileCreatingDataException {
+    public ResponseEntity<String> createLocationsInitFile(@RequestBody @NotEmpty String rawData) throws InvalidLocationInitFileCreatingDataException {
         if (!locationService.isLocationDataValid(rawData)) {
             throw new InvalidLocationInitFileCreatingDataException(
                     getMessageSource("exception.invalid.locations.file.creating.data"));

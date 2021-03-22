@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,12 +11,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @DBRider
@@ -32,7 +31,6 @@ class SubcategoryControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getSubcategoryNamesByCategoryId_whenSubcategoryDoesNotExist_shouldReturnOkStstusAndAllSubcategoryNames()
             throws Exception {
@@ -44,7 +42,6 @@ class SubcategoryControllerIntegrationTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getSubcategoryNamesByCategoryId_whenSubcategoryDoesNotExist_shouldReturnNotFound() throws Exception {
         mockMvc.perform(get("/subcategory/{category_id}/names", NONEXISTENT_CATEGORY_ID)
@@ -55,7 +52,6 @@ class SubcategoryControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Transactional
     @DataSet("database_init.yml")
     void deleteSubcategoryById_shouldDeleteExistedSubcategory() throws Exception {
         mockMvc.perform(delete("/subcategory/{subcategory_id}", EXISTENT_SUBCATEGORY_ID)

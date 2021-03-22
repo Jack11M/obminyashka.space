@@ -2,7 +2,7 @@ package com.hillel.items_exchange.end2end;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dto.UserChangeEmailDto;
 import com.hillel.items_exchange.dto.UserChangePasswordDto;
 import com.hillel.items_exchange.dto.UserDeleteFlowDto;
@@ -23,8 +23,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import javax.transaction.Transactional;
 
 import static com.hillel.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
@@ -61,7 +59,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     void getUserDto_shouldReturnUserDtoIfExists() throws Exception {
         mockMvc.perform(get("/user/my-info")
@@ -73,7 +70,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
@@ -103,7 +99,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "/children/create.yml", ignoreCols = {"birth_date", "sex"})
     void addChildren_Success_ShouldReturnHttpStatusOk() throws Exception {
@@ -126,7 +121,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/delete.yml")
     void removeChild_Success_ShouldReturnHttpStatusOk() throws Exception {
@@ -139,7 +133,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/update.yml")
     void updateChild_Success_ShouldReturnHttpStatusOk() throws Exception {
@@ -162,7 +155,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "new_user")
-    @Transactional
     @DataSet({"database_init.yml", "user/update_init.yml"})
     @ExpectedDataSet(value = {"database_init.yml", "user/children_phones_update.yml"}, ignoreCols = "updated")
     void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
@@ -175,7 +167,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
@@ -196,7 +187,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "user")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
@@ -212,7 +202,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/delete_user_first_expected.yml",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
@@ -230,7 +219,6 @@ class UserFlowTest {
 
     @Test
     @WithMockUser(username = "deletedUser")
-    @Transactional
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = {"database_init.yml", "user/deleted_user_restore_expected.yml"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})

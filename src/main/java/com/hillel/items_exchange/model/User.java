@@ -19,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true, exclude = {"advertisements", "phones", "deals", "children"})
+@EqualsAndHashCode(callSuper = true, of = {"username", "email", "firstName", "lastName"})
 public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true)
@@ -60,7 +60,7 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Child> children;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "user_chat",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"))

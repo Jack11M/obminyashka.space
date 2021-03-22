@@ -7,13 +7,17 @@ import com.hillel.items_exchange.model.Location;
 import com.hillel.items_exchange.model.enums.I18n;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -28,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class LocationServiceTest {
     @MockBean
@@ -158,18 +163,18 @@ class LocationServiceTest {
     @Test
     void createFileToInitLocations_shouldReturnProperData()
             throws IOException, InvalidLocationInitFileCreatingDataException {
-        String locationsString = Files.readString(Path.of(pathToFileParseLocationsFrom));
+        String locationsString = Files.readString(Path.of(pathToFileParseLocationsFrom), StandardCharsets.UTF_8);
         String createdFileContent = locationService.createParsedLocationsFile(locationsString);
         String[] parsedLocationsQuantity = createdFileContent.split("\\), \\(");
         int lastId = Integer.parseInt(parsedLocationsQuantity[parsedLocationsQuantity.length - 1].substring(1, 5));
-        int locationsInThreeLanguages = locationsString.split("\\},\\{").length;
+        int locationsInThreeLanguages = locationsString.split("},\\{").length;
         assertEquals(locationsInThreeLanguages * 3, lastId);
     }
 
     @Test
     void createFileToInitLocations_shouldCreateNotEmptyFileToInitLocationsInDB()
             throws IOException, InvalidLocationInitFileCreatingDataException {
-        locationService.createParsedLocationsFile(Files.readString(Path.of(pathToFileParseLocationsFrom)));
+        locationService.createParsedLocationsFile(Files.readString(Path.of(pathToFileParseLocationsFrom), StandardCharsets.UTF_8));
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
