@@ -5,8 +5,7 @@ import Avatar from '../../../components/avatar/avatar';
 import './ProductOwnerData.scss';
 
 const ProductOwnerData = ( { ava , name , date , city , phone } ) => {
-	
-	console.log(ava)
+
 		return (
 			<div className = 'productOwnerDataBox'>
 				<div className = 'productOwner'>
