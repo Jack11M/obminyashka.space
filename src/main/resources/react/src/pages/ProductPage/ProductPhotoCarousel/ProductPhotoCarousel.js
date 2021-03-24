@@ -1,51 +1,48 @@
-import React , { useState } from 'react';
-import Slider from 'react-slick';
+import React, { useEffect, useState } from 'react';
 
-import { ProductDB } from '../MokDB';
+import SliderOrNot from '../SliderOrNot';
+import NoPhoto from './NoPhoto';
+
 import './ProductPhotoCarousel.scss';
 
-const ProductPhotoCarousel = () => {
-	
-	const [ state , setState ] = useState( {
-		photos : ProductDB.photo ,
-		bigPhoto : ProductDB.photo[0]
-	} );
-	
-	const settings = {
-		dots : false ,
-		infinite : true ,
-		slidesToShow : 4 ,
-		slidesToScroll : 1 ,
-		centerMode : false ,
-		vertical : true ,
-		verticalSwiping : true ,
+const ProductPhotoCarousel = ({ photos }) => {
+	const [ state, setState ] = useState({
+		photos : [],
+		bigPhoto : {}
+	});
+
+	useEffect(() => {
+		setState({
+			photos : photos,
+			bigPhoto : photos[0]
+		});
+	}, [ photos ]);
+
+	const showBigImg = (id) => {
+		const currentPhoto = photos.find(photo => photo.id === id);
+		setState({ ...state, bigPhoto : currentPhoto });
 	};
-	
-	const showBigImg = ( id ) => {
-		setState( { ...state , bigPhoto : ProductDB.photo[id] } );
-	};
-	
+
+	let noArr;
+	if ( !state.photos.length) {
+		noArr = <NoPhoto noPhoto = 'bigNoPhoto' noPhotoImg = 'bigNoPhotoImg'/>;
+	} else {
+		noArr = <img src = { `data:image/jpeg;base64,${ state.bigPhoto.resource }` } alt = 'activeSlide'/>;
+	}
+
 	return (
 		<div className = 'carouselBox'>
 			<div className = 'sliderPosition'>
-				<Slider { ...settings } className = 'productPhotoSlider'>
-					{ state.photos.map( ( photo , idx ) =>
-						<div key = { `index-${ idx }` }>
-							<img
-								src = { photo }
-								alt = { idx }
-								onClick = { () => showBigImg( idx ) }
-								className = { state.bigPhoto === photo ? 'selected' : '' }
-							/>
-						</div>
-					) }
-				</Slider>
+				<SliderOrNot
+					photos = { state.photos }
+					showBigImg = { showBigImg }
+					bigPhoto = { state.bigPhoto }
+				/>
 			</div>
 			<div className = 'productPhotoSlideBig'>
-				<img src = { state.bigPhoto } alt = 'activeSlide'/>
+				{ noArr }
 			</div>
 		</div>
 	);
 };
-
 export default ProductPhotoCarousel;
