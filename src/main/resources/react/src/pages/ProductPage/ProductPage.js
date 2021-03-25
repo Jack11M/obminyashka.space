@@ -20,7 +20,7 @@ const ProductPage = () => {
   const [ subcategory, setSubcategory ] = useState({});
 
   useEffect(() => {
-    getProduct(3)
+    getProduct(1)
       .then(({ data }) => {
         const { images, wishesToExchange, category, subcategory, location, ...rest } = data;
         const arrWishes = wishesToExchange.split(', ');
