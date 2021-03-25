@@ -49,3 +49,21 @@
 .topSection {
   padding-top: 150px;
 }
+
+.noCarouselImg {
+  height: 140px;
+  width: 140px;
+  margin: 10px 0;
+}
+
+.bigNoPhoto {
+  width: 600px;
+  height: 680px;
+  background-color: #FFFFFF;
+
+  .bigNoPhotoImg {
+    width: 40%;
+    height: 40%;
+    margin: 30% 30%;
+  }
+}

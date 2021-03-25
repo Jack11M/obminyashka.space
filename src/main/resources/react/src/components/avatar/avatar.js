@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Img = styled.img`
   width: ${({width}) =>  width};
   height: ${({height}) =>  height};
-  border-radius: 25px;
+  border-radius: 50%;
   object-fit: cover;
 `;
 
