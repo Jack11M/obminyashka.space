@@ -28,10 +28,12 @@ const initialState = {
 		online: '',
 		lastOnlineTime: ''
 	},
-	profileFromServer: {}
+	profileFromServer: {},
+	isOpen: false,
+	modalIsOpening: 0,
 };
 
-const profileReducer = ( state = initialState, { type, payload, id } ) => {
+const profileReducer = ( state = initialState, { type, payload, id} ) => {
 	switch (type) {
 		case types.FILL_USER_INFO_SYNC:
 			return {
@@ -81,6 +83,18 @@ const profileReducer = ( state = initialState, { type, payload, id } ) => {
 				...state,
 				profile: { ...state.profile, children: deleteItem( state.profile.children, payload ) }
 			};
+
+		case types.OPEN_EXIT_MODAL:
+			return {
+				...state,
+				isOpen: !state.isOpen,
+			};
+
+		case types.CHECK_FIRST_OPENING:
+			return {
+				...state,
+				modalIsOpening: state.modalIsOpening,
+			}
 
 		default:
 			return state;
