@@ -47,6 +47,9 @@ public class LocationController {
 
     @GetMapping("/all")
     @ApiOperation(value = "Get all locations for current locale (I18n).")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<LocationDto>> getAllLocationsForCurrentLanguage(
             @RequestHeader("accept-language") String lang) {
 
