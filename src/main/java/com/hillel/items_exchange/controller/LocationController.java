@@ -45,6 +45,17 @@ public class LocationController {
                 new ResponseEntity<>(allLocations, HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    @ApiOperation(value = "Get all locations for current locale (I18n).")
+    public ResponseEntity<List<LocationDto>> getAllLocationsForCurrentLanguage(
+            @RequestHeader("accept-language") String lang) {
+
+        List<LocationDto> locations = locationService.findAllForCurrentLanguage(lang);
+        return locations.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(locations, HttpStatus.OK);
+    }
+
     @GetMapping("/{location_id}")
     @ApiOperation(value = "Get an existed location by its ID.")
     @ApiResponses(value = {

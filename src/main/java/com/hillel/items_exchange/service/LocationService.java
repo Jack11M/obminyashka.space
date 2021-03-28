@@ -17,6 +17,13 @@ public interface LocationService {
     List<LocationDto> findAll();
 
     /**
+     * Returns all Location DTOs for given language (i18n).
+     * @param lang string value of I18n.
+     * @return list of all location entities for I18n from DB that are represented as {@link LocationDto}
+     */
+    List<LocationDto> findAllForCurrentLanguage(String lang);
+
+    /**
      * Retrieves a location by its id.
      * @param id Location ID.
      * @return the location with the given id or {@link Optional#empty()} if none found.

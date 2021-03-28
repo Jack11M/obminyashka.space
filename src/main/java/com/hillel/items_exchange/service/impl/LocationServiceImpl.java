@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertTo;
+import com.hillel.items_exchange.model.enums.I18n;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
@@ -48,6 +49,16 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationDto> findAll() {
         return new ArrayList<>(convertAllTo(locationRepository.findAll(), LocationDto.class, ArrayList::new));
+    }
+
+    @Override
+    public List<LocationDto> findAllForCurrentLanguage(String lang) {
+        Optional<I18n> i18n = Arrays.stream(I18n.values())
+                .filter(i18nValue -> i18nValue.getValue().toLowerCase().contains(lang))
+                .findFirst();
+
+        return i18n.map(existingI18n -> new ArrayList<>(convertAllTo(locationRepository.findByI18n(existingI18n),
+                LocationDto.class, ArrayList::new))).orElse(new ArrayList<>());
     }
 
     @Override

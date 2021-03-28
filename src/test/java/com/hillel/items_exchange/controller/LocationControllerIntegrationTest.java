@@ -55,6 +55,26 @@ class LocationControllerIntegrationTest {
 
     @Test
     @DataSet("database_init.yml")
+    void getLocationsForCurrentLanguage_shouldReturnLocations() throws Exception {
+        mockMvc.perform(get("/location/all").header("accept-language" , "en"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].city").value("Kharkiv"))
+                .andExpect(jsonPath("$[0].district").value("Kharkivska district"));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    void getLocationsForCurrentLanguage_shouldReturn404WhenLocationsForLangDoNotExist() throws Exception {
+        mockMvc.perform(get("/location/all").header("accept-language" , "us"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet("database_init.yml")
     void getLocation_shouldReturnLocationWithGivenId() throws Exception {
         mockMvc.perform(get("/location/{location_id}", 1L))
                 .andDo(print())
