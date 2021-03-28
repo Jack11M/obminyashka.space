@@ -53,12 +53,12 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationDto> findAllForCurrentLanguage(String lang) {
-        Optional<I18n> i18n = Arrays.stream(I18n.values())
+        return Arrays.stream(I18n.values())
                 .filter(i18nValue -> i18nValue.getValue().toLowerCase().contains(lang))
-                .findFirst();
-
-        return i18n.map(existingI18n -> new ArrayList<>(convertAllTo(locationRepository.findByI18n(existingI18n),
-                LocationDto.class, ArrayList::new))).orElse(new ArrayList<>());
+                .findFirst()
+                .map(existingI18n -> new ArrayList<>(convertAllTo(locationRepository.findByI18n(existingI18n),
+                        LocationDto.class, ArrayList::new)))
+                .orElse(new ArrayList<>());
     }
 
     @Override
