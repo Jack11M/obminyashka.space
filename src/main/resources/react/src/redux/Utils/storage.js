@@ -7,3 +7,9 @@ export const getStorageUser = ( option ) => {
 export const getStorageLang = () => {
 	return localStorage.getItem( 'lang' ) || 'ru';
 };
+
+export const removeTokenFromStorage = () => {
+	localStorage.removeItem('user');
+	sessionStorage.removeItem('user');
+	return false;
+}

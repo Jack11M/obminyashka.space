@@ -1,19 +1,12 @@
 import React from "react";
 
 import TitleBigBlue from "../../../../components/title_Big_Blue/title_Big_Blue";
-import CardWithStar from "../../components/cards/card-with-star/card-with-star";
 import ProductCard from '../../../../components/Card/ProductCard';
 
 import "./myFavorites.scss";
 
 const MyFavorites = () => {
-    const arr = [{
-        elem: {
-            title: "Название",
-            city: "Киев",
-            subject: "https://static.toiimg.com/photo/72975551.cms"
-        }
-    }];
+
     const isFavorite = true;
 
     return (

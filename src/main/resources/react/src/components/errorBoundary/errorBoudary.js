@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import SomethingBad from '../../pages/ErrorPages/SomethingBad';
 
 class ErrorBoundary extends React.Component {
-  state = { hasError: false };
+  state = { hasError: localStorage.getItem('error')};
 
   componentDidCatch(error, info) {
     console.log(error);

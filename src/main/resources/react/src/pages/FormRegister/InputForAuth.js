@@ -1,10 +1,12 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+
+import { route } from '../../routes/routeConstants';
 import { InputAuth, InputDiv, Label, SpanError } from './loginStyle';
 
 const InputForAuth = ( { text, name, type, value, error, click } ) => {
 	const location = useLocation();
-	const path = location.pathname === '/login/';
+	const path = location.pathname === route.login;
 
 	return (
 		<InputDiv path={ path }>

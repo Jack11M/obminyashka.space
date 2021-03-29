@@ -22,12 +22,8 @@ const SomethingBad = ( { deactivateError } ) => {
 	};
 
 	return (
-		<div className={ 'error-page' }>
-			<div className={ 'blockCenterImage' }>
-				<div className={ 'blockCenterImage-somethingBad' }>
-					<img src={ somethingBad } alt={ 'somethingBad' }/>
-				</div>
-			</div>
+		<div className={ 'somethingBad' }> 
+			
 			<div className={ 'blockOrangeImage' }>
 				<img src={ orangeDots } alt={ 'orange dots' }/>
 			</div>
@@ -37,11 +33,14 @@ const SomethingBad = ( { deactivateError } ) => {
 			<div className={ 'blockRightImage' }>
 				<img src={ loop } alt={ 'loop' }/>
 			</div>
-			<h2>{ getTranslatedText( 'somethingBad.error', lang ) }</h2>
-			<div className={ 'blockButtons' }>
-				<Button whatClass={ 'onMain' } text={ getTranslatedText( 'fourOhFour.mainPage', lang ) } click={ goTo }/>
-				<Button whatClass={ 'back' } text={ getTranslatedText( 'fourOhFour.backPage', lang ) } click={ goTo }/>
+			<div className={ 'blockControls' }>
+				<h2>{ getTranslatedText('somethingBad.error', lang) }</h2>
+				<div className={ 'blockButtons' }>
+					<Button whatClass={ 'onMain' } text={ getTranslatedText('fourOhFour.mainPage', lang) } click={ goTo }/>
+					<Button whatClass={ 'back' } text={ getTranslatedText('fourOhFour.backPage', lang) } click={ goTo }/>
 			</div>
+			</div>
+			
 		</div>
 	);
 };

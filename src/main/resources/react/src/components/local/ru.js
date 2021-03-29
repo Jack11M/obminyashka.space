@@ -16,13 +16,35 @@ const ru = {
 		logEmail: 'Введите верный логин или email',
 		logPassword: 'Неверный пароль',
 		regEmail: 'Укажите действующий адрес электронной почты',
-		regNick: 'Больше 2 и меньше 50 символов, без пробелов',
+		regNick: 'Больше 1 и меньше 50 символов, без пробелов',
 		regPassword: 'Большие и малые латинские буквы и цифры. Длина от 8 до 30 символов',
-		regConfirm: 'Пароли должны совпадать'
+		regConfirm: 'Пароли должны совпадать',
+		children: 'Дети не старше 17 лет'
+	},
+	ownInfo: {
+		panelMyActivity: 'Моя активность',
+		panelMyProfile: 'Мой профиль',
+		panelMyFavorite: 'Избранное',
+		panelMySettings: 'Насртойки',
+		panelExit: 'Выход',
+		aboutMe: 'О себе',
+		firstName: 'Имя:',
+		lastName: 'Фамилия:',
+		phone: 'Телефон:',
+		children: 'Дети',
+		dateOfBirth: 'Дата рождения:',
+		gender: 'Пол:',
+		boy: 'Мальчик',
+		girl:'Девочка',
+		unselected: 'Не выбрано'
 	},
 	button: {
 		addAdv: 'Добавить объявление',
+		addField: 'Добавить поле',
+		removeField: 'Удалить поле',
+		saveChanges: 'Сохранить изменения',
 		enter: 'Войти'
+
 	},
 	header: {
 		about: 'О проекте',
@@ -51,9 +73,7 @@ const ru = {
 		backPage: 'Назад'
 	},
 	somethingBad: {
-		error: 'Ошибка! Что будем делать?',
-		mainPage: 'На главную',
-		backPage: 'Назад'
+		error: 'Ошибка! Что будем делать?'
 	}
 };
 
