@@ -23,18 +23,12 @@ public final class JwtUserFactory {
                 user.getEmail(),
                 user.getPassword(),
                 mapToGrantedAuthorities(user.getRole()),
-                isUserEnabled(user),
+                user.getStatus().equals(Status.ACTIVE),
                 user.getUpdated()
         );
     }
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(Role userRole) {
         return Collections.singletonList(new SimpleGrantedAuthority(userRole.getName()));
-    }
-
-    private static boolean isUserEnabled(User user) {
-        Status userStatus = user.getStatus();
-
-        return userStatus.equals(Status.ACTIVE) || userStatus.equals(Status.DELETED);
     }
 }

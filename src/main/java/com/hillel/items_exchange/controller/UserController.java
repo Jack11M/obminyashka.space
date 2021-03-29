@@ -121,14 +121,15 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String deleteUserFirst(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
+    public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
             throws InvalidDtoException {
         User user = getUser(principal.getName());
         if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
             throw new InvalidDtoException(getMessageSource(incorrectPassword));
         }
+        userService.selfDeleteRequest(user);
 
-        return userService.deleteUserFirst(user);
+        return getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user));
     }
 
     @PutMapping("/service/restore")
@@ -138,7 +139,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String restoreUser(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
+    public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
             throws InvalidDtoException, IllegalOperationException {
         User user = getUser(principal.getName());
         if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
@@ -147,8 +148,9 @@ public class UserController {
         if (!user.getStatus().equals(DELETED)) {
             throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
         }
+        userService.makeAccountActiveAgain(user);
 
-        return userService.restoreUser(user);
+        return getMessageSource("account.made.active.again");
     }
 
     @GetMapping("/child")

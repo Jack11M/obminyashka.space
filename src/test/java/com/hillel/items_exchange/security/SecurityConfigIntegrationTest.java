@@ -2,7 +2,7 @@ package com.hillel.items_exchange.security;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dao.AdvertisementRepository;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.UserLoginDto;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -73,9 +72,8 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
-    public void loginWithValidUserIsOk() throws Exception {
+    void loginWithValidUserIsOk() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .content(asJsonString(validLoginDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +83,6 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void loginWithNotValidUserGetsBadRequest() throws Exception {
         mockMvc.perform(post("/auth/login")
@@ -97,16 +94,14 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
-    @Transactional
-    public void createAdvertisementWithoutTokenIsUnauthorized() throws Exception {
+    void createAdvertisementWithoutTokenIsUnauthorized() throws Exception {
         mockMvc.perform(post("/adv"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
-    public void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
+    void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
 
         mockMvc.perform(post("/adv")
@@ -115,10 +110,9 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
-    public void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
+    void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
 
         mockMvc.perform(post("/adv")
@@ -131,7 +125,7 @@ class SecurityConfigIntegrationTest {
 
     @Test
     @DataSet("database_init.yml")
-    public void postRequestWithJWTTokenWithoutBearerPrefixIsUnauthorizedAndBearerIsAbsent() throws Exception {
+    void postRequestWithJWTTokenWithoutBearerPrefixIsUnauthorizedAndBearerIsAbsent() throws Exception {
         final String tokenWithoutBearerPrefix = obtainToken(validLoginDto);
 
         String errorMessage = mockMvc.perform(post("/adv")
@@ -146,7 +140,7 @@ class SecurityConfigIntegrationTest {
 
     @Test
     @DataSet("database_init.yml")
-    public void postRequestWithNotValidJWTTokenIsUnauthorizedAndBadTokenSignature() throws Exception {
+    void postRequestWithNotValidJWTTokenIsUnauthorizedAndBadTokenSignature() throws Exception {
         final String invalidToken = "Bearer " + obtainToken(validLoginDto).replaceAll(".$", "");
 
         String errorMessage = mockMvc.perform(post("/adv")
@@ -161,7 +155,7 @@ class SecurityConfigIntegrationTest {
 
     @Test
     @DataSet("database_init.yml")
-    public void postRequestWithExpiredJwtTokenIsUnauthorizedAndTokenIsExpired() throws Exception {
+    void postRequestWithExpiredJwtTokenIsUnauthorizedAndTokenIsExpired() throws Exception {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
         TimeUnit.MILLISECONDS.sleep(jwtTimeExpired);
 

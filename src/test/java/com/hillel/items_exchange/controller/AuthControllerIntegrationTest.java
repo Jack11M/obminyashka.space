@@ -2,7 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
@@ -14,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import javax.transaction.Transactional;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Objects;
 
@@ -47,7 +47,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     private InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Test
-    @Transactional
+    @Commit
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "auth/register_user.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
@@ -62,7 +62,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenDtoIsValid_shouldReturnSpecificSuccessMessage() throws Exception {
         UserRegistrationDto validUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
@@ -94,7 +93,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenUsernameOrEmailExists_shouldReturnUnprocessableEntityAndThrowUnprocessableEntityException()
             throws Exception {
@@ -113,7 +111,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenUsernameExists_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -131,7 +128,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenEmailExists_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -165,7 +161,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenDifferentConfirmPassword_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -196,7 +191,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenPasswordInvalid_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -227,7 +221,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenEmailInvalid_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -259,7 +252,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenUsernameInvalid_shouldReturnSpecificErrorMessage()
             throws Exception {

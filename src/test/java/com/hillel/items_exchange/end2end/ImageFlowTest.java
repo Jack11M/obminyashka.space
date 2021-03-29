@@ -2,9 +2,7 @@ package com.hillel.items_exchange.end2end;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
-import com.hillel.items_exchange.model.User;
-import com.hillel.items_exchange.service.UserService;
+import com.github.database.rider.junit5.api.DBRider;
 import org.dbunit.util.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,14 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import javax.transaction.Transactional;
-
-import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,11 +28,8 @@ class ImageFlowTest {
 
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
-    public static final long DELETED_USER_ADVERTISEMENT_NUMBER = 6L;
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private UserService userService;
     private MockMultipartFile txt;
 
     @BeforeEach
@@ -49,7 +38,6 @@ class ImageFlowTest {
     }
 
     @Test
-    @Transactional
     void getByAdvertisementId_shouldReturnAllImages() throws Exception {
         mockMvc.perform(get("/image/{advertisement_id}/resource", 1L))
                 .andDo(print())
@@ -60,7 +48,6 @@ class ImageFlowTest {
     }
 
     @Test
-    @Transactional
     void getImageLinksByAdvertisementId_shouldReturnAllImageLinks() throws Exception {
         mockMvc.perform(get("/image/{advertisement_id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
@@ -82,23 +69,6 @@ class ImageFlowTest {
                 .andExpect(status().isUnsupportedMediaType());
     }
 
-    @Test
-    @WithMockUser(username = "deletedUser")
-    @Transactional
-    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void saveImages_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(multipart("/image/{advertisement_id}",
-                DELETED_USER_ADVERTISEMENT_NUMBER)
-                .file(txt))
-                .andDo(print())
-                .andExpect(status().isForbidden())
-                .andReturn();
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-
-        assertTrue(contentAsString.contains(getIllegalOperationMessage(deletedUser)));
-    }
-
     @WithMockUser("admin")
     @Test
     @ExpectedDataSet(value = "image/delete.yml", ignoreCols = {"created", "updated"})
@@ -107,30 +77,5 @@ class ImageFlowTest {
                 .param("ids", "1", "2"))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "deletedUser")
-    @Transactional
-    @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    void deleteImages_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete("/image/{advertisement_id}",
-                DELETED_USER_ADVERTISEMENT_NUMBER)
-                .param("ids", "6"))
-                .andDo(print())
-                .andExpect(status().isForbidden())
-                .andReturn();
-
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-
-        assertTrue(contentAsString.contains(getIllegalOperationMessage(deletedUser)));
-    }
-
-    private String getIllegalOperationMessage(User deletedUser) {
-        return getMessageSource("exception.illegal.operation")
-                .concat(". ")
-                .concat(getParametrizedMessageSource("account.deleted.first",
-                        userService.getDaysBeforeDeletion(deletedUser)));
     }
 }

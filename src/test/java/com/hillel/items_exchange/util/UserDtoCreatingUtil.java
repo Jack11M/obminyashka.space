@@ -92,7 +92,7 @@ public class UserDtoCreatingUtil {
                 EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
-    public static UserDto createUserDtoForUpdatingWithInvalidLNameWithoutPhones() {
+    public static UserDto createUserDtoForUpdatingWithInvalidFNameWithoutPhones() {
         return getBuild("admin", "admin@gmail.com", Boolean.FALSE, NEW_INVALID_TWO_WORDS_NAME,
                 "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
                 EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());

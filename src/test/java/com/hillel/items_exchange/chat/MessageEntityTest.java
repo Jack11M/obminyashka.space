@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.chat;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dao.ChatRepository;
 import com.hillel.items_exchange.dao.MessageRepository;
 import com.hillel.items_exchange.dao.UserRepository;

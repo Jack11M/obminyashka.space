@@ -1,11 +1,10 @@
 package com.hillel.items_exchange.security.jwt;
 
 import com.hillel.items_exchange.model.User;
-import com.hillel.items_exchange.model.enums.Status;
 import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -16,51 +15,52 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Principal;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
+@Component
 @RequiredArgsConstructor
 public class DeletedUserFilter extends GenericFilterBean {
 
     private final UserService userService;
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException,
-            ServletException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) resp;
-        String requestedURL = String.valueOf(request.getRequestURL());
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        Principal principal = httpServletRequest.getUserPrincipal();
+        if (principal != null) {
 
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-            String username = userDetails.getUsername();
-            Optional<User> userOptional = userService.findByUsernameOrEmail(username);
-            PrintWriter writer = response.getWriter();
-
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                if (user.getStatus().equals(Status.DELETED) &&
-                        !isUserAllowedToDoOperation(request, requestedURL)) {
-                    writer.write(getMessageSource("exception.illegal.operation")
-                            .concat(". ")
-                            .concat(getParametrizedMessageSource("account.deleted.first",
-                                    userService.getDaysBeforeDeletion(user))));
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                }
-                else {
-                    chain.doFilter(req, resp);
-                }
+            String username = principal.getName();
+            Optional<User> selfDeletedUser = userService.findByUsernameOrEmail(username)
+                    .filter(Predicate.not(User::isEnabled));
+            if (selfDeletedUser.isPresent() && !isAllowedMethodsAccessed(httpServletRequest)) {
+                blockFurtherAccessWithError(selfDeletedUser.get(), (HttpServletResponse) servletResponse);
                 return;
             }
         }
-        chain.doFilter(req, resp);
+        chain.doFilter(servletRequest, servletResponse);
     }
 
-    private boolean isUserAllowedToDoOperation(HttpServletRequest request, String requestedURL) {
-        return request.getMethod().equals("PUT") && requestedURL.contains("/user/service/restore") ||
-                request.getMethod().equals("GET");
+    private void blockFurtherAccessWithError(User user, HttpServletResponse response) throws IOException {
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write(getMessageSource("exception.illegal.operation")
+                    .concat(". ")
+                    .concat(getParametrizedMessageSource("account.self.delete.request",
+                            userService.getDaysBeforeDeletion(user))));
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
+    }
+
+    private boolean isAllowedMethodsAccessed(HttpServletRequest request) {
+        String requestedURL = request.getRequestURL().toString();
+        String requestMethod = request.getMethod();
+
+        return HttpMethod.PUT.matches(requestMethod) && requestedURL.contains("/user/service/restore") ||
+                HttpMethod.GET.matches(requestMethod);
     }
 }

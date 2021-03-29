@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -33,15 +34,12 @@ import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
 import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
 import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-    //TODO move this constant to application.properties
-    public static final String ONE_TIME_PER_DAY_AT_3_AM = "0 0 3 * * * ";
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
@@ -55,10 +53,11 @@ public class UserService {
     }
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        Pattern emailPattern = Pattern.compile(PatternHandler.EMAIL);
-        Optional<User> user = emailPattern.matcher(usernameOrEmail).matches()
-                ? userRepository.findByEmail(usernameOrEmail)
-                : userRepository.findByUsername(usernameOrEmail);
+        Pattern usernamePattern = Pattern.compile(PatternHandler.USERNAME);
+        Optional<User> user = usernamePattern.matcher(usernameOrEmail).matches()
+                ? userRepository.findByUsername(usernameOrEmail)
+                : userRepository.findByEmail(usernameOrEmail);
+
         return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
     }
 
@@ -96,36 +95,32 @@ public class UserService {
         return getMessageSource("changed.user.email");
     }
 
-    public String deleteUserFirst(User user) {
+    public void selfDeleteRequest(User user) {
         user.setStatus(DELETED);
         userRepository.saveAndFlush(user);
-
-        return getParametrizedMessageSource("account.deleted.first", getDaysBeforeDeletion(user));
     }
 
     public long getDaysBeforeDeletion(User user) {
         return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
     }
 
-    @Scheduled(cron = ONE_TIME_PER_DAY_AT_3_AM)
+    @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
         userRepository.findAll().stream()
-                .filter(user -> user.getStatus().equals(DELETED) &&
-                        isDurationMoreThanNumberOfDaysToKeepDeletedUser(user.getUpdated()))
+                .filter(Predicate.not(User::isEnabled))
+                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
                 .forEach(userRepository::delete);
     }
 
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(LocalDateTime localDateTime) {
-        Duration duration = Duration.between(localDateTime, LocalDateTime.now());
+    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
+        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
 
         return duration.toDays() > numberOfDaysToKeepDeletedUsers;
     }
 
-    public String restoreUser(User user) {
+    public void makeAccountActiveAgain(User user) {
         user.setStatus(ACTIVE);
         userRepository.saveAndFlush(user);
-
-        return getMessageSource("account.restored");
     }
 
     public boolean existsByUsername(String username) {

@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.dto;
 
 import com.hillel.items_exchange.annotation.FieldMatch;
-import com.hillel.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,10 +17,9 @@ import javax.validation.constraints.NotEmpty;
 public class UserChangeEmailDto {
 
     @NotEmpty(message = "{invalid.not-empty}")
-    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
+    @Email(message = "{invalid.email}")
     private String newEmail;
 
     @NotEmpty(message = "{invalid.not-empty}")
-    @Email(regexp = PatternHandler.EMAIL, message = "{invalid.email}")
     private String newEmailConfirmation;
 }

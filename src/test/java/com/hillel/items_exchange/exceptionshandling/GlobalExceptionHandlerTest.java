@@ -1,7 +1,7 @@
 package com.hillel.items_exchange.exceptionshandling;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.dto.ChildDto;

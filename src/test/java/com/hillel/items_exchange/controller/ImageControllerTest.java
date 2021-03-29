@@ -59,7 +59,8 @@ class ImageControllerTest {
 
     @BeforeEach
     void setUp() throws IOException, UnsupportedMediaTypeException {
-        user = createUser();
+        user = new User();
+        user.setStatus(Status.ACTIVE);
         jpeg = new MockMultipartFile("files", "image-jpeg.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpeg".getBytes());
         mocksInit();
     }
@@ -112,12 +113,4 @@ class ImageControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
-
-    private User createUser() {
-        user = new User();
-        user.setStatus(Status.ACTIVE);
-
-        return user;
-    }
-
 }
