@@ -5,12 +5,15 @@ export const errorHandling = ( errors, key, verified, forArray ) => {
 	const lang = getStorageLang();
 	let errorText;
 
-	if (forArray === 'phone') {
-		errorText = '+38(123)456-78-90, 381234567890';
-	} else if (forArray === 'children') {
-		errorText = getTranslatedText( `errors.children`, lang );
-	} else {
-		errorText = getTranslatedText( `errors.regNick`, lang );
+	switch (forArray) {
+		case 'phone':
+			errorText = '+38(123)456-78-90, 381234567890';
+			break;
+		case 'children':
+			errorText = getTranslatedText( `errors.children`, lang );
+			break;
+		default:
+			errorText = getTranslatedText( `errors.regNick`, lang );
 	}
 
 	const newError = {

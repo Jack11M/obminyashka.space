@@ -16,7 +16,7 @@ const en = {
 		logEmail: 'Please enter a valid username or email',
 		logPassword: 'Invalid password',
 		regEmail: 'Please enter a valid email address',
-		regNick: 'More than 1 and less than 50 characters, no spaces',
+		regNick: 'At least 2 and less than 50 characters, no spaces',
 		regPassword: 'Uppercase and lowercase Latin letters and numbers. Length from 8 to 30 characters',
 		regConfirm: 'Passwords must match',
 		children: 'Children under 17'

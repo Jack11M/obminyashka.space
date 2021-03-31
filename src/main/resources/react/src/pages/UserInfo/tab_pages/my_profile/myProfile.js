@@ -91,11 +91,9 @@ const MyProfile = () => {
 
 
 	const childDelete = useCallback( ( idx, childrenId, localDelete ) => {
-		if (localDelete) {
-			dispatch( deleteChild( [ idx, childrenId, localDelete ] ) );
-		} else {
-			dispatch( deleteChildrenAsync( [ idx, childrenId ] ) );
-		}
+		localDelete
+			? deleteChild( [ idx, childrenId, localDelete ] )
+			: dispatch( deleteChildrenAsync( [ idx, childrenId ] ) );
 	}, [ dispatch ] );
 
 	const submitFormAboutMe = ( e ) => {

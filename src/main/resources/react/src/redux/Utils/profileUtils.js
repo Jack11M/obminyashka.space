@@ -1,6 +1,6 @@
 const PHONE_MAX = 5;
 const CHILDREN_MAX = 10;
-const YEARS_AGO = 17;
+const MAX_AGE = 17;
 const date = new Date();
 
 export const getCurrentDate = () => {
@@ -8,7 +8,7 @@ export const getCurrentDate = () => {
 };
 
 export const getMinDate = () => {
-	let year = getCurrentDate().slice( 0, 4 ) - YEARS_AGO;
+	let year = getCurrentDate().slice( 0, 4 ) - MAX_AGE;
 	let rest = getCurrentDate().slice( 4 );
 	return `${ year }${ rest }`;
 };
@@ -24,12 +24,7 @@ export const fillUserInfo = ( data ) => {
 };
 
 export const changePhoneInputOrChildren = ( state, value, id, property ) => {
-	return state.map( ( item, idx ) => {
-		if (idx === id) {
-			return { ...item, [property]: value };
-		}
-		return item;
-	} );
+	return state.map( ( item, idx ) => idx === id ? { ...item, [property]: value } : item );
 };
 
 export const addPhone = ( data, errors ) => {
@@ -46,13 +41,7 @@ export const putChildren = ( state, child ) => {
 };
 
 export const genderChange = ( state, sex, id ) => {
-	return state.map( ( child, idx ) => {
-		if (idx === id) {
-			return { ...child, sex };
-		} else {
-			return child;
-		}
-	} );
+	return state.map( ( child, idx ) => idx === id ? { ...child, sex } : child );
 };
 
 export const deleteLastPhone = ( data ) => {
