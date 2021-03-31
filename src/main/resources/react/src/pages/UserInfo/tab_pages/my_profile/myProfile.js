@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import TitleBigBlue from '../../../../components/title_Big_Blue';
@@ -6,125 +6,141 @@ import InputProfile from '../../components/inputProfile/inputProfile';
 import BlockButtons from '../../components/buttonsAddRemoveChild/blockButtons';
 import Button from '../../../../components/button/Button';
 import InputGender from '../../components/inputProfile/inputGender';
-import CheckBox from '../../../../components/checkbox';
-
-import './myProfile.scss';
-
 import {
 	addChild,
-	addChildrenInputValue,
-	addMeInputValue, addPhone,
-	addPhoneInputValue,
-	deleteChild, deletePhone,
+	addPhone,
+	changeChildrenInputValue,
+	changeInputValue,
+	changePermissionChildren,
+	changePermissionProfile,
+	changePhoneInputValue,
+	chooseGender,
+	deleteChild,
+	deleteChildrenAsync,
+	deletePhone,
+	fetchUserInfoAsync,
+	postChildrenAsync,
+	putChildrenAsync,
 	putUserInfoAsync
 } from '../../../../redux/profile/profileAction';
+
+import { getTranslatedText } from '../../../../components/local/localisation';
+
+import './myProfile.scss';
 
 
 const MyProfile = () => {
 	const dispatch = useDispatch();
-	const { profile } = useSelector( state => state.profileMe );
+	const { lang } = useSelector( state => state.auth );
+	const {
+		firstName,
+		lastName,
+		phones,
+		mockPhones,
+		children,
+		mockChildren,
+		prohibitionToSendAboutMe,
+		prohibitionToSendChildren,
+		receivedChildrenFromBack
+	} = useSelector( state => state.profileMe );
 
-	const addInputMe = useCallback( ( e ) => {
-		dispatch( addMeInputValue( { [e.target.name]: e.target.value } ) );
+	const phonesArray = !phones.length ? mockPhones : phones;
+	const childrenArray = !children.length ? mockChildren : children;
+
+
+	useEffect( () => {
+		dispatch( fetchUserInfoAsync() );
 	}, [ dispatch ] );
 
-	const addInputCity = ( e ) => {
-		console.log( { [e.target.name]: e.target.value } );
-	};
+	useEffect( () => {
+		dispatch( changePermissionProfile() );
+	}, [ dispatch, firstName, lastName, phones ] );
 
-	const addInputPhone = useCallback( ( e, id ) => {
-		dispatch( addPhoneInputValue( { [e.target.name]: e.target.value }, id ) );
+	useEffect( () => {
+		dispatch( changePermissionChildren() );
+	}, [ dispatch, children ] );
+
+	const changeInput = useCallback( ( event ) => {
+		dispatch( changeInputValue( [ event.target.name, event.target.value ] ) );
 	}, [ dispatch ] );
 
-	const phoneAdd = useCallback(()=> {
-		dispatch(addPhone())
-	},[dispatch])
-
-	const phoneRemove = useCallback(()=> {
-		dispatch(deletePhone())
-	},[dispatch])
-
-	const showPhone = useCallback( ( value, id ) => {
-		dispatch( addPhoneInputValue( { show: !value }, id ) );
+	const changeInputPhone = useCallback( ( event, id ) => {
+		dispatch( changePhoneInputValue( [ event.target.name, event.target.value ], id ) );
 	}, [ dispatch ] );
 
-	const addInputChildren = useCallback( ( e, id ) => {
-		dispatch( addChildrenInputValue( { [e.target.name]: e.target.value }, id ) );
+	const phoneAdd = useCallback( () => {
+		dispatch( addPhone() );
+	}, [ dispatch ] );
+
+	const phoneRemove = useCallback( () => {
+		dispatch( deletePhone() );
+	}, [ dispatch ] );
+
+	const changeInputChildren = useCallback( ( event, id ) => {
+		dispatch( changeChildrenInputValue( [ event.target.name, event.target.value ], id ) );
 	}, [ dispatch ] );
 
 	const pickBoyOrGirl = useCallback( ( id, gender ) => {
-		dispatch( addChildrenInputValue( { sex: gender }, id ) );
+		dispatch( chooseGender( gender, id ) );
 	}, [ dispatch ] );
 
-	const childDelete = useCallback( ( childrenId ) => {
-		dispatch( deleteChild( childrenId ) );
-	}, [ dispatch ] );
 
-	const childAdd = useCallback( id => {
+	const childAdd = useCallback( () => {
 		dispatch( addChild() );
+	}, [ dispatch ] );
+
+
+	const childDelete = useCallback( ( idx, childrenId, localDelete ) => {
+		localDelete
+			? deleteChild( [ idx, childrenId, localDelete ] )
+			: dispatch( deleteChildrenAsync( [ idx, childrenId ] ) );
 	}, [ dispatch ] );
 
 	const submitFormAboutMe = ( e ) => {
 		e.preventDefault();
-		dispatch( putUserInfoAsync( profile ) );
+		dispatch( putUserInfoAsync( { firstName, lastName, phones } ) );
 	};
 
 	const submitFormChildren = ( e ) => {
 		e.preventDefault();
-		dispatch( putUserInfoAsync( profile ) );
+		if (receivedChildrenFromBack.length === children.length) {
+			dispatch( putChildrenAsync( children ) );
+		} else {
+			const number = children.length - receivedChildrenFromBack.length;
+			const body = children.slice( children.length - number );
+			dispatch( postChildrenAsync( body ) );
+		}
 	};
 
 	return (
 		<>
 			<form onSubmit={ submitFormAboutMe }>
-				<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'О себе' }/>
+				<TitleBigBlue whatClass={ 'myProfile-title' } text={ getTranslatedText( 'ownInfo.aboutMe', lang ) }/>
 				<InputProfile
-					data={ {
-						name: 'firstName',
-						label: 'Имя:',
-						value: profile.firstName,
-						type: 'text'
-					} }
-					click={ addInputMe }
+					label={ getTranslatedText( 'ownInfo.firstName', lang ) }
+					type={ 'text' }
+					name={ 'firstName' }
+					value={ firstName }
+					change={ changeInput }
 				/>
 				<InputProfile
-					data={ {
-						name: 'lastName',
-						label: 'Фамилия:',
-						value: profile.lastName,
-						type: 'text'
-					} }
-					click={ addInputMe }
+					label={ getTranslatedText( 'ownInfo.lastName', lang ) }
+					type={ 'text' }
+					name={ 'lastName' }
+					value={ lastName }
+					change={ changeInput }
 				/>
-				<InputProfile data={ {
-					name: 'city',
-					label: 'Город:',
-					value: profile.city,
-					type: 'text'
-				} }
-					click={ addInputCity }
-				/>
-
 				<div>
-					{ profile.phones.map( ( phone, index ) => {
+					{ phonesArray.map( ( phone, idx ) => {
 						return (
-							<div key={ `${ phone.id }_phone` }>
+							<div key={ `${ idx }_phone` }>
 								<InputProfile
-									data={ {
-										name: 'phoneNumber',
-										label: `${ !index ? 'Телефон:' : '' } `,
-										value: phone.phoneNumber,
-										type: 'phone',
-										id: phone.id
-									} }
-									click={ ( e ) => addInputPhone( e, phone.id ) }
-								/>
-								<CheckBox
-									text={'Разрешаю отображать на сайте'}
-									margin={ '-10px 0 18px 134px' }
-									checked={ phone.show }
-									click={ () => showPhone( phone.show, phone.id ) }
-									distanceBetween={'9px'}
+									id={ idx }
+									label={ `${ !idx ? getTranslatedText( 'ownInfo.phone', lang ) : '' } ` }
+									type={ 'phone' }
+									name={ 'phoneNumber' }
+									value={ phone.phoneNumber }
+									change={ ( e ) => changeInputPhone( e, idx ) }
 								/>
 							</div>
 						);
@@ -132,45 +148,35 @@ const MyProfile = () => {
 				</div>
 				<BlockButtons
 					mb={ '34px' }
-					index={ profile.phones.length - 1 }
+					index={ phonesArray.length - 1 }
 					add={ phoneAdd }
-					remove={ phoneRemove}
+					remove={ phoneRemove }
 				/>
-
-
 				<Button
-					text={ 'Сохранить' }
+					text={ getTranslatedText( 'button.saveChanges', lang ) }
 					width={ '248px' }
-					whatClass={ 'btn-form-about-me' }/>
+					whatClass={ 'btn-form-about-me' }
+					disabling={ prohibitionToSendAboutMe }
+				/>
 			</form>
 
 			<form onSubmit={ submitFormChildren }>
 				<div className={ 'block-children' }>
-					<TitleBigBlue whatClass={ 'myProfile-title' } text={ 'Дети' }/>
-					{ profile.children.map( ( child, idx ) => {
+					<TitleBigBlue whatClass={ 'myProfile-title' } text={ getTranslatedText( 'ownInfo.children', lang ) }/>
+					{ childrenArray.map( ( child, idx ) => {
 						return (
-							<div className={ 'block-child' } key={ `${ child.id }_child` }>
+							<div className={ 'block-child' } key={ `${ idx }_child` }>
+
 								<InputProfile
-									data={ {
-										name: 'name',
-										label: 'Имя:',
-										value: child.name,
-										type: 'text'
-									} }
-									click={ ( e ) => addInputChildren( e, child.id ) }/>
-								<InputProfile
-									data={ {
-										name: 'birthDate',
-										label: 'Возраст:',
-										value: child.birthDate,
-										type: 'date'
-									} }
-									click={ ( e ) => addInputChildren( e, child.id ) }/>
+									id={ idx }
+									label={ getTranslatedText( 'ownInfo.dateOfBirth', lang ) }
+									type={ 'date' }
+									name={ 'birthDate' }
+									value={ child.birthDate }
+									change={ ( e ) => changeInputChildren( e, idx ) }/>
 								<InputGender
-									data={ {
-										gender: child.sex,
-										id: child.id
-									} }
+									gender={ child.sex }
+									id={ idx }
 									click={ pickBoyOrGirl }/>
 								<BlockButtons
 									mb={ '37px' }
@@ -184,7 +190,8 @@ const MyProfile = () => {
 					} ) }
 				</div>
 				<Button
-					text={ 'Сохранить' }
+					disabling={ prohibitionToSendChildren }
+					text={ getTranslatedText( 'button.saveChanges', lang ) }
 					width={ '248px' }
 					whatClass={ 'btn-form-children' }
 				/>

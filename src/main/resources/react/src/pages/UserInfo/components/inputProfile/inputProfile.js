@@ -1,8 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { getCurrentDate, getMinDate } from '../../../../redux/Utils';
+
 const ProfileInput = styled.div`
- display: flex;
+  position: relative;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 21px;
@@ -25,26 +29,53 @@ const Input = styled.input`
   outline: none;
   font-size: 16px;
   line-height: 16px;
-  :focus,
-  :hover {
-    border: 1px solid #464444;
-  };
   font-family: inherit;
+  border: 1px solid ${ ( { theme: { colors }, error } ) => error ? colors['colorError'] : 'hsl(0, 0%, 74%)' };
+  color: ${ ( { theme: { colors } } ) => colors['right-color-text'] };
+
+  &:focus, &:hover {
+    border-color: ${ ( { theme: { colors }, error } ) => error ? colors['colorError'] : 'hsl(0, 0%, 44%)' };
+  }
 `;
 
-const InputProfile = ( props ) => {
-	const { id = '', name, label, value, type } = props.data;
+const SpanError = styled.span`
+  position: absolute;
+  bottom: -18px;
+  left: 135px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${ ( { theme: { colors } } ) => colors['colorError'] };
+`;
+
+const InputProfile = ( { id = '', type, name, label, value, change } ) => {
+	const { errors, errorsPhone, errorsChildren } = useSelector( state => state.profileMe );
+	let error;
+	if (type === 'phone') {
+		error = errorsPhone.find( error => error.key === id );
+	} else if (type === 'date') {
+		error = errorsChildren.find( error => error.key === id );
+	} else {
+		error = errors.find( error => error.key === name );
+	}
+	const errorText = error ? error.errorText : null;
 
 	return (
 		<ProfileInput>
 			<Label htmlFor={ name + id }>{ `${ label }` }</Label>
 			<Input
+				max={ type === 'date' ? getCurrentDate() : null }
+				min={ type === 'date' ? getMinDate() : null }
 				id={ name + id }
 				type={ type }
 				name={ name }
 				value={ value }
-				onChange={ props.click }
+				error={ errorText }
+				onChange={ change }
+				placeholder={ name === 'phoneNumber' ? `+38(123)456-78-90, 381234567890` : null }
 			/>
+			<SpanError>{ errorText }</SpanError>
 		</ProfileInput>
 	);
 };

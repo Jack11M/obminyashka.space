@@ -1,15 +1,15 @@
 import { types } from './types';
 
-export const chooseLanguage = (lang) => ({
+export const chooseLanguage = ( lang ) => ({
 	type: types.CHOOSE_LANGUAGE,
 	payload: lang
 });
 
-export const clearValueLogin  = () => ({
+export const clearValueLogin = () => ({
 	type: types.CLEAR_VALUE_LOGIN
 });
 
-export const clearValueSignUp  = () => ({
+export const clearValueSignUp = () => ({
 	type: types.CLEAR_VALUE_SIGNUP
 });
 
@@ -23,11 +23,11 @@ export const toggleCheckBox = ( toggle ) => ({
 	payload: toggle
 });
 
-export const toggleDisableButtonLog  = () => ({
+export const toggleDisableButtonLog = () => ({
 	type: types.TOGGLE_DISABLE_BUTTON_LOG
 });
 
-export const toggleDisableButtonReg  = () => ({
+export const toggleDisableButtonReg = () => ({
 	type: types.TOGGLE_DISABLE_BUTTON_REG
 });
 
@@ -46,16 +46,20 @@ export const putTokenLocalStorage = ( body ) => ({
 	payload: body
 });
 
-export const showErrorLogin  = (body) => ({
+export const showErrorLogin = ( body ) => ({
 	type: types.SHOW_ERROR_LOGIN,
 	payload: body
 });
 
-export const showErrorRegister  = (body) => ({
+export const showErrorRegister = ( body ) => ({
 	type: types.SHOW_ERROR_REGISTER,
 	payload: body
 });
 
-export const successReg  = () => ({
+export const successReg = () => ({
 	type: types.SUCCESS_REGISTER
+});
+
+export const unauthorized = () => ({
+	type: types.UNAUTHORIZED
 });

@@ -11,7 +11,6 @@ const ActiveProfile = ({firstName, lastName, avatar}) => {
         <div className="active__profile__box-data">
           <p className="active__profile__box-data-name">
             {`${firstName} ${lastName}`}
-            <span className="active__profile__box-data-city">Харьков</span>
           </p>
         </div>
       </div>
