@@ -68,7 +68,7 @@ class LocationControllerIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     void getLocationsForCurrentLanguage_shouldReturn404WhenLocationsForLangDoNotExist() throws Exception {
-        mockMvc.perform(get("/location/all").header("accept-language" , "us"))
+        mockMvc.perform(get("/location/all").header("accept-language" , "ua"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
