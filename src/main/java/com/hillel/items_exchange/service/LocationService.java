@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import com.hillel.items_exchange.model.Location;
+import com.hillel.items_exchange.model.enums.I18n;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,10 +19,10 @@ public interface LocationService {
 
     /**
      * Returns all Location DTOs for given language (i18n).
-     * @param lang string value of I18n.
+     * @param lang represents I18n.
      * @return list of all location entities for I18n from DB that are represented as {@link LocationDto}
      */
-    List<LocationDto> findAllForCurrentLanguage(String lang);
+    List<LocationDto> findAllForCurrentLanguage(I18n lang);
 
     /**
      * Retrieves a location by its id.

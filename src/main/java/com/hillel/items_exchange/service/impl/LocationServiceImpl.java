@@ -1,7 +1,6 @@
 package com.hillel.items_exchange.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hillel.items_exchange.converter.StringToEnumConverter;
 import com.hillel.items_exchange.dao.LocationRepository;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
@@ -43,7 +42,6 @@ public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final ObjectMapper mapper;
-    private final StringToEnumConverter<I18n> stringToEnumConverter;
 
     private List<String> locationStings;
     @Value("${location.init.file.path}")
@@ -55,13 +53,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<LocationDto> findAllForCurrentLanguage(String lang) {
-        return Arrays.stream(I18n.values())
-                .filter(i18nValue -> i18nValue == stringToEnumConverter.convert(I18n.class, lang))
-                .findFirst()
-                .map(existingI18n -> new ArrayList<>(convertAllTo(locationRepository.findByI18n(existingI18n),
-                        LocationDto.class, ArrayList::new)))
-                .orElse(new ArrayList<>());
+    public List<LocationDto> findAllForCurrentLanguage(I18n lang) {
+        return new ArrayList<>(convertAllTo(locationRepository.findByI18n(lang), LocationDto.class, ArrayList::new));
     }
 
     @Override

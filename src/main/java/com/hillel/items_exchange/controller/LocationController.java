@@ -3,6 +3,7 @@ package com.hillel.items_exchange.controller;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import com.hillel.items_exchange.mapper.UtilMapper;
+import com.hillel.items_exchange.model.enums.I18n;
 import com.hillel.items_exchange.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,7 +53,7 @@ public class LocationController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<LocationDto>> getAllLocationsForCurrentLanguage(
-            @RequestHeader("accept-language") String lang) {
+            @RequestHeader("accept-language") I18n lang) {
 
         List<LocationDto> locations = locationService.findAllForCurrentLanguage(lang);
         return locations.isEmpty()
