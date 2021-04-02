@@ -16,12 +16,33 @@ const ua = {
 		logEmail: 'Введіть правильний логін або email',
 		logPassword: 'Неправильний пароль',
 		regEmail: 'Вкажіть діючу адресу електронної пошти',
-		regNick: 'Більше 2 і менше 50 символів, без пробілів',
+		regNick: 'Неменш як 2 і менше 50 символів, без пробілів',
 		regPassword: 'Великі і малі латинські літери та цифри. Довжина від 8 до 30 символів',
-		regConfirm: 'Паролі повинні співпадати'
+		regConfirm: 'Паролі повинні співпадати',
+		children: 'Діти які не досягли 17 років'
+	},
+	ownInfo: {
+		panelMyActivity: 'Моя активність',
+		panelMyProfile: 'Мій профіль',
+		panelMyFavorite: 'Вибране',
+		panelMySettings: 'Налаштування',
+		panelExit: 'Вихід',
+		aboutMe: 'Про себе',
+		firstName: 'Iм\'я:',
+		lastName: 'Прізвище:',
+		phone: 'Телефон:',
+		children: 'Діти',
+		dateOfBirth: 'Дата народження:',
+		gender: 'Стать:',
+		boy: 'Хлопчик',
+		girl:'Дівчинка',
+		unselected: 'Не вибрано'
 	},
 	button: {
 		addAdv: 'Додати оголошення',
+		addField: 'Додати поле',
+		removeField: 'Видалити поле',
+		saveChanges: 'Зберегти зміни',
 		enter: 'Увійти'
 	},
 	header: {
@@ -51,9 +72,7 @@ const ua = {
 		backPage: 'Назад'
 	},
 	somethingBad: {
-		error: 'Помилка! Що будемо робити?',
-		mainPage: 'На головну',
-		backPage: 'Назад'
+		error: 'Помилка! Що будемо робити?'
 	}
 };
 

@@ -47,7 +47,7 @@ export const SpanError = styled.span`
   line-height: 20px;
 
   ${ InputAuth } {
-    border-color: ${ ( { theme: { colors }, error } ) => error && colors['colorError'] };
+    border-color: ${ ( { theme: { colors }, error } ) => error && colors.colorError };
   }
 ;
   color: ${ ( { theme: { colors } } ) => colors['colorError'] };

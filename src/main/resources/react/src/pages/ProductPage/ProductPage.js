@@ -6,7 +6,7 @@ import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductPostData from './ProductPostData/ProductPostData';
 import ProductOffers from './ProductOffers/ProductOffers';
 import TitleBigBlue from '../../components/title_Big_Blue';
-import { getProduct } from '../../REST/Resources/fetchProfile';
+import { getProduct } from '../../REST/Resources';
 
 import './ProductPage.scss';
 
