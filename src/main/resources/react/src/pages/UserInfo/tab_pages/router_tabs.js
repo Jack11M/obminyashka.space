@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import MyActivity from './my_activity';
@@ -8,13 +8,14 @@ import MySettings from './my_settings';
 import { route } from '../../../routes/routeConstants';
 
 
-const RouterTabs = ( { url } ) => {
+const RouterTabs = ( { url, set } ) => {
 	const location = useLocation();
-	const [ prevLocation, setPrevLocation ] = useState( '' );
+	const [ prevLocation, setPrevLocation ] = set;
+
 
 	useEffect( () => {
 		return () => setPrevLocation( location.pathname );
-	}, [ location ] );
+	}, [ setPrevLocation, location ] );
 
 	const findComponentForExit = useCallback( () => {
 		let lastComponent = MyActivity;

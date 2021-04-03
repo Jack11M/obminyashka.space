@@ -21,12 +21,14 @@ const ru = {
 		regConfirm: 'Пароли должны совпадать',
 		children: 'Дети не старше 17 лет'
 	},
+	panel: {
+		myActivity: 'Моя активность',
+		myProfile: 'Мой профиль',
+		myFavorite: 'Избранное',
+		mySettings: 'Насртойки',
+		myExit: 'Выход',
+	},
 	ownInfo: {
-		panelMyActivity: 'Моя активность',
-		panelMyProfile: 'Мой профиль',
-		panelMyFavorite: 'Избранное',
-		panelMySettings: 'Насртойки',
-		panelExit: 'Выход',
 		aboutMe: 'О себе',
 		firstName: 'Имя:',
 		lastName: 'Фамилия:',
@@ -38,13 +40,17 @@ const ru = {
 		girl:'Девочка',
 		unselected: 'Не выбрано'
 	},
+	exit: {
+		question: 'Выйти?',
+		text: 'Вы не сможете оставлять сообщения и добавлять объявления!',
+		exit: 'Выход'
+	},
 	button: {
 		addAdv: 'Добавить объявление',
 		addField: 'Добавить поле',
 		removeField: 'Удалить поле',
 		saveChanges: 'Сохранить изменения',
 		enter: 'Войти'
-
 	},
 	header: {
 		about: 'О проекте',

@@ -1,8 +1,8 @@
 import { call, put } from 'redux-saga/effects';
 
 import { startFetching, stopFetching } from '../../../ui/action';
-import { postAuthLogin, postAuthRegister } from '../../../../REST/Resources';
-import { putTokenLocalStorage, showErrorLogin, showErrorRegister, successReg } from '../../action';
+import { postAuthLogin, postAuthLogout, postAuthRegister } from '../../../../REST/Resources';
+import { putTokenLocalStorage, showErrorLogin, showErrorRegister, successReg, unauthorized } from '../../action';
 
 export function* workerPostAuthLogin( action ) {
 	const body = action.payload;
@@ -30,6 +30,18 @@ export function* workerPostAuthRegister( action ) {
 		if (e.response.status === 400) {
 			yield put( showErrorRegister( e.response.data.error ) );
 		}
+		console.log( e.response.data.error );
+	} finally {
+		yield put( stopFetching() );
+	}
+}
+
+export function* workerPostAuthLogout() {
+	try {
+		yield put( startFetching() );
+		yield call( postAuthLogout );
+		yield put( unauthorized() );
+	} catch (e) {
 		console.log( e.response.data.error );
 	} finally {
 		yield put( stopFetching() );

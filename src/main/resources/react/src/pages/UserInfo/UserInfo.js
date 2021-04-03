@@ -1,23 +1,32 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 import Tabs from './tabs';
 import RouterTabs from './tab_pages/router_tabs';
 import ActiveProfile from './active_profile';
-import Exit from './tab_pages/exit/index'
+import Exit from './tab_pages/exit/index';
 
 import './UserInfo.scss';
 
 const UserInfo = () => {
-	let {  url } = useRouteMatch();
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const { profile } = useSelector( ( state ) => state.profileMe );
-	const { firstName, lastName, avatarImage } = profile;
+	let { url } = useRouteMatch();
+	let history = useHistory();
+	const [ isModalOpen, setIsModalOpen ] = useState( false );
+	const [ prevLocation, setPrevLocation ] = useState( '' );
 
-	const toggle = useCallback(() => {
-		setIsModalOpen(state => !state);
-	},[])
+	const { firstName, lastName, avatarImage } = useSelector( ( state ) => state.profileMe );
+
+
+	const open = useCallback( () => {
+		setIsModalOpen( true );
+	}, [] );
+
+	const close = useCallback( () => {
+		setIsModalOpen( false );
+		history.push( prevLocation );
+
+	}, [ prevLocation, history ] );
 
 	return (
 		<div className="container">
@@ -27,14 +36,14 @@ const UserInfo = () => {
 					lastName={ lastName }
 					avatar={ avatarImage }
 				/>
-				<Tabs url={ url } toggle={toggle}/>
+				<Tabs url={ url } toggle={ open }/>
 			</aside>
 			<main className="main-content">
 				<div className="main-content-wrapper">
-					<RouterTabs url={ url } profile={ profile }/>
+					<RouterTabs url={ url } set={ [ prevLocation, setPrevLocation ] }/>
 				</div>
 			</main>
-			{isModalOpen && <Exit toggle={toggle}/>}
+			{ isModalOpen && <Exit toggle={ close }/> }
 		</div>
 	);
 };
