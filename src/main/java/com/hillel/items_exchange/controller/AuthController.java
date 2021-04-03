@@ -93,7 +93,7 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getExceptionMessageSource("invalid.username-or-password"));
+            throw new BadCredentialsException(getMessageSource("invalid.username-or-password"));
         }
     }
 
@@ -121,10 +121,10 @@ public class AuthController {
         Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);
         if (userService.registerNewUser(userRegistrationDto, role)) {
             log.info("User with email: {} successfully registered", userRegistrationDto.getEmail());
-            return new ResponseEntity<>(getExceptionParametrizedMessageSource(
+            return new ResponseEntity<>(getParametrizedMessageSource(
                     "user.created", userRegistrationDto.getUsername()), HttpStatus.CREATED);
         }
 
-        throw new BadRequestException(getExceptionMessageSource("user.not-registered"));
+        throw new BadRequestException(getMessageSource("user.not-registered"));
     }
 }

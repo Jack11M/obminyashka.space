@@ -1,26 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 
 import Tabs from './tabs';
 import RouterTabs from './tab_pages/router_tabs';
 import ActiveProfile from './active_profile';
 import Exit from './tab_pages/exit/index'
-import { fetchUserInfoAsync } from '../../redux/profile/profileAction';
 
 import './UserInfo.scss';
 
 const UserInfo = () => {
-	const dispatch = useDispatch();
 	let {  url } = useRouteMatch();
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const { profile } = useSelector( ( state ) => state.profileMe );
 	const { firstName, lastName, avatarImage } = profile;
-
-	useEffect( () => {
-		dispatch( fetchUserInfoAsync() );
-	}, [ dispatch ] );
-
 
 	const toggle = useCallback(() => {
 		setIsModalOpen(state => !state);

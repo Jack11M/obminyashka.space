@@ -2,7 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dto.UserLoginDto;
 import com.hillel.items_exchange.dto.UserRegistrationDto;
 import com.hillel.items_exchange.exception.BadRequestException;
@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import javax.transaction.Transactional;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Objects;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -47,7 +47,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     private InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Test
-    @Transactional
+    @Commit
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "auth/register_user.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
@@ -62,7 +62,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenDtoIsValid_shouldReturnSpecificSuccessMessage() throws Exception {
         UserRegistrationDto validUser = createUserRegistrationDto(VALID_USERNAME, VALID_EMAIL,
@@ -73,7 +72,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print()).andReturn();
 
-        String seekingResponse = getExceptionParametrizedMessageSource("user.created", validUser.getUsername());
+        String seekingResponse = getParametrizedMessageSource("user.created", validUser.getUsername());
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
     }
 
@@ -94,7 +93,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenUsernameOrEmailExists_shouldReturnUnprocessableEntityAndThrowUnprocessableEntityException()
             throws Exception {
@@ -113,7 +111,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenUsernameExists_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -127,11 +124,10 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(result.getResponse().getContentAsString().contains(getExceptionMessageSource("username.duplicate")));
+        assertTrue(result.getResponse().getContentAsString().contains(getMessageSource("username.duplicate")));
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenEmailExists_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -145,7 +141,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andDo(print())
                 .andReturn();
 
-        assertTrue(result.getResponse().getContentAsString().contains(getExceptionMessageSource("email.duplicate")));
+        assertTrue(result.getResponse().getContentAsString().contains(getMessageSource("email.duplicate")));
     }
 
     @Test
@@ -165,7 +161,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenDifferentConfirmPassword_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -180,7 +175,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertEquals(getExceptionMessageSource("different.passwords"), receivedMessage);
+        assertEquals(getMessageSource("different.passwords"), receivedMessage);
     }
 
     @Test
@@ -196,7 +191,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenPasswordInvalid_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -211,7 +205,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.password")));
+        assertTrue(receivedMessage.contains(getMessageSource("invalid.password")));
     }
 
     @Test
@@ -227,7 +221,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenEmailInvalid_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -242,7 +235,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.email")));
+        assertTrue(receivedMessage.contains(getMessageSource("invalid.email")));
     }
 
     @Test
@@ -259,7 +252,6 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void register_whenUsernameInvalid_shouldReturnSpecificErrorMessage()
             throws Exception {
@@ -274,7 +266,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andReturn();
 
         String receivedMessage = Objects.requireNonNull(result.getResolvedException()).getMessage();
-        assertTrue(receivedMessage.contains(getExceptionMessageSource("invalid.username")));
+        assertTrue(receivedMessage.contains(getMessageSource("invalid.username")));
     }
 
     @Test

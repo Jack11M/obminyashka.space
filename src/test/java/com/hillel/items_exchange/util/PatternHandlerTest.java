@@ -3,7 +3,6 @@ package com.hillel.items_exchange.util;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.hillel.items_exchange.util.PatternHandler.*;
@@ -11,18 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PatternHandlerTest {
-
-    @ParameterizedTest
-    @MethodSource("createCorrectEmails")
-    void testEmailRegexp_whenEmailIsCorrect(String correctEmail) {
-        assertTrue(correctEmail.matches(EMAIL));
-    }
-
-    @ParameterizedTest
-    @MethodSource("createWrongEmails")
-    void testEmailRegexp_whenEmailIsWrong(String wrongEmail) {
-        assertFalse(wrongEmail.matches(EMAIL));
-    }
 
     @ParameterizedTest
     @MethodSource("createCorrectPasswords")
@@ -70,32 +57,6 @@ class PatternHandlerTest {
     @MethodSource("createWrongWordsEmptyOrMin2Max50")
     void testWordEmptyOrMin2Max50_whenWordIsWrong(String wrongWord) {
         assertFalse(wrongWord.matches(WORD_EMPTY_OR_MIN_2_MAX_50));
-    }
-
-    private static List<String> createCorrectEmails() {
-
-        return List.of(
-                "pushkin@ukr.net",
-                "pushkin.145@gmail.com",
-                "pushkin@mail.ru",
-                "pushkin.pushkin@mail.ru",
-                "pushkin.pushkin@mail.mail.ru",
-                "1@ukr.net",
-                "1@111.ru");
-    }
-
-    private static List<String> createWrongEmails() {
-
-        return new ArrayList<>(List.of(
-                "pushkin@ukr.n",
-                "ФЫЩШЁpushkin@mail.ru",
-                "pushkin@m~il.ru",
-                "pushkin@mail.5u",
-                ".145@gmail.com",
-                "push~kin@mail.ru",
-                "pushkin@@mail.ru",
-                "1@111.11",
-                "pushkin.11"));
     }
 
     private static List<String> createCorrectPasswords() {
@@ -167,7 +128,6 @@ class PatternHandlerTest {
                 "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                 "АлександрФилипповичМакедонский",
                 "7",
-                "~~!@#$%^&&*())",
                 "WЪQЬRЫL",
                 "Ё",
                 "Є"
@@ -181,7 +141,10 @@ class PatternHandlerTest {
                 " ",
                 "www bbb",
                 " www",
-                "www ");
+                "www ",
+                "~~!@#$%^&&*())",
+                "user@gmail.com"
+        );
     }
 
     private static List<String> createCorrectWordsEmptyOrMin2Max50() {

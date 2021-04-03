@@ -1,28 +1,36 @@
 package com.hillel.items_exchange.service.impl;
 
 import com.hillel.items_exchange.dao.AdvertisementRepository;
+import com.hillel.items_exchange.dto.AdvertisementDisplayDto;
 import com.hillel.items_exchange.dto.AdvertisementDto;
 import com.hillel.items_exchange.dto.AdvertisementFilterDto;
 import com.hillel.items_exchange.dto.AdvertisementTitleDto;
+import com.hillel.items_exchange.dto.CategoryNameDto;
 import com.hillel.items_exchange.dto.LocationDto;
 import com.hillel.items_exchange.model.Advertisement;
 import com.hillel.items_exchange.model.Image;
 import com.hillel.items_exchange.model.Location;
 import com.hillel.items_exchange.model.User;
+import com.hillel.items_exchange.model.enums.AgeRange;
 import com.hillel.items_exchange.model.enums.Status;
 import com.hillel.items_exchange.service.AdvertisementService;
 import com.hillel.items_exchange.service.ImageService;
 import com.hillel.items_exchange.service.LocationService;
 import com.hillel.items_exchange.service.SubcategoryService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +48,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
     private final ImageService imageService;
+
+    @Value("${display.adv.date.format}")
+    private String dateFormat;
 
     @Override
     public List<AdvertisementDto> findAll(Pageable pageable) {
@@ -64,8 +75,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Optional<AdvertisementDto> findDtoById(long id) {
-        return findById(id).map(this::mapAdvertisementToDto);
+    public Optional<AdvertisementDisplayDto> findDtoById(long id) {
+        return findById(id).map(this::buildAdvertisementDisplayDto);
     }
 
     @Override
@@ -110,6 +121,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         fromDB.setStatus(Status.UPDATED);
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
+    }
+
+    @Override
+    public boolean existById(Long id) {
+        return advertisementRepository.existsById(id);
     }
 
     private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
@@ -198,5 +214,37 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .ownerName(advertisement.getUser().getUsername())
                 .ownerAvatar(advertisement.getUser().getAvatarImage())
                 .build();
+    }
+
+    private AdvertisementDisplayDto buildAdvertisementDisplayDto(Advertisement advertisement) {
+        String createdDate = advertisement.getCreated().format(DateTimeFormatter.ofPattern(dateFormat));
+        String age = Optional.ofNullable(advertisement.getAge()).map(AgeRange::getValue).orElse("");
+        AdvertisementDisplayDto displayDto = AdvertisementDisplayDto.builder()
+                .advertisementId(advertisement.getId())
+                .ownerName(getOwnerFullName(advertisement.getUser()))
+                .ownerAvatar(advertisement.getUser().getAvatarImage())
+                .age(age)
+                .phone(getOwnerPhone(advertisement.getUser()))
+                .category(convertTo(advertisement.getSubcategory().getCategory(), CategoryNameDto.class))
+                .createdDate(createdDate)
+                .build();
+
+        AdvertisementDisplayDto mappedDto = modelMapper.map(advertisement, AdvertisementDisplayDto.class);
+        BeanUtils.copyProperties(mappedDto, displayDto, "createdDate", "phone", "age", "ownerName",
+                "category");
+        return displayDto;
+    }
+
+    private String getOwnerPhone(User user) {
+        var phones = user.getPhones();
+        return phones.stream()
+                .findFirst()
+                .map(phone -> String.valueOf(phone.getPhoneNumber()))
+                .orElse("");
+    }
+
+    private String getOwnerFullName(User user) {
+        String formatted = String.format("%s %s", user.getFirstName(), user.getLastName());
+        return formatted.isBlank() ? user.getUsername() : formatted.trim();
     }
 }

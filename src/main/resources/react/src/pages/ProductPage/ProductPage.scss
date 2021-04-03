@@ -1,0 +1,69 @@
+.productPageContainer {
+  margin: auto;
+  max-width: 1220px;
+  padding-top: 50px;
+}
+
+.productPageInner {
+  font-family: Roboto, sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.breadСrumbs {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 26px;
+  color: #8F8F8F;
+  margin-bottom: 30px;
+}
+
+.breadСrumbs span {
+  color: #11171F;
+}
+
+.carouselAndDescription {
+  display: flex;
+  flex-direction: column;
+  width: 765px;
+  height: 935px;
+  justify-content: space-between;
+}
+
+.ownerAndPost {
+  display: flex;
+  flex-direction: column;
+  width: 420px;
+  height: 935px;
+  justify-content: space-between;
+}
+
+.sectionHeading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.topSection {
+  padding-top: 150px;
+}
+
+.noCarouselImg {
+  height: 140px;
+  width: 140px;
+  margin: 10px 0;
+}
+
+.bigNoPhoto {
+  width: 600px;
+  height: 680px;
+  background-color: #FFFFFF;
+
+  .bigNoPhotoImg {
+    width: 40%;
+    height: 40%;
+    margin: 30% 30%;
+  }
+}

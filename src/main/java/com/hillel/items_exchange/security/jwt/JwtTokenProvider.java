@@ -10,13 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Slf4j
 @Component
@@ -69,7 +70,7 @@ public class JwtTokenProvider {
                 return bearerToken.substring(BEARER_PREFIX.length());
             } else {
                 String errorMessageTokenNotStartWithBearerPrefix =
-                        getExceptionMessageSource("token.not.start.with.bearer");
+                        getMessageSource("token.not.start.with.bearer");
                 log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
                 req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
                 return EMPTY_TOKEN;
@@ -92,7 +93,7 @@ public class JwtTokenProvider {
 
     public void invalidateToken(String token) {
         final Date expirationDate = getTokenExpirationDate(token)
-                .orElseThrow(() -> new JwtException(getExceptionMessageSource("invalid.token")));
+                .orElseThrow(() -> new JwtException(getMessageSource("invalid.token")));
         invalidatedTokensHolder.invalidate(token, expirationDate);
     }
 

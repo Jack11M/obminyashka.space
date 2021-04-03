@@ -2,7 +2,7 @@ package com.hillel.items_exchange.end2end;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import org.dbunit.util.Base64;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.transaction.Transactional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
 class ImageFlowTest {
+
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
     @Autowired
@@ -39,7 +38,6 @@ class ImageFlowTest {
     }
 
     @Test
-    @Transactional
     void getByAdvertisementId_shouldReturnAllImages() throws Exception {
         mockMvc.perform(get("/image/{advertisement_id}/resource", 1L))
                 .andDo(print())
@@ -50,7 +48,6 @@ class ImageFlowTest {
     }
 
     @Test
-    @Transactional
     void getImageLinksByAdvertisementId_shouldReturnAllImageLinks() throws Exception {
         mockMvc.perform(get("/image/{advertisement_id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))

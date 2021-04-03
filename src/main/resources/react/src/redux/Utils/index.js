@@ -1,4 +1,7 @@
-export { addInputPhoneOrChildren, deleteItem, addChild, fillUserInfo, addPhone, deleteLastPhone } from './profileUtils';
-export { authValidation } from './validationInput';
+export {
+	changePhoneInputOrChildren, deleteItem, addChild, fillUserInfo, addPhone, deleteLastPhone, getCurrentDate, genderChange, dateValidation, getMinDate, getArray, putChildren, deleteReceivedChildren
+} from './profileUtils';
 export { toggleButtonLog, toggleButtonReg } from './toggleDisableButtonAuth';
-export { getStorageUser, getStorageLang } from './storage';
+export { getStorageUser, getStorageLang, removeTokenFromStorage } from './storage';
+export { errorHandling, translateErrors, permissionToSendProfile, permissionToSendChildren } from './errorHandling';
+export { authValidation } from './validationInput';

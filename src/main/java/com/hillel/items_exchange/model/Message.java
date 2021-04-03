@@ -22,5 +22,5 @@ public class Message extends BaseEntity {
     private User user;
     private String text;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "message", orphanRemoval = true)
-    List<Attachment> attachments;
+    private List<Attachment> attachments;
 }

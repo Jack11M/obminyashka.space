@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,7 +26,8 @@ import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertTo;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import com.hillel.items_exchange.model.enums.I18n;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +42,7 @@ public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final ObjectMapper mapper;
+
     private List<String> locationStings;
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
@@ -49,6 +50,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationDto> findAll() {
         return new ArrayList<>(convertAllTo(locationRepository.findAll(), LocationDto.class, ArrayList::new));
+    }
+
+    @Override
+    public List<LocationDto> findAllForCurrentLanguage(I18n lang) {
+        return new ArrayList<>(convertAllTo(locationRepository.findByI18n(lang), LocationDto.class, ArrayList::new));
     }
 
     @Override
@@ -105,10 +111,10 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public String createParsedLocationsFile(String creatingData)
             throws IOException, InvalidLocationInitFileCreatingDataException {
-        File file = new File(locationInitFilePath);
+
         List<Location> locations = mapCreatingDataToLocations(creatingData);
         String initString = "INSERT INTO `evo_exchange`.`location` (`id`, `city`, `district`, `area`, `i18n`) VALUES";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locationInitFilePath), StandardCharsets.UTF_8)) {
             writer.append(initString);
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
@@ -121,7 +127,7 @@ public class LocationServiceImpl implements LocationService {
                 if (i < locations.size()-1) writer.append(",");
             }
         }
-        return Files.readString(Path.of(file.getAbsolutePath()));
+        return Files.readString(Path.of(locationInitFilePath).toAbsolutePath(), StandardCharsets.UTF_8);
     }
 
     @Override
@@ -129,7 +135,7 @@ public class LocationServiceImpl implements LocationService {
         Pattern pattern = Pattern.compile(LOCATION_INIT_FILE_CREATE_DATA_PATTERN);
         locationStings = new ArrayList<>();
         return Arrays.stream(locationDataString.substring(1, locationDataString.length() - 1).split("},"))
-                .map(s -> s.replaceAll("\\{|\\}", ""))
+                .map(s -> s.replaceAll("[{}]", ""))
                 .peek(locationStings::add)
                 .allMatch(s -> pattern.matcher(s).matches());
     }
@@ -137,7 +143,7 @@ public class LocationServiceImpl implements LocationService {
     private List<Location> mapCreatingDataToLocations(String creatingData)
             throws InvalidLocationInitFileCreatingDataException {
         if (!isLocationDataValid(creatingData)) throw new InvalidLocationInitFileCreatingDataException(
-                getExceptionMessageSource("exception.invalid.locations.file.creating.data"));
+                getMessageSource("exception.invalid.locations.file.creating.data"));
         return locationStings
                 .stream()
                 .map(this::prepareLocation)

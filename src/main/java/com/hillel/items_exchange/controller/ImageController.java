@@ -32,8 +32,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionParametrizedMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
 @RequestMapping("/image")
@@ -82,19 +82,20 @@ public class ImageController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> saveImages(@PathVariable("advertisement_id")
                                              @PositiveOrZero(message = "{invalid.id}") long advertisementId,
                                              @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
-            throws ElementsNumberExceedException {
+            throws ElementsNumberExceedException, IllegalOperationException {
 
         try {
             final Advertisement advToSaveImages = advertisementService.findById(advertisementId)
                     .orElseThrow(ClassNotFoundException::new);
             if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
                 throw new ElementsNumberExceedException(
-                        getExceptionParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
+                        getParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
             }
             List<byte[]> compressedImages = imageService.compress(images);
             imageService.saveToAdvertisement(advToSaveImages, compressedImages);
@@ -126,7 +127,7 @@ public class ImageController {
             throws IllegalOperationException {
 
         if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
-            throw new IllegalOperationException(getExceptionMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
         imageService.removeById(imageIdList);
     }

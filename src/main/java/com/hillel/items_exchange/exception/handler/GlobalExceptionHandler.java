@@ -1,9 +1,6 @@
 package com.hillel.items_exchange.exception.handler;
 
-import com.hillel.items_exchange.exception.DataConflictException;
-import com.hillel.items_exchange.exception.IllegalOperationException;
-import com.hillel.items_exchange.exception.InvalidDtoException;
-import com.hillel.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
+import com.hillel.items_exchange.exception.*;
 import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,7 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalOperationException.class, AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorMessage handleIllegalOperation(IllegalOperationException e, ServletWebRequest request) {
+    public ErrorMessage handleIllegalOperation(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
@@ -66,6 +64,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
+    }
+
+    @ExceptionHandler(UnsupportedMediaTypeException.class)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ErrorMessage handleUnsupportedMediaTypeException(UnsupportedMediaTypeException ex, ServletWebRequest request){
+        return logAndGetErrorMessage(request, ex, Level.ERROR);
+    }
+
+    @ExceptionHandler(IOException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ErrorMessage handleIOException(IOException ex, ServletWebRequest request){
+        return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {

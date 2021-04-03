@@ -2,7 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +14,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static com.hillel.items_exchange.util.LocationDtoCreatingUtil.*;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,6 +51,26 @@ class LocationControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].city").value("Kharkiv"))
                 .andExpect(jsonPath("$[0].district").value("Kharkivska district"));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    void getLocationsForCurrentLanguage_shouldReturnLocations() throws Exception {
+        mockMvc.perform(get("/location/all").header("accept-language" , "en"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].city").value("Kharkiv"))
+                .andExpect(jsonPath("$[0].district").value("Kharkivska district"));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    void getLocationsForCurrentLanguage_shouldReturn404WhenLocationsForLangDoNotExist() throws Exception {
+        mockMvc.perform(get("/location/all").header("accept-language" , "ua"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -202,7 +223,7 @@ class LocationControllerIntegrationTest {
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsValid_shouldCreateFileAndReturnItsContent() throws Exception {
         MvcResult response = mockMvc.perform(post("/location/locations-init")
-                .param("data", Files.readString(Path.of(pathToFileParseLocationsFrom))))
+                .content(Files.readString(Path.of(pathToFileParseLocationsFrom), StandardCharsets.UTF_8)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
@@ -218,10 +239,10 @@ class LocationControllerIntegrationTest {
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/location/locations-init")
-                .param("data", "NOT VALID DATA"))
+                .content("NOT VALID DATA"))
                 .andDo(print()).andReturn();
         assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus());
-        String stringToSearch = getExceptionMessageSource("exception.invalid.locations.file.creating.data");
+        String stringToSearch = getMessageSource("exception.invalid.locations.file.creating.data");
         assertTrue(mvcResult.getResponse().getContentAsString().contains(stringToSearch));
     }
 }

@@ -18,23 +18,23 @@ public class MessageSourceUtil {
         mSource = messageSource;
     }
 
-    public static String getExceptionMessageSource(String message) {
+    public static String getMessageSource(String message) {
         return mSource.getMessage(message,
                 null,
                 LocaleContextHolder.getLocale());
     }
 
-    public static String getExceptionParametrizedMessageSource(String message, Object... parameters) {
+    public static String getParametrizedMessageSource(String message, Object... parameters) {
         return mSource.getMessage(message,
                 parameters,
                 LocaleContextHolder.getLocale());
     }
 
     public static String getExceptionMessageSourceWithId(long id, String message) {
-        return getExceptionMessageSource(message) + id;
+        return getMessageSource(message) + id;
     }
 
     public static String getExceptionMessageSourceWithAdditionalInfo(String message, String additionalInfo) {
-        return getExceptionMessageSource(message) + additionalInfo;
+        return getMessageSource(message) + additionalInfo;
     }
 }

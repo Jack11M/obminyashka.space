@@ -1,88 +1,161 @@
 import { types } from './types';
-import { addChild, addInputPhoneOrChildren, addPhone, deleteItem, deleteLastPhone, fillUserInfo } from '../Utils';
-
+import {
+	addChild,
+	addPhone,
+	authValidation,
+	changePhoneInputOrChildren,
+	dateValidation,
+	deleteItem,
+	deleteLastPhone,
+	deleteReceivedChildren,
+	errorHandling,
+	genderChange,
+	getArray,
+	permissionToSendChildren,
+	permissionToSendProfile,
+	translateErrors
+} from '../Utils';
 
 const initialState = {
-	profile: {
-		avatarImage: '',
-		firstName: '',
-		lastName: '',
-		username: '',
-		email: '',
-		phones: [
-			{
-				defaultPhone: false,
-				id: 0,
-				phoneNumber: '',
-				show: true
-			}
-		],
-		children: [
-			{
-				name: '',
-				birthDate: '',
-				id: 0,
-				sex: 'boy'
-			}
-		],
-		online: '',
-		lastOnlineTime: ''
-	},
-	profileFromServer: {},
-	isOpen: false,
-	modalIsOpening: 0,
+	avatarImage: '',
+	firstName: '',
+	lastName: '',
+	username: '',
+	email: '',
+	phones: [],
+	children: [],
+	online: '',
+	lastOnlineTime: '',
+	mockPhones: [
+		{
+			defaultPhone: false,
+			id: 0,
+			phoneNumber: ''
+		}
+	],
+	mockChildren: [
+		{
+			birthDate: '',
+			id: 0,
+			sex: 'UNSELECTED'
+		}
+	],
+	errors: [],
+	errorsPhone: [],
+	errorsChildren: [],
+	prohibitionToSendAboutMe: true,
+	prohibitionToSendChildren: true,
+	receivedChildrenFromBack: []
 };
 
-const profileReducer = ( state = initialState, { type, payload, id} ) => {
+const profileReducer = ( state = initialState, { type, payload, id } ) => {
 	switch (type) {
 		case types.FILL_USER_INFO_SYNC:
 			return {
 				...state,
-				profile: { ...state.profile, ...fillUserInfo( payload ) }
+				...payload,
+				receivedChildrenFromBack: payload.children
 			};
 
-		case types.ADD_ME_INPUT_VALUE:
+		case types.CHANGE_INPUT_VALUE:
+			const [ keyInput, value ] = payload;
+			const verified = authValidation( state, keyInput, value );
+			const error = errorHandling( state.errors, keyInput, verified );
 			return {
-				...state,
-				profile: { ...state.profile, ...payload }
+				...state, [keyInput]: value, errors: [ ...error ]
 			};
 
-		case types.ADD_PHONE_INPUT_VALUE:
+		case types.CHANGE_PHONE_INPUT_VALUE:
+			const [ keyPhone, valuePhone ] = payload;
+			const errorPhone = errorHandling( state.errorsPhone, id, authValidation( state.phones[id], keyPhone, valuePhone ), 'phone' );
+			const phones = getArray( state.phones, state.mockPhones );
 			return {
 				...state,
-				profile: { ...state.profile, phones: addInputPhoneOrChildren( state.profile.phones, payload, id ) }
+				phones: changePhoneInputOrChildren( phones, valuePhone, id, 'phoneNumber' ),
+				errorsPhone: errorPhone
 			};
 
 		case types.ADD_PHONE:
 			return {
 				...state,
-				profile: { ...state.profile, phones: addPhone( state.profile.phones ) }
+				phones: addPhone( state.phones, state.errorsPhone )
 			};
 
 		case types.DELETE_PHONE:
 			return {
 				...state,
-				profile: { ...state.profile, phones: deleteLastPhone( state.profile.phones ) }
+				phones: deleteLastPhone( state.phones ),
+				errorsPhone: deleteLastPhone( state.errorsPhone )
 			};
 
-		case types.ADD_CHILDREN_INPUT_VALUE: {
+		case types.CHANGE_CHILDREN_INPUT_VALUE: {
+			const valid = dateValidation( payload[1] );
+			const errorChild = errorHandling( state.errorsChildren, id, valid, 'children' );
+			const children = getArray( state.children, state.mockChildren );
 			return {
 				...state,
-				profile: { ...state.profile, children: addInputPhoneOrChildren( state.profile.children, payload, id ) }
+				children: changePhoneInputOrChildren( children, payload[1], id, 'birthDate' ),
+				errorsChildren: errorChild
+			};
+		}
+
+		case types.CHOOSE_GENDER: {
+			const children = getArray( state.children, state.mockChildren );
+			return {
+				...state,
+				children: genderChange( children, payload, id )
 			};
 		}
 
 		case types.ADD_CHILD:
 			return {
 				...state,
-				profile: { ...state.profile, children: addChild( state.profile.children ) }
+				children: addChild( state.children, state.errorsChildren )
 			};
 
 		case types.DELETE_CHILD:
+			const [ index, childrenId, localDelete ] = payload;
+
 			return {
 				...state,
-				profile: { ...state.profile, children: deleteItem( state.profile.children, payload ) }
+				children: localDelete ? deleteItem( state.children, index ) : deleteReceivedChildren( state.children, childrenId ),
+				errorsChildren: deleteItem( state.errorsChildren, index ),
+				receivedChildrenFromBack: deleteReceivedChildren( state.receivedChildrenFromBack, childrenId )
 			};
+
+		case types.CHANGE_LANG_PROFILE_ERRORS:
+			return {
+				...state,
+				errors: translateErrors( state.errors, payload ),
+				errorsChildren: translateErrors( state.errorsChildren, payload )
+			};
+
+		case types.CHANGE_PERMISSION_PROFILE:
+			return {
+				...state,
+				prohibitionToSendAboutMe: !permissionToSendProfile( state )
+			};
+
+		case types.CHANGE_PERMISSION_CHILDREN:
+			return {
+				...state,
+				prohibitionToSendChildren: !permissionToSendChildren( state )
+			};
+
+		case types.PUT_RECEIVED_POST_CHILDREN:
+			const childrenWithoutID = [ ...state.children ].filter( item => item.id !== 0 );
+			return {
+				...state,
+				children: [ ...childrenWithoutID, ...payload ],
+				receivedChildrenFromBack: [ ...state.receivedChildrenFromBack, ...payload ]
+			};
+
+		case types.PUT_RECEIVED_PUT_CHILDREN:
+			return {
+				...state,
+				receivedChildrenFromBack: payload
+			};
+
 		default:
 			return state;
 	}

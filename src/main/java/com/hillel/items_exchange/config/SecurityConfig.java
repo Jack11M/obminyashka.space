@@ -1,8 +1,10 @@
 package com.hillel.items_exchange.config;
 
+import com.hillel.items_exchange.security.jwt.DeletedUserFilter;
 import com.hillel.items_exchange.security.jwt.JwtAuthenticationEntryPoint;
 import com.hillel.items_exchange.security.jwt.JwtConfigurator;
 import com.hillel.items_exchange.security.jwt.JwtTokenProvider;
+import com.hillel.items_exchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -27,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_USER = "hasRole('ROLE_USER')";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final UserService userService;
 
     @Bean
     @Override
@@ -69,6 +73,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .apply(new JwtConfigurator(jwtTokenProvider))
                 .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .addFilterAfter(new DeletedUserFilter(userService), BasicAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 }

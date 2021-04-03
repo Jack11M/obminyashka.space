@@ -2,7 +2,7 @@ package com.hillel.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
+import com.github.database.rider.junit5.api.DBRider;
 import com.hillel.items_exchange.dto.CategoryDto;
 import com.hillel.items_exchange.exception.InvalidDtoException;
 import com.hillel.items_exchange.util.CategoryTestUtil;
@@ -13,11 +13,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import javax.transaction.Transactional;
 
 import static com.hillel.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -44,7 +43,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getAllCategoriesNames_shouldReturnAllCategoryNames() throws Exception {
         mockMvc.perform(get("/category/names")
@@ -54,7 +52,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getAllCategories_shouldReturnAllCategoryDtos() throws Exception {
         mockMvc.perform(get("/category/all")
@@ -64,7 +61,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     }
 
     @Test
-    @Transactional
     @DataSet("database_init.yml")
     void getCategoryById_shouldReturnCategoryByIdIfExists() throws Exception {
         mockMvc.perform(get("/category/{category_id}", EXISTING_ENTITY_ID)
@@ -88,7 +84,7 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
+    @Commit
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "category/create_category.yml")
     void createCategory_shouldCreateValidCategory() throws Exception {
@@ -116,7 +112,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void createCategory_whenCategoryIdNotEqualsZero_shouldReturnBadRequest()
             throws Exception {
@@ -133,7 +128,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void createCategory_whenInternalSubcategoryIdNotEqualsZero_shouldReturnBadRequest()
             throws Exception {
@@ -150,7 +144,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void createCategory_whenCategoryNameHasDuplicate_shouldReturnBadRequest()
             throws Exception {
@@ -167,7 +160,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "category/update_category.yml")
     void updateCategory_shouldUpdateExistedCategory() throws Exception {
@@ -188,7 +180,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void updateCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowIllegalIdentifierException()
             throws Exception {
@@ -210,7 +201,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void updateCategory_whenSubcategoryIdDoesNotExistAndNotEqualsZero_shouldReturnBadRequest()
             throws Exception {
@@ -229,7 +219,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void deleteCategoryById_shouldDeleteExistedCategory() throws Exception {
         mockMvc.perform(delete("/category/{category_id}", 2L)
@@ -241,7 +230,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void deleteCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowInvalidDtoException()
             throws Exception {
@@ -257,7 +245,6 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
-    @Transactional
     @DataSet("database_init.yml")
     void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnBadRequest()
             throws Exception {

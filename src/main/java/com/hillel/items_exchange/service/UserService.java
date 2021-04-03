@@ -1,9 +1,7 @@
 package com.hillel.items_exchange.service;
 
 import com.hillel.items_exchange.dao.UserRepository;
-import com.hillel.items_exchange.dto.ChildDto;
-import com.hillel.items_exchange.dto.UserDto;
-import com.hillel.items_exchange.dto.UserRegistrationDto;
+import com.hillel.items_exchange.dto.*;
 import com.hillel.items_exchange.exception.IllegalOperationException;
 import com.hillel.items_exchange.mapper.UserMapper;
 import com.hillel.items_exchange.model.Child;
@@ -16,25 +14,27 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.hillel.items_exchange.mapper.UserMapper.convertDto;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertAllTo;
 import static com.hillel.items_exchange.mapper.UtilMapper.convertToDto;
+import static com.hillel.items_exchange.model.enums.Status.ACTIVE;
+import static com.hillel.items_exchange.model.enums.Status.DELETED;
 import static com.hillel.items_exchange.util.Collections.extractAll;
-import static com.hillel.items_exchange.util.MessageSourceUtil.getExceptionMessageSource;
+import static com.hillel.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @RequiredArgsConstructor
@@ -45,15 +45,19 @@ public class UserService {
     private final ModelMapper modelMapper;
     private static final Set<String> READONLY_FIELDS = Set.of("username", "lastOnlineTime", "children", "phones");
 
+    @Value("${number.of.days.to.keep.deleted.users}")
+    private int numberOfDaysToKeepDeletedUsers;
+
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
     }
 
     public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        Pattern emailPattern = Pattern.compile(PatternHandler.EMAIL);
-        Optional<User> user = emailPattern.matcher(usernameOrEmail).matches()
-                ? userRepository.findByEmail(usernameOrEmail)
-                : userRepository.findByUsername(usernameOrEmail);
+        Pattern usernamePattern = Pattern.compile(PatternHandler.USERNAME);
+        Optional<User> user = usernamePattern.matcher(usernameOrEmail).matches()
+                ? userRepository.findByUsername(usernameOrEmail)
+                : userRepository.findByEmail(usernameOrEmail);
+
         return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
     }
 
@@ -75,6 +79,48 @@ public class UserService {
         addNewChildren(user, newChildren);
         addNewPhones(user, newPhones);
         return mapUserToDto(userRepository.saveAndFlush(user));
+    }
+
+    public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
+        userRepository.saveAndFlush(user);
+
+        return getMessageSource("changed.user.password");
+    }
+
+    public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
+        user.setEmail(userChangeEmailDto.getNewEmail());
+        userRepository.saveAndFlush(user);
+
+        return getMessageSource("changed.user.email");
+    }
+
+    public void selfDeleteRequest(User user) {
+        user.setStatus(DELETED);
+        userRepository.saveAndFlush(user);
+    }
+
+    public long getDaysBeforeDeletion(User user) {
+        return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
+    }
+
+    @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
+    public void permanentlyDeleteUsers() {
+        userRepository.findAll().stream()
+                .filter(Predicate.not(User::isEnabled))
+                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
+                .forEach(userRepository::delete);
+    }
+
+    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
+        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
+
+        return duration.toDays() > numberOfDaysToKeepDeletedUsers;
+    }
+
+    public void makeAccountActiveAgain(User user) {
+        user.setStatus(ACTIVE);
+        userRepository.saveAndFlush(user);
     }
 
     public boolean existsByUsername(String username) {
@@ -128,6 +174,11 @@ public class UserService {
         userRepository.saveAndFlush(parent);
     }
 
+    public void setUserAvatar(byte[] newAvatarImage, User user) {
+        user.setAvatarImage(newAvatarImage);
+        userRepository.saveAndFlush(user);
+    }
+
     private void checkReadOnlyFieldsUpdate(User toCompare, User original) throws IllegalOperationException {
         String errorResponse = READONLY_FIELDS.stream()
                 .filter(fieldName -> !checkReadOnlyFields(toCompare, original, fieldName))
@@ -135,7 +186,7 @@ public class UserService {
 
         if (!errorResponse.isEmpty()) {
             throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.field.change") + errorResponse);
+                    getMessageSource("exception.illegal.field.change") + errorResponse);
         }
     }
 
@@ -151,7 +202,7 @@ public class UserService {
         boolean isNewUser = user.getUpdated().equals(user.getCreated());
         if ((!isNewUser) && (hasNewChildren || hasNewPhones)) {
             throw new IllegalOperationException(
-                    getExceptionMessageSource("exception.illegal.children.phones.change"));
+                    getMessageSource("exception.illegal.children.phones.change"));
         }
     }
 

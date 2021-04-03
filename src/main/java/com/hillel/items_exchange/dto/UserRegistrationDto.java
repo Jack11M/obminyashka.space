@@ -21,7 +21,6 @@ public class UserRegistrationDto {
     private String username;
 
     @NotEmpty(message = "{empty.email}")
-    @Size(max = 129, message = "{too.big.email}")
     @Email(message = "{invalid.email}")
     private String email;
 
