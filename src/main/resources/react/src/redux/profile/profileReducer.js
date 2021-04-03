@@ -83,19 +83,6 @@ const profileReducer = ( state = initialState, { type, payload, id} ) => {
 				...state,
 				profile: { ...state.profile, children: deleteItem( state.profile.children, payload ) }
 			};
-
-		case types.OPEN_EXIT_MODAL:
-			return {
-				...state,
-				isOpen: !state.isOpen,
-			};
-
-		case types.CHECK_FIRST_OPENING:
-			return {
-				...state,
-				modalIsOpening: state.modalIsOpening,
-			}
-
 		default:
 			return state;
 	}

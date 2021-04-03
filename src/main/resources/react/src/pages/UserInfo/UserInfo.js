@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 
@@ -14,13 +13,18 @@ import './UserInfo.scss';
 const UserInfo = () => {
 	const dispatch = useDispatch();
 	let {  url } = useRouteMatch();
-	const { profile, isOpen } = useSelector( ( state ) => state.profileMe );
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const { profile } = useSelector( ( state ) => state.profileMe );
+	const { firstName, lastName, avatarImage } = profile;
 
 	useEffect( () => {
 		dispatch( fetchUserInfoAsync() );
 	}, [ dispatch ] );
 
-	const { firstName, lastName, avatarImage } = profile;
+
+	const toggle = useCallback(() => {
+		setIsModalOpen(state => !state);
+	},[])
 
 	return (
 		<div className="container">
@@ -30,14 +34,14 @@ const UserInfo = () => {
 					lastName={ lastName }
 					avatar={ avatarImage }
 				/>
-				<Tabs url={ url }/>
+				<Tabs url={ url } toggle={toggle}/>
 			</aside>
 			<main className="main-content">
 				<div className="main-content-wrapper">
 					<RouterTabs url={ url } profile={ profile }/>
 				</div>
 			</main>
-      {isOpen && ReactDOM.createPortal(<Exit/>, document.getElementById("modal"))}
+			{isModalOpen && <Exit toggle={toggle}/>}
 		</div>
 	);
 };

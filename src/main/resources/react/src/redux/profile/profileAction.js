@@ -48,12 +48,3 @@ export const fillUserInfoSync = (user) => ({
 	type: types.FILL_USER_INFO_SYNC,
 	payload: user
 });
-
-export const toggleModal = () => ({
-  type: types.OPEN_EXIT_MODAL,
-})
-
-export const checkModal = (data) => ({
-  type: types.CHECK_FIRST_OPENING,
-  modalIsOpening: data,
-})
