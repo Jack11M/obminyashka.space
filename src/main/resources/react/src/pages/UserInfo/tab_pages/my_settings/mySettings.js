@@ -41,4 +41,4 @@ const MySettings = () => {
 	);
 };
 
-export default MySettings;
+export default React.memo(MySettings);

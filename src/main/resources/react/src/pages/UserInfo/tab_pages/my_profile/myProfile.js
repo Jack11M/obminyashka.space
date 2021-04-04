@@ -200,4 +200,4 @@ const MyProfile = () => {
 	);
 };
 
-export default MyProfile;
+export default React.memo(MyProfile);

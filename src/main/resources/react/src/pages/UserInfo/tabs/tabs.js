@@ -7,24 +7,26 @@ import { getTranslatedText } from '../../../components/local/localisation';
 
 import './tabs.scss';
 
-const createNavLink = ( url, classname, textKey, lang, exact = false ) => {
-	return (<NavLink to={ url } exact={ exact }>
-		<i className={ classname }/>
-		{ getTranslatedText( textKey, lang ) }
-		<i className="active__cycle"/>
-	</NavLink>);
+const createNavLink = ( { url, classname, textKey, lang, click = null, exact = false } ) => {
+	return (
+		<NavLink to={ url } exact={ exact } onClick={ click }>
+			<i className={ classname }/>
+			{ getTranslatedText( textKey, lang ) }
+			<i className="active__cycle"/>
+		</NavLink>);
 };
 
 const Tabs = props => {
-	const { url } = props;
+	const { url, toggle } = props;
 	const { lang } = useSelector( state => state.auth );
+
 	return (
 		<div className="tabs">
-			{ createNavLink( url, 'icon-activity', 'ownInfo.panelMyActivity', lang, true ) }
-			{ createNavLink( `${ url }${ route.myProfile }`, 'icon-profile', 'ownInfo.panelMyProfile', lang ) }
-			{ createNavLink( `${ url }${ route.myFavorite }`, 'icon-star', 'ownInfo.panelMyFavorite', lang ) }
-			{ createNavLink( `${ url }${ route.mySettings }`, 'icon-settings', 'ownInfo.panelMySettings', lang ) }
-			{ createNavLink( `${ url }${ route.exit }`, 'icon-logout', 'ownInfo.panelExit', lang ) }
+			{ createNavLink( { url, classname: 'icon-activity', textKey: 'panel.myActivity', lang, exact: true } ) }
+			{ createNavLink( { url: `${ url }${ route.myProfile }`, classname: 'icon-profile', textKey: 'panel.myProfile', lang } ) }
+			{ createNavLink( { url: `${ url }${ route.myFavorite }`, classname: 'icon-star', textKey: 'panel.myFavorite', lang } ) }
+			{ createNavLink( { url: `${ url }${ route.mySettings }`, classname: 'icon-settings', textKey: 'panel.mySettings', lang } ) }
+			{ createNavLink( { url: `${ url }${ route.exit }`, classname: 'icon-logout', textKey: 'panel.myExit', lang, click: toggle } ) }
 		</div>
 	);
 };
