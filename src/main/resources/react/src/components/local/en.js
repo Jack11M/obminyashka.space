@@ -21,12 +21,14 @@ const en = {
 		regConfirm: 'Passwords must match',
 		children: 'Children under 17'
 	},
+	panel: {
+		myActivity: 'My activity',
+		myProfile: 'My profile',
+		myFavorite: 'My favorite',
+		mySettings: 'Settings',
+		myExit: 'Exit',
+	},
 	ownInfo: {
-		panelMyActivity: 'My activity',
-		panelMyProfile: 'My profile',
-		panelMyFavorite: 'My favorite',
-		panelMySettings: 'Settings',
-		panelExit: 'Exit',
 		aboutMe: 'About me',
 		firstName: 'Name:',
 		lastName: 'Last name:',
@@ -37,6 +39,11 @@ const en = {
 		boy: 'Boy',
 		girl:'Girl',
 		unselected: 'Unselected'
+	},
+	exit: {
+		question: 'Leave?',
+		text: 'You can’t leave messages and add ads!',
+		exit: 'exit'
 	},
 	button: {
 		addAdv: 'Add new advertisement',

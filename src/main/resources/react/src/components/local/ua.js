@@ -21,12 +21,14 @@ const ua = {
 		regConfirm: 'Паролі повинні співпадати',
 		children: 'Діти які не досягли 17 років'
 	},
+	panel: {
+		myActivity: 'Моя активність',
+		myProfile: 'Мій профіль',
+		myFavorite: 'Вибране',
+		mySettings: 'Налаштування',
+		myExit: 'Вихід',
+	},
 	ownInfo: {
-		panelMyActivity: 'Моя активність',
-		panelMyProfile: 'Мій профіль',
-		panelMyFavorite: 'Вибране',
-		panelMySettings: 'Налаштування',
-		panelExit: 'Вихід',
 		aboutMe: 'Про себе',
 		firstName: 'Iм\'я:',
 		lastName: 'Прізвище:',
@@ -37,6 +39,11 @@ const ua = {
 		boy: 'Хлопчик',
 		girl:'Дівчинка',
 		unselected: 'Не вибрано'
+	},
+	exit: {
+		question: 'Вийти?',
+		text: 'Ви не зможете залишати повідомлення і додавати оголошення!',
+		exit: 'вихід'
 	},
 	button: {
 		addAdv: 'Додати оголошення',

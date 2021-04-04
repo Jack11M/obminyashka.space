@@ -170,7 +170,8 @@ export const authReducer = ( state = initialState, action ) => {
 		case types.UNAUTHORIZED:
 			return {
 				...state,
-				isAuthenticated: removeTokenFromStorage()
+				isAuthenticated: removeTokenFromStorage(),
+				token: ''
 			};
 
 		default:

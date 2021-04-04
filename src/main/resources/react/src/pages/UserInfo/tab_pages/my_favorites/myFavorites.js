@@ -57,4 +57,4 @@ const MyFavorites = () => {
     )
 };
 
-export default MyFavorites;
+export default React.memo(MyFavorites);

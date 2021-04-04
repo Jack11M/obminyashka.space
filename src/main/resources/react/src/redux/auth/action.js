@@ -41,6 +41,10 @@ export const postAuthRegisterAsync = ( body ) => ({
 	payload: body
 });
 
+export const postAuthLogoutAsync = () => ({
+	type: types.POST_AUTH_LOGOUT_ASYNC
+});
+
 export const putTokenLocalStorage = ( body ) => ({
 	type: types.PUT_TOKEN_LOCALSTORAGE,
 	payload: body

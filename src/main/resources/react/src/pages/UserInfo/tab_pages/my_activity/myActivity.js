@@ -123,4 +123,4 @@ const MyActivity = () => {
 	);
 };
 
-export default MyActivity;
+export default React.memo(MyActivity);

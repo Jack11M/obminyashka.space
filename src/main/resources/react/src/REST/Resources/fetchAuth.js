@@ -8,4 +8,6 @@ export const postAuthRegister = ( data ) => {
 	return axiosInstance( 'post', 'auth/register', data );
 };
 
-
+export const postAuthLogout = () => {
+	return axiosInstance( 'post', 'auth/logout' );
+};
