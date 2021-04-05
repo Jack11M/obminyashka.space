@@ -13,7 +13,7 @@
             padding: 40px;
 
             h3 {
-                font-family: Roboto;
+                font-family: 'Open Sans', sans-serif;
                 font-size: 26px;
                 font-weight: 600;
                 margin-bottom: 10px;
@@ -22,6 +22,125 @@
 
             .add_choose {
                 margin-bottom: 50px;
+
+                .sections {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .sections_item {
+
+                        .sections_item-description {
+                            color: #8E8E8E;
+                            margin-bottom: 10px;
+                        }
+                        .select {
+                            display: flex;
+                            align-items: center;
+                            border: 1px solid #BCBCBC;
+                            border-radius: 2px;
+                            width: 350px;
+                            height: 50px;
+
+                            p {
+                                padding: 10px;
+                                line-height: 26px;
+                                color: #11171F;
+                            }
+
+                            img {
+                                width: 18px;
+                                height: 18px;
+                                margin-left: 15px;
+                            }
+                        }
+
+                        input {
+                            box-sizing: border-box;
+                            width: 350px;
+                            height: 50px;
+                            border: 1px solid #BCBCBC;
+                            border-radius: 2px;
+                            outline: none;
+                            padding: 10px;
+                            line-height: 26px;
+                            color: #11171F;
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }
+
+            .change {
+                margin-bottom: 50px;
+            }
+
+            .change-description {
+                color: #8E8E8E;
+                margin-bottom: 10px;
+            }
+
+            .change_wrapper {
+                display: flex;
+                width: 80%;
+                border: 1px solid #BCBCBC;
+                border-radius: 2px;
+                margin-bottom: 20px;
+
+                .change_item {
+                    position: relative;
+                    margin: 7px;
+                    padding: 6px 34px 6px 14px;
+                    background: #12B6ED;
+                    border-radius: 5px;
+                    color: #FFFFFF;
+                    text-transform: uppercase;
+                    font-size: 12px;
+                    line-height: 24px;
+
+                    span {
+                        position: absolute;
+                        right: 25px;
+                        cursor: pointer;
+                    }
+
+                    span::after {
+                        position: absolute;
+                        content: '';
+                        top: 5px;
+                        left: 9px;
+                        width: 1px;
+                        height: 11px;
+                        background: #fff;
+                        transform: rotate(45deg);
+                        
+                    }
+
+                    span::before {
+                        position: absolute;
+                        content: '';
+                        top: 5px;
+                        left: 9px;
+                        width: 1px;
+                        height: 11px;
+                        background: #fff;
+                        transform: rotate(-45deg);
+                        
+                    }
+                    
+                }
+
+                .change_input {
+                    position: relative;
+                    height: 32px;
+                    width: 250px;
+                    margin: 7px;
+                    border: none;
+                    outline: none;
+                    &::before {
+                        content: 'asd';
+                    
+                    }
+                }
             }
 
             .characteristics_items {
@@ -36,6 +155,7 @@
             }
 
             .description {
+                padding-bottom: 40px;
                 .description_subtitile {
                     color: #8E8E8E;
                     margin-bottom: 10px;
@@ -43,7 +163,6 @@
 
 
                 .description_textarea {
-                    font-family: Roboto;
                     resize: none;
                     width: 100%;
                     min-height: 115px;
@@ -54,7 +173,28 @@
             }
 
             .files {
-                .file-input {
+                h3 {
+                    font-weight: 600;
+                    color: #11171F;
+                    font-size: 26px;
+                    line-height: 40px;
+                }
+
+                p {
+                    font-size: 16px;
+                    line-height: 26px;
+                    color: #8F8F8F;
+                    font-weight: 400;
+                }
+                .files_wrapper {
+                    margin-right: -90px;
+                    margin-top: 15px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    
+                }
+
+                .file_input {
                     display: none;
                 }
 
@@ -63,13 +203,17 @@
                     display: block;
                     width: 152px;
                     height: 159px;
+                    margin-right: 90px;
+                    margin-bottom: 20px;
                     border: 2px dashed #C4C4C4;
                     border-radius: 19px;
-                    background: url(../../img/cards/lot15.jpg);
-                    background-size: contain;
+                    background: url(../../img/cards/addFoto.svg);
+                    background-size: 53px, 53px;
                     background-repeat: no-repeat;
                     background-position: center;
-
+                   
+                
+                
                     span {
                         position: absolute;
                         top: -5px;
@@ -80,8 +224,38 @@
                         background:#fff;
                         border-radius: 50%;
                         border: 1px solid #BABABA;
+                        cursor: pointer;
                     }
 
+                    span::after {
+                        position: absolute;
+                        content: '';
+                        top: 5px;
+                        left: 9px;
+                        width: 1px;
+                        height: 11px;
+                        background: #BABABA;
+                        transform: rotate(45deg);
+                        
+                    }
+
+                    span::before {
+                        position: absolute;
+                        content: '';
+                        top: 5px;
+                        left: 9px;
+                        width: 1px;
+                        height: 11px;
+                        background: #BABABA;
+                        transform: rotate(-45deg);
+                        
+                    }
+                }
+
+                .added {
+                    background-image: url(../../img/cards/lot15.jpg);
+                    background-size: contain;
+                   
                 }
             }
         }

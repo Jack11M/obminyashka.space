@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import CheckBox from "../../components/checkbox/index";
 import { getTranslatedText } from '../../components/local/localisation';
 import { toggleCheckBox } from '../../redux/auth/action';
+import { books, clothes, furniture, kidsUpToYear, other, shoes, toys, transportForChildren } from '../../img/all_images_export/navItems';
 import { InputDiv } from "../FormRegister/loginStyle";
 
 import "./AddGoods.scss";
@@ -25,28 +26,43 @@ const AddGoods = () => {
 						<h3 className="add-title">Выберите раздел</h3>
 						<div className="sections">
 							<div className="sections_item">
-								<h5>* Категория</h5>
-								<select>
-									<option>Одежда</option>
-									<option>Обувь</option>
-									<option>Игрушки</option>
-								</select>
+								<h5 className="sections_item-description">* Категория</h5>
+								<div className="select">
+									<img src={clothes} alt="clothes" />
+									<p>Одежда</p>
+								</div>
 							</div>
 							<div className="sections_item">
-								<h5>* Подкатегория</h5>
-								<select>
-									<option></option>
-									<option></option>
-									<option></option>
-								</select>
+								<h5 className="sections_item-description">* Подкатегория</h5>
+								<div className="select">
+									<p>Колготки, носки</p>
+								</div>
 							</div>
 							<div className="sections_item">
-								<h5>* Заголовок обьявления</h5>
+								<h5 className="sections_item-description">* Заголовок обьявления</h5>
 								<input type="text"></input>
 							</div>
 						</div>
 					</div>
-					<div className=""></div>
+					<div className="change">
+						<h3 className="change_title">Обмен</h3>
+						<p className="change-description">* На что хотите обменяться?</p>
+						<p className="change-description">(введите фразу, а потом нажмите Enter)</p>
+						<div className="change_wrapper">
+							<div className="change_item">Ботинки зимние <span></span></div>
+							<div className="change_item">Кофта на девочку 7 лет<span></span></div>
+							<div className="change_input-wrapper" >
+								<input className="change_input" type="text" placeholder="Введите на что хотите обменяться"></input>
+							</div>
+						</div>
+						<CheckBox
+									text={'Рассмотрю Ваше предложение'}
+									margin={'0 0 15px 0'}
+									fs={'14px'}
+									checked={logCheckbox}
+									click={changeCheckBox}
+								/>
+					</div>
 					<div className="characteristics">
 						<h3> Характеристики</h3>
 						<div className="characteristics_items">
@@ -199,13 +215,13 @@ const AddGoods = () => {
 					</div>
 					<div className="files">
 						<h3>Загрузите фотографии вашей вещи</h3>
-						<h5>Первое фото станет обложкой карточки товара</h5>
-						<h5>Загружено фотографий 1 из 5</h5>
-						<div>
-							<input id="file-input1" className = "file-input" type="file" name="file" multiple></input>
-								<label for="file-input1" className = "files_label"><span></span></label>
-							<input id="file-input1" className = "file-input" type="file" name="file" multiple></input>
-								<label for="file-input1" className = "files_label"><span></span></label>
+						<p>Первое фото станет обложкой карточки товара</p>
+						<p>Загружено фотографий 1 из 5</p>
+						<div className = "files_wrapper">
+							<input id="file-input1" className = "file_input" type="file" name="file" multiple></input>
+								<label for="file-input1" className = "files_label added"><span></span></label>
+							<input id="file-input2" className = "file_input " type="file" name="file" multiple></input>
+								<label for="file-input1" className = "files_label "><span></span></label>
 						</div>
 						
 					</div>
