@@ -45,7 +45,7 @@ class ImageServiceTest extends BasicImageCreator{
         jpeg = new Image(1, "test jpeg".getBytes(), null);
         testJpg = getImageBytes(MediaType.IMAGE_JPEG);
         testPng = getImageBytes(MediaType.IMAGE_PNG);
-        testTxt = new MockMultipartFile("files", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
+        testTxt = new MockMultipartFile("image", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
     }
 
     @Test

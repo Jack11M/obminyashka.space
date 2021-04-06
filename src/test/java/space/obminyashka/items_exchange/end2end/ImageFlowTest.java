@@ -14,6 +14,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,7 +37,7 @@ class ImageFlowTest {
 
     @BeforeEach
     void setUp() {
-         txt = new MockMultipartFile("files", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
+         txt = new MockMultipartFile("image", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
     }
 
     @Test
@@ -75,6 +78,18 @@ class ImageFlowTest {
     void deleteImages_shouldDeleteMultipleImageWhenUserOwnsThemAll() throws Exception {
         mockMvc.perform(delete("/image/{advertisement_id}", 1)
                 .param("ids", "1", "2"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser("admin")
+    @Test
+    void saveImages_shouldSaveImage() throws Exception {
+        var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
+                Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
+        mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
+                .file(jpeg)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

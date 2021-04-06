@@ -76,7 +76,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public Optional<Advertisement> findByIdAndOwnerUsername(long advertisementId, String ownerName) {
-        return advertisementRepository.findAdvertisementByIdAndUsername(advertisementId, ownerName);
+        return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
     }
 
     @Override

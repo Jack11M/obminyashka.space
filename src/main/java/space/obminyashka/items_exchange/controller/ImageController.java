@@ -87,11 +87,12 @@ public class ImageController {
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> saveImages(@PathVariable("advertisement_id")
                                              @PositiveOrZero(message = "{invalid.id}") long advertisementId,
-                                             @RequestParam(value = "files") @Size(min = 1, max = 10) List<MultipartFile> images)
+                                             @RequestParam(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
+                                             Principal principal)
             throws ElementsNumberExceedException, IllegalOperationException {
 
         try {
-            final Advertisement advToSaveImages = advertisementService.findById(advertisementId)
+            final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, principal.getName())
                     .orElseThrow(ClassNotFoundException::new);
             if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
                 throw new ElementsNumberExceedException(

@@ -21,8 +21,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     Iterable<Advertisement> findFirst10ByTopicIgnoreCaseContaining(String topic);
 
-    @Query("SELECT a from Advertisement a where (a.id = :id) and (a.user.username = :username)")
-    Optional<Advertisement> findAdvertisementByIdAndUsername(long id, String username);
+    Optional<Advertisement> findAdvertisementByIdAndUserUsername(long id, String username);
 
     @Query("SELECT a from Advertisement a where " +
             "(:age is null or a.age = :age) and " +
