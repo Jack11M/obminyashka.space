@@ -1,8 +1,8 @@
-package obminyashka.space.items_exchange.converter;
+package space.obminyashka.items_exchange.converter;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import obminyashka.space.items_exchange.model.enums.I18n;
+import space.obminyashka.items_exchange.model.enums.I18n;
 
 
 @Component
