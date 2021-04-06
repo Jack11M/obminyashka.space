@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { chooseLanguage, clearValueLogin, clearValueSignUp } from '../../redux/auth/action';
+import { changeLangProfileErrors } from '../../redux/profile/profileAction';
 
 const SelectLanguage = styled.div`
   width: 29px;
@@ -96,6 +97,7 @@ const CustomSelect = () => {
 	const handleSelected = ( lang ) => {
 		dispatch( clearValueSignUp() );
 		dispatch( clearValueLogin() );
+		dispatch(changeLangProfileErrors(lang))
 		dispatch( chooseLanguage( lang ) );
 	};
 

@@ -1,1 +1,4 @@
-export { workerPostAuthLogin, workerPostAuthRegister } from './workers';
+export {
+	workerPostAuthLogin,
+	workerPostAuthRegister,
+	workerPostAuthLogout } from './workers';

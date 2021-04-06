@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.controller;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import space.obminyashka.items_exchange.mapper.UtilMapper;
+import space.obminyashka.items_exchange.model.enums.I18n;
 import space.obminyashka.items_exchange.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +44,21 @@ public class LocationController {
         return allLocations.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allLocations, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    @ApiOperation(value = "Get all locations for current locale (I18n).")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<List<LocationDto>> getAllLocationsForCurrentLanguage(
+            @RequestHeader("accept-language") I18n lang) {
+
+        List<LocationDto> locations = locationService.findAllForCurrentLanguage(lang);
+        return locations.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(locations, HttpStatus.OK);
     }
 
     @GetMapping("/{location_id}")

@@ -16,12 +16,40 @@ const ru = {
 		logEmail: 'Введите верный логин или email',
 		logPassword: 'Неверный пароль',
 		regEmail: 'Укажите действующий адрес электронной почты',
-		regNick: 'Больше 2 и меньше 50 символов, без пробелов',
+		regNick: 'Не меньше 2 и меньше 50 символов, без пробелов',
 		regPassword: 'Большие и малые латинские буквы и цифры. Длина от 8 до 30 символов',
-		regConfirm: 'Пароли должны совпадать'
+		regConfirm: 'Пароли должны совпадать',
+		children: 'Дети не старше 17 лет'
+	},
+	panel: {
+		myActivity: 'Моя активность',
+		myProfile: 'Мой профиль',
+		myFavorite: 'Избранное',
+		mySettings: 'Насртойки',
+		myExit: 'Выход',
+	},
+	ownInfo: {
+		aboutMe: 'О себе',
+		firstName: 'Имя:',
+		lastName: 'Фамилия:',
+		phone: 'Телефон:',
+		children: 'Дети',
+		dateOfBirth: 'Дата рождения:',
+		gender: 'Пол:',
+		boy: 'Мальчик',
+		girl:'Девочка',
+		unselected: 'Не выбрано'
+	},
+	exit: {
+		question: 'Выйти?',
+		text: 'Вы не сможете оставлять сообщения и добавлять объявления!',
+		exit: 'Выход'
 	},
 	button: {
 		addAdv: 'Добавить объявление',
+		addField: 'Добавить поле',
+		removeField: 'Удалить поле',
+		saveChanges: 'Сохранить изменения',
 		enter: 'Войти'
 	},
 	header: {
@@ -51,9 +79,7 @@ const ru = {
 		backPage: 'Назад'
 	},
 	somethingBad: {
-		error: 'Ошибка! Что будем делать?',
-		mainPage: 'На главную',
-		backPage: 'Назад'
+		error: 'Ошибка! Что будем делать?'
 	}
 };
 

@@ -1,6 +1,7 @@
 import { types } from './types';
-import { authValidation, getStorageLang, getStorageUser, toggleButtonLog, toggleButtonReg } from '../Utils';
+import { authValidation, getStorageLang, getStorageUser, removeTokenFromStorage, toggleButtonLog, toggleButtonReg } from '../Utils';
 import { getTranslatedText } from '../../components/local/localisation';
+
 
 
 const initialState = {
@@ -57,8 +58,8 @@ export const authReducer = ( state = initialState, action ) => {
 
 		case types.CHANGE_INPUT_AUTH:
 			const [ keyInput, value ] = action.payload;
-			const Verified = authValidation( state, keyInput, value );
-			const newError = Verified ? '' : getTranslatedText( `errors.${ keyInput }`, state.lang );
+			const verified = authValidation( state, keyInput, value );
+			const newError = verified ? '' : getTranslatedText( `errors.${ keyInput }`, state.lang );
 			return {
 				...state,
 				[keyInput]: { value, error: newError }
@@ -164,6 +165,13 @@ export const authReducer = ( state = initialState, action ) => {
 			return {
 				...state,
 				successRegister: true
+			};
+
+		case types.UNAUTHORIZED:
+			return {
+				...state,
+				isAuthenticated: removeTokenFromStorage(),
+				token: ''
 			};
 
 		default:

@@ -16,13 +16,20 @@ export const authValidation = ( state, keyInput, value ) => {
 			[ 'pattern', 'password' ],
 			[ 'cutEmpty' ]
 		],
-		regConfirm: [ [ 'contains', 'regPassword' ] ]
+		regConfirm: [ [ 'contains', 'regPassword' ] ],
+		firstName: [ [ 'pattern', 'firstname' ] ],
+		lastName: [ [ 'pattern', 'lastname' ] ],
+		phoneNumber: [ [ 'pattern', 'phone' ] ],
 	};
 
 	const verificationMethods = {
 		MIN_LENGTH_STRING: 1,
 		MAX_LENGTH_STRING: 49,
 		rulesPattern: {
+			firstname: /^$|^[\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50}$/,
+			lastname: /^$|^[\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50}$/,
+			phone: /^\s*(?<country>\+?\d{2})[-. (]*(?<area>\d{3})[-. )]*(?<number>\d{3}[-. ]*\d{2}[-. ]*\d{2})\s*$/,
+
 			email: /^[A-Z0-9._%+-]{1,129}@[A-Z0-9-]+.+.[A-Z]{2,4}$/i,
 			password: /(?=^.{8,30}$)((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$/,
 			altCodeLogin: /^[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9][А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\'\"\.<>`~₴\\|/=]*$/,
