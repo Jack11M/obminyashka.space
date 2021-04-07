@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 import ProductDescription from './ProductDescription/ProductDescription';
@@ -6,12 +7,13 @@ import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductPostData from './ProductPostData/ProductPostData';
 import ProductOffers from './ProductOffers/ProductOffers';
 import TitleBigBlue from '../../components/title_Big_Blue';
-import { getProduct } from '../../REST/Resources';
 
+import { getProduct } from '../../REST/Resources';
 import './ProductPage.scss';
+import { getTranslatedText } from '../../components/local/localisation';
 
 const ProductPage = () => {
-
+  const { lang } = useSelector( state => state.auth );
   const [ product, setProduct ] = useState({});
   const [ photos, setPhotos ] = useState([]);
   const [ wishes, setWishes ] = useState([]);
@@ -43,7 +45,7 @@ const ProductPage = () => {
     <div>
       <section className = 'topSection'>
         <div className = 'productPageContainer'>
-          <div className = 'breadСrumbs'>Categories/{ category.name }/{ subcategory.name }/{ product.topic }
+          <div className = 'breadСrumbs'>{getTranslatedText('product.categories', lang)}/{ category.name }/{ subcategory.name }/{ product.topic }
           </div>
           <div className = 'productPageInner'>
             <div className = 'carouselAndDescription'>
@@ -77,7 +79,7 @@ const ProductPage = () => {
         <div className = 'productPageContainer'>
           <div className = 'productPageInner'>
             <div className = 'sectionHeading'>
-              <TitleBigBlue text = { 'Вас так же могут заинтересовать' }/>
+              <TitleBigBlue text = { getTranslatedText('product.blueTitle', lang) }/>
             </div>
             <ProductOffers/>
           </div>

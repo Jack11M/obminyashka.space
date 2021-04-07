@@ -1,10 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Avatar from '../../../components/avatar/avatar';
 
 import './ProductOwnerData.scss';
+import { getTranslatedText } from '../../../components/local/localisation';
 
 const ProductOwnerData = ({ ava, name, date, city, phone }) => {
+
+  const { lang } = useSelector( state => state.auth );
 
     return (
       <div className = 'productOwnerDataBox'>
@@ -19,9 +23,9 @@ const ProductOwnerData = ({ ava, name, date, city, phone }) => {
         <div className = 'postData'>
           <div className = 'postReqData'>
             <ul>
-              <li><span>Дата публикации:</span></li>
-              <li><span>Город:</span></li>
-              <li><span>Телефон:</span></li>
+              <li><span>{getTranslatedText('product.dateOfAdv', lang)}:</span></li>
+              <li><span>{getTranslatedText('product.cityOfAdv', lang)}:</span></li>
+              <li><span>{getTranslatedText('product.phoneOfAdv', lang)}:</span></li>
             </ul>
           </div>
           <div className = 'postResData'>
