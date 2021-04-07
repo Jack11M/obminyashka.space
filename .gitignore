@@ -35,3 +35,4 @@ dist
 .firebase
 *.log
 *.puml
+*.p12

@@ -8,7 +8,7 @@ export const theme = {
 		'btn-green-normal': 'hsl(134, 45%, 48%)', // ->  #43b15d
 		'btn-green-hover': 'hsl(134, 45%, 43%)', // -> #3c9f53
 		'btn-green-active': 'hsl(134, 100%, 27%)', // -> #008a20
-		'colorError': '#ff4c4c',
+		colorError: '#ff4c4c',
 		colorGrey: '#8E8E8E',
 		colorTextDisabled:'#A3A3A3',
 		'btn-gb-disabled': '#DADADA',
