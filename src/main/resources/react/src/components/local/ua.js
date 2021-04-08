@@ -80,6 +80,20 @@ const ua = {
 	},
 	somethingBad: {
 		error: 'Помилка! Що будемо робити?'
+	},
+	product: {
+		categories: 'Категорії',
+		blueTitle: 'Вас також можуть зацікавити',
+		dateOfAdv: 'Дата публікації',
+		cityOfAdv: 'Місто',
+		phoneOfAdv: 'Телефон',
+		changesTo: 'Обмінює на',
+		description: 'Опис',
+		size: 'Розмір',
+		age: 'Вік',
+		season: 'Сезон',
+		sex: 'Стать',
+		button: 'Запропонувати обмін'
 	}
 };
 
