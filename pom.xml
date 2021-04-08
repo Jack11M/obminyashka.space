@@ -173,7 +173,6 @@
                         <goals>
                             <goal>yarn</goal>
                         </goals>
-                        <phase>prepare-package</phase>
                         <configuration>
                             <arguments>build</arguments>
                         </configuration>
