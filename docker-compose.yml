@@ -2,16 +2,16 @@ version: '3'
 
 services:
   nginx:
-    image: nginx
+    image: nginx:latest
     restart: always
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/certs/:/etc/ssl/certs/
     networks:
-      - backend
-    command: openssl req -x509 -newkey rsa:4096 -sha256 -days 185 -nodes -keyout obminyashka.key -out obminyashka.crt -subj "/CN=localhost"
+      - containers-network
 
   web-server:
     image: web-server
@@ -29,11 +29,12 @@ services:
       SERVER_SSL_KEY_STORE: keystore.p12
       APP_JWT_SECRET: root
     command: mvn clean spring-boot:run
+    volumes:
+      - ./nginx/certs/keystore.p12:/tmp/keystore.p12
     depends_on:
       - database
-      - nginx
     networks:
-      - backend
+      - containers-network
 
   database:
     image: mysql:latest
@@ -45,8 +46,8 @@ services:
       - "3307:3306"
     restart: always
     networks:
-      - backend
+      - containers-network
 
 networks:
-  backend:
+  containers-network:
     driver: bridge
