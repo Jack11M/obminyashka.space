@@ -80,6 +80,20 @@ const ru = {
 	},
 	somethingBad: {
 		error: 'Ошибка! Что будем делать?'
+	},
+	product: {
+		categories: 'Категории',
+		blueTitle: 'Вас так же могут заинтересовать',
+		dateOfAdv: 'Дата публикации',
+		cityOfAdv: 'Город',
+		phoneOfAdv: 'Телефон',
+		changesTo: 'Меняет на',
+		description: 'Описание',
+		size: 'Размер',
+		age: 'Возраст',
+		season: 'Сезон',
+		sex: 'Пол',
+		button: 'Предложить обмен'
 	}
 };
 

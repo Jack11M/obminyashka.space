@@ -80,6 +80,20 @@ const en = {
 	},
 	somethingBad: {
 		error: 'Error! What should we do the next?'
+	},
+	product: {
+		categories: 'Categories',
+		blueTitle: 'You may also be interested in',
+		dateOfAdv: 'Date of publication',
+		cityOfAdv: 'City',
+		phoneOfAdv: 'Phone',
+		changesTo: 'Changes to',
+		description: 'Description',
+		size: 'Size',
+		age: 'Age',
+		season: 'Season',
+		sex: 'Sex',
+		button: 'Offer an exchange'
 	}
 };
 
