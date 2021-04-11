@@ -1,15 +1,19 @@
 version: '3'
 
 services:
-  nginx:
-    image: nginx:latest
+
+  nginx-openssl:
+    image: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     restart: always
     ports:
       - 80:80
       - 443:443
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/
-      - ./nginx/certs/:/etc/ssl/certs/
+      - ssl:/etc/ssl/certs/
     networks:
       - containers-network
 
@@ -26,13 +30,14 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_SSL_KEY_STORE_PASSWORD: root
-      SERVER_SSL_KEY_STORE: keystore.p12
+      SERVER_SSL_KEY_STORE: /etc/ssl/certs/keystore.p12
       APP_JWT_SECRET: root
     command: mvn clean spring-boot:run
     volumes:
-      - ./nginx/certs/keystore.p12:/tmp/keystore.p12
+      - ssl:/etc/ssl/certs/
     depends_on:
       - database
+      - nginx-openssl
     networks:
       - containers-network
 
@@ -51,3 +56,6 @@ services:
 networks:
   containers-network:
     driver: bridge
+
+volumes:
+  ssl:
