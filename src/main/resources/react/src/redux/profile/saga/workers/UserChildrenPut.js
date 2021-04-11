@@ -7,15 +7,15 @@ import { receivedPutRequestChildrenSync } from '../../profileAction';
 
 export function* workerUserChildrenPut( action ) {
 	const body = action.payload;
+	yield put( startFetching() );
 	try {
-		yield put( startFetching() );
 		const { data } = yield call( putUserChildren, body );
 		yield put( receivedPutRequestChildrenSync( data ) );
 	} catch (e) {
+		console.log( e.response.data );
 		if (e.response.status === 401) {
 			yield put( unauthorized() );
 		}
-		console.log( e.response.data );
 	} finally {
 		yield put( stopFetching() );
 	}

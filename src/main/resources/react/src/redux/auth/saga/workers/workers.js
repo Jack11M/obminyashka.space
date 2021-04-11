@@ -6,8 +6,8 @@ import { putTokenLocalStorage, showErrorLogin, showErrorRegister, successReg, un
 
 export function* workerPostAuthLogin( action ) {
 	const body = action.payload;
+	yield put( startFetching() );
 	try {
-		yield put( startFetching() );
 		const { data } = yield call( postAuthLogin, body );
 		yield put( putTokenLocalStorage( data ) );
 	} catch (e) {
@@ -22,8 +22,8 @@ export function* workerPostAuthLogin( action ) {
 
 export function* workerPostAuthRegister( action ) {
 	const body = action.payload;
+	yield put( startFetching() );
 	try {
-		yield put( startFetching() );
 		yield call( postAuthRegister, body );
 		yield put( successReg() );
 	} catch (e) {
@@ -37,12 +37,15 @@ export function* workerPostAuthRegister( action ) {
 }
 
 export function* workerPostAuthLogout() {
+	yield put( startFetching() );
 	try {
-		yield put( startFetching() );
 		yield call( postAuthLogout );
 		yield put( unauthorized() );
 	} catch (e) {
 		console.log( e.response.data.error );
+		if (e.response.status === 401) {
+			yield put( unauthorized() );
+		}
 	} finally {
 		yield put( stopFetching() );
 	}

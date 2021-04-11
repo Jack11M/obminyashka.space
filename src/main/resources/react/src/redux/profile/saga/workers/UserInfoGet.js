@@ -6,8 +6,8 @@ import { startFetching, stopFetching } from '../../../ui/action';
 import { unauthorized } from '../../../auth/action';
 
 export function* workerUserInfoGet() {
+	yield put( startFetching() );
 	try {
-		yield put( startFetching() );
 		const { data } = yield call( getUserInfoAsync );
 		yield put( fillUserInfoSync( data ) );
 	} catch (e) {
