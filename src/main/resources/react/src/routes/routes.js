@@ -10,7 +10,7 @@ import FourOhFourPage from '../pages/ErrorPages/FourOhFourPage';
 import { route } from './routeConstants';
 import ProductPage from '../pages/ProductPage/ProductPage';
 
-export default () => {
+const Routes = () => {
 	const { isAuthenticated } = useSelector( state => state.auth );
 	
 	return <Switch>
@@ -29,3 +29,5 @@ export default () => {
 		<Route path = { route.noMatch } component = { FourOhFourPage }/>
 	</Switch>;
 };
+
+export default Routes;

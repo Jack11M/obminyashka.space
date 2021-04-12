@@ -23,7 +23,7 @@ import './avatarForCard.scss';
 const ProductCard = ( props ) => {
 	const avatar = props.avatar === '' || props.avatar;
 	return (
-		<Card>
+		<Card margin={props.margin}>
 			<FavoriteMarker isFavorite={ props.isFavorite }>
 				{ avatar ? <Avatar whatIsClass={ 'avatar-for-card' } avatar={ props.avatar } width={ '40px' } height={ '40px' }/> :
 					<SvgStar isFavorite={ props.isFavorite }/> }
