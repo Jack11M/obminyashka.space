@@ -24,7 +24,7 @@
         <mapper.version>2.3.9</mapper.version>
         <db-rider.version>1.23.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
-        <node.version>v14.16.0</node.version>
+        <node.version>v15.14.0</node.version>
         <yarn.version>v1.22.10</yarn.version>
         <frontend-maven-plugin.version>1.11.2</frontend-maven-plugin.version>
     </properties>

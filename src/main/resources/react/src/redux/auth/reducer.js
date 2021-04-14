@@ -171,7 +171,8 @@ export const authReducer = ( state = initialState, action ) => {
 			return {
 				...state,
 				isAuthenticated: removeTokenFromStorage(),
-				token: ''
+				token: '',
+				username: getStorageUser( 'username' )
 			};
 
 		default:

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import logout2 from '../../../../img/log-out-2.png'
 import Button from '../../../../components/button/Button';
 import { getTranslatedText } from '../../../../components/local/localisation';
 import { postAuthLogoutAsync } from '../../../../redux/auth/action';
@@ -27,7 +28,7 @@ const Exit = ( { toggle } ) => {
 					click={ logOut }
 				/>
 				<div className={ 'background' }>
-					<img src={ require( '../../../../img/log-out-2.png' ) } className="log-out-img" alt="log-out"/>
+					<img src={ logout2 } className="log-out-img" alt="log-out"/>
 				</div>
 			</div>
 		</div>
