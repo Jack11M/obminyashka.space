@@ -27,7 +27,7 @@ const ProductPage = () => {
         const { images, wishesToExchange, category, subcategory, location, ...rest } = data;
         const arrWishes = wishesToExchange.split(', ');
         if (rest.readyForOffers) {
-          arrWishes.push('ваши предложения');
+          arrWishes.push(getTranslatedText('product.checkInUl', lang));
         }
         setWishes(arrWishes);
         setPhotos(images);
@@ -39,7 +39,7 @@ const ProductPage = () => {
       .catch(e => {
         console.log(e);
       });
-  }, []);
+  }, [lang]);
 
   return (
     <div>
