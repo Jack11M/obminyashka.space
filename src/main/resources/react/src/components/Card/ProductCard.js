@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import Button from '../button/Button';
 import SvgStar from './FavoriteMarker';
 import InboxMessageSvg from './inboxMessageSvg';
 import Avatar from '../avatar/avatar';
+import { getTranslatedText } from '../local/localisation';
 
 import {
   ButtonBlock,
@@ -21,7 +23,9 @@ import './avatarForCard.scss';
 
 
 const ProductCard = ( props ) => {
+	const { lang } = useSelector( state => state.auth );
 	const avatar = props.avatar === '' || props.avatar;
+
 	return (
 		<Card margin={props.margin}>
 			<FavoriteMarker isFavorite={ props.isFavorite }>
@@ -49,7 +53,7 @@ const ProductCard = ( props ) => {
 				<ButtonBlock>
 					<Button
 						whatClass=""
-						text="Смотреть"
+						text= { getTranslatedText('button.look', lang) }
 						width={ props.inboxMessage ? '190px' : '222px' }
 					/>
 

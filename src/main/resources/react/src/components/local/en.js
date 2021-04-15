@@ -50,7 +50,8 @@ const en = {
 		addField: 'Add field',
 		removeField: 'Remove field',
 		saveChanges: 'Save changes',
-		enter: 'Enter'
+		enter: 'Enter',
+		look: 'View',
 	},
 	header: {
 		about: 'About the project',
@@ -93,7 +94,8 @@ const en = {
 		age: 'Age',
 		season: 'Season',
 		sex: 'Sex',
-		button: 'Offer an exchange'
+		button: 'Offers for exchange',
+		checkInUl: 'your offers'
 	}
 };
 

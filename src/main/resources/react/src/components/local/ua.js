@@ -50,7 +50,8 @@ const ua = {
 		addField: 'Додати поле',
 		removeField: 'Видалити поле',
 		saveChanges: 'Зберегти зміни',
-		enter: 'Увійти'
+		enter: 'Увійти',
+		look: 'Дивитись',
 	},
 	header: {
 		about: 'Про проект',
@@ -93,7 +94,8 @@ const ua = {
 		age: 'Вік',
 		season: 'Сезон',
 		sex: 'Стать',
-		button: 'Запропонувати обмін'
+		button: 'Запропонувати обмін',
+		checkInUl: 'ваші пропозиції'
 	}
 };
 

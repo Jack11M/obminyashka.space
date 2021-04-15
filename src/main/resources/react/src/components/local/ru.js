@@ -50,7 +50,8 @@ const ru = {
 		addField: 'Добавить поле',
 		removeField: 'Удалить поле',
 		saveChanges: 'Сохранить изменения',
-		enter: 'Войти'
+		enter: 'Войти',
+		look: 'Смотреть',
 	},
 	header: {
 		about: 'О проекте',
@@ -93,7 +94,8 @@ const ru = {
 		age: 'Возраст',
 		season: 'Сезон',
 		sex: 'Пол',
-		button: 'Предложить обмен'
+		button: 'Предложить обмен',
+		checkInUl: 'ваши предложения'
 	}
 };
 
