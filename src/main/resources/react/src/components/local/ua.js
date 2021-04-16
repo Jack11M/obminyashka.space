@@ -96,6 +96,38 @@ const ua = {
 		sex: 'Стать',
 		button: 'Запропонувати обмін',
 		checkInUl: 'ваші пропозиції'
+	},
+	mainPage: {
+		question: 'Накопичилося багато ',
+		questionBold: 'дитячих речей?',
+		answerFirstPart: 'Просто',
+		answerBold: 'зареєструйся',
+		answerSecondPart: 'і розмісти',
+		answerThirdPart: 'оголошення!',
+		changeBold: 'Обміняйтесь',
+		changeFirstPart: 'з іншими користувачами',
+		changeSecondPart: 'на щось кльове і',
+		changeThirdPart: 'корисне!',
+		blueText: 'Поточні пропозиції',
+		blueSearch: 'Розширений пошук',
+		blueSlideSubtitle: 'Величезний вибір',
+		blueSlideTitle: 'Іграшок',
+		greenSlideSubtitle: 'Різноманітність дитячого та підліткового',
+		greenSlideTitle: 'Одягу',
+		yellowSlideSubtitle: 'Все для',
+		yellowSlideTitle: 'Малюків',
+		pinkSlideSubtitle: 'Безліч дитячих',
+		pinkSlideTitle: 'Меблів',
+		lilacSlideSubtitle: 'Різноманітність дитячого та підліткового',
+		lilacSlideTitle: 'Взуття',
+		orangeSlideSubtitle: 'Дитячий',
+		orangeSlideTitle: 'Транспорт',
+		helpTitle: 'Чужих дітей не буває!',
+		helpName: 'Обміняшка',
+		helpText: 'співпрацює з волонтерськими організаціями по\n' +
+			'         всій Україні! Ти теж можеш допомогти! Віддай свої непотрібні речі, вони\n' +
+			'         потраплять до дитячих будинків і притулків!',
+		helpButton: 'я хочу допомогти дітям!',
 	}
 };
 

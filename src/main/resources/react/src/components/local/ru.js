@@ -96,6 +96,38 @@ const ru = {
 		sex: 'Пол',
 		button: 'Предложить обмен',
 		checkInUl: 'ваши предложения'
+	},
+	mainPage: {
+		question: 'Накопилось много',
+		questionBold: 'детских вещей?',
+		answerFirstPart: 'Просто',
+		answerBold: 'зарегистрируйся',
+		answerSecondPart: 'и размести',
+		answerThirdPart: 'объявление!',
+		changeBold: 'Обменяйтесь',
+		changeFirstPart: 'с другими пользователями',
+		changeSecondPart: 'на что-то клёвое и',
+		changeThirdPart: 'полезное!',
+		blueText: 'Текущие предложения',
+		blueSearch: 'Расширенный поиск',
+		blueSlideSubtitle: 'Огромный выбор',
+		blueSlideTitle: 'Игрушек',
+		greenSlideSubtitle: 'Разнообразие детской и подростковой',
+		greenSlideTitle: 'Одежды',
+		yellowSlideSubtitle: 'Всё для',
+		yellowSlideTitle: 'Малышей',
+		pinkSlideSubtitle: 'Множество детской',
+		pinkSlideTitle: 'Мебели',
+		lilacSlideSubtitle: 'Разнообразие детской и подростковой',
+		lilacSlideTitle: 'Обуви',
+		orangeSlideSubtitle: 'Детский',
+		orangeSlideTitle: 'Транспорт',
+		helpTitle: 'Чужих детей не бывает!',
+		helpName: 'Обменяшка',
+		helpText: 'сотрудничает с волонтерскими организациями по\n' +
+			'        всей Украине! Ты тоже можешь помочь! Отдай свои ненужные вещи, они\n' +
+			'        попадут в детские дома и приюты!',
+		helpButton: 'я хочу помочь детям!',
 	}
 };
 

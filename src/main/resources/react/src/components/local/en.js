@@ -96,6 +96,38 @@ const en = {
 		sex: 'Sex',
 		button: 'Offers for exchange',
 		checkInUl: 'your offers'
+	},
+	mainPage: {
+		question: 'Have a lot accumulated of',
+		questionBold: 'children\'s things?',
+		answerFirstPart: 'Just',
+		answerBold: 'register',
+		answerSecondPart: 'and post your',
+		answerThirdPart: 'advertisement!',
+		changeBold: 'Trade',
+		changeFirstPart: 'with other users',
+		changeSecondPart: 'for something cool and',
+		changeThirdPart: 'useful!',
+		blueText: 'Current offers',
+		blueSearch: 'Advanced Search',
+		blueSlideSubtitle: 'Huge selection of',
+		blueSlideTitle: 'Toys',
+		greenSlideSubtitle: 'Variety for children and teenagers of',
+		greenSlideTitle: 'Clothes',
+		yellowSlideSubtitle: 'Everything for',
+		yellowSlideTitle: 'Infants',
+		pinkSlideSubtitle: 'Lots of children\'s',
+		pinkSlideTitle: 'Furniture',
+		lilacSlideSubtitle: 'Variety for children and teenagers of',
+		lilacSlideTitle: 'Shoes',
+		orangeSlideSubtitle: 'Children\'s',
+		orangeSlideTitle: 'Transport',
+		helpTitle: 'There are no other people\'s children!',
+		helpName: 'Obminyashka',
+		helpText: 'cooperates with volunteer organizations for\n' +
+			'         all over Ukraine! You can help too! Give your unnecessary things, they\n' +
+			'         will end up in orphanages and orphanages!',
+		helpButton: 'I want to help children!',
 	}
 };
 
