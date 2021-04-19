@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { chooseLanguage, clearValueLogin, clearValueSignUp } from '../../redux/auth/action';
@@ -42,17 +42,15 @@ const CustomSelect = () => {
   const dispatch = useDispatch();
   const { lang : language } = useSelector(state => state.auth);
 
-  const selectedOption = languageArray.map(lang =>
-    lang.value === language
-      ?
-      { ...lang, checked : true }
-      :
-      { ...lang, checked : false }
-  );
-
   useEffect(() => {
-    document.body.addEventListener('click', selectedOption);
-  }, []);
+    const checkedArray = languageArray.map(item => item.value === language
+      ?
+      { ...item, checked : true }
+      :
+      { ...item, checked : false }
+    );
+    setLanguageArray(checkedArray);
+  }, [ language ]);
 
   const handleSelected = (lang) => {
     dispatch(clearValueSignUp());
