@@ -23,24 +23,23 @@ const LanguageItem = styled.div`
   text-transform: uppercase;
   padding: 5px;
   margin: 18px 0 10px 0;
-  background-color: ${ props => props.checked ? 'hsl(195, 100%, 53%)' : '#F2F4F7' };
-  color: rgb(119, 119, 119);
-  
+  cursor: pointer;
+  color: ${ ({ checked }) => checked ? 'hsl(195, 100%, 53%)' : 'rgb(119, 119, 119)' };
+
   &:hover {
     background-color: hsl(195, 100%, 90%);
     color: hsl(0, 0%, 10%);;
   }
 `;
 
-const languageArray = [
-  { value : 'ru', checked : false },
-  { value : 'ua', checked : false },
-  { value : 'en', checked : false }
-];
-
 const CustomSelect = () => {
   const dispatch = useDispatch();
   const { lang : language } = useSelector(state => state.auth);
+  const [ languageArray, setLanguageArray ] = useState([
+    { value : 'ru', checked : false },
+    { value : 'ua', checked : false },
+    { value : 'en', checked : false }
+  ]);
 
   useEffect(() => {
     const checkedArray = languageArray.map(item => item.value === language
