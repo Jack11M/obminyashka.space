@@ -133,9 +133,9 @@ class SecurityConfigIntegrationTest {
                 .andExpect(status().isUnauthorized())
                 .andReturn()
                 .getResponse()
-                .getErrorMessage();
+                .getContentAsString();
 
-        assertEquals(getMessageSource("token.not.start.with.bearer"), errorMessage);
+        assertEquals(getMessageSource("token.not.start.with.bearer"), errorMessage.trim());
     }
 
     @Test
@@ -148,9 +148,9 @@ class SecurityConfigIntegrationTest {
                 .andExpect(status().isUnauthorized())
                 .andReturn()
                 .getResponse()
-                .getErrorMessage();
+                .getContentAsString();
 
-        assertEquals(getMessageSource("token.signature.not.valid"), errorMessage);
+        assertEquals(getMessageSource("token.signature.not.valid"), errorMessage.trim());
     }
 
     @Test
@@ -164,7 +164,7 @@ class SecurityConfigIntegrationTest {
                 .andExpect(status().isUnauthorized())
                 .andReturn()
                 .getResponse()
-                .getErrorMessage();
+                .getContentAsString();
 
         assertTrue(Objects.requireNonNull(errorMessage).startsWith(getMessageSource("token.expired")));
     }
