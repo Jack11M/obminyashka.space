@@ -21,8 +21,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         final String detailedError = (String) httpServletRequest.getAttribute("detailedError");
 
-        httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                Objects.requireNonNullElseGet(detailedError, () ->
-                        getMessageSource("invalid.token")));
+        httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        httpServletResponse.setContentType("text/html; charset=utf-8");
+        httpServletResponse.getWriter().println(Objects.requireNonNullElseGet(detailedError,
+                () -> getMessageSource("invalid.token")));
     }
 }
