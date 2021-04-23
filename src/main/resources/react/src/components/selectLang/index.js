@@ -1,60 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { chooseLanguage, clearValueLogin, clearValueSignUp } from '../../redux/auth/action';
 import { changeLangProfileErrors } from '../../redux/profile/profileAction';
 
-const SelectLanguage = styled.div`
-  width: 29px;
-  margin: 22px 15px 0;
+const LanguagePanel = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 10px 0 0;
 `;
 
-const LanguageLabel = styled.div`
-  position: relative;
+const LanguageItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
   font-family: inherit;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 19px;
-  color: #777777;
   text-transform: uppercase;
+  padding: 5px;
+  margin: 18px 0 10px 0;
   cursor: pointer;
-
-  &:after {
-    position: absolute;
-    content: "";
-    display: block;
-    top: 38%;
-    right: 0;
-    border-style: solid;
-    border-width: 5px 2.5px 0 2.5px;
-    border-color: #777777 transparent transparent transparent;
-    z-index: 1;
-    pointer-events: none;
-
-  }
-`;
-
-const DropDownMenu = styled.div`
-  position: absolute;
-  background-color: #F2F4F7;
-  color: #777777;
-  box-sizing: border-box;
-  cursor: pointer;
-  z-index: 1000;
-
-`;
-
-const DivOption = styled.div`
-  text-transform: uppercase;
-  font-family: inherit;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 19px;
-  padding: 9px;
-  background-color: ${ props => props.checked ? 'hsl(195, 100%, 53%)' : '#F2F4F7' };
-  color: ${ props => props.checked ? '#fff' : '#777777' };
+  color: ${ ({ checked }) => checked ? 'hsl(195, 100%, 53%)' : 'rgb(119, 119, 119)' };
 
   &:hover {
     background-color: hsl(195, 100%, 90%);
@@ -62,54 +32,46 @@ const DivOption = styled.div`
   }
 `;
 
-const languageArray = [
-	{ value: 'ru', checked: false },
-	{ value: 'ua', checked: false },
-	{ value: 'en', checked: false }
-];
-
 const CustomSelect = () => {
-	const dispatch = useDispatch();
-	const { lang: language } = useSelector( state => state.auth );
-	const catchRef = useRef();
+  const dispatch = useDispatch();
+  const { lang : language } = useSelector(state => state.auth);
+  const [ languageArray, setLanguageArray ] = useState([
+    { value : 'ru', checked : false },
+    { value : 'ua', checked : false },
+    { value : 'en', checked : false }
+  ]);
 
-	const selectedOption = languageArray.map( lang => lang.value === language ? { ...lang, checked: true } : { ...lang, checked: false } );
+  useEffect(() => {
+    const checkedArray = languageArray.map(item => item.value === language
+      ?
+      { ...item, checked : true }
+      :
+      { ...item, checked : false }
+    );
+    setLanguageArray(checkedArray);
+  }, [ language ]);
 
-	const pickLanguage = selectedOption.find( option => option.checked );
-	const [ open, setOpen ] = useState( false );
+  const handleSelected = (lang) => {
+    dispatch(clearValueSignUp());
+    dispatch(clearValueLogin());
+    dispatch(changeLangProfileErrors(lang));
+    dispatch(chooseLanguage(lang));
+  };
 
-
-	const handleCatch = ( e ) => {
-		const path = e.path || (e.composedPath && e.composedPath());
-		if (!path.includes( catchRef.current )) {
-			setOpen( false );
-		}
-	};
-
-	useEffect( () => {
-		document.body.addEventListener( 'click', handleCatch );
-	}, [] );
-
-	const handleOpen = () => {
-		setOpen( prevOpen => !prevOpen );
-	};
-
-	const handleSelected = ( lang ) => {
-		dispatch( clearValueSignUp() );
-		dispatch( clearValueLogin() );
-		dispatch(changeLangProfileErrors(lang))
-		dispatch( chooseLanguage( lang ) );
-	};
-
-	return (
-		<SelectLanguage ref={ catchRef } onClick={ handleOpen }>
-			<LanguageLabel>{ pickLanguage.value }</LanguageLabel>
-			{ open && <DropDownMenu>
-				{ selectedOption.map( option => <DivOption key={ option.value } onClick={ () => handleSelected( option.value ) }
-					checked={ option.checked }>{ option.value }</DivOption> ) }
-			</DropDownMenu> }
-		</SelectLanguage>
-	);
+  return (
+    <LanguagePanel>
+      {
+        languageArray.map(option =>
+          <LanguageItem
+            key = { option.value }
+            onClick = { () => handleSelected(option.value) }
+            checked = { option.checked }
+          >
+            { option.value }
+          </LanguageItem>)
+      }
+    </LanguagePanel>
+  );
 };
 
 export default CustomSelect;
