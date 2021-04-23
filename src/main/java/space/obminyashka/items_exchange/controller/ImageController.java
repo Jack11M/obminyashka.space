@@ -1,19 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.BaseEntity;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.service.AdvertisementService;
-import space.obminyashka.items_exchange.service.ImageService;
-import space.obminyashka.items_exchange.service.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,14 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.dto.ImageDto;
+import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
+import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
+import space.obminyashka.items_exchange.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.model.Advertisement;
+import space.obminyashka.items_exchange.service.AdvertisementService;
+import space.obminyashka.items_exchange.service.ImageService;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
@@ -43,7 +39,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParamet
 @Slf4j
 public class ImageController {
     private final ImageService imageService;
-    private final UserService userService;
     private final AdvertisementService advertisementService;
 
     @Value("${max.images.amount}")
@@ -85,10 +80,11 @@ public class ImageController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
-    public ResponseEntity<String> saveImages(@PathVariable("advertisement_id")
-                                             @PositiveOrZero(message = "{invalid.id}") long advertisementId,
-                                             @RequestParam(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
-                                             Principal principal)
+    public ResponseEntity<String> saveImages(@ApiParam(value = "ID of the Advertisement for adding the image(s)", required = true)
+                                             @PathVariable("advertisement_id") @PositiveOrZero(message = "{invalid.id}") long advertisementId,
+                                             @ApiParam(value = "Select the image to Upload", required = true)
+                                             @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
+                                             @ApiIgnore Principal principal)
             throws ElementsNumberExceedException, IllegalOperationException {
 
         try {
@@ -122,22 +118,23 @@ public class ImageController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteImages(@PathVariable("advertisement_id")
-                                 @PositiveOrZero(message = "{invalid.id}") long advertisementId,
-                             @RequestParam("ids") List<Long> imageIdList, Principal principal)
-            throws IllegalOperationException {
+    public void deleteImages(@ApiParam(required = true) @PathVariable("advertisement_id")
+                             @PositiveOrZero(message = "{invalid.id}") long advertisementId,
+                             @ApiParam(required = true) @RequestParam("ids") List<Long> imageIdList,
+                             @ApiIgnore Principal principal)
+            throws IllegalOperationException, IllegalIdentifierException {
 
-        if (!isUserOwnsSelectedAdvertisement(advertisementId, principal)) {
+        final var existedAdvertisement = advertisementService.findByIdAndOwnerUsername(advertisementId, principal.getName());
+        if (existedAdvertisement.isEmpty()) {
             throw new IllegalOperationException(getMessageSource("user.not-owner"));
         }
-        imageService.removeById(imageIdList);
-    }
-
-    private boolean isUserOwnsSelectedAdvertisement(long advertisementId, Principal principal) {
-        return userService.findByUsernameOrEmail(principal.getName())
-                .map(User::getAdvertisements).stream()
-                .flatMap(Collection::parallelStream)
-                .map(BaseEntity::getId)
-                .anyMatch(Predicate.isEqual(advertisementId));
+        final var isAllImageIdsExist = imageIdList.stream()
+                .filter(Predicate.not(imageService::isExistsById))
+                .collect(Collectors.toUnmodifiableList());
+        if (isAllImageIdsExist.isEmpty()) {
+            imageService.removeById(imageIdList);
+        } else {
+            throw new IllegalIdentifierException(getParametrizedMessageSource("exception.image.not-existed-id", imageIdList));
+        }
     }
 }

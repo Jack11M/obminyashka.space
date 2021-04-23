@@ -128,6 +128,11 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public boolean isExistsById(long imageId) {
+        return imageRepository.existsById(imageId);
+    }
+
+    @Override
     public void removeById(List<Long> imageIdList) {
         imageIdList.forEach(this::removeById);
     }

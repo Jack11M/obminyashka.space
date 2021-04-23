@@ -60,6 +60,13 @@ public interface ImageService {
     void saveToAdvertisement(Advertisement advertisement, byte[] image);
 
     /**
+     * Check if the image exists into the DB by its ID
+     * @param imageId ID of the image to check
+     * @return result of check
+     */
+    boolean isExistsById(long imageId);
+
+    /**
      * Remove received images from the DB using their ID
      * @param imageIdList ID images for removing
      */
