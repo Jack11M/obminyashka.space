@@ -1,16 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.Phone;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.annotation.FieldMatch;
-import space.obminyashka.items_exchange.model.enums.Gender;
-import space.obminyashka.items_exchange.model.enums.Status;
-import space.obminyashka.items_exchange.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,23 +16,32 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
+import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
+import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
+import space.obminyashka.items_exchange.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.model.Child;
+import space.obminyashka.items_exchange.model.Phone;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.enums.Gender;
+import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.service.UserService;
 
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -297,9 +295,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
-        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(WRONG_OLD_PASSWORD,
-                NEW_PASSWORD,
-                NEW_PASSWORD);
+        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(WRONG_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -311,9 +307,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "admin")
     void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
-                NEW_PASSWORD,
-                WRONG_NEW_PASSWORD_CONFIRMATION);
+        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -326,7 +320,7 @@ class UserControllerTest {
     @Test
     @WithMockUser(username = "user")
     void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -341,7 +335,7 @@ class UserControllerTest {
     void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL);
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
                 status().isConflict())
                 .andDo(print())
@@ -357,7 +351,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.existsByEmail(any())).thenReturn(true);
 
-        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL);
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
                 status().isConflict())
                 .andDo(print())
@@ -388,8 +382,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
-                WRONG_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -402,8 +395,7 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void selfDeleteRequest_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
             throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
-                WRONG_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -413,20 +405,11 @@ class UserControllerTest {
         assertTrue(message.contains(getMessageSource("different.passwords")));
     }
 
-    /**
-     * In this case annotation
-     * {@link FieldMatch}
-     * has to work before condition:
-     * if (!userService.isPasswordMatches(user, userDeleteOrRestoreDto.getPassword()))}
-     * in
-     * {@link UserController#selfDeleteRequest(UserDeleteFlowDto, Principal)}
-     */
     @Test
     @WithMockUser(username = "admin")
     void selfDeleteRequest_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
             throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
-                CORRECT_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -442,8 +425,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
-                WRONG_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -456,8 +438,7 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
             throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
-                WRONG_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -471,8 +452,7 @@ class UserControllerTest {
     @WithMockUser(username = "deletedUser")
     void makeAccountActiveAgain_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
             throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(WRONG_OLD_PASSWORD,
-                CORRECT_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
                 status().isBadRequest())
                 .andDo(print())
@@ -488,8 +468,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.isPasswordMatches(any(), any())).thenReturn(true);
 
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
-                CORRECT_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
                 status().isForbidden())
                 .andDo(print())

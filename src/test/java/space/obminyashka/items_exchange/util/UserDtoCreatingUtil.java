@@ -122,27 +122,4 @@ public class UserDtoCreatingUtil {
                 .updated(updated)
                 .build();
     }
-
-    public static UserChangePasswordDto createUserChangePasswordDto(String password, String newPassword,
-                                                                    String confirmNewPassword) {
-        return UserChangePasswordDto.builder()
-                .oldPassword(password)
-                .newPassword(newPassword)
-                .confirmNewPassword(confirmNewPassword)
-                .build();
-    }
-
-    public static UserChangeEmailDto createUserChangeEmailDto(String newEmail, String newEmailConfirmation) {
-        return UserChangeEmailDto.builder()
-                .newEmail(newEmail)
-                .newEmailConfirmation(newEmailConfirmation)
-                .build();
-    }
-
-    public static UserDeleteFlowDto createUserDeleteOrRestoreDto(String password, String confirmPassword) {
-        return UserDeleteFlowDto.builder()
-                .password(password)
-                .confirmPassword(confirmPassword)
-                .build();
-    }
 }
