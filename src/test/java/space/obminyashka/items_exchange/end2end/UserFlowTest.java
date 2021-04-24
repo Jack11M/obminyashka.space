@@ -171,9 +171,7 @@ class UserFlowTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserPassword_WhenDataCorrect_Successfully() throws Exception {
-        UserChangePasswordDto userChangePasswordDto = createUserChangePasswordDto(CORRECT_OLD_PASSWORD,
-                NEW_PASSWORD,
-                NEW_PASSWORD);
+        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
                 status().isAccepted())
                 .andDo(print())
@@ -191,7 +189,7 @@ class UserFlowTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
-        UserChangeEmailDto userChangeEmailDto = createUserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
                 status().isAccepted())
                 .andDo(print())
@@ -206,8 +204,7 @@ class UserFlowTest {
     @ExpectedDataSet(value = "user/delete_user_first_expected.yml",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void selfDeleteRequest_WhenDataCorrect_Successfully() throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
-                CORRECT_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
                 status().isAccepted())
                 .andDo(print())
@@ -223,8 +220,7 @@ class UserFlowTest {
     @ExpectedDataSet(value = {"database_init.yml", "user/deleted_user_restore_expected.yml"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void makeAccountActiveAgain_WhenDataCorrect_Successfully() throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = createUserDeleteOrRestoreDto(CORRECT_OLD_PASSWORD,
-                CORRECT_OLD_PASSWORD);
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
                 status().isAccepted())
                 .andDo(print())

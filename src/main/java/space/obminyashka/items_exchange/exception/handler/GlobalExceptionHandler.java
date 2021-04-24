@@ -4,9 +4,11 @@ import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,19 +18,12 @@ import space.obminyashka.items_exchange.exception.*;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Locale;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Log4j2
 @AllArgsConstructor
 public class GlobalExceptionHandler {
-
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter
-            .ofLocalizedDateTime(FormatStyle.MEDIUM)
-            .withLocale(Locale.getDefault());
 
     @ExceptionHandler({UsernameNotFoundException.class, EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -50,6 +45,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleBadRequestExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleValidationExceptions(MethodArgumentNotValidException e, ServletWebRequest request) {
+        final var validationErrors = e.getBindingResult().getFieldErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining("\n", "Validation error(s): ", ""));
+
+        final var errorMessage = new ErrorMessage(validationErrors, request.getRequest().getRequestURI(), request.getHttpMethod());
+        log.log(Level.WARN, errorMessage);
+        return errorMessage;
     }
 
     @ExceptionHandler({IllegalOperationException.class, AccessDeniedException.class, RoleNotFoundException.class})
@@ -92,10 +99,7 @@ public class GlobalExceptionHandler {
         if (e instanceof UndeclaredThrowableException) {
             e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
         }
-        ErrorMessage errorMessage = new ErrorMessage(dateFormat.format(LocalDateTime.now()),
-                e.getLocalizedMessage(),
-                request.getRequest().getRequestURI(),
-                request.getHttpMethod());
+        var errorMessage = new ErrorMessage(e.getLocalizedMessage(), request.getRequest().getRequestURI(), request.getHttpMethod());
         log.log(level, errorMessage);
         return errorMessage;
     }

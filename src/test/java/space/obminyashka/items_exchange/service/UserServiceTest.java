@@ -48,11 +48,7 @@ class UserServiceTest {
 
     @Test
     void testUpdateUserPassword_WhenDataCorrect_Successfully() {
-        UserChangePasswordDto userChangePasswordDto = UserChangePasswordDto.builder()
-                .oldPassword(CORRECT_OLD_PASSWORD)
-                .newPassword(NEW_PASSWORD)
-                .confirmNewPassword(NEW_PASSWORD)
-                .build();
+        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
         String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
 
         assertEquals(getMessageSource("changed.user.password"), message);
@@ -62,10 +58,7 @@ class UserServiceTest {
 
     @Test
     void testUpdateUserEmail_WhenDataCorrect_Successfully() {
-        UserChangeEmailDto userChangeEmailDto = UserChangeEmailDto.builder()
-                .newEmail(NEW_USER_EMAIL)
-                .newEmailConfirmation(NEW_USER_EMAIL)
-                .build();
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL, NEW_USER_EMAIL);
         String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
 
         assertEquals(getMessageSource("changed.user.email"), message);

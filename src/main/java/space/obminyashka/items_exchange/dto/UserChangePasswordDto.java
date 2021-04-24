@@ -1,21 +1,18 @@
 package space.obminyashka.items_exchange.dto;
 
-import space.obminyashka.items_exchange.annotation.FieldMatch;
-import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.obminyashka.items_exchange.util.PatternHandler;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldMatch(first = "newPassword", second = "confirmNewPassword", message = "{different.passwords}")
 public class UserChangePasswordDto {
 
     @NotEmpty(message = "{empty.password}")
@@ -28,4 +25,9 @@ public class UserChangePasswordDto {
 
     @NotEmpty(message = "{empty.confirm.password}")
     private String confirmNewPassword;
+
+    @AssertTrue(message = "{different.passwords}")
+    private boolean isPasswordsEquals() {
+        return newPassword.equals(confirmNewPassword);
+    }
 }
