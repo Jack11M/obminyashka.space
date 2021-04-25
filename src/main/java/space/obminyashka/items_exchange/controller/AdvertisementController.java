@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
+import org.springframework.validation.BindingResult;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
@@ -140,7 +141,7 @@ public class AdvertisementController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public AdvertisementDto updateAdvertisement(@Validated(Exist.class) @RequestBody AdvertisementDto dto, Principal principal)
+    public AdvertisementDto updateAdvertisement(@Validated(Exist.class) @RequestBody AdvertisementDto dto, Principal principal, BindingResult bindingResult)
             throws IllegalIdentifierException, IllegalOperationException {
 
         User owner = getUser(principal.getName());
