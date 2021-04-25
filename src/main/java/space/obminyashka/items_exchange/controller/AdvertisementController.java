@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import org.springframework.validation.BindingResult;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
