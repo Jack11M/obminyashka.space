@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     id("io.freefair.lombok") version "6.0.0-m2"
     id("org.siouan.frontend-jdk11") version "5.0.1"
+    id("org.springframework.boot") version "2.3.9.RELEASE"
 }
 
 frontend {
