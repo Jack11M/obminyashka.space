@@ -1,5 +1,6 @@
-FROM maven:3.6.3-jdk-11-slim
-COPY pom.xml /tmp/
+FROM gradle:7.0-jdk11
+COPY build.gradle.kts /tmp/
+COPY settings.gradle.kts /tmp/
 COPY src /tmp/src/
 WORKDIR /tmp/
-RUN mvn clean install
+RUN gradle build

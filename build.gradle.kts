@@ -7,11 +7,15 @@ plugins {
 
 frontend {
     nodeVersion.set("15.14.0")
-    nodeInstallDirectory.set(file("${projectDir}/src/main/resources/react/node"))
+    nodeInstallDirectory.set(file("$projectDir/node"))
+
+    yarnEnabled.set(true)
+    yarnVersion.set("1.22.10")
+    yarnInstallDirectory.set(file("$projectDir/yarn"))
 
     installScript.set("install")
-    assembleScript.set("run build")
-    packageJsonDirectory.set(file("${rootProject.projectDir}/src/main/resources/react"))
+    assembleScript.set("build")
+    packageJsonDirectory.set(file("$projectDir/src/main/resources/react"))
 
 }
 
@@ -52,7 +56,9 @@ publishing {
     }
 }
 
-tasks.named("processResources") {
+tasks.processResources {
+    exclude("**/.idea/**")
+    exclude("**/node_modules/**")
     dependsOn(tasks.named("installFrontend"))
 }
 

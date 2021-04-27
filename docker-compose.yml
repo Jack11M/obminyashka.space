@@ -32,7 +32,7 @@ services:
       SERVER_SSL_KEY_STORE_PASSWORD: root
       SERVER_SSL_KEY_STORE: /etc/ssl/certs/keystore.p12
       APP_JWT_SECRET: root
-    command: mvn clean spring-boot:run
+    command: gradle bootRun
     volumes:
       - ssl:/etc/ssl/certs/
     depends_on:
