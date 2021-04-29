@@ -8,11 +8,11 @@ plugins {
 
 frontend {
     nodeVersion.set("15.14.0")
-    nodeInstallDirectory.set(file("$projectDir/node"))
+    nodeInstallDirectory.set(file("$projectDir/build_tools/node"))
 
     yarnEnabled.set(true)
     yarnVersion.set("1.22.10")
-    yarnInstallDirectory.set(file("$projectDir/yarn"))
+    yarnInstallDirectory.set(file("$projectDir/build_tools/yarn"))
 
     installScript.set("install")
     assembleScript.set("build")
