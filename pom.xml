@@ -147,7 +147,7 @@
                     <nodeVersion>${node.version}</nodeVersion>
                     <yarnVersion>${yarn.version}</yarnVersion>
                     <workingDirectory>${frontend-src-dir}</workingDirectory>
-                    <installDirectory>${project.build.directory}</installDirectory>
+                    <installDirectory>${project.basedir}/build_tools</installDirectory>
                 </configuration>
 
                 <executions>
@@ -180,5 +180,15 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/.idea/**</exclude>
+                    <exclude>**/node_modules/**</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 </project>
