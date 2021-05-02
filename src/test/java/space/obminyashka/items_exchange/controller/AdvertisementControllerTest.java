@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

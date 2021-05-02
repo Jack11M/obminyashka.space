@@ -9,7 +9,6 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.I18n;
 import space.obminyashka.items_exchange.model.enums.Season;
 
-import javax.validation.constraints.PositiveOrZero;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
