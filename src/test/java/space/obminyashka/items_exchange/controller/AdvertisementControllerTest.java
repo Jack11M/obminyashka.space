@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.springframework.http.MediaType;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,12 +14,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import space.obminyashka.items_exchange.dto.AdvertisementDto;
+import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
 @SpringBootTest
@@ -101,5 +105,25 @@ class AdvertisementControllerTest {
        mockMvc.perform(get("/adv/thumbnail"))
                 .andExpect(status().isOk())
                .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementSize() throws Exception {
+        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithNotValidSize();
+
+        MvcResult mvcResult = mockMvc.perform(put("/adv")
+                .content(asJsonString(existDtoForUpdate))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains("must be between 1 and 50 symbols"));
     }
 }
