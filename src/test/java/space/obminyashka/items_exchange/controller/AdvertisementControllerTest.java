@@ -187,4 +187,44 @@ class AdvertisementControllerTest {
                 .getContentAsString()
                 .contains("must be between 3 and 70 symbols"));
     }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementDescription() throws Exception {
+        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithNotValidDescription();
+
+        MvcResult mvcResult = mockMvc.perform(put("/adv")
+                .content(asJsonString(existDtoForUpdate))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains("must be less than 255 symbols"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementWishesToExchange() throws Exception {
+        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithNotValidWishesToExchange();
+
+        MvcResult mvcResult = mockMvc.perform(put("/adv")
+                .content(asJsonString(existDtoForUpdate))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains("must be less than 210 symbols"));
+    }
 }
