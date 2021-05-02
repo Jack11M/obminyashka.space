@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.controller;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -125,5 +127,45 @@ class AdvertisementControllerTest {
                 .getResponse()
                 .getContentAsString()
                 .contains("must be between 1 and 50 symbols"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementLocation() throws Exception {
+        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithNotValidLocation();
+
+        String expectedResponseArea =
+                "area: " + existDtoForUpdate.getLocation().getArea() + " must be between 2 and 100 symbols";
+        String expectedResponseDistrict =
+                "district: " + existDtoForUpdate.getLocation().getDistrict() + " must be between 2 and 100 symbols";
+        String expectedResponseCity =
+                "city: " + existDtoForUpdate.getLocation().getCity() + " must be between 2 and 100 symbols";
+
+        MvcResult mvcResult = mockMvc.perform(put("/adv")
+                .content(asJsonString(existDtoForUpdate))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        Assertions.assertAll(
+                () -> assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains(expectedResponseArea)),
+
+                () -> assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains(expectedResponseDistrict)),
+
+                () -> assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains(expectedResponseCity))
+        );
+
     }
 }
