@@ -96,13 +96,7 @@ public class AdvertisementDtoCreatingUtil {
                 .build();
     }
 
-    @PositiveOrZero
     private static String createString(int quantityOfCharsInNewsString){
-        StringBuilder sb = new StringBuilder(quantityOfCharsInNewsString);
-        for (int i = 0; i < quantityOfCharsInNewsString; ++i)
-        {
-            sb.append('x');
-        }
-        return sb.toString();
+        return "x".repeat(Math.max(0, quantityOfCharsInNewsString));
     }
 }
