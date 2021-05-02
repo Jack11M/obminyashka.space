@@ -166,6 +166,25 @@ class AdvertisementControllerTest {
                 .getContentAsString()
                 .contains(expectedResponseCity))
         );
+    }
 
+    @Test
+    @WithMockUser(username = "admin")
+    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementTopic() throws Exception {
+        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
+                .createExistAdvertisementDtoForUpdateWithNotValidTopic();
+
+        MvcResult mvcResult = mockMvc.perform(put("/adv")
+                .content(asJsonString(existDtoForUpdate))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertTrue(mvcResult
+                .getResponse()
+                .getContentAsString()
+                .contains("must be between 3 and 70 symbols"));
     }
 }

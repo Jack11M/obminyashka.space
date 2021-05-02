@@ -56,6 +56,11 @@ public class AdvertisementDtoCreatingUtil {
                 NOT_VALID_LOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
     }
 
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidTopic() {
+        return getBuild(1L, "to", "description", "shoes", true, DealType.EXCHANGE,
+                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
+    }
+
     private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer,
                                              DealType exchange, LocationDto city, AgeRange age, Season season,
                                              Gender gender, String size, long subcatId, List<ImageDto> images) {
