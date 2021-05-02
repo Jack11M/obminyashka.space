@@ -23,6 +23,8 @@ public class AdvertisementDtoCreatingUtil {
     private static final LocationDto ODESSA = new LocationDto(0L, "Odesska", "Odessa district", "Odessa", I18n.EN);
     private static final LocationDto CHANGEDLOCATION =
             new LocationDto(1L, "Kyivska", "New Vasyuki district", "New Vasyuki", I18n.EN);
+    private static final LocationDto NOT_VALID_LOCATION =
+            new LocationDto(2L, "b", "b", "b", I18n.EN);
 
     public static AdvertisementDto createNonExistAdvertisementDto() {
         return getBuild(0L, "topic", "description", "hat",false, DealType.GIVEAWAY,
@@ -42,6 +44,16 @@ public class AdvertisementDtoCreatingUtil {
     public static AdvertisementDto createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory() {
         return getBuild(1L, "new topic", "new description", "BMW",true, DealType.EXCHANGE,
                 CHANGEDLOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L, Collections.singletonList(JPEG));
+    }
+
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidSize() {
+        return getBuild(1L, "topic", "description", "shoes", true, DealType.EXCHANGE,
+                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "", 1L, Arrays.asList(JPEG, PNG));
+    }
+
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidLocation() {
+        return getBuild(1L, "topic", "description", "shoes", true, DealType.EXCHANGE,
+                NOT_VALID_LOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
     }
 
     private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer,
