@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
@@ -13,6 +14,7 @@ import { getProduct } from '../../REST/Resources';
 import './ProductPage.scss';
 
 const ProductPage = () => {
+  const param = useRouteMatch();
   const { lang } = useSelector( state => state.auth );
   const [ product, setProduct ] = useState({});
   const [ photos, setPhotos ] = useState([]);
@@ -22,7 +24,7 @@ const ProductPage = () => {
   const [ subcategory, setSubcategory ] = useState({});
 
   useEffect(() => {
-    getProduct(1)
+    getProduct(param.params.id)
       .then(({ data }) => {
         const { images, wishesToExchange, category, subcategory, location, ...rest } = data;
         const arrWishes = wishesToExchange.split(', ');

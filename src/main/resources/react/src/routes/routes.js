@@ -25,7 +25,7 @@ const Routes = () => {
 			component = { UserInfo }
 			permission = { isAuthenticated }
 			redirect = { route.login }/>
-		<Route path = { route.productPage } component = { ProductPage }/>
+		<Route path = { `${route.productPage}:id` } component = { ProductPage }/>
 		<Route path = { route.noMatch } component = { FourOhFourPage }/>
 	</Switch>;
 };
