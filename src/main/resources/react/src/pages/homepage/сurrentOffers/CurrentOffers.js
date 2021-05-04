@@ -9,28 +9,28 @@ import { getCurrentOffers } from '../../../REST/Resources';
 import { getTranslatedText } from '../../../components/local/localisation';
 import noPhotos from '../../../img/showAdv/noPhoto.svg';
 
-
 import './currentOffers.scss';
 
 const CurrentOffers = () => {
   const history = useHistory();
   const { lang } = useSelector(state => state.auth);
-  //useState
+
   const [ offers, setOffers ] = useState([]);
-  //useEffect
+
   useEffect(() => {
     getCurrentOffers()
-      .then((data) => {
+      .then(({ data }) => {
+        console.log(data);
         setOffers(data);
       })
       .catch(e => {
         console.log(e);
       });
-  });
+  }, []);
 
   const moveToProductPage = (id) => {
-    history.push(route.productPage + id)
-  }
+    history.push(route.productPage + id);
+  };
 
   return (
     <section className = "products-section">
@@ -46,12 +46,12 @@ const CurrentOffers = () => {
 
       <ul className = "products-list" id = "products-list">
         { offers.map((offer) =>
-          <li>
+          <li key = { offer.advertisementId }>
             <ProductCard
-              clicOnButton={() => moveToProductPage(1)} //offer.advertisementId
+              clickOnButton = { () => moveToProductPage(offer.advertisementId) }
               margin = { '10px 8px' }
               isFavorite = { false }
-              picture = { offer.image ? `data:image/jpeg;base64,${ offer.image  }` : noPhotos }
+              picture = { offer.image ? `data:image/jpeg;base64,${ offer.image }` : noPhotos }
               city = { offer.location.city || '' }
               text = { offer.title }
             />
