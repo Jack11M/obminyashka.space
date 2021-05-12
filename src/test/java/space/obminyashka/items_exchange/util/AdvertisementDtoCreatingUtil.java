@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.util;
 
+import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.dto.LocationDto;
@@ -9,6 +10,7 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.I18n;
 import space.obminyashka.items_exchange.model.enums.Season;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +30,8 @@ public class AdvertisementDtoCreatingUtil {
             new LocationDto(2L, "b", "b", "b", I18n.EN);
     private static final String NOT_VALID_DESCRIPTION = createString(256);
     private static final String NOT_VALID_WISHES = createString(211);
-    private static final String NOT_VALID_SIZE = "";
-    private static final String NOT_VALID_TOPIC = "xx";
+    private static final String NOT_VALID_SIZE = createString(0);
+    private static final String NOT_VALID_TOPIC = createString(2);
 
     public static AdvertisementDto createNonExistAdvertisementDto() {
         return getBuild(0L, "topic", "description", "hat",false, DealType.GIVEAWAY,
@@ -74,6 +76,25 @@ public class AdvertisementDtoCreatingUtil {
                 .subcategoryId(subcatId)
                 .images(images)
                 .build();
+    }
+
+    public static String createValidationMessage(String dtoFieldName, String dtoFieldValue, String minValidValue, String maxValidValue) {
+        return MessageSourceUtil.getMessageSource("invalid.size")
+                .replace("${validatedValue}",
+                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
+                .replace("{min}", minValidValue)
+                .replace("{max}", maxValidValue);
+    }
+
+    public static String createValidationMessage(String dtoFieldName, String dtoFieldValue, String maxValidValue) {
+        return MessageSourceUtil.getMessageSource("invalid.max-size")
+                .replace("${validatedValue}",
+                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
+                .replace("{max}", maxValidValue);
+    }
+
+    public static boolean isResponseContainsExpectedResponse(String expectedResponse, MvcResult mvcResult) throws UnsupportedEncodingException {
+        return mvcResult.getResponse().getContentAsString().contains(expectedResponse);
     }
 
     private static String createString(int quantityOfCharsInNewsString){

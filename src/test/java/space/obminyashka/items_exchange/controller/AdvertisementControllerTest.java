@@ -17,15 +17,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
-
-import java.io.UnsupportedEncodingException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createValidationMessage;
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
@@ -149,24 +148,5 @@ class AdvertisementControllerTest {
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageTopic, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWhishes, mvcResult))
         );
-    }
-
-    private String createValidationMessage(String dtoFieldName, String dtoFieldValue, String min, String max) {
-        return MessageSourceUtil.getMessageSource("invalid.size")
-                .replace("${validatedValue}",
-                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
-                .replace("{min}", min)
-                .replace("{max}", max);
-    }
-
-    private String createValidationMessage(String dtoFieldName, String dtoFieldValue, String max) {
-        return MessageSourceUtil.getMessageSource("invalid.max-size")
-                .replace("${validatedValue}",
-                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
-                .replace("{max}", max);
-    }
-
-    private boolean isResponseContainsExpectedResponse(String expectedResponse, MvcResult mvcResult) throws UnsupportedEncodingException {
-        return mvcResult.getResponse().getContentAsString().contains(expectedResponse);
     }
 }
