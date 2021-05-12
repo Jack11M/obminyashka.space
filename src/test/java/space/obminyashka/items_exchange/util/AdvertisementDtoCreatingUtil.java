@@ -28,6 +28,8 @@ public class AdvertisementDtoCreatingUtil {
             new LocationDto(2L, "b", "b", "b", I18n.EN);
     private static final String NOT_VALID_DESCRIPTION = createString(256);
     private static final String NOT_VALID_WISHES = createString(211);
+    private static final String NOT_VALID_SIZE = "";
+    private static final String NOT_VALID_TOPIC = "xx";
 
     public static AdvertisementDto createNonExistAdvertisementDto() {
         return getBuild(0L, "topic", "description", "hat",false, DealType.GIVEAWAY,
@@ -49,30 +51,9 @@ public class AdvertisementDtoCreatingUtil {
                 CHANGEDLOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L, Collections.singletonList(JPEG));
     }
 
-    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidSize() {
-        return getBuild(1L, "topic", "description", "shoes", true, DealType.EXCHANGE,
-                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "", 1L, Arrays.asList(JPEG, PNG));
-    }
-
-    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidLocation() {
-        return getBuild(1L, "topic", "description", "shoes", true, DealType.EXCHANGE,
-                NOT_VALID_LOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
-    }
-
-    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidTopic() {
-        return getBuild(1L, "to", "description", "shoes", true, DealType.EXCHANGE,
-                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
-    }
-
-    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidDescription() {
-        return getBuild(1L, "topic", NOT_VALID_DESCRIPTION, "shoes", true, DealType.EXCHANGE,
-                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
-    }
-
-
-    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidWishesToExchange() {
-        return getBuild(1L, "topic", "description", NOT_VALID_WISHES, true, DealType.EXCHANGE,
-                KHARKIV, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 1L, Arrays.asList(JPEG, PNG));
+    public static AdvertisementDto createExistAdvertisementDtoForUpdateWithNotValidFields() {
+        return getBuild(1L, NOT_VALID_TOPIC, NOT_VALID_DESCRIPTION, NOT_VALID_WISHES, true, DealType.EXCHANGE,
+                NOT_VALID_LOCATION, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, NOT_VALID_SIZE, 1L, Arrays.asList(JPEG, PNG));
     }
 
     private static AdvertisementDto getBuild(long aId, String topic, String description, String wishes, boolean offer,

@@ -3,20 +3,23 @@ package space.obminyashka.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.http.MediaType;
-import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
+import space.obminyashka.items_exchange.util.MessageSourceUtil;
+
+import java.io.UnsupportedEncodingException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -110,36 +113,24 @@ class AdvertisementControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementSize() throws Exception {
+    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementFields() throws Exception {
         AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithNotValidSize();
+                .createExistAdvertisementDtoForUpdateWithNotValidFields();
 
-        MvcResult mvcResult = mockMvc.perform(put("/adv")
-                .content(asJsonString(existDtoForUpdate))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains("must be between 1 and 50 symbols"));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementLocation() throws Exception {
-        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithNotValidLocation();
-
-        String expectedResponseArea =
-                "area: " + existDtoForUpdate.getLocation().getArea() + " must be between 2 and 100 symbols";
-        String expectedResponseDistrict =
-                "district: " + existDtoForUpdate.getLocation().getDistrict() + " must be between 2 and 100 symbols";
-        String expectedResponseCity =
-                "city: " + existDtoForUpdate.getLocation().getCity() + " must be between 2 and 100 symbols";
+        final var validationMessageSize =
+                createValidationMessage("size", existDtoForUpdate.getSize(), "1", "50");
+        final var validationMessageTopic =
+                createValidationMessage("topic", existDtoForUpdate.getTopic(), "3", "70");
+        final var validationMessageDescription =
+                createValidationMessage("description", existDtoForUpdate.getDescription(), "255");
+        final var validationMessageWhishes =
+                createValidationMessage("wishesToExchange", existDtoForUpdate.getWishesToExchange(), "210");
+        final var validationMessageCity =
+                createValidationMessage("location.city", existDtoForUpdate.getLocation().getCity(), "2", "100");
+        final var validationMessageArea =
+                createValidationMessage("location.area", existDtoForUpdate.getLocation().getArea(), "2", "100");
+        final var validationMessageDistrict =
+                createValidationMessage("location.district", existDtoForUpdate.getLocation().getDistrict(), "2", "100");
 
         MvcResult mvcResult = mockMvc.perform(put("/adv")
                 .content(asJsonString(existDtoForUpdate))
@@ -150,80 +141,32 @@ class AdvertisementControllerTest {
                 .andReturn();
 
         Assertions.assertAll(
-                () -> assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains(expectedResponseArea)),
-
-                () -> assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains(expectedResponseDistrict)),
-
-                () -> assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains(expectedResponseCity))
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageArea, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageDistrict, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageCity, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageSize, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageDescription, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageTopic, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWhishes, mvcResult))
         );
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementTopic() throws Exception {
-        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithNotValidTopic();
-
-        MvcResult mvcResult = mockMvc.perform(put("/adv")
-                .content(asJsonString(existDtoForUpdate))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains("must be between 3 and 70 symbols"));
+    private String createValidationMessage(String dtoFieldName, String dtoFieldValue, String min, String max) {
+        return MessageSourceUtil.getMessageSource("invalid.size")
+                .replace("${validatedValue}",
+                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
+                .replace("{min}", min)
+                .replace("{max}", max);
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementDescription() throws Exception {
-        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithNotValidDescription();
-
-        MvcResult mvcResult = mockMvc.perform(put("/adv")
-                .content(asJsonString(existDtoForUpdate))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains("must be less than 255 symbols"));
+    private String createValidationMessage(String dtoFieldName, String dtoFieldValue, String max) {
+        return MessageSourceUtil.getMessageSource("invalid.max-size")
+                .replace("${validatedValue}",
+                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
+                .replace("{max}", max);
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementWishesToExchange() throws Exception {
-        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithNotValidWishesToExchange();
-
-        MvcResult mvcResult = mockMvc.perform(put("/adv")
-                .content(asJsonString(existDtoForUpdate))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertTrue(mvcResult
-                .getResponse()
-                .getContentAsString()
-                .contains("must be less than 210 symbols"));
+    private boolean isResponseContainsExpectedResponse(String expectedResponse, MvcResult mvcResult) throws UnsupportedEncodingException {
+        return mvcResult.getResponse().getContentAsString().contains(expectedResponse);
     }
 }
