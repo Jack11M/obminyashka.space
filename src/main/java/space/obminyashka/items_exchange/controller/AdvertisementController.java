@@ -122,7 +122,9 @@ public class AdvertisementController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
-    public AdvertisementDto createAdvertisement(@Validated(New.class) @RequestBody AdvertisementDto dto, Principal principal)
+    public AdvertisementDto createAdvertisement(@Validated(New.class)
+                                                @Valid @RequestBody AdvertisementDto dto,
+                                                Principal principal)
             throws IllegalIdentifierException {
 
         long subcategoryId = dto.getSubcategoryId();
@@ -140,7 +142,9 @@ public class AdvertisementController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public AdvertisementDto updateAdvertisement(@Validated(Exist.class) @RequestBody AdvertisementDto dto, Principal principal)
+    public AdvertisementDto updateAdvertisement(@Validated(Exist.class)
+                                                @Valid @RequestBody AdvertisementDto dto,
+                                                Principal principal)
             throws IllegalIdentifierException, IllegalOperationException {
 
         User owner = getUser(principal.getName());
