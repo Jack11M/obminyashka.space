@@ -2,10 +2,10 @@ import React from "react";
 
 import { useDispatch, useSelector } from 'react-redux';
 import CheckBox from "../../components/checkbox/index";
-import { getTranslatedText } from '../../components/local/localisation';
 import { toggleCheckBox } from '../../redux/auth/action';
 import { books, clothes, furniture, kidsUpToYear, other, shoes, toys, transportForChildren } from '../../img/all_images_export/navItems';
-import { InputDiv } from "../FormRegister/loginStyle";
+import ButtonAdv from "../../components/buttonAdv/ButtonAdv";
+import Button from "../../components/button/Button";
 
 import "./AddGoods.scss";
 
@@ -225,9 +225,24 @@ const AddGoods = () => {
 						</div>
 						
 					</div>
-
+					<div className="bottom_block">
+						<div className="buttons_block">
+							<ButtonAdv/>
+							<Button
+								whatClass="preview"
+								text="Предпросмотр"
+								width="222px"
+							/>
+						</div>
+						<div className="cancel">
+								<p>Отменить все</p>
+						</div>
 					</div>
+					
+					</div>
+					
 				</div>
+				
 		</main >
 	);
 };

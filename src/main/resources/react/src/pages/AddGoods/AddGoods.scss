@@ -173,6 +173,7 @@
             }
 
             .files {
+                margin-bottom: 48px;
                 h3 {
                     font-weight: 600;
                     color: #11171F;
@@ -258,6 +259,27 @@
                    
                 }
             }
+
+            .bottom_block {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .buttons_block {
+                    display: flex;
+    
+                    .preview {
+                        margin-left: 30px;
+                    }
+                }
+
+                .cancel{
+                    text-transform: uppercase;
+                    cursor: pointer;
+                }
+            }
+
+            
         }
     }
 }
+
