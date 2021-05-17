@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.controller;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.junit.jupiter.api.Assertions;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.util.CategoryTestUtil;
@@ -17,7 +18,9 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -161,6 +164,31 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
+    void createCategory_whenCategoryNameHasInvalidSize_shouldReturnBadRequest()
+            throws Exception {
+
+        CategoryDto nonExistCategoryDtoWithInvalidName = createNonExistCategoryDtoWithInvalidName();
+
+        final var validationMessage = MessageSourceUtil.getMessageSource("invalid.size")
+                .replace("${validatedValue}",
+                        "createCategory.categoryDto.name: " + nonExistCategoryDtoWithInvalidName.getName())
+                .replace("{min}", "3")
+                .replace("{max}", "50");
+
+        MvcResult mvcResult = mockMvc.perform(post("/category")
+                .content(asJsonString(nonExistCategoryDtoWithInvalidName))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        Assertions.assertTrue(isResponseContainsExpectedResponse(validationMessage, mvcResult));
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "category/update_category.yml")
     void updateCategory_shouldUpdateExistedCategory() throws Exception {
 
@@ -215,6 +243,31 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
+    @DataSet("database_init.yml")
+    void updateCategory_whenCategoryNameHasInvalidSize_shouldReturnBadRequest()
+            throws Exception {
+
+        CategoryDto updatedCategoryDtoWithInvalidName = getUpdatedCategoryDtoWithInvalidName();
+
+        final var validationMessage = MessageSourceUtil.getMessageSource("invalid.size")
+                .replace("${validatedValue}",
+                        "updateCategory.categoryDto.name: " + updatedCategoryDtoWithInvalidName.getName())
+                .replace("{min}", "3")
+                .replace("{max}", "50");
+
+        MvcResult mvcResult = mockMvc.perform(put("/category")
+                .content(asJsonString(updatedCategoryDtoWithInvalidName))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        Assertions.assertTrue(isResponseContainsExpectedResponse(validationMessage, mvcResult));
     }
 
     @Test

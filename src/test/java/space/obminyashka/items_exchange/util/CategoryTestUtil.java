@@ -21,6 +21,7 @@ public class CategoryTestUtil {
     public static final String EXISTING_SUBCATEGORY_NAME = "light_shoes";
     public static final String NEW_SUBCATEGORY_NAME = "new subcategory";
     public static final String OTHER_NEW_SUBCATEGORY_NAME = "other new subcategory";
+    public static final String INVALID_CATEGORY_NAME = "xx";
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String USERNAME_ADMIN = "admin";
     public static final String CATEGORY_NAME_TOYS = "toys";
@@ -48,6 +49,12 @@ public class CategoryTestUtil {
         return createNewInvalidCategoryDto(EXISTING_ENTITY_ID, NEW_ENTITY_ID, NEW_CATEGORY_NAME);
     }
 
+    public static CategoryDto createNonExistCategoryDtoWithInvalidName() {
+        final SubcategoryDto fairyTales = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
+        final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
+        return new CategoryDto(NEW_ENTITY_ID, INVALID_CATEGORY_NAME, Arrays.asList(fairyTales, educationalBooks));
+    }
+
     public static CategoryDto createNonExistCategoryDtoWithInvalidSubcategoryId() {
         return createNewInvalidCategoryDto(NEW_ENTITY_ID, EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
     }
@@ -66,6 +73,11 @@ public class CategoryTestUtil {
         return updatedCategoryDto;
     }
 
+    public static CategoryDto getUpdatedCategoryDtoWithInvalidName() {
+        final CategoryDto updatedCategoryDto = createExistCategoryDto();
+        updatedCategoryDto.setName(INVALID_CATEGORY_NAME);
+        return updatedCategoryDto;
+    }
     private static CategoryDto createNewInvalidCategoryDto(long categoryId,
                                                            long subcategoryId,
                                                            String categoryName) {
