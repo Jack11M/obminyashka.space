@@ -18,9 +18,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
-import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -164,26 +162,20 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
-    void createCategory_whenCategoryNameHasInvalidSize_shouldReturnBadRequest()
-            throws Exception {
+    void createCategory_whenCategoryNameHasInvalidSize_shouldReturnBadRequest() throws Exception {
 
-        CategoryDto nonExistCategoryDtoWithInvalidName = createNonExistCategoryDtoWithInvalidName();
-
-        final var validationMessage = MessageSourceUtil.getMessageSource("invalid.size")
-                .replace("${validatedValue}",
-                        "createCategory.categoryDto.name: " + nonExistCategoryDtoWithInvalidName.getName())
-                .replace("{min}", "3")
-                .replace("{max}", "50");
+        CategoryDto categoryDtoWithInvalidName = createNonExistCategoryDtoWithInvalidName();
+        final var validationMessage = createValidateMessageForCategoryDtoName(categoryDtoWithInvalidName);
 
         MvcResult mvcResult = mockMvc.perform(post("/category")
-                .content(asJsonString(nonExistCategoryDtoWithInvalidName))
+                .content(asJsonString(categoryDtoWithInvalidName))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
-        Assertions.assertTrue(isResponseContainsExpectedResponse(validationMessage, mvcResult));
+        Assertions.assertTrue(mvcResult.getResponse().getContentAsString().contains(validationMessage));
     }
 
     @Test
@@ -248,26 +240,20 @@ class CategoryControllerIntegrationTest extends CategoryTestUtil {
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
-    void updateCategory_whenCategoryNameHasInvalidSize_shouldReturnBadRequest()
-            throws Exception {
+    void updateCategory_whenCategoryNameHasInvalidSize_shouldReturnBadRequest() throws Exception {
 
-        CategoryDto updatedCategoryDtoWithInvalidName = getUpdatedCategoryDtoWithInvalidName();
-
-        final var validationMessage = MessageSourceUtil.getMessageSource("invalid.size")
-                .replace("${validatedValue}",
-                        "updateCategory.categoryDto.name: " + updatedCategoryDtoWithInvalidName.getName())
-                .replace("{min}", "3")
-                .replace("{max}", "50");
+        CategoryDto categoryDtoWithInvalidName = getUpdatedCategoryDtoWithInvalidName();
+        final var validationMessage = createValidateMessageForCategoryDtoName(categoryDtoWithInvalidName);
 
         MvcResult mvcResult = mockMvc.perform(put("/category")
-                .content(asJsonString(updatedCategoryDtoWithInvalidName))
+                .content(asJsonString(categoryDtoWithInvalidName))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andReturn();
 
-        Assertions.assertTrue(isResponseContainsExpectedResponse(validationMessage, mvcResult));
+        Assertions.assertTrue(mvcResult.getResponse().getContentAsString().contains(validationMessage));
     }
 
     @Test

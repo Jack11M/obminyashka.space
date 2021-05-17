@@ -33,6 +33,8 @@ public class CategoryTestUtil {
     public static final String SUBCATEGORY_NAME_FAIRY_TALES = "fairy tales";
     public static final String SUBCATEGORY_NAME_EDUCATIONAL_BOOKS = "educational books";
     public static final String UPDATED_CATEGORY_NAME = "footwear";
+    public static final String CATEGORY_NAME_MIN = "3";
+    public static final String CATEGORY_NAME_MAX = "50";
 
     protected static CategoryDto createExistCategoryDto() {
         final SubcategoryDto lightShoes = new SubcategoryDto(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
@@ -126,5 +128,12 @@ public class CategoryTestUtil {
 
         final Subcategory subcategory = createSubcategory(subcategoryId, subcategoryName);
         return new Category(categoryId, categoryName, Collections.singletonList(subcategory));
+    }
+
+    public static String createValidateMessageForCategoryDtoName(CategoryDto categoryDto) {
+        return MessageSourceUtil.getMessageSource("invalid.size")
+                .replace("${validatedValue}", "categoryDto.name: " + categoryDto.getName())
+                .replace("{min}", CATEGORY_NAME_MIN)
+                .replace("{max}", CATEGORY_NAME_MAX);
     }
 }
