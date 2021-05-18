@@ -21,6 +21,7 @@ public class CategoryTestUtil {
     public static final String EXISTING_SUBCATEGORY_NAME = "light_shoes";
     public static final String NEW_SUBCATEGORY_NAME = "new subcategory";
     public static final String OTHER_NEW_SUBCATEGORY_NAME = "other new subcategory";
+    public static final String INVALID_CATEGORY_NAME = "xx";
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String USERNAME_ADMIN = "admin";
     public static final String CATEGORY_NAME_TOYS = "toys";
@@ -32,6 +33,8 @@ public class CategoryTestUtil {
     public static final String SUBCATEGORY_NAME_FAIRY_TALES = "fairy tales";
     public static final String SUBCATEGORY_NAME_EDUCATIONAL_BOOKS = "educational books";
     public static final String UPDATED_CATEGORY_NAME = "footwear";
+    public static final String CATEGORY_NAME_MIN = "3";
+    public static final String CATEGORY_NAME_MAX = "50";
 
     protected static CategoryDto createExistCategoryDto() {
         final SubcategoryDto lightShoes = new SubcategoryDto(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
@@ -46,6 +49,12 @@ public class CategoryTestUtil {
 
     public static CategoryDto createNonExistCategoryDtoWithInvalidId() {
         return createNewInvalidCategoryDto(EXISTING_ENTITY_ID, NEW_ENTITY_ID, NEW_CATEGORY_NAME);
+    }
+
+    public static CategoryDto createNonExistCategoryDtoWithInvalidName() {
+        final SubcategoryDto fairyTales = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
+        final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
+        return new CategoryDto(NEW_ENTITY_ID, INVALID_CATEGORY_NAME, Arrays.asList(fairyTales, educationalBooks));
     }
 
     public static CategoryDto createNonExistCategoryDtoWithInvalidSubcategoryId() {
@@ -66,6 +75,11 @@ public class CategoryTestUtil {
         return updatedCategoryDto;
     }
 
+    public static CategoryDto getUpdatedCategoryDtoWithInvalidName() {
+        final CategoryDto updatedCategoryDto = createExistCategoryDto();
+        updatedCategoryDto.setName(INVALID_CATEGORY_NAME);
+        return updatedCategoryDto;
+    }
     private static CategoryDto createNewInvalidCategoryDto(long categoryId,
                                                            long subcategoryId,
                                                            String categoryName) {
@@ -114,5 +128,12 @@ public class CategoryTestUtil {
 
         final Subcategory subcategory = createSubcategory(subcategoryId, subcategoryName);
         return new Category(categoryId, categoryName, Collections.singletonList(subcategory));
+    }
+
+    public static String createValidateMessageForCategoryDtoName(CategoryDto categoryDto) {
+        return MessageSourceUtil.getMessageSource("invalid.size")
+                .replace("${validatedValue}", "categoryDto.name: " + categoryDto.getName())
+                .replace("{min}", CATEGORY_NAME_MIN)
+                .replace("{max}", CATEGORY_NAME_MAX);
     }
 }
