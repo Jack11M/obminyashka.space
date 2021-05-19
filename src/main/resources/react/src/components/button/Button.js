@@ -38,7 +38,7 @@ const ButtonBlue = styled.button`
 `
 
 
-const Button = ({ whatClass = null,mb, bold, lHeight, disabling, text, click = null, width}) => {
+const Button = ({ whatClass = null, mb, bold, lHeight, disabling, text, click = null, width}) => {
   return (
       <ButtonBlue
         className={whatClass}
@@ -53,4 +53,4 @@ const Button = ({ whatClass = null,mb, bold, lHeight, disabling, text, click = n
       </ButtonBlue>
   );
 };
-export default Button;
+export default React.memo(Button);

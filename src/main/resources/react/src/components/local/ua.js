@@ -16,13 +16,42 @@ const ua = {
 		logEmail: 'Введіть правильний логін або email',
 		logPassword: 'Неправильний пароль',
 		regEmail: 'Вкажіть діючу адресу електронної пошти',
-		regNick: 'Більше 2 і менше 50 символів, без пробілів',
+		regNick: 'Неменш як 2 і менше 50 символів, без пробілів',
 		regPassword: 'Великі і малі латинські літери та цифри. Довжина від 8 до 30 символів',
-		regConfirm: 'Паролі повинні співпадати'
+		regConfirm: 'Паролі повинні співпадати',
+		children: 'Діти які не досягли 17 років'
+	},
+	panel: {
+		myActivity: 'Моя активність',
+		myProfile: 'Мій профіль',
+		myFavorite: 'Вибране',
+		mySettings: 'Налаштування',
+		myExit: 'Вихід',
+	},
+	ownInfo: {
+		aboutMe: 'Про себе',
+		firstName: 'Iм\'я:',
+		lastName: 'Прізвище:',
+		phone: 'Телефон:',
+		children: 'Діти',
+		dateOfBirth: 'Дата народження:',
+		gender: 'Стать:',
+		boy: 'Хлопчик',
+		girl:'Дівчинка',
+		unselected: 'Не вибрано'
+	},
+	exit: {
+		question: 'Вийти?',
+		text: 'Ви не зможете залишати повідомлення і додавати оголошення!',
+		exit: 'вихід'
 	},
 	button: {
 		addAdv: 'Додати оголошення',
-		enter: 'Увійти'
+		addField: 'Додати поле',
+		removeField: 'Видалити поле',
+		saveChanges: 'Зберегти зміни',
+		enter: 'Увійти',
+		look: 'Дивитись',
 	},
 	header: {
 		about: 'Про проект',
@@ -49,6 +78,56 @@ const ua = {
 		noPage: 'Сторінку не знайдено!',
 		mainPage: 'На головну',
 		backPage: 'Назад'
+	},
+	somethingBad: {
+		error: 'Помилка! Що будемо робити?'
+	},
+	product: {
+		categories: 'Категорії',
+		blueTitle: 'Вас також можуть зацікавити',
+		dateOfAdv: 'Дата публікації',
+		cityOfAdv: 'Місто',
+		phoneOfAdv: 'Телефон',
+		changesTo: 'Обмінює на',
+		description: 'Опис',
+		size: 'Розмір',
+		age: 'Вік',
+		season: 'Сезон',
+		sex: 'Стать',
+		button: 'Запропонувати обмін',
+		checkInUl: 'ваші пропозиції'
+	},
+	mainPage: {
+		question: 'Накопичилося багато ',
+		questionBold: 'дитячих речей?',
+		answerFirstPart: 'Просто',
+		answerBold: 'зареєструйся',
+		answerSecondPart: 'і розмісти',
+		answerThirdPart: 'оголошення!',
+		changeBold: 'Обміняйтесь',
+		changeFirstPart: 'з іншими користувачами',
+		changeSecondPart: 'на щось кльове і',
+		changeThirdPart: 'корисне!',
+		blueText: 'Поточні пропозиції',
+		blueSearch: 'Розширений пошук',
+		blueSlideSubtitle: 'Величезний вибір',
+		blueSlideTitle: 'Іграшок',
+		greenSlideSubtitle: 'Різноманітність дитячого та підліткового',
+		greenSlideTitle: 'Одягу',
+		yellowSlideSubtitle: 'Все для',
+		yellowSlideTitle: 'Малюків',
+		pinkSlideSubtitle: 'Безліч дитячих',
+		pinkSlideTitle: 'Меблів',
+		lilacSlideSubtitle: 'Різноманітність дитячого та підліткового',
+		lilacSlideTitle: 'Взуття',
+		orangeSlideSubtitle: 'Дитячий',
+		orangeSlideTitle: 'Транспорт',
+		helpTitle: 'Чужих дітей не буває!',
+		helpName: 'Обміняшка',
+		helpText: 'співпрацює з волонтерськими організаціями по\n' +
+			'         всій Україні! Ти теж можеш допомогти! Віддай свої непотрібні речі, вони\n' +
+			'         потраплять до дитячих будинків і притулків!',
+		helpButton: 'я хочу допомогти дітям!',
 	}
 };
 

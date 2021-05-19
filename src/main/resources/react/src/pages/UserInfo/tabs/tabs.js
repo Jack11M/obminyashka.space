@@ -1,45 +1,34 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-import "./tabs.scss";
+import { route } from '../../../routes/routeConstants';
+import { getTranslatedText } from '../../../components/local/localisation';
 
+import './tabs.scss';
+
+const createNavLink = ( { url, classname, textKey, lang, click = null, exact = false } ) => {
+	return (
+		<NavLink to={ url } exact={ exact } onClick={ click }>
+			<i className={ classname }/>
+			{ getTranslatedText( textKey, lang ) }
+			<i className="active__cycle"/>
+		</NavLink>);
+};
 
 const Tabs = props => {
-  const { url } = props;
+	const { url, toggle } = props;
+	const { lang } = useSelector( state => state.auth );
 
-  return (
-    <div className="tabs">
-      <NavLink to={`${url}/activity`} exact >
-        <i className={"icon-activity"} />
-        Моя активность
-        <i className="active__cycle" />
-      </NavLink>
-
-      <NavLink to={`${url}/my_profile`}>
-        <i className={"icon-profile"} />
-        Мой профиль
-        <i className="active__cycle" />
-      </NavLink>
-
-      <NavLink to={`${url}/my_favorites`}>
-        <i className={"icon-star"} />
-        Избранное
-        <i className="active__cycle" />
-      </NavLink>
-
-      <NavLink to={`${url}/my_settings`}>
-        <i className={"icon-settings"} />
-        Настройки
-        <i className="active__cycle" />
-      </NavLink>
-
-      <NavLink to={`${url}/exit`}>
-        <i className={"icon-logout"} />
-        Выйти
-        <i className="active__cycle" />
-      </NavLink>
-    </div>
-  );
+	return (
+		<div className="tabs">
+			{ createNavLink( { url, classname: 'icon-activity', textKey: 'panel.myActivity', lang, exact: true } ) }
+			{ createNavLink( { url: `${ url }${ route.myProfile }`, classname: 'icon-profile', textKey: 'panel.myProfile', lang } ) }
+			{ createNavLink( { url: `${ url }${ route.myFavorite }`, classname: 'icon-star', textKey: 'panel.myFavorite', lang } ) }
+			{ createNavLink( { url: `${ url }${ route.mySettings }`, classname: 'icon-settings', textKey: 'panel.mySettings', lang } ) }
+			{ createNavLink( { url: `${ url }${ route.exit }`, classname: 'icon-logout', textKey: 'panel.myExit', lang, click: toggle } ) }
+		</div>
+	);
 };
 
 export default Tabs;

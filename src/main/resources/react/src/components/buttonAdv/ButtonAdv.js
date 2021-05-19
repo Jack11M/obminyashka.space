@@ -1,14 +1,18 @@
 import React from "react";
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import { getTranslatedText } from '../local/localisation';
-import {ButtonAdd, Span} from './style_button_adv';
+import { route } from '../../routes/routeConstants';
+
+import "./buttonAdv.scss";
 
 const ButtonAdv = () => {
   const { lang } =useSelector(state => state.auth)
   return (
-    <ButtonAdd to={'/AddGoods'} >
-      <Span>{ getTranslatedText('button.addAdv', lang) }</Span>
-    </ButtonAdd>
+    <Link to={route.home} className="btn-adv">
+      <span>{ getTranslatedText('button.addAdv', lang) }</span>
+    </Link>
   );
 };
 

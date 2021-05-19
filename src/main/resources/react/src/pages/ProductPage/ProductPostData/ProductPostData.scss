@@ -1,0 +1,67 @@
+.productPostData {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  background-color: #FDFCFF;
+  box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
+  height: 710px;
+}
+
+.productPostData h2 {
+  font-family: 'Proxima Nova', sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 40px;
+}
+
+.productPostData p {
+  font-family: 'Proxima Nova', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.postDataDescription span {
+  color: #8F8F8F;
+}
+
+ol {
+  list-style-image: url('./ProductPostCheck.svg') !important;
+  margin-left: 30px !important;
+}
+
+ol li {
+  font-family: 'Proxima Nova', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+ul li {
+  font-family: 'Proxima Nova', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.postDataBox {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.postDataDescription {
+  padding: 5px 20px 15px 30px;
+}
+
+.postHeading {
+  margin: 20px 0 0 30px;
+}
+
+.postButton {
+  margin: 15px;
+}

@@ -17,13 +17,13 @@ import {
 
 import { Extra, ExtraLink } from './loginStyle';
 import SpinnerForAuthBtn from '../../components/spinner/spinnerForAuthBtn';
+import { route } from '../../routes/routeConstants';
 
 const Login = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
 	const { lang, logEmail, logPassword, logCheckbox, disableLog } = useSelector( state => state.auth );
 	const { isFetching } = useSelector( state => state.ui );
-
 
 	useEffect( () => {
 		dispatch( clearValueLogin() );
@@ -79,12 +79,12 @@ const Login = () => {
 					checked={ logCheckbox }
 					click={ changeCheckBox }
 				/>
-				<ExtraLink to={ '/login/signup' }>
+				<ExtraLink to={ `${route.login}${route.signUp}` }>
 					{ getTranslatedText( 'auth.noLogin', lang ) }
 				</ExtraLink>
 			</Extra>
 			<Button
-				text={ isFetching? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
+				text={ isFetching ? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
 				disabling={ disableLog }
 				mb={ '64px' }
 				bold

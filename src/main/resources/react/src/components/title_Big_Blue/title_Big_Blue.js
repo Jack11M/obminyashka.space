@@ -35,4 +35,4 @@ const TitleBigBlue = ({whatClass = '', text}) => {
   );
 };
 
-export default TitleBigBlue;
+export default React.memo(TitleBigBlue);

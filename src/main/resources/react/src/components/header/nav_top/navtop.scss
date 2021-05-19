@@ -36,6 +36,8 @@
 
     #personalArea {
       display: flex;
+      min-width: 295px;
+      justify-content: space-between;
 
       a {
         position: relative;

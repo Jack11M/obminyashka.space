@@ -1,6 +1,22 @@
 version: '3'
 
 services:
+
+  nginx-openssl:
+    image: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ssl:/etc/ssl/certs/
+    networks:
+      - containers-network
+
   web-server:
     image: web-server
     restart: always
@@ -8,16 +24,22 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8443:8443"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/evo_exchange?useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SERVER_SSL_KEY_STORE_PASSWORD: root
+      SERVER_SSL_KEY_STORE: /etc/ssl/certs/keystore.p12
+      APP_JWT_SECRET: root
     command: mvn clean spring-boot:run
+    volumes:
+      - ssl:/etc/ssl/certs/
     depends_on:
       - database
+      - nginx-openssl
     networks:
-      - backend
+      - containers-network
 
   database:
     image: mysql:latest
@@ -29,8 +51,11 @@ services:
       - "3307:3306"
     restart: always
     networks:
-      - backend
+      - containers-network
 
 networks:
-  backend:
+  containers-network:
     driver: bridge
+
+volumes:
+  ssl:

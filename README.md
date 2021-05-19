@@ -1,55 +1,85 @@
-# Obmenyashka (Child Goods Exchange)
+# Obminyashka (Child Goods Exchange)
 
-This is the back-end part of the IT School Hillel EVO project "Obmenyashka".
+This is the source code of the IT School Hillel's EVO project "Obminyashka".
 
-We want to give our users opportunity to share or exchange any children's clothes.  
+Our aim is to give our users opportunity to share or exchange any children's clothes.  
 
-The technologies used:
+##The technologies used:
+
+#### Front-End
+- React (Router, Redux, Saga)
+- Styled-Components
+- SCSS
+
+#### Back-End
 - Java, Spring (Boot, Web MVC, Data JPA, Security), JWT, Lombok 
-- MySQL, Liquibase, Database-Rider
+- MySQL, H2, Liquibase, Database-Rider
 - Swagger
 - Docker
 
 ## Usage
-### Requirements
+### Requirements for manual build
 
- - [JDK](https://www.oracle.com/technetwork/java/javase/downloads/index.html) `version 11`
- - [MySQL](https://www.mysql.com/downloads/) `version 8`
+ - [OpenJDK](https://openjdk.java.net/projects/jdk/16/) `version 16`
+ - [NGINX](https://nginx.org) `version 1.18.0`
+ - [MySQL](https://www.mysql.com/downloads/) `version 8` ( scheme `evo_exchange` will be created after the very first local run )
  - [maven](https://maven.apache.org/index.html) `version 3.6.+`
- - MySQL scheme `evo_exchange` will be created after the very first local run
+ 
 
-### Installation
+### Build & Run
 
-Use a project builder [maven](https://maven.apache.org/index.html) to install the project if you fulfil the requirements.
-```bash
-mvn clean install
-mvn spring-boot:run -Dspring-boot.run-arguments=--p='your_local_DB_password'
-```
-Otherwise, use [docker](https://www.docker.com/get-started) to run the project without installation.
+#### Completely automated Docker container build
+
+Install [docker](https://www.docker.com/get-started) to run the project and enter one by one into the command line app following:
 ```bash
 docker-compose build
 docker-compose up
 ```
 
+#### Manual build with custom parameters
+
+1. Install [openssl](https://www.openssl.org) and for generation local SSL certificate and key enter one by one into 
+   command line app following:
+```bash
+openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout obminyashka.key -out obminyashka.crt
+openssl pkcs12 -export -in obminyashka.crt -inkey obminyashka.key -out keystore.p12 -name tomcat -caname root -passout pass:your_keystore_pass
+```
+2. Install [nginx](https://nginx.org/en/download.html) and copy [default.conf](nginx/conf.d/default.conf) content into `http { ... }` section of `ngix.conf` or replace `default.conf` file.
+3. Replace path to previously created SSL certificate and key into `ssl_certificate` and `ssl_certificate_key` sections resp
+   of the previously copied nginx configuration file.
+4. Reload changes into nginx. 
+   - **Ubuntu**: `systemctl reload nginx`
+   - **Windows**: `nginx -s reload` or with Explorer:`Win+R -> services.msc -> nginx (Restart)`
+
+5. Use a project builder [maven](https://maven.apache.org/index.html) to install and run the project 
+   (check before run into [application.properties](src/main/resources/application.properties) all required properties) 
+```bash
+mvn clean install
+mvn spring-boot:run -Dspring-boot.run-arguments=\
+--server.ssl.key-store=path_to_keystore.p12,\
+--server.ssl.key-store-password='your_keystore_pass',\
+--spring.datasource.password='your_db_pass',\
+--app.jwt.secret='your_jwt_pass'
+```
+
+## Obminyashka URL 
+### Main page
+Server: https://obminyashka.space
+
+Localhost: https://localhost
+
 ### API
-Use Swagger-UI local URL: `http://localhost:8080/swagger-ui/`
+Server: https://obminyashka.space/swagger-ui/
 
-### Build
+Localhost URL: https://localhost/swagger-ui/
 
-in progress 
+## Top 5 Contributors
 
-### Run
+##### Thanks to the following people, and many other who have contributed to this project:
 
-in progress
+- [@Wolshebnik](https://github.com/Wolshebnik)
+- [@rpkyrych](https://gi@thub.com/rpkyrych)
+- [@SergeyCheremisin](https://github.com/SergeyCheremisin)
+- [@vss1502](https://github.com/vss1502) 
+- [@Jack11M](https://github.com/Jack11M)
 
-## Contributors
-
-##### Thanks to the following people who have contributed to this project:
-
-- @Jack11M
-- @KozminAlexandr
-- @rpkyrych
-- @lubchik-14
-- @drw85
-- @Wolshebnik
-- @Dariy98

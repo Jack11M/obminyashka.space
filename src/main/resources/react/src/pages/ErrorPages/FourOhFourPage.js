@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Button from '../../components/button/Button';
 import { getTranslatedText } from '../../components/local/localisation';
 import { fourOhFour, greenDots, loop, orangeDots, shadow, shadowDark } from '../../img/all_images_export/errorPage';
+import { route } from '../../routes/routeConstants';
 
 import './errorPage.scss';
 
@@ -12,7 +13,7 @@ const FourOhFourPage = () => {
 	let history = useHistory();
 	const goTo = (event) => {
 		if(event.target.className.includes("onMain") ){
-			history.push( '/' )
+			history.push( route.home  )
 		} else {
 			history.goBack()
 		}

@@ -3,18 +3,19 @@ import { call, put } from 'redux-saga/effects';
 import { putUserInfo as putUserInfoAsync } from '../../../../REST/Resources';
 import { fillUserInfoSync } from '../../profileAction';
 import { startFetching, stopFetching } from '../../../ui/action';
+import { unauthorized } from '../../../auth/action';
 
-export function* userInfoPut(action) {
-	const body = action.payload;
+export function* workerUserInfoPut( action ) {
+	yield put( startFetching() );
 	try {
-		yield put(startFetching())
-
-		const {data} = yield call(putUserInfoAsync, body);
-		console.log(data);
-		yield put(fillUserInfoSync(data));
+		const { data } = yield call( putUserInfoAsync, action.payload );
+		yield put( fillUserInfoSync( data ) );
 	} catch (e) {
-		console.log(e.response.data);
-	}finally {
-		yield put(stopFetching())
+		console.log( e.response.data );
+		if (e.response.status === 401) {
+			yield put( unauthorized() );
+		}
+	} finally {
+		yield put( stopFetching() );
 	}
 }

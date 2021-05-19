@@ -1,5 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+
+import { getTranslatedText } from '../../../../components/local/localisation';
 
 const GenderDiv = styled.div`
  	display: flex;
@@ -7,6 +10,7 @@ const GenderDiv = styled.div`
   align-items: center;
   margin: 3px 0 26px;
 `;
+
 const Container = styled.div`
 	display: flex;
 	width: 415px;
@@ -18,11 +22,16 @@ const Label = styled.label`
   display: inline-flex;
   
 `;
+
 const ChildDiv = styled.div`
  cursor: pointer;
  margin-right: 41px;
+  &:last-child{
+    margin-right: 0;
+  }
   
 `;
+
 const CircleBoy = styled.span`
 	display: inline-flex;
 	width: 15px;
@@ -30,14 +39,15 @@ const CircleBoy = styled.span`
 	border: 4px solid ${ ( { theme: { colors } } ) => colors['btn-blue-normal'] };
 	border-radius: 50%;
 	background-color: ${ ( { theme: { colors }, gender } ) => {
-	return gender === 'boy' ? colors['btn-blue-normal'] : colors['bg-content'];
+	return gender === 'MALE' ? colors['btn-blue-normal'] : colors['bg-content'];
 } };
 	& + span {
 	color: ${ ( { theme: { colors }, gender } ) => {
-	return gender === 'boy' && colors['black-color-text'];
+	return gender === 'MALE' && colors['black-color-text'];
 } };
 	}
 `;
+
 const CircleGirl = styled.span`
 	display: inline-flex;
 	width: 15px;
@@ -45,14 +55,31 @@ const CircleGirl = styled.span`
 	border: 4px solid ${ ( { theme: { colors } } ) => colors['btn-blue-normal'] };
 	border-radius: 50%;
 	background-color: ${ ( { theme: { colors }, gender } ) => {
-	return gender === 'girl' ? colors['btn-blue-normal'] : colors['bg-content'];
+	return gender === 'FEMALE' ? colors['btn-blue-normal'] : colors['bg-content'];
 } };
 	& + span {
 	color: ${ ( { theme: { colors }, gender } ) => {
-	return gender === 'girl' && colors['black-color-text'];
+	return gender === 'FEMALE' && colors['black-color-text'];
 } };
 	}
 `;
+
+const CircleUnselected = styled.span`
+	display: inline-flex;
+	width: 15px;
+	height: 15px;
+	border: 4px solid ${ ( { theme: { colors } } ) => colors['btn-blue-normal'] };
+	border-radius: 50%;
+	background-color: ${ ( { theme: { colors }, gender } ) => {
+	return gender === 'UNSELECTED' ? colors['btn-blue-normal'] : colors['bg-content'];
+} };
+	& + span {
+	color: ${ ( { theme: { colors }, gender } ) => {
+	return gender === 'UNSELECTED' && colors['black-color-text'];
+} };
+	}
+`;
+
 const Span = styled.span`
   display: inline-flex;
   margin-left: 9px;
@@ -63,21 +90,24 @@ const Span = styled.span`
 
 `;
 
-const InputGender = ( props ) => {
-	const { gender, id } = props.data;
 
-
+const InputGender = ( { gender, id, click }) => {
+	const { lang } = useSelector( state => state.auth );
 	return (
 		<GenderDiv>
-			<Label>{ 'Пол:' }</Label>
+			<Label>{ getTranslatedText('ownInfo.gender', lang) }</Label>
 			<Container>
-				<ChildDiv onClick={ () => props.click( id, 'boy' ) }>
+				<ChildDiv onClick={ () => click( id, 'MALE' ) }>
 					<CircleBoy gender={ gender }/>
-					<Span>Мальчик</Span>
+					<Span>{ getTranslatedText('ownInfo.boy', lang) }</Span>
 				</ChildDiv>
-				<ChildDiv onClick={ () => props.click( id, 'girl' ) }>
+				<ChildDiv onClick={ () => click( id, 'FEMALE' ) }>
 					<CircleGirl gender={ gender }/>
-					<Span>Девочка</Span>
+					<Span>{ getTranslatedText('ownInfo.girl', lang) }</Span>
+				</ChildDiv>
+				<ChildDiv onClick={ () => click( id, 'UNSELECTED' ) }>
+					<CircleUnselected gender={ gender }/>
+					<Span>{ getTranslatedText('ownInfo.unselected', lang) }</Span>
 				</ChildDiv>
 			</Container>
 		</GenderDiv>

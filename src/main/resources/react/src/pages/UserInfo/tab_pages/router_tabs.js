@@ -1,22 +1,50 @@
-import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+
 import MyActivity from './my_activity';
 import MyProfile from './my_profile/myProfile';
 import MyFavorites from './my_favorites';
 import MySettings from './my_settings';
+import { route } from '../../../routes/routeConstants';
 
 
-const RouterTabs = ( props ) => {
-	const { path } = props;
+const RouterTabs = ( { url, set } ) => {
+	const location = useLocation();
+	const [ prevLocation, setPrevLocation ] = set;
+
+
+	useEffect( () => {
+		return () => setPrevLocation( location.pathname );
+	}, [ setPrevLocation, location ] );
+
+	const findComponentForExit = useCallback( () => {
+		let lastComponent = MyActivity;
+		switch (prevLocation) {
+			case '/user':
+				lastComponent = MyActivity;
+				return MyActivity;
+			case '/user/profile':
+				lastComponent = MyProfile;
+				return MyProfile;
+			case '/user/favorites':
+				lastComponent = MyFavorites;
+				return MyFavorites;
+			case '/user/settings':
+				lastComponent = MySettings;
+				return MySettings;
+			default:
+				return lastComponent;
+		}
+	}, [ prevLocation ] );
+
 	return (
 		<Switch>
-			<Route path={ `${ path }activity` } component={ MyActivity } exact/>
-			<Route path={ `${ path }my_profile` } component={ MyProfile }/>
-			<Route path={ `${ path }my_favorites` } component={ MyFavorites }/>
-			<Route path={ `${ path }my_settings` } component={ MySettings }/>
-			<Route path={ `${ path }exit` } component={ MySettings }/>
-			<Redirect to={`${ path }activity`} />
-
+			<Route path={ `${ url }` } component={ MyActivity } exact/>
+			<Route path={ `${ url }${ route.myProfile }` } component={ MyProfile }/>
+			<Route path={ `${ url }${ route.myFavorite }` } component={ MyFavorites }/>
+			<Route path={ `${ url }${ route.mySettings }` } component={ MySettings }/>
+			<Route path={ `${ url }${ route.exit }` } component={ findComponentForExit() }/>
+			<Redirect to={ `${ url }` }/>
 		</Switch>
 	);
 };
