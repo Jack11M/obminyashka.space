@@ -1,16 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.exception.BadRequestException;
-import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.mapper.transfer.Exist;
-import space.obminyashka.items_exchange.mapper.transfer.New;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.service.AdvertisementService;
-import space.obminyashka.items_exchange.service.SubcategoryService;
-import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
+import space.obminyashka.items_exchange.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.mapper.transfer.Exist;
+import space.obminyashka.items_exchange.mapper.transfer.New;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.service.AdvertisementService;
+import space.obminyashka.items_exchange.service.LocationService;
+import space.obminyashka.items_exchange.service.SubcategoryService;
+import space.obminyashka.items_exchange.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -41,18 +41,21 @@ public class AdvertisementController {
     private final AdvertisementService advertisementService;
     private final UserService userService;
     private final SubcategoryService subcategoryService;
+    private final LocationService locationService;
 
+    @Deprecated
     @GetMapping
-    @ApiOperation(value = "Find requested quantity of the advertisement and return them as a page result")
+    @ApiOperation(value = "USE CAREFULLY DUE TO A LOT OF RESOURCES EXPENSES.  " +
+            "Find requested quantity of the advertisement and return them as a page result")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<AdvertisementDto>> findPaginated(
             @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
-                @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @ApiParam(value = "Number of records per page. Default value: 12")
-                @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         List<AdvertisementDto> dtoList = advertisementService.findAll(PageRequest.of(page, size));
         return dtoList.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -69,7 +72,7 @@ public class AdvertisementController {
             @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @ApiParam(value = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         List<AdvertisementTitleDto> dtoList = advertisementService.findAllThumbnails(PageRequest.of(page, size));
         return dtoList.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -94,8 +97,8 @@ public class AdvertisementController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementDto>> getFirst10AdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
-        List<AdvertisementDto> allByTopic = advertisementService.findFirst10ByTopic(topic);
+    public ResponseEntity<List<AdvertisementTitleDto>> getFirst10AdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
+        List<AdvertisementTitleDto> allByTopic = advertisementService.findFirst10ByTopic(topic);
         return allByTopic.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allByTopic, HttpStatus.OK);
@@ -108,8 +111,8 @@ public class AdvertisementController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementDto>> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto filterDto) {
-        List<AdvertisementDto> advertisementsByMultipleParams = advertisementService.findFirst10ByFilter(filterDto);
+    public ResponseEntity<List<AdvertisementTitleDto>> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto filterDto) {
+        List<AdvertisementTitleDto> advertisementsByMultipleParams = advertisementService.findFirst10ByFilter(filterDto);
         return advertisementsByMultipleParams.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(advertisementsByMultipleParams, HttpStatus.OK);
@@ -122,16 +125,10 @@ public class AdvertisementController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
-    public AdvertisementDto createAdvertisement(@Validated(New.class)
-                                                @Valid @RequestBody AdvertisementDto dto,
-                                                Principal principal)
-            throws IllegalIdentifierException {
-
-        long subcategoryId = dto.getSubcategoryId();
-
-        validateNewAdvertisementInternalEntitiesIdsAreZero(dto);
-        validateSubcategoryId(subcategoryId);
-
+    public AdvertisementModificationDto createAdvertisement(@Validated(New.class)
+                                                      @Valid @RequestBody AdvertisementModificationDto dto,
+                                                            Principal principal) throws IllegalIdentifierException {
+        validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         return advertisementService.createAdvertisement(dto, getUser(principal.getName()));
     }
 
@@ -140,18 +137,16 @@ public class AdvertisementController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public AdvertisementDto updateAdvertisement(@Validated(Exist.class)
-                                                @Valid @RequestBody AdvertisementDto dto,
-                                                Principal principal)
+    public AdvertisementModificationDto updateAdvertisement(@Validated(Exist.class)
+                                                      @Valid @RequestBody AdvertisementModificationDto dto,
+                                                            Principal principal)
             throws IllegalIdentifierException, IllegalOperationException {
 
-        User owner = getUser(principal.getName());
-        validateAdvertisementOwner(dto.getId(), owner);
-        long subcategoryId = dto.getSubcategoryId();
-        validateSubcategoryId(subcategoryId);
-
+        validateAdvertisementOwner(dto.getId(), getUser(principal.getName()));
+        validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         return advertisementService.updateAdvertisement(dto);
     }
 
@@ -200,32 +195,22 @@ public class AdvertisementController {
         }
     }
 
+    private void validateInternalEntityIds(long subcategoryId, long locationId) throws IllegalIdentifierException {
+        validateExistedId(locationId, true);
+        validateExistedId(subcategoryId, false);
+    }
+
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
     }
 
-    private void validateSubcategoryId(long subcategoryId) throws IllegalIdentifierException {
-        boolean isSubcategoryExists = subcategoryService.isSubcategoryExistsById(subcategoryId);
-
-        if (subcategoryId == 0 || !isSubcategoryExists) {
-            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(subcategoryId,
-                    "invalid.subcategory.id"));
-        }
-    }
-
-    private void validateNewAdvertisementInternalEntitiesIdsAreZero(AdvertisementDto dto) throws IllegalIdentifierException {
-        long locationId = dto.getLocation().getId();
-        if (locationId != 0) {
-            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(locationId, "new.location.id.not-zero"));
-        }
-
-        boolean isAllIdsEqualZero = dto.getImages().stream()
-                .map(ImageDto::getId)
-                .allMatch(imageId -> imageId == 0);
-        if (!isAllIdsEqualZero) {
-            throw new IllegalIdentifierException(MessageSourceUtil.getMessageSource("new.image.id.not-zero"));
+    private void validateExistedId(long id, boolean isLocation) throws IllegalIdentifierException {
+        boolean idExists = isLocation ? locationService.existsById(id) : subcategoryService.isSubcategoryExistsById(id);
+        if (!idExists) {
+            String message = isLocation ? "invalid.location.id" : "invalid.subcategory.id";
+            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(id, message));
         }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @Repository
@@ -19,7 +20,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     boolean existsAdvertisementByIdAndUser(Long id, User user);
 
-    Iterable<Advertisement> findFirst10ByTopicIgnoreCaseContaining(String topic);
+    Collection<Advertisement> findFirst10ByTopicIgnoreCaseContaining(String topic);
 
     Optional<Advertisement> findAdvertisementByIdAndUserUsername(long id, String username);
 
@@ -31,7 +32,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId) and " +
             "(:categoryId is null or a.subcategory.category.id = :categoryId) and " +
             "(:locationId is null or a.location.id = :locationId)")
-    Iterable<Advertisement> findFirst10ByParams(@Param("age") AgeRange age,
+    Collection<Advertisement> findFirst10ByParams(@Param("age") AgeRange age,
                                                 @Param("gender") Gender gender,
                                                 @Param("size") String size,
                                                 @Param("season") Season season,

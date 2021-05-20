@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@Validated(New.class) @RequestBody CategoryDto categoryDto)
+    public CategoryDto createCategory(@Validated(New.class) @Valid @RequestBody CategoryDto categoryDto)
             throws InvalidDtoException {
         if (categoryService.isCategoryDtoValidForCreating(categoryDto)) {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
@@ -94,7 +95,7 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public CategoryDto updateCategory(@Validated(Exist.class) @RequestBody CategoryDto categoryDto) {
+    public CategoryDto updateCategory(@Validated(Exist.class) @Valid @RequestBody CategoryDto categoryDto) {
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
         }

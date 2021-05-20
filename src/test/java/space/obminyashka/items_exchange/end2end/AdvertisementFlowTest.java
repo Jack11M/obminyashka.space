@@ -6,12 +6,13 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.JsonConverter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -38,15 +39,7 @@ class AdvertisementFlowTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private AdvertisementDto nonExistDto;
-    private AdvertisementDto existDtoForUpdate;
-    private long validId;
-
-    @BeforeEach
-    void setUp() {
-        nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
-        validId = 1L;
-    }
+    private static final long VALID_ID = 1L;;
 
     @Test
     @DataSet("database_init.yml")
@@ -69,18 +62,16 @@ class AdvertisementFlowTest {
         mockMvc.perform(get("/adv/topic/{topic}", "ses")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$[0].topic").value("Blouses"))
-                .andExpect(jsonPath("$[1].topic").value("Dresses"))
                 .andExpect(status().isOk());
     }
 
     @Test
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementIfExists() throws Exception {
-        mockMvc.perform(get("/adv/{advertisement_id}", 1L)
+        mockMvc.perform(get("/adv/{advertisement_id}", VALID_ID)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.advertisementId").value(1))
+                .andExpect(jsonPath("$.advertisementId").value(VALID_ID))
                 .andExpect(jsonPath("$.topic").value("topic"))
                 .andExpect(jsonPath("$.ownerName").value("super admin"))
                 .andExpect(jsonPath("$.age").value("14+"))
@@ -107,12 +98,10 @@ class AdvertisementFlowTest {
                 .andReturn();
 
         String contentAsString = mvcResult.getResponse().getContentAsString();
-        AdvertisementDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString, AdvertisementDto[].class);
+        AdvertisementTitleDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString,
+                AdvertisementTitleDto[].class);
         assertEquals(1, advertisementDtos.length);
-        assertEquals(4, advertisementDtos[0].getId());
-        assertEquals(AgeRange.FROM_10_TO_12, advertisementDtos[0].getAge());
-        assertEquals(Gender.FEMALE, advertisementDtos[0].getGender());
-        assertEquals(Season.SUMMER, advertisementDtos[0].getSeason());
+        assertEquals(4, advertisementDtos[0].getAdvertisementId());
     }
 
     @Test
@@ -120,6 +109,8 @@ class AdvertisementFlowTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
+        AdvertisementModificationDto nonExistDto =
+                AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
         mockMvc.perform(post("/adv")
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -133,10 +124,9 @@ class AdvertisementFlowTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
-    void updateAdvertisement_shouldUpdateExistedAdvertisementWithNewLocation() throws Exception {
-        existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithNewLocationChangedImagesAndSubcategory();
-
+    void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
+        AdvertisementModificationDto existDtoForUpdate =
+                AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDtoForUpdate();
         mockMvc.perform(put("/adv")
                 .content(asJsonString(existDtoForUpdate))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,30 +135,7 @@ class AdvertisementFlowTest {
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.description").value("new description"))
                 .andExpect(jsonPath("$.topic").value("new topic"))
-                .andExpect(jsonPath("$.wishesToExchange").value("BMW"))
-                .andExpect(jsonPath("$.location.city").value("Odessa"))
-                .andExpect(jsonPath("$.location.district").value("Odessa district"));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/updateAdvLocation.yml", ignoreCols = "updated")
-    void updateAdvertisement_shouldUpdateExistedAdvertisementWithUpdatedLocation() throws Exception {
-        existDtoForUpdate = AdvertisementDtoCreatingUtil
-                .createExistAdvertisementDtoForUpdateWithUpdatedLocationChangedImagesAndSubcategory();
-
-        mockMvc.perform(put("/adv")
-                .content(asJsonString(existDtoForUpdate))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isAccepted())
-                .andExpect(jsonPath("$.description").value("new description"))
-                .andExpect(jsonPath("$.topic").value("new topic"))
-                .andExpect(jsonPath("$.wishesToExchange").value("BMW"))
-                .andExpect(jsonPath("$.location.city").value("New Vasyuki"))
-                .andExpect(jsonPath("$.location.district").value("New Vasyuki district"));
+                .andExpect(jsonPath("$.wishesToExchange").value("BMW"));
     }
 
     @Test
@@ -176,7 +143,7 @@ class AdvertisementFlowTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
-        mockMvc.perform(delete("/adv/{advertisement_id}", validId)
+        mockMvc.perform(delete("/adv/{advertisement_id}", VALID_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -187,7 +154,7 @@ class AdvertisementFlowTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/setDefaultImage.yml", ignoreCols = {"created", "updated"})
     void setDefaultImage_success() throws Exception {
-        mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", validId, validId))
+        mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", VALID_ID, VALID_ID))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
