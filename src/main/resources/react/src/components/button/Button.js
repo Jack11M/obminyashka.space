@@ -8,7 +8,6 @@ const ButtonBlue = styled.button`
   outline: none;
   width: ${({ width }) => width};
   height: 49px;
-
   font-family:  'Roboto', sans-serif;
   font-style: normal;
   font-weight: ${(props)=>props.bold ? 'bold': 'normal' };
