@@ -109,7 +109,7 @@ class ImageServiceTest extends BasicImageCreator{
         List<Long> testImagesId = List.of(1L, 2L, 3L);
 
         imageService.removeById(testImagesId);
-        testImagesId.forEach(id -> verify(imageRepository).deleteById(id));
+        verify(imageRepository).deleteAllByIdIn(testImagesId);
         verifyNoMoreInteractions(imageRepository);
     }
 

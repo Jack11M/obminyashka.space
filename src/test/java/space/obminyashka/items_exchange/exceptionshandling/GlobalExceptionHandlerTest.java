@@ -116,6 +116,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
     void testHandleIllegalOperationException() throws Exception {
         MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
