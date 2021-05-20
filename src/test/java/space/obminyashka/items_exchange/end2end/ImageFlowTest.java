@@ -12,8 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -74,6 +76,7 @@ class ImageFlowTest {
 
     @WithMockUser("admin")
     @Test
+    @Commit
     @ExpectedDataSet(value = "image/delete.yml", ignoreCols = {"created", "updated"})
     void deleteImages_shouldDeleteMultipleImageWhenUserOwnsThemAll() throws Exception {
         mockMvc.perform(delete("/image/{advertisement_id}", 1)

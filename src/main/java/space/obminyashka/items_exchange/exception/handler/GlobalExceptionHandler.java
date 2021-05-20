@@ -16,6 +16,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import space.obminyashka.items_exchange.exception.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.ServletException;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.stream.Collectors;
@@ -71,9 +72,9 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, e, Level.ERROR);
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler({RuntimeException.class, ServletException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
+    public ErrorMessage handleRuntimeExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
     }
 

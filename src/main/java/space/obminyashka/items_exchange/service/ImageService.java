@@ -67,6 +67,14 @@ public interface ImageService {
     boolean isExistsById(long imageId);
 
     /**
+     * Check whether all images with gained IDs received into an advertisement
+     * @param ids images IDs to check
+     * @param advertisementId ID of the advertisement
+     * @return {@literal true} if all image IDs exist into the advertisement
+     */
+    boolean existAllById(List<Long> ids, long advertisementId);
+
+    /**
      * Remove received images from the DB using their ID
      * @param imageIdList ID images for removing
      */
