@@ -22,16 +22,18 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.Dimension;
-import java.awt.Color;
+import javax.transaction.Transactional;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -41,6 +43,7 @@ import static java.awt.Image.SCALE_SMOOTH;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final ModelMapper modelMapper;
@@ -133,8 +136,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public boolean existAllById(List<Long> ids, long advertisementId) {
+        return imageRepository.existsAllByIdInAndAdvertisement_Id(ids, advertisementId);
+    }
+
+    @Override
     public void removeById(List<Long> imageIdList) {
-        imageIdList.forEach(this::removeById);
+        imageRepository.deleteAllByIdIn(imageIdList);
     }
 
     @Override

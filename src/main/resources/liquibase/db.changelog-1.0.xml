@@ -432,4 +432,8 @@
                          columnName="avatar_image"
                          newDataType="MEDIUMBLOB"/>
     </changeSet>
+
+    <changeSet id="1.0.26" author="rpkyrch">
+        <modifyDataType tableName="image" columnName="resource" newDataType="LONGBLOB"/>
+    </changeSet>
 </databaseChangeLog>
