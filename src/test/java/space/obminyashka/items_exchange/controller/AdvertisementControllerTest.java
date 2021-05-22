@@ -14,16 +14,19 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
+import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.*;
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createValidationMessage;
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
@@ -104,9 +107,9 @@ class AdvertisementControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
-       mockMvc.perform(get("/adv/thumbnail"))
+        mockMvc.perform(get("/adv/thumbnail"))
                 .andExpect(status().isOk())
-               .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
+                .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
     }
 
     @Test
@@ -147,7 +150,8 @@ class AdvertisementControllerTest {
         AdvertisementModificationDto nonExistedDto =
                 AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
         nonExistedDto.setLocationId(notValidId);
-        verifyAdvInternalEntityId(nonExistedDto, "invalid.location.id", post("/adv"), mockMvc);
+        nonExistedDto.setSubcategoryId(notValidId);
+        verifyAdvInternalEntityId(nonExistedDto, post("/adv"), mockMvc);
     }
 
     @Test
@@ -157,7 +161,8 @@ class AdvertisementControllerTest {
         AdvertisementModificationDto existedDto =
                 AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDto();
         existedDto.setSubcategoryId(notValidId);
-        verifyAdvInternalEntityId(existedDto, "invalid.subcategory.id", put("/adv"), mockMvc);
+        existedDto.setLocationId(notValidId);
+        verifyAdvInternalEntityId(existedDto, put("/adv"), mockMvc);
     }
 
     @Test
@@ -179,5 +184,25 @@ class AdvertisementControllerTest {
         existedDto.setId(notValidId);
         mockMvc.perform(put("/put"))
                 .andExpect(status().isNotFound());
+    }
+
+    private void verifyAdvInternalEntityId(AdvertisementModificationDto dto,
+                                           MockHttpServletRequestBuilder requestBuilder,
+                                           MockMvc mockMvc) throws Exception {
+
+        var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
+        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");
+        MvcResult mvcResult = mockMvc.perform(requestBuilder
+                .content(asJsonString(dto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        Assertions.assertAll(
+                () -> assertTrue(isResponseContainsExpectedResponse(validationLocationIdMessage, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationSubcategoryIdMessage, mvcResult))
+        );
     }
 }

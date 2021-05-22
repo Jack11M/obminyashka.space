@@ -4,15 +4,7 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.model.enums.AgeRange;
-import space.obminyashka.items_exchange.model.enums.Gender;
-import space.obminyashka.items_exchange.model.enums.Season;
-import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.JsonConverter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,13 +14,24 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import space.obminyashka.items_exchange.dto.AdvertisementDto;
+import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.model.enums.AgeRange;
+import space.obminyashka.items_exchange.model.enums.Gender;
+import space.obminyashka.items_exchange.model.enums.Season;
+import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
+import space.obminyashka.items_exchange.util.JsonConverter;
 
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 @SpringBootTest
 @DBRider
@@ -39,7 +42,7 @@ class AdvertisementFlowTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final long VALID_ID = 1L;;
+    private static final long VALID_ID = 1L;
 
     @Test
     @DataSet("database_init.yml")
@@ -59,10 +62,15 @@ class AdvertisementFlowTest {
     @Test
     @DataSet("database_init.yml")
     void getAllAdvertisements_shouldReturnAdvertisementsByTopic() throws Exception {
-        mockMvc.perform(get("/adv/topic/{topic}", "ses")
+        int suitableAdvertisementsCount = 2;
+        MvcResult mvcResult = mockMvc.perform(get("/adv/topic/{topic}", "ses")
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+        String json = mvcResult.getResponse().getContentAsString();
+        AdvertisementTitleDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementTitleDto[].class);
+        assertEquals(suitableAdvertisementsCount, advertisementsDtos.length);
     }
 
     @Test
@@ -100,8 +108,12 @@ class AdvertisementFlowTest {
         String contentAsString = mvcResult.getResponse().getContentAsString();
         AdvertisementTitleDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString,
                 AdvertisementTitleDto[].class);
-        assertEquals(1, advertisementDtos.length);
-        assertEquals(4, advertisementDtos[0].getAdvertisementId());
+
+        Assertions.assertAll(
+                () -> assertEquals(1, advertisementDtos.length),
+                () -> assertEquals(4, advertisementDtos[0].getAdvertisementId()),
+                () -> assertEquals("admin" , advertisementDtos[0].getOwnerName())
+        );
     }
 
     @Test

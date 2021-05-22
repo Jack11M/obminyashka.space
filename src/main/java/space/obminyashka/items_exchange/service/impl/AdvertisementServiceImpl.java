@@ -1,5 +1,13 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
@@ -13,22 +21,10 @@ import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
-import lombok.RequiredArgsConstructor;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityNotFoundException;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -61,7 +57,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public List<AdvertisementTitleDto> findFirst10ByTopic(String topic) {
-        return mapAdvertisementsToTitleDto(advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
+        return mapAdvertisementsToTitleDto((Collection<Advertisement>) advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
     }
 
     @Override
@@ -82,7 +78,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
         return mapAdvertisementsToTitleDto(
-                advertisementRepository.findFirst10ByParams(
+                (Collection<Advertisement>) advertisementRepository.findFirst10ByParams(
                         dto.getAge(),
                         dto.getGender(),
                         dto.getSize(),

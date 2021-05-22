@@ -1,9 +1,6 @@
 package space.obminyashka.items_exchange.util;
 
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
@@ -11,11 +8,6 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 
 import java.io.UnsupportedEncodingException;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 public class AdvertisementDtoCreatingUtil {
 
@@ -45,9 +37,9 @@ public class AdvertisementDtoCreatingUtil {
                 existedLocationId, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, NOT_VALID_SIZE, 1L);
     }
 
-    private static AdvertisementModificationDto getBuild(long advId, String topic, String description, String wishes, boolean offer,
-                                             DealType exchange, long locationId, AgeRange age, Season season,
-                                             Gender gender, String size, long subcatId) {
+    private static AdvertisementModificationDto getBuild(long advId, String topic, String description, String wishes,
+                                                         boolean offer, DealType exchange, long locationId, AgeRange age,
+                                                         Season season, Gender gender, String size, long subcatId) {
         return AdvertisementModificationDto.builder()
                 .id(advId)
                 .age(age)
@@ -79,31 +71,8 @@ public class AdvertisementDtoCreatingUtil {
                 .replace("{max}", maxValidValue);
     }
 
-    public static String createValidationIdMessage(String dtoFieldName, long id, String errorMessage) {
-        return MessageSourceUtil.getMessageSource(errorMessage)
-                .replace("${validatedValue}",
-                        "createAdvertisement.dto." + dtoFieldName + ": " + id);
-    }
-
     public static boolean isResponseContainsExpectedResponse(String expectedResponse, MvcResult mvcResult) throws UnsupportedEncodingException {
         return mvcResult.getResponse().getContentAsString().contains(expectedResponse);
-    }
-
-    public static void verifyAdvInternalEntityId(AdvertisementModificationDto dto,
-                                                 String validationMessageProperty,
-                                                 MockHttpServletRequestBuilder requestBuilder,
-                                                 MockMvc mockMvc) throws Exception {
-
-        var validationMessage = MessageSourceUtil.getMessageSource(validationMessageProperty);
-        MvcResult mvcResult = mockMvc.perform(requestBuilder
-                .content(asJsonString(dto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertTrue(isResponseContainsExpectedResponse(validationMessage, mvcResult));
     }
 
     private static String createString(int quantityOfCharsInNewsString){

@@ -20,6 +20,7 @@ import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 import space.obminyashka.items_exchange.service.UserService;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -43,9 +44,14 @@ public class AdvertisementController {
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
 
+    /**
+     * Deprecated due to high resource consumption
+     * Used for testing purposes only
+     * Instead of it, use {@link #findPaginatedAsThumbnails(int, int)} ()}
+     */
     @Deprecated
     @GetMapping
-    @ApiOperation(value = "USE CAREFULLY DUE TO A LOT OF RESOURCES EXPENSES.  " +
+    @ApiOperation(value = "USE CAREFULLY DUE TO HIGH RESOURCE CONSUMPTION. ONLY FOR TESTING PURPOSES.  " +
             "Find requested quantity of the advertisement and return them as a page result")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -126,8 +132,8 @@ public class AdvertisementController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
     public AdvertisementModificationDto createAdvertisement(@Validated(New.class)
-                                                      @Valid @RequestBody AdvertisementModificationDto dto,
-                                                            Principal principal) throws IllegalIdentifierException {
+                                                            @Valid @RequestBody AdvertisementModificationDto dto,
+                                                            @ApiIgnore Principal principal) throws IllegalIdentifierException {
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         return advertisementService.createAdvertisement(dto, getUser(principal.getName()));
     }
@@ -141,8 +147,8 @@ public class AdvertisementController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AdvertisementModificationDto updateAdvertisement(@Validated(Exist.class)
-                                                      @Valid @RequestBody AdvertisementModificationDto dto,
-                                                            Principal principal)
+                                                            @Valid @RequestBody AdvertisementModificationDto dto,
+                                                            @ApiIgnore Principal principal)
             throws IllegalIdentifierException, IllegalOperationException {
 
         validateAdvertisementOwner(dto.getId(), getUser(principal.getName()));
@@ -158,7 +164,7 @@ public class AdvertisementController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable("advertisement_id") @Positive(message = "{invalid.exist.id}") long id,
-                                    Principal principal)
+                                    @ApiIgnore Principal principal)
             throws IllegalOperationException {
 
         User owner = getUser(principal.getName());
@@ -178,7 +184,7 @@ public class AdvertisementController {
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long advertisementId,
             @ApiParam(value = "ID of existed image")
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
-            Principal principal) throws BadRequestException {
+            @ApiIgnore Principal principal) throws BadRequestException {
         User owner = getUser(principal.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
             throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
@@ -196,21 +202,21 @@ public class AdvertisementController {
     }
 
     private void validateInternalEntityIds(long subcategoryId, long locationId) throws IllegalIdentifierException {
-        validateExistedId(locationId, true);
-        validateExistedId(subcategoryId, false);
+        var exceptionMessage = "";
+        if (!subcategoryService.isSubcategoryExistsById(subcategoryId)) {
+            exceptionMessage = getExceptionMessageSourceWithId(subcategoryId, "invalid.subcategory.id") + "\n";
+        }
+        if (!locationService.existsById(locationId)) {
+            exceptionMessage = exceptionMessage.concat(getExceptionMessageSourceWithId(subcategoryId, "invalid.location.id"));
+        }
+        if (!exceptionMessage.isEmpty()) {
+            throw new IllegalIdentifierException(exceptionMessage);
+        }
     }
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
-    }
-
-    private void validateExistedId(long id, boolean isLocation) throws IllegalIdentifierException {
-        boolean idExists = isLocation ? locationService.existsById(id) : subcategoryService.isSubcategoryExistsById(id);
-        if (!idExists) {
-            String message = isLocation ? "invalid.location.id" : "invalid.subcategory.id";
-            throw new IllegalIdentifierException(getExceptionMessageSourceWithId(id, message));
-        }
     }
 }
