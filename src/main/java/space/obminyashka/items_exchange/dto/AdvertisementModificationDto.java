@@ -18,6 +18,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(exclude = {"id"})
 public class AdvertisementModificationDto {
 
