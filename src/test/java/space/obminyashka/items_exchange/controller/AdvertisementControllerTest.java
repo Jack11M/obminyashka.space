@@ -14,9 +14,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
+import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -105,15 +107,15 @@ class AdvertisementControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
-       mockMvc.perform(get("/adv/thumbnail"))
+        mockMvc.perform(get("/adv/thumbnail"))
                 .andExpect(status().isOk())
-               .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
+                .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
     }
 
     @Test
     @WithMockUser(username = "admin")
     void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementFields() throws Exception {
-        AdvertisementDto existDtoForUpdate = AdvertisementDtoCreatingUtil
+        AdvertisementModificationDto existDtoForUpdate = AdvertisementDtoCreatingUtil
                 .createExistAdvertisementDtoForUpdateWithNotValidFields();
 
         final var validationMessageSize =
@@ -124,12 +126,6 @@ class AdvertisementControllerTest {
                 createValidationMessage("description", existDtoForUpdate.getDescription(), "255");
         final var validationMessageWhishes =
                 createValidationMessage("wishesToExchange", existDtoForUpdate.getWishesToExchange(), "210");
-        final var validationMessageCity =
-                createValidationMessage("location.city", existDtoForUpdate.getLocation().getCity(), "2", "100");
-        final var validationMessageArea =
-                createValidationMessage("location.area", existDtoForUpdate.getLocation().getArea(), "2", "100");
-        final var validationMessageDistrict =
-                createValidationMessage("location.district", existDtoForUpdate.getLocation().getDistrict(), "2", "100");
 
         MvcResult mvcResult = mockMvc.perform(put("/adv")
                 .content(asJsonString(existDtoForUpdate))
@@ -140,13 +136,73 @@ class AdvertisementControllerTest {
                 .andReturn();
 
         Assertions.assertAll(
-                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageArea, mvcResult)),
-                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageDistrict, mvcResult)),
-                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageCity, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageSize, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageDescription, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageTopic, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWhishes, mvcResult))
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void createAdvertisement_shouldReturn400WhenLocationIdNotExist() throws Exception {
+        AdvertisementModificationDto nonExistedDto =
+                AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        nonExistedDto.setLocationId(notValidId);
+        nonExistedDto.setSubcategoryId(notValidId);
+        verifyAdvInternalEntityId(nonExistedDto, post("/adv"), mockMvc);
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void updateAdvertisement_shouldReturn400WhenSubcategoryIdNotExist() throws Exception {
+        AdvertisementModificationDto existedDto =
+                AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDto();
+        existedDto.setSubcategoryId(notValidId);
+        existedDto.setLocationId(notValidId);
+        verifyAdvInternalEntityId(existedDto, put("/adv"), mockMvc);
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void createAdvertisement_shouldReturn400WhenAdvIdIsNotZero() throws Exception {
+        AdvertisementModificationDto nonExistedDto =
+                AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        nonExistedDto.setId(notValidId);
+        mockMvc.perform(post("/adv"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void updateAdvertisement_shouldReturn404WhenAdvIdNotExist() throws Exception {
+        AdvertisementModificationDto existedDto =
+                AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDto();
+        existedDto.setId(notValidId);
+        mockMvc.perform(put("/put"))
+                .andExpect(status().isNotFound());
+    }
+
+    private void verifyAdvInternalEntityId(AdvertisementModificationDto dto,
+                                           MockHttpServletRequestBuilder requestBuilder,
+                                           MockMvc mockMvc) throws Exception {
+
+        var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
+        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");
+        MvcResult mvcResult = mockMvc.perform(requestBuilder
+                .content(asJsonString(dto))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        Assertions.assertAll(
+                () -> assertTrue(isResponseContainsExpectedResponse(validationLocationIdMessage, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationSubcategoryIdMessage, mvcResult))
         );
     }
 }
