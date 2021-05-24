@@ -2,18 +2,13 @@ package space.obminyashka.items_exchange.exceptionshandling;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
-import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.CategoryTestUtil;
 import space.obminyashka.items_exchange.util.ChildDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.UserDtoCreatingUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +48,12 @@ class GlobalExceptionHandlerTest {
     private MockMvc mockMvc;
     private AdvertisementDto nonExistDto;
     private AdvertisementDto existDto;
-    private UserDto userDtoWithChangedUsername;
     private List<ChildDto> childDtoList;
 
     @BeforeEach
     void setup() {
         nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
         existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
-        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutPhones();
         childDtoList = ChildDtoCreatingUtil.getChildrenDtoList(10);
     }
 
@@ -98,16 +91,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    void testHandleInvalidDtoException() throws Exception {
-        userDtoWithChangedUsername.setUsername("admin");
-        userDtoWithChangedUsername.setEmail("user@gmail.com");
-        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isBadRequest());
-        assertThat(result.getResolvedException(), is(instanceOf(InvalidDtoException.class)));
-    }
-
-    @Test
     void testHandleConstraintViolationException() throws Exception {
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
         MvcResult result = mockMvc.perform(get("/image/{advertisement_id}", -1L)
@@ -115,14 +98,6 @@ class GlobalExceptionHandlerTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
         assertThat(result.getResolvedException(), is(instanceOf(ConstraintViolationException.class)));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    void testHandleIllegalOperationException() throws Exception {
-        MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
-        assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));
     }
 
     @Test

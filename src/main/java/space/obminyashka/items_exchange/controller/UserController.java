@@ -1,13 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.exception.*;
-import space.obminyashka.items_exchange.mapper.UtilMapper;
-import space.obminyashka.items_exchange.mapper.transfer.New;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.service.ImageService;
-import space.obminyashka.items_exchange.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -22,6 +14,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.exception.*;
+import space.obminyashka.items_exchange.mapper.UtilMapper;
+import space.obminyashka.items_exchange.mapper.transfer.New;
+import space.obminyashka.items_exchange.model.Child;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.service.ImageService;
+import space.obminyashka.items_exchange.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -42,13 +42,14 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 @Slf4j
 public class UserController {
 
+    private final UserService userService;
+    private final ImageService imageService;
     @Value("incorrect.password")
     public String incorrectPassword;
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
-
-    private final UserService userService;
-    private final ImageService imageService;
+    @Value("${max.phones.amount}")
+    private int maxPhonesAmount;
 
     @GetMapping("/my-info")
     @ApiOperation(value = "Find a registered requested user's data")
@@ -67,13 +68,15 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
-            throws InvalidDtoException, IllegalOperationException {
+    public UserWithoutChildrenDto updateUserInfo(@Valid @RequestBody UserWithoutChildrenDto userDto, Principal principal)
+            throws InvalidDtoException, IllegalOperationException, ElementsNumberExceedException{
+
         User user = getUser(principal.getName());
-        if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
-            throw new InvalidDtoException(getMessageSource("email.duplicate"));
+        if (userDto.getPhones().size() > maxPhonesAmount) {
+            throw new ElementsNumberExceedException(getParametrizedMessageSource(
+                    "exception.phones-amount", maxPhonesAmount));
         }
-        return userService.update(userDto, user);
+        return userService.updateUserWithoutChildren(userDto, user);
     }
 
     @PutMapping("/service/pass")
