@@ -1,30 +1,23 @@
 package space.obminyashka.items_exchange.controller.error;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public class RedirectErrorController {
+public class RedirectErrorController extends BasicErrorController {
 
-    @GetMapping("/error")
-    public String redirectError(HttpServletRequest request) {
-        String attribute = (String) request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
-        int errorCode = (int) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-        return errorCode == HttpStatus.NOT_FOUND.value()
-                ? "redirect:/?uri=" + attribute
-                : "redirect:/?code=" + errorCode;
+    public RedirectErrorController(ErrorAttributes errorAttributes) {
+        super(errorAttributes, new ErrorProperties());
     }
 
-    @RequestMapping(value = "/error", method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
-    @ResponseStatus
-    public String redirectErrors(Exception e) {
-        return e.getLocalizedMessage();
+    @Override
+    public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
+        return new ModelAndView("index");
     }
 }
