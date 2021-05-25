@@ -1,10 +1,13 @@
 package space.obminyashka.items_exchange.util;
 
 import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Status;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
@@ -13,6 +16,10 @@ public class UserDtoCreatingUtil {
 
     public static final byte[] BLANK_AVATAR_IMAGE = "test image png".getBytes();
     private final static LocalDateTime LAST_ONLINE_TIME = LocalDateTime.of(2019, 1, 1, 0, 0, 1);
+    public static final String NEW_USERNAME = "newUsername123";
+    public static final List<ChildDto> EXISTED_CHILDREN = List.of(
+            new ChildDto(1L, Gender.MALE, LocalDate.of(2019, 1, 1)),
+            new ChildDto(2L, Gender.FEMALE, LocalDate.of(2019, 2, 2)));
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
     public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
@@ -32,6 +39,12 @@ public class UserDtoCreatingUtil {
     public static UserWithoutChildrenDto createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinus() {
         return getBuild("admin", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME,
                 NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LAST_ONLINE_TIME, NEW_VALID_PHONES, ACTIVE, LocalDateTime.now());
+    }
+
+    public static UserDto createUserDtoForUpdatingWithChangedUsernameWithoutPhones() {
+        return getBuild(NEW_USERNAME, "admin@gmail.com", Boolean.FALSE, "super",
+                "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
+                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
     }
 
     public static UserWithoutChildrenDto createValidUserWithoutChildrenDtoForUpdating() {
@@ -61,6 +74,25 @@ public class UserDtoCreatingUtil {
                 new PhoneDto(0L, "381234567894", true),
                 new PhoneDto(0L, "381234567895", true),
                 new PhoneDto(0L, "381234567896", true));
+    }
+
+    public static UserDto getBuild(String username, String email, Boolean online, String firstName,
+                                   String lastName, byte[] avatarImage, LocalDateTime lastOnlineTime,
+                                   List<ChildDto> children, Set<PhoneDto> phones, Status status,
+                                   LocalDateTime updated) {
+        return UserDto.builder()
+                .username(username)
+                .email(email)
+                .online(online)
+                .firstName(firstName)
+                .lastName(lastName)
+                .avatarImage(avatarImage)
+                .lastOnlineTime(lastOnlineTime)
+                .children(children)
+                .phones(phones)
+                .status(status)
+                .updated(updated)
+                .build();
     }
 
     public static UserWithoutChildrenDto getBuild(String username, String email, Boolean online, String firstName,

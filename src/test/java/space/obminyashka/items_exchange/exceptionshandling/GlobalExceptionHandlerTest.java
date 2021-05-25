@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
+import space.obminyashka.items_exchange.util.UserDtoCreatingUtil;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
