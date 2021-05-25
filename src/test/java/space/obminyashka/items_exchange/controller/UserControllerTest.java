@@ -16,10 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
@@ -47,6 +44,7 @@ import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 @AutoConfigureMockMvc
 class UserControllerTest {
 
+    public static final String PATH_USER_INFO = "/user/info";
     public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
     public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
     public static final String PATH_USER_CHANGE_AVATAR = "/user/service/avatar";
@@ -63,6 +61,8 @@ class UserControllerTest {
 
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
+    @Value("${max.phones.amount}")
+    private int maxPhonesAmount;
 
     @BeforeEach
     void setUp() {
@@ -79,94 +79,34 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn403WhenUsernameIsChanged() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.update(any(), any())).thenThrow(new IllegalOperationException(
-                getMessageSource("exception.illegal.field.change") + user.getUsername()));
+    void updateUserInfo_InvalidFirstName_shouldReturn400WhenShortFirstName() throws Exception {
+        getResultActions(HttpMethod.PUT, PATH_USER_INFO,
+                createUserWithoutChildrenDtoForUpdatingWithInvalidShortName(), status().isBadRequest())
+                .andReturn();
+    }
 
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedUsernameWithoutPhones(), status().isForbidden())
+    @Test
+    @WithMockUser(username = "admin")
+    void updateUserInfo_InvalidFirstName__shouldReturn400WhenFirstNameContainsTwoWords() throws Exception {
+        getResultActions(HttpMethod.PUT, PATH_USER_INFO,
+                createUserWithoutChildrenDtoForUpdatingWithInvalidFirstName(), status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void updateUserInfo_badAmountPhones_shouldReturnHttpStatusNotAcceptable() throws Exception {
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_INFO,
+                createUserWithoutChildrenDtoForUpdatingWithInvalidAmountOfPhones(), status().isNotAcceptable())
                 .andDo(print())
                 .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains(
-                getMessageSource("exception.illegal.field.change") + user.getUsername()));
+
+        var responseAsString = mvcResult.getResponse().getContentAsString();
+        var expectedErrorMessage = getParametrizedMessageSource("exception.phones-amount", maxPhonesAmount);
+        assertTrue(responseAsString.contains(expectedErrorMessage));
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn403WhenLastOnlineTimeIsChanged() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.update(any(), any())).thenThrow(new IllegalOperationException(
-                getMessageSource("exception.illegal.field.change") + user.getLastOnlineTime()));
-
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedLastOnlineTimeWithoutPhones(), status().isForbidden())
-                .andDo(print())
-                .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains(
-                getMessageSource("exception.illegal.field.change") + user.getLastOnlineTime()));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn403WhenChildrenAreChanged() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.update(any(), any())).thenThrow(new IllegalOperationException(
-                getMessageSource("exception.illegal.field.change") + user.getChildren()));
-
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedChildrenWithoutPhones(), status().isForbidden())
-                .andDo(print())
-                .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains(
-                getMessageSource("exception.illegal.field.change") + user.getChildren()));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn403WhenPhonesAreChanged() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.update(any(), any())).thenThrow(new IllegalOperationException(
-                getMessageSource("exception.illegal.field.change") + user.getPhones()));
-
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithPhones(), status().isForbidden())
-                .andDo(print())
-                .andReturn();
-        assertTrue(result.getResponse().getContentAsString().contains(
-                getMessageSource("exception.illegal.field.change") + user.getPhones()));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn400WhenShortFirstName() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidShortFNameWithoutPhones(), status().isBadRequest())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn400WhenFirstNameContainsTwoWords() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithInvalidFNameWithoutPhones(), status().isBadRequest())
-                .andReturn();
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_shouldReturn400WhenDuplicateEmail() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.existsByEmail(any())).thenReturn(true);
-
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithDuplicateEmailWithoutPhones(), status().isBadRequest())
-                .andDo(print())
-                .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource("email.duplicate")));
-    }
 
     @Test
     @WithMockUser(username = "deletedUser")
@@ -176,8 +116,7 @@ class UserControllerTest {
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(),
-                status().isForbidden())
+                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinus(), status().isForbidden())
                 .andDo(print())
                 .andReturn();
 
@@ -257,36 +196,6 @@ class UserControllerTest {
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
                 .contains(getParametrizedMessageSource("exception.children-amount",
                         maxChildrenAmount)));
-    }
-
-    @Test
-    @WithMockUser(username = "test")
-    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewChildren() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.update(any(), any())).thenThrow(new IllegalOperationException(
-                getMessageSource("exception.illegal.children.phones.change")));
-
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChildrenWithoutPhones(), status().isForbidden())
-                .andDo(print())
-                .andReturn();
-        assertTrue(result.getResponse().getContentAsString()
-                .contains(getMessageSource("exception.illegal.children.phones.change")));
-    }
-
-    @Test
-    @WithMockUser(username = "test")
-    void updateUserInfo_shouldReturn403WhenUpdatedUserContainsNewPhone() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.update(any(), any())).thenThrow(new IllegalOperationException(
-                getMessageSource("exception.illegal.children.phones.change")));
-
-        MvcResult result = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithPhoneWithoutChildren(), status().isForbidden())
-                .andDo(print())
-                .andReturn();
-        assertTrue(result.getResponse().getContentAsString()
-                .contains(getMessageSource("exception.illegal.children.phones.change")));
     }
 
     @Test

@@ -3,11 +3,6 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,18 +18,24 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
+import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
+import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
+import space.obminyashka.items_exchange.dto.UserWithoutChildrenDto;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.service.UserService;
 
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @DBRider
@@ -42,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class UserFlowTest {
 
+    public static final String USER_INFO = "/user/info";
     public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
     public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
     public static final String USER_SERVICE_DELETE = "/user/service/delete";
@@ -71,14 +73,14 @@ class UserFlowTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
-    void updateUserInfo_shouldUpdateUserData() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(), status().isAccepted())
-                .andDo(print())
-                .andExpect(jsonPath("$.email").value(NEW_VALID_EMAIL))
-                .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME_WITH_APOSTROPHE))
-                .andExpect(jsonPath("$.lastName").value(NEW_VALID_NAME_WITH_HYPHEN_MINUS));
+    @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "email", "updated"})
+    void updateUserInfo_Success_shouldReturnHttpStatusAccept() throws Exception {
+        UserWithoutChildrenDto dto = createValidUserWithoutChildrenDtoForUpdating();
+
+        getResultActions(HttpMethod.PUT, USER_INFO, dto, status().isAccepted())
+                .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME))
+                .andExpect(jsonPath("$.lastName").value(NEW_VALID_NAME_WITH_HYPHEN_MINUS))
+                .andExpect(jsonPath("$.phones", hasSize(NEW_VALID_PHONES.size())));
     }
 
     @Test
@@ -151,18 +153,6 @@ class UserFlowTest {
                 .andExpect(jsonPath("$[1].id").value("2"))
                 .andExpect(jsonPath("$[1].birthDate").value("2018-04-04"))
                 .andExpect(jsonPath("$[1].sex").value("FEMALE"));
-    }
-
-    @Test
-    @WithMockUser(username = "new_user")
-    @DataSet({"database_init.yml", "user/update_init.yml"})
-    @ExpectedDataSet(value = {"database_init.yml", "user/children_phones_update.yml"}, ignoreCols = "updated")
-    void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithNewChildAndPhones(), status().isAccepted())
-                .andDo(print())
-                .andExpect(jsonPath("$.children", hasSize(1)))
-                .andExpect(jsonPath("$.phones", hasSize(1)));
     }
 
     @Test
