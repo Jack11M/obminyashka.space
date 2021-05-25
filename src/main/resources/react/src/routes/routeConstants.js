@@ -1,5 +1,6 @@
 export const route = {
 	home: '/',
+	addAdv: '/add_good',
 	login: '/login',
 	signUp: '/sign',
 	userInfo: '/user',

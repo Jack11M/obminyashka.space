@@ -46,14 +46,18 @@ class GlobalExceptionHandlerTest {
     private WebApplicationContext context;
     @Autowired
     private MockMvc mockMvc;
-    private AdvertisementDto nonExistDto;
-    private AdvertisementDto existDto;
+
+    private AdvertisementModificationDto nonExistDto;
+    private AdvertisementModificationDto existDto;
+    private UserDto userDtoWithChangedUsername;
+
     private List<ChildDto> childDtoList;
 
     @BeforeEach
     void setup() {
-        nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
-        existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
+        nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDto();
+        userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutPhones();
         childDtoList = ChildDtoCreatingUtil.getChildrenDtoList(10);
     }
 
