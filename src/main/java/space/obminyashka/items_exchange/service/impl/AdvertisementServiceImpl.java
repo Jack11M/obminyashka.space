@@ -1,12 +1,15 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.dto.CategoryNameDto;
-import space.obminyashka.items_exchange.dto.LocationDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.model.Location;
@@ -18,22 +21,10 @@ import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
-import lombok.RequiredArgsConstructor;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityNotFoundException;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,8 +56,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementDto> findFirst10ByTopic(String topic) {
-        return mapAdvertisementsToDto(advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
+    public List<AdvertisementTitleDto> findFirst10ByTopic(String topic) {
+        return mapAdvertisementsToTitleDto((Collection<Advertisement>) advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
     }
 
     @Override
@@ -85,9 +76,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
-        return mapAdvertisementsToDto(
-                advertisementRepository.findFirst10ByParams(
+    public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
+        return mapAdvertisementsToTitleDto(
+                (Collection<Advertisement>) advertisementRepository.findFirst10ByParams(
                         dto.getAge(),
                         dto.getGender(),
                         dto.getSize(),
@@ -103,26 +94,24 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto, User user) {
-        Advertisement adv = mapDtoToAdvertisement(advertisementDto);
+    public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto createDto, User user) {
+        Advertisement adv = mapDtoToAdvertisement(createDto);
         adv.setUser(user);
         adv.setStatus(Status.NEW);
-        updateSubcategory(adv, advertisementDto.getSubcategoryId());
-
+        updateSubcategory(adv, createDto.getSubcategoryId());
+        updateLocation(adv, createDto.getLocationId());
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
     @Override
-    public AdvertisementDto updateAdvertisement(AdvertisementDto dto) {
+    public AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto) {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
         updateAdvertisement(toUpdate, fromDB);
         updateSubcategory(fromDB, toUpdate.getSubcategory().getId());
-        updateImages(toUpdate, fromDB);
-        createOrUpdateLocation(toUpdate, fromDB);
-
+        updateLocation(fromDB, toUpdate.getLocation().getId());
         fromDB.setStatus(Status.UPDATED);
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
         return mapAdvertisementToDto(updatedAdvertisement);
@@ -144,23 +133,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .orElseThrow(EntityNotFoundException::new));
     }
 
-    private void updateImages(Advertisement toUpdateAdvertisement, Advertisement fromDBAdvertisement) {
-        List<Image> existImages = fromDBAdvertisement.getImages();
-        List<Image> newImages = toUpdateAdvertisement.getImages();
-        if (existImages != null && !Objects.equals(newImages, existImages)) {
-            existImages.retainAll(newImages);
-            newImages.stream().filter(image -> !existImages.contains(image)).forEach(existImages::add);
-        }
-    }
-
-    private void createOrUpdateLocation(Advertisement toUpdate, Advertisement fromDB) {
-        Location toUpdateLocation = toUpdate.getLocation();
-        if (!toUpdateLocation.equals(fromDB.getLocation())) {
-            Location newLocation = locationService.findById(toUpdateLocation.getId())
-                    .orElseGet(() -> locationService.save(toUpdateLocation));
-            BeanUtils.copyProperties(toUpdateLocation, newLocation);
-            fromDB.setLocation(newLocation);
-        }
+    private void updateLocation(Advertisement fromDBAdvertisement, long id) {
+        fromDBAdvertisement.setLocation(locationService.findById(id)
+                .orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
@@ -190,14 +165,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return advertisements.stream().map(this::buildAdvertisementTitle).collect(Collectors.toList());
     }
 
-    private Advertisement mapDtoToAdvertisement(AdvertisementDto dto) {
+    private Advertisement mapDtoToAdvertisement(AdvertisementModificationDto dto) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper.map(dto, Advertisement.class);
     }
 
-    private AdvertisementDto mapAdvertisementToDto(Advertisement advertisement) {
+    private AdvertisementModificationDto mapAdvertisementToDto(Advertisement advertisement) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return modelMapper.map(advertisement, AdvertisementDto.class);
+        return modelMapper.map(advertisement, AdvertisementModificationDto.class);
     }
 
     @Override
@@ -211,9 +186,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
         Location advLocation = advertisement.getLocation();
+        byte[] image = getImage(advertisement);
+
         return AdvertisementTitleDto.builder()
                 .advertisementId(advertisement.getId())
-                .image(advertisement.getDefaultPhoto())
+                .image(image)
                 .title(advertisement.getTopic())
                 .location(convertTo(advLocation, LocationDto.class))
                 .ownerName(advertisement.getUser().getUsername())
@@ -246,6 +223,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .findFirst()
                 .map(phone -> String.valueOf(phone.getPhoneNumber()))
                 .orElse("");
+    }
+
+    private byte[] getImage(Advertisement advertisement) {
+        return Optional.ofNullable(advertisement.getDefaultPhoto())
+                .orElseGet(() -> advertisement.getImages().stream()
+                        .findFirst()
+                        .map(Image::getResource)
+                        .orElse(new byte[0]));
     }
 
     private String getOwnerFullName(User user) {

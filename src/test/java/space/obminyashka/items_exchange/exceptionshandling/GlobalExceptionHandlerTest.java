@@ -2,10 +2,7 @@ package space.obminyashka.items_exchange.exceptionshandling;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
-import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
@@ -51,15 +48,15 @@ class GlobalExceptionHandlerTest {
     private WebApplicationContext context;
     @Autowired
     private MockMvc mockMvc;
-    private AdvertisementDto nonExistDto;
-    private AdvertisementDto existDto;
+    private AdvertisementModificationDto nonExistDto;
+    private AdvertisementModificationDto existDto;
     private UserDto userDtoWithChangedUsername;
     private List<ChildDto> childDtoList;
 
     @BeforeEach
     void setup() {
-        nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto();
-        existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementDto();
+        nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        existDto = AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDto();
         userDtoWithChangedUsername = UserDtoCreatingUtil.createUserDtoForUpdatingWithChangedUsernameWithoutPhones();
         childDtoList = ChildDtoCreatingUtil.getChildrenDtoList(10);
     }
@@ -119,6 +116,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
     void testHandleIllegalOperationException() throws Exception {
         MvcResult result = getResult(HttpMethod.PUT, "/user/info", userDtoWithChangedUsername, status().isForbidden());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalOperationException.class)));

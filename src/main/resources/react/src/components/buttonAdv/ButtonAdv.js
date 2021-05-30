@@ -10,7 +10,7 @@ import "./buttonAdv.scss";
 const ButtonAdv = () => {
   const { lang } =useSelector(state => state.auth)
   return (
-    <Link to={route.home} className="btn-adv">
+    <Link to={route.addAdv} className="btn-adv">
       <span>{ getTranslatedText('button.addAdv', lang) }</span>
     </Link>
   );

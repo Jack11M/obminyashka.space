@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
-import logout2 from '../../../../img/log-out-2.png'
+import logout2 from '../../../../img/log-out-2.png';
 import Button from '../../../../components/button/Button';
 import { getTranslatedText } from '../../../../components/local/localisation';
 import { postAuthLogoutAsync } from '../../../../redux/auth/action';
@@ -9,10 +10,12 @@ import { postAuthLogoutAsync } from '../../../../redux/auth/action';
 import './exit.scss';
 
 const Exit = ( { toggle } ) => {
+	const history = useHistory();
 	const dispatch = useDispatch();
 	const { lang } = useSelector( state => state.auth );
 	const logOut = useCallback( () => {
 		dispatch( postAuthLogoutAsync() );
+		history.push( '/' );
 	}, [ dispatch ] );
 
 	return (

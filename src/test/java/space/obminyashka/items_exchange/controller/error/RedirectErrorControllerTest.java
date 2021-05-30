@@ -7,10 +7,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RedirectErrorControllerTest {
@@ -18,12 +15,12 @@ class RedirectErrorControllerTest {
     private TestRestTemplate template;
 
     @Test
-    void redirectError_shouldRedirectAndDisplayIndexPage_when404codeReceived() throws Exception {
-        String indexPagePath = "src/main/resources/react/build/index.html";
-        String indexPageContent = new String(Files.readAllBytes(Path.of(indexPagePath)));
+    void redirectError_shouldReturn404AndFallTrough_whenUrlNotFound() {
 
         ResponseEntity<String> response = template.getForEntity("/page-not-exist", String.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(indexPageContent, response.getBody(), "index.html has to be returned from ErrorController");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        final var body = response.getBody();
+        assertNotNull(body);
+        assertTrue(body.contains("\"path\":\"/page-not-exist\""), "ErrorController has to pass URL and 404 to React part");
     }
 }

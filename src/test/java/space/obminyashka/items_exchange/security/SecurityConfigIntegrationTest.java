@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementDto;
+import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +59,7 @@ class SecurityConfigIntegrationTest {
     private MockMvc mockMvc;
     private UserLoginDto validLoginDto;
     private UserLoginDto notValidLoginDto;
-    private AdvertisementDto nonExistDto;
+    private AdvertisementModificationDto nonExistDto;
 
     @BeforeEach
     public void setup() {
@@ -68,7 +69,7 @@ class SecurityConfigIntegrationTest {
 
         createValidUserLoginDto();
         createNotValidUserLoginDto();
-        nonExistDto = createNonExistAdvertisementDto();
+        nonExistDto = createNonExistAdvertisementModificationDto();
     }
 
     @Test
