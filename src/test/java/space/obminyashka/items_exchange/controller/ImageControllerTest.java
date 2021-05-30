@@ -73,6 +73,7 @@ class ImageControllerTest {
     }
 
     private void mocksInit() throws IOException, UnsupportedMediaTypeException {
+        when(advertisementService.existById(1L)).thenReturn(true);
         when(advertisementService.findByIdAndOwnerUsername(1L, "admin")).thenReturn(Optional.of(advertisement));
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
@@ -91,6 +92,7 @@ class ImageControllerTest {
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
 
+        verify(advertisementService).existById(anyLong());
         verify(advertisementService).findByIdAndOwnerUsername(anyLong(), anyString());
         assertThat(mvcResult.getResolvedException(), is(instanceOf(ElementsNumberExceedException.class)));
     }
@@ -114,11 +116,11 @@ class ImageControllerTest {
 
     @WithMockUser("admin")
     @Test
-    void saveImages_shouldReturn400WhenAdvertisementIsNotExist() throws Exception {
+    void saveImages_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
         mockMvc.perform(multipart("/image/{advertisement_id}", 50L)
                 .file(jpeg))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     @WithMockUser("admin")

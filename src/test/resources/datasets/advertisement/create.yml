@@ -94,7 +94,7 @@ advertisement:
     updated: '2019-01-01 00:00:01'
     status: 'NEW'
     user_id: 1
-    location_id: 2
+    location_id: 1
     age: 'YOUNGER_THAN_1'
     gender: 'MALE'
     size: 'M'
@@ -141,9 +141,6 @@ location:
   - id: 1
     city: 'Kharkiv'
     district: 'Kharkivska district'
-  - id: 2
-    city: 'Kyiv'
-    district: 'District'
 
 image:
   - id: 1
@@ -154,7 +151,3 @@ image:
     # Encoded to byte array with Base64.encodeString("test image png")
     resource: "dGVzdCBpbWFnZSBwbmc="
     advertisement_id: 1
-  - id: 3
-    # Encoded to byte array with Base64.encodeString("test image gif")
-    resource: 'dGVzdCBpbWFnZSBnaWY='
-    advertisement_id: 6

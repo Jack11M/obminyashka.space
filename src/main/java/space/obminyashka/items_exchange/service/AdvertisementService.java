@@ -1,9 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +29,7 @@ public interface AdvertisementService {
      * @param topic - searched topic
      * @return result of the request
      */
-    List<AdvertisementDto> findFirst10ByTopic(String topic);
+    List<AdvertisementTitleDto> findFirst10ByTopic(String topic);
 
     /**
      * Find an advertisement by id
@@ -61,7 +58,7 @@ public interface AdvertisementService {
      * @param dto an object that contains all parameters to search
      * @return result of the request
      */
-    List<AdvertisementDto> findFirst10ByFilter(AdvertisementFilterDto dto);
+    List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto);
 
     /**
      * Check whenever user has an advertisement with selected id
@@ -73,18 +70,18 @@ public interface AdvertisementService {
 
     /**
      * Create a new advertisement
-     * @param advertisementDto DTO for converting and saving
+     * @param advertisementModificationDto DTO for converting and saving
      * @param user owner of a new advertisement
      * @return saved advertisement DTO with updated id
      */
-    AdvertisementDto createAdvertisement(AdvertisementDto advertisementDto, User user);
+    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto advertisementModificationDto, User user);
 
     /**
      * Update existed advertisement
      * @param dto advertisement DTO for converting and updating
      * @return updated advertisement DTO
      */
-    AdvertisementDto updateAdvertisement(AdvertisementDto dto);
+    AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto);
 
     /**
      * Remove an advertisement by it's id
