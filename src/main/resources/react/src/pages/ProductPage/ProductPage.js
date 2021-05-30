@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 import ProductDescription from './ProductDescription/ProductDescription';
+import { getTranslatedText } from '../../components/local/localisation';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductPostData from './ProductPostData/ProductPostData';
-import ProductOffers from './ProductOffers/ProductOffers';
 import TitleBigBlue from '../../components/title_Big_Blue';
-
+import ProductOffers from './ProductOffers/ProductOffers';
 import { getProduct } from '../../REST/Resources';
+
 import './ProductPage.scss';
-import { getTranslatedText } from '../../components/local/localisation';
 
 const ProductPage = () => {
+  const param = useRouteMatch();
   const { lang } = useSelector( state => state.auth );
   const [ product, setProduct ] = useState({});
   const [ photos, setPhotos ] = useState([]);
@@ -22,7 +24,7 @@ const ProductPage = () => {
   const [ subcategory, setSubcategory ] = useState({});
 
   useEffect(() => {
-    getProduct(1)
+    getProduct(param.params.id)
       .then(({ data }) => {
         const { images, wishesToExchange, category, subcategory, location, ...rest } = data;
         const arrWishes = wishesToExchange.split(', ');

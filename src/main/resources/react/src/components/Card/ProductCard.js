@@ -52,6 +52,7 @@ const ProductCard = ( props ) => {
 				</LocationIcon>
 				<ButtonBlock>
 					<Button
+						click={props.clickOnButton}
 						whatClass=""
 						text= { getTranslatedText('button.look', lang) }
 						width={ props.inboxMessage ? '190px' : '222px' }
