@@ -22,23 +22,22 @@ const Routes = () => {
 			permission={ !isAuthenticated }
 			redirect={ route.home }/>
 		<Protected
-			path = { route.userInfo }
-			component = { UserInfo }
-			permission = { isAuthenticated }
-			redirect = { route.login }/>
-		<Route path = { `${route.productPage}:id` } component = { ProductPage }/>
-		<Route path = { route.noMatch } component = { FourOhFourPage }/>
 			path={ route.userInfo }
 			component={ UserInfo }
 			permission={ isAuthenticated }
 			redirect={ route.login }/>
 		<Protected
+			path = { route.userInfo }
+			component = { UserInfo }
+			permission = { isAuthenticated }
+			redirect = { route.login }/>
+    <Protected
 			path={ route.addAdv }
 			component={ AddGoods }
 			permission={ isAuthenticated }
 			redirect={ route.login }/>
-		<Route path={ route.productPage } component={ ProductPage }/>
-		<Route path={ route.noMatch } component={ FourOhFourPage }/>
+    <Route path = { `${route.productPage}:id` } component = { ProductPage }/>
+		<Route path = { route.noMatch } component = { FourOhFourPage }/>
 	</Switch>;
 };
 
