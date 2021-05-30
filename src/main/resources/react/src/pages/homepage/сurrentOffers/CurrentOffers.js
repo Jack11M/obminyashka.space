@@ -20,7 +20,6 @@ const CurrentOffers = () => {
   useEffect(() => {
     getCurrentOffers()
       .then(({ data }) => {
-        console.log(data);
         setOffers(data);
       })
       .catch(e => {
