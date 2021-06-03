@@ -46,6 +46,8 @@ public class UserController {
     public String incorrectPassword;
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
+    @Value("${max.phones.amount}")
+    private int maxPhonesAmount;
 
     private final UserService userService;
     private final ImageService imageService;
@@ -65,15 +67,17 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 406, message = "NOT ACCEPTABLE")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
-            throws InvalidDtoException, IllegalOperationException {
-        User user = getUser(principal.getName());
-        if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
-            throw new InvalidDtoException(getMessageSource("email.duplicate"));
+    public UserUpdateDto updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, Principal principal)
+            throws IllegalOperationException, ElementsNumberExceedException {
+        if (userUpdateDto.getPhones().size() > maxPhonesAmount) {
+            throw new ElementsNumberExceedException(getParametrizedMessageSource(
+                    "exception.phones-amount", maxPhonesAmount));
         }
-        return userService.update(userDto, user);
+        User user = getUser(principal.getName());
+        return userService.update(userUpdateDto, user);
     }
 
     @PutMapping("/service/pass")
