@@ -2,16 +2,12 @@ package space.obminyashka.items_exchange.service;
 
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.util.BeanUtil;
 import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,20 +15,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UserMapper.convertDto;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
 import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
-import static space.obminyashka.items_exchange.util.Collections.extractAll;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -43,7 +36,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
-    private static final Set<String> READONLY_FIELDS = Set.of("username", "lastOnlineTime", "children", "phones");
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -66,19 +58,15 @@ public class UserService {
         return userRepository.save(registeredUser).getId() != 0;
     }
 
-    public UserDto update(UserDto newUserDto, User user) throws IllegalOperationException {
-        User updatedUser = convertDto(newUserDto);
-        var newChildren = extractAll(updatedUser.getChildren(), child -> child.getId() == 0, ArrayList::new);
-        var newPhones = extractAll(updatedUser.getPhones(), phone -> phone.getId() == 0, HashSet::new);
+    public UserUpdateDto update(UserUpdateDto newUserUpdateDto, User user) {
+        User updatedUser = convertDto(newUserUpdateDto);
+        boolean isEqualsPhones = user.getPhones().equals(updatedUser.getPhones());
 
-        checkIsAllowedToAddNewChildrenOrPhones(user, !newChildren.isEmpty(), !newPhones.isEmpty());
-        checkReadOnlyFieldsUpdate(updatedUser, user);
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        if (!isEqualsPhones) user.setPhones(updatedUser.getPhones());
 
-        BeanUtil.copyProperties(updatedUser, user, "email", "firstName", "lastName", "avatarImage");
-        user.setUpdated(LocalDateTime.now());
-        addNewChildren(user, newChildren);
-        addNewPhones(user, newPhones);
-        return mapUserToDto(userRepository.saveAndFlush(user));
+        return mapUserToUpdateDto(userRepository.saveAndFlush(user));
     }
 
     public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
@@ -143,6 +131,10 @@ public class UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
+    private UserUpdateDto mapUserToUpdateDto(User user) {
+        return modelMapper.map(user, UserUpdateDto.class);
+    }
+
     public List<ChildDto> getChildren(User parent) {
         return convertToDto(parent.getChildren(), ChildDto.class);
     }
@@ -179,40 +171,9 @@ public class UserService {
         userRepository.saveAndFlush(user);
     }
 
-    private void checkReadOnlyFieldsUpdate(User toCompare, User original) throws IllegalOperationException {
-        String errorResponse = READONLY_FIELDS.stream()
-                .filter(fieldName -> !checkReadOnlyFields(toCompare, original, fieldName))
-                .collect(Collectors.joining(", "));
-
-        if (!errorResponse.isEmpty()) {
-            throw new IllegalOperationException(
-                    getMessageSource("exception.illegal.field.change") + errorResponse);
-        }
-    }
-
-    @SneakyThrows
-    private boolean checkReadOnlyFields(User toCompare, User original, String fieldName) {
-        Field declaredField = User.class.getDeclaredField(fieldName);
-        declaredField.setAccessible(true);
-        return declaredField.get(toCompare).equals(declaredField.get(original));
-    }
-
-    private void checkIsAllowedToAddNewChildrenOrPhones(User user, boolean hasNewChildren, boolean hasNewPhones)
-            throws IllegalOperationException {
-        boolean isNewUser = user.getUpdated().equals(user.getCreated());
-        if ((!isNewUser) && (hasNewChildren || hasNewPhones)) {
-            throw new IllegalOperationException(
-                    getMessageSource("exception.illegal.children.phones.change"));
-        }
-    }
-
     private void addNewChildren(User user, Collection<Child> children) {
         children.forEach(child -> child.setUser(user));
         user.getChildren().addAll(children);
     }
 
-    private void addNewPhones(User user, Collection<Phone> phones) {
-        phones.forEach(phone -> phone.setUser(user));
-        user.getPhones().addAll(phones);
-    }
 }

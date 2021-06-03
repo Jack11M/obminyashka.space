@@ -1,8 +1,8 @@
 package space.obminyashka.items_exchange.mapper;
 
 import space.obminyashka.items_exchange.dto.PhoneDto;
-import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -55,14 +55,14 @@ public class UserMapper {
         return user;
     }
 
-    public static User convertDto(UserDto userDto) {
+    public static User convertDto(UserUpdateDto userUpdateDto) {
         Converter<String, Long> stringLongConverter = context ->
                 Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
-        mapper.typeMap(UserDto.class, User.class).addMappings(mapper -> mapper.skip(User::setRole));
+        mapper.typeMap(UserUpdateDto.class, User.class).addMappings(mapper -> mapper.skip(User::setRole));
         mapper.typeMap(PhoneDto.class, Phone.class)
                 .addMappings(mapper -> mapper.using(stringLongConverter)
                         .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
-        return mapper.map(userDto, User.class);
+        return mapper.map(userUpdateDto, User.class);
     }
 }
