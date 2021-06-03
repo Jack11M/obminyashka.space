@@ -18,11 +18,8 @@ public class UserDtoCreatingUtil {
     public static final List<ChildDto> EXISTED_CHILDREN = List.of(
             new ChildDto(1L, Gender.MALE, LocalDate.of(2019, 1, 1)),
             new ChildDto(2L, Gender.FEMALE, LocalDate.of(2019, 2, 2)));
-    public static final List<ChildDto> NEW_CHILDREN = List.of(
-            new ChildDto(0, Gender.MALE, LocalDate.of(2019, 3, 3)));
     public static final Set<PhoneDto> NEW_PHONES = Set.of(
             new PhoneDto(0, "381234567890", true));
-    public static final String NEW_USERNAME = "newUsername123";
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
     public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
@@ -40,6 +37,10 @@ public class UserDtoCreatingUtil {
     private static final int MAX_AMOUNT_OF_PHONES = 5;
     public static final Set<PhoneDto> NEW_INVALID_PHONES = createWithInvalidSizeListOfPhones();
 
+    public static UserUpdateDto createUserUpdateDto() {
+        return new UserUpdateDto(NEW_VALID_NAME, NEW_VALID_NAME_WITH_HYPHEN_MINUS, NEW_PHONES );
+    }
+
     public static UserUpdateDto createUserUpdateDtoWithInvalidAmountOfPhones() {
         return new UserUpdateDto(NEW_VALID_NAME, NEW_VALID_NAME, NEW_INVALID_PHONES );
     }
@@ -52,18 +53,6 @@ public class UserDtoCreatingUtil {
         return getBuild("admin", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
                 NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
                 EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
-    }
-
-    public static UserDto createUserDtoForUpdatingWithChangedUsernameWithoutPhones() {
-        return getBuild(NEW_USERNAME, "admin@gmail.com", Boolean.FALSE, "super",
-                "admin", BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                EXISTED_CHILDREN, Collections.emptySet(), ACTIVE, LocalDateTime.now());
-    }
-
-    public static UserDto createUserDtoForUpdatingWithNewChildAndPhones() {
-        return getBuild("new_user", NEW_VALID_EMAIL, Boolean.FALSE, NEW_VALID_NAME_WITH_APOSTROPHE,
-                NEW_VALID_NAME_WITH_HYPHEN_MINUS, BLANK_AVATAR_IMAGE, LocalDateTime.of(2019, 1, 1, 0, 0, 1),
-                NEW_CHILDREN, NEW_PHONES, ACTIVE, LocalDateTime.now());
     }
 
     public static UserDto getBuild(String username, String email, Boolean online, String firstName,

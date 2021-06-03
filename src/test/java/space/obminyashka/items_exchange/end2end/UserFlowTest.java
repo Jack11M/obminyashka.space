@@ -71,13 +71,12 @@ class UserFlowTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated"})
+    @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated", "email"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(), status().isAccepted())
+        getResultActions(HttpMethod.PUT, "/user/info", createUserUpdateDto(), status().isAccepted())
                 .andDo(print())
-                .andExpect(jsonPath("$.email").value(NEW_VALID_EMAIL))
-                .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME_WITH_APOSTROPHE))
+                .andExpect(jsonPath("$.phones", hasSize(NEW_PHONES.size())))
+                .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME))
                 .andExpect(jsonPath("$.lastName").value(NEW_VALID_NAME_WITH_HYPHEN_MINUS));
     }
 
@@ -151,18 +150,6 @@ class UserFlowTest {
                 .andExpect(jsonPath("$[1].id").value("2"))
                 .andExpect(jsonPath("$[1].birthDate").value("2018-04-04"))
                 .andExpect(jsonPath("$[1].sex").value("FEMALE"));
-    }
-
-    @Test
-    @WithMockUser(username = "new_user")
-    @DataSet({"database_init.yml", "user/update_init.yml"})
-    @ExpectedDataSet(value = {"database_init.yml", "user/children_phones_update.yml"}, ignoreCols = "updated")
-    void updateUserInfo_shouldUpdateUserDataWithNewChildrenAndPhones() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithNewChildAndPhones(), status().isAccepted())
-                .andDo(print())
-                .andExpect(jsonPath("$.children", hasSize(1)))
-                .andExpect(jsonPath("$.phones", hasSize(1)));
     }
 
     @Test

@@ -64,8 +64,11 @@ public class UserService {
 
         user.setFirstName(updatedUser.getFirstName());
         user.setLastName(updatedUser.getLastName());
-        if (!isEqualsPhones) user.setPhones(updatedUser.getPhones());
-
+        if (!isEqualsPhones) {
+            updatedUser.getPhones().forEach(phone -> phone.setUser(user));
+            user.getPhones().clear();
+            user.getPhones().addAll(updatedUser.getPhones());
+        }
         return mapUserToUpdateDto(userRepository.saveAndFlush(user));
     }
 
