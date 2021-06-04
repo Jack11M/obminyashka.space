@@ -65,7 +65,7 @@ class UserControllerTest {
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
     @Value("${max.phones.amount}")
-    private int maxPhonesAmount;
+    private String maxPhonesAmount;
 
     @BeforeEach
     void setUp() {
@@ -104,14 +104,14 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateUserInfo_badAmountPhones_shouldReturnHttpStatusNotAcceptable() throws Exception {
+    void updateUserInfo_badAmountPhones_ReturnHttpStatusBadRequest() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserUpdateDtoWithInvalidAmountOfPhones(), status().isNotAcceptable())
+                createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest())
                 .andDo(print())
                 .andReturn();
         var responseAsString = mvcResult.getResponse().getContentAsString();
-        var expectedErrorMessage = getParametrizedMessageSource("exception.phones-amount", maxPhonesAmount);
+        var expectedErrorMessage = getMessageSource("invalid.phones-amount").replace("{max}", maxPhonesAmount);
         assertTrue(responseAsString.contains(expectedErrorMessage));
     }
 

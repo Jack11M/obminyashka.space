@@ -7,6 +7,7 @@ import space.obminyashka.items_exchange.util.PatternHandler;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -24,6 +25,7 @@ public class UserUpdateDto {
     @NotNull(message = "{invalid.not-null}")
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")
     private String lastName;
+    @Size(max = 5, message = "{invalid.phones-amount}")
     @NotNull(message = "{invalid.not-null}")
     private Set<@Valid PhoneDto> phones;
 }

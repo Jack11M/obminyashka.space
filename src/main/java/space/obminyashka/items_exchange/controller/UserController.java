@@ -67,17 +67,11 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 406, message = "NOT ACCEPTABLE")})
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public UserUpdateDto updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, Principal principal)
-            throws IllegalOperationException, ElementsNumberExceedException {
-        if (userUpdateDto.getPhones().size() > maxPhonesAmount) {
-            throw new ElementsNumberExceedException(getParametrizedMessageSource(
-                    "exception.phones-amount", maxPhonesAmount));
-        }
-        User user = getUser(principal.getName());
-        return userService.update(userUpdateDto, user);
+            throws IllegalOperationException {
+        return userService.update(userUpdateDto, getUser(principal.getName()));
     }
 
     @PutMapping("/service/pass")
