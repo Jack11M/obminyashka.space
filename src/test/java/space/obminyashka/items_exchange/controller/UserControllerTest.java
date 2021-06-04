@@ -28,6 +28,7 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.UserService;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -110,9 +111,9 @@ class UserControllerTest {
                 createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest())
                 .andDo(print())
                 .andReturn();
-        var responseAsString = mvcResult.getResponse().getContentAsString();
-        var expectedErrorMessage = getMessageSource("invalid.phones-amount").replace("{max}", maxPhonesAmount);
-        assertTrue(responseAsString.contains(expectedErrorMessage));
+        var responseContentAsString = getResponseContentAsString(mvcResult);
+        var expectedErrorMessage = getErrorMessageForInvalidField("invalid.phones-amount", "{max}", maxPhonesAmount);
+        assertTrue(responseContentAsString.contains(expectedErrorMessage));
     }
 
     @Test
@@ -120,17 +121,18 @@ class UserControllerTest {
     void updateUserInfo_invalidFirstAndLastName_shouldReturnHttpStatusBadRequest() throws Exception {
         UserUpdateDto dto = createUserUpdateDtoWithInvalidFirstAndLastName();
 
-        final var errorMessageForInvalidFirstName = getMessageSource("invalid.first-or-last.name")
-                .replace("${validatedValue}", dto.getFirstName());
-        final var errorMessageForInvalidLastName = getMessageSource("invalid.first-or-last.name")
-                .replace("${validatedValue}", dto.getLastName());
+        final var errorMessageForInvalidFirstName =
+                getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getFirstName());
+        final var errorMessageForInvalidLastName =
+                getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getLastName());
 
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info", dto, status().isBadRequest())
                 .andDo(print())
                 .andReturn();
+        String responseContentAsString = getResponseContentAsString(mvcResult);
         Assertions.assertAll(
-                () ->  assertTrue(mvcResult.getResponse().getContentAsString().contains(errorMessageForInvalidFirstName)),
-                () ->  assertTrue(mvcResult.getResponse().getContentAsString().contains(errorMessageForInvalidLastName))
+                () ->  assertTrue(responseContentAsString.contains(errorMessageForInvalidFirstName)),
+                () ->  assertTrue(responseContentAsString.contains(errorMessageForInvalidLastName))
         );
     }
 
@@ -399,6 +401,14 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(dto));
         return mockMvc.perform(builder).andExpect(matcher);
+    }
+
+    private String getResponseContentAsString(MvcResult mvcResult) throws UnsupportedEncodingException {
+        return mvcResult.getResponse().getContentAsString();
+    }
+
+    private String getErrorMessageForInvalidField(String messageFromSource, String replacementValue, String valueToReplace) {
+        return getMessageSource(messageFromSource).replace(replacementValue, valueToReplace);
     }
 
     private User createUser() {
