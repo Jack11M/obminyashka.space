@@ -89,18 +89,16 @@ class UserControllerTest {
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
         MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(),
-                status().isForbidden())
+                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(), status().isForbidden())
                 .andDo(print())
                 .andReturn();
+        var responseContentAsString = getResponseContentAsString(mvcResult);
+        var expectedErrorMessage = new StringJoiner(". ")
+                .add(getMessageSource("exception.illegal.operation"))
+                .add(getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user)))
+                .toString();
 
-        User deletedUser = userService.findByUsernameOrEmail("deletedUser@gmail.com").orElseThrow();
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-
-        assertTrue(contentAsString.contains(getMessageSource("exception.illegal.operation")
-                .concat(". ")
-                .concat(getParametrizedMessageSource("account.self.delete.request",
-                        userService.getDaysBeforeDeletion(deletedUser)))));
+        assertTrue(responseContentAsString.contains(expectedErrorMessage));
     }
 
     @Test
