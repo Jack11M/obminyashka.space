@@ -73,10 +73,10 @@ class UserFlowTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated", "email"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
-        getResultActions(HttpMethod.PUT, "/user/info", createUserUpdateDto(), status().isAccepted())
+        getResultActions(HttpMethod.PUT, "/user/my-info", createUserUpdateDto(), status().isAccepted())
                 .andDo(print())
                 .andExpect(jsonPath("$.phones", hasSize(NEW_PHONES.size())))
-                .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME))
+                .andExpect(jsonPath("$.firstName").value(NEW_VALID_NAME_WITH_APOSTROPHE))
                 .andExpect(jsonPath("$.lastName").value(NEW_VALID_NAME_WITH_HYPHEN_MINUS));
     }
 

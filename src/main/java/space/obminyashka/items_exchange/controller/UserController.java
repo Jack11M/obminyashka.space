@@ -46,8 +46,6 @@ public class UserController {
     public String incorrectPassword;
     @Value("${max.children.amount}")
     private int maxChildrenAmount;
-    @Value("${max.phones.amount}")
-    private int maxPhonesAmount;
 
     private final UserService userService;
     private final ImageService imageService;
@@ -62,7 +60,7 @@ public class UserController {
         return ResponseEntity.of(userService.getByUsernameOrEmail(principal.getName()));
     }
 
-    @PutMapping("/info")
+    @PutMapping("/my-info")
     @ApiOperation(value = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),

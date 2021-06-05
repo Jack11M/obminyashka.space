@@ -59,15 +59,15 @@ public class UserService {
     }
 
     public UserUpdateDto update(UserUpdateDto newUserUpdateDto, User user) {
-        User updatedUser = convertDto(newUserUpdateDto);
-        boolean isEqualsPhones = user.getPhones().equals(updatedUser.getPhones());
+        User userToUpdate = convertDto(newUserUpdateDto);
+        boolean isEqualsPhones = user.getPhones().equals(userToUpdate.getPhones());
 
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
+        user.setFirstName(userToUpdate.getFirstName());
+        user.setLastName(userToUpdate.getLastName());
         if (!isEqualsPhones) {
-            updatedUser.getPhones().forEach(phone -> phone.setUser(user));
+            userToUpdate.getPhones().forEach(phone -> phone.setUser(user));
             user.getPhones().clear();
-            user.getPhones().addAll(updatedUser.getPhones());
+            user.getPhones().addAll(userToUpdate.getPhones());
         }
         return mapUserToUpdateDto(userRepository.saveAndFlush(user));
     }

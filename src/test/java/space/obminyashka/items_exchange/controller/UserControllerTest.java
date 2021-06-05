@@ -88,8 +88,8 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
-                createUserDtoForUpdatingWithChangedEmailAndFNameApAndLNameMinusWithoutPhones(), status().isForbidden())
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/my-info",
+                createUserUpdateDto(), status().isForbidden())
                 .andDo(print())
                 .andReturn();
         var responseContentAsString = getResponseContentAsString(mvcResult);
@@ -105,7 +105,7 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void updateUserInfo_badAmountPhones_ReturnHttpStatusBadRequest() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info",
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/my-info",
                 createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest())
                 .andDo(print())
                 .andReturn();
@@ -124,7 +124,7 @@ class UserControllerTest {
         final var errorMessageForInvalidLastName =
                 getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getLastName());
 
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/info", dto, status().isBadRequest())
+        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/my-info", dto, status().isBadRequest())
                 .andDo(print())
                 .andReturn();
         String responseContentAsString = getResponseContentAsString(mvcResult);
