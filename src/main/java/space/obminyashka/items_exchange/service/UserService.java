@@ -22,8 +22,7 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import static space.obminyashka.items_exchange.mapper.UserMapper.convertDto;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
+import static space.obminyashka.items_exchange.mapper.UtilMapper.*;
 import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -69,7 +68,8 @@ public class UserService {
             user.getPhones().clear();
             user.getPhones().addAll(userToUpdate.getPhones());
         }
-        return mapUserToUpdateDto(userRepository.saveAndFlush(user));
+        userRepository.saveAndFlush(user);
+        return convertTo(user, UserUpdateDto.class);
     }
 
     public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
@@ -132,10 +132,6 @@ public class UserService {
 
     private UserDto mapUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
-    }
-
-    private UserUpdateDto mapUserToUpdateDto(User user) {
-        return modelMapper.map(user, UserUpdateDto.class);
     }
 
     public List<ChildDto> getChildren(User parent) {
