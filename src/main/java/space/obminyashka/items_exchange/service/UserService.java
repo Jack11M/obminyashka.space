@@ -2,18 +2,21 @@ package space.obminyashka.items_exchange.service;
 
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.model.Phone;
+import space.obminyashka.items_exchange.model.enums.Status;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -21,7 +24,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static space.obminyashka.items_exchange.mapper.UserMapper.convertDto;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.*;
 import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
@@ -53,23 +55,24 @@ public class UserService {
     }
 
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
-        User registeredUser = UserMapper.userRegistrationDtoToUser(userRegistrationDto, bCryptPasswordEncoder, role);
+        User registeredUser = userRegistrationDtoToUser(userRegistrationDto, bCryptPasswordEncoder, role);
         return userRepository.save(registeredUser).getId() != 0;
     }
 
-    public UserUpdateDto update(UserUpdateDto newUserUpdateDto, User user) {
-        User userToUpdate = convertDto(newUserUpdateDto);
-        boolean isEqualsPhones = user.getPhones().equals(userToUpdate.getPhones());
+    public String update(UserUpdateDto newUserUpdateDto, User user) {
+        user.setFirstName(newUserUpdateDto.getFirstName());
+        user.setLastName(newUserUpdateDto.getLastName());
 
-        user.setFirstName(userToUpdate.getFirstName());
-        user.setLastName(userToUpdate.getLastName());
+        final var phonesToUpdate = convertPhone(newUserUpdateDto.getPhones());
+        final var userPhones = user.getPhones();
+        boolean isEqualsPhones = userPhones.equals(phonesToUpdate);
         if (!isEqualsPhones) {
-            userToUpdate.getPhones().forEach(phone -> phone.setUser(user));
-            user.getPhones().clear();
-            user.getPhones().addAll(userToUpdate.getPhones());
+            userPhones.removeIf(Predicate.not((phonesToUpdate::contains)));
+            userPhones.addAll(phonesToUpdate);
+            userPhones.forEach((phone -> phone.setUser(user)));
         }
-        userRepository.saveAndFlush(user);
-        return convertTo(user, UserUpdateDto.class);
+        convertTo(userRepository.saveAndFlush(user), UserUpdateDto.class);
+        return getMessageSource("changed.user.info");
     }
 
     public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
@@ -175,4 +178,37 @@ public class UserService {
         user.getChildren().addAll(children);
     }
 
+    private Set<Phone> convertPhone(Set<PhoneDto> phones) {
+        Converter<String, Long> stringLongConverter = context ->
+                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
+
+        modelMapper.typeMap(PhoneDto.class, Phone.class)
+                .addMappings(mapper -> mapper.using(stringLongConverter)
+                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
+        return modelMapper.map(phones, new TypeToken<Set<Phone>>() {}.getType());
+    }
+
+    public static User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto,
+                                                 BCryptPasswordEncoder bCryptPasswordEncoder,
+                                                 Role role) {
+        User user = new User();
+        user.setUsername(userRegistrationDto.getUsername());
+        user.setEmail(userRegistrationDto.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
+        user.setRole(role);
+        user.setFirstName("");
+        user.setLastName("");
+        user.setOnline(false);
+        user.setAvatarImage(new byte[0]);
+        user.setAdvertisements(Collections.emptyList());
+        user.setChildren(Collections.emptyList());
+        user.setDeals(Collections.emptyList());
+        user.setPhones(Collections.emptySet());
+        LocalDateTime now = LocalDateTime.now();
+        user.setCreated(now);
+        user.setUpdated(now);
+        user.setLastOnlineTime(now);
+        user.setStatus(Status.ACTIVE);
+        return user;
+    }
 }

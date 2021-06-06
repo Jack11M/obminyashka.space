@@ -9,7 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id", "user"})
+@EqualsAndHashCode(exclude = {"id", "user", "defaultPhone"})
 public class Phone {
 
     @Id

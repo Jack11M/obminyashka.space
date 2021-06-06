@@ -67,8 +67,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserUpdateDto updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, Principal principal)
-            throws IllegalOperationException {
+    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, Principal principal) {
         return userService.update(userUpdateDto, getUser(principal.getName()));
     }
 
