@@ -56,6 +56,11 @@
           margin-left: 10px;
           line-height: 16px;
           color: #444444;
+          display: block;
+          width: 150px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         &:active {
