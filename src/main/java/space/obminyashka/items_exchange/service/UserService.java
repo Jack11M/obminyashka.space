@@ -71,7 +71,8 @@ public class UserService {
             userPhones.addAll(phonesToUpdate);
             userPhones.forEach((phone -> phone.setUser(user)));
         }
-        convertTo(userRepository.saveAndFlush(user), UserUpdateDto.class);
+
+        userRepository.saveAndFlush(user);
         return getMessageSource("changed.user.info");
     }
 
