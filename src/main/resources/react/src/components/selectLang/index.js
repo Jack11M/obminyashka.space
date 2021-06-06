@@ -24,7 +24,9 @@ const LanguageItem = styled.div`
   padding: 5px;
   margin: 18px 0 10px 0;
   cursor: pointer;
+  border-radius: 50%;
   color: ${ ({ checked }) => checked ? 'hsl(195, 100%, 53%)' : 'rgb(119, 119, 119)' };
+  border: ${ ({ checked }) => checked ? '1px solid #12b6ed;' : 'none' };
 
   &:hover {
     background-color: hsl(195, 100%, 90%);
