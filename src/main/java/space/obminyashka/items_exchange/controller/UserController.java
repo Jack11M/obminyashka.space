@@ -60,20 +60,15 @@ public class UserController {
         return ResponseEntity.of(userService.getByUsernameOrEmail(principal.getName()));
     }
 
-    @PutMapping("/info")
+    @PutMapping("/my-info")
     @ApiOperation(value = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public UserDto updateUserInfo(@Valid @RequestBody UserDto userDto, Principal principal)
-            throws InvalidDtoException, IllegalOperationException {
-        User user = getUser(principal.getName());
-        if (!user.getEmail().equals(userDto.getEmail()) && userService.existsByEmail(userDto.getEmail())) {
-            throw new InvalidDtoException(getMessageSource("email.duplicate"));
-        }
-        return userService.update(userDto, user);
+    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @ApiIgnore Principal principal) {
+        return userService.update(userUpdateDto, getUser(principal.getName()));
     }
 
     @PutMapping("/service/pass")
