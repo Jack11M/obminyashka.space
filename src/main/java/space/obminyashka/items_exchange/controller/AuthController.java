@@ -1,17 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.UserLoginDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.exception.BadRequestException;
-import space.obminyashka.items_exchange.exception.RoleNotFoundException;
-import space.obminyashka.items_exchange.exception.UserValidationException;
-import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
-import space.obminyashka.items_exchange.service.RoleService;
-import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.validator.UserLoginDtoValidator;
-import space.obminyashka.items_exchange.validator.UserRegistrationDtoValidator;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -28,10 +16,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.dto.UserLoginDto;
+import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.RoleNotFoundException;
+import space.obminyashka.items_exchange.exception.UserValidationException;
+import space.obminyashka.items_exchange.model.Role;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
+import space.obminyashka.items_exchange.service.RoleService;
+import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.validator.UserLoginDtoValidator;
+import space.obminyashka.items_exchange.validator.UserRegistrationDtoValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,8 @@ public class AuthController {
     private static final String USERNAME = "username";
     private static final String FIRSTNAME = "firstname";
     private static final String LASTNAME = "lastname";
-    private static final String AVATARIMAGE = "avatarImage";
+    private static final String EMAIL = "email";
+    private static final String AVATAR_IMAGE = "avatarImage";
     private static final String TOKEN = "token";
 
     private final UserRegistrationDtoValidator userRegistrationDtoValidator;
@@ -66,7 +66,8 @@ public class AuthController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")
     })
-    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid UserLoginDto userLoginDto,
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, Object> login(@RequestBody @Valid UserLoginDto userLoginDto,
                                                      BindingResult bindingResult) throws UserValidationException {
 
         userLoginDtoValidator.validate(userLoginDto, bindingResult);
@@ -80,18 +81,17 @@ public class AuthController {
             User user = userService.findByUsernameOrEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException(
                             getExceptionMessageSourceWithAdditionalInfo("user.not-found", username)));
-            String userFirstName = user.getFirstName();
-            String userLastName = user.getLastName();
-            String avatarImage = Base64.getEncoder().encodeToString(user.getAvatarImage());
-            String token = jwtTokenProvider.createToken(username, user.getRole());
-            Map<String, String> response = new HashMap<>();
+            Map<String, Object> response = new HashMap<>();
             response.put(USERNAME, username);
-            response.put(FIRSTNAME, userFirstName);
-            response.put(LASTNAME, userLastName);
-            response.put(AVATARIMAGE, avatarImage);
+            response.put(FIRSTNAME, user.getFirstName());
+            response.put(LASTNAME, user.getLastName());
+            response.put(EMAIL, user.getEmail());
+            response.put(AVATAR_IMAGE, user.getAvatarImage());
+            String token = jwtTokenProvider.createToken(username, user.getRole());
             response.put(TOKEN, token);
+            log.info("User {} is successfully logged in", username);
 
-            return ResponseEntity.ok(response);
+            return response;
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource("invalid.username-or-password"));
         }

@@ -284,6 +284,7 @@ class AuthControllerIntegrationTest extends AuthControllerIntegrationTestUtil {
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'firstname':'firstname'}"))
                 .andExpect(content().json("{'lastname':'lastname'}"))
+                .andExpect(content().json("{'email':'test@test.com'}"))
                 .andExpect(content().json("{'avatarImage':'dGVzdCBpbWFnZSBwbmc='}"));
     }
 
