@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import TitleBigBlue from '../../../../components/title_Big_Blue';
+import TitleBigBlue from '../../../../components/common/title_Big_Blue';
 import InputProfile from '../../components/inputProfile/inputProfile';
 import BlockButtons from '../../components/buttonsAddRemoveChild/blockButtons';
-import Button from '../../../../components/button/Button';
+import Button from '../../../../components/common/button/Button';
 import InputGender from '../../components/inputProfile/inputGender';
 import {
 	addChild,

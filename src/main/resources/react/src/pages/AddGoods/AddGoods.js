@@ -1,11 +1,11 @@
 import React from "react";
 
 import { useDispatch, useSelector } from 'react-redux';
-import CheckBox from "../../components/checkbox/index";
+import CheckBox from "../../components/common/checkbox/index";
 import { toggleCheckBox } from '../../redux/auth/action';
 import { books, clothes, furniture, kidsUpToYear, other, shoes, toys, transportForChildren } from '../../img/all_images_export/navItems';
-import ButtonAdv from "../../components/buttonAdv/ButtonAdv";
-import Button from "../../components/button/Button";
+import ButtonAdv from "../../components/common/buttonAdv/ButtonAdv";
+import Button from "../../components/common/button/Button";
 
 import "./AddGoods.scss";
 

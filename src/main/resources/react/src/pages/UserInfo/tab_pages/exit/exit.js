@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import logout2 from '../../../../img/log-out-2.png';
-import Button from '../../../../components/button/Button';
+import Button from '../../../../components/common/button/Button';
 import { getTranslatedText } from '../../../../components/local/localisation';
-import { postAuthLogoutAsync } from '../../../../redux/auth/action';
+import { fetchLogOut } from '../../../../store/auth/slice';
+import { route } from '../../../../routes/routeConstants';
 
 import './exit.scss';
 
@@ -13,10 +14,10 @@ const Exit = ( { toggle } ) => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const { lang } = useSelector( state => state.auth );
-	const logOut = useCallback( () => {
-		dispatch( postAuthLogoutAsync() );
-		history.push( '/' );
-	}, [ dispatch ] );
+	const setLogOut = useCallback( () => {
+		dispatch( fetchLogOut() );
+		history.push( route.home );
+	}, [ dispatch, history ] );
 
 	return (
 		<div className="modal-overlay">
@@ -28,7 +29,7 @@ const Exit = ( { toggle } ) => {
 					whatClass="button"
 					text={ getTranslatedText( 'exit.exit', lang ) }
 					width={ '179px' }
-					click={ logOut }
+					click={ setLogOut }
 				/>
 				<div className={ 'background' }>
 					<img src={ logout2 } className="log-out-img" alt="log-out"/>

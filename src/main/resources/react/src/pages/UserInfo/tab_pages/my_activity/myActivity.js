@@ -2,8 +2,8 @@ import React from 'react';
 
 import lot3 from '../../../../img/cards/lot3.jpg';
 import mommy from '../../../../img/mama_1_04232631 1.png';
-import TitleBigBlue from '../../../../components/title_Big_Blue';
-import ProductCard from '../../../../components/Card';
+import TitleBigBlue from '../../../../components/common/title_Big_Blue';
+import ProductCard from '../../../../components/item-card';
 
 import './myActyvity.scss';
 

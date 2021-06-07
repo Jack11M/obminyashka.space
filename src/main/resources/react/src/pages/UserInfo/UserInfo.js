@@ -15,7 +15,7 @@ const UserInfo = () => {
 	const [ isModalOpen, setIsModalOpen ] = useState( false );
 	const [ prevLocation, setPrevLocation ] = useState( '' );
 
-	const { firstName, lastName, avatarImage } = useSelector( ( state ) => state.profileMe );
+	const { firstName, lastName, avatarImage } = useSelector( ( state ) => state.profileMe);
 
 
 	const open = useCallback( () => {

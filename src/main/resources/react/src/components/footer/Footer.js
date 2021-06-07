@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import BtnGoodBusiness from '../btnGoodBusiness/BtnGoodBusiness.js';
+import BtnGoodBusiness from '../common/btnGoodBusiness/BtnGoodBusiness.js';
 import { getTranslatedText } from '../local/localisation';
 import logoFooter from '../../img/Logo-footer.png';
 import { route } from '../../routes/routeConstants';
@@ -9,7 +9,7 @@ import { route } from '../../routes/routeConstants';
 import './Footer.scss';
 
 const Footer = () => {
-	const { lang } = useSelector( state => state.auth );
+	const { lang } = useSelector( state => state.auth);
 	const timeDate = new Date();
 	const yearNow = timeDate.getFullYear();
 

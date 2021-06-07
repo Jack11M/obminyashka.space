@@ -19,7 +19,7 @@ const AddRemoveDiv = styled.div`
 
 function BlockButtons( { mb, index, id, add, remove } ) {
 	const { lang } = useSelector( state => state.auth );
-	const { children, receivedChildrenFromBack } = useSelector( state => state.profileMe );
+	const { children, receivedChildrenFromBack } = useSelector( state => state.profileMe);
 	const itemAdd = useCallback( () => {
 		add();
 	}, [ add ] );

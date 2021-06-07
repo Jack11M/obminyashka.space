@@ -2,7 +2,7 @@ import { types } from './types';
 import {
 	addChild,
 	addPhone,
-	authValidation,
+	validation,
 	changePhoneInputOrChildren,
 	dateValidation,
 	deleteItem,
@@ -14,7 +14,7 @@ import {
 	permissionToSendChildren,
 	permissionToSendProfile,
 	translateErrors
-} from '../Utils';
+} from '../../Utils';
 
 const initialState = {
 	avatarImage: '',
@@ -59,7 +59,7 @@ const profileReducer = ( state = initialState, { type, payload, id } ) => {
 
 		case types.CHANGE_INPUT_VALUE:
 			const [ keyInput, value ] = payload;
-			const verified = authValidation( state, keyInput, value );
+			const verified = validation( state, keyInput, value );
 			const error = errorHandling( state.errors, keyInput, verified );
 			return {
 				...state, [keyInput]: value, errors: [ ...error ]
@@ -67,7 +67,7 @@ const profileReducer = ( state = initialState, { type, payload, id } ) => {
 
 		case types.CHANGE_PHONE_INPUT_VALUE:
 			const [ keyPhone, valuePhone ] = payload;
-			const errorPhone = errorHandling( state.errorsPhone, id, authValidation( state.phones[id], keyPhone, valuePhone ), 'phone' );
+			const errorPhone = errorHandling( state.errorsPhone, id, validation( state.phones[id], keyPhone, valuePhone ), 'phone' );
 			const phones = getArray( state.phones, state.mockPhones );
 			return {
 				...state,

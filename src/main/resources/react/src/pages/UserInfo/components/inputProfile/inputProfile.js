@@ -1,8 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { getCurrentDate, getMinDate } from '../../../../redux/Utils';
+import { getCurrentDate, getMinDate } from '../../../../Utils';
 
 const ProfileInput = styled.div`
   position: relative;
@@ -40,26 +39,29 @@ const Input = styled.input`
 
 const SpanError = styled.span`
   position: absolute;
-  bottom: -18px;
+  bottom: -17px;
   left: 135px;
-  font-size: 12px;
+  font-size: 11px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
   color: ${ ( { theme: { colors } } ) => colors['colorError'] };
 `;
 
-const InputProfile = ( { id = '', type, name, label, value, change } ) => {
-	const { errors, errorsPhone, errorsChildren } = useSelector( state => state.profileMe );
-	let error;
-	if (type === 'phone') {
-		error = errorsPhone.find( error => error.key === id );
-	} else if (type === 'date') {
-		error = errorsChildren.find( error => error.key === id );
-	} else {
-		error = errors.find( error => error.key === name );
-	}
-	const errorText = error ? error.errorText : null;
+const InputProfile = ( { id = '', type, name, label, value, change, errors=[] } ) => {
+	// I will delete it later, I need it
+	// const { errors, errorsPhone, errorsChildren } = useSelector( state => state.profileMe );
+	// let error;
+	// if (type === 'phone') {
+	// 	error = errorsPhone.find( error => error.key === id );
+	// } else if (type === 'date') {
+	// 	error = errorsChildren.find( error => error.key === id );
+	// } else {
+	// 	error = errors.find( error => error.key === name );
+	// }
+	// const errorText = error ? error.errorText : null;
+	const error = !!errors.length && errors.find(err => {
+		return Object.keys(err).join('')=== name});
 
 	return (
 		<ProfileInput>
@@ -71,11 +73,11 @@ const InputProfile = ( { id = '', type, name, label, value, change } ) => {
 				type={ type }
 				name={ name }
 				value={ value }
-				error={ errorText }
+				error={ error }
 				onChange={ change }
 				placeholder={ name === 'phoneNumber' ? `+38(123)456-78-90, 381234567890` : null }
 			/>
-			<SpanError>{ errorText }</SpanError>
+			<SpanError>{ error && error[name] }</SpanError>
 		</ProfileInput>
 	);
 };

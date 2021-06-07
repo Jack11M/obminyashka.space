@@ -7,7 +7,7 @@ import ProductDescription from './ProductDescription/ProductDescription';
 import { getTranslatedText } from '../../components/local/localisation';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductPostData from './ProductPostData/ProductPostData';
-import TitleBigBlue from '../../components/title_Big_Blue';
+import TitleBigBlue from '../../components/common/title_Big_Blue';
 import ProductOffers from './ProductOffers/ProductOffers';
 import { getProduct } from '../../REST/Resources';
 

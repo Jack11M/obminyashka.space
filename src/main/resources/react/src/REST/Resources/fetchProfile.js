@@ -20,3 +20,6 @@ export const deleteUserChildren = ( id ) => {
 	return axiosInstance( 'delete', `user/child/${id}` );
 };
 
+export const putPassword = ( data ) => {
+	return axiosInstance( 'put', `user/service/pass/${data}` );
+};

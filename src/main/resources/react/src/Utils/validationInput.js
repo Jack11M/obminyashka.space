@@ -1,4 +1,4 @@
-export const authValidation = ( state, keyInput, value ) => {
+export const validation = ( state, keyInput, value ) => {
 
 	const allVerified = {
 		logEmail: [ [ 'notEmpty' ], [ 'cutEmpty' ], [ 'lengthLogin' ] ],
@@ -7,35 +7,35 @@ export const authValidation = ( state, keyInput, value ) => {
 		regNick: [
 			[ 'notEmpty' ],
 			[ 'lengthLogin' ],
-			[ 'pattern', 'altCodeLogin' ],
+			[ 'pattern', 'userName' ],
 			[ 'cutEmpty' ]
 		],
 		regPassword: [
-			[ 'pattern', 'altCodePassword' ],
 			[ 'notEmpty' ],
 			[ 'pattern', 'password' ],
 			[ 'cutEmpty' ]
 		],
-		regConfirm: [ [ 'contains', 'regPassword' ] ],
-		firstName: [ [ 'pattern', 'firstname' ] ],
-		lastName: [ [ 'pattern', 'lastname' ] ],
+		regConfirm: [ [ 'isEqual', 'regPassword' ] ],
+		firstName: [ [ 'pattern', 'name' ] ],
+		lastName: [ [ 'pattern', 'name' ] ],
 		phoneNumber: [ [ 'pattern', 'phone' ] ],
+		currentPassword: [
+			[ 'notEmpty' ],
+			[ 'pattern', 'password' ],
+			[ 'cutEmpty' ]
+		],
 	};
-
 	const verificationMethods = {
 		MIN_LENGTH_STRING: 1,
 		MAX_LENGTH_STRING: 49,
 		rulesPattern: {
-			firstname: /^$|^[\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50}$/,
-			lastname: /^$|^[\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50}$/,
-			phone: /^\s*(?<country>\+?\d{2})[-. (]*(?<area>\d{3})[-. )]*(?<number>\d{3}[-. ]*\d{2}[-. ]*\d{2})\s*$/,
-
 			email: /^[A-Z0-9._%+-]{1,129}@[A-Z0-9-]+.+.[A-Z]{2,4}$/i,
-			password: /(?=^.{8,30}$)((?=.*\d)|(?=.*\W+))(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$/,
-			altCodeLogin: /^[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*[А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9][А-Яа-яёЁЇїІіЄєҐґ0-9A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\'\"\.<>`~₴\\|/=]*$/,
-			altCodePassword: /^[A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*[A-Za-z0-9][A-Za-z0-9 «\!»№;%:\?\*()_+\-,@#$^&\[\]\{\}\’\"\.<>`~₴\\|/=]*$/
-		},
+			userName: /^(?=.*[A-Za-zА-Яа-я-'`ЁёҐЄІЇієїґ])(?=.*\d*)(?=.[«!»№;%:?*()_+\-,@#$^&[\]{}’".<>`~₴|/=]*)[A-Za-zА-Яа-я-'`ЁёҐЄІЇієїґ\d«!»№;%:?*()_+\-,@#$^&[\]{}’".<>~₴|/=]{2,50}$/,
+			password: /^(?=.*[A-Za-z])(?=.*\d)(?=.[«!»№;%:?*()_+\-,@#$^&[\]{}’".<>`~₴|/=]*)[A-Za-z\d«!»№;%:?*()_+\-,@#$^&[\]{}’".<>`~₴|/=]{8,30}$/,
+			name: /^$|^[\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50}$/,
+			phone: /^\s*(?<country>\+?\d{2})[-. (]*(?<area>\d{3})[-. )]*(?<number>\d{3}[-. ]*\d{2}[-. ]*\d{2})\s*$/
 
+		},
 		notEmpty( el ) {
 			return el !== '';
 		},
@@ -45,9 +45,9 @@ export const authValidation = ( state, keyInput, value ) => {
 		pattern( el, pattern ) {
 			return this.rulesPattern[pattern].test( el );
 		},
-		contains( el, el2 ) {
+		isEqual( el, el2 ) {
 			if (el === '') return true;
-			return el === state[el2].value;
+			return el === state[el2];
 		},
 		lengthLogin( el ) {
 			return (

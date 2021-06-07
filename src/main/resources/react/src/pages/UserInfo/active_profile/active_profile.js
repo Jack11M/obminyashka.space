@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./active_profile.scss";
-import Avatar from '../../../components/avatar/avatar';
+import Avatar from '../../../components/common/avatar/avatar';
 
 const ActiveProfile = ({firstName, lastName, avatar}) => {
   return (

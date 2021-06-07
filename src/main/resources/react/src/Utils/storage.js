@@ -1,7 +1,7 @@
 export const getStorageUser = ( option ) => {
-	const local = JSON.parse( localStorage.getItem( 'user' ) ) || '';
-	const session = JSON.parse( sessionStorage.getItem( 'user' ) ) || '';
-	return (local && local[option] ) || (session && session[option]) || '';
+	const local = JSON.parse(localStorage.getItem( option ) ) || '';
+	const session = JSON.parse(sessionStorage.getItem( option )) || '';
+	return (local ) || (session ) || '';
 };
 
 export const getStorageLang = () => {

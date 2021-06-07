@@ -1,19 +1,17 @@
 import { getStorageLang } from './index';
-import { getTranslatedText } from '../../components/local/localisation';
+import { getTranslatedText } from '../components/local/localisation';
 
-export const errorHandling = ( errors, key, verified, forArray ) => {
-	const lang = getStorageLang();
+const errorHandling = ( errors, key, isValid, forArray ) => {
 	let errorText;
-
 	switch (forArray) {
 		case 'phone':
 			errorText = '+38(123)456-78-90, 381234567890';
 			break;
 		case 'children':
-			errorText = getTranslatedText( `errors.children`, lang );
+			errorText = getTranslatedText( `errors.children`, getStorageLang() );
 			break;
 		default:
-			errorText = getTranslatedText( `errors.regNick`, lang );
+			errorText = getTranslatedText( `errors.regNick`, getStorageLang() );
 	}
 
 	const newError = {
@@ -21,24 +19,24 @@ export const errorHandling = ( errors, key, verified, forArray ) => {
 		errorText
 	};
 
-	if (verified) {
+	if (isValid) {
 		return errors.filter( error => error.key !== key );
 	} else {
 		return errors.some( error => error.key === key ) ? errors : [ ...errors, newError ];
 	}
 };
 
-export const translateErrors = ( state, lang ) => {
+const translateErrors = ( state ) => {
 	return state.map( child => {
 		const field = Number.isInteger( child.key ) ? 'children' : 'regNick';
 		return {
 			...child,
-			errorText: getTranslatedText( `errors.${ field }`, lang )
+			errorText: getTranslatedText( `errors.${ field }`, getStorageLang() )
 		};
 	} );
 };
 
-export const permissionToSendProfile = ( state ) => {
+const permissionToSendProfile = ( state ) => {
 	const phones = !state.phones.length ? false : state.phones.every( phone => phone.phoneNumber !== '' );
 
 	if ((state.phones.length > 0 && !phones)) {
@@ -51,9 +49,11 @@ export const permissionToSendProfile = ( state ) => {
 	return (emptyStrings.some( field => field ) && !errors.some( length => length ));
 };
 
-export const permissionToSendChildren = ( state ) => {
+const permissionToSendChildren = ( state ) => {
 	if (!state.children.length) {
 		return false;
 	}
 	return state.children[state.children.length - 1].birthDate && !!!state.errorsChildren.length;
 };
+
+export { permissionToSendChildren, permissionToSendProfile, translateErrors, errorHandling };

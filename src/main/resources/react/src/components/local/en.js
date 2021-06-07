@@ -19,7 +19,8 @@ const en = {
 		regNick: 'At least 2 and less than 50 characters, no spaces',
 		regPassword: 'Uppercase and lowercase Latin letters and numbers. Length from 8 to 30 characters',
 		regConfirm: 'Passwords must match',
-		children: 'Children under 17'
+		children: 'Children under 17',
+		currentPassword: 'Uppercase and lowercase Latin letters and numbers. Length from 8 to 30 characters',
 	},
 	panel: {
 		myActivity: 'My activity',
@@ -40,6 +41,18 @@ const en = {
 		girl:'Girl',
 		unselected: 'Unselected'
 	},
+	settings: {
+		changePassword: 'CHANGE PASSWORD',
+		currentPassword: 'Current password:',
+		newPassword: 'New password:',
+		confirmPassword: 'Repeat password:',
+		changeEmail: 'CHANGE E-MAIL',
+		oldEmail: 'Old E-Mail:',
+		newEmail: 'New E-Mail:',
+		remove: 'REMOVE ACCOUNT',
+		describe: 'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section',
+		profile: 'Profile'
+	},
 	exit: {
 		question: 'Leave?',
 		text: 'You can’t leave messages and add ads!',
@@ -52,6 +65,9 @@ const en = {
 		saveChanges: 'Save changes',
 		enter: 'Enter',
 		look: 'View',
+		save: 'SAVE',
+		codeConfirm: 'SEND CONFIRMATION CODE',
+		remove: 'REMOVE ACCOUNT'
 	},
 	header: {
 		about: 'About the project',

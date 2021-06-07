@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { chooseLanguage, clearValueLogin, clearValueSignUp } from '../../redux/auth/action';
-import { changeLangProfileErrors } from '../../redux/profile/profileAction';
+
+import { setLanguage } from '../../store/auth/slice';
 
 const LanguagePanel = styled.div`
   display: flex;
@@ -35,45 +35,44 @@ const LanguageItem = styled.div`
 `;
 
 const CustomSelect = () => {
-  const dispatch = useDispatch();
-  const { lang : language } = useSelector(state => state.auth);
-  const [ languageArray, setLanguageArray ] = useState([
-    { value : 'ru', checked : false },
-    { value : 'ua', checked : false },
-    { value : 'en', checked : false }
-  ]);
+	const dispatch = useDispatch();
+	const { lang } = useSelector( state => state.auth );
+	const [ languageArray, setLanguageArray ] = useState( [
+		{ value: 'ru', checked: false },
+		{ value: 'ua', checked: false },
+		{ value: 'en', checked: false }
+	] );
 
-  useEffect(() => {
-    const checkedArray = languageArray.map(item => item.value === language
-      ?
-      { ...item, checked : true }
-      :
-      { ...item, checked : false }
-    );
-    setLanguageArray(checkedArray);
-  }, [ language ]);
+	useEffect( () => {
+		const newLang = languageArray.map(
+			item => item.value === lang
+				?
+				{ ...item, checked: true }
+				:
+				{ ...item, checked: false }
+		);
+	setLanguageArray( newLang);
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ lang ] );
 
-  const handleSelected = (lang) => {
-    dispatch(clearValueSignUp());
-    dispatch(clearValueLogin());
-    dispatch(changeLangProfileErrors(lang));
-    dispatch(chooseLanguage(lang));
-  };
+	const handleSelected = ( lang ) => {
+		dispatch( setLanguage( lang ) );
+	};
 
-  return (
-    <LanguagePanel>
-      {
-        languageArray.map(option =>
-          <LanguageItem
-            key = { option.value }
-            onClick = { () => handleSelected(option.value) }
-            checked = { option.checked }
-          >
-            { option.value }
-          </LanguageItem>)
-      }
-    </LanguagePanel>
-  );
+	return (
+		<LanguagePanel>
+			{
+				languageArray.map( option =>
+					<LanguageItem
+						key={ option.value }
+						onClick={ () => handleSelected( option.value ) }
+						checked={ option.checked }
+					>
+						{ option.value }
+					</LanguageItem> )
+			}
+		</LanguagePanel>
+	);
 };
 
 export default CustomSelect;
