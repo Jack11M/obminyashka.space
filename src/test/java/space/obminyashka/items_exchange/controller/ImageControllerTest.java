@@ -129,7 +129,7 @@ class ImageControllerTest {
         final MvcResult mvcResult = sendDeleteRequest("999", status().isBadRequest());
 
         verify(advertisementService).findByIdAndOwnerUsername(1L, "admin");
-        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource("exception.image.not-existed-id", 999));
+        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource("exception.image.not-existed-id", "[999]"));
     }
 
     @WithMockUser
