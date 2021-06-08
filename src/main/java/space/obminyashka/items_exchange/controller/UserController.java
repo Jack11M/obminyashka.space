@@ -6,6 +6,7 @@ import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.mapper.transfer.New;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
 import io.swagger.annotations.Api;
@@ -50,6 +51,7 @@ public class UserController {
 
     private final UserService userService;
     private final ImageService imageService;
+    private final AdvertisementService advService;
 
     @GetMapping("/my-info")
     @ApiOperation(value = "Find a registered requested user's data")
@@ -58,7 +60,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<UserDto> getPersonalInfo(Principal principal) {
-        return ResponseEntity.of(userService.getByUsernameOrEmail(principal.getName()));
+        return ResponseEntity.of(userService.findByUsername(principal.getName()));
     }
 
     @PutMapping("/my-info")
@@ -70,6 +72,19 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @ApiIgnore Principal principal) {
         return userService.update(userUpdateDto, getUser(principal.getName()));
+    }
+
+    @GetMapping("/my-adv")
+    @ApiOperation(value = "Update a registered requested user's data")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<List<AdvertisementTitleDto>> getCreatedAdvertisements(@ApiIgnore Principal principal) {
+        final var allByUsername = advService.findAllByUsername(principal.getName());
+        return allByUsername.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(allByUsername, HttpStatus.OK);
     }
 
     @PutMapping("/service/pass")
