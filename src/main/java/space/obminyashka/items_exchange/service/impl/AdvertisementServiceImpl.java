@@ -12,7 +12,6 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
-import space.obminyashka.items_exchange.model.Location;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -53,6 +52,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
         return mapAdvertisementsToTitleDto(content);
+    }
+
+    @Override
+    public List<AdvertisementTitleDto> findAllByUsername(String username) {
+        final var allForUser = advertisementRepository.findAllByUserUsername(username);
+        return mapAdvertisementsToTitleDto(allForUser);
     }
 
     @Override
@@ -185,14 +190,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
-        Location advLocation = advertisement.getLocation();
-        byte[] image = getImage(advertisement);
-
         return AdvertisementTitleDto.builder()
                 .advertisementId(advertisement.getId())
-                .image(image)
+                .image(getImage(advertisement))
                 .title(advertisement.getTopic())
-                .location(convertTo(advLocation, LocationDto.class))
+                .location(convertTo(advertisement.getLocation(), LocationDto.class))
                 .ownerName(advertisement.getUser().getUsername())
                 .ownerAvatar(advertisement.getUser().getAvatarImage())
                 .build();

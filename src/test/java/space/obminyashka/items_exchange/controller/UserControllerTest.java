@@ -26,7 +26,7 @@ import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Status;
-import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
@@ -59,7 +59,7 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private User user;
 

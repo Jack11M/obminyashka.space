@@ -25,6 +25,13 @@ public interface AdvertisementService {
     List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
 
     /**
+     * Find all advertisements as thumbnails for specific user
+     * @param username login of the user
+     * @return all advertisements created by the user
+     */
+    List<AdvertisementTitleDto> findAllByUsername(String username);
+
+    /**
      * Find first 10 advertisements having requested topic
      * @param topic - searched topic
      * @return result of the request
