@@ -19,12 +19,18 @@ export const validation = ( state, keyInput, value ) => {
 		firstName: [ [ 'pattern', 'name' ] ],
 		lastName: [ [ 'pattern', 'name' ] ],
 		phoneNumber: [ [ 'pattern', 'phone' ] ],
-		currentPassword: [
+		oldPassword: [
 			[ 'notEmpty' ],
 			[ 'pattern', 'password' ],
 			[ 'cutEmpty' ]
 		],
+		newPassword: [
+			[ 'pattern', 'password' ],
+			[ 'isNotEqual', 'oldPassword' ],
+		],
+		confirmNewPassword: [ [ 'isEqual', 'newPassword' ] ],
 	};
+
 	const verificationMethods = {
 		MIN_LENGTH_STRING: 1,
 		MAX_LENGTH_STRING: 49,
@@ -48,6 +54,10 @@ export const validation = ( state, keyInput, value ) => {
 		isEqual( el, el2 ) {
 			if (el === '') return true;
 			return el === state[el2];
+		},
+		isNotEqual( el, el2 ) {
+			if (el === '') return true;
+			return el !== state[el2];
 		},
 		lengthLogin( el ) {
 			return (

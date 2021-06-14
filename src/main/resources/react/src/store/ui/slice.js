@@ -9,11 +9,8 @@ const uiSlice = createSlice( {
 	name: 'ui',
 	initialState: uiInitialState,
 	reducers: {
-		startFetching: ( state ) => {
-			state.isFetching = true;
-		},
-		stopFetching: ( state ) => {
-			state.isFetching = false;
+		setFetching: ( state, {payload} ) => {
+			state.isFetching = payload;
 		}
 	}
 } );
@@ -21,9 +18,8 @@ const uiSlice = createSlice( {
 const {
 	reducer: uiReducer,
 	actions: {
-		startFetching,
-		stopFetching
+		setFetching
 	}
 } = uiSlice;
 
-export { startFetching, stopFetching, uiReducer, uiInitialState };
+export { setFetching, uiReducer, uiInitialState };

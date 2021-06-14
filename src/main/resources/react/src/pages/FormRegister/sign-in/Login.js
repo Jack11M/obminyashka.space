@@ -1,135 +1,108 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
 import { route } from '../../../routes/routeConstants';
 import { getTranslatedText } from '../../../components/local/localisation';
 import Button from '../../../components/common/button/Button';
 import CheckBox from '../../../components/common/checkbox';
 import InputForAuth from '../../../components/common/input';
+import { postAuthLogin } from '../../../REST/Resources';
+import { putToken, unauthorized } from '../../../store/auth/slice';
 
 import SpinnerForAuthBtn from '../../../components/common/spinner/spinnerForAuthBtn';
-import { startFetching, stopFetching } from '../../../store/ui/slice';
-import { putToken } from '../../../store/auth/slice';
-
 import { Extra, ExtraLink } from './loginStyle';
-import { changeInputAuth, toggleButtonLog, translateErrorsAuth } from '../../../Utils';
-import { postAuthLogin } from '../../../REST/Resources';
 
 const Login = () => {
 	const dispatch = useDispatch();
-	const { isFetching } = useSelector( state => state.ui );
 	const { lang } = useSelector( state => state.auth );
-	const [ state, setState ] = useState( {
-		logEmail: '',
-		logPassword: '',
-		logCheckbox: false,
-		errors: []
-	} );
-	const [ disable, setDisable ] = useState( false );
-	const { logEmail, logPassword, logCheckbox, errors } = state;
+	const [ checkbox, setCheckbox ] = useState( false );
+	const [ loading, setLoading ] = useState( false );
 
-	useEffect(() => {
-		const error = translateErrorsAuth(errors)
-		setState({...state, errors: error})
-		//eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [lang])
-
-	useEffect( () => {
-		const getPost = async () => {
-			try {
-				const { data } = await postAuthLogin( {
-					usernameOrEmail: logEmail,
-					password: logPassword
-				} );
-				dispatch(putToken({data, isCheck: logCheckbox}))
-			} catch (error) {
-				if (error.response.status === 400) {
-					const { error: message } = error.response.data;
-					setState( { ...state, errors: [ ...errors, { logEmail: message } ] } );
-				}
-			} finally {
-				dispatch( stopFetching() );
-			}
-		};
-		if (isFetching) {
-			getPost().finally();
-		}
-		//eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ dispatch, isFetching ] );
-
-	useEffect( () => {
-		if (toggleButtonLog( state )) {
-			setDisable( false );
-		} else {
-			setDisable( true );
-		}
-	}, [ state ] );
-
-	const changeInput = ( event ) => {
-		const { name: key, value } = event.target;
-		const newError = changeInputAuth( event, state );
-		setState( {
-			...state,
-			errors: newError,
-			[key]: value,
-		} );
-	};
 	const changeCheckBox = () => {
-		setState( prev => ({
-			...prev,
-			logCheckbox: !prev.logCheckbox
-		}) );
+		setCheckbox( prev => !prev );
 	};
 
-	const submitForm = ( e ) => {
-		e.preventDefault();
-		if(!isFetching){
-			dispatch( startFetching() );
-		}
-	};
+	const validationLoginSchema = yup.object().shape( {
+		usernameOrEmail:
+			yup.string()
+			.required( 'Поле обязательно' )
+			.default( () => '' ),
+		password:
+			yup.string()
+			.required( 'Поле обязательно' )
+			.default( () => '' )
+	} );
+	const initialLoginValues = validationLoginSchema.cast( {} );
 
 
 	return (
-		<form onSubmit={ submitForm }>
-			<div>
-				<InputForAuth
-					text={ getTranslatedText( 'auth.logEmail', lang ) }
-					name={ 'logEmail' }
-					type={ 'text' }
-					value={ logEmail }
-					errors={ errors }
-					click={ changeInput }
-				/>
-				<InputForAuth
-					text={ getTranslatedText( 'auth.logPassword', lang ) }
-					name={ 'logPassword' }
-					type={ 'password' }
-					value={ logPassword }
-					errors={ errors }
-					click={ changeInput }
-				/>
-			</div>
-			<Extra>
-				<CheckBox
-					text={ getTranslatedText( 'auth.remember', lang ) }
-					margin={ '0 0 44px 0' }
-					fs={ '14px' }
-					checked={ logCheckbox }
-					click={ changeCheckBox }
-				/>
-				<ExtraLink to={ `${ route.login }${ route.signUp }` }>
-					{ getTranslatedText( 'auth.noLogin', lang ) }
-				</ExtraLink>
-			</Extra>
-			<Button
-				text={ isFetching ? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
-				disabling={ disable }
-				mb={ '64px' }
-				bold
-				lHeight={ '24px' }
-				width={ '222px' }
-				height={ '48px' }/>
+		<form>
+			<Formik
+				initialValues={ initialLoginValues }
+				validationSchema={ validationLoginSchema }
+				validateOnBlur
+				enableReinitialize
+				onSubmit={ (async ( dataFormik, onSubmitProps ) => {
+					if(loading) return;
+					setLoading( true );
+					try {
+						const { data } = await postAuthLogin( dataFormik );
+						dispatch( putToken( { data, checkbox } ) );
+					} catch (err) {
+						if (err.response.status === 401) {
+							dispatch( unauthorized() );
+						}
+						if (err.response.status === 400) {
+							onSubmitProps.setErrors( { usernameOrEmail: err.response.data.error } );
+						}
+					}finally {
+						setLoading( false );
+					}
+				}) }
+			>
+				{ ( { errors, handleSubmit, isValid, dirty } ) => {
+					return (
+						<>
+							<div>
+								<InputForAuth
+									text={ getTranslatedText( 'auth.logEmail', lang ) }
+									name={ 'usernameOrEmail' }
+									type={ 'text' }
+								/>
+								<InputForAuth
+									text={ getTranslatedText( 'auth.logPassword', lang ) }
+									name={ 'password' }
+									type={ 'password' }
+								/>
+							</div>
+							<Extra>
+								<CheckBox
+									text={ getTranslatedText( 'auth.remember', lang ) }
+									margin={ '0 0 44px 0' }
+									fs={ '14px' }
+									checked={ checkbox }
+									click={ changeCheckBox }
+								/>
+								<ExtraLink to={ `${ route.login }${ route.signUp }` }>
+									{ getTranslatedText( 'auth.noLogin', lang ) }
+								</ExtraLink>
+							</Extra>
+							<Button
+								text={ loading ? <SpinnerForAuthBtn/> : getTranslatedText( 'button.enter', lang ) }
+								mb={ '64px' }
+								type={ 'submit' }
+								bold
+								lHeight={ '24px' }
+								width={ '222px' }
+								height={ '48px' }
+								disabling={  !isValid && !dirty }
+								click={ !errors.usernameOrEmail ? handleSubmit : null }
+							/>
+						</>);
+				} }
+			</Formik>
 		</form>
 	);
 };

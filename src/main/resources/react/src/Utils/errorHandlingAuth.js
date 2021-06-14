@@ -18,10 +18,10 @@ const translateErrorsAuth = ( state ) => {
 	} );
 };
 
-const changeInputAuth = ( event, state ) => {
+const isErrorArray = ( event, state ) => {
 	const { name: key, value } = event.target;
 	const isValid = validation( state, key, value );
 	return errorAuth( state.errors, key, isValid );
 };
 
-export { errorAuth, translateErrorsAuth, changeInputAuth };
+export { errorAuth, translateErrorsAuth, isErrorArray };

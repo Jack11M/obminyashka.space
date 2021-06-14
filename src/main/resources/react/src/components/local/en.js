@@ -20,7 +20,6 @@ const en = {
 		regPassword: 'Uppercase and lowercase Latin letters and numbers. Length from 8 to 30 characters',
 		regConfirm: 'Passwords must match',
 		children: 'Children under 17',
-		currentPassword: 'Uppercase and lowercase Latin letters and numbers. Length from 8 to 30 characters',
 	},
 	panel: {
 		myActivity: 'My activity',
@@ -49,6 +48,7 @@ const en = {
 		changeEmail: 'CHANGE E-MAIL',
 		oldEmail: 'Old E-Mail:',
 		newEmail: 'New E-Mail:',
+		confirmEmail: 'Repeat E-Mail:',
 		remove: 'REMOVE ACCOUNT',
 		describe: 'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section',
 		profile: 'Profile'

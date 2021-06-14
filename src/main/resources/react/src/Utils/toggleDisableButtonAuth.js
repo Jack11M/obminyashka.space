@@ -27,4 +27,8 @@ const toggleButtonReg = ( state ) => {
 	);
 };
 
-export { toggleButtonLog, toggleButtonReg };
+const getBool = (...array) => {
+	return array.every(item => item);
+}
+
+export { toggleButtonLog, toggleButtonReg, getBool };

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
 import MyActivity from './my_activity';
-import MyProfile from './my_profile/myProfile';
+import MyProfile from './my_profile';
 import MyFavorites from './my_favorites';
 import MySettings from './my_settings';
 import { route } from '../../../routes/routeConstants';
@@ -20,16 +20,16 @@ const RouterTabs = ( { url, set } ) => {
 	const findComponentForExit = useCallback( () => {
 		let lastComponent = MyActivity;
 		switch (prevLocation) {
-			case '/user':
+			case route.userInfo:
 				lastComponent = MyActivity;
 				return MyActivity;
-			case '/user/profile':
+			case `${route.userInfo}${route.myProfile}`:
 				lastComponent = MyProfile;
 				return MyProfile;
-			case '/user/favorites':
+			case `${route.userInfo}${route.myFavorite}`:
 				lastComponent = MyFavorites;
 				return MyFavorites;
-			case '/user/settings':
+			case `${route.userInfo}${route.mySettings}`:
 				lastComponent = MySettings;
 				return MySettings;
 			default:

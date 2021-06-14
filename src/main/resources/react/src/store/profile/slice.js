@@ -1,57 +1,68 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getUserInfo } from '../../REST/Resources';
+import { unauthorized } from '../auth/slice';
+
+
+export const fetchUser = createAsyncThunk( 'profileMe/fetchUser',
+	async ( _, { dispatch } ) => {
+		try {
+			const { data } = await getUserInfo();
+			return data;
+		} catch (err) {
+			if (err.response.status === 401) {
+				dispatch( unauthorized() );
+			}
+		}
+	}
+);
 
 
 const profileMeInitialState = {
+	userLoading: false,
+	childrenLoading: false,
 	avatarImage: '',
+	children: [],
+	email: '',
 	firstName: '',
 	lastName: '',
-	username: '',
-	email: '',
-	phones: [],
-	children: [],
-	online: '',
 	lastOnlineTime: '',
-	mockPhones: [
-		{
-			defaultPhone: false,
-			id: 0,
-			phoneNumber: ''
-		}
-	],
-	mockChildren: [
-		{
-			birthDate: '',
-			id: 0,
-			sex: 'UNSELECTED'
-		}
-	],
-	errors: [],
-	errorsPhone: [],
-	errorsChildren: [],
-	prohibitionToSendAboutMe: true,
-	prohibitionToSendChildren: true,
-	receivedChildrenFromBack: []
+	online: false,
+	phones: [],
+	status: '',
+	updated: '',
+	username: ''
 };
 
 const profileMeSlice = createSlice( {
 	name: 'profile',
 	initialState: profileMeInitialState,
 	reducers: {
-		startFetching: ( state ) => {
-			state.isFetching = true;
-		},
-		stopFetching: ( state ) => {
-			state.isFetching = false;
-		},
+		putUserToStore: (state, {payload}) => {
+			state.firstName = payload.firstName;
+			state.lastName = payload.lastName;
+			state.phones = payload.phones;
+		}
+	},
+	extraReducers: {
+		[fetchUser.fulfilled]: ( state, { payload } ) => {
+			state.avatarImage = payload.avatarImage;
+			state.children = payload.children;
+			state.email = payload.email;
+			state.firstName = payload.firstName;
+			state.lastName = payload.lastName;
+			state.lastOnlineTime = payload.lastOnlineTime;
+			state.online = payload.online;
+			state.phones = payload.phones;
+			state.status = payload.status;
+			state.updated = payload.updated;
+			state.username = payload.username;
+		}
 	}
 } );
 
 const {
 	reducer: profileMeReducer,
-	actions: {
-		startFetching,
-		stopFetching
-	}
+	actions: {putUserToStore}
 } = profileMeSlice;
 
-export { startFetching, stopFetching, profileMeReducer, profileMeInitialState };
+export {putUserToStore, profileMeReducer, profileMeInitialState };

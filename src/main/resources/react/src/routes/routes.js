@@ -26,11 +26,6 @@ const Routes = () => {
 			component={ UserInfo }
 			permission={ isAuthenticated }
 			redirect={ route.login }/>
-		<Protected
-			path = { route.userInfo }
-			component = { UserInfo }
-			permission = { isAuthenticated }
-			redirect = { route.login }/>
     <Protected
 			path={ route.addAdv }
 			component={ AddGoods }

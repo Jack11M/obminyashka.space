@@ -9,5 +9,5 @@ export const postAuthRegister = ( data ) => {
 };
 
 export const postAuthLogout = () => {
-	return axiosInstance( 'post', 'auth/logout' );
+	return axiosInstance( 'post', '/auth/logout' );
 };

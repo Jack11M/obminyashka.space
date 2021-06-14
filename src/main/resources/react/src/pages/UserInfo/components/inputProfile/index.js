@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import { getCurrentDate, getMinDate } from '../../../../Utils';
+import { useField } from 'formik';
 
 const ProfileInput = styled.div`
   position: relative;
@@ -48,38 +47,24 @@ const SpanError = styled.span`
   color: ${ ( { theme: { colors } } ) => colors['colorError'] };
 `;
 
-const InputProfile = ( { id = '', type, name, label, value, change, errors=[] } ) => {
-	// I will delete it later, I need it
-	// const { errors, errorsPhone, errorsChildren } = useSelector( state => state.profileMe );
-	// let error;
-	// if (type === 'phone') {
-	// 	error = errorsPhone.find( error => error.key === id );
-	// } else if (type === 'date') {
-	// 	error = errorsChildren.find( error => error.key === id );
-	// } else {
-	// 	error = errors.find( error => error.key === name );
-	// }
-	// const errorText = error ? error.errorText : null;
-	const error = !!errors.length && errors.find(err => {
-		return Object.keys(err).join('')=== name});
+const InputProfile = ( { id = '', label, ...props } ) => {
 
+	const [ field, meta ] = useField( props );
+	const { error, touched } = meta;
 	return (
 		<ProfileInput>
-			<Label htmlFor={ name + id }>{ `${ label }` }</Label>
+			<Label htmlFor={ id }>{ `${ label }` }</Label>
 			<Input
-				max={ type === 'date' ? getCurrentDate() : null }
-				min={ type === 'date' ? getMinDate() : null }
-				id={ name + id }
-				type={ type }
-				name={ name }
-				value={ value }
-				error={ error }
-				onChange={ change }
-				placeholder={ name === 'phoneNumber' ? `+38(123)456-78-90, 381234567890` : null }
+				readOnly={props.readOnly}
+				id={ field.name + id }
+				error={ touched && error }
+				{ ...field }
+				{ ...props }
 			/>
-			<SpanError>{ error && error[name] }</SpanError>
+			{ <SpanError> { touched && error }</SpanError> }
 		</ProfileInput>
 	);
 };
+
 
 export default InputProfile;

@@ -8,6 +8,7 @@ const authInitialState = {
 	lang: getStorageLang(),
 	isAuthenticated: !!getStorageUser( 'user' ).token,
 	username: getStorageUser( 'user' ).username,
+	email: getStorageUser( 'user' ).email,
 	token: getStorageUser( 'user' ).token,
 	avatarImage: getStorageUser( 'user' ).avatarImage,
 	firstname: getStorageUser( 'user' ).firstname,
@@ -15,9 +16,13 @@ const authInitialState = {
 };
 
 export const fetchLogOut = createAsyncThunk( 'auth/fetchLogOut',
-	async () => {
-		const { data } = await postAuthLogout();
-		return data;
+	async ( { dispatch } ) => {
+		try {
+			await postAuthLogout();
+			dispatch( unauthorized() );
+		} catch (err) {
+			dispatch( unauthorized() );
+		}
 	} );
 
 const authSlice = createSlice( {
@@ -33,13 +38,24 @@ const authSlice = createSlice( {
 				console.log( 'You need to enable a localStorage' );
 			}
 		},
-		setAuthenticate: ( state, { payload } ) => {
-			state.isAuthenticated = payload;
+		putEmail: ( state, { payload } ) => {
+			state.email = payload;
+		},
+		setAuthenticated: ( state ) => {
+			state.isAuthenticated = true;
+		},
+		unAuthenticated: ( state ) => {
+			state.isAuthenticated = false;
+		},
+
+		unauthorized: ( state ) => {
+			resetUser(state)
 		},
 		putToken: ( state, { payload } ) => {
 			const { data, isCheck } = payload;
 			state.isAuthenticated = true;
 			state.username = data.username;
+			state.email = data.email;
 			state.token = data.token;
 			state.avatarImage = data.avatarImage;
 			state.firstname = data.firstname;
@@ -56,30 +72,38 @@ const authSlice = createSlice( {
 		[fetchLogOut.pending]: ( state ) => {
 			state.isFetchingAuth = true;
 		},
-		[fetchLogOut.fulfilled]: ( state ) => {
-			state.isFetchingAuth = false;
-			state.isAuthenticated = false;
-			removeTokenFromStorage();
-			removeTokenFromStorage();
-			state.username = '';
-			state.token = '';
-			state.avatarImage = '';
-			state.firstname = '';
-			state.lastname = '';
+		[fetchLogOut.fulfilled]: ( state, {payload} ) => {
+			console.log(payload);
+			resetUser(state)
+
 		},
-		[fetchLogOut.rejected]: ( state ) => {
-			state.isFetchingAuth = false;
-			state.isAuthenticated = false;
-			removeTokenFromStorage();
-			state.username = '';
-			state.token = '';
-			state.avatarImage = '';
-			state.firstname = '';
-			state.lastname = '';
+		[fetchLogOut.rejected]: ( state , {payload}) => {
+			console.log(payload);
+			resetUser(state)
 		}
 	}
 } );
+function  resetUser (state) {
+	state.isFetchingAuth = false;
+	removeTokenFromStorage();
+	state.isAuthenticated = '';
+	state.email = ''
+	state.username = '';
+	state.token = '';
+	state.avatarImage = '';
+	state.firstname = '';
+	state.lastname = '';
+}
 
-const { reducer: authReducer, actions: { setLanguage, setAuthenticate, putToken } } = authSlice;
+const {
+	reducer: authReducer, actions: {
+		setLanguage,
+		putEmail,
+		setAuthenticated,
+		unAuthenticated,
+		unauthorized,
+		putToken
+	}
+} = authSlice;
 
-export { setLanguage, setAuthenticate, putToken, authReducer, authInitialState };
+export { setLanguage,putEmail,  setAuthenticated, unAuthenticated, unauthorized, putToken, authReducer, authInitialState };
