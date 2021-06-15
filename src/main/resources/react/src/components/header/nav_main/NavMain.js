@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import ButtonAdv from '../../buttonAdv/ButtonAdv.js';
+import ButtonAdv from '../../common/buttonAdv/ButtonAdv.js';
 import NavCategory from '../nav_category/NavCategory.js';
 import { getTranslatedText } from '../../local/localisation';
 

@@ -5,7 +5,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import Tabs from './tabs';
 import RouterTabs from './tab_pages/router_tabs';
 import ActiveProfile from './active_profile';
-import Exit from './tab_pages/exit/index';
+import Exit from './tab_pages/exit';
 
 import './UserInfo.scss';
 
@@ -15,7 +15,7 @@ const UserInfo = () => {
 	const [ isModalOpen, setIsModalOpen ] = useState( false );
 	const [ prevLocation, setPrevLocation ] = useState( '' );
 
-	const { firstName, lastName, avatarImage } = useSelector( ( state ) => state.profileMe );
+	const { firstName, lastName, avatarImage } = useSelector( ( state ) => state.profileMe);
 
 
 	const open = useCallback( () => {
@@ -43,7 +43,7 @@ const UserInfo = () => {
 					<RouterTabs url={ url } set={ [ prevLocation, setPrevLocation ] }/>
 				</div>
 			</main>
-			{ isModalOpen && <Exit toggle={ close }/> }
+			{ isModalOpen && <Exit toggle={ close } setIsModalOpen={setIsModalOpen}/> }
 		</div>
 	);
 };

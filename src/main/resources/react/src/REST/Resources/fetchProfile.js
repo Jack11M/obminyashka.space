@@ -5,7 +5,7 @@ export const getUserInfo = () => {
 };
 
 export const putUserInfo = ( data ) => {
-	return axiosInstance( 'put', 'user/info', data );
+	return axiosInstance( 'put', 'user/my-info', data );
 };
 
 export const postUserChildren = ( data ) => {
@@ -20,3 +20,9 @@ export const deleteUserChildren = ( id ) => {
 	return axiosInstance( 'delete', `user/child/${id}` );
 };
 
+export const putPasswordFetch = ( data ) => {
+	return axiosInstance( 'put', `user/service/pass/`, data );
+};
+export const putEmailFetch = ( data ) => {
+	return axiosInstance( 'put', `user/service/email/`, data );
+};

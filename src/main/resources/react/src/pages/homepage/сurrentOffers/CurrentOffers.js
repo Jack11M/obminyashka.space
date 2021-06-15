@@ -3,8 +3,8 @@ import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { route } from '../../../routes/routeConstants';
-import ProductCard from '../../../components/Card';
-import TitleBigBlue from '../../../components/title_Big_Blue';
+import ProductCard from '../../../components/item-card';
+import TitleBigBlue from '../../../components/common/title_Big_Blue';
 import { getCurrentOffers } from '../../../REST/Resources';
 import { getTranslatedText } from '../../../components/local/localisation';
 import noPhotos from '../../../img/showAdv/noPhoto.svg';

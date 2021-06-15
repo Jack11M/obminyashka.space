@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ProductCard from '../../../components/Card';
+import ProductCard from '../../../components/item-card';
 
 import './ProductOffers.scss';
 

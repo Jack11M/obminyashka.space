@@ -5,6 +5,7 @@ import en from './en';
 const translations = { ru, ua, en };
 
 const getTranslatedText = ( key, lang ) => {
+
 	const arrayKeys = key.split( '.' );
 	const [ keys, value ] = arrayKeys;
 

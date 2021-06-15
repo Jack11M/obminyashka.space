@@ -1,5 +1,5 @@
 import React from "react";
-import BtnGoodBusiness from "../../../components/btnGoodBusiness/BtnGoodBusiness.js";
+import BtnGoodBusiness from "../../../components/common/btnGoodBusiness/BtnGoodBusiness.js";
 import "./helpchildren.scss";
 import { useSelector } from 'react-redux';
 import { getTranslatedText } from '../../../components/local/localisation';
