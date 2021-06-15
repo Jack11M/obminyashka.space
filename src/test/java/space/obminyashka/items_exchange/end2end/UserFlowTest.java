@@ -84,6 +84,22 @@ class UserFlowTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
+    void getCreatedAdvertisements_shouldReturnAll() throws Exception {
+        mockMvc.perform(get("/user/my-adv")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(5)))
+                .andExpect(jsonPath("$[0].title").value("topic"))
+                .andExpect(jsonPath("$[1].title").value("Blouses"))
+                .andExpect(jsonPath("$[2].title").value("Dresses"))
+                .andExpect(jsonPath("$[3].title").value("Skirts"))
+                .andExpect(jsonPath("$[4].title").value("Pajamas"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
     void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
         mockMvc.perform(get("/user/child/")
                 .contentType(MediaType.APPLICATION_JSON)

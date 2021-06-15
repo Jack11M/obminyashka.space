@@ -20,9 +20,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@EqualsAndHashCode(exclude = {"id", "location", "images"})
 public class AdvertisementDto {
     @Positive(groups = Exist.class, message = "{invalid.exist.id}")
     @Zero(groups = New.class, message = "{new.advertisement.id.not-zero}")

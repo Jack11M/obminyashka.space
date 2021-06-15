@@ -1,215 +1,150 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.dao.UserRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.util.PatternHandler;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.model.Phone;
-import space.obminyashka.items_exchange.model.enums.Status;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.util.Optional;
 
-import static space.obminyashka.items_exchange.mapper.UtilMapper.*;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static java.time.temporal.ChronoUnit.DAYS;
+public interface UserService {
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+    /**
+     * Find a user into DB by checking gained param either username or email columns
+     * @param usernameOrEmail login or email of the user
+     * @return {@link Optional} with the user as the result
+     */
+    Optional<User> findByUsernameOrEmail(String usernameOrEmail);
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ModelMapper modelMapper;
+    /**
+     * Find a user into DB by checking gained username and convert it into DTO
+     * @param username login of the user
+     * @return {@link Optional} with the converted user as the result
+     */
+    Optional<UserDto> findByUsername(String username);
 
-    @Value("${number.of.days.to.keep.deleted.users}")
-    private int numberOfDaysToKeepDeletedUsers;
+    /**
+     * Register new user with received role
+     * @param userRegistrationDto DTO which contains all required data for registration the user
+     * @param role provided role which has to be set to the user
+     * @return result of registration
+     */
+    boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role);
 
-    public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
-        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
-    }
+    /**
+     * Update an existed user with new data
+     * @param newUserUpdateDto new data for update
+     * @param user existed user to update
+     * @return a message as the result of the operation
+     */
+    String update(UserUpdateDto newUserUpdateDto, User user);
 
-    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        Pattern usernamePattern = Pattern.compile(PatternHandler.USERNAME);
-        Optional<User> user = usernamePattern.matcher(usernameOrEmail).matches()
-                ? userRepository.findByUsername(usernameOrEmail)
-                : userRepository.findByEmail(usernameOrEmail);
+    /**
+     * Update password of an existed user with new one
+     * @param userChangePasswordDto DTO which contains old password and doubled new password
+     * @param user existed user to update
+     * @return a message as the result of the operation
+     */
+    String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user);
 
-        return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
-    }
+    /**
+     * Update email of an existed user with new one
+     * @param userChangeEmailDto DTO which contains doubled new email
+     * @param user existed user to update
+     * @return a message as the result of the operation
+     */
+    String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user);
 
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
-        User registeredUser = userRegistrationDtoToUser(userRegistrationDto, bCryptPasswordEncoder, role);
-        return userRepository.save(registeredUser).getId() != 0;
-    }
+    /**
+     * Request from a user to remove them account with time limit
+     * @param user existed user which is requested self-removing procedure
+     */
+    void selfDeleteRequest(User user);
 
-    public String update(UserUpdateDto newUserUpdateDto, User user) {
-        user.setFirstName(newUserUpdateDto.getFirstName());
-        user.setLastName(newUserUpdateDto.getLastName());
+    /**
+     * Getting days which is/are left for the user before removing from DB
+     * @param user the requested user
+     * @return quantity of days that is/are left
+     */
+    long getDaysBeforeDeletion(User user);
 
-        final var phonesToUpdate = convertPhone(newUserUpdateDto.getPhones());
-        final var userPhones = user.getPhones();
-        boolean isEqualsPhones = userPhones.equals(phonesToUpdate);
-        if (!isEqualsPhones) {
-            userPhones.removeIf(Predicate.not((phonesToUpdate::contains)));
-            userPhones.addAll(phonesToUpdate);
-            userPhones.forEach((phone -> phone.setUser(user)));
-        }
-
-        userRepository.saveAndFlush(user);
-        return getMessageSource("changed.user.info");
-    }
-
-    public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
-        userRepository.saveAndFlush(user);
-
-        return getMessageSource("changed.user.password");
-    }
-
-    public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
-        user.setEmail(userChangeEmailDto.getNewEmail());
-        userRepository.saveAndFlush(user);
-
-        return getMessageSource("changed.user.email");
-    }
-
-    public void selfDeleteRequest(User user) {
-        user.setStatus(DELETED);
-        userRepository.saveAndFlush(user);
-    }
-
-    public long getDaysBeforeDeletion(User user) {
-        return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
-    }
-
+    /**
+     * Scheduled job which checks users that needs to be removed from DB after exhaustion of the grace period
+     */
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
-    public void permanentlyDeleteUsers() {
-        userRepository.findAll().stream()
-                .filter(Predicate.not(User::isEnabled))
-                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
-                .forEach(userRepository::delete);
-    }
+    void permanentlyDeleteUsers();
 
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
-        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
+    /**
+     * Restoration of the user which was tagged as "to be removed"
+     * @param user the requested user which has to be active again
+     */
+    void makeAccountActiveAgain(User user);
 
-        return duration.toDays() > numberOfDaysToKeepDeletedUsers;
-    }
+    /**
+     * Check whether the user exist into DB by login
+     * @param username login of the user to check
+     * @return result of the check
+     */
+    boolean existsByUsername(String username);
 
-    public void makeAccountActiveAgain(User user) {
-        user.setStatus(ACTIVE);
-        userRepository.saveAndFlush(user);
-    }
+    /**
+     * Check whether the user exist into DB by email
+     * @param email mail address of the user to check
+     * @return result of the check
+     */
+    boolean existsByEmail(String email);
 
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
+    /**
+     * Check whether the user exist into DB by email or username and encrypted user's password
+     * @param usernameOrEmail login or email to be checked
+     * @param encodedPassword encoded password of the user
+     * @return result of the check
+     */
+    boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword);
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
+    /**
+     * Check whether received user's password matches to gained user
+     * @param user user to check password
+     * @param encodedPassword encoded password
+     * @return result of the check
+     */
+    boolean isPasswordMatches(User user, String encodedPassword);
 
-    public Optional<UserDto> getByUsernameOrEmail(String usernameOrEmail) {
-        return userRepository.findByUsername(usernameOrEmail).map(this::mapUserToDto);
-    }
+    /**
+     * Get all children from gained user
+     * @param parent the user which is requested for getting all the children
+     * @return all existed children for provided user
+     */
+    List<ChildDto> getChildren(User parent);
 
-    public boolean isPasswordMatches(User user, String encodedPassword){
-        return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
-    }
+    /**
+     * Add new children to existed user
+     * @param parent the user which is required for adding new children
+     * @param childrenDtoToAdd list which contains new children's data
+     * @return children which were added to the user
+     */
+    List<ChildDto> addChildren(User parent, List<ChildDto> childrenDtoToAdd);
 
-    private UserDto mapUserToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
-    }
+    /**
+     * Update existed children of gained user
+     * @param parent user for children update
+     * @param childrenDtoToUpdate updated children data
+     * @return children which were updated
+     */
+    List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate);
 
-    public List<ChildDto> getChildren(User parent) {
-        return convertToDto(parent.getChildren(), ChildDto.class);
-    }
+    /**
+     * Remove received children from gained user
+     * @param parent user for removing children
+     * @param childrenIdToRemove list which contains children which have to be removed
+     */
+    void removeChildren(User parent, List<Long> childrenIdToRemove);
 
-    public List<ChildDto> addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
-        final List<Child> childrenToSave = new ArrayList<>(convertAllTo(
-                childrenDtoToAdd, Child.class, ArrayList::new));
-        addNewChildren(parent, childrenToSave);
-        userRepository.save(parent);
-        List<Child> children = parent.getChildren();
-        children.retainAll(childrenToSave);
-        return convertToDto(children, ChildDto.class);
-    }
-
-    public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
-        List<Child> updatedChildren = new ArrayList<>();
-        parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
-            if (pChild.getId() == uChild.getId()) {
-                BeanUtils.copyProperties(uChild, pChild);
-                updatedChildren.add(pChild);
-            }
-        }));
-        userRepository.saveAndFlush(parent);
-        return convertToDto(updatedChildren, ChildDto.class);
-    }
-
-    public void removeChildren(User parent, List<Long> childrenIdToRemove) {
-        parent.getChildren().removeIf(child -> childrenIdToRemove.contains(child.getId()));
-        userRepository.saveAndFlush(parent);
-    }
-
-    public void setUserAvatar(byte[] newAvatarImage, User user) {
-        user.setAvatarImage(newAvatarImage);
-        userRepository.saveAndFlush(user);
-    }
-
-    private void addNewChildren(User user, Collection<Child> children) {
-        children.forEach(child -> child.setUser(user));
-        user.getChildren().addAll(children);
-    }
-
-    private Set<Phone> convertPhone(Set<PhoneDto> phones) {
-        Converter<String, Long> stringLongConverter = context ->
-                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
-
-        modelMapper.typeMap(PhoneDto.class, Phone.class)
-                .addMappings(mapper -> mapper.using(stringLongConverter)
-                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
-        return modelMapper.map(phones, new TypeToken<Set<Phone>>() {}.getType());
-    }
-
-    public static User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto,
-                                                 BCryptPasswordEncoder bCryptPasswordEncoder,
-                                                 Role role) {
-        User user = new User();
-        user.setUsername(userRegistrationDto.getUsername());
-        user.setEmail(userRegistrationDto.getEmail());
-        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
-        user.setRole(role);
-        user.setFirstName("");
-        user.setLastName("");
-        user.setOnline(false);
-        user.setAvatarImage(new byte[0]);
-        user.setAdvertisements(Collections.emptyList());
-        user.setChildren(Collections.emptyList());
-        user.setDeals(Collections.emptyList());
-        user.setPhones(Collections.emptySet());
-        LocalDateTime now = LocalDateTime.now();
-        user.setCreated(now);
-        user.setUpdated(now);
-        user.setLastOnlineTime(now);
-        user.setStatus(Status.ACTIVE);
-        return user;
-    }
+    /**
+     * Set received image to existed user as the avatar image
+     * @param newAvatarImage image represented into array of bytes
+     * @param user user whom the image has to be set as new avatar image
+     */
+    void setUserAvatar(byte[] newAvatarImage, User user);
 }

@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
 @Setter
 public class UserDto {
