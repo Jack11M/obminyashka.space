@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,12 +29,14 @@ import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.validator.UserLoginDtoValidator;
 import space.obminyashka.items_exchange.validator.UserRegistrationDtoValidator;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
+import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @Slf4j
@@ -59,7 +62,7 @@ public class AuthController {
     private final UserService userService;
     private final RoleService roleService;
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Login in a registered user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -68,7 +71,7 @@ public class AuthController {
     })
     @ResponseStatus(HttpStatus.OK)
     public Map<String, Object> login(@RequestBody @Valid UserLoginDto userLoginDto,
-                                                     BindingResult bindingResult) throws UserValidationException {
+                                                     @ApiIgnore BindingResult bindingResult) throws UserValidationException {
 
         userLoginDtoValidator.validate(userLoginDto, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -76,18 +79,17 @@ public class AuthController {
         }
 
         try {
-            String username = userLoginDto.getUsernameOrEmail();
+            final String username = escapeHtml(userLoginDto.getUsernameOrEmail());
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             User user = userService.findByUsernameOrEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(
-                            getExceptionMessageSourceWithAdditionalInfo("user.not-found", username)));
+                    .orElseThrow(() -> new UsernameNotFoundException(getMessageSource("exception.user.not-found")));
             Map<String, Object> response = new HashMap<>();
             response.put(USERNAME, username);
             response.put(FIRSTNAME, user.getFirstName());
             response.put(LASTNAME, user.getLastName());
             response.put(EMAIL, user.getEmail());
             response.put(AVATAR_IMAGE, user.getAvatarImage());
-            String token = jwtTokenProvider.createToken(username, user.getRole());
+            final String token = jwtTokenProvider.createToken(username, user.getRole());
             response.put(TOKEN, token);
             log.info("User {} is successfully logged in", username);
 
@@ -113,16 +115,15 @@ public class AuthController {
             @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
-                                                   BindingResult bindingResult)
+                                                   @ApiIgnore BindingResult bindingResult)
             throws BadRequestException, RoleNotFoundException {
 
         userRegistrationDtoValidator.validate(userRegistrationDto, bindingResult);
 
         Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);
         if (userService.registerNewUser(userRegistrationDto, role)) {
-            log.info("User with email: {} successfully registered", userRegistrationDto.getEmail());
-            return new ResponseEntity<>(getParametrizedMessageSource(
-                    "user.created", userRegistrationDto.getUsername()), HttpStatus.CREATED);
+            log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
+            return new ResponseEntity<>(getMessageSource("user.created"), HttpStatus.CREATED);
         }
 
         throw new BadRequestException(getMessageSource("user.not-registered"));
