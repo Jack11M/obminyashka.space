@@ -1,10 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const BtnGoodBusiness = props => {
+const BtnGoodBusiness = (props) => {
   return (
     <Link to={props.href} className={props.whatClass}>
-      <span className="icon-heart"/>
+      <span className="icon-heart" />
       {props.text}
     </Link>
   );

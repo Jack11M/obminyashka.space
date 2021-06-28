@@ -11,7 +11,6 @@
 }
 
 .productPhotoSlideBig {
-
   img {
     width: 600px;
     height: 680px;
@@ -23,7 +22,7 @@
   height: 100%;
 
   .slick-slider {
-    padding-top: 20px
+    padding-top: 20px;
   }
 }
 
@@ -71,14 +70,14 @@
 }
 
 .selected {
-  border: 2px solid #FA9E25;
+  border: 2px solid #fa9e25;
 }
 
 .noPhoto {
   margin: 10px 0;
   width: 138px;
   height: 138px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 
   .noPhotoImg {
     width: 40%;

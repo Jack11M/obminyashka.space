@@ -1,16 +1,15 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
 import SomethingBad from '../../pages/ErrorPages/SomethingBad';
 
 class ErrorBoundary extends React.Component {
-  state = { hasError: localStorage.getItem('error')};
+  state = { hasError: localStorage.getItem('error') };
 
   componentDidCatch(error, info) {
     console.log(error);
     console.log(info);
     this.setState({ hasError: true });
   }
-
 
   deactivateError = (value) => {
     this.setState({ hasError: value });

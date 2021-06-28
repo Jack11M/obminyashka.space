@@ -16,54 +16,56 @@ import {
   FavoriteMarker,
   LocationIcon,
   Picture,
-  TextContent
+  TextContent,
 } from './styledForCard';
 
 import './avatarForCard.scss';
 
+const ProductCard = (props) => {
+  const { lang } = useSelector((state) => state.auth);
+  const avatar = props.avatar === '' || props.avatar;
 
-const ProductCard = ( props ) => {
-	const { lang } = useSelector( state => state.auth );
-	const avatar = props.avatar === '' || props.avatar;
+  return (
+    <Card margin={props.margin}>
+      <FavoriteMarker isFavorite={props.isFavorite}>
+        {avatar ? (
+          <Avatar
+            whatIsClass={'avatar-for-card'}
+            avatar={props.avatar}
+            width={'40px'}
+            height={'40px'}
+          />
+        ) : (
+          <SvgStar isFavorite={props.isFavorite} />
+        )}
+      </FavoriteMarker>
 
-	return (
-		<Card margin={props.margin}>
-			<FavoriteMarker isFavorite={ props.isFavorite }>
-				{ avatar ? <Avatar whatIsClass={ 'avatar-for-card' } avatar={ props.avatar } width={ '40px' } height={ '40px' }/> :
-					<SvgStar isFavorite={ props.isFavorite }/> }
-			</FavoriteMarker>
+      <DivPicture>
+        <Picture src={props.picture} alt="lot" className="" />
+      </DivPicture>
 
-			<DivPicture>
-				<Picture
-					src={ props.picture }
-					alt="lot"
-					className=""
-				/>
-			</DivPicture>
+      <CardContent>
+        <TextContent>{props.text}</TextContent>
 
-			<CardContent>
-				<TextContent>
-					{ props.text }
-				</TextContent>
+        <LocationIcon inbox={props.inboxMessage}>
+          <span className="icon-location" />
+          <CitySpan>{props.city}</CitySpan>
+        </LocationIcon>
+        <ButtonBlock>
+          <Button
+            click={props.clickOnButton}
+            whatClass=""
+            text={getTranslatedText('button.look', lang)}
+            width={props.inboxMessage ? '190px' : '222px'}
+          />
 
-				<LocationIcon inbox={ props.inboxMessage }>
-					<span className="icon-location"/>
-					<CitySpan>{ props.city }</CitySpan>
-				</LocationIcon>
-				<ButtonBlock>
-					<Button
-						click={props.clickOnButton}
-						whatClass=""
-						text= { getTranslatedText('button.look', lang) }
-						width={ props.inboxMessage ? '190px' : '222px' }
-					/>
-
-					{ props.inboxMessage && <InboxMessageSvg inboxMessage={ props.inboxMessage }/> }
-
-				</ButtonBlock>
-			</CardContent>
-		</Card>
-	);
+          {props.inboxMessage && (
+            <InboxMessageSvg inboxMessage={props.inboxMessage} />
+          )}
+        </ButtonBlock>
+      </CardContent>
+    </Card>
+  );
 };
 
 export default ProductCard;

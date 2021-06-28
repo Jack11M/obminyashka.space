@@ -15,18 +15,25 @@ import './ProductPage.scss';
 
 const ProductPage = () => {
   const param = useRouteMatch();
-  const { lang } = useSelector( state => state.auth );
-  const [ product, setProduct ] = useState({});
-  const [ photos, setPhotos ] = useState([]);
-  const [ wishes, setWishes ] = useState([]);
-  const [ location, setLocation ] = useState({});
-  const [ category, setCategory ] = useState({});
-  const [ subcategory, setSubcategory ] = useState({});
+  const { lang } = useSelector((state) => state.auth);
+  const [product, setProduct] = useState({});
+  const [photos, setPhotos] = useState([]);
+  const [wishes, setWishes] = useState([]);
+  const [location, setLocation] = useState({});
+  const [category, setCategory] = useState({});
+  const [subcategory, setSubcategory] = useState({});
 
   useEffect(() => {
     getProduct(param.params.id)
       .then(({ data }) => {
-        const { images, wishesToExchange, category, subcategory, location, ...rest } = data;
+        const {
+          images,
+          wishesToExchange,
+          category,
+          subcategory,
+          location,
+          ...rest
+        } = data;
         const arrWishes = wishesToExchange.split(', ');
         if (rest.readyForOffers) {
           arrWishes.push(getTranslatedText('product.checkInUl', lang));
@@ -38,52 +45,56 @@ const ProductPage = () => {
         setSubcategory(subcategory);
         setLocation(location);
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e);
       });
   }, [lang]);
 
   return (
     <div>
-      <section className = 'topSection'>
-        <div className = 'productPageContainer'>
-          <div className = 'breadСrumbs'>{getTranslatedText('product.categories', lang)}/{ category.name }/{ subcategory.name }/{ product.topic }
+      <section className="topSection">
+        <div className="productPageContainer">
+          <div className="breadСrumbs">
+            {getTranslatedText('product.categories', lang)}/{category.name}/
+            {subcategory.name}/{product.topic}
           </div>
-          <div className = 'productPageInner'>
-            <div className = 'carouselAndDescription'>
-              <ProductPhotoCarousel photos = { photos }/>
+          <div className="productPageInner">
+            <div className="carouselAndDescription">
+              <ProductPhotoCarousel photos={photos} />
               <ProductDescription
-                title = { product.topic }
-                description = { product.description }
+                title={product.topic}
+                description={product.description}
               />
             </div>
-            <div className = 'ownerAndPost'>
+            <div className="ownerAndPost">
               <ProductOwnerData
-                ava = { product.ownerAvatar }
-                name = { product.ownerName }
-                date = { product.createdDate }
-                city = { location.city }
-                phone = { product.phone }
+                ava={product.ownerAvatar}
+                name={product.ownerName}
+                date={product.createdDate}
+                city={location.city}
+                phone={product.phone}
               />
               <ProductPostData
-                title = { product.topic }
-                wishes = { wishes }
-                size = { product.size }
-                gender = { product.gender }
-                age = { product.age }
-                season = { product.season }
+                title={product.topic}
+                wishes={wishes}
+                size={product.size}
+                gender={product.gender}
+                age={product.age}
+                season={product.season}
               />
             </div>
           </div>
         </div>
       </section>
       <section>
-        <div className = 'productPageContainer'>
-          <div className = 'productPageInner'>
-            <div className = 'sectionHeading'>
-              <TitleBigBlue text = { getTranslatedText('product.blueTitle', lang) }/>
+        <div className="productPageContainer">
+          <div className="productPageInner">
+            <div className="sectionHeading">
+              <TitleBigBlue
+                text={getTranslatedText('product.blueTitle', lang)}
+              />
             </div>
-            <ProductOffers/>
+            <ProductOffers />
           </div>
         </div>
       </section>

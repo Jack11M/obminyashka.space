@@ -10,11 +10,11 @@ export const Extra = styled.div`
   justify-content: space-between;
 `;
 
-export const ExtraLink = styled( Link )`
+export const ExtraLink = styled(Link)`
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
   line-height: 17px;
   text-decoration-line: none;
-  color: ${ ( { theme: { colors } } ) => colors['btn-blue-normal'] };
+  color: ${({ theme: { colors } }) => colors['btn-blue-normal']};
 `;

@@ -1,4 +1,4 @@
-@import "../../partials/variables";
+@import '../../partials/variables';
 
 .navbarBurger-list {
   background-color: #fff;
@@ -52,12 +52,11 @@
       height: 157px;
 
       &:hover {
-        border: 2px dashed #FFB641;
+        border: 2px dashed #ffb641;
         box-sizing: border-box;
         box-shadow: 0 4px 40px rgba(255, 199, 0, 0.4);
         border-radius: 111px;
       }
-
     }
   }
 }

@@ -4,7 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
-
 import ScrollToTop from './components/scrollToTop/scrollToTop';
 import ErrorBoundary from './components/errorBoundary/errorBoudary';
 import Header from './components/header/Header';
@@ -15,21 +14,21 @@ import { theme } from './styledTheme';
 import GlobalFonts from './styledTheme/styledFonts';
 
 const App = () => {
-	return (
-		<Provider store={ store }>
-				<ThemeProvider theme={ theme }>
-					<GlobalFonts/>
-					<Router>
-						<ErrorBoundary>
-							<ScrollToTop/>
-							<Header/>
-							<Routes/>
-							<Footer/>
-						</ErrorBoundary>
-					</Router>
-				</ThemeProvider>
-		</Provider>
-	);
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <GlobalFonts />
+        <Router>
+          <ErrorBoundary>
+            <ScrollToTop />
+            <Header />
+            <Routes />
+            <Footer />
+          </ErrorBoundary>
+        </Router>
+      </ThemeProvider>
+    </Provider>
+  );
 };
 
 export default App;

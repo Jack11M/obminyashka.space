@@ -17,156 +17,168 @@ import './myProfile.scss';
 import { unauthorized } from '../../../../store/auth/slice';
 
 const MyProfile = () => {
-	const dispatch = useDispatch();
-	const { lang } = useSelector( state => state.auth );
-	const { firstName, lastName, children, phones } = useSelector( state => state.profileMe );
+  const dispatch = useDispatch();
+  const { lang } = useSelector((state) => state.auth);
+  const { firstName, lastName, children, phones } = useSelector(
+    (state) => state.profileMe
+  );
 
-	const phoneForInitial = !phones.length && [ '' ] || phones.map( phone => phone.phoneNumber );
-	console.log( phoneForInitial );
-	useEffect( () => {
-		dispatch( fetchUser() );
-	}, [ dispatch ] );
+  const phoneForInitial =
+    (!phones.length && ['']) || phones.map((phone) => phone.phoneNumber);
+  console.log(phoneForInitial);
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
+  const transformPhones = (array) => {
+    return array.map((phone) => ({
+      defaultPhone: false,
+      phoneNumber: phone,
+    }));
+  };
 
-	const transformPhones = ( array ) => {
-		return array.map( phone => ({
-			defaultPhone: false,
-			phoneNumber: phone
-		}) );
-	};
+  const validationUserSchema = yup.object().shape({
+    firstName: yup
+      .string()
+      .min(2, 'must be at least 2 characters')
+      .max(50, 'must be at least 50 characters')
+      .matches(NAME_REG_EXP, 'Любые буквы')
+      .default(() => firstName),
+    lastName: yup
+      .string()
+      .min(2, 'must be at least 2 characters')
+      .max(50, 'must be at least 50 characters')
+      .matches(NAME_REG_EXP, 'Любые буквы')
+      .default(() => lastName),
+    phones: yup
+      .array()
+      .of(yup.string().matches(PHONE_REG_EXP, 'Phone number is not valid'))
+      .default(() => phoneForInitial),
+  });
+  const initialUserValues = validationUserSchema.cast({});
 
-	const validationUserSchema = yup.object().shape( {
-		firstName:
-			yup.string()
-			.min( 2, 'must be at least 2 characters' )
-			.max( 50, 'must be at least 50 characters' )
-			.matches( NAME_REG_EXP, 'Любые буквы' )
-			.default( () => firstName ),
-		lastName:
-			yup.string()
-			.min( 2, 'must be at least 2 characters' )
-			.max( 50, 'must be at least 50 characters' )
-			.matches( NAME_REG_EXP, 'Любые буквы' )
-			.default( () => lastName ),
-		phones: yup.array()
-		.of( yup.string()
-		.matches( PHONE_REG_EXP, 'Phone number is not valid' ) )
-		.default( () => phoneForInitial )
-	} );
-	const initialUserValues = validationUserSchema.cast( {} );
+  return (
+    <>
+      <Formik
+        initialValues={initialUserValues}
+        validationSchema={validationUserSchema}
+        validateOnBlur
+        enableReinitialize
+        onSubmit={async (dataFormik) => {
+          try {
+            const newUserData = {
+              ...dataFormik,
+              phones: transformPhones(dataFormik.phones),
+            };
+            await putUserInfo(newUserData);
+            dispatch(putUserToStore(newUserData));
+          } catch (err) {
+            if (err.response.status === 401) {
+              dispatch(unauthorized());
+            }
+          }
+        }}
+      >
+        {({ values, errors, handleSubmit }) => (
+          <>
+            <TitleBigBlue
+              whatClass={'myProfile-title'}
+              text={getTranslatedText('ownInfo.aboutMe', lang)}
+            />
+            <InputProfile
+              label={getTranslatedText('ownInfo.firstName', lang)}
+              type={'text'}
+              name={'firstName'}
+            />
+            <InputProfile
+              label={getTranslatedText('ownInfo.lastName', lang)}
+              type={'text'}
+              name={'lastName'}
+            />
+            <FieldArray name={'phones'}>
+              {({ push, remove }) => {
+                return (
+                  <>
+                    {values.phones.map((phone, index, arr) => {
+                      const lastIndex = arr.length - 1;
+                      const biggerThanStartIndex = index > 0;
+                      const maxArray = index < 10;
+                      const errorField = errors.phones && errors.phones[index];
+                      return (
+                        <div
+                          key={`phones[${index}]`}
+                          style={{ position: 'relative' }}
+                        >
+                          <InputProfile
+                            label={getTranslatedText('ownInfo.phone', lang)}
+                            type="tel"
+                            name={`phones[${index}]`}
+                            placeholder="+38(123)456-78-90, 381234567890"
+                          />
+                          {lastIndex === index && maxArray && (
+                            <ButtonsAddRemoveChild
+                              className={'add-field'}
+                              text={getTranslatedText('button.addField', lang)}
+                              addRemove="add"
+                              onClick={() => !!phone && !errorField && push('')}
+                            />
+                          )}
+                          {biggerThanStartIndex && (
+                            <ButtonsAddRemoveChild
+                              className={'remove-field'}
+                              onClick={() => remove(index)}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </>
+                );
+              }}
+            </FieldArray>
+            <Button
+              text={getTranslatedText('button.saveChanges', lang)}
+              width={'248px'}
+              type={'submit'}
+              whatClass={'btn-form-about-me'}
+              disabling={false}
+              click={handleSubmit}
+            />
+          </>
+        )}
+      </Formik>
 
-	return (
-		<>
-			<Formik
-				initialValues={ initialUserValues }
-				validationSchema={ validationUserSchema }
-				validateOnBlur
-				enableReinitialize
-				onSubmit={ (async ( dataFormik ) => {
-					try {
-						const newUserData = { ...dataFormik, phones: transformPhones( dataFormik.phones ) };
-						await putUserInfo( newUserData );
-						dispatch( putUserToStore( newUserData ) );
-					} catch (err) {
-						if (err.response.status === 401) {
-							dispatch( unauthorized() );
-						}
-					}
-				}) }
-			>
-				{ ( { values, errors, handleSubmit } ) => (
-					<>
-						<TitleBigBlue whatClass={ 'myProfile-title' } text={ getTranslatedText( 'ownInfo.aboutMe', lang ) }/>
-						<InputProfile
-							label={ getTranslatedText( 'ownInfo.firstName', lang ) }
-							type={ 'text' }
-							name={ 'firstName' }
-						/>
-						<InputProfile
-							label={ getTranslatedText( 'ownInfo.lastName', lang ) }
-							type={ 'text' }
-							name={ 'lastName' }
-						/>
-						<FieldArray name={ 'phones' }>
-							{ ( { push, remove } ) => {
-								return (
-									<>
-										{ values.phones.map( ( phone, index, arr ) => {
-												const lastIndex = arr.length - 1;
-												const biggerThanStartIndex = index > 0;
-												const maxArray = index < 10;
-												const errorField = errors.phones && errors.phones[index];
-												return (
-													<div key={ `phones[${ index }]` } style={ { position: 'relative' } }>
-														<InputProfile
-															label={ getTranslatedText( 'ownInfo.phone', lang ) }
-															type="tel"
-															name={ `phones[${ index }]` }
-															placeholder="+38(123)456-78-90, 381234567890"
-														/>
-														{ lastIndex === index && maxArray &&
-														(<ButtonsAddRemoveChild
-															className={ 'add-field' }
-															text={ getTranslatedText( 'button.addField', lang ) }
-															addRemove="add"
-															onClick={ () => !!phone && !errorField && push( '' ) }
-														/>) }
-														{ biggerThanStartIndex &&
-														(<ButtonsAddRemoveChild
-															className={ 'remove-field' }
-															onClick={ () => remove( index ) }
-														/>) }
-													</div>
-												);
-											}
-										) }
-									</>
-								);
-							} }
-						</FieldArray>
-						<Button
-							text={ getTranslatedText( 'button.saveChanges', lang ) }
-							width={ '248px' }
-							type={ 'submit' }
-							whatClass={ 'btn-form-about-me' }
-							disabling={ false }
-							click={ handleSubmit }
-						/>
-					</>
-				) }
-			</Formik>
-
-			<form>
-				<div className={ 'block-children' }><TitleBigBlue whatClass={ 'myProfile-title' }
-					text={ getTranslatedText( 'ownInfo.children', lang ) }/>{ children.map( ( child, idx ) => {
-					return (
-						<div className={ 'block-child' } key={ `${ idx }_child` }>
-
-							<InputProfile
-								id={ idx }
-								label={ getTranslatedText( 'ownInfo.dateOfBirth', lang ) }
-								type={ 'date' }
-								name={ 'birthDate' }
-								value={ child.birthDate }
-								onChange={ null }/>
-							<InputGender
-								gender={ child.sex }
-								id={ idx }
-								click={ null }/>
-
-						</div>
-					);
-				} ) }
-				</div>
-				<Button
-					disabling={ false }
-					text={ getTranslatedText( 'button.saveChanges', lang ) }
-					width={ '248px' }
-					whatClass={ 'btn-form-children' }
-				/>
-			</form>
-		</>
-	);
+      <form>
+        <div className={'block-children'}>
+          <TitleBigBlue
+            whatClass={'myProfile-title'}
+            text={getTranslatedText('ownInfo.children', lang)}
+          />
+          {children.map((child, idx) => {
+            return (
+              <div className={'block-child'} key={`${idx}_child`}>
+                <InputProfile
+                  id={idx}
+                  label={getTranslatedText('ownInfo.dateOfBirth', lang)}
+                  type={'date'}
+                  name={'birthDate'}
+                  value={child.birthDate}
+                  onChange={null}
+                />
+                <InputGender gender={child.sex} id={idx} click={null} />
+              </div>
+            );
+          })}
+        </div>
+        <Button
+          disabling={false}
+          text={getTranslatedText('button.saveChanges', lang)}
+          width={'248px'}
+          whatClass={'btn-form-children'}
+        />
+      </form>
+    </>
+  );
 };
 
-export default React.memo( MyProfile );
+export default React.memo(MyProfile);

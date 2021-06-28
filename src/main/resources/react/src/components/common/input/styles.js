@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 export const InputDiv = styled.div`
   position: relative;
-  margin-bottom: ${ ( { path } ) => path ? '42px' : '22px' };
+  margin-bottom: ${({ path }) => (path ? '42px' : '22px')};
   &:last-child {
-    margin-bottom: ${ ( { path } ) => path ? '26px' : '32px' };
+    margin-bottom: ${({ path }) => (path ? '26px' : '32px')};
   }
 `;
 
@@ -13,7 +13,7 @@ export const Label = styled.label`
   font-weight: normal;
   font-size: 14px;
   line-height: 22px;
-  color: ${ ( { theme: { colors } } ) => colors.colorGrey };
+  color: ${({ theme: { colors } }) => colors.colorGrey};
   cursor: pointer;
 `;
 
@@ -28,11 +28,14 @@ export const InputAuth = styled.input`
   font-size: 16px;
   line-height: 24px;
   outline: none;
-  border: 1px solid ${ ( { theme: { colors }, error } ) => error ? colors['colorError']: 'hsl(0, 0%, 74%)' };
-  color: ${ ( { theme: { colors } } ) => colors['right-color-text'] };
+  border: 1px solid
+    ${({ theme: { colors }, error }) =>
+      error ? colors['colorError'] : 'hsl(0, 0%, 74%)'};
+  color: ${({ theme: { colors } }) => colors['right-color-text']};
 
   &:focus {
-    border-color: ${ ( { theme: { colors }, error } ) => error ? colors['colorError']:'hsl(0, 0%, 44%)'};
+    border-color: ${({ theme: { colors }, error }) =>
+      error ? colors['colorError'] : 'hsl(0, 0%, 44%)'};
   }
 `;
 
@@ -45,9 +48,9 @@ export const SpanError = styled.span`
   font-weight: 400;
   line-height: 20px;
 
-  ${ InputAuth } {
-    border-color: ${ ( { theme: { colors }, error } ) => error && colors.colorError };
+  ${InputAuth} {
+    border-color: ${({ theme: { colors }, error }) =>
+      error && colors.colorError};
   }
-;
-  color: ${ ( { theme: { colors } } ) => colors['colorError'] };
+  color: ${({ theme: { colors } }) => colors['colorError']};
 `;

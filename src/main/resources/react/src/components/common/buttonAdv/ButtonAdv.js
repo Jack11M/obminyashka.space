@@ -8,12 +8,12 @@ import { route } from '../../../routes/routeConstants';
 import './buttonAdv.scss';
 
 const ButtonAdv = () => {
-	const { lang } = useSelector( state => state.auth );
-	return (
-		<Link to={ route.addAdv } className="btn-adv">
-			<span>{ getTranslatedText( 'button.addAdv', lang ) }</span>
-		</Link>
-	);
+  const { lang } = useSelector((state) => state.auth);
+  return (
+    <Link to={route.addAdv} className="btn-adv">
+      <span>{getTranslatedText('button.addAdv', lang)}</span>
+    </Link>
+  );
 };
 
 export default ButtonAdv;

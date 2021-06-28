@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import styled from 'styled-components';
 
 const H2 = styled.h2`
@@ -9,10 +9,10 @@ const H2 = styled.h2`
   line-height: 24px;
   font-family: Pollywog_Cyr, sans-serif;
   color: #11b5ed;
-  &:before, 
-  &:after{
+  &:before,
+  &:after {
     display: inline-block;
-    content: "";
+    content: '';
     width: 11px;
     height: 11px;
     border-radius: 50%;
@@ -25,9 +25,9 @@ const H2 = styled.h2`
   &:after {
     margin-left: 27px;
   }
-`
+`;
 
-const TitleBigBlue = ({whatClass = '', text}) => {
+const TitleBigBlue = ({ whatClass = '', text }) => {
   return (
     <React.Fragment>
       <H2 className={whatClass}>{text}</H2>

@@ -5,9 +5,9 @@ export const Card = styled.div`
   width: 290px;
   height: 419px;
   border-radius: 20px;
-  border: 2px dotted #C4C4C4;
+  border: 2px dotted #c4c4c4;
   background-color: #fff;
-  margin: ${ ( { margin } ) => margin ? margin : '10px 14px' };
+  margin: ${({ margin }) => (margin ? margin : '10px 14px')};
   -webkit-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   -moz-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
@@ -22,19 +22,21 @@ export const FavoriteMarker = styled.span`
   border-radius: 0 0 25px 25px;
   transform: translate(-50%);
   transition: background-color 0.3s ease;
-  background-color: ${ ( { isFavorite = false } ) => isFavorite ? '#FEE200' : '#A0A0A0' };
+  background-color: ${({ isFavorite = false }) =>
+    isFavorite ? '#FEE200' : '#A0A0A0'};
 
   &:hover {
     cursor: pointer;
-    background-color: ${ ( { isFavorite = false } ) => isFavorite ? 'hsl(53, 100%, 48%)' : 'hsl(0, 0%, 59%)' };
+    background-color: ${({ isFavorite = false }) =>
+      isFavorite ? 'hsl(53, 100%, 48%)' : 'hsl(0, 0%, 59%)'};
   }
 
   &:active {
     cursor: pointer;
-    background-color: ${ ( { isFavorite = false } ) => isFavorite ? 'hsl(53, 100%, 44%)' : 'hsl(0, 0%, 59%)' };
+    background-color: ${({ isFavorite = false }) =>
+      isFavorite ? 'hsl(53, 100%, 44%)' : 'hsl(0, 0%, 59%)'};
   }
 `;
-
 
 export const DivPicture = styled.div`
   margin-bottom: 10px;
@@ -48,8 +50,6 @@ export const Picture = styled.img`
   object-fit: cover;
   width: 100%;
   height: 100%;
-
-
 `;
 
 export const CardContent = styled.div`
@@ -57,14 +57,13 @@ export const CardContent = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 `;
 
 export const TextContent = styled.h6`
   height: 37px;
   font-size: 16px;
   line-height: 19px;
-  color: ${ ( { theme: { colors } } ) => colors['black-color-text'] };
+  color: ${({ theme: { colors } }) => colors['black-color-text']};
   margin: -5px 44px 10px;
   text-align: center;
 
@@ -76,11 +75,10 @@ export const TextContent = styled.h6`
 `;
 
 export const LocationIcon = styled.div`
-  margin-bottom: ${ ( { inbox } ) => inbox ? '36px' : '23px' };
-
+  margin-bottom: ${({ inbox }) => (inbox ? '36px' : '23px')};
 `;
 export const CitySpan = styled.span`
-  color: ${ ( { theme: { colors } } ) => colors['btn-blue-hover'] };
+  color: ${({ theme: { colors } }) => colors['btn-blue-hover']};
   font-size: 14px;
   margin-left: 9px;
 `;
@@ -91,7 +89,6 @@ export const ButtonBlock = styled.div`
 
 export const InboxSvg = styled.svg`
   transition: background-color 0.3s ease;
-
 `;
 
 export const InboxDiv = styled.div`
@@ -100,20 +97,20 @@ export const InboxDiv = styled.div`
 
   &:hover {
     cursor: pointer;
-    ${ InboxSvg }: hover {
+    ${InboxSvg}: hover {
       cursor: pointer;
       path {
         fill: hsl(116, 60%, 45%);
       }
     };
-    ${ InboxSvg }: active {
+      
+    ${InboxSvg}: active {
       cursor: pointer;
       path {
         fill: hsl(116, 60%, 41%);
       }
     }
   }
-;
 `;
 
 export const InboxSpan = styled.span`
