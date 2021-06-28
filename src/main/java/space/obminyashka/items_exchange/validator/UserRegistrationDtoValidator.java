@@ -13,6 +13,7 @@ import org.springframework.validation.Validator;
 
 import java.util.Objects;
 
+import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Component
@@ -31,11 +32,11 @@ public class UserRegistrationDtoValidator implements Validator {
     public void validate(Object o, Errors errors) {
         UserRegistrationDto userRegistrationDto = (UserRegistrationDto) o;
 
-        if (userService.existsByUsername(userRegistrationDto.getUsername())) {
+        if (userService.existsByUsername(escapeHtml(userRegistrationDto.getUsername()))) {
             throw new UnprocessableEntityException(getMessageSource("username.duplicate"));
         }
 
-        if (userService.existsByEmail(userRegistrationDto.getEmail())) {
+        if (userService.existsByEmail(escapeHtml(userRegistrationDto.getEmail()))) {
             throw new UnprocessableEntityException(getMessageSource("email.duplicate"));
         }
 

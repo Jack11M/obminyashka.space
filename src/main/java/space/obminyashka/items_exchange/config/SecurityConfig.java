@@ -27,7 +27,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
-    public static final String HAS_ROLE_USER = "hasRole('ROLE_USER')";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final UserService userService;
@@ -60,12 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js",
                         "/auth/**").permitAll()
-                .antMatchers(
-                        "/v2/api-docs",
-                        "/configuration/ui",
-                        "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/webjars/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/**").permitAll()
                 .antMatchers("/adv/**", "/category/**", "/subcategory/**", "/user/**").authenticated()

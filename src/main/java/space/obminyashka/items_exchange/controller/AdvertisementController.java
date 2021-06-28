@@ -216,7 +216,6 @@ public class AdvertisementController {
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        getExceptionMessageSourceWithAdditionalInfo("user.not-found", userNameOrEmail)));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessageSource("exception.user.not-found")));
     }
 }
