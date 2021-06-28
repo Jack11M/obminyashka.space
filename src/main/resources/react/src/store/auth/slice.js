@@ -72,13 +72,11 @@ const authSlice = createSlice( {
 		[fetchLogOut.pending]: ( state ) => {
 			state.isFetchingAuth = true;
 		},
-		[fetchLogOut.fulfilled]: ( state, {payload} ) => {
-			console.log(payload);
+		[fetchLogOut.fulfilled]: ( state ) => {
 			resetUser(state)
 
 		},
-		[fetchLogOut.rejected]: ( state , {payload}) => {
-			console.log(payload);
+		[fetchLogOut.rejected]: ( state ) => {
 			resetUser(state)
 		}
 	}
