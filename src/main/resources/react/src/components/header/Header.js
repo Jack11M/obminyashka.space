@@ -1,8 +1,8 @@
-import React from "react";
-import NavTop from "./nav_top/NavTop.js";
-import NavMain from "./nav_main/NavMain.js";
+import React from 'react';
+import NavTop from './nav_top/NavTop.js';
+import NavMain from './nav_main/NavMain.js';
 
-import "./Navbar.scss";
+import './Navbar.scss';
 
 const Header = () => {
   return (

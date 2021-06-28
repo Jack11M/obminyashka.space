@@ -1,12 +1,11 @@
-@import "../../fonts/font";
-@import "../../components/partials/variables";
+@import '../../fonts/font';
+@import '../../components/partials/variables';
 
 .container {
   display: flex;
   margin: 156px 0 auto 0;
   width: 100%;
   @include font('Roboto');
-
 
   .left-side {
     display: flex;
@@ -15,7 +14,7 @@
     width: 25%;
     height: auto;
     background-color: #ffffff;
-    color: darken(rgba(173, 173, 173, 0.78),5%);
+    color: darken(rgba(173, 173, 173, 0.78), 5%);
     margin-bottom: -300px;
   }
   .main-content {

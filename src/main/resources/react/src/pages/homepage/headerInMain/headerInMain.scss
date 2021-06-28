@@ -1,5 +1,5 @@
-@import "../../../components/partials/variables";
-@import "../../../fonts/font";
+@import '../../../components/partials/variables';
+@import '../../../fonts/font';
 
 .present-section {
   position: relative;
@@ -9,14 +9,12 @@
   background-repeat: no-repeat;
   z-index: 0;
 
-
   .presentSlider {
     display: flex;
     padding-top: 298px;
     padding-bottom: 201px;
     justify-content: space-between;
     align-items: center;
-
 
     .presentSlider-element {
       z-index: 10;
@@ -37,9 +35,7 @@
         text-align: center;
 
         color: #ffffff;
-
       }
-
     }
 
     .presentSlider-element:nth-child(1) {

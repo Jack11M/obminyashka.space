@@ -1,4 +1,4 @@
-@import "../../partials/variables";
+@import '../../partials/variables';
 
 .btn-adv {
   position: relative;
@@ -16,7 +16,6 @@
     font-size: 16px;
     line-height: 24px;
     text-transform: uppercase;
-
   }
 
   &:before {
@@ -39,7 +38,8 @@
     background-color: #fff;
   }
 
-  &:hover, &:active {
-    background-color: #008B20;
+  &:hover,
+  &:active {
+    background-color: #008b20;
   }
 }

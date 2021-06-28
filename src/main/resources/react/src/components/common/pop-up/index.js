@@ -4,6 +4,7 @@ import { useClickAway } from 'react-use';
 import { WrapDiv, ContentModal, DivClose, Title } from './styles';
 
 const Modal = ({ active, setActive, title, children }) => {
+  const DELAY = 400;
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -14,7 +15,7 @@ const Modal = ({ active, setActive, title, children }) => {
     setOpen(false);
     setTimeout(() => {
       setActive(false);
-    }, 1000);
+    }, DELAY);
   };
 
   const ref = useRef(null);
@@ -22,8 +23,8 @@ const Modal = ({ active, setActive, title, children }) => {
     close();
   });
   return (
-    <WrapDiv active={open}>
-      <ContentModal ref={ref}  active={open}>
+    <WrapDiv active={open} delay={DELAY}>
+      <ContentModal ref={ref} active={open} delay={DELAY}>
         <Title>{title}</Title>
         {children}
         <DivClose onClick={close} />

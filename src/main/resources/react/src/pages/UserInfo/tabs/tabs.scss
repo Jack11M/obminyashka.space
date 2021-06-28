@@ -1,4 +1,4 @@
-@import "../../../components/partials/variables";
+@import '../../../components/partials/variables';
 
 .tabs {
   padding: 26px 65px;
@@ -14,13 +14,10 @@
     margin-bottom: 25px;
     white-space: nowrap;
 
-
-
     &:not(.active):hover {
       @include Scale(1.05);
     }
   }
-
 }
 
 .active {

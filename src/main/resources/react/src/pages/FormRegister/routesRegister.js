@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import Login from './sign-in/Login';
@@ -10,7 +10,7 @@ export default () => {
     <Switch>
       <Route path={route.login} exact component={Login} />
       <Route path={`${route.login}${route.signUp}`} exact component={SignUp} />
-      <Redirect to={route.login}/>
+      <Redirect to={route.login} />
     </Switch>
   );
 };

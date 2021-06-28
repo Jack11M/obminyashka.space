@@ -28,11 +28,15 @@ const Input = styled.input`
   font-size: 16px;
   line-height: 16px;
   font-family: inherit;
-  border: 1px solid ${ ( { theme: { colors }, error } ) => error ? colors['colorError'] : 'hsl(0, 0%, 74%)' };
-  color: ${ ( { theme: { colors } } ) => colors['right-color-text'] };
+  border: 1px solid
+    ${({ theme: { colors }, error }) =>
+      error ? colors['colorError'] : 'hsl(0, 0%, 74%)'};
+  color: ${({ theme: { colors } }) => colors['right-color-text']};
 
-  &:focus, &:hover {
-    border-color: ${ ( { theme: { colors }, error } ) => error ? colors['colorError'] : 'hsl(0, 0%, 44%)' };
+  &:focus,
+  &:hover {
+    border-color: ${({ theme: { colors }, error }) =>
+      error ? colors['colorError'] : 'hsl(0, 0%, 44%)'};
   }
 `;
 
@@ -44,27 +48,25 @@ const SpanError = styled.span`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${ ( { theme: { colors } } ) => colors['colorError'] };
+  color: ${({ theme: { colors } }) => colors['colorError']};
 `;
 
-const InputProfile = ( { id = '', label, ...props } ) => {
-
-	const [ field, meta ] = useField( props );
-	const { error, touched } = meta;
-	return (
-		<ProfileInput>
-			<Label htmlFor={ id }>{ `${ label }` }</Label>
-			<Input
-				readOnly={props.readOnly}
-				id={ field.name + id }
-				error={ touched && error }
-				{ ...field }
-				{ ...props }
-			/>
-			{ <SpanError> { touched && error }</SpanError> }
-		</ProfileInput>
-	);
+const InputProfile = ({ id = '', label, ...props }) => {
+  const [field, meta] = useField(props);
+  const { error, touched } = meta;
+  return (
+    <ProfileInput>
+      <Label htmlFor={id}>{`${label}`}</Label>
+      <Input
+        readOnly={props.readOnly}
+        id={field.name + id}
+        error={touched && error}
+        {...field}
+        {...props}
+      />
+      {<SpanError> {touched && error}</SpanError>}
+    </ProfileInput>
+  );
 };
-
 
 export default InputProfile;

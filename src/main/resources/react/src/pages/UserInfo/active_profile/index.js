@@ -1,2 +1,2 @@
-import ActiveProfile from "./active_profile";
+import ActiveProfile from './active_profile';
 export default ActiveProfile;

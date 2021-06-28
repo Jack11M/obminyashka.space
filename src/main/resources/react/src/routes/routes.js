@@ -12,28 +12,33 @@ import AddGoods from '../pages/AddGoods/AddGoods';
 import { route } from './routeConstants';
 
 const Routes = () => {
-	const { isAuthenticated } = useSelector( state => state.auth );
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
-	return <Switch>
-		<Route path={ route.home } component={ HomePage } exact/>
-		<Protected
-			path={ route.login }
-			component={ Auth }
-			permission={ !isAuthenticated }
-			redirect={ route.home }/>
-		<Protected
-			path={ route.userInfo }
-			component={ UserInfo }
-			permission={ isAuthenticated }
-			redirect={ route.login }/>
-    <Protected
-			path={ route.addAdv }
-			component={ AddGoods }
-			permission={ isAuthenticated }
-			redirect={ route.login }/>
-    <Route path = { `${route.productPage}:id` } component = { ProductPage }/>
-		<Route path = { route.noMatch } component = { FourOhFourPage }/>
-	</Switch>;
+  return (
+    <Switch>
+      <Route path={route.home} component={HomePage} exact />
+      <Protected
+        path={route.login}
+        component={Auth}
+        permission={!isAuthenticated}
+        redirect={route.home}
+      />
+      <Protected
+        path={route.userInfo}
+        component={UserInfo}
+        permission={isAuthenticated}
+        redirect={route.login}
+      />
+      <Protected
+        path={route.addAdv}
+        component={AddGoods}
+        permission={isAuthenticated}
+        redirect={route.login}
+      />
+      <Route path={`${route.productPage}:id`} component={ProductPage} />
+      <Route path={route.noMatch} component={FourOhFourPage} />
+    </Switch>
+  );
 };
 
 export default Routes;

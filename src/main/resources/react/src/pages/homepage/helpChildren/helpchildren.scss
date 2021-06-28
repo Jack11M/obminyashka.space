@@ -1,5 +1,5 @@
-@import "../../../components/partials/variables";
-@import "../../../fonts/font";
+@import '../../../components/partials/variables';
+@import '../../../fonts/font';
 
 .HelpChildren {
   display: block;
@@ -31,7 +31,7 @@
 
     strong {
       display: contents;
-      color: #00C0FF;
+      color: #00c0ff;
 
       text-decoration: none;
 
@@ -56,7 +56,7 @@
   }
 
   &__btn:hover {
-    background-color: #0094FF
+    background-color: #0094ff;
   }
 }
 

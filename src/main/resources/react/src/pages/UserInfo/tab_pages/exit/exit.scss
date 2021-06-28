@@ -20,7 +20,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 30;
-    box-shadow: 0 3px 10px -.5px rgba(18, 182, 237, 0.3);
+    box-shadow: 0 3px 10px -0.5px rgba(18, 182, 237, 0.3);
     text-align: center;
     padding: 39px;
     border-radius: 3px;
@@ -35,14 +35,15 @@
       right: -15px;
       fill: #444;
       cursor: pointer;
-      background-color: #12B6ED;
+      background-color: #12b6ed;
       border-radius: 50%;
       transition: all 0.3s linear;
-      
-      &:before, &:after {
+
+      &:before,
+      &:after {
         content: '';
         position: absolute;
-        top:7px;
+        top: 7px;
         width: 1px;
         height: 15px;
         background-color: #fff;
@@ -96,8 +97,8 @@
       width: 179px;
       height: 49px;
       border-radius: 63px;
-      background-color: #12B6ED;
-      color: #FFFFFF;
+      background-color: #12b6ed;
+      color: #ffffff;
       font-size: 16px;
       line-height: 19px;
       cursor: pointer;
@@ -115,7 +116,7 @@
       height: 146px;
       right: 33px;
       border-radius: 25px;
-      background-color: #FEE6E6;
+      background-color: #fee6e6;
 
       img {
         position: absolute;

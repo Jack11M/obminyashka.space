@@ -10,42 +10,42 @@ import Exit from './tab_pages/exit';
 import './UserInfo.scss';
 
 const UserInfo = () => {
-	let { url } = useRouteMatch();
-	let history = useHistory();
-	const [ isModalOpen, setIsModalOpen ] = useState( false );
-	const [ prevLocation, setPrevLocation ] = useState( '' );
+  let { url } = useRouteMatch();
+  let history = useHistory();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prevLocation, setPrevLocation] = useState('');
 
-	const { firstName, lastName, avatarImage } = useSelector( ( state ) => state.profileMe);
+  const { firstName, lastName, avatarImage } = useSelector(
+    (state) => state.profileMe
+  );
 
+  const open = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
 
-	const open = useCallback( () => {
-		setIsModalOpen( true );
-	}, [] );
+  const close = useCallback(() => {
+    setIsModalOpen(false);
+    history.push(prevLocation);
+  }, [prevLocation, history]);
 
-	const close = useCallback( () => {
-		setIsModalOpen( false );
-		history.push( prevLocation );
-
-	}, [ prevLocation, history ] );
-
-	return (
-		<div className="container">
-			<aside className="left-side">
-				<ActiveProfile
-					firstName={ firstName }
-					lastName={ lastName }
-					avatar={ avatarImage }
-				/>
-				<Tabs url={ url } toggle={ open }/>
-			</aside>
-			<main className="main-content">
-				<div className="main-content-wrapper">
-					<RouterTabs url={ url } set={ [ prevLocation, setPrevLocation ] }/>
-				</div>
-			</main>
-			{ isModalOpen && <Exit toggle={ close } setIsModalOpen={setIsModalOpen}/> }
-		</div>
-	);
+  return (
+    <div className="container">
+      <aside className="left-side">
+        <ActiveProfile
+          firstName={firstName}
+          lastName={lastName}
+          avatar={avatarImage}
+        />
+        <Tabs url={url} toggle={open} />
+      </aside>
+      <main className="main-content">
+        <div className="main-content-wrapper">
+          <RouterTabs url={url} set={[prevLocation, setPrevLocation]} />
+        </div>
+      </main>
+      {isModalOpen && <Exit toggle={close} setIsModalOpen={setIsModalOpen} />}
+    </div>
+  );
 };
 
 export default UserInfo;

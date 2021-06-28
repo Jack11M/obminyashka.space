@@ -1,5 +1,5 @@
-@import "../../../components/partials/variables";
-@import "../../../fonts/font";
+@import '../../../components/partials/variables';
+@import '../../../fonts/font';
 
 .slick-slide {
   margin-right: 20px;
@@ -22,7 +22,7 @@
       @include font(Roboto);
       font-size: 18px;
       line-height: 24px;
-      color: #FFFFFF;
+      color: #ffffff;
 
       b {
         @include font(Pollywog_Cyr);
@@ -31,14 +31,12 @@
         text-transform: uppercase;
         letter-spacing: 1px;
 
-        color: #FFFFFF;
-
+        color: #ffffff;
       }
 
       &:active {
         transform: scale(1.05);
       }
-
     }
   }
 }

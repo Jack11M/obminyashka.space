@@ -25,54 +25,52 @@ const LanguageItem = styled.div`
   margin: 18px 0 10px 0;
   cursor: pointer;
   border-radius: 50%;
-  color: ${ ({ checked }) => checked ? 'hsl(195, 100%, 53%)' : 'rgb(119, 119, 119)' };
-  border: ${ ({ checked }) => checked ? '1px solid #12b6ed;' : 'none' };
+  color: ${({ checked }) =>
+    checked ? 'hsl(195, 100%, 53%)' : 'rgb(119, 119, 119)'};
+  border: ${({ checked }) => (checked ? '1px solid #12b6ed;' : 'none')};
 
   &:hover {
     background-color: hsl(195, 100%, 90%);
-    color: hsl(0, 0%, 10%);;
+    color: hsl(0, 0%, 10%);
   }
 `;
 
 const CustomSelect = () => {
-	const dispatch = useDispatch();
-	const { lang } = useSelector( state => state.auth );
-	const [ languageArray, setLanguageArray ] = useState( [
-		{ value: 'ru', checked: false },
-		{ value: 'ua', checked: false },
-		{ value: 'en', checked: false }
-	] );
+  const dispatch = useDispatch();
+  const { lang } = useSelector((state) => state.auth);
+  const [languageArray, setLanguageArray] = useState([
+    { value: 'ru', checked: false },
+    { value: 'ua', checked: false },
+    { value: 'en', checked: false },
+  ]);
 
-	useEffect( () => {
-		const newLang = languageArray.map(
-			item => item.value === lang
-				?
-				{ ...item, checked: true }
-				:
-				{ ...item, checked: false }
-		);
-	setLanguageArray( newLang);
-		//eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ lang ] );
+  useEffect(() => {
+    const newLang = languageArray.map((item) =>
+      item.value === lang
+        ? { ...item, checked: true }
+        : { ...item, checked: false }
+    );
+    setLanguageArray(newLang);
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
-	const handleSelected = ( lang ) => {
-		dispatch( setLanguage( lang ) );
-	};
+  const handleSelected = (lang) => {
+    dispatch(setLanguage(lang));
+  };
 
-	return (
-		<LanguagePanel>
-			{
-				languageArray.map( option =>
-					<LanguageItem
-						key={ option.value }
-						onClick={ () => handleSelected( option.value ) }
-						checked={ option.checked }
-					>
-						{ option.value }
-					</LanguageItem> )
-			}
-		</LanguagePanel>
-	);
+  return (
+    <LanguagePanel>
+      {languageArray.map((option) => (
+        <LanguageItem
+          key={option.value}
+          onClick={() => handleSelected(option.value)}
+          checked={option.checked}
+        >
+          {option.value}
+        </LanguageItem>
+      ))}
+    </LanguagePanel>
+  );
 };
 
 export default CustomSelect;

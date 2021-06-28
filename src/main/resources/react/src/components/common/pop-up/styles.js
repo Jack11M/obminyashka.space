@@ -11,9 +11,11 @@ const WrapDiv = styled.div`
   height: 100vh;
   background-color: rgba(17, 181, 237, 0.4);
   z-index: 999;
-  transition: 0.4s ease-in-out;
 
-  opacity: ${(p) => (p.active ? 1 : 0)};
+  ${(p) => css`
+    transition: transform ${p.delay}ms ease-in-out;
+    opacity: ${p.active ? 1 : 0};
+  `}
 `;
 const ContentModal = styled.div`
   position: relative;
@@ -21,8 +23,9 @@ const ContentModal = styled.div`
   flex-grow: 1;
   padding: 44px 50px;
   background-color: #fff;
-  transition: 0.4s ease-in-out 0.1s;
+
   ${(p) => css`
+    transition: transform ${p.delay}ms ease-in-out;
     transform: translateY(${p.active ? 0 : -100}vh);
   `}
 `;

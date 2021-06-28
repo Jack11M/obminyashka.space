@@ -1,5 +1,5 @@
-@import "../../components/partials/variables";
-@import "../../fonts/font";
+@import '../../components/partials/variables';
+@import '../../fonts/font';
 
 .somethingBad {
   min-height: 100vh;
@@ -8,9 +8,8 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  
 
-  @media (max-width: 576px){
+  @media (max-width: 576px) {
     background-size: 300%;
     background-position: top;
     background-position-y: 15%;
@@ -23,28 +22,28 @@
     bottom: 10%;
   }
 
-  
-  .blockRightImage, .blockGreenImage, .blockOrangeImage{
+  .blockRightImage,
+  .blockGreenImage,
+  .blockOrangeImage {
     position: absolute;
     top: 0;
     z-index: -1;
-    img{
+    img {
       max-width: 100%;
       height: calc(100vh - 3px);
     }
-
   }
-  .blockOrangeImage{
+  .blockOrangeImage {
     left: 360px;
   }
-  .blockGreenImage{
+  .blockGreenImage {
     left: 0;
   }
-  .blockRightImage{
+  .blockRightImage {
     right: 50px;
   }
 
-  h2{
+  h2 {
     @include font(Pollywog_Cyr);
     font-style: normal;
     font-weight: normal;
@@ -53,18 +52,18 @@
 
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #BABABA;
+    color: #bababa;
     text-align: center;
 
     margin-bottom: 27px;
     padding: 10px 5px;
 
-    @media (max-width:576px){
+    @media (max-width: 576px) {
       font-size: 16px;
     }
   }
 
-  .blockButtons{
+  .blockButtons {
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -79,7 +78,7 @@
       width: 222px;
       height: 50px;
 
-      @include font(Roboto) ;
+      @include font(Roboto);
       font-style: normal;
       font-weight: normal;
       font-size: 16px;
@@ -87,17 +86,15 @@
       text-transform: uppercase;
 
       color: #ffffff;
-
-
     }
     .onMain {
       background-color: $btn-bh-active;
       &:hover {
         cursor: pointer;
-        background-color: #0094FF;
+        background-color: #0094ff;
       }
       &:active {
-        background-color: darken(#0094FF, 5%);
+        background-color: darken(#0094ff, 5%);
       }
 
       &:disabled {
@@ -108,10 +105,10 @@
       background-color: $btn-bh-green;
       &:hover {
         cursor: pointer;
-        background-color: #008B20;
+        background-color: #008b20;
       }
       &:active {
-        background-color: darken(#008B20, 5%);
+        background-color: darken(#008b20, 5%);
       }
 
       &:disabled {
