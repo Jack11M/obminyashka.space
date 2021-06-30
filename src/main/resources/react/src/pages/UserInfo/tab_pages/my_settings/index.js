@@ -29,41 +29,65 @@ const MySettings = () => {
   const validationPasswordSchema = yup.object().shape({
     oldPassword: yup
       .string()
-      .min(8, 'must be at least 8 characters')
-      .max(30, 'must be no more than 30 characters')
-      .matches(PASSWORD_REG_EXP, 'Большие и малые латинские буквы и цифры.')
-      .matches(PASSWORD_ALT_CODE_EXP, 'Не должно быть Alt code')
-      .required('Поле обязательно')
+      .min(8, getTranslatedText('errors.min8', lang))
+      .max(30, getTranslatedText('errors.max30', lang))
+      .matches(
+        PASSWORD_REG_EXP,
+        getTranslatedText('errors.passwordMatch', lang)
+      )
+      .matches(
+        PASSWORD_ALT_CODE_EXP,
+        getTranslatedText('errors.altCodeMatch', lang)
+      )
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
     newPassword: yup
       .string()
-      .min(8, 'must be at least 8 characters')
-      .max(30, 'must be at least 30 characters')
-      .matches(PASSWORD_REG_EXP, 'Большие и малые латинские буквы и цифры.')
-      .matches(PASSWORD_ALT_CODE_EXP, 'Не должно быть Alt code')
-      .notOneOf([yup.ref('oldPassword'), false], 'Пароль совпадает с текущим')
-      .required('Поле обязательно')
+      .min(8, getTranslatedText('errors.min8', lang))
+      .max(30, getTranslatedText('errors.max30', lang))
+      .matches(
+        PASSWORD_REG_EXP,
+        getTranslatedText('errors.passwordMatch', lang)
+      )
+      .matches(
+        PASSWORD_ALT_CODE_EXP,
+        getTranslatedText('errors.altCodeMatch', lang)
+      )
+      .notOneOf(
+        [yup.ref('oldPassword'), false],
+        getTranslatedText('errors.passwordIdentical', lang)
+      )
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
     confirmNewPassword: yup
       .string()
-      .oneOf([yup.ref('newPassword')], 'Пароли не совпадают')
-      .required('Поле обязательно')
+      .oneOf(
+        [yup.ref('newPassword')],
+        getTranslatedText('errors.passwordMismatch', lang)
+      )
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
   });
 
   const validationEmailSchema = yup.object().shape({
     newEmail: yup
       .string()
-      .notOneOf([currentEmail], 'Email совпадает со старым')
-      .matches(EMAIL_REG_EXP, 'must be at least 129 characters')
-      .email('Не верный формат Email')
-      .required('Поле обязательно')
+      .notOneOf(
+        [currentEmail],
+        getTranslatedText('errors.emailIdentical', lang)
+      )
+      .matches(EMAIL_REG_EXP, getTranslatedText('errors.max129', lang))
+      .email(getTranslatedText('errors.invalidEmailFormat', lang))
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
     newEmailConfirmation: yup
       .string()
-      .oneOf([yup.ref('newEmail')], 'Email не совпадает')
-      .email('Не верный формат Email')
-      .required('Поле обязательно')
+      .oneOf(
+        [yup.ref('newEmail')],
+        getTranslatedText('errors.emailNotIdentical', lang)
+      )
+      .email(getTranslatedText('errors.invalidEmailFormat', lang))
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
   });
 

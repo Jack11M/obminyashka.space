@@ -27,11 +27,11 @@ const Login = () => {
   const validationLoginSchema = yup.object().shape({
     usernameOrEmail: yup
       .string()
-      .required('Поле обязательно')
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
     password: yup
       .string()
-      .required('Поле обязательно')
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
   });
   const initialLoginValues = validationLoginSchema.cast({});

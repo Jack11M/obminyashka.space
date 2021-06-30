@@ -40,19 +40,23 @@ const MyProfile = () => {
   const validationUserSchema = yup.object().shape({
     firstName: yup
       .string()
-      .min(2, 'must be at least 2 characters')
-      .max(50, 'must be at least 50 characters')
-      .matches(NAME_REG_EXP, 'Любые буквы')
+      .min(2, getTranslatedText('errors.min2', lang))
+      .max(50, getTranslatedText('errors.max50', lang))
+      .matches(NAME_REG_EXP, getTranslatedText('errors.nameMatch', lang))
       .default(() => firstName),
     lastName: yup
       .string()
-      .min(2, 'must be at least 2 characters')
-      .max(50, 'must be at least 50 characters')
-      .matches(NAME_REG_EXP, 'Любые буквы')
+      .min(2, getTranslatedText('errors.min2', lang))
+      .max(50, getTranslatedText('errors.max50', lang))
+      .matches(NAME_REG_EXP, getTranslatedText('errors.nameMatch', lang))
       .default(() => lastName),
     phones: yup
       .array()
-      .of(yup.string().matches(PHONE_REG_EXP, 'Phone number is not valid'))
+      .of(
+        yup
+          .string()
+          .matches(PHONE_REG_EXP, getTranslatedText('errors.phoneMatch', lang))
+      )
       .default(() => phoneForInitial),
   });
   const initialUserValues = validationUserSchema.cast({});
