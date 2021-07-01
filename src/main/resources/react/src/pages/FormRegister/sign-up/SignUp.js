@@ -33,29 +33,41 @@ const SignUp = () => {
   const validationRegisterSchema = yup.object().shape({
     email: yup
       .string()
-      .email('Не верный формат Email')
-      .required('Поле обязательно')
-      .matches(EMAIL_REG_EXP, 'must be at least 129 characters')
+      .email(getTranslatedText('errors.invalidEmailFormat', lang))
+      .required(getTranslatedText('errors.requireField', lang))
+      .matches(EMAIL_REG_EXP, getTranslatedText('errors.emailMatch', lang))
       .default(() => ''),
     username: yup
       .string()
-      .required('Поле обязательно')
-      .min(2, 'must be at least 2 characters')
-      .max(50, 'must be no more than 50 characters')
-      .matches(USERNAME_ALT_CODE_EXP, 'Не должно быть Alt code')
+      .required(getTranslatedText('errors.requireField', lang))
+      .min(2, getTranslatedText('errors.min2', lang))
+      .max(50, getTranslatedText('errors.max50', lang))
+      .matches(
+        USERNAME_ALT_CODE_EXP,
+        getTranslatedText('errors.altCodeMatch', lang)
+      )
       .default(() => ''),
     password: yup
       .string()
-      .required('Поле обязательно')
-      .min(8, 'must be at least 8 characters')
-      .max(30, 'must be at least 30 characters')
-      .matches(PASSWORD_REG_EXP, 'Большие и малые латинские буквы и цифры.')
-      .matches(PASSWORD_ALT_CODE_EXP, 'Не должно быть Alt code')
+      .required(getTranslatedText('errors.requireField', lang))
+      .min(8, getTranslatedText('errors.min8', lang))
+      .max(30, getTranslatedText('errors.max30', lang))
+      .matches(
+        PASSWORD_REG_EXP,
+        getTranslatedText('errors.passwordMatch', lang)
+      )
+      .matches(
+        PASSWORD_ALT_CODE_EXP,
+        getTranslatedText('errors.altCodeMatch', lang)
+      )
       .default(() => ''),
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password')], 'Пароли не совпадают')
-      .required('Поле обязательно')
+      .oneOf(
+        [yup.ref('password')],
+        getTranslatedText('errors.passwordMismatch', lang)
+      )
+      .required(getTranslatedText('errors.requireField', lang))
       .default(() => ''),
   });
   const initialRegisterValues = validationRegisterSchema.cast({});
