@@ -79,8 +79,8 @@
             <version>${jsonwebtoken.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.fasterxml.jackson</groupId>
-                    <artifactId>jackson-bom</artifactId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
