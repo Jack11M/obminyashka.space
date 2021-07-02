@@ -44,11 +44,11 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+            <column name="created" type="TIMESTAMP" defaultValueComputed="current_timestamp">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+            <column name="updated" type="TIMESTAMP" defaultValueComputed="current_timestamp">
                 <constraints nullable="false"/>
             </column>
 
@@ -158,11 +158,11 @@
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+            <column name="created" type="TIMESTAMP" defaultValueComputed="current_timestamp">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+            <column name="updated" type="TIMESTAMP" defaultValueComputed="current_timestamp">
                 <constraints nullable="false"/>
             </column>
 
@@ -264,11 +264,11 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="created" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+            <column name="created" type="TIMESTAMP" defaultValueComputed="current_timestamp">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="updated" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP()">
+            <column name="updated" type="TIMESTAMP" defaultValueComputed="current_timestamp">
                 <constraints nullable="false"/>
             </column>
 
