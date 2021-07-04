@@ -56,6 +56,9 @@ const profileMeSlice = createSlice({
       state.updated = payload.updated;
       state.username = payload.username;
     },
+    [fetchUser.rejected]: (state) => {
+      console.log(state);
+    },
   },
 });
 
