@@ -24,6 +24,7 @@ const en = {
     max30: 'Must be no more than 30 characters',
     passwordMatch: 'Large and small Latin letters and numbers',
     passwordMismatch: 'Password mismatch',
+    noSpace: 'There should be no spaces',
     nameMatch: 'Any letters',
     phoneMatch: 'Invalid phone format',
     passwordIdentical: 'The password matches the current one',
@@ -76,7 +77,7 @@ const en = {
     enter: 'Enter',
     look: 'View',
     save: 'SAVE',
-    codeConfirm: 'SEND CONFIRMATION CODE',
+    saveEmail: 'SAVE EMAIL',
     remove: 'REMOVE ACCOUNT',
   },
   header: {

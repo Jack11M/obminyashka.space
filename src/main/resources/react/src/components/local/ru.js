@@ -24,6 +24,7 @@ const ru = {
     max30: 'Должно быть не более 30 символов',
     passwordMatch: 'Большие и малые латинские буквы и цифры',
     passwordMismatch: 'Пароли не совпадают',
+    noSpace: 'Не должно быть пробелов',
     nameMatch: 'Любые буквы',
     phoneMatch: 'Неверный формат телефона',
     passwordIdentical: 'Пароль совпадает с текущим',
@@ -77,7 +78,7 @@ const ru = {
     enter: 'Войти',
     look: 'Смотреть',
     save: 'СОХРАНИТЬ',
-    codeConfirm: 'ОТПРАВИТЬ КОД ПОДТВЕРЖДЕНИЯ',
+    saveEmail: 'СОХРАНИТЬ EMAIL',
     remove: 'УДАЛИТЬ АККАУНТ',
   },
   header: {

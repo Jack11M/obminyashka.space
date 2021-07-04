@@ -220,11 +220,11 @@ const MySettings = () => {
                 isFetchEmail ? (
                   <SpinnerForAuthBtn />
                 ) : (
-                  getTranslatedText(`button.codeConfirm`, lang)
+                  getTranslatedText(`button.saveEmail`, lang)
                 )
               }
               whatClass={'btn-profile e-mail-button'}
-              width={'363px'}
+              width={'300px'}
               height={'49px'}
               click={!errors.newEmail ? handleSubmit : null}
               type={'submit'}

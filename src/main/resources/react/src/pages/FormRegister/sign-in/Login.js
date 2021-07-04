@@ -10,6 +10,7 @@ import CheckBox from '../../../components/common/checkbox';
 import InputForAuth from '../../../components/common/input';
 import { postAuthLogin } from '../../../REST/Resources';
 import { putToken, unauthorized } from '../../../store/auth/slice';
+import { NO_SPACE } from '../../../config';
 
 import SpinnerForAuthBtn from '../../../components/common/spinner/spinnerForAuthBtn';
 import { Extra, ExtraLink } from './loginStyle';
@@ -28,10 +29,12 @@ const Login = () => {
     usernameOrEmail: yup
       .string()
       .required(getTranslatedText('errors.requireField', lang))
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
     password: yup
       .string()
       .required(getTranslatedText('errors.requireField', lang))
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
   });
   const initialLoginValues = validationLoginSchema.cast({});
@@ -48,8 +51,10 @@ const Login = () => {
           setLoading(true);
           try {
             const { data } = await postAuthLogin(dataFormik);
+            setLoading(false);
             dispatch(putToken({ data, isCheck: checkbox }));
           } catch (err) {
+            setLoading(false);
             if (err.response.status === 401) {
               dispatch(unauthorized());
             }
@@ -58,8 +63,7 @@ const Login = () => {
                 usernameOrEmail: err.response.data.error,
               });
             }
-          } finally {
-            setLoading(false);
+
           }
         }}
       >

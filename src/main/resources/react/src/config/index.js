@@ -12,7 +12,10 @@ const USERNAME_REG_EXP = /^(?=.*[A-Za-zА-Яа-я-'`ЁёҐЄІЇієїґ])(?=.*\
 
 const PHONE_REG_EXP = /^\s*(?<country>\+?\d{2})[-. (]*(?<area>\d{3})[-. )]*(?<number>\d{3}[-. ]*\d{2}[-. ]*\d{2})\s*$/;
 
+const NO_SPACE = /^\S+$/;
+
 export {
+  NO_SPACE,
   NAME_REG_EXP,
   EMAIL_REG_EXP,
   PHONE_REG_EXP,

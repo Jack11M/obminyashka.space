@@ -9,9 +9,10 @@ import CheckBox from '../../../components/common/checkbox';
 import Button from '../../../components/common/button/Button';
 import { getTranslatedText } from '../../../components/local/localisation';
 import {
+  NO_SPACE,
   EMAIL_REG_EXP,
-  PASSWORD_ALT_CODE_EXP,
   PASSWORD_REG_EXP,
+  PASSWORD_ALT_CODE_EXP,
   USERNAME_ALT_CODE_EXP,
 } from '../../../config';
 import { postAuthRegister } from '../../../REST/Resources';
@@ -36,6 +37,7 @@ const SignUp = () => {
       .email(getTranslatedText('errors.invalidEmailFormat', lang))
       .required(getTranslatedText('errors.requireField', lang))
       .matches(EMAIL_REG_EXP, getTranslatedText('errors.emailMatch', lang))
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
     username: yup
       .string()
@@ -46,6 +48,7 @@ const SignUp = () => {
         USERNAME_ALT_CODE_EXP,
         getTranslatedText('errors.altCodeMatch', lang)
       )
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
     password: yup
       .string()
@@ -60,6 +63,7 @@ const SignUp = () => {
         PASSWORD_ALT_CODE_EXP,
         getTranslatedText('errors.altCodeMatch', lang)
       )
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
     confirmPassword: yup
       .string()
@@ -83,7 +87,9 @@ const SignUp = () => {
           try {
             await postAuthRegister(dataFormik);
             setLoading(false);
+            history.push(route.login);
           } catch (err) {
+            setLoading(false);
             if (err.response.status === 400) {
               const { error: message } = err.response.data;
               const field =
@@ -94,9 +100,6 @@ const SignUp = () => {
                   : 'email';
               onSubmitProps.setErrors({ [field]: message });
             }
-          } finally {
-            setLoading(false);
-            history.push(route.login);
           }
         }}
       >
