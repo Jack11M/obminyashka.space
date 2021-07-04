@@ -55,7 +55,8 @@ const WrapDiv = styled.div`
   background-color: rgba(17, 181, 237, 0.4);
   z-index: 999;
   ${(p) => css`
-    animation: ${p.closing ? fadeOut : fadeIn} 0.3s cubic-bezier(.44,.44,.61,.63);
+    animation: ${p.closing ? fadeOut : fadeIn} 0.3s
+      cubic-bezier(0.44, 0.44, 0.61, 0.63);
   `}
 `;
 const ContentModal = styled.div`
@@ -65,9 +66,10 @@ const ContentModal = styled.div`
   background-color: #fff;
   box-shadow: 0 0 75px 10px rgba(17, 181, 237, 0.6);
   opacity: 1;
-${(p) => css`
-  animation: ${p.closing ? moveUp : moveDown} 0.3s cubic-bezier(.44,.44,.61,.63);
-`}
+  ${(p) => css`
+    animation: ${p.closing ? moveUp : moveDown} 0.3s
+      cubic-bezier(0.44, 0.44, 0.61, 0.63);
+  `}
 `;
 
 const Title = styled.div`

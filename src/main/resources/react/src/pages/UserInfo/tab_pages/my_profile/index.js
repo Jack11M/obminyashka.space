@@ -83,7 +83,7 @@ const MyProfile = () => {
             };
             const { data } = await putUserInfo(newUserData);
             openModal({
-              title: 'Ответ от сервера',
+              title: getTranslatedText('popup.serverResponse', lang),
               children: <p>{data}</p>,
             });
             setAboutLoading(false);

@@ -112,7 +112,7 @@ const MySettings = () => {
           try {
             const { data } = await putPasswordFetch(values);
             openModal({
-              title: 'Ответ от сервера',
+              title: getTranslatedText('popup.serverResponse', lang),
               children: <p>{data}</p>,
             });
             onSubmitProps.resetForm();
@@ -183,7 +183,7 @@ const MySettings = () => {
               newEmailConfirmation,
             });
             openModal({
-              title: 'Ответ от сервера',
+              title: getTranslatedText('popup.serverResponse', lang),
               children: <p>{data}</p>,
             });
             dispatch(putEmail(newEmail));
