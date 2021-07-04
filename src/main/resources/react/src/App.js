@@ -13,6 +13,8 @@ import Footer from './components/footer/Footer';
 import { theme } from './styledTheme';
 import GlobalFonts from './styledTheme/styledFonts';
 
+import { ModalProvider } from './components/common/pop-up';
+
 const App = () => {
   return (
     <Provider store={store}>
@@ -21,9 +23,11 @@ const App = () => {
         <Router>
           <ErrorBoundary>
             <ScrollToTop />
-            <Header />
-            <Routes />
-            <Footer />
+            <ModalProvider>
+              <Header />
+              <Routes />
+              <Footer />
+            </ModalProvider>
           </ErrorBoundary>
         </Router>
       </ThemeProvider>

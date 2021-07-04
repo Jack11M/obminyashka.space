@@ -13,6 +13,9 @@ const en = {
     agreement:
       '* I agree to the terms of use of the service, as well as to the transfer and processing of my data. I confirm that I am of legal age and responsible for posting ads.',
   },
+  popup: {
+    serverResponse: 'Server response',
+  },
   errors: {
     requireField: 'Field is required',
     invalidEmailFormat: 'Invalid mail format',
@@ -24,6 +27,7 @@ const en = {
     max30: 'Must be no more than 30 characters',
     passwordMatch: 'Large and small Latin letters and numbers',
     passwordMismatch: 'Password mismatch',
+    noSpace: 'There should be no spaces',
     nameMatch: 'Any letters',
     phoneMatch: 'Invalid phone format',
     passwordIdentical: 'The password matches the current one',
@@ -76,7 +80,7 @@ const en = {
     enter: 'Enter',
     look: 'View',
     save: 'SAVE',
-    codeConfirm: 'SEND CONFIRMATION CODE',
+    saveEmail: 'SAVE EMAIL',
     remove: 'REMOVE ACCOUNT',
   },
   header: {

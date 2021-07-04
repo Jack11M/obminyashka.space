@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useField } from 'formik';
+import InputMask from 'react-input-mask';
 
 const ProfileInput = styled.div`
   position: relative;
@@ -54,16 +55,35 @@ const SpanError = styled.span`
 const InputProfile = ({ id = '', label, ...props }) => {
   const [field, meta] = useField(props);
   const { error, touched } = meta;
+
   return (
     <ProfileInput>
       <Label htmlFor={id}>{`${label}`}</Label>
-      <Input
-        readOnly={props.readOnly}
-        id={field.name + id}
-        error={touched && error}
-        {...field}
-        {...props}
-      />
+
+      {field.name.includes('phones') ? (
+        <InputMask
+          mask="+38(999) 999-99-99"
+          value={field.value}
+          onChange={field.onChange}
+          readOnly={props.readOnly}
+          id={field.name + id}
+          {...field}
+          {...props}
+          error={touched && error}
+        >
+          {(inputProps) => (
+            <Input {...inputProps} disableUnderline />
+          )}
+        </InputMask>
+      ) : (
+        <Input
+          readOnly={props.readOnly}
+          id={field.name + id}
+          {...field}
+          {...props}
+          error={touched && error}
+        />
+      )}
       {<SpanError> {touched && error}</SpanError>}
     </ProfileInput>
   );
