@@ -1,4 +1,47 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const fadeIn = keyframes`
+ 0% {
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+`;
+
+const moveDown = keyframes`
+ 0% {
+   opacity: 0;
+     
+  }
+  5%{
+    transform: translateY(-100vh);
+  }
+  100%{
+    opacity: 1;
+    transform: translateY(0vh);
+  }
+`;
+
+const fadeOut = keyframes`
+ 0% {
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+`;
+
+const moveUp = keyframes`
+ 0% {
+   opacity: 1;
+   transform: translateY(0vh);
+  }
+  100%{
+    opacity: 0;
+     transform: translateY(-100vh);
+  }
+`;
 
 const WrapDiv = styled.div`
   position: fixed;
@@ -11,23 +54,20 @@ const WrapDiv = styled.div`
   height: 100vh;
   background-color: rgba(17, 181, 237, 0.4);
   z-index: 999;
-
   ${(p) => css`
-    transition: transform ${p.delay}ms ease-in-out;
-    opacity: ${p.active ? 1 : 0};
+    animation: ${p.closing ? fadeOut : fadeIn} 0.3s cubic-bezier(.44,.44,.61,.63);
   `}
 `;
 const ContentModal = styled.div`
   position: relative;
   max-width: 600px;
-  flex-grow: 1;
   padding: 44px 50px;
   background-color: #fff;
-
-  ${(p) => css`
-    transition: transform ${p.delay}ms ease-in-out;
-    transform: translateY(${p.active ? 0 : -100}vh);
-  `}
+  box-shadow: 0 0 75px 10px rgba(17, 181, 237, 0.6);
+  opacity: 1;
+${(p) => css`
+  animation: ${p.closing ? moveUp : moveDown} 0.3s cubic-bezier(.44,.44,.61,.63);
+`}
 `;
 
 const Title = styled.div`
@@ -37,6 +77,15 @@ const Title = styled.div`
   font-style: normal;
   font-weight: 600;
   color: #111111;
+`;
+
+const Content = styled.div`
+  margin: 0 auto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 22px;
+  color: #777777;
 `;
 
 const DivClose = styled.div`
@@ -74,4 +123,4 @@ const DivClose = styled.div`
   }
 `;
 
-export { WrapDiv, ContentModal, DivClose, Title };
+export { WrapDiv, ContentModal, DivClose, Title, Content };

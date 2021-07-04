@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
@@ -14,10 +14,12 @@ import InputGender from '../../components/inputProfile/inputGender';
 import { putUserInfo } from '../../../../REST/Resources';
 import { unauthorized } from '../../../../store/auth/slice';
 import SpinnerForAuthBtn from '../../../../components/common/spinner/spinnerForAuthBtn';
+import { ModalContext } from '../../../../components/common/pop-up';
 
 import './myProfile.scss';
 
 const MyProfile = () => {
+  const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
   const { lang } = useSelector((state) => state.auth);
   const { firstName, lastName, children, phones } = useSelector(
@@ -79,7 +81,11 @@ const MyProfile = () => {
               ...dataFormik,
               phones: transformPhones(dataFormik.phones),
             };
-            await putUserInfo(newUserData);
+            const { data } = await putUserInfo(newUserData);
+            openModal({
+              title: 'Ответ от сервера',
+              children: <p>{data}</p>,
+            });
             setAboutLoading(false);
             dispatch(putUserToStore(newUserData));
           } catch (err) {

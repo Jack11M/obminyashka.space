@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
@@ -16,11 +16,14 @@ import {
   PASSWORD_REG_EXP,
 } from '../../../../config';
 
-import './mySettings.scss';
 import { putEmailFetch, putPasswordFetch } from '../../../../REST/Resources';
 import { putEmail, unauthorized } from '../../../../store/auth/slice';
+import { ModalContext } from '../../../../components/common/pop-up';
+
+import './mySettings.scss';
 
 const MySettings = () => {
+  const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
@@ -107,18 +110,21 @@ const MySettings = () => {
         onSubmit={async (values, onSubmitProps) => {
           setIsFetchPass(true);
           try {
-            await putPasswordFetch(values);
-            // create POPup ant insert  data message, Password been changed
+            const { data } = await putPasswordFetch(values);
+            openModal({
+              title: 'Ответ от сервера',
+              children: <p>{data}</p>,
+            });
             onSubmitProps.resetForm();
+            setIsFetchPass(false);
           } catch (e) {
+            setIsFetchPass(false);
             if (e.response.status === 401) {
               dispatch(unauthorized());
             }
             if (e.response.status === 400) {
               onSubmitProps.setErrors({ oldPassword: e.response.data.error });
             }
-          } finally {
-            setIsFetchPass(false);
           }
         }}
       >
@@ -172,11 +178,19 @@ const MySettings = () => {
           const { newEmail, newEmailConfirmation } = values;
           setIsFetchEmail(true);
           try {
-            await putEmailFetch({ newEmail, newEmailConfirmation });
-            // create POPup ant insert  data message, Email been changed
+            const { data } = await putEmailFetch({
+              newEmail,
+              newEmailConfirmation,
+            });
+            openModal({
+              title: 'Ответ от сервера',
+              children: <p>{data}</p>,
+            });
             dispatch(putEmail(newEmail));
             onSubmitProps.resetForm();
+            setIsFetchEmail(false);
           } catch (e) {
+            setIsFetchEmail(false);
             if (e.response.status === 401) {
               dispatch(unauthorized());
             }
@@ -189,8 +203,6 @@ const MySettings = () => {
               console.log(e.response.data.error);
               onSubmitProps.setErrors({ newEmail: e.response.data.error });
             }
-          } finally {
-            setIsFetchEmail(false);
           }
         }}
       >
