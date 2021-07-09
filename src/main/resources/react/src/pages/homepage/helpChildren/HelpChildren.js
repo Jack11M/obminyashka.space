@@ -14,7 +14,7 @@ const HelpChildren = () => {
       </h3>
       <p className="HelpChildren__text">
         <strong>{getTranslatedText('mainPage.helpName', lang)}</strong>
-        {getTranslatedText('mainPage.helpText', lang)}
+        &nbsp; {getTranslatedText('mainPage.helpText', lang)}
       </p>
       <BtnGoodBusiness
         whatClass={'HelpChildren__btn '}

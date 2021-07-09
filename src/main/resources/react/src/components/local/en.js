@@ -54,15 +54,15 @@ const en = {
     unselected: 'Unselected',
   },
   settings: {
-    changePassword: 'CHANGE PASSWORD',
+    changePassword: 'Change password',
     currentPassword: 'Current password:',
     newPassword: 'New password:',
     confirmPassword: 'Repeat password:',
-    changeEmail: 'CHANGE E-MAIL',
+    changeEmail: 'Change E-MaiL',
     oldEmail: 'Old E-Mail:',
     newEmail: 'New E-Mail:',
     confirmEmail: 'Repeat E-Mail:',
-    remove: 'REMOVE ACCOUNT',
+    remove: 'Remove account',
     describe:
       'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section',
     profile: 'Profile',

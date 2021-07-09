@@ -54,15 +54,15 @@ const ru = {
     unselected: 'Не выбрано',
   },
   settings: {
-    changePassword: 'СМЕНИТЬ ПАРОЛЬ',
+    changePassword: 'Сменить пароль',
     currentPassword: 'Текущий пароль:',
     newPassword: 'Новый пароль:',
     confirmPassword: 'Повторите пароль:',
-    changeEmail: 'СМЕНИТЬ E-MAIL',
+    changeEmail: 'Сменить E-Mail',
     oldEmail: 'Старый E-Mail:',
     newEmail: 'Новый E-Mail:',
     confirmEmail: 'Повторите E-Mail:',
-    remove: 'УДАЛИТЬ АККАУНТ',
+    remove: 'Удалить аккаунт',
     describe:
       'Внимание! После удаления учетной записи, ваш профиль будет полностью удален из каталога сайта и многие функции перестанут быть' +
       ' доступными. Вы можете поменять контактные данные и номера телефонов в разделе меню',

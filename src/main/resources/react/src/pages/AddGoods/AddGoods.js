@@ -19,7 +19,6 @@ import './AddGoods.scss';
 
 const AddGoods = () => {
   const { lang } = useSelector((state) => state.auth);
-  const changeCheckBox = () => {};
   const dispatch = useDispatch();
   return (
     <main className="add">
@@ -29,21 +28,25 @@ const AddGoods = () => {
             <h3 className="add-title">Выберите раздел</h3>
             <div className="sections">
               <div className="sections_item">
-                <h5 className="sections_item-description">* Категория</h5>
+                <h5 className="sections_item-description">
+                  <span className="span_star">*</span> Категория
+                </h5>
                 <div className="select">
                   <img src={clothes} alt="clothes" />
                   <p>Одежда</p>
                 </div>
               </div>
               <div className="sections_item">
-                <h5 className="sections_item-description">* Подкатегория</h5>
+                <h5 className="sections_item-description">
+                  <span className="span_star">*</span> Подкатегория
+                </h5>
                 <div className="select">
                   <p>Колготки, носки</p>
                 </div>
               </div>
               <div className="sections_item">
                 <h5 className="sections_item-description">
-                  * Заголовок обьявления
+                  <span className="span_star">*</span> Заголовок обьявления
                 </h5>
                 <input type="text" />
               </div>
@@ -51,7 +54,9 @@ const AddGoods = () => {
           </div>
           <div className="change">
             <h3 className="change_title">Обмен</h3>
-            <p className="change-description">* На что хотите обменяться?</p>
+            <p className="change-description">
+              <span className="span_star">*</span> На что хотите обменяться?
+            </p>
             <p className="change-description">
               (введите фразу, а потом нажмите Enter)
             </p>
@@ -76,7 +81,7 @@ const AddGoods = () => {
               margin={'0 0 15px 0'}
               fs={'14px'}
               checked={false}
-              click={changeCheckBox}
+              click={null}
             />
           </div>
           <div className="characteristics">
@@ -89,42 +94,42 @@ const AddGoods = () => {
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'1-2'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'2-4'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'5-7'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'8-11'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'11-14'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
               </div>
               <div className="characteristics_item">
@@ -134,21 +139,21 @@ const AddGoods = () => {
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'Мужской'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'Мальчик/Девочка'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
               </div>
               <div className="characteristics_item">
@@ -158,42 +163,42 @@ const AddGoods = () => {
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'80 - 92 см'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'92 - 104 см'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'110 - 122 см'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'128 - 146 см'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'146 - 164 см'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
               </div>
               <div className="characteristics_item">
@@ -203,56 +208,48 @@ const AddGoods = () => {
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'Лето'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
                 <CheckBox
                   text={'Зима'}
                   margin={'0 0 15px 0'}
                   fs={'14px'}
                   checked={false}
-                  click={changeCheckBox}
+                  click={null}
                 />
               </div>
             </div>
           </div>
           <div className="description">
-            <h3 className="description_titile"> Описание</h3>
-            <p className="description_subtitile">
-              * Опишите Вашу вещь: деффекты, особенности использования, и пр
+            <h3 className="description_title"> Описание</h3>
+            <p className="description_subtitle">
+              <span className="span_star">*</span> Опишите Вашу вещь: деффекты,
+              особенности использования, и пр
             </p>
             <textarea className="description_textarea" />
           </div>
           <div className="files">
             <h3>Загрузите фотографии вашей вещи</h3>
             <p>Первое фото станет обложкой карточки товара</p>
-            <p>Загружено фотографий 1 из 5</p>
+            <p>Загружено фотографий 1 из 10</p>
             <div className="files_wrapper">
-              <input
-                id="file-input1"
-                className="file_input"
-                type="file"
-                name="file"
-                multiple
-              />
-              <label htmlFor="file-input1" className="files_label added">
-                <span />
-              </label>
-              <input
-                id="file-input2"
-                className="file_input "
-                type="file"
-                name="file"
-                multiple
-              />
-              <label htmlFor="file-input1" className="files_label ">
-                <span />
+              <label  className="files_label">
+                <input
+                  className="file_input"
+                  type="file"
+                  name="file"
+                  multiple
+                />
+                {true ? <span className='span_add'/> : <img src="#" alt="photo"/>}
+
+                <span className='span_close'/>
               </label>
             </div>
           </div>

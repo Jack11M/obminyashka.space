@@ -1,23 +1,23 @@
 @font-face {
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
   @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap&subset=cyrillic');
 }
 
 @font-face {
-  font-family: 'Pollywog_Cyr';
-  src: url('Pollywog_Cyr.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'Caveat', cursive;
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
+  font-size: 50px;
   font-style: normal;
-  font-display: block;
+  font-weight: 700;
 }
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', sans-serif;
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
   font-style: normal;
   font-weight: 80;
 }
 
 @mixin font($font) {
-  font-family: $font, sans-serif;
+  font-family: $font;
 }
