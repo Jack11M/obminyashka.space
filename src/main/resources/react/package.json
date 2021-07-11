@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^13.1.2",
     "axios": "^0.21.1",
     "formik": "^2.2.9",
-    "node-sass": "^4.14.1",
+    "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-input-mask": "^2.0.4",
@@ -28,6 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "CI=false react-scripts build",
+    "compress-svg": "svgo -f src/assets/icons/ --config icons-config.yml",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

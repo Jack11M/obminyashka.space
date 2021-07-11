@@ -61,7 +61,7 @@ const SignUp = () => {
       )
       .matches(
         PASSWORD_ALT_CODE_EXP,
-        getTranslatedText('errors.altCodeMatch', lang)
+        getTranslatedText('errors.passwordMatch', lang)
       )
       .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
