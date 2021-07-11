@@ -5,7 +5,7 @@ import * as yup from 'yup';
 
 import { route } from '../../../routes/routeConstants';
 import { getTranslatedText } from '../../../components/local/localisation';
-import Button from '../../../components/common/button/Button';
+import Button from '../../../components/common/buttons/button/Button';
 import CheckBox from '../../../components/common/checkbox';
 import InputForAuth from '../../../components/common/input';
 import { postAuthLogin } from '../../../REST/Resources';

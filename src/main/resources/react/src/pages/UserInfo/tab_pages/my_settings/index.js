@@ -6,7 +6,7 @@ import * as yup from 'yup';
 
 import SpinnerForAuthBtn from '../../../../components/common/spinner/spinnerForAuthBtn';
 import TitleBigBlue from '../../../../components/common/title_Big_Blue/title_Big_Blue';
-import Button from '../../../../components/common/button/Button';
+import Button from '../../../../components/common/buttons/button/Button';
 import InputProfile from '../../components/inputProfile';
 import { route } from '../../../../routes/routeConstants';
 import { getTranslatedText } from '../../../../components/local/localisation';

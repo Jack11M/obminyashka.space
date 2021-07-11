@@ -1,10 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import BtnGoodBusiness from '../common/btnGoodBusiness/BtnGoodBusiness.js';
-import { getTranslatedText } from '../local/localisation';
-import logoFooter from '../../img/Logo-footer.png';
-import { route } from '../../routes/routeConstants';
+
+import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBusiness.js';
+import { ReactComponent as PhoneSvg } from 'assets/icons/phone.svg';
+import { ReactComponent as QuestionSvg } from 'assets/icons/question-mark.svg';
+import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
+import { getTranslatedText } from 'components/local/localisation';
+import logoFooter from 'assets/img/Logo-footer.png';
+import { route } from 'routes/routeConstants';
 
 import './Footer.scss';
 
@@ -18,7 +22,10 @@ const Footer = () => {
       <div className="wrapper">
         <ul className="footer-blocks">
           <li className="footer-list">
-            <span className="footer-list__icon icon-phone" />
+            <span className="footer-list__icon">
+              <PhoneSvg />
+            </span>
+
             <a href="mailto:&#101;&#109;&#97;&#105;&#108;&#46;&#111;&#98;&#109;&#101;&#110;&#121;&#97;&#115;&#104;&#107;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">
               &#101;&#109;&#97;&#105;&#108;&#46;&#111;&#98;&#109;&#101;&#110;&#121;&#97;&#115;&#104;&#107;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;
             </a>
@@ -32,7 +39,9 @@ const Footer = () => {
             </div>
           </li>
           <li className="footer-list">
-            <span className="footer-list__icon icon-question" />
+            <span className="footer-list__icon">
+              <QuestionSvg />
+            </span>
             <Link to={route.home} className="footer-list_rules">
               {getTranslatedText('footer.rules', lang)}
             </Link>
@@ -45,13 +54,15 @@ const Footer = () => {
             </Link>
           </li>
           <li className="footer-list">
-            <span className="footer-list__icon icon-home" />
+            <span className="footer-list__icon">
+              <HomeSvg />
+            </span>
             <Link to={route.home}>
               <img src={logoFooter} alt="Logo" />
             </Link>
             <BtnGoodBusiness
               text={getTranslatedText('header.goodness', lang)}
-              href={route.productPage}
+              href={'#'}
               whatClass={'btn-Help-Children'}
             />
           </li>

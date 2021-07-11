@@ -34,6 +34,9 @@ const Input = styled.input`
       error ? colors['colorError'] : 'hsl(0, 0%, 74%)'};
   color: ${({ theme: { colors } }) => colors['right-color-text']};
 
+  &::placeholder {
+    color: #A3A3A3;
+  }
   &:focus,
   &:hover {
     border-color: ${({ theme: { colors }, error }) =>

@@ -11,9 +11,9 @@ import {
   shoes,
   toys,
   transportForChildren,
-} from '../../img/all_images_export/navItems';
-import ButtonAdv from '../../components/common/buttonAdv/ButtonAdv';
-import Button from '../../components/common/button/Button';
+} from '../../assets/img/all_images_export/navItems';
+import ButtonAdv from '../../components/common/buttons/buttonAdv/ButtonAdv';
+import Button from '../../components/common/buttons/button/Button';
 
 import './AddGoods.scss';
 

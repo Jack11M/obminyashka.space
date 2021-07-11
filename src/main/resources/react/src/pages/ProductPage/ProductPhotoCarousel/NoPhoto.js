@@ -1,5 +1,5 @@
 import React from 'react';
-import noPhotos from '../../../img/showAdv/noPhoto.svg';
+import noPhotos from '../../../assets/img/showAdv/noPhoto.svg';
 
 const NoPhoto = ({ noPhoto = 'noPhoto', noPhotoImg = 'noPhotoImg' }) => {
   return (
