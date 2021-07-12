@@ -2,8 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { getTranslatedText } from '../../local/localisation';
-import { route } from '../../../routes/routeConstants';
+import { getTranslatedText } from '../../../local/localisation';
+import { route } from '../../../../routes/routeConstants';
 
 import './buttonAdv.scss';
 

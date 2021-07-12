@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Button from '../common/button/Button';
+import Button from '../common/buttons/button/Button';
 import SvgStar from './FavoriteMarker';
 import InboxMessageSvg from './inboxMessageSvg';
 import Avatar from '../common/avatar/avatar';

@@ -11,7 +11,7 @@ import {
   shoesSlider,
   strollersSlider,
   toySlider,
-} from '../../../img/all_images_export/sliderImages';
+} from '../../../assets/img/all_images_export/sliderImages';
 
 import './slider.scss';
 import 'slick-carousel/slick/slick.scss';

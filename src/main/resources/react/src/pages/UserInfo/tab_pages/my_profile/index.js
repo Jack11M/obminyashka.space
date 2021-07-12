@@ -4,17 +4,17 @@ import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
 
 import InputProfile from '../../components/inputProfile';
-import { fetchUser, putUserToStore } from '../../../../store/profile/slice';
-import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from '../../../../config';
-import Button from '../../../../components/common/button/Button';
-import TitleBigBlue from '../../../../components/common/title_Big_Blue';
-import { getTranslatedText } from '../../../../components/local/localisation';
-import ButtonsAddRemoveChild from '../../components/buttonsAddRemoveChild/buttonsAddRemoveChild';
+import { fetchUser, putUserToStore } from 'store/profile/slice';
+import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
+import Button from 'components/common/buttons/button/Button';
+import TitleBigBlue from 'components/common/title_Big_Blue';
+import { getTranslatedText } from 'components/local/localisation';
+import ButtonsAddRemoveChild from 'pages/UserInfo/components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 import InputGender from '../../components/inputProfile/inputGender';
-import { putUserInfo } from '../../../../REST/Resources';
-import { unauthorized } from '../../../../store/auth/slice';
-import SpinnerForAuthBtn from '../../../../components/common/spinner/spinnerForAuthBtn';
-import { ModalContext } from '../../../../components/common/pop-up';
+import { putUserInfo } from 'REST/Resources';
+import { unauthorized } from 'store/auth/slice';
+import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
+import { ModalContext } from 'components/common/pop-up';
 
 import './myProfile.scss';
 
@@ -35,26 +35,48 @@ const MyProfile = () => {
   }, [dispatch]);
 
   const transformPhones = (array) => {
-    return array.map((phone) => ({
-      defaultPhone: false,
-      phoneNumber: phone,
-    }));
+    return array
+      .map((phone) => ({
+        defaultPhone: false,
+        phoneNumber: phone,
+      }))
+      .filter((phone) => phone.phoneNumber !== '');
+  };
+
+  const errorMessage = (validatedObject, message) => {
+    return validatedObject.value.length > 0 ? message : undefined;
   };
 
   const validationUserSchema = yup.object().shape({
     firstName: yup
       .string()
-      .min(2, getTranslatedText('errors.min2', lang))
-      .max(50, getTranslatedText('errors.max50', lang))
-      .matches(NAME_REG_EXP, getTranslatedText('errors.nameMatch', lang))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
+      .min(2, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.min2', lang))
+      )
+      .max(50, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.max50', lang))
+      )
+      .matches(NO_SPACE, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.noSpace', lang))
+      )
+      .matches(NAME_REG_EXP, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.nameMatch', lang))
+      )
       .default(() => firstName),
     lastName: yup
       .string()
-      .min(2, getTranslatedText('errors.min2', lang))
-      .max(50, getTranslatedText('errors.max50', lang))
-      .matches(NAME_REG_EXP, getTranslatedText('errors.nameMatch', lang))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
+      .min(2, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.min2', lang))
+      )
+      .max(50, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.max50', lang))
+      )
+      .matches(NO_SPACE, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.noSpace', lang))
+      )
+      .matches(NAME_REG_EXP, (obj) =>
+        errorMessage(obj, getTranslatedText('errors.nameMatch', lang))
+      )
       .default(() => lastName),
     phones: yup
       .array()
@@ -81,6 +103,22 @@ const MyProfile = () => {
               ...dataFormik,
               phones: transformPhones(dataFormik.phones),
             };
+            if (
+              !newUserData.lastName &&
+              !newUserData.firstName &&
+              !newUserData.phones.length
+            ) {
+              setAboutLoading(false);
+              openModal({
+                title: getTranslatedText('popup.errorTitle', lang),
+                children: (
+                  <p style={{ textAlign: 'center' }}>
+                    {getTranslatedText('popup.notEmptyInput', lang)}
+                  </p>
+                ),
+              });
+              return;
+            }
             const { data } = await putUserInfo(newUserData);
             openModal({
               title: getTranslatedText('popup.serverResponse', lang),
@@ -92,6 +130,17 @@ const MyProfile = () => {
             setAboutLoading(false);
             if (err.response.status === 401) {
               dispatch(unauthorized());
+            }
+            if (err.response.status === 400) {
+              const indexStart = err.response.data.error.indexOf(':') + 1;
+              openModal({
+                title: getTranslatedText('popup.serverResponse', lang),
+                children: (
+                  <p style={{ textAlign: 'center' }}>
+                    {err.response.data.error.slice(indexStart)}
+                  </p>
+                ),
+              });
             }
           }
         }}
@@ -164,7 +213,7 @@ const MyProfile = () => {
               width={'248px'}
               type={'submit'}
               whatClass={'btn-form-about-me'}
-              disabling={false}
+              disabling={Object.keys(errors).length}
               click={handleSubmit}
             />
           </>
@@ -203,5 +252,4 @@ const MyProfile = () => {
     </>
   );
 };
-
 export default React.memo(MyProfile);

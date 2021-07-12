@@ -14,11 +14,6 @@ export {
   deleteReceivedChildren,
 } from './profileUtils';
 export {
-  toggleButtonLog,
-  toggleButtonReg,
-  getBool,
-} from './toggleDisableButtonAuth';
-export {
   getStorageUser,
   getStorageLang,
   removeTokenFromStorage,
@@ -34,4 +29,4 @@ export {
   translateErrorsAuth,
   isErrorArray,
 } from './errorHandlingAuth';
-export { validation } from './validationInput';
+// export { validation } from './validationInput';

@@ -6,7 +6,7 @@ import * as yup from 'yup';
 
 import InputForAuth from '../../../components/common/input';
 import CheckBox from '../../../components/common/checkbox';
-import Button from '../../../components/common/button/Button';
+import Button from '../../../components/common/buttons/button/Button';
 import { getTranslatedText } from '../../../components/local/localisation';
 import {
   NO_SPACE,
@@ -61,7 +61,7 @@ const SignUp = () => {
       )
       .matches(
         PASSWORD_ALT_CODE_EXP,
-        getTranslatedText('errors.altCodeMatch', lang)
+        getTranslatedText('errors.passwordMatch', lang)
       )
       .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),

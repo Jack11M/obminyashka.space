@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Button from '../../components/common/button/Button';
+import Button from '../../components/common/buttons/button/Button';
 import { getTranslatedText } from '../../components/local/localisation';
 import {
   fourOhFour,
@@ -10,7 +10,7 @@ import {
   orangeDots,
   shadow,
   shadowDark,
-} from '../../img/all_images_export/errorPage';
+} from '../../assets/img/all_images_export/errorPage';
 import { route } from '../../routes/routeConstants';
 
 import './errorPage.scss';

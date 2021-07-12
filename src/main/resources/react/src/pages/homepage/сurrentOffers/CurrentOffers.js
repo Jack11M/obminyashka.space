@@ -7,7 +7,7 @@ import ProductCard from '../../../components/item-card';
 import TitleBigBlue from '../../../components/common/title_Big_Blue';
 import { getCurrentOffers } from '../../../REST/Resources';
 import { getTranslatedText } from '../../../components/local/localisation';
-import noPhotos from '../../../img/showAdv/noPhoto.svg';
+import noPhotos from '../../../assets/img/showAdv/noPhoto.svg';
 
 import './currentOffers.scss';
 
