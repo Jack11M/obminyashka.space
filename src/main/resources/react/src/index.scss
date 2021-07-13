@@ -155,6 +155,7 @@ a {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: $scrollbar-color;
+  border-radius: 10px;
 }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   books,
   clothes,
@@ -10,9 +10,9 @@ import {
   shoes,
   toys,
   transportForChildren,
-} from '../../../img/all_images_export/navItems';
-import { getTranslatedText } from '../../local/localisation';
-import { route } from '../../../routes/routeConstants';
+} from 'assets/img/all_images_export/navItems';
+import { getTranslatedText } from 'components/local/localisation';
+import { route } from 'routes/routeConstants';
 
 import './navCategory.scss';
 

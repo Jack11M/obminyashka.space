@@ -15,6 +15,8 @@ const ua = {
   },
   popup: {
     serverResponse: 'Відповідь від сервера',
+    errorTitle: 'Ошибка',
+    notEmptyInput: 'Потрібно хоча б одне поле заповнене.',
   },
   errors: {
     requireField: "Поле обов'язково",

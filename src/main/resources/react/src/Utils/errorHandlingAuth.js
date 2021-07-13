@@ -1,5 +1,5 @@
-import { getStorageLang, validation } from './index';
-import { getTranslatedText } from '../components/local/localisation';
+import { getStorageLang } from '.';
+import { getTranslatedText } from 'components/local/localisation';
 
 const errorAuth = (errors, key, isValid) => {
   if (isValid) {
@@ -24,9 +24,8 @@ const translateErrorsAuth = (state) => {
 };
 
 const isErrorArray = (event, state) => {
-  const { name: key, value } = event.target;
-  const isValid = validation(state, key, value);
-  return errorAuth(state.errors, key, isValid);
+  const { name: key } = event.target;
+  return errorAuth(state.errors, key);
 };
 
 export { errorAuth, translateErrorsAuth, isErrorArray };
