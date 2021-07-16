@@ -15,6 +15,8 @@ const ru = {
   },
   popup: {
     serverResponse: 'Ответ от сервера',
+    errorTitle: 'Ошибка',
+    notEmptyInput: 'Требуется хотя бы одно поле заполнено.',
   },
   errors: {
     requireField: 'Поле обязательно',

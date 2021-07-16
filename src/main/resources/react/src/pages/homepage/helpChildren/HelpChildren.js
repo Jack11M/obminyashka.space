@@ -1,8 +1,10 @@
 import React from 'react';
-import BtnGoodBusiness from '../../../components/common/btnGoodBusiness/BtnGoodBusiness.js';
-import './helpchildren.scss';
 import { useSelector } from 'react-redux';
-import { getTranslatedText } from '../../../components/local/localisation';
+
+import { getTranslatedText } from 'components/local/localisation';
+import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBusiness';
+
+import './helpchildren.scss';
 
 const HelpChildren = () => {
   const { lang } = useSelector((state) => state.auth);

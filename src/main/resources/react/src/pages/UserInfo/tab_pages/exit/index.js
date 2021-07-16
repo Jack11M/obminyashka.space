@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
-import logout2 from '../../../../img/log-out-2.png';
-import Button from '../../../../components/common/button/Button';
+import logout2 from '../../../../assets/img/log-out-2.png';
+import Button from '../../../../components/common/buttons/button/Button';
 import { getTranslatedText } from '../../../../components/local/localisation';
 import { fetchLogOut } from '../../../../store/auth/slice';
 import { route } from '../../../../routes/routeConstants';

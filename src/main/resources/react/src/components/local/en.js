@@ -15,6 +15,8 @@ const en = {
   },
   popup: {
     serverResponse: 'Server response',
+    errorTitle: 'Error',
+    notEmptyInput: 'At least one field is required.',
   },
   errors: {
     requireField: 'Field is required',
