@@ -162,6 +162,19 @@ const en = {
       '         will end up in orphanages and orphanages!',
     helpButton: 'I want to help children!',
   },
+  productEnums: {
+    gender: {
+      male: 'Male',
+      female: 'Female',
+      unselected: 'Unselected',
+    },
+    season: {
+      winter: 'Winter',
+      summer: 'Summer',
+      allSeasons: 'All seasons',
+      demiSeason: 'Demi-season',
+    },
+  },
 };
 
 export default en;
