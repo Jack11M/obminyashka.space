@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 @AllArgsConstructor
@@ -31,4 +28,9 @@ public class UserRegistrationDto {
 
     @NotEmpty(message = "{empty.confirm.password}")
     private String confirmPassword;
+
+    @AssertTrue(message = "{different.passwords}")
+    private boolean isPasswordsEquals() {
+        return password.equals(confirmPassword);
+    }
 }

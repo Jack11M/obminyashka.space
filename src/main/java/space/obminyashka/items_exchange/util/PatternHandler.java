@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PatternHandler {
+public final class PatternHandler {
 
     public static final String PASSWORD = "(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])(?=\\S+$)[\\w\\p{Punct}]+";
     public static final String PHONE_NUMBER =

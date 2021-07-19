@@ -20,7 +20,7 @@ import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_AD
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 
 @RestController
-@RequestMapping("/subcategory")
+@RequestMapping("/api/v1/subcategory")
 @Api(tags = "Subcategory")
 @RequiredArgsConstructor
 @Validated

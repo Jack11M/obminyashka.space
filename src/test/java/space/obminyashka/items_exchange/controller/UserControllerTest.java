@@ -3,24 +3,20 @@ package space.obminyashka.items_exchange.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
@@ -32,53 +28,50 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getJsonOfChildrenDto;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
+import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.generateTestChildren;
+import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserControllerTest {
-
-    public static final String PATH_USER_CHANGE_PASSWORD = "/user/service/pass";
-    public static final String PATH_USER_CHANGE_EMAIL = "/user/service/email";
-    public static final String PATH_USER_CHANGE_AVATAR = "/user/service/avatar";
-    public static final String USER_SERVICE_DELETE = "/user/service/delete";
-    public static final String USER_SERVICE_RESTORE = "/user/service/restore";
-
-    @Autowired
-    private MockMvc mockMvc;
+class UserControllerTest extends BasicControllerTest {
 
     @MockBean
     private UserServiceImpl userService;
 
     private User user;
 
-    @Value("${max.children.amount}")
-    private int maxChildrenAmount;
+    private static int maxChildrenAmount;
     @Value("${max.phones.amount}")
     private String maxPhonesAmount;
+
+    @Autowired
+    public UserControllerTest(MockMvc mockMvc) {
+        super(mockMvc);
+    }
 
     @BeforeEach
     void setUp() {
         user = createUser();
     }
 
+    @Value("${max.children.amount}")
+    public void setMaxChildrenAmount(int maxChildrenAmount) {
+        UserControllerTest.maxChildrenAmount = maxChildrenAmount;
+    }
+
     @Test
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        mockMvc.perform(get("/user/my-info")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andReturn();
+        sendUriAndGetMvcResult(get(USER_MY_INFO), status().isUnauthorized());
     }
 
     @Test
@@ -88,10 +81,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/my-info",
-                createUserUpdateDto(), status().isForbidden())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isForbidden());
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = new StringJoiner(". ")
                 .add(getMessageSource("exception.illegal.operation"))
@@ -105,10 +95,7 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void updateUserInfo_badAmountPhones_ReturnHttpStatusBadRequest() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/my-info",
-                createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest());
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = getErrorMessageForInvalidField("invalid.phones-amount", "{max}", maxPhonesAmount);
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
@@ -124,83 +111,52 @@ class UserControllerTest {
         final var errorMessageForInvalidLastName =
                 getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getLastName());
 
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, "/user/my-info", dto, status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), dto, status().isBadRequest());
         String responseContentAsString = getResponseContentAsString(mvcResult);
         Assertions.assertAll(
-                () ->  assertTrue(responseContentAsString.contains(errorMessageForInvalidFirstName)),
-                () ->  assertTrue(responseContentAsString.contains(errorMessageForInvalidLastName))
+                () -> assertTrue(responseContentAsString.contains(errorMessageForInvalidFirstName)),
+                () -> assertTrue(responseContentAsString.contains(errorMessageForInvalidLastName))
+        );
+    }
+
+    @ParameterizedTest
+    @WithMockUser(username = "admin")
+    @MethodSource("userIdentifierTestData")
+    void addChild_NotValidDto_ShouldThrowIllegalIdentifierException(List<ChildDto> testChildren, String expectedErrorMessageKey) throws Exception {
+
+        final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), testChildren, status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(expectedErrorMessageKey)));
+    }
+
+    private static Stream<Arguments> userIdentifierTestData() {
+        return Stream.of(
+                Arguments.of(getTestChildren(111L, 222L, 2019), "invalid.new.entity.id"),
+                Arguments.of(generateTestChildren(maxChildrenAmount + 1), "exception.invalid.dto")
         );
     }
 
     @Test
     @WithMockUser(username = "admin")
-    void addChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
-        String notValidCreatingChildDtoJson = getJsonOfChildrenDto(111L, 222L, 2019);
-
-        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(notValidCreatingChildDtoJson)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-        assertTrue(mvcResult.getResponse().getContentAsString()
-                .contains(getMessageSource("invalid.new.entity.id")));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
     void updateChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
-        String notValidUpdatingChildDtoJson = getJsonOfChildrenDto(1L, 999L, 2018);
+        var notValidUpdatingChildDto = getTestChildren(1L, 999L, 2018);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        final MvcResult mvcResult = mockMvc.perform(put("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(notValidUpdatingChildDtoJson)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
+        final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), notValidUpdatingChildDto, status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
     }
 
     @Test
     @WithMockUser(username = "admin")
-    void addChild_BadAmount_ShouldThrowConstraintViolationException() throws Exception {
-        String badAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount + 1);
-
-        final MvcResult mvcResult = mockMvc.perform(post("/user/child")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(badAmountChildDtoJson)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn();
-        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getMessageSource("exception.invalid.dto")));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
     void addChild_BadTotalAmount_ShouldThrowEntityAmountException() throws Exception {
-        String badTotalAmountChildDtoJson = getJsonOfChildrenDto(maxChildrenAmount - 1);
+        var badTotalAmountChildDto = generateTestChildren(maxChildrenAmount - 1);
         user.setChildren(List.of(
                 new Child(1L, Gender.MALE, LocalDate.of(2019, 1, 1), user),
                 new Child(2L, Gender.FEMALE, LocalDate.of(2019, 1, 1), user)));
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        final MvcResult mvcResult = mockMvc.perform(post("/user/child/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(badTotalAmountChildDtoJson)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isNotAcceptable())
-                .andReturn();
+        final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), badTotalAmountChildDto, status().isNotAcceptable());
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getParametrizedMessageSource("exception.children-amount",
-                        maxChildrenAmount)));
+                .contains(getParametrizedMessageSource("exception.children-amount", maxChildrenAmount)));
     }
 
     @Test
@@ -210,10 +166,7 @@ class UserControllerTest {
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(WRONG_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
     }
@@ -222,10 +175,7 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_PASSWORD, userChangePasswordDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("different.passwords")));
@@ -235,10 +185,7 @@ class UserControllerTest {
     @WithMockUser(username = "user")
     void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
         UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("invalid.confirm.email")));
@@ -250,10 +197,7 @@ class UserControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
-                status().isConflict())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isConflict());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("exception.email.old")));
@@ -266,10 +210,8 @@ class UserControllerTest {
         when(userService.existsByEmail(any())).thenReturn(true);
 
         UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, PATH_USER_CHANGE_EMAIL, userChangeEmailDto,
-                status().isConflict())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isConflict());
+
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("email.duplicate")));
@@ -280,14 +222,8 @@ class UserControllerTest {
     void setUserAvatar_whenReceivedBMPImage_shouldThrowUnsupportedMediaTypeException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        MockMultipartFile bmp = new MockMultipartFile("file", "image-bmp.bmp", "image/bmp",
-                "image bmp".getBytes());
-        mockMvc.perform(multipart(PATH_USER_CHANGE_AVATAR)
-                .file(bmp)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isUnsupportedMediaType())
-                .andReturn();
+        MockMultipartFile bmp = new MockMultipartFile("file", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
+        sendUriAndGetMvcResult(multipart(USER_SERVICE_CHANGE_AVATAR).file(bmp), status().isUnsupportedMediaType());
     }
 
     @Test
@@ -297,40 +233,27 @@ class UserControllerTest {
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isBadRequest());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = "admin")
-    void selfDeleteRequest_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
-            throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+    @MethodSource("selfDeleteTestData")
+    void selfDeleteRequest_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
+        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), testDto, status().isBadRequest());
+
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("different.passwords")));
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void selfDeleteRequest_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
-            throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.DELETE, USER_SERVICE_DELETE, userDeleteFlowDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource("different.passwords")));
+    private static Stream<Arguments> selfDeleteTestData() {
+        return Stream.of(
+                Arguments.of(new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD)),
+                Arguments.of(new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD))
+        );
     }
 
     @Test
@@ -340,37 +263,17 @@ class UserControllerTest {
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isBadRequest());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = "deletedUser")
-    void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException()
-            throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+    @MethodSource("selfDeleteTestData")
+    void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), testDto, status().isBadRequest());
 
-        assertTrue(message.contains(getMessageSource("different.passwords")));
-    }
-
-    @Test
-    @WithMockUser(username = "deletedUser")
-    void makeAccountActiveAgain_WhenPasswordWrongAndPasswordConfirmationDoesNotMatch_ShouldThrowIllegalArgumentException()
-            throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
-                status().isBadRequest())
-                .andDo(print())
-                .andReturn();
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("different.passwords")));
@@ -383,22 +286,11 @@ class UserControllerTest {
         when(userService.isPasswordMatches(any(), any())).thenReturn(true);
 
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = getResultActions(HttpMethod.PUT, USER_SERVICE_RESTORE, userDeleteFlowDto,
-                status().isForbidden())
-                .andDo(print())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isForbidden());
+
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource("exception.illegal.operation")));
-    }
-
-    private <T> ResultActions getResultActions(HttpMethod httpMethod, String path,
-                                               T dto, ResultMatcher matcher) throws Exception {
-        MockHttpServletRequestBuilder builder = request(httpMethod, path)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(dto));
-        return mockMvc.perform(builder).andExpect(matcher);
     }
 
     private String getResponseContentAsString(MvcResult mvcResult) throws UnsupportedEncodingException {

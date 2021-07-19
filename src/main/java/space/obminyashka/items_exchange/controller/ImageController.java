@@ -31,7 +31,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/api/v1/image")
 @Api(tags = "Image")
 @RequiredArgsConstructor
 @Validated

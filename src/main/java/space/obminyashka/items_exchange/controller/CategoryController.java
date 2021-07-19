@@ -26,7 +26,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/v1/category")
 @Api(tags = "Category")
 @RequiredArgsConstructor
 @Validated

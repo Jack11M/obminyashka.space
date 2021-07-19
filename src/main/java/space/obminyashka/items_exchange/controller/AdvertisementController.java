@@ -32,7 +32,7 @@ import java.util.List;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
-@RequestMapping("/adv")
+@RequestMapping("/api/v1/adv")
 @Api(tags = "Advertisement")
 @RequiredArgsConstructor
 @Validated

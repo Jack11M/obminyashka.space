@@ -41,7 +41,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @Api(tags = "Authorization")
 @RequiredArgsConstructor
 @Validated
