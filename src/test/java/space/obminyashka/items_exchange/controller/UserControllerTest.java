@@ -252,7 +252,7 @@ class UserControllerTest extends BasicControllerTest {
     private static Stream<Arguments> selfDeleteTestData() {
         return Stream.of(
                 Arguments.of(new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD)),
-                Arguments.of(new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD))
+                Arguments.of(new UserDeleteFlowDto(WRONG_OLD_PASSWORD, CORRECT_OLD_PASSWORD))
         );
     }
 
