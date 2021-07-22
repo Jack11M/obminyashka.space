@@ -37,7 +37,7 @@ import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 @Api(tags = "User")
 @RequiredArgsConstructor
 @Validated

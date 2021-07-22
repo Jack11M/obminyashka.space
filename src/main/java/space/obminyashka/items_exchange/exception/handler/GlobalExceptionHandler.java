@@ -90,12 +90,6 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 
-    @ExceptionHandler(UnprocessableEntityException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ErrorMessage handleUnprocessableEntityException(UnprocessableEntityException ex, ServletWebRequest request){
-        return logAndGetErrorMessage(request, ex, Level.ERROR);
-    }
-
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
         if (e instanceof UndeclaredThrowableException) {
             e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();

@@ -58,16 +58,14 @@ public class AdvertisementDtoCreatingUtil {
 
     public static String createValidationMessage(String dtoFieldName, String dtoFieldValue, String minValidValue, String maxValidValue) {
         return MessageSourceUtil.getMessageSource("invalid.size")
-                .replace("${validatedValue}",
-                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
+                .replace("${validatedValue}", "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
                 .replace("{min}", minValidValue)
                 .replace("{max}", maxValidValue);
     }
 
     public static String createValidationMessage(String dtoFieldName, String dtoFieldValue, String maxValidValue) {
         return MessageSourceUtil.getMessageSource("invalid.max-size")
-                .replace("${validatedValue}",
-                        "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
+                .replace("${validatedValue}", "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
                 .replace("{max}", maxValidValue);
     }
 

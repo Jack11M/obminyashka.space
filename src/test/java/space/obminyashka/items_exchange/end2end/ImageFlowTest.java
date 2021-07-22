@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.dbunit.util.Base64;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,6 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
+import space.obminyashka.items_exchange.BasicControllerTest;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,24 +28,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DBRider
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
-class ImageFlowTest {
+class ImageFlowTest extends BasicControllerTest {
 
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
-    @Autowired
-    private MockMvc mockMvc;
-    private MockMultipartFile txt;
+    private final MockMultipartFile txt = new MockMultipartFile("image", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
 
-    @BeforeEach
-    void setUp() {
-         txt = new MockMultipartFile("image", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
+    @Autowired
+    public ImageFlowTest(MockMvc mockMvc) {
+        super(mockMvc);
     }
 
     @Test
     void getByAdvertisementId_shouldReturnAllImages() throws Exception {
-        mockMvc.perform(get("/image/{advertisement_id}/resource", 1L))
-                .andDo(print())
-                .andExpect(status().isOk())
+        sendUriAndGetResultAction(get(IMAGE_RESOURCE, 1L), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0]").value(Base64.encodeString(TEST_JPEG)))
                 .andExpect(jsonPath("$[1]").value(Base64.encodeString(TEST_PNG)));
@@ -53,10 +49,7 @@ class ImageFlowTest {
 
     @Test
     void getImageLinksByAdvertisementId_shouldReturnAllImageLinks() throws Exception {
-        mockMvc.perform(get("/image/{advertisement_id}", 1L)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
+        sendUriAndGetResultAction(get(IMAGE_BY_ADV_ID, 1L), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].resource").value(Base64.encodeString(TEST_JPEG)))
@@ -67,10 +60,7 @@ class ImageFlowTest {
     @WithMockUser("admin")
     @Test
     void saveImages_shouldReturn415WhenNotSupportedType() throws Exception {
-        mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
-                .file(txt))
-                .andDo(print())
-                .andExpect(status().isUnsupportedMediaType());
+        sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, 1L).file(txt), status().isUnsupportedMediaType());
     }
 
     @WithMockUser("admin")
@@ -78,10 +68,9 @@ class ImageFlowTest {
     @Commit
     @ExpectedDataSet(value = "image/delete.yml", ignoreCols = {"created", "updated"})
     void deleteImages_shouldDeleteMultipleImageWhenUserOwnsThemAll() throws Exception {
-        mockMvc.perform(delete("/image/{advertisement_id}", 1)
-                .param("ids", "1", "2"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, 1L)
+                        .param("ids", "1", "2"),
+                status().isOk());
     }
 
     @WithMockUser("admin")
@@ -89,7 +78,7 @@ class ImageFlowTest {
     void saveImages_shouldSaveImage() throws Exception {
         var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
                 Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
-        mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
+        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
                 .file(jpeg)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print())

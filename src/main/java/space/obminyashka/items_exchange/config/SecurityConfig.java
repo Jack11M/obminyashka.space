@@ -58,11 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/auth/**").permitAll()
+                        "/api/v1/auth/**").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/**").authenticated()
-                .antMatchers(HttpMethod.GET, "/**").permitAll()
-                .antMatchers("/adv/**", "/category/**", "/subcategory/**", "/user/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/v1/user/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/**", "/api/v1/**").permitAll()
+                .antMatchers("/api/v1/adv/**", "/api/v1/category/**", "/api/v1/subcategory/**", "/api/v1/user/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurator(jwtTokenProvider))

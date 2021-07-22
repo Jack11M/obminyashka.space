@@ -29,7 +29,7 @@ import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_AD
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/api/v1/location")
 @Api(tags = "Location")
 @RequiredArgsConstructor
 @Validated

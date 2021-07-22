@@ -5,15 +5,20 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -23,51 +28,72 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.JsonConverter;
+import space.obminyashka.items_exchange.util.MessageSourceUtil;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
-class AdvertisementFlowTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+class AdvertisementFlowTest extends BasicControllerTest {
 
     private static final long VALID_ID = 1L;
+    private static final long INVALID_ID = 999L;
+    private final AdvertisementRepository advertisementRepository;
+
+    @Autowired
+    public AdvertisementFlowTest(MockMvc mockMvc, AdvertisementRepository advertisementRepository) {
+        super(mockMvc);
+        this.advertisementRepository = advertisementRepository;
+    }
 
     @Test
     @DataSet("database_init.yml")
     void findPaginated_shouldReturnSelectedQuantity() throws Exception {
         int page = 0;
         int size = 2;
-        MvcResult mvcResult = mockMvc.perform(get("/adv?page={page}&size={size}", page, size)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
+
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_PAGINATION, page, size), status().isOk());
         String json = mvcResult.getResponse().getContentAsString();
         AdvertisementDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementDto[].class);
         assertEquals(size, advertisementsDtos.length);
     }
 
     @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findPaginatedAsThumbnails_shouldReturnSpecificAdvertisementTitleDto() throws Exception {
+        int page = 2;
+        int size = 1;
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_PARAMS, page, size), status().isOk())
+                .andExpect(jsonPath("$[0].advertisementId").value("3"))
+                .andExpect(jsonPath("$[0].title").value("Dresses"))
+                .andExpect(jsonPath("$[0].ownerName").value("admin"));
+    }
+
+    @Test
+    @DisplayName("Should return all advertisements from DB (12 if there is more)")
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
+                .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
+    }
+
+    @Test
     @DataSet("database_init.yml")
     void getAllAdvertisements_shouldReturnAdvertisementsByTopic() throws Exception {
         int suitableAdvertisementsCount = 2;
-        MvcResult mvcResult = mockMvc.perform(get("/adv/topic/{topic}", "ses")
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_TOPIC, "ses"), status().isOk());
+
         String json = mvcResult.getResponse().getContentAsString();
         AdvertisementTitleDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementTitleDto[].class);
         assertEquals(suitableAdvertisementsCount, advertisementsDtos.length);
@@ -76,15 +102,12 @@ class AdvertisementFlowTest {
     @Test
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementIfExists() throws Exception {
-        mockMvc.perform(get("/adv/{advertisement_id}", VALID_ID)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
+        sendUriAndGetResultAction(get(ADV_ID, VALID_ID), status().isOk())
                 .andExpect(jsonPath("$.advertisementId").value(VALID_ID))
                 .andExpect(jsonPath("$.topic").value("topic"))
                 .andExpect(jsonPath("$.ownerName").value("super admin"))
                 .andExpect(jsonPath("$.age").value("14+"))
-                .andExpect(jsonPath("$.createdDate").value("01.01.2019"))
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$.createdDate").value("01.01.2019"));
     }
 
     @Test
@@ -97,13 +120,7 @@ class AdvertisementFlowTest {
                 .age(AgeRange.FROM_10_TO_12)
                 .build();
 
-        MvcResult mvcResult = mockMvc.perform(post("/adv/filter")
-                .content(asJsonString(dto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), dto, status().isOk());
 
         String contentAsString = mvcResult.getResponse().getContentAsString();
         AdvertisementTitleDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString,
@@ -123,12 +140,7 @@ class AdvertisementFlowTest {
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         AdvertisementModificationDto nonExistDto =
                 AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
-        mockMvc.perform(post("/adv")
-                .content(asJsonString(nonExistDto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
+        sendDtoAndGetResultAction(post(ADV), nonExistDto, status().isCreated())
                 .andExpect(jsonPath("$.id").exists());
     }
 
@@ -139,12 +151,7 @@ class AdvertisementFlowTest {
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         AdvertisementModificationDto existDtoForUpdate =
                 AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDtoForUpdate();
-        mockMvc.perform(put("/adv")
-                .content(asJsonString(existDtoForUpdate))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isAccepted())
+        sendDtoAndGetResultAction(put(ADV), existDtoForUpdate, status().isAccepted())
                 .andExpect(jsonPath("$.description").value("new description"))
                 .andExpect(jsonPath("$.topic").value("new topic"))
                 .andExpect(jsonPath("$.wishesToExchange").value("BMW"));
@@ -153,12 +160,27 @@ class AdvertisementFlowTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
+    void createAdvertisement_shouldReturn400WhenInvalidLocationAndSubcategoryId() throws Exception {
+        final var dto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+
+        dto.setLocationId(INVALID_ID);
+        dto.setSubcategoryId(INVALID_ID);
+        final var mvcResult = sendDtoAndGetMvcResult(post(ADV), dto, status().isBadRequest());
+
+        var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
+        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");
+        Assertions.assertAll(
+                () -> assertTrue(isResponseContainsExpectedResponse(validationLocationIdMessage, mvcResult)),
+                () -> assertTrue(isResponseContainsExpectedResponse(validationSubcategoryIdMessage, mvcResult))
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/delete.yml")
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
-        mockMvc.perform(delete("/adv/{advertisement_id}", VALID_ID)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+        sendUriAndGetMvcResult(delete(ADV_ID, VALID_ID), status().isOk());
     }
 
     @Test
@@ -166,8 +188,23 @@ class AdvertisementFlowTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/setDefaultImage.yml", ignoreCols = {"created", "updated"})
     void setDefaultImage_success() throws Exception {
-        mockMvc.perform(post("/adv/default-image/{advertisementId}/{imageId}", VALID_ID, VALID_ID))
-                .andDo(print())
-                .andExpect(status().isOk());
+        sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, VALID_ID, VALID_ID), status().isOk());
+    }
+
+
+    @ParameterizedTest
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    @MethodSource("provideTestIds")
+    void setDefaultImage_shouldReturn400WhenNotValidAdvertisementId(long firstId, long secondId) throws Exception {
+        sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, firstId, secondId), status().isBadRequest());
+    }
+
+    private static Stream<Arguments> provideTestIds() {
+        return Stream.of(
+                Arguments.of(VALID_ID, INVALID_ID),
+                Arguments.of(INVALID_ID, VALID_ID),
+                Arguments.of(-1L, -2L)
+        );
     }
 }
