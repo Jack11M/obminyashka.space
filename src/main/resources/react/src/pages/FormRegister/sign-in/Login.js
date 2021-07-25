@@ -63,7 +63,6 @@ const Login = () => {
                 usernameOrEmail: err.response.data.error,
               });
             }
-
           }
         }}
       >
@@ -73,20 +72,20 @@ const Login = () => {
               <div>
                 <InputForAuth
                   text={getTranslatedText('auth.logEmail', lang)}
-                  name={'usernameOrEmail'}
-                  type={'text'}
+                  name="usernameOrEmail"
+                  type="text"
                 />
                 <InputForAuth
                   text={getTranslatedText('auth.logPassword', lang)}
-                  name={'password'}
-                  type={'password'}
+                  name="password"
+                  type="password"
                 />
               </div>
               <Extra>
                 <CheckBox
                   text={getTranslatedText('auth.remember', lang)}
-                  margin={'0 0 44px 0'}
-                  fs={'14px'}
+                  margin="0 0 44px 0"
+                  fontSize="14px"
                   checked={checkbox}
                   click={changeCheckBox}
                 />
@@ -102,12 +101,12 @@ const Login = () => {
                     getTranslatedText('button.enter', lang)
                   )
                 }
-                mb={'64px'}
-                type={'submit'}
                 bold
-                lHeight={'24px'}
-                width={'222px'}
-                height={'48px'}
+                height="48px"
+                lHeight="24px"
+                mb="64px"
+                type="submit"
+                width="222px"
                 disabling={!isValid && !dirty}
                 click={!errors.usernameOrEmail ? handleSubmit : null}
               />

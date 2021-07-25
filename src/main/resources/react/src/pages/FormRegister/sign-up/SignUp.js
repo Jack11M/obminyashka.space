@@ -109,30 +109,30 @@ const SignUp = () => {
               <div>
                 <InputForAuth
                   text={getTranslatedText('auth.regEmail', lang)}
-                  name={'email'}
-                  type={'email'}
+                  name="email"
+                  type="email"
                 />
                 <InputForAuth
                   text={getTranslatedText('auth.regLogin', lang)}
-                  name={'username'}
-                  type={'text'}
+                  name="username"
+                  type="text"
                 />
                 <InputForAuth
                   text={getTranslatedText('auth.regPassword', lang)}
-                  name={'password'}
-                  type={'password'}
+                  name="password"
+                  type="password"
                 />
                 <InputForAuth
                   text={getTranslatedText('auth.regConfirm', lang)}
-                  name={'confirmPassword'}
-                  type={'password'}
+                  name="confirmPassword"
+                  type="password"
                 />
               </div>
               <Extra>
                 <CheckBox
                   text={getTranslatedText('auth.agreement', lang)}
-                  margin={'0 0 44px 0'}
-                  fs={'14px'}
+                  margin="0 0 44px 0"
+                  fontSize="14px"
                   checked={checkbox}
                   click={changeCheckBox}
                 />
@@ -145,12 +145,12 @@ const SignUp = () => {
                     getTranslatedText('auth.signUp', lang)
                   )
                 }
-                mb={'44px'}
+                mb="44px"
                 bold
-                type={'submit'}
-                lHeight={'24px'}
-                width={'222px'}
-                height={'48px'}
+                type="submit"
+                lHeight="24px"
+                width="222px"
+                height="48px"
                 disabling={!checkbox || isSubmitting || (!dirty && !isValid)}
                 click={!errors.email || !errors.username ? handleSubmit : null}
               />

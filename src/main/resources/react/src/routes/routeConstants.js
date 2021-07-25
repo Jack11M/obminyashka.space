@@ -1,6 +1,6 @@
 export const route = {
   home: '/',
-  addAdv: '/add_good',
+  addAdv: '/add-good',
   login: '/login',
   signUp: '/sign',
   userInfo: '/user',
@@ -8,6 +8,6 @@ export const route = {
   myFavorite: '/favorites',
   mySettings: '/settings',
   exit: '/exit',
-  productPage: '/product_page',
+  productPage: '/product-page',
   noMatch: '*',
 };

@@ -32,14 +32,14 @@ const fadeOut = keyframes`
   }
 `;
 
-const moveUp = keyframes`
+const continueMoveDown = keyframes`
  0% {
    opacity: 1;
    transform: translateY(0vh);
   }
   100%{
     opacity: 0;
-     transform: translateY(-100vh);
+     transform: translateY(100vh);
   }
 `;
 
@@ -67,7 +67,7 @@ const ContentModal = styled.div`
   box-shadow: 0 0 75px 10px rgba(17, 181, 237, 0.6);
   opacity: 1;
   ${(p) => css`
-    animation: ${p.closing ? moveUp : moveDown} 0.3s
+    animation: ${p.closing ? continueMoveDown : moveDown} 0.3s
       cubic-bezier(0.44, 0.44, 0.61, 0.63);
   `}
 `;
@@ -121,7 +121,7 @@ const DivClose = styled.div`
     transform: rotate(-45deg);
   }
   &:hover {
-    transform: rotate(-180deg);
+    transform: rotate(180deg);
   }
 `;
 

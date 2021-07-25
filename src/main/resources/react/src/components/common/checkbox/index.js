@@ -32,7 +32,7 @@ const Svg = styled.svg`
 
 const Label = styled.p`
   margin-left: ${(props) => (props.distanceBetween ? '9px' : '22px')};
-  font-size: ${({ fs }) => (fs ? fs : '16px')};
+  font-size: ${({ fontSize }) => (fontSize ? fontSize : '16px')};
   line-height: 17px;
   vertical-align: middle;
   cursor: pointer;
@@ -43,7 +43,7 @@ const Label = styled.p`
   }};
 `;
 
-const CheckBox = ({ margin, click, checked, distanceBetween, fs, text }) => {
+const CheckBox = ({ margin, click, checked, distanceBetween, fontSize, text }) => {
   return (
     <Div margin={margin} onClick={click}>
       <LabelSquare checked={checked}>
@@ -78,7 +78,7 @@ const CheckBox = ({ margin, click, checked, distanceBetween, fs, text }) => {
         )}
       </LabelSquare>
       <div>
-        <Label checked={checked} distanceBetween={distanceBetween} fs={fs}>
+        <Label checked={checked} distanceBetween={distanceBetween} fontSize={fontSize}>
           {text}
         </Label>
       </div>
