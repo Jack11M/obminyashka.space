@@ -5,10 +5,10 @@ import { WrapImage, SpanClose, ImgPhoto } from './styles';
 const ImagePhoto = ({
   url,
   index,
+  removeImage,
   onDrop,
   onDragEnd,
   onDragOver,
-  removeImage,
   onDragStart,
   onDragLeave,
 }) => {
@@ -24,7 +24,7 @@ const ImagePhoto = ({
   return (
     <WrapImage
       isRemove={isRemove}
-      draggable="true"
+      draggable={true}
       onDragStart={onDragStart}
       onDragLeave={onDragLeave}
       onDragEnd={onDragEnd}

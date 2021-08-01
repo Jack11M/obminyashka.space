@@ -11,7 +11,8 @@ const WrapImage = styled.div`
   height: 208px;
   border: 2px dotted #c4c4c4;
   border-radius: 19px;
-  cursor: grab;
+  cursor: move;
+  background-color: #fff;
   ${({ isRemove }) =>
     isRemove &&
     css`
@@ -83,7 +84,7 @@ const SpanClose = styled.span`
   }
 `;
 
-const ImgPhoto= styled.img`
+const ImgPhoto = styled.img`
   width: 100%;
   height: 100%;
   max-height: 100%;

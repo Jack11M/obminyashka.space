@@ -17,11 +17,11 @@ import Button from 'components/common/buttons/button/Button';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localisation';
 
-import { ItemInput } from './item-input';
+import { AddFileInput } from './add-file-input';
+import { ImagePhoto } from './image-photo';
 import { convertToMB } from './helper';
 
 import './AddGoods.scss';
-import { ImagePhoto } from './image-photo';
 
 const AddGoods = () => {
   const { openModal } = useContext(ModalContext);
@@ -31,17 +31,10 @@ const AddGoods = () => {
   const [preViewImage, setPreViewImage] = useState([]);
   const [currentIndexImage, setCurrentIndexImage] = useState(null);
 
-  const handleFilesAdd = (event) => {
-    if (!event.target.files.length) {
-      openModal({
-        title: getTranslatedText('popup.errorTitle', lang),
-        children: (
-          <p style={{ textAlign: 'center' }}>Выберите хотя бы один файл.</p>
-        ),
-      });
-      return;
-    }
-    const files = Array.from(event.target.files);
+  const filesAddHandler = (event, dropFiles = null) => {
+    event.preventDefault();
+
+    const files = Array.from(dropFiles || event.target.files);
 
     files.forEach((file, index, iterableArray) => {
       const notAbilityToDownload =
@@ -50,6 +43,18 @@ const AddGoods = () => {
       const foundSameFile = imageFiles.filter(
         (image) => image.name === file.name
       );
+
+      if (foundSameFile.length) {
+        openModal({
+          title: getTranslatedText('popup.errorTitle', lang),
+          children: (
+            <p style={{ textAlign: 'center' }}>
+              Файл который Вы добавляете, уже существует.
+            </p>
+          ),
+        });
+        return;
+      }
 
       if (!file.type.match('image') || file.type.match('image/svg')) {
         openModal({
@@ -88,17 +93,6 @@ const AddGoods = () => {
         return;
       }
 
-      if (foundSameFile.length) {
-        openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              Файл который Вы добавляете, уже существует.
-            </p>
-          ),
-        });
-        return;
-      }
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = (event) => {
@@ -120,8 +114,7 @@ const AddGoods = () => {
     setPreViewImage(newPreViewImage);
   };
 
-  const dragStartHandler = (e,index) => {
-    console.log(e);
+  const dragStartHandler = (e, index) => {
     setCurrentIndexImage(index);
   };
 
@@ -134,14 +127,24 @@ const AddGoods = () => {
     e.target.style.background = 'lightgrey';
   };
 
+  const changeStateForImagesWhenDrop = (
+    processedArray,
+    setProcessedArray,
+    index
+  ) => {
+    const newPrevArr = [...processedArray];
+    const underPrevImage = newPrevArr[index];
+    const currentPrevImage = newPrevArr[currentIndexImage];
+    newPrevArr[currentIndexImage] = underPrevImage;
+    newPrevArr[index] = currentPrevImage;
+    setProcessedArray(newPrevArr);
+  };
+
   const dropHandler = (e, index) => {
     e.preventDefault();
-    const newArr = [...preViewImage];
-    const currentImage = newArr[currentIndexImage];
-    const downImage = newArr[index];
-    newArr[currentIndexImage] = downImage;
-    newArr[index] = currentImage;
-    setPreViewImage(newArr);
+    e.target.style.background = 'white';
+    changeStateForImagesWhenDrop(preViewImage, setPreViewImage, index);
+    changeStateForImagesWhenDrop(imageFiles, setImageFiles, index);
   };
 
   return (
@@ -366,7 +369,7 @@ const AddGoods = () => {
             <div className="files_wrapper">
               {preViewImage.map((url, index) => (
                 <ImagePhoto
-                  key={`${url}_${index}_${Math.random()}`}
+                  key={index}
                   url={url}
                   index={index}
                   onDragStart={(e) => dragStartHandler(e, index)}
@@ -377,8 +380,9 @@ const AddGoods = () => {
                   removeImage={removeImage}
                 />
               ))}
+
               {imageFiles.length < 10 && (
-                <ItemInput onChange={handleFilesAdd} />
+                <AddFileInput onChange={filesAddHandler} />
               )}
             </div>
           </div>

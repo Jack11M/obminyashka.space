@@ -82,8 +82,8 @@ const SpanClose = styled.span`
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: 100%;
+  width: 100px;
+  height: 100px;
   max-height: 100%;
   object-fit: cover;
   border-radius: 17px;
