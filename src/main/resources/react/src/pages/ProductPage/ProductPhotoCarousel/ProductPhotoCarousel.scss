@@ -14,6 +14,7 @@
   img {
     width: 600px;
     height: 680px;
+    object-fit: contain;
   }
 }
 
@@ -30,6 +31,7 @@
   img {
     height: 138px;
     width: 138px;
+    object-fit: contain;
   }
 
   img:hover {

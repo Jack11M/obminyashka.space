@@ -14,7 +14,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
+import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
@@ -36,7 +36,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -48,9 +47,8 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParamet
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ImageControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+class ImageControllerTest extends BasicControllerTest {
+
     @MockBean
     private AdvertisementService advertisementService;
     @MockBean
@@ -63,6 +61,11 @@ class ImageControllerTest {
     private ArgumentCaptor<List<byte[]>> listArgumentCaptor;
     private ArrayList<Image> testImages;
     private MockMultipartFile jpeg;
+
+    @Autowired
+    public ImageControllerTest(MockMvc mockMvc) {
+        super(mockMvc);
+    }
 
     @BeforeEach
     void setUp() throws IOException, UnsupportedMediaTypeException {
@@ -85,7 +88,7 @@ class ImageControllerTest {
     @WithMockUser("admin")
     @Test
     void saveImages_shouldThrowExceptionWhenTotalAmountMoreThan10() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
+        MvcResult mvcResult = mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
                 .file(jpeg)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -102,7 +105,7 @@ class ImageControllerTest {
     void saveImages_shouldSaveImagesWhenTotalAmountLessThan10() throws Exception {
         testImages.remove(0);
 
-        mockMvc.perform(multipart("/image/{advertisement_id}", 1L)
+        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
                 .file(jpeg)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -117,7 +120,7 @@ class ImageControllerTest {
     @WithMockUser("admin")
     @Test
     void saveImages_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
-        mockMvc.perform(multipart("/image/{advertisement_id}", 50L)
+        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 50L)
                 .file(jpeg))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -126,7 +129,9 @@ class ImageControllerTest {
     @WithMockUser("admin")
     @Test
     void deleteImages_shouldThrow400WhenImageIdNotExist() throws Exception {
-        final MvcResult mvcResult = sendDeleteRequest("999", status().isBadRequest());
+        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, 1L)
+                        .param("ids", "999"),
+                status().isBadRequest());
 
         verify(advertisementService).findByIdAndOwnerUsername(1L, "admin");
         verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource("exception.image.not-existed-id", "[999]"));
@@ -135,24 +140,11 @@ class ImageControllerTest {
     @WithMockUser
     @Test
     void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement() throws Exception {
-        final MvcResult mvcResult = sendDeleteRequest("1", status().isForbidden());
+        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, 1L)
+                        .param("ids", "1"),
+                status().isForbidden());
 
         verify(advertisementService).findByIdAndOwnerUsername(1L, "user");
         verifyResultException(mvcResult, IllegalOperationException.class, getMessageSource("user.not-owner"));
-    }
-
-    private MvcResult sendDeleteRequest(String imageId, ResultMatcher status) throws Exception {
-        return mockMvc.perform(delete("/image/{advertisement_id}", 1L)
-                .param("ids", imageId))
-                .andDo(print())
-                .andExpect(status)
-                .andReturn();
-    }
-
-    private void verifyResultException(MvcResult mvcResult, Class<? extends Exception> exceptionClass, String exceptionMessage) {
-        final var resolvedException = mvcResult.getResolvedException();
-        assertNotNull(resolvedException);
-        assertThat(resolvedException, is(instanceOf(exceptionClass)));
-        assertEquals(exceptionMessage, resolvedException.getLocalizedMessage());
     }
 }

@@ -75,7 +75,7 @@ class SecurityConfigIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     void loginWithValidUserIsOk() throws Exception {
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .content(asJsonString(validLoginDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -86,7 +86,7 @@ class SecurityConfigIntegrationTest {
     @Test
     @DataSet("database_init.yml")
     void loginWithNotValidUserGetsBadRequest() throws Exception {
-        mockMvc.perform(post("/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .content(asJsonString(notValidLoginDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -96,7 +96,7 @@ class SecurityConfigIntegrationTest {
 
     @Test
     void createAdvertisementWithoutTokenIsUnauthorized() throws Exception {
-        mockMvc.perform(post("/adv"))
+        mockMvc.perform(post("/api/v1/adv"))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -105,7 +105,7 @@ class SecurityConfigIntegrationTest {
     void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
 
-        mockMvc.perform(post("/adv")
+        mockMvc.perform(post("/api/v1/adv")
                 .header("Authorization", validToken))
                 .andExpect(status().isBadRequest());
     }
@@ -116,7 +116,7 @@ class SecurityConfigIntegrationTest {
     void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
 
-        mockMvc.perform(post("/adv")
+        mockMvc.perform(post("/api/v1/adv")
                 .header("Authorization", validToken)
                 .content(asJsonString(nonExistDto))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +129,7 @@ class SecurityConfigIntegrationTest {
     void postRequestWithJWTTokenWithoutBearerPrefixIsUnauthorizedAndBearerIsAbsent() throws Exception {
         final String tokenWithoutBearerPrefix = obtainToken(validLoginDto);
 
-        String errorMessage = mockMvc.perform(post("/adv")
+        String errorMessage = mockMvc.perform(post("/api/v1/adv")
                 .header("Authorization", tokenWithoutBearerPrefix))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
@@ -144,7 +144,7 @@ class SecurityConfigIntegrationTest {
     void postRequestWithNotValidJWTTokenIsUnauthorizedAndBadTokenSignature() throws Exception {
         final String invalidToken = "Bearer " + obtainToken(validLoginDto).replaceAll(".$", "");
 
-        String errorMessage = mockMvc.perform(post("/adv")
+        String errorMessage = mockMvc.perform(post("/api/v1/adv")
                 .header("Authorization", invalidToken))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
@@ -160,7 +160,7 @@ class SecurityConfigIntegrationTest {
         final String validToken = "Bearer " + obtainToken(validLoginDto);
         TimeUnit.MILLISECONDS.sleep(jwtTimeExpired);
 
-        String errorMessage = mockMvc.perform(post("/adv")
+        String errorMessage = mockMvc.perform(post("/api/v1/adv")
                 .header("Authorization", validToken))
                 .andExpect(status().isUnauthorized())
                 .andReturn()
@@ -183,7 +183,7 @@ class SecurityConfigIntegrationTest {
     }
 
     private String obtainToken(UserLoginDto loginDto) throws Exception {
-        MvcResult result = mockMvc.perform(post("/auth/login")
+        MvcResult result = mockMvc.perform(post("/api/v1/auth/login")
                 .content(asJsonString(loginDto))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
