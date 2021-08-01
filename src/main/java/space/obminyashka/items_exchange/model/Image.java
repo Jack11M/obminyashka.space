@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -17,6 +18,7 @@ public class Image {
     private long id;
 
     @Lob
+    @Type(type="org.hibernate.type.BinaryType")
     private byte[] resource;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
