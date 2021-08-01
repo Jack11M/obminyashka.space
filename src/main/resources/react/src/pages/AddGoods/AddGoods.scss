@@ -167,7 +167,7 @@
       }
 
       .files {
-        margin-bottom: 48px;
+        margin-bottom: 100px;
         h3 {
           font-weight: 600;
           color: #11171f;
@@ -182,69 +182,9 @@
           font-weight: 400;
         }
         .files_wrapper {
-          margin-right: -90px;
           margin-top: 15px;
-          display: flex;
-          flex-wrap: wrap;
-        }
-
-        .file_input {
-          display: none;
-        }
-
-        .files_label {
-          position: relative;
-          display: block;
-          width: 152px;
-          height: 159px;
-          margin-right: 90px;
-          margin-bottom: 20px;
-          border: 2px dashed #c4c4c4;
-          border-radius: 19px;
-          background: url(../../assets/img/cards/addFoto.svg);
-          background-size: 53px, 53px;
-          background-repeat: no-repeat;
-          background-position: center;
-
-          span {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            display: block;
-            width: 22px;
-            height: 22px;
-            background: #fff;
-            border-radius: 50%;
-            border: 1px solid #bababa;
-            cursor: pointer;
-          }
-
-          span::after {
-            position: absolute;
-            content: '';
-            top: 5px;
-            left: 9px;
-            width: 1px;
-            height: 11px;
-            background: #bababa;
-            transform: rotate(45deg);
-          }
-
-          span::before {
-            position: absolute;
-            content: '';
-            top: 5px;
-            left: 9px;
-            width: 1px;
-            height: 11px;
-            background: #bababa;
-            transform: rotate(-45deg);
-          }
-        }
-
-        .added {
-          background-image: url(../../assets/img/cards/lot15.jpg);
-          background-size: contain;
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
         }
       }
 
@@ -264,6 +204,9 @@
           text-transform: uppercase;
           cursor: pointer;
         }
+      }
+      .span_star {
+        color: red;
       }
     }
   }

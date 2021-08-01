@@ -7,7 +7,7 @@ import { WrapDiv, ContentModal, DivClose, Title, Content } from './styles';
 const Modal = ({ title, children }) => {
   const { closeModal } = useContext(ModalContext);
   const [closing, setClosing] = useState(false);
-  const DELAY = 300;
+  const DELAY = 275;
 
   const handleClose = () => {
     setClosing(true);

@@ -56,15 +56,15 @@ const ua = {
     unselected: 'Не вибрано',
   },
   settings: {
-    changePassword: 'ЗМІНИТИ ПАРОЛЬ',
+    changePassword: 'Змінити пароль',
     currentPassword: 'Поточний пароль:',
     newPassword: 'Новий пароль:',
     confirmPassword: 'Повторіть пароль:',
-    changeEmail: 'ЗМІНИТИ E-MAIL',
+    changeEmail: 'Змінити E-MaiL',
     oldEmail: 'Старий E-Mail:',
     newEmail: 'Новий E-Mail:',
     confirmEmail: 'Повторіть E-Mail:',
-    remove: 'ВИДАЛИТИ АКАУНТ',
+    remove: 'Видалити акаунт',
     describe:
       'Увага! Після видалення облікового запису, ваш профіль буде повністю видалений з каталогу сайту і багато функцій перестануть бути доступними. Ви можете поміняти контактні дані та номери телефонів в розділі меню',
     profile: 'Профіль',

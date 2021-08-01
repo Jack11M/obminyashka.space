@@ -2,12 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 const H2 = styled.h2`
-  text-transform: uppercase;
   font-style: normal;
-  font-weight: normal;
-  font-size: 27px;
+  font-weight: 700;
+  font-size: 50px;
   line-height: 24px;
-  font-family: Pollywog_Cyr, sans-serif;
+  font-family: Caveat, cursive;
   color: #11b5ed;
   &:before,
   &:after {

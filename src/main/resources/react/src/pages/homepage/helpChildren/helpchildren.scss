@@ -10,10 +10,9 @@
 
   &__title {
     color: $btn-bh-active;
-    font-size: 43px;
+    font-size: 50px;
     line-height: 24px;
-    text-transform: uppercase;
-    @include font(Pollywog_Cyr);
+    @include font(Caveat);
     padding-bottom: 36px;
   }
 
