@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Set;
 
+import org.hibernate.annotations.Type;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
@@ -47,6 +48,7 @@ public class Advertisement extends BaseEntity {
     private String wishesToExchange;
 
     @Lob
+    @Type(type="org.hibernate.type.BinaryType")
     @Column(name = "default_photo")
     private byte[] defaultPhoto;
 
