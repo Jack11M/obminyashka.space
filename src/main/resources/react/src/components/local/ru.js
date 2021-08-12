@@ -163,19 +163,17 @@ const ru = {
       '        попадут в детские дома и приюты!',
     helpButton: 'я хочу помочь детям!',
   },
-  productEnums: {
-    gender: {
+    genderEnum: {
       male: 'Мужской',
       female: 'Женский',
       unselected: 'Не выбран',
     },
-    season: {
+    seasonEnum: {
       winter: 'Зима',
       summer: 'Лето',
       allSeasons: 'Все сезоны',
       demiSeason: 'Демисезон',
     },
-  },
 };
 
 export default ru;
