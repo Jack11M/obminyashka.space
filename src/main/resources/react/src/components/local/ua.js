@@ -162,19 +162,17 @@ const ua = {
       '         потраплять до дитячих будинків і притулків!',
     helpButton: 'я хочу допомогти дітям!',
   },
-  productEnums: {
-    gender: {
+    genderEnum: {
       male: 'Чоловіча',
       female: 'Жіноча',
       unselected: 'Не обрана',
     },
-    season: {
+    seasonEnum: {
       winter: 'Зима',
       summer: 'Літо',
       allSeasons: 'Всі сезони',
       demiSeason: 'Демісезон',
     },
-  },
 };
 
 export default ua;
