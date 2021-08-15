@@ -52,17 +52,18 @@ const ProductPage = () => {
 
   const genderConversion = (gender, lang) => {
     let resultGender;
-    console.log(resultGender);
     switch (gender) {
       case 'MALE':
         resultGender = getTranslatedText('genderEnum.male', lang);
         break;
       case 'FEMALE':
         resultGender = getTranslatedText('genderEnum.female', lang);
-        console.log(resultGender);
         break;
       case 'UNSELECTED':
-        resultGender = getTranslatedText('genderEnum.unselected', lang);
+        resultGender = getTranslatedText(
+          'genderEnum.unselected',
+          lang
+        );
         break;
     }
     return resultGender;
@@ -78,10 +79,16 @@ const ProductPage = () => {
         resultSeason = getTranslatedText('seasonEnum.winter', lang);
         break;
       case 'ALL_SEASONS':
-        resultSeason = getTranslatedText('seasonEnum.allSeasons', lang);
+        resultSeason = getTranslatedText(
+          'seasonEnum.allSeasons',
+          lang
+        );
         break;
       case 'DEMI_SEASON':
-        resultSeason = getTranslatedText('seasonEnum.demiSeason', lang);
+        resultSeason = getTranslatedText(
+          'seasonEnum.demiSeason',
+          lang
+        );
         break;
     }
     return resultSeason;
