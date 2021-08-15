@@ -58,11 +58,10 @@ const ProductPage = () => {
         break;
       case 'FEMALE':
         resultGender = getTranslatedText('genderEnum.female', lang);
-        console.log(resultGender)
         break;
       case 'UNSELECTED':
         resultGender = getTranslatedText(
-          'gender.unselected',
+          'genderEnum.unselected',
           lang
         );
         break;
