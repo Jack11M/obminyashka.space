@@ -17,11 +17,12 @@ import Button from 'components/common/buttons/button/Button';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localisation';
 
-import { AddFileInput } from './add-file-input';
-import { ImagePhoto } from './image-photo';
-import { convertToMB } from './helper';
+import { AddFileInput } from './add-image/add-file-input';
+import { ImagePhoto } from './add-image/image-photo';
+import { convertToMB } from './add-image/helper';
 
 import './AddGoods.scss';
+import { DropDownSelect } from './header';
 
 const AddGoods = () => {
   const { openModal } = useContext(ModalContext);
@@ -151,34 +152,7 @@ const AddGoods = () => {
     <main className="add">
       <div className="add_container">
         <div className="add_inner">
-          <div className="add_choose">
-            <h3 className="add-title">Выберите раздел</h3>
-            <div className="sections">
-              <div className="sections_item">
-                <h5 className="sections_item-description">
-                  <span className="span_star">*</span> Категория
-                </h5>
-                <div className="select">
-                  <img src={clothes} alt="clothes" />
-                  <p>Одежда</p>
-                </div>
-              </div>
-              <div className="sections_item">
-                <h5 className="sections_item-description">
-                  <span className="span_star">*</span> Подкатегория
-                </h5>
-                <div className="select">
-                  <p>Колготки, носки</p>
-                </div>
-              </div>
-              <div className="sections_item">
-                <h5 className="sections_item-description">
-                  <span className="span_star">*</span> Заголовок обьявления
-                </h5>
-                <input type="text" />
-              </div>
-            </div>
-          </div>
+            <DropDownSelect />
           <div className="change">
             <h3 className="change_title">Обмен</h3>
             <p className="change-description">

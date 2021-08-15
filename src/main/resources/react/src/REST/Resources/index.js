@@ -9,4 +9,5 @@ export {
   putPasswordFetch,
   putEmailFetch,
 } from './fetchProfile';
+export { getCategoryAll } from './fetchCategories';
 export { getCurrentOffers } from './fetchHome';
