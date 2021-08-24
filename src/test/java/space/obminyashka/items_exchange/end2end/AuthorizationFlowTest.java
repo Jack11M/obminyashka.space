@@ -4,7 +4,6 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.jayway.jsonpath.JsonPath;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,8 +20,10 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.security.jwt.InvalidatedTokensHolder;
+import space.obminyashka.items_exchange.security.jwt.refresh.RefreshTokenRequest;
 
 import javax.validation.ConstraintViolationException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.stream.Stream;
 
@@ -105,13 +107,18 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @Test
     @DataSet(value = "auth/login.yml")
-    void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder() throws Exception {
-        final var validToken = obtainToken(new UserLoginDto(VALID_USERNAME, VALID_PASSWORD));
+    void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder_And_DeletedRefreshToken() throws Exception {
+        final var result = sendDtoAndGetMvcResult(post(AUTH_LOGIN), new UserLoginDto(VALID_USERNAME, VALID_PASSWORD),
+                status().isOk());
+        final String accessToken = getJsonPathValue(result, "$.accessToken");
+        final String refreshToken = getJsonPathValue(result, "$.refreshToken");
         sendUriAndGetResultAction(post(AUTH_LOGOUT)
-                        .header("Authorization", "Bearer " + validToken),
-                status().isNoContent());
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken), status().isNoContent());
+        assertTrue(invalidatedTokensHolder.isInvalidated(accessToken));
 
-        assertTrue(invalidatedTokensHolder.isInvalidated(validToken));
+        final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_REFRESH_TOKEN),
+                new RefreshTokenRequest(refreshToken), status().isNotFound());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.not-found").substring(0, 13)));
     }
 
     @Test
@@ -119,13 +126,10 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void logout_Failure_ShouldThrowJwtExceptionAfterRequestWithInvalidToken() throws Exception {
         final String token = "DefinitelyNotValidToken";
         sendUriAndGetMvcResult(post(AUTH_LOGOUT)
-                        .header("Authorization", "Bearer " + token),
-                status().isUnauthorized());
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token), status().isUnauthorized());
     }
 
-    @SneakyThrows
-    private String obtainToken(UserLoginDto loginDto) {
-        MvcResult result = sendDtoAndGetMvcResult(post(AUTH_LOGIN), loginDto, status().isOk());
-        return JsonPath.read(result.getResponse().getContentAsString(), "$.token");
+    private String getJsonPathValue(MvcResult result, String key) throws UnsupportedEncodingException {
+        return JsonPath.read(result.getResponse().getContentAsString(), key);
     }
 }

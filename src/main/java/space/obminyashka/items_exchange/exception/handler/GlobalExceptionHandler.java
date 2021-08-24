@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
-    @ExceptionHandler({JwtException.class, UnauthorizedException.class})
+    @ExceptionHandler({JwtException.class, UnauthorizedException.class, RefreshTokenException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorMessage handleUnauthorizedExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
