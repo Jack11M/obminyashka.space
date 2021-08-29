@@ -20,7 +20,8 @@ const Sections = styled.div`
 
 const SectionsItem = styled.div`
   max-width: 350px;
-  width: 100%;`
+  width: 100%;
+`;
 
 const ItemDescription = styled.h5`
   color: #8e8e8e;
@@ -28,49 +29,27 @@ const ItemDescription = styled.h5`
   white-space: nowrap;
 `;
 
-const Select = styled.div`
-  display: flex;
-  align-items: center;
-  border: 1px solid #bcbcbc;
-  border-radius: 2px;
-  max-width: 350px;
-  height: 50px;
-`;
-
-const Image = styled.img`
-  width: 18px;
-  height: 18px;
-  margin-left: 15px;
-`;
-
-const SelectTitle = styled.p`
-  padding: 10px;
-  line-height: 26px;
-  color: #11171f;
-`;
-
 const InputText = styled.input`
   box-sizing: border-box;
   max-width: 350px;
   width: 100%;
-  height: 50px;
+  height: 48px;
   border: 1px solid #bcbcbc;
   border-radius: 2px;
   outline: none;
-  padding: 10px;
-  line-height: 26px;
+  padding: 10px 10px 10px 16px;
   color: #11171f;
+  line-height: 26px;
   font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  caret-color: #00C0FF;
 `;
 
 export {
-  Image,
-  Select,
   TitleH3,
   Sections,
   AddChoose,
   InputText,
-  SelectTitle,
   SectionsItem,
   ItemDescription,
 };

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { getStorageUser, getStorageLang } from '../../Utils';
+import { getStorageUser, getStorageLang } from 'Utils';
 
 const instance = axios.create({
-  baseURL: 'https://localhost/',
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
