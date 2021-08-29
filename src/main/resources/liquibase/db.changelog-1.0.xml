@@ -437,7 +437,7 @@
         <modifyDataType tableName="image" columnName="resource" newDataType="LONGBLOB"/>
     </changeSet>
 
-    <changeSet id="1.0.27: Create table 'refresh_token'" author="jack.petrov">
+    <changeSet id="1.0.27: Create table 'refresh_token' and a foreign key between 'refresh_token' and 'user' tables (one-to-one relationship)" author="jack.petrov">
         <createTable tableName="refresh_token">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
@@ -459,9 +459,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
 
-    <changeSet id="1.0.28: Create a foreign key between 'refresh_token' and 'user' tables (one-to-one relationship)" author="jack.petrov">
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="refresh_token"
                                  constraintName="fk_refresh_token_to_user_id"
@@ -470,5 +468,4 @@
                                  referencedColumnNames="id"
                                  referencedTableName="user"/>
     </changeSet>
-
 </databaseChangeLog>

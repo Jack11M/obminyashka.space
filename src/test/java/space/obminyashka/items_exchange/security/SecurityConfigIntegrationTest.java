@@ -15,7 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
-import space.obminyashka.items_exchange.security.jwt.refresh.RefreshTokenRequest;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +40,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     private static final String REFRESH_TOKEN = "refreshToken";
     private static final String ACCESS_TOKEN = "accessToken";
     private static final String INVALID_TOKEN = "DefinitelyNotValidToken";
+    private static final String REFRESH_TOKEN_HEADER_KEY = "RefreshToken";
 
     @Value("${app.access.jwt.expiration.time.ms}")
     private long accessJwtExpirationTime;
@@ -125,8 +125,8 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     void postRequestToRefreshJwtIsOkAndCreateAdvWithNewAccessJwt() throws Exception {
         final var refreshToken = getRefreshTokenValue();
         TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
-        final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_REFRESH_TOKEN),
-                new RefreshTokenRequest(refreshToken), status().isOk());
+        final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
+                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + refreshToken), status().isOk());
         final var newAccessToken = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
                 .get(ACCESS_TOKEN).textValue();
         sendDtoWithHeadersAndGetResultAction(post(ADV), createNonExistAdvertisementModificationDto(), status().isCreated(),
@@ -141,19 +141,17 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
                 status().isOk()).getResponse().getContentAsString();
         final var refreshToken = objectMapper.readTree(content).get(REFRESH_TOKEN).textValue();
         TimeUnit.SECONDS.sleep(refreshTokenExpirationTime);
-        final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_REFRESH_TOKEN),
-                new RefreshTokenRequest(refreshToken), status().isUnauthorized());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getRefreshTokenStartExceptionMessage("refresh.token.expired")));
+        final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
+                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + refreshToken), status().isUnauthorized());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestWithInvalidRefreshTokenIsNotFound() throws Exception {
-        final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_REFRESH_TOKEN),
-                new RefreshTokenRequest(INVALID_TOKEN), status().isNotFound());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getRefreshTokenStartExceptionMessage("refresh.token.not-found")));
+    void postRequestWithInvalidRefreshTokenIsUnauthorized() throws Exception {
+        final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
+                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
     private String obtainToken(UserLoginDto loginDto) throws Exception {
@@ -185,7 +183,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
         return new UserLoginDto(NOT_VALID_USERNAME, NOT_VALID_PASSWORD);
     }
 
-    private String getRefreshTokenStartExceptionMessage(String messageSource) {
-        return getMessageSource(messageSource).substring(0, 13);
+    private String getRefreshTokenStartExceptionMessage() {
+        return getMessageSource("refresh.token.invalid").substring(0, 24);
     }
 }

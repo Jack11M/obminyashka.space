@@ -1,15 +1,19 @@
-package space.obminyashka.items_exchange.security.jwt.refresh;
+package space.obminyashka.items_exchange.service.impl;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.RefreshTokenRepository;
+import space.obminyashka.items_exchange.model.RefreshToken;
+import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
+import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.UserService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -17,11 +21,9 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserService userService;
-
-    @Value("${app.refresh.jwt.expiration.time.seconds}")
-    private long jwtRefreshTokenExpirationSeconds;
 
     @Override
     public Optional<RefreshToken> findByToken(String token) {
@@ -32,7 +34,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public RefreshToken createRefreshToken(String username) {
         final var user = userService.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(getMessageSource("exception.user.not-found")));
-        return refreshTokenRepository.save(new RefreshToken(user, generateToken(username), getRefreshTokenExpiryDate()));
+        return refreshTokenRepository.save(new RefreshToken(user, jwtTokenProvider.generateRefreshToken(username),
+                jwtTokenProvider.generateRefreshTokenExpirationTime()));
     }
 
     @Override
@@ -49,11 +52,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         refreshTokenRepository.deleteByUserUsername(username);
     }
 
-    private String generateToken(String username) {
-        return String.format("%s%s%s", username, UUID.randomUUID(), UUID.randomUUID());
-    }
-
-    private LocalDateTime getRefreshTokenExpiryDate() {
-        return LocalDateTime.now().plusSeconds(jwtRefreshTokenExpirationSeconds);
+    @Override
+    public Optional<String> renewAccessTokenByRefresh(String refreshToken) {
+        return findByToken(refreshToken)
+                .filter(Predicate.not(this::isRefreshTokenExpired))
+                .map(RefreshToken::getUser)
+                .map(user -> jwtTokenProvider.createAccessToken(user.getUsername(), user.getRole()));
     }
 }

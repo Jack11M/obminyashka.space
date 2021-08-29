@@ -20,7 +20,6 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.security.jwt.InvalidatedTokensHolder;
-import space.obminyashka.items_exchange.security.jwt.refresh.RefreshTokenRequest;
 
 import javax.validation.ConstraintViolationException;
 import java.io.UnsupportedEncodingException;
@@ -51,6 +50,8 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_PASSWORD = "test123456";
     protected static final String INVALID_EMAIL = "email.com";
     protected static final String INVALID_USERNAME = "user name";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String REFRESH_TOKEN_HEADER_KEY = "RefreshToken";
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
     private final InvalidatedTokensHolder invalidatedTokensHolder;
 
@@ -113,12 +114,12 @@ class AuthorizationFlowTest extends BasicControllerTest {
         final String accessToken = getJsonPathValue(result, "$.accessToken");
         final String refreshToken = getJsonPathValue(result, "$.refreshToken");
         sendUriAndGetResultAction(post(AUTH_LOGOUT)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken), status().isNoContent());
+                .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + accessToken), status().isNoContent());
         assertTrue(invalidatedTokensHolder.isInvalidated(accessToken));
 
-        final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_REFRESH_TOKEN),
-                new RefreshTokenRequest(refreshToken), status().isNotFound());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.not-found").substring(0, 13)));
+        final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
+                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + refreshToken), status().isUnauthorized());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.invalid").substring(0, 24)));
     }
 
     @Test
@@ -126,7 +127,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void logout_Failure_ShouldThrowJwtExceptionAfterRequestWithInvalidToken() throws Exception {
         final String token = "DefinitelyNotValidToken";
         sendUriAndGetMvcResult(post(AUTH_LOGOUT)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token), status().isUnauthorized());
+                .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token), status().isUnauthorized());
     }
 
     private String getJsonPathValue(MvcResult result, String key) throws UnsupportedEncodingException {

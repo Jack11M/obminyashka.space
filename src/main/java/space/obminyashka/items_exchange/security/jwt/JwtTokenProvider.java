@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.security.jwt;
 
-import space.obminyashka.items_exchange.model.Role;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +9,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import space.obminyashka.items_exchange.model.Role;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -25,26 +29,32 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class JwtTokenProvider {
 
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
+    private static final String REFRESH_TOKEN_HEADER_NAME = "RefreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String EMPTY_TOKEN = "";
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     private final UserDetailsService userDetailsService;
+    private final InvalidatedTokensHolder invalidatedTokensHolder;
+
     @Value("${app.jwt.secret}")
     private String secret;
     @Value("${app.access.jwt.expiration.time.ms}")
-    private long jwtAccessTokenExpireTime;
-    private final InvalidatedTokensHolder invalidatedTokensHolder;
+    private long jwtAccessTokenExpirationMillis;
+    @Value("${app.refresh.jwt.expiration.time.seconds}")
+    private long jwtRefreshTokenExpirationSeconds;
 
     @PostConstruct
     protected void init() {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username, Role role) {
+    public String createAccessToken(String username, Role role) {
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("role", role.getName());
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + jwtAccessTokenExpireTime);
+        Date validity = new Date(now.getTime() + jwtAccessTokenExpirationMillis);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -63,23 +73,15 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader(AUTHORIZATION_HEADER_NAME);
-        if(bearerToken != null) {
-            if(bearerToken.startsWith(BEARER_PREFIX)) {
-                return bearerToken.substring(BEARER_PREFIX.length());
-            } else {
-                String errorMessageTokenNotStartWithBearerPrefix =
-                        getMessageSource("token.not.start.with.bearer");
-                log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
-                req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
-                return EMPTY_TOKEN;
-            }
-        }
-        return EMPTY_TOKEN;
+    public String resolveAccessToken(HttpServletRequest req) {
+        return getTokenFromHeader(req, AUTHORIZATION_HEADER_NAME);
     }
 
-    public boolean validateToken(String token, HttpServletRequest req) {
+    public String resolveRefreshToken(HttpServletRequest req) {
+        return getTokenFromHeader(req, REFRESH_TOKEN_HEADER_NAME);
+    }
+
+    public boolean validateAccessToken(String token, HttpServletRequest req) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date())
@@ -91,18 +93,52 @@ public class JwtTokenProvider {
         }
     }
 
-    public void invalidateToken(String token) {
-        final Date expirationDate = getTokenExpirationDate(token)
+    public void invalidateAccessToken(String token) {
+        final Date expirationDate = getAccessTokenExpirationDate(token)
                 .orElseThrow(() -> new JwtException(getMessageSource("invalid.token")));
         invalidatedTokensHolder.invalidate(token, expirationDate);
     }
 
-    public Optional<Date> getTokenExpirationDate(String token) {
+    public Optional<Date> getAccessTokenExpirationDate(String token) {
         try {
             return Optional.ofNullable(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration());
         } catch (JwtException exception) {
             log.error("Token parsing error {}", exception.getMessage());
             return Optional.empty();
         }
+    }
+
+    public String generateRefreshToken(String username) {
+        return String.format("%s%s", username, UUID.randomUUID());
+    }
+
+    public LocalDateTime generateRefreshTokenExpirationTime() {
+        return LocalDateTime.now().plusSeconds(jwtRefreshTokenExpirationSeconds);
+    }
+
+    public String getAccessTokenExpiration(LocalDateTime localDateTime) {
+        return localDateTime.plusSeconds(TimeUnit.MILLISECONDS.toSeconds(jwtAccessTokenExpirationMillis))
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    }
+
+    public String getRefreshTokenExpiration(LocalDateTime localDateTime) {
+        return localDateTime.plusSeconds(jwtRefreshTokenExpirationSeconds)
+                .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    }
+
+    private String getTokenFromHeader(HttpServletRequest request, String headerKey) {
+        String bearerToken = request.getHeader(headerKey);
+        if (bearerToken != null) {
+            if (bearerToken.startsWith(BEARER_PREFIX)) {
+                return bearerToken.substring(BEARER_PREFIX.length());
+            } else {
+                String errorMessageTokenNotStartWithBearerPrefix =
+                        getMessageSource("token.not.start.with.bearer");
+                log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
+                request.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
+                return EMPTY_TOKEN;
+            }
+        }
+        return EMPTY_TOKEN;
     }
 }

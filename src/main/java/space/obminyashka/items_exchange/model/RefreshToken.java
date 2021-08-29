@@ -1,9 +1,8 @@
-package space.obminyashka.items_exchange.security.jwt.refresh;
+package space.obminyashka.items_exchange.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import space.obminyashka.items_exchange.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

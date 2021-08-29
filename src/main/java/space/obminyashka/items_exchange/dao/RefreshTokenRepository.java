@@ -1,12 +1,11 @@
-package space.obminyashka.items_exchange.security.jwt.refresh;
+package space.obminyashka.items_exchange.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import space.obminyashka.items_exchange.model.RefreshToken;
 
 import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
-
-    Optional<RefreshToken> findById(long id);
 
     Optional<RefreshToken> findByToken(String token);
 
