@@ -202,7 +202,7 @@ const ru = {
     'Other (Shoes)': 'Другое (Обувь)',
 
     'Lego & Constructors': 'Лего и конструкторы',
-    'Stuffed Toys': 'мягкие игрушки',
+    'Stuffed Toys': 'Мягкие игрушки',
     'Equipment & Weapons': 'Снаряжение и оружие',
     Dolls: 'Куклы',
     'Board Games': 'Настольные игры',

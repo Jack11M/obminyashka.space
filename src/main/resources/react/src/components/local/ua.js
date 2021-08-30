@@ -179,7 +179,8 @@ const ua = {
     'Vehicles For Children': 'Транспортні засоби для дітей',
     'Kids Until Year': 'Діти до року',
     Books: 'Книги',
-    Other: 'Іншие',
+    Other: 'Інше',
+
     Outerwear: 'Верхній одяг',
     'Blouses, Shirts': 'Блузки, сорочки',
     'Pants, Jeans, Shorts': 'Штани, джинси, шорти',
@@ -200,7 +201,7 @@ const ua = {
     'Other (Shoes)': 'Інше (взуття)',
 
     'Lego & Constructors': 'Конструктори та Лего',
-    'Stuffed Toys': 'Фаршировані іграшки',
+    'Stuffed Toys': 'М\'які іграшки',
     'Equipment & Weapons': 'Обладнання та зброя',
     Dolls: 'Ляльки',
     'Board Games': 'Настільні ігри',
@@ -208,7 +209,7 @@ const ua = {
     Puzzles: 'Головоломки',
     Sport: 'Спорт',
     'Kinder Surprise & Figures': 'Кіндер-сюрприз і фігурки',
-    Creation: 'Створення',
+    Creation: 'Творчість',
     'Other (Toys)': 'Інше (іграшки)',
 
     'Tables & Chairs': 'Столи та Стільці',
