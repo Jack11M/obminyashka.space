@@ -25,7 +25,6 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   useEffect(() => {
     (async () => {
       const categories = await getCategoryAll();
-      console.log(categories);
       setReceivedCategories(categories);
     })();
   }, []);

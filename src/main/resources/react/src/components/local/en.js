@@ -175,7 +175,7 @@ const en = {
     Clothing: 'Clothing',
     Shoes: 'Shoes',
     Toys: 'Toys',
-    'Children`S Furniture': 'Children`S Furniture',
+    'Children`S Furniture': 'Kids Furniture',
     'Vehicles For Children': 'Vehicles For Children',
     'Kids Until Year': 'Kids Until Year',
     Books: 'Books',
