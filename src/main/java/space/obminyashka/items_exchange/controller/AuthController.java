@@ -13,18 +13,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.obminyashka.items_exchange.dto.UserLoginDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.exception.RoleNotFoundException;
 import space.obminyashka.items_exchange.exception.UserValidationException;
 import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
+import space.obminyashka.items_exchange.service.AuthService;
+import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.validator.UserLoginDtoValidator;
@@ -33,11 +33,11 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
 
 import static liquibase.util.StringUtil.escapeHtml;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @Slf4j
 @RestController
@@ -48,19 +48,15 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 public class AuthController {
 
     private static final String ROLE_USER = "ROLE_USER";
-    private static final String USERNAME = "username";
-    private static final String FIRSTNAME = "firstname";
-    private static final String LASTNAME = "lastname";
-    private static final String EMAIL = "email";
-    private static final String AVATAR_IMAGE = "avatarImage";
-    private static final String TOKEN = "token";
 
     private final UserRegistrationDtoValidator userRegistrationDtoValidator;
     private final UserLoginDtoValidator userLoginDtoValidator;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final RoleService roleService;
+    private final AuthService authService;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Login in a registered user")
@@ -70,8 +66,8 @@ public class AuthController {
             @ApiResponse(code = 404, message = "NOT FOUND")
     })
     @ResponseStatus(HttpStatus.OK)
-    public Map<String, Object> login(@RequestBody @Valid UserLoginDto userLoginDto,
-                                                     @ApiIgnore BindingResult bindingResult) throws UserValidationException {
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginDto userLoginDto,
+                                      @ApiIgnore BindingResult bindingResult) throws UserValidationException {
 
         userLoginDtoValidator.validate(userLoginDto, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -79,21 +75,11 @@ public class AuthController {
         }
 
         try {
-            final String username = escapeHtml(userLoginDto.getUsernameOrEmail());
+            final var username = escapeHtml(userLoginDto.getUsernameOrEmail());
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
-            User user = userService.findByUsernameOrEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException(getMessageSource("exception.user.not-found")));
-            Map<String, Object> response = new HashMap<>();
-            response.put(USERNAME, username);
-            response.put(FIRSTNAME, user.getFirstName());
-            response.put(LASTNAME, user.getLastName());
-            response.put(EMAIL, user.getEmail());
-            response.put(AVATAR_IMAGE, user.getAvatarImage());
-            final String token = jwtTokenProvider.createToken(username, user.getRole());
-            response.put(TOKEN, token);
+            final var userLoginResponseDto = authService.createUserLoginResponseDto(username);
             log.info("User {} is successfully logged in", username);
-
-            return response;
+            return userLoginResponseDto;
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource("invalid.username-or-password"));
         }
@@ -103,8 +89,9 @@ public class AuthController {
     @ApiOperation(value = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req) {
-        final String token = jwtTokenProvider.resolveToken(req);
-        jwtTokenProvider.invalidateToken(token);
+        final String accessToken = jwtTokenProvider.resolveAccessToken(req);
+        jwtTokenProvider.invalidateAccessToken(accessToken);
+        refreshTokenService.deleteByUsername(req.getUserPrincipal().getName());
     }
 
     @PostMapping("/register")
@@ -115,7 +102,7 @@ public class AuthController {
             @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
-                                                   @ApiIgnore BindingResult bindingResult)
+                                               @ApiIgnore BindingResult bindingResult)
             throws BadRequestException, RoleNotFoundException {
 
         userRegistrationDtoValidator.validate(userRegistrationDto, bindingResult);
@@ -127,5 +114,24 @@ public class AuthController {
         }
 
         throw new BadRequestException(getMessageSource("user.not-registered"));
+    }
+
+    @PostMapping(value = "/refresh/token")
+    @ApiOperation(value = "Renew access token with refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 401, message = "UNAUTHORIZED")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    public RefreshTokenResponseDto refreshToken(HttpServletRequest request)
+            throws RefreshTokenException {
+
+        final var refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        final var accessToken = refreshTokenService.renewAccessTokenByRefresh(refreshToken)
+                .orElseThrow(() -> new RefreshTokenException(getParametrizedMessageSource("refresh.token.invalid",
+                        refreshToken)));
+        return new RefreshTokenResponseDto(accessToken, refreshToken,
+                jwtTokenProvider.getAccessTokenExpiration(LocalDateTime.now()),
+                jwtTokenProvider.getRefreshTokenExpiration(LocalDateTime.now()));
     }
 }

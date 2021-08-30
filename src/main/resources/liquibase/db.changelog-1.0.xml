@@ -436,4 +436,36 @@
     <changeSet id="1.0.26" author="rpkyrch">
         <modifyDataType tableName="image" columnName="resource" newDataType="LONGBLOB"/>
     </changeSet>
+
+    <changeSet id="1.0.27: Create table 'refresh_token' and a foreign key between 'refresh_token' and 'user' tables (one-to-one relationship)" author="jack.petrov">
+        <createTable tableName="refresh_token">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="expiry_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValueComputed="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="refresh_token"
+                                 constraintName="fk_refresh_token_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
 </databaseChangeLog>

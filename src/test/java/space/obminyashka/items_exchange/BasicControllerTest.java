@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -35,6 +36,7 @@ public abstract class BasicControllerTest {
     protected static final String AUTH_REGISTER = AUTH + "/register";
     protected static final String AUTH_LOGIN = AUTH + "/login";
     protected static final String AUTH_LOGOUT = AUTH + "/logout";
+    protected static final String AUTH_REFRESH_TOKEN = AUTH + "/refresh/token";
     // Category API
     protected static final String CATEGORY = API + "/category";
     protected static final String CATEGORY_NAMES = CATEGORY + "/names";
@@ -65,7 +67,6 @@ public abstract class BasicControllerTest {
     protected static final String USER_SERVICE_DELETE = USER_SERVICE + "/delete";
     protected static final String USER_SERVICE_RESTORE = USER_SERVICE + "/restore";
 
-
     protected final MockMvc mockMvc;
 
     protected <T> MvcResult sendDtoAndGetMvcResult(MockHttpServletRequestBuilder method, T dto, ResultMatcher expectedStatus) throws Exception {
@@ -73,12 +74,13 @@ public abstract class BasicControllerTest {
     }
 
     protected <T> ResultActions sendDtoAndGetResultAction(MockHttpServletRequestBuilder method, T dto, ResultMatcher expectedStatus) throws Exception {
-        return mockMvc.perform(method
-                .content(asJsonString(dto))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(expectedStatus);
+        return getResultActionsAndExpectStatus(method, dto, expectedStatus);
+    }
+
+    protected <T> ResultActions sendDtoWithHeadersAndGetResultAction(MockHttpServletRequestBuilder method, T dto,
+                                                                     ResultMatcher expectedStatus,
+                                                                     HttpHeaders headers) throws Exception {
+        return getResultActionsAndExpectStatus(method.headers(headers), dto, expectedStatus);
     }
 
     protected MvcResult sendUriAndGetMvcResult(MockHttpServletRequestBuilder method, ResultMatcher expectedStatus) throws Exception {
@@ -86,7 +88,24 @@ public abstract class BasicControllerTest {
     }
 
     protected ResultActions sendUriAndGetResultAction(MockHttpServletRequestBuilder method, ResultMatcher expectedStatus) throws Exception {
-        return mockMvc.perform(method)
+        return getResultActionsAndExpectStatus(expectedStatus, method);
+    }
+
+    protected MvcResult sendUriWithHeadersAndGetMvcResult(MockHttpServletRequestBuilder method,
+                                                          ResultMatcher expectedStatus,
+                                                          HttpHeaders headers) throws Exception {
+        return this.sendUriWithHeadersAndGetResultAction(method, expectedStatus, headers).andReturn();
+    }
+
+    protected ResultActions sendUriWithHeadersAndGetResultAction(MockHttpServletRequestBuilder method,
+                                                                 ResultMatcher expectedStatus,
+                                                                 HttpHeaders headers) throws Exception {
+        return getResultActionsAndExpectStatus(expectedStatus, method.headers(headers));
+    }
+
+    private ResultActions getResultActionsAndExpectStatus(ResultMatcher expectedStatus,
+                                                          MockHttpServletRequestBuilder builder) throws Exception {
+        return mockMvc.perform(builder)
                 .andDo(print())
                 .andExpect(expectedStatus);
     }
@@ -96,5 +115,15 @@ public abstract class BasicControllerTest {
         assertNotNull(resolvedException);
         assertThat(resolvedException, is(instanceOf(exceptionClass)));
         assertEquals(exceptionMessage, resolvedException.getLocalizedMessage());
+    }
+
+    private <T> ResultActions getResultActionsAndExpectStatus(MockHttpServletRequestBuilder builder, T dto,
+                                                              ResultMatcher expectedStatus) throws Exception {
+        return mockMvc.perform(builder
+                        .content(asJsonString(dto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(expectedStatus);
     }
 }

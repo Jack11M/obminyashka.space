@@ -24,7 +24,7 @@ public class InvalidatedTokensHolder {
         return data.containsKey(token);
     }
 
-    @Scheduled(fixedDelayString = "${app.jwt.expiration.time.ms}")
+    @Scheduled(fixedDelayString = "${app.access.jwt.expiration.time.ms}")
     private void removeExpiredTokens() {
         data.entrySet().removeIf(entry -> entry.getValue().before(new Date()));
     }
