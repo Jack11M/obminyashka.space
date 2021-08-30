@@ -3,6 +3,8 @@ package space.obminyashka.items_exchange.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class RefreshToken {
 
     @Id
@@ -28,12 +31,12 @@ public class RefreshToken {
     private LocalDateTime expiryDate;
 
     @Column(name = "created", columnDefinition = "DATE", nullable = false)
+    @CreatedDate
     private LocalDateTime created;
 
     public RefreshToken(User user, String token, LocalDateTime expiryDate) {
         this.user = user;
         this.token = token;
         this.expiryDate = expiryDate;
-        this.created = LocalDateTime.now();
     }
 }

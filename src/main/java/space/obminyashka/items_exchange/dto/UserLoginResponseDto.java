@@ -1,12 +1,10 @@
 package space.obminyashka.items_exchange.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class UserLoginResponseDto {
 
     private String email;
