@@ -1,25 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import CheckBox from 'components/common/checkbox/index';
-import {
-  books,
-  clothes,
-  furniture,
-  kidsUpToYear,
-  other,
-  shoes,
-  toys,
-  transportForChildren,
-} from 'assets/img/all_images_export/navItems';
-import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
-import Button from 'components/common/buttons/button/Button';
 import { ModalContext } from 'components/common/pop-up';
+import CheckBox from 'components/common/checkbox/index';
+import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
+import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
 
-import { AddFileInput } from './add-file-input';
-import { ImagePhoto } from './image-photo';
-import { convertToMB } from './helper';
+import { convertToMB } from './add-image/helper';
+import { ImagePhoto } from './add-image/image-photo';
+import { SelectionSection } from './selection-section';
+import { AddFileInput } from './add-image/add-file-input';
 
 import './AddGoods.scss';
 
@@ -27,6 +18,10 @@ const AddGoods = () => {
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [categoryItems, setCategoryItems] = useState('');
+  const [subCategoryItems, setSubCategoryItems] = useState('');
+  const [announcementTitle, setAnnouncementTitle] = useState('');
+
   const [imageFiles, setImageFiles] = useState([]);
   const [preViewImage, setPreViewImage] = useState([]);
   const [currentIndexImage, setCurrentIndexImage] = useState(null);
@@ -151,34 +146,11 @@ const AddGoods = () => {
     <main className="add">
       <div className="add_container">
         <div className="add_inner">
-          <div className="add_choose">
-            <h3 className="add-title">Выберите раздел</h3>
-            <div className="sections">
-              <div className="sections_item">
-                <h5 className="sections_item-description">
-                  <span className="span_star">*</span> Категория
-                </h5>
-                <div className="select">
-                  <img src={clothes} alt="clothes" />
-                  <p>Одежда</p>
-                </div>
-              </div>
-              <div className="sections_item">
-                <h5 className="sections_item-description">
-                  <span className="span_star">*</span> Подкатегория
-                </h5>
-                <div className="select">
-                  <p>Колготки, носки</p>
-                </div>
-              </div>
-              <div className="sections_item">
-                <h5 className="sections_item-description">
-                  <span className="span_star">*</span> Заголовок обьявления
-                </h5>
-                <input type="text" />
-              </div>
-            </div>
-          </div>
+          <SelectionSection
+            category={{ categoryItems, setCategoryItems }}
+            subcategory={{ subCategoryItems, setSubCategoryItems }}
+            announcement={{ announcementTitle, setAnnouncementTitle }}
+          />
           <div className="change">
             <h3 className="change_title">Обмен</h3>
             <p className="change-description">
@@ -363,7 +335,7 @@ const AddGoods = () => {
             <textarea className="description_textarea" />
           </div>
           <div className="files">
-            <h3>Загрузите фотографии вашей вещи</h3>
+            <h3>Загрузите фотографии ваших вещей</h3>
             <p>Первое фото станет обложкой карточки товара</p>
             <p>Загружено фотографий {imageFiles.length} из 10</p>
             <div className="files_wrapper">

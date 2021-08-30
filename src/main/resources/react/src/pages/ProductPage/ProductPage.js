@@ -83,8 +83,6 @@ const ProductPage = () => {
           'seasonEnum.allSeasons',
           lang
         );
-        console.log('-', resultSeason)
-        console.log('+', getTranslatedText('seasonEnum.allSeasons', lang))
         break;
       case 'DEMI_SEASON':
         resultSeason = getTranslatedText(
