@@ -20,7 +20,7 @@
         <java.version>16</java.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
-        <liquibase.version>4.4.1</liquibase.version>
+        <liquibase.version>4.4.3</liquibase.version>
         <mapper.version>2.4.4</mapper.version>
         <db-rider.version>1.25.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
