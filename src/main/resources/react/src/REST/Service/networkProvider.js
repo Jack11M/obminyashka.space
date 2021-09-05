@@ -7,7 +7,6 @@ import { logOutUser } from '../../store/auth/slice';
 const refreshUrl = '/auth/refresh/token';
 
 function handleAuthError(error, onAuthError) {
-  console.log('logout');
   if (onAuthError) onAuthError();
   return Promise.reject(error);
 }
