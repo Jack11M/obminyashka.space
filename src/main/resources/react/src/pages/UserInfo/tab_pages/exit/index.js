@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
-import logout2 from '../../../../assets/img/log-out-2.png';
-import Button from '../../../../components/common/buttons/button/Button';
-import { getTranslatedText } from '../../../../components/local/localisation';
-import { fetchLogOut } from '../../../../store/auth/slice';
-import { route } from '../../../../routes/routeConstants';
+import logout2 from 'assets/img/log-out-2.png';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localisation';
+import { logoutUserThunk } from 'store/auth/thunk';
+import { route } from 'routes/routeConstants';
 
 import './exit.scss';
 
@@ -16,8 +16,9 @@ const Exit = ({ toggle, setIsModalOpen }) => {
   const dispatch = useDispatch();
   const ref = React.useRef(null);
   const { lang } = useSelector((state) => state.auth);
-  const setLogOut = useCallback(() => {
-    dispatch(fetchLogOut());
+
+  const setLogOut = useCallback(async () => {
+    await dispatch(logoutUserThunk());
     history.push(route.home);
   }, [dispatch, history]);
 

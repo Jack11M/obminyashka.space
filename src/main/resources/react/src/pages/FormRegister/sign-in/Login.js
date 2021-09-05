@@ -3,17 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
-import { route } from '../../../routes/routeConstants';
-import { getTranslatedText } from '../../../components/local/localisation';
-import Button from '../../../components/common/buttons/button/Button';
-import CheckBox from '../../../components/common/checkbox';
-import InputForAuth from '../../../components/common/input';
-import { postAuthLogin } from '../../../REST/Resources';
-import { putToken, unauthorized } from '../../../store/auth/slice';
-import { NO_SPACE } from '../../../config';
+import { route } from 'routes/routeConstants';
+import { getTranslatedText } from 'components/local/localisation';
+import Button from 'components/common/buttons/button/Button';
+import CheckBox from 'components/common/checkbox';
+import InputForAuth from 'components/common/input';
+import { NO_SPACE } from 'config';
 
-import SpinnerForAuthBtn from '../../../components/common/spinner/spinnerForAuthBtn';
+import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
 import { Extra, ExtraLink } from './loginStyle';
+import { putUserThunk } from 'store/auth/thunk';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -50,14 +49,10 @@ const Login = () => {
           if (loading) return;
           setLoading(true);
           try {
-            const { data } = await postAuthLogin(dataFormik);
             setLoading(false);
-            dispatch(putToken({ data, isCheck: checkbox }));
+            await dispatch(putUserThunk(dataFormik, checkbox));
           } catch (err) {
             setLoading(false);
-            if (err.response.status === 401) {
-              dispatch(unauthorized());
-            }
             if (err.response.status === 400) {
               onSubmitProps.setErrors({
                 usernameOrEmail: err.response.data.error,

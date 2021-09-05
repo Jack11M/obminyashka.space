@@ -12,7 +12,6 @@ import { getTranslatedText } from 'components/local/localisation';
 import ButtonsAddRemoveChild from 'pages/UserInfo/components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 import InputGender from '../../components/inputProfile/inputGender';
 import { putUserInfo } from 'REST/Resources';
-import { unauthorized } from 'store/auth/slice';
 import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
 import { ModalContext } from 'components/common/pop-up';
 
@@ -128,9 +127,6 @@ const MyProfile = () => {
             dispatch(putUserToStore(newUserData));
           } catch (err) {
             setAboutLoading(false);
-            if (err.response.status === 401) {
-              dispatch(unauthorized());
-            }
             if (err.response.status === 400) {
               const indexStart = err.response.data.error.indexOf(':') + 1;
               openModal({

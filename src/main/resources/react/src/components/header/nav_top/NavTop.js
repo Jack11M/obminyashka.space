@@ -12,7 +12,7 @@ import './navtop.scss';
 
 const NavTop = () => {
   const { lang } = useSelector((state) => state.auth);
-  const { isAuthenticated, username } = useSelector((state) => state.auth);
+  const { isAuthed, profile } = useSelector((state) => state.auth);
 
   return (
     <div className="navbar-top-inner">
@@ -28,10 +28,10 @@ const NavTop = () => {
             </Link>
           </div>
           <div id="personalArea">
-            <Link to={isAuthenticated ? route.userInfo : route.login}>
+            <Link to={isAuthed ? route.userInfo : route.login}>
               <Avatar whatIsClass={'user-photo'} width={30} height={28} />
               <span>
-                {username || getTranslatedText('header.myOffice', lang)}
+                {profile?.username || getTranslatedText('header.myOffice', lang)}
               </span>
             </Link>
             <SelectLang />

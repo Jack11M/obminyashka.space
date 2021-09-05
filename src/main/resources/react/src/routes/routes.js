@@ -12,7 +12,7 @@ import AddGoods from '../pages/AddGoods/AddGoods';
 import { route } from './routeConstants';
 
 const Routes = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthed } = useSelector((state) => state.auth);
 
   return (
     <Switch>
@@ -20,19 +20,19 @@ const Routes = () => {
       <Protected
         path={route.login}
         component={Auth}
-        permission={!isAuthenticated}
+        permission={!isAuthed}
         redirect={route.home}
       />
       <Protected
         path={route.userInfo}
         component={UserInfo}
-        permission={isAuthenticated}
+        permission={isAuthed}
         redirect={route.login}
       />
       <Protected
         path={route.addAdv}
         component={AddGoods}
-        permission={isAuthenticated}
+        permission={isAuthed}
         redirect={route.login}
       />
       <Route path={`${route.productPage}:id`} component={ProductPage} />

@@ -1,34 +1,12 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {
-  getStorageLang,
-  getStorageUser,
-  removeTokenFromStorage,
-} from '../../Utils';
-import { postAuthLogout } from '../../REST/Resources';
+import { createSlice } from '@reduxjs/toolkit';
+import { getStorageLang, getStorageUser } from 'Utils';
 
 const authInitialState = {
+  profile: getStorageUser('user'),
   isFetchingAuth: false,
   lang: getStorageLang(),
-  isAuthenticated: !!getStorageUser('user').token,
-  username: getStorageUser('user').username,
-  email: getStorageUser('user').email,
-  token: getStorageUser('user').token,
-  avatarImage: getStorageUser('user').avatarImage,
-  firstname: getStorageUser('user').firstname,
-  lastname: getStorageUser('user').lastname,
+  isAuthed: !!getStorageUser('user'),
 };
-
-export const fetchLogOut = createAsyncThunk(
-  'auth/fetchLogOut',
-  async ({ dispatch }) => {
-    try {
-      await postAuthLogout();
-      dispatch(unauthorized());
-    } catch (err) {
-      dispatch(unauthorized());
-    }
-  }
-);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -46,64 +24,34 @@ const authSlice = createSlice({
     putEmail: (state, { payload }) => {
       state.email = payload;
     },
-    setAuthenticated: (state) => {
-      state.isAuthenticated = true;
+    setAuthed: (state, { payload }) => {
+      state.isAuthenticated = payload;
     },
-    unAuthenticated: (state) => {
-      state.isAuthenticated = false;
+    setLoader: (state, { payload }) => {
+      state.isFetchingAuth = payload;
     },
-
-    unauthorized: (state) => {
-      resetUser(state);
+    logOutUser: (state) => {
+      state.profile = '';
+      state.isFetchingAuth = false;
+      state.isAuthed = false;
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
     },
     putToken: (state, { payload }) => {
-      const { data, isCheck } = payload;
-      state.isAuthenticated = true;
-      state.username = data.username;
-      state.email = data.email;
-      state.token = data.token;
-      state.avatarImage = data.avatarImage;
-      state.firstname = data.firstname;
-      state.lastname = data.lastname;
-      if (isCheck) {
-        localStorage.setItem('user', JSON.stringify(data));
-      } else {
-        sessionStorage.setItem('user', JSON.stringify(data));
-      }
-    },
-  },
-  extraReducers: {
-    [fetchLogOut.pending]: (state) => {
-      state.isFetchingAuth = true;
-    },
-    [fetchLogOut.fulfilled]: (state) => {
-      resetUser(state);
-    },
-    [fetchLogOut.rejected]: (state) => {
-      resetUser(state);
+      state.profile = payload;
+      state.isAuthed = true;
     },
   },
 });
-function resetUser(state) {
-  state.isFetchingAuth = false;
-  removeTokenFromStorage();
-  state.isAuthenticated = '';
-  state.email = '';
-  state.username = '';
-  state.token = '';
-  state.avatarImage = '';
-  state.firstname = '';
-  state.lastname = '';
-}
 
 const {
   reducer: authReducer,
   actions: {
     setLanguage,
     putEmail,
-    setAuthenticated,
-    unAuthenticated,
-    unauthorized,
+    setAuthed,
+    setLoader,
+    logOutUser,
     putToken,
   },
 } = authSlice;
@@ -111,9 +59,9 @@ const {
 export {
   setLanguage,
   putEmail,
-  setAuthenticated,
-  unAuthenticated,
-  unauthorized,
+  setAuthed,
+  setLoader,
+  logOutUser,
   putToken,
   authReducer,
   authInitialState,

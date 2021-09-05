@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getUserInfo } from '../../REST/Resources';
-import { unauthorized } from '../auth/slice';
 
 export const fetchUser = createAsyncThunk(
   'profileMe/fetchUser',
@@ -8,11 +7,7 @@ export const fetchUser = createAsyncThunk(
     try {
       const { data } = await getUserInfo();
       return data;
-    } catch (err) {
-      if (err.response.status === 401) {
-        dispatch(unauthorized());
-      }
-    }
+    } catch (err) {}
   }
 );
 
