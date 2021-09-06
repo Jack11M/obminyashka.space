@@ -14,6 +14,7 @@ export {
   deleteReceivedChildren,
 } from './profileUtils';
 export {
+  setStorageUser,
   getStorageUser,
   getStorageLang,
   removeTokenFromStorage,

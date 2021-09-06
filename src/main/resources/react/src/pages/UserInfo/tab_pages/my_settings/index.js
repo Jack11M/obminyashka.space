@@ -4,21 +4,17 @@ import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
-import SpinnerForAuthBtn from '../../../../components/common/spinner/spinnerForAuthBtn';
-import TitleBigBlue from '../../../../components/common/title_Big_Blue/title_Big_Blue';
-import Button from '../../../../components/common/buttons/button/Button';
+import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
+import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
+import Button from 'components/common/buttons/button/Button';
 import InputProfile from '../../components/inputProfile';
-import { route } from '../../../../routes/routeConstants';
-import { getTranslatedText } from '../../../../components/local/localisation';
-import {
-  EMAIL_REG_EXP,
-  PASSWORD_ALT_CODE_EXP,
-  PASSWORD_REG_EXP,
-} from '../../../../config';
+import { route } from 'routes/routeConstants';
+import { getTranslatedText } from 'components/local/localisation';
+import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
 
-import { putEmailFetch, putPasswordFetch } from '../../../../REST/Resources';
-import { putEmail, unauthorized } from '../../../../store/auth/slice';
-import { ModalContext } from '../../../../components/common/pop-up';
+import { putEmailFetch, putPasswordFetch } from 'REST/Resources';
+import { putEmail } from 'store/auth/slice';
+import { ModalContext } from 'components/common/pop-up';
 
 import './mySettings.scss';
 
@@ -27,7 +23,10 @@ const MySettings = () => {
   const dispatch = useDispatch();
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
-  const { lang, email: currentEmail } = useSelector((state) => state.auth);
+  const {
+    lang,
+    profile: { email: currentEmail },
+  } = useSelector((state) => state.auth);
 
   const validationPasswordSchema = yup.object().shape({
     oldPassword: yup
@@ -119,9 +118,6 @@ const MySettings = () => {
             setIsFetchPass(false);
           } catch (e) {
             setIsFetchPass(false);
-            if (e.response.status === 401) {
-              dispatch(unauthorized());
-            }
             if (e.response.status === 400) {
               onSubmitProps.setErrors({ oldPassword: e.response.data.error });
             }
@@ -191,9 +187,6 @@ const MySettings = () => {
             setIsFetchEmail(false);
           } catch (e) {
             setIsFetchEmail(false);
-            if (e.response.status === 401) {
-              dispatch(unauthorized());
-            }
             if (e.response.status === 409) {
               onSubmitProps.setErrors({
                 newEmailConfirmation: e.response.data.error,

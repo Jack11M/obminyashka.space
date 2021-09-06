@@ -1,5 +1,5 @@
-import { axiosInstance } from '../Service/networkProvider';
+import { obminyashkaApi } from '../Service/networkProvider';
 
 export const getCategoryAll = () => {
-  return axiosInstance('get', '/category/all').then(({ data }) => data);
+  return obminyashkaApi.get('/category/all').then(({ data }) => data);
 };

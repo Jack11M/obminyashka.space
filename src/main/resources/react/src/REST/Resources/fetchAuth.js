@@ -1,13 +1,13 @@
-import { axiosInstance } from '../Service/networkProvider';
+import { obminyashkaApi } from '../Service/networkProvider';
 
 export const postAuthLogin = (data) => {
-  return axiosInstance('post', '/auth/login', data);
+  return obminyashkaApi.post('/auth/login', data).then(({ data }) => data);
 };
 
 export const postAuthRegister = (data) => {
-  return axiosInstance('post', '/auth/register', data);
+  return obminyashkaApi.post('/auth/register', data);
 };
 
 export const postAuthLogout = () => {
-  return axiosInstance('post', '/auth/logout');
+  return obminyashkaApi.post('/auth/logout');
 };

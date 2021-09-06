@@ -4,6 +4,19 @@ export const getStorageUser = (option) => {
   return local || session || '';
 };
 
+export const setStorageUser = (data) => {
+  const local = JSON.parse(localStorage.getItem('user'));
+  const session = JSON.parse(sessionStorage.getItem('user'));
+  // const newData = local ? {...local, ...data} ? {...session, ...data}
+  if (local) {
+    const newData = { ...local, ...data };
+    localStorage.setItem('user', JSON.stringify(newData));
+  } else {
+    const newData = { ...session, ...data };
+    sessionStorage.setItem('user', JSON.stringify(newData));
+  }
+};
+
 export const getStorageLang = () => {
   return localStorage.getItem('lang') || 'ru';
 };
