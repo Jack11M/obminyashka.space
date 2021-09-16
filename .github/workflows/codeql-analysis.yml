@@ -39,6 +39,8 @@ jobs:
         cache: 'maven'
     - name: Build with Maven
       run: mvn clean install
+      env:
+        CI: false
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
