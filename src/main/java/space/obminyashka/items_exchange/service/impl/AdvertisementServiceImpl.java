@@ -6,6 +6,8 @@ import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
@@ -25,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
@@ -61,8 +64,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementTitleDto> findFirst10ByTopic(String topic) {
-        return mapAdvertisementsToTitleDto((Collection<Advertisement>) advertisementRepository.findFirst10ByTopicIgnoreCaseContaining(topic));
+    public Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable) {
+        final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
+        if (!wholeStringSearchResult.isEmpty()) {
+            return wholeStringSearchResult.map(this::buildAdvertisementTitle);
+        }
+        final var keywords = Set.of(keyword.split(" "));
+        if (!keywords.isEmpty()){
+            return advertisementRepository.search(keywords, pageable).map(this::buildAdvertisementTitle);
+        }
+        return Page.empty();
     }
 
     @Override

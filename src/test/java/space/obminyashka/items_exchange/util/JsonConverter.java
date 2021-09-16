@@ -4,31 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonConverter {
     private static ObjectMapper objectMapper;
 
+    @SneakyThrows
     public static String asJsonString(final Object obj) {
-        try {
-            if (objectMapper == null) {
-                objectMapperInit();
-            }
-            return objectMapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (objectMapper == null) {
+            objectMapperInit();
         }
+        return objectMapper.writeValueAsString(obj);
     }
 
+    @SneakyThrows
     public static <T> T jsonToObject(final String json, Class<T> tClass) {
-        try {
-            if (objectMapper == null) {
-                objectMapperInit();
-            }
-            return objectMapper.readValue(json, tClass);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (objectMapper == null) {
+            objectMapperInit();
         }
+        return objectMapper.readValue(json, tClass);
     }
 
     private static void objectMapperInit() {

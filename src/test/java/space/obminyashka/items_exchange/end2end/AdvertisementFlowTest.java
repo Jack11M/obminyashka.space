@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementDto;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
@@ -55,16 +54,31 @@ class AdvertisementFlowTest extends BasicControllerTest {
         this.advertisementRepository = advertisementRepository;
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("getSearchKeywords")
     @DataSet("database_init.yml")
-    void findPaginated_shouldReturnSelectedQuantity() throws Exception {
+    void findPaginated_shouldReturnSearchResults(String keyword, int expectedResultQuantity) throws Exception {
         int page = 0;
-        int size = 2;
+        int size = 12;
 
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_PAGINATION, page, size), status().isOk());
-        String json = mvcResult.getResponse().getContentAsString();
-        AdvertisementDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementDto[].class);
-        assertEquals(size, advertisementsDtos.length);
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED, keyword, page, size), status().isOk());
+        final var totalElements = Stream.of(mvcResult.getResponse().getContentAsString().split(","))
+                .filter(s -> s.startsWith("\"totalElements"))
+                .map(s -> s.substring(s.length() - 1))
+                .map(Integer::parseInt)
+                .findFirst()
+                .orElse(0);
+
+        assertEquals(expectedResultQuantity, totalElements);
+    }
+
+    private static Stream<Arguments> getSearchKeywords() {
+        return Stream.of(
+                Arguments.of("blouses description", 1), // full description matching
+                Arguments.of("pajamas", 1), // full topic matching
+                Arguments.of("description", 5), // partial description matching
+                Arguments.of("ses", 2) // partial topic matching
+        );
     }
 
     @Test
@@ -86,17 +100,6 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
         sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
                 .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
-    }
-
-    @Test
-    @DataSet("database_init.yml")
-    void getAllAdvertisements_shouldReturnAdvertisementsByTopic() throws Exception {
-        int suitableAdvertisementsCount = 2;
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_TOPIC, "ses"), status().isOk());
-
-        String json = mvcResult.getResponse().getContentAsString();
-        AdvertisementTitleDto[] advertisementsDtos = JsonConverter.jsonToObject(json, AdvertisementTitleDto[].class);
-        assertEquals(suitableAdvertisementsCount, advertisementsDtos.length);
     }
 
     @Test

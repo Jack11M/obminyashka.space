@@ -24,10 +24,9 @@ public abstract class BasicControllerTest {
     protected static final String API = "/api/v1";
     // Advertisement API
     protected static final String ADV = API + "/adv";
-    protected static final String ADV_PAGINATION = ADV + "?page={page}&size={size}";
+    protected static final String ADV_SEARCH_PAGINATED = ADV + "/search/{keyword}?page={page}&size={size}";
     protected static final String ADV_DEFAULT_IMAGE = ADV + "/default-image/{advertisementId}/{imageId}";
     protected static final String ADV_ID = ADV + "/{advertisement_id}";
-    protected static final String ADV_TOPIC = ADV + "/topic/{topic}";
     protected static final String ADV_FILTER = ADV + "/filter";
     protected static final String ADV_THUMBNAIL = ADV + "/thumbnail";
     protected static final String ADV_THUMBNAIL_PARAMS = ADV_THUMBNAIL + "?page={page}&size={size}";

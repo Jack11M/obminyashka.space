@@ -3,13 +3,18 @@ package space.obminyashka.items_exchange.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
+import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
@@ -29,7 +34,8 @@ import javax.validation.constraints.PositiveOrZero;
 import java.security.Principal;
 import java.util.List;
 
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
 @RequestMapping("/api/v1/adv")
@@ -43,30 +49,6 @@ public class AdvertisementController {
     private final UserService userService;
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
-
-    /**
-     * Deprecated due to high resource consumption
-     * Used for testing purposes only
-     * Instead of it, use {@link #findPaginatedAsThumbnails(int, int)} ()}
-     */
-    @Deprecated
-    @GetMapping
-    @ApiOperation(value = "USE CAREFULLY DUE TO HIGH RESOURCE CONSUMPTION. ONLY FOR TESTING PURPOSES.  " +
-            "Find requested quantity of the advertisement and return them as a page result")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementDto>> findPaginated(
-            @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @ApiParam(value = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        List<AdvertisementDto> dtoList = advertisementService.findAll(PageRequest.of(page, size));
-        return dtoList.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(dtoList, HttpStatus.OK);
-    }
 
     @GetMapping("/thumbnail")
     @ApiOperation(value = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
@@ -97,17 +79,22 @@ public class AdvertisementController {
         return ResponseEntity.of(advertisementService.findDtoById(id));
     }
 
-    @GetMapping("/topic/{topic}")
-    @ApiOperation(value = "Find first 10 advertisements by topic")
+    @GetMapping("/search/{keyword}")
+    @ApiOperation(value = "Find advertisements by keyword")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementTitleDto>> getFirst10AdvertisementsByTopic(@PathVariable("topic") @NotEmpty String topic) {
-        List<AdvertisementTitleDto> allByTopic = advertisementService.findFirst10ByTopic(topic);
-        return allByTopic.isEmpty() ?
+    public ResponseEntity<Page<AdvertisementTitleDto>> getPageOfAdvertisementsByKeyword(
+            @PathVariable @NotEmpty String keyword,
+            @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @ApiParam(value = "Number of records per page. Default value: 12")
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
+        Page<AdvertisementTitleDto> allByKeyword = advertisementService.findByKeyword(keyword, PageRequest.of(page, size, Sort.by("topic")));
+        return allByKeyword.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(allByTopic, HttpStatus.OK);
+                new ResponseEntity<>(allByKeyword, HttpStatus.OK);
     }
 
     @PostMapping("/filter")

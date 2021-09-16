@@ -39,7 +39,7 @@ class AdvertisementControllerTest extends BasicControllerTest {
     void findPaginated_shouldBeThrownValidationException() throws Exception {
         int page = 0;
         int size = -12;
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_PAGINATION, page, size), status().isBadRequest());
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED, "KEYWORD", page, size), status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
     }
 
