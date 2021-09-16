@@ -22,7 +22,7 @@
         <swagger.version>3.0.0</swagger.version>
         <liquibase.version>4.4.3</liquibase.version>
         <mapper.version>2.4.4</mapper.version>
-        <db-rider.version>1.25.0</db-rider.version>
+        <db-rider.version>1.30.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
         <node.version>v16.4.2</node.version>
         <yarn.version>v1.22.10</yarn.version>

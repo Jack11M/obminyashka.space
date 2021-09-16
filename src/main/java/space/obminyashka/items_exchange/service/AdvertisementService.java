@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import org.springframework.data.domain.Page;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
@@ -32,11 +33,12 @@ public interface AdvertisementService {
     List<AdvertisementTitleDto> findAllByUsername(String username);
 
     /**
-     * Find first 10 advertisements having requested topic
-     * @param topic - searched topic
+     * Find advertisements having requested keyword
+     * @param keyword - searched word
+     * @param pageable see {@link Pageable} for more details
      * @return result of the request
      */
-    List<AdvertisementTitleDto> findFirst10ByTopic(String topic);
+    Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
 
     /**
      * Find an advertisement by id
