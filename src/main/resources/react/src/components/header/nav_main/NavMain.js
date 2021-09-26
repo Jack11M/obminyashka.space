@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { ReactComponent as SearchSvg} from 'assets/icons/search.svg';
+import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv.js';
 import { getTranslatedText } from 'components/local/localisation';
 import NavCategory from '../nav_category/NavCategory.js';
@@ -34,7 +34,7 @@ const NavMain = () => {
               <SearchSvg />
             </label>
           </div>
-          <ButtonAdv />
+          <ButtonAdv type="link" />
         </div>
       </div>
     </div>

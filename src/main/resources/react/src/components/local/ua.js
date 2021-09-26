@@ -170,6 +170,10 @@ const ua = {
     headline: 'Заголовок оголошення',
     selectCategory: 'Виберіть категорію',
     selectSubcategory: 'Виберіть підкатегорію',
+    exchange: 'Обмін',
+    whatChange: 'На що хочете обмінятися?',
+    enterPhrase: 'введіть фразу, а потім натисніть Enter',
+    placeholderChange: 'Введіть на що хочете обмінятися',
   },
   categories: {
     Clothing: 'Одяг',
@@ -201,7 +205,7 @@ const ua = {
     'Other (Shoes)': 'Інше (взуття)',
 
     'Lego & Constructors': 'Конструктори та Лего',
-    'Stuffed Toys': 'М\'які іграшки',
+    'Stuffed Toys': "М'які іграшки",
     'Equipment & Weapons': 'Обладнання та зброя',
     Dolls: 'Ляльки',
     'Board Games': 'Настільні ігри',
