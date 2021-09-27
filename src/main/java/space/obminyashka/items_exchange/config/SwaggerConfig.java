@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -35,14 +36,14 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Obmenyashka (Child Goods Exchange) API")
-                .description("API Definitions of the Obmenyashka (Child Goods Exchange) project")
+                .title("Obminyashka (Child Goods Exchange) API")
+                .description("API Definitions of the Obminyashka (Child Goods Exchange) project")
                 .version("1.0.0")
                 .build();
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Authorization", "header");
+        return new ApiKey("Authorization", HttpHeaders.AUTHORIZATION, "header");
     }
 
     private SecurityContext securityContext() {
@@ -52,7 +53,7 @@ public class SwaggerConfig {
     }
 
     private List<SecurityReference> defaultAuth() {
-        return List.of(new SecurityReference("Authorization",
+        return List.of(new SecurityReference(HttpHeaders.AUTHORIZATION,
                 new AuthorizationScope[]{
                         new AuthorizationScope("global", "accessEverything")}));
     }

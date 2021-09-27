@@ -27,6 +27,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String REFRESH_TOKEN = "refresh_token";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final UserService userService;
@@ -62,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/user/**").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/v1/auth/logout").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/v1/auth/refresh/token").authenticated()
                 .antMatchers(HttpMethod.GET, "/**", "/api/v1/**").permitAll()
                 .antMatchers("/api/v1/adv/**", "/api/v1/category/**", "/api/v1/subcategory/**", "/api/v1/user/**").authenticated()
                 .anyRequest().authenticated()

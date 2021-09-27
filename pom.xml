@@ -12,17 +12,17 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.2</version>
+        <version>2.5.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
         <liquibase.version>4.4.3</liquibase.version>
         <mapper.version>2.4.4</mapper.version>
-        <db-rider.version>1.30.0</db-rider.version>
+        <db-rider.version>1.31.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
         <node.version>v16.4.2</node.version>
         <yarn.version>v1.22.10</yarn.version>
