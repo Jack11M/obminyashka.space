@@ -18,7 +18,7 @@ function initObminyashka({ onAuthError }) {
   };
 
   axios.interceptors.request.use((config) => {
-    const token = getStorageUser('user').accessToken;
+    const token = getStorageUser('user').access_token;
     const newConfig = { ...config };
     if (token) newConfig.headers.Authorization = 'Bearer ' + token;
     else delete newConfig.headers.Authorization;
@@ -32,7 +32,7 @@ function initObminyashka({ onAuthError }) {
     },
     async (error) => {
       const originalRequest = error.config;
-      const refreshToken = getStorageUser('user').refreshToken;
+      const refreshToken = getStorageUser('user').refresh_token;
 
       if (!refreshToken && error?.response?.status === 401) {
         return handleAuthError(error, onAuthError);
@@ -49,7 +49,7 @@ function initObminyashka({ onAuthError }) {
             refreshUrl,
             {},
             {
-              headers: { RefreshToken: 'Bearer ' + refreshToken },
+              headers: { refresh_token: 'Bearer ' + refreshToken },
             }
           )
           .then((res) => {
