@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.security.jwt;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -20,7 +21,7 @@ public class JwtTokenFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
             throws IOException, ServletException {
-        String token = jwtTokenProvider.resolveAccessToken((HttpServletRequest) req);
+        String token = jwtTokenProvider.getTokenFromHeader((HttpServletRequest) req, HttpHeaders.AUTHORIZATION);
         if (isTokenValid((HttpServletRequest) req, token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
             if (auth != null) {

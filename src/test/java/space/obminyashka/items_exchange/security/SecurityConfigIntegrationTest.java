@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -23,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.config.SecurityConfig.ACCESS_TOKEN;
+import static space.obminyashka.items_exchange.config.SecurityConfig.REFRESH_TOKEN;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -37,10 +40,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     private static final String NOT_VALID_USERNAME = "nimda";
     private static final String NOT_VALID_PASSWORD = "drowssap";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String REFRESH_TOKEN = "refreshToken";
-    private static final String ACCESS_TOKEN = "accessToken";
     private static final String INVALID_TOKEN = "DefinitelyNotValidToken";
-    private static final String REFRESH_TOKEN_HEADER_KEY = "RefreshToken";
 
     @Value("${app.access.jwt.expiration.time.ms}")
     private long accessJwtExpirationTime;
@@ -61,7 +61,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     void loginWithValidUserIsOk() throws Exception {
         sendDtoAndGetResultAction(post(AUTH_LOGIN), createValidUserLoginDto(), status().isOk())
                 .andExpect(jsonPath("$.email").value("admin@gmail.com"))
-                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
+                .andExpect(jsonPath("$.refresh_token").isNotEmpty());
     }
 
     @Test
@@ -95,11 +95,11 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestWithJWTTokenWithoutBearerPrefixIsUnauthorizedAndBearerIsAbsent() throws Exception {
+    void postRequestWithJWTTokenAndEmptyBodyShouldReturnBadRequest() throws Exception {
         final String tokenWithoutBearerPrefix = obtainToken(createValidUserLoginDto());
-        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().isUnauthorized(),
+        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().isBadRequest(),
                 getAuthorizationHeader(tokenWithoutBearerPrefix));
-        assertEquals(getMessageSource("token.not.start.with.bearer"), mvcResult.getResponse().getContentAsString().trim());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Required request body is missing:"));
     }
 
     @Test
@@ -121,12 +121,13 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
+    @WithMockUser("admin")
     @DataSet("database_init.yml")
     void postRequestToRefreshJwtIsOkAndCreateAdvWithNewAccessJwt() throws Exception {
         final var refreshToken = getRefreshTokenValue();
         TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + refreshToken), status().isOk());
+                .header(REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isOk());
         final var newAccessToken = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
                 .get(ACCESS_TOKEN).textValue();
         sendDtoWithHeadersAndGetResultAction(post(ADV), createNonExistAdvertisementModificationDto(), status().isCreated(),
@@ -135,6 +136,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
+    @WithMockUser("admin")
     @DataSet("database_init.yml")
     void postRequestWithExpiredRefreshTokenIsUnauthorized() throws Exception {
         final var content = sendDtoAndGetMvcResult(post(AUTH_LOGIN), createValidUserLoginDto(),
@@ -142,21 +144,22 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
         final var refreshToken = objectMapper.readTree(content).get(REFRESH_TOKEN).textValue();
         TimeUnit.SECONDS.sleep(refreshTokenExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + refreshToken), status().isUnauthorized());
+                .header(REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
     @Test
+    @WithMockUser("admin")
     @DataSet("database_init.yml")
     void postRequestWithInvalidRefreshTokenIsUnauthorized() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
+                .header(REFRESH_TOKEN, BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
     private String obtainToken(UserLoginDto loginDto) throws Exception {
         final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_LOGIN), loginDto, status().isOk());
-        return JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.accessToken");
+        return JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.access_token");
     }
 
     private HttpHeaders getAuthorizationHeader(String token) {

@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.security.jwt;
 
 import io.jsonwebtoken.*;
+import liquibase.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +29,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
-    private static final String REFRESH_TOKEN_HEADER_NAME = "RefreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String EMPTY_TOKEN = "";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -71,14 +70,6 @@ public class JwtTokenProvider {
 
     private String getUsername(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public String resolveAccessToken(HttpServletRequest req) {
-        return getTokenFromHeader(req, AUTHORIZATION_HEADER_NAME);
-    }
-
-    public String resolveRefreshToken(HttpServletRequest req) {
-        return getTokenFromHeader(req, REFRESH_TOKEN_HEADER_NAME);
     }
 
     public boolean validateAccessToken(String token, HttpServletRequest req) {
@@ -126,18 +117,23 @@ public class JwtTokenProvider {
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
-    private String getTokenFromHeader(HttpServletRequest request, String headerKey) {
+    public String getTokenFromHeader(HttpServletRequest request, String headerKey) {
         String bearerToken = request.getHeader(headerKey);
-        if (bearerToken != null) {
-            if (bearerToken.startsWith(BEARER_PREFIX)) {
-                return bearerToken.substring(BEARER_PREFIX.length());
-            } else {
-                String errorMessageTokenNotStartWithBearerPrefix =
-                        getMessageSource("token.not.start.with.bearer");
-                log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
-                request.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
-                return EMPTY_TOKEN;
+        final var resolvedToken = resolveToken(bearerToken);
+        if (resolvedToken.isBlank()) {
+            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource("invalid.token");
+            log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
+            request.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
+        }
+        return resolvedToken;
+    }
+
+    public String resolveToken(String token) {
+        if (!StringUtil.isEmpty(token)) {
+            if (token.startsWith(BEARER_PREFIX)) {
+                return token.substring(BEARER_PREFIX.length());
             }
+            return token;
         }
         return EMPTY_TOKEN;
     }

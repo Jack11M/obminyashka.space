@@ -48,13 +48,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
+    public Optional<User> findByUsernameOrEmail(String username, String email) {
+        return userRepository.findByEmailOrUsername(username, email);
+    }
+
+    @Override
+    public Optional<User> findByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword) {
         Pattern usernamePattern = Pattern.compile(PatternHandler.USERNAME);
         Optional<User> user = usernamePattern.matcher(usernameOrEmail).matches()
                 ? userRepository.findByUsername(usernameOrEmail)
                 : userRepository.findByEmail(usernameOrEmail);
 
-        return user.filter(u -> isPasswordMatches(u, encryptedPassword)).isPresent();
+        return user.filter(u -> isPasswordMatches(u, encodedPassword));
+    }
+
+    @Override
+    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
+        return findByUsernameOrEmailAndPassword(usernameOrEmail, encryptedPassword).isPresent();
     }
 
     @Override
@@ -148,13 +158,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     @Override
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    public boolean existsByUsernameOrEmail(String username, String email) {
+        return userRepository.existsByUsernameOrEmail(username, email);
     }
 
     @Override
