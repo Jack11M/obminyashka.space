@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.service.impl;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

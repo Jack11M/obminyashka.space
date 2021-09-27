@@ -3,7 +3,6 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,18 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.security.jwt.InvalidatedTokensHolder;
+import space.obminyashka.items_exchange.exception.DataConflictException;
 
-import javax.validation.ConstraintViolationException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -33,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.config.SecurityConfig.REFRESH_TOKEN;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
@@ -51,14 +50,11 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_EMAIL = "email.com";
     protected static final String INVALID_USERNAME = "user name";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String REFRESH_TOKEN_HEADER_KEY = "RefreshToken";
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
-    private final InvalidatedTokensHolder invalidatedTokensHolder;
 
     @Autowired
-    public AuthorizationFlowTest(MockMvc mockMvc, InvalidatedTokensHolder invalidatedTokensHolder) {
+    public AuthorizationFlowTest(MockMvc mockMvc) {
         super(mockMvc);
-        this.invalidatedTokensHolder = invalidatedTokensHolder;
     }
 
     @Test
@@ -78,8 +74,8 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @ParameterizedTest
     @MethodSource("userRegistrationData")
-    void register_whenUserDataInvalid_shouldThrowException(UserRegistrationDto dto, String errorMessage, Class<Exception> resolvedException) throws Exception {
-        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), dto, status().isBadRequest());
+    void register_whenUserDataInvalid_shouldThrowException(UserRegistrationDto dto, ResultMatcher expectedStatus, String errorMessage, Class<Exception> resolvedException) throws Exception {
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), dto, expectedStatus);
 
         assertThat(result.getResolvedException(), is(instanceOf(resolvedException)));
         assertTrue(result.getResponse().getContentAsString().contains(getMessageSource(errorMessage)));
@@ -87,12 +83,18 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> userRegistrationData() {
         return Stream.of(
-                Arguments.of(new UserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD), "username.duplicate", UndeclaredThrowableException.class),
-                Arguments.of(new UserRegistrationDto(INVALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD), "invalid.username", ConstraintViolationException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD), "email.duplicate", UndeclaredThrowableException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD), "invalid.email", ConstraintViolationException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, INVALID_PASSWORD), "different.passwords", ConstraintViolationException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, INVALID_PASSWORD, INVALID_PASSWORD), "invalid.password", ConstraintViolationException.class)
+                Arguments.of(new UserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                        status().isConflict(), "username-email.duplicate", DataConflictException.class),
+                Arguments.of(new UserRegistrationDto(INVALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                        status().isBadRequest(), "invalid.username", MethodArgumentNotValidException.class),
+                Arguments.of(new UserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                        status().isConflict(), "username-email.duplicate", DataConflictException.class),
+                Arguments.of(new UserRegistrationDto(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                        status().isBadRequest(), "invalid.email", MethodArgumentNotValidException.class),
+                Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, INVALID_PASSWORD),
+                        status().isBadRequest(), "different.passwords", MethodArgumentNotValidException.class),
+                Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, INVALID_PASSWORD, INVALID_PASSWORD),
+                        status().isBadRequest(), "invalid.password", MethodArgumentNotValidException.class)
         );
     }
 
@@ -107,30 +109,20 @@ class AuthorizationFlowTest extends BasicControllerTest {
     }
 
     @Test
+    @WithMockUser
     @DataSet(value = "auth/login.yml")
     void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder_And_DeletedRefreshToken() throws Exception {
-        final var result = sendDtoAndGetMvcResult(post(AUTH_LOGIN), new UserLoginDto(VALID_USERNAME, VALID_PASSWORD),
-                status().isOk());
-        final String accessToken = getJsonPathValue(result, "$.accessToken");
-        final String refreshToken = getJsonPathValue(result, "$.refreshToken");
-        sendUriAndGetResultAction(post(AUTH_LOGOUT)
-                .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + accessToken), status().isNoContent());
-        assertTrue(invalidatedTokensHolder.isInvalidated(accessToken));
-
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN_HEADER_KEY, BEARER_PREFIX + refreshToken), status().isUnauthorized());
+                .header(REFRESH_TOKEN, BEARER_PREFIX + "refreshToken"), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.invalid").substring(0, 24)));
     }
 
     @Test
+    @WithMockUser("test")
     @DataSet(value = "auth/login.yml")
     void logout_Failure_ShouldThrowJwtExceptionAfterRequestWithInvalidToken() throws Exception {
         final String token = "DefinitelyNotValidToken";
         sendUriAndGetMvcResult(post(AUTH_LOGOUT)
                 .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + token), status().isUnauthorized());
-    }
-
-    private String getJsonPathValue(MvcResult result, String key) throws UnsupportedEncodingException {
-        return JsonPath.read(result.getResponse().getContentAsString(), key);
     }
 }
