@@ -171,9 +171,9 @@ const ua = {
     selectCategory: 'Виберіть категорію',
     selectSubcategory: 'Виберіть підкатегорію',
     exchange: 'Обмін',
-    whatChange: 'На що хочете обмінятися?',
+    whatChange: 'На що бажаєте обмінятися?',
     enterPhrase: 'введіть фразу, а потім натисніть Enter',
-    placeholderChange: 'Введіть на що хочете обмінятися',
+    placeholderChange: 'Введіть на що бажаєте обмінятися',
   },
   categories: {
     Clothing: 'Одяг',
