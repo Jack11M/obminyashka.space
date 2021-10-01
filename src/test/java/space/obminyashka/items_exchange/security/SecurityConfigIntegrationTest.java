@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -121,7 +120,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser("admin")
     @DataSet("database_init.yml")
     void postRequestToRefreshJwtIsOkAndCreateAdvWithNewAccessJwt() throws Exception {
         final var refreshToken = getRefreshTokenValue();
@@ -136,7 +134,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser("admin")
     @DataSet("database_init.yml")
     void postRequestWithExpiredRefreshTokenIsUnauthorized() throws Exception {
         final var content = sendDtoAndGetMvcResult(post(AUTH_LOGIN), createValidUserLoginDto(),
@@ -149,7 +146,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser("admin")
     @DataSet("database_init.yml")
     void postRequestWithInvalidRefreshTokenIsUnauthorized() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)

@@ -27,9 +27,8 @@ public interface AuthService {
     /**
      * Create new access token using while refresh token is not expired
      * @param refreshToken token for re-creation access token
-     * @param username name of the user which the token belongs
      * @return DTO containing tokens and their expiration time
      * @throws RefreshTokenException when token wasn't found
      */
-    RefreshTokenResponseDto renewAccessTokenByRefresh(String refreshToken, String username) throws RefreshTokenException;
+    RefreshTokenResponseDto renewAccessTokenByRefresh(String refreshToken) throws RefreshTokenException;
 }
