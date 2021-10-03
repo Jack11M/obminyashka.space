@@ -55,8 +55,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RefreshTokenResponseDto renewAccessTokenByRefresh(String refreshToken, String username) throws RefreshTokenException {
-        return refreshTokenService.renewAccessTokenByRefresh(jwtTokenProvider.resolveToken(refreshToken))
+    public RefreshTokenResponseDto renewAccessTokenByRefresh(String refreshToken) throws RefreshTokenException {
+        final var token = jwtTokenProvider.resolveToken(refreshToken);
+        return refreshTokenService.renewAccessTokenByRefresh(token)
                 .filter(Predicate.not(String::isEmpty))
                 .map(accessToken -> new RefreshTokenResponseDto(accessToken, refreshToken,
                         jwtTokenProvider.getAccessTokenExpiration(LocalDateTime.now()),

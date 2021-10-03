@@ -1,9 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +27,6 @@ import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -111,12 +107,12 @@ public class AuthController {
     @ApiOperation(value = "Renew access token with refresh token")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 401, message = "UNAUTHORIZED")
+            @ApiResponse(code = 400, message = "Required request header is not present"),
+            @ApiResponse(code = 401, message = "Refresh token is expired or not exist")
     })
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<RefreshTokenResponseDto> refreshToken(
-            @RequestHeader("refresh_token") String refreshToken,
-            @ApiIgnore Authentication authentication) throws RefreshTokenException {
-        return ResponseEntity.ok(authService.renewAccessTokenByRefresh(refreshToken, authentication.getName()));
+    public RefreshTokenResponseDto refreshToken(@ApiParam(required = true) @RequestHeader("refresh_token") String refreshToken)
+            throws RefreshTokenException {
+        return authService.renewAccessTokenByRefresh(refreshToken);
     }
 }
