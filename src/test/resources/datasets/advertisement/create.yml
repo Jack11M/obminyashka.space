@@ -100,7 +100,7 @@ advertisement:
     size: 'M'
     season: 'DEMI_SEASON'
     subcategory_id: 1
-    default_photo: null
+    default_photo: "CREATED_BUT_CONTENT_IGNORED"
 
 user:
   - id: 1
@@ -151,3 +151,6 @@ image:
     # Encoded to byte array with Base64.encodeString("test image png")
     resource: "dGVzdCBpbWFnZSBwbmc="
     advertisement_id: 1
+  - id: 3
+    resource: 'CREATED_BUT_CONTENT_IGNORED'
+    advertisement_id: 6

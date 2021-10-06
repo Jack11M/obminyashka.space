@@ -14,16 +14,14 @@ import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -49,8 +47,9 @@ public class ImageController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<byte[]>> getImagesResource(@PathVariable("advertisement_id")
-                                                                 @PositiveOrZero(message = "{invalid.id}") long id) {
+    public ResponseEntity<List<byte[]>> getImagesResource(@ApiParam(value = "ID of the Advertisement for getting all the images", required = true)
+                                                              @PathVariable("advertisement_id")
+                                                          @Positive(message = "{invalid.not-positive.id}") long id) {
         List<byte[]> imagesResource = imageService.getImagesResourceByAdvertisementId(id);
         return imagesResource.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
@@ -63,16 +62,32 @@ public class ImageController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<ImageDto>> getByAdvertisementId(@PathVariable("advertisement_id")
-                                             @PositiveOrZero(message = "{invalid.id}") long id) {
+    public ResponseEntity<List<ImageDto>> getByAdvertisementId(@ApiParam(value = "ID of the Advertisement for getting all the images representation", required = true)
+                                                               @PathVariable("advertisement_id")
+                                                               @Positive(message = "{invalid.not-positive.id}") long id) {
         List<ImageDto> images = imageService.getByAdvertisementId(id);
         return images.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(images, HttpStatus.OK);
     }
 
+    @GetMapping("/{advertisement_id}/total")
+    @ApiOperation(value = "Count all images for an existed advertisement by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<Integer> countImagesInAdvertisement(@ApiParam(value = "ID of the Advertisement for counting the images", required = true)
+                                                              @PathVariable("advertisement_id")
+                                                              @Positive(message = "{invalid.not-positive.id}") long id) {
+        if (!advertisementService.existById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(imageService.countImagesForAdvertisement(id));
+    }
+
     @PostMapping(value = "/{advertisement_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "Save and compress up to 10 images to an existed advertisement by its ID")
+    @ApiOperation(value = "Compress up to 10 images and add to an existed advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
@@ -80,31 +95,27 @@ public class ImageController {
             @ApiResponse(code = 404, message = "Advertisement Not Found with such ID"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
-    public ResponseEntity<String> saveImages(@ApiParam(value = "ID of the Advertisement for adding the image(s)", required = true)
-                                             @PathVariable("advertisement_id") @PositiveOrZero(message = "{invalid.id}") long advertisementId,
-                                             @ApiParam(value = "Select the image to Upload", required = true)
-                                             @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
-                                             @ApiIgnore Principal principal)
-            throws ElementsNumberExceedException, IllegalOperationException, UnsupportedMediaTypeException {
+    public ResponseEntity<String> addImagesToAdvertisement(@ApiParam(value = "ID of the Advertisement for adding the image(s)", required = true)
+                                                           @PathVariable("advertisement_id") @Positive(message = "{invalid.not-positive.id}") long advertisementId,
+                                                           @ApiParam(value = "Select the image to Upload", required = true)
+                                                           @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
+                                                           @ApiIgnore Principal principal)
+            throws ElementsNumberExceedException, IllegalOperationException {
 
         if (!advertisementService.existById(advertisementId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND);
         }
-        try {
-            final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, principal.getName())
-                    .orElseThrow(() -> new IllegalOperationException(getMessageSource("user.not-owner")));
-            if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
-                throw new ElementsNumberExceedException(
-                        getParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
-            }
-            List<byte[]> compressedImages = imageService.compress(images);
-            imageService.saveToAdvertisement(advToSaveImages, compressedImages);
-        } catch (IOException e) {
-            final var msg = "There was an error during extraction of gained images!";
-            log.error(msg, e);
-            return new ResponseEntity<>(msg, HttpStatus.NOT_ACCEPTABLE);
+        final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, principal.getName())
+                .orElseThrow(() -> new IllegalOperationException(getMessageSource("user.not-owner")));
+        if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
+            throw new ElementsNumberExceedException(
+                    getParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
         }
-        return new ResponseEntity<>("Images saved successfully", HttpStatus.OK);
+        List<byte[]> compressedImages = images.parallelStream()
+                .map(imageService::compress)
+                .toList();
+        imageService.saveToAdvertisement(advToSaveImages, compressedImages);
+        return ResponseEntity.ok("Images added successfully");
     }
 
     @DeleteMapping("/{advertisement_id}")
@@ -115,7 +126,7 @@ public class ImageController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteImages(@ApiParam(value = "ID of the Advertisement for delete the image(s)", required = true)
-                             @PathVariable("advertisement_id") @PositiveOrZero(message = "{invalid.id}") long advertisementId,
+                             @PathVariable("advertisement_id") @Positive(message = "{invalid.not-positive.id}") long advertisementId,
                              @ApiParam(value = "Input image(s) ID for delete", required = true)
                              @RequestParam("ids") List<Long> imageIdList,
                              @ApiIgnore Principal principal)

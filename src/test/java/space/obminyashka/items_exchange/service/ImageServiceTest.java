@@ -1,11 +1,5 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.dao.ImageRepository;
-import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Image;
-import space.obminyashka.items_exchange.service.basic.BasicImageCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -15,8 +9,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import space.obminyashka.items_exchange.dao.ImageRepository;
+import space.obminyashka.items_exchange.dto.ImageDto;
+import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.model.Advertisement;
+import space.obminyashka.items_exchange.model.Image;
+import space.obminyashka.items_exchange.service.basic.BasicImageCreator;
 
 import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -83,7 +84,7 @@ class ImageServiceTest extends BasicImageCreator{
 
     @Test
     void compressImage_shouldThrowException_WhenInvalidImageType(){
-        assertThrows(UnsupportedMediaTypeException.class, () -> imageService.compress(testTxt));
+        assertThrows(UndeclaredThrowableException.class, () -> imageService.compress(testTxt));
     }
 
     @Test

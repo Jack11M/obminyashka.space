@@ -30,7 +30,7 @@ class InternationalizationTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString()
-                .contains("Id value has to be 0 or positive"));
+                .contains("ID value has to be positive"));
     }
 
     @Test
@@ -41,7 +41,7 @@ class InternationalizationTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString()
-                .contains("Id value has to be 0 or positive"));
+                .contains("ID value has to be positive"));
     }
 
     @Test
@@ -53,7 +53,7 @@ class InternationalizationTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8)
-                .contains("Идентификатор не может быть отрицательным"));
+                .contains("Идентификатор должен быть положительным"));
     }
 
     @Test
@@ -65,6 +65,6 @@ class InternationalizationTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8)
-                .contains("Идентификатор не может быть отрицательным"));
+                .contains("Идентификатор должен быть положительным"));
     }
 }

@@ -12,13 +12,6 @@ import java.util.Optional;
 public interface AdvertisementService {
 
     /**
-     * Find all advertisements and return them by requested quantity (size) and page
-     * @param pageable see {@link Pageable} for more details
-     * @return wanted quantity of advertisement on a page
-     */
-    List<AdvertisementDto> findAll(Pageable pageable);
-
-    /**
      * Find all advertisements as thumbnails and return them by requested quantity (size) and page
      * @param pageable see {@link Pageable} for more details
      * @return wanted quantity of advertisement on a page
@@ -79,11 +72,12 @@ public interface AdvertisementService {
 
     /**
      * Create a new advertisement
-     * @param advertisementModificationDto DTO for converting and saving
+     * @param modificationDto DTO for converting and saving
      * @param user owner of a new advertisement
+     * @param compressedImages images related to an advertisement
      * @return saved advertisement DTO with updated id
      */
-    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto advertisementModificationDto, User user);
+    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto modificationDto, User user, List<byte[]> compressedImages);
 
     /**
      * Update existed advertisement

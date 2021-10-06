@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.exceptionshandling;
+package space.obminyashka.items_exchange.controller.error;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.WebApplicationContext;
+import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.dto.ChildDto;
@@ -42,15 +44,18 @@ import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
-class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest extends BasicControllerTest {
 
     @Autowired
     private WebApplicationContext context;
-    @Autowired
-    private MockMvc mockMvc;
     private AdvertisementModificationDto nonExistDto;
     private AdvertisementModificationDto existDto;
     private List<ChildDto> childDtoList;
+
+    @Autowired
+    public GlobalExceptionHandlerTest(MockMvc mockMvc) {
+        super(mockMvc);
+    }
 
     @BeforeEach
     void setup() {
@@ -63,7 +68,7 @@ class GlobalExceptionHandlerTest {
     @WithMockUser(username = "anonymous")
     @DataSet("database_init.yml")
     void testHandleUserNotFoundException() throws Exception {
-        MvcResult result = getResult(HttpMethod.POST, "/api/v1/adv", nonExistDto, status().isNotFound());
+        MvcResult result = sendDtoAndGetMvcResult(multipart(ADV).file(new MockMultipartFile("image", new byte[0])), nonExistDto, status().isNotFound());
         assertThat(result.getResolvedException(), is(instanceOf(UsernameNotFoundException.class)));
     }
 

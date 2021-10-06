@@ -2,7 +2,6 @@ package space.obminyashka.items_exchange.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
@@ -18,14 +17,12 @@ import space.obminyashka.items_exchange.dto.UserLoginDto;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.config.SecurityConfig.ACCESS_TOKEN;
 import static space.obminyashka.items_exchange.config.SecurityConfig.REFRESH_TOKEN;
-import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
@@ -85,15 +82,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
-    void createAdvertisementWithValidTokenAndValidAdvertisementDtoIsOk() throws Exception {
-        sendDtoWithHeadersAndGetResultAction(post(ADV), createNonExistAdvertisementModificationDto(), status().isCreated(),
-                getAuthorizationHeaderWithValidToken())
-                .andExpect(jsonPath("$.id").exists());
-    }
-
-    @Test
-    @DataSet("database_init.yml")
     void postRequestWithJWTTokenAndEmptyBodyShouldReturnBadRequest() throws Exception {
         final String tokenWithoutBearerPrefix = obtainToken(createValidUserLoginDto());
         final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().isBadRequest(),
@@ -121,16 +109,14 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestToRefreshJwtIsOkAndCreateAdvWithNewAccessJwt() throws Exception {
+    void postRequestToRefresh_shouldReturnNewAccessToken() throws Exception {
         final var refreshToken = getRefreshTokenValue();
         TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
                 .header(REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isOk());
         final var newAccessToken = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
                 .get(ACCESS_TOKEN).textValue();
-        sendDtoWithHeadersAndGetResultAction(post(ADV), createNonExistAdvertisementModificationDto(), status().isCreated(),
-                getAuthorizationHeader(BEARER_PREFIX + newAccessToken))
-                .andExpect(jsonPath("$.id").exists());
+        assertNotNull(newAccessToken);
     }
 
     @Test

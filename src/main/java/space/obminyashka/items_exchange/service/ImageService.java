@@ -1,10 +1,11 @@
 package space.obminyashka.items_exchange.service;
 
+import lombok.SneakyThrows;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,17 +33,18 @@ public interface ImageService {
      * @throws UnsupportedMediaTypeException in case receiving unsupported types
      * @see SupportedMediaTypes supported media types
      */
-    List<byte[]> compress(List<MultipartFile> images) throws IOException, UnsupportedMediaTypeException;
+    List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException;
 
     /**
      * Make in-memory compressing (30% of basic quality) only for supported types of images
      * @param image image for further compression
      * @return compresses image's bytes
-     * @throws IOException in cases when received image is corrupted or it's impossible to read it properly
-     * @throws UnsupportedMediaTypeException in case receiving unsupported types
+     * @apiNote throw {@link IOException} in cases when received image is corrupted, or it's impossible to read it properly AND
+     * throw {@link UnsupportedMediaTypeException} in case receiving unsupported types
      * @see SupportedMediaTypes supported media types
      */
-    byte[] compress(MultipartFile image) throws IOException, UnsupportedMediaTypeException;
+    @SneakyThrows({IOException.class, UnsupportedMediaTypeException.class})
+    byte[] compress(MultipartFile image);
 
     /**
      * Create new entity for each received image, link them to the Advertisement using it's ID and store them to the DB
@@ -92,4 +94,11 @@ public interface ImageService {
      * @return scaled image bytes
      */
     byte[] scale(byte[] bytes);
+
+    /**
+     * Making count of all images into an advertisement by its ID
+     * @param id advertisement ID
+     * @return total quantity of images already stored for selected advertisement
+     */
+    int countImagesForAdvertisement(long id);
 }

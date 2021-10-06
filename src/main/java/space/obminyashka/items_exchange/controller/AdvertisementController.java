@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -21,16 +22,14 @@ import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.mapper.transfer.Exist;
 import space.obminyashka.items_exchange.mapper.transfer.New;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.service.AdvertisementService;
-import space.obminyashka.items_exchange.service.LocationService;
-import space.obminyashka.items_exchange.service.SubcategoryService;
-import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.service.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.security.Principal;
 import java.util.List;
 
@@ -46,6 +45,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class AdvertisementController {
 
     private final AdvertisementService advertisementService;
+    private final ImageService imageService;
     private final UserService userService;
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
@@ -118,11 +118,17 @@ public class AdvertisementController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
-    public AdvertisementModificationDto createAdvertisement(@Validated(New.class)
-                                                            @Valid @RequestBody AdvertisementModificationDto dto,
-                                                            @ApiIgnore Principal principal) throws IllegalIdentifierException {
+    public AdvertisementModificationDto createAdvertisement(
+            @Validated(New.class) @Valid @RequestBody AdvertisementModificationDto dto,
+            @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
+            @ApiIgnore Principal principal) throws IllegalIdentifierException {
+
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
-        return advertisementService.createAdvertisement(dto, getUser(principal.getName()));
+        final var owner = getUser(principal.getName());
+        final var compressedImages = images.parallelStream()
+                .map(imageService::compress)
+                .toList();
+        return advertisementService.createAdvertisement(dto, owner, compressedImages);
     }
 
     @PutMapping

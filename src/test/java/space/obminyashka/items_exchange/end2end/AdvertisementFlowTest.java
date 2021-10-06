@@ -13,6 +13,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +31,9 @@ import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.JsonConverter;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,11 +52,14 @@ class AdvertisementFlowTest extends BasicControllerTest {
     private static final long VALID_ID = 1L;
     private static final long INVALID_ID = 999L;
     private final AdvertisementRepository advertisementRepository;
+    private final MockMultipartFile jpeg;
 
     @Autowired
-    public AdvertisementFlowTest(MockMvc mockMvc, AdvertisementRepository advertisementRepository) {
+    public AdvertisementFlowTest(MockMvc mockMvc, AdvertisementRepository advertisementRepository) throws IOException {
         super(mockMvc);
         this.advertisementRepository = advertisementRepository;
+        jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
+                Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
     }
 
     @ParameterizedTest
@@ -139,11 +147,11 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"default_photo", "created", "updated", "resource"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         AdvertisementModificationDto nonExistDto =
                 AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
-        sendDtoAndGetResultAction(post(ADV), nonExistDto, status().isCreated())
+        sendDtoAndGetResultAction(multipart(ADV).file(jpeg), nonExistDto, status().isCreated())
                 .andExpect(jsonPath("$.id").exists());
     }
 
@@ -168,7 +176,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
 
         dto.setLocationId(INVALID_ID);
         dto.setSubcategoryId(INVALID_ID);
-        final var mvcResult = sendDtoAndGetMvcResult(post(ADV), dto, status().isBadRequest());
+        final var mvcResult = sendDtoAndGetMvcResult(multipart(ADV).file(jpeg), dto, status().isBadRequest());
 
         var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
         var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");

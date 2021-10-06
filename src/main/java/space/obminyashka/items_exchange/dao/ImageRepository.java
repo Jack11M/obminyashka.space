@@ -14,4 +14,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     void deleteAllByIdIn(List<Long> id);
 
     boolean existsAllByIdInAndAdvertisement_Id(List<Long> id, Long advertisementId);
+
+    int countImageByAdvertisement_Id(long id);
 }

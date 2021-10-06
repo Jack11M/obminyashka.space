@@ -14,11 +14,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.model.User;
@@ -38,8 +38,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -68,21 +67,21 @@ class ImageControllerTest extends BasicControllerTest {
     }
 
     @BeforeEach
-    void setUp() throws IOException, UnsupportedMediaTypeException {
+    void setUp() throws IOException {
         user = new User();
         user.setStatus(Status.ACTIVE);
         jpeg = new MockMultipartFile("image", "image-jpeg.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpeg".getBytes());
         mocksInit();
     }
 
-    private void mocksInit() throws IOException, UnsupportedMediaTypeException {
+    private void mocksInit() throws IOException {
         when(advertisementService.existById(1L)).thenReturn(true);
         when(advertisementService.findByIdAndOwnerUsername(1L, "admin")).thenReturn(Optional.of(advertisement));
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
         when(advertisement.getImages()).thenReturn(testImages);
         when(advertisement.getUser()).thenReturn(user);
-        when(imageService.compress(List.of(jpeg))).thenReturn(List.of(jpeg.getBytes()));
+        when(imageService.compress(jpeg)).thenReturn(jpeg.getBytes());
     }
 
     @WithMockUser("admin")
@@ -100,18 +99,23 @@ class ImageControllerTest extends BasicControllerTest {
         assertThat(mvcResult.getResolvedException(), is(instanceOf(ElementsNumberExceedException.class)));
     }
 
+    @Test
+    void countImagesInAdvertisement() throws Exception {
+        when(imageService.countImagesForAdvertisement(1L)).thenReturn(10);
+
+        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_COUNT, 1L), status().isOk());
+        assertEquals("10", mvcResult.getResponse().getContentAsString());
+        verify(imageService).countImagesForAdvertisement(anyLong());
+    }
+
     @WithMockUser("admin")
     @Test
     void saveImages_shouldSaveImagesWhenTotalAmountLessThan10() throws Exception {
         testImages.remove(0);
 
-        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
-                .file(jpeg)
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+        sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, 1L).file(jpeg), status().isOk());
 
-        verify(imageService).compress(anyList());
+        verify(imageService).compress(any(MultipartFile.class));
         verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
         verify(advertisementService).findByIdAndOwnerUsername(anyLong(), anyString());
         assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0));
