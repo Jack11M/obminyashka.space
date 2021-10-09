@@ -13,6 +13,7 @@ const InputForAuth = ({ text, ...props }) => {
   const path = location.pathname === route.login;
   const [field, meta, helpers] = useField(props);
   const { error, touched } = meta;
+
   useEffect(() => {
     helpers.setError('');
   }, [lang]);
