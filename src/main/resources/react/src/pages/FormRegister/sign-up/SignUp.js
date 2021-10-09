@@ -82,7 +82,7 @@ const SignUp = () => {
         initialValues={initialRegisterValues}
         validationSchema={validationRegisterSchema}
         validateOnBlur
-        onSubmit={async (dataFormik, onSubmitProps, ...props) => {
+        onSubmit={async (dataFormik, onSubmitProps) => {
           setLoading(true);
           try {
             await postAuthRegister(dataFormik);
