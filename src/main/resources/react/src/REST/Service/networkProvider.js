@@ -2,7 +2,7 @@ import axios from 'axios';
 import { store } from 'store';
 
 import { setStorageUser, getStorageUser, getStorageLang } from 'Utils';
-import { logOutUser } from '../../store/auth/slice';
+import { logOutUser } from 'store/auth/slice';
 
 const refreshUrl = '/auth/refresh/token';
 

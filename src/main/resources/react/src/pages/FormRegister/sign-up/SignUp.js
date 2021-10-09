@@ -4,21 +4,21 @@ import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
-import InputForAuth from '../../../components/common/input';
-import CheckBox from '../../../components/common/checkbox';
-import Button from '../../../components/common/buttons/button/Button';
-import { getTranslatedText } from '../../../components/local/localisation';
+import { route } from 'routes/routeConstants';
+import CheckBox from 'components/common/checkbox';
+import { postAuthRegister } from 'REST/Resources';
+import InputForAuth from 'components/common/input';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localisation';
+import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
 import {
   NO_SPACE,
   EMAIL_REG_EXP,
   PASSWORD_REG_EXP,
   PASSWORD_ALT_CODE_EXP,
   USERNAME_ALT_CODE_EXP,
-} from '../../../config';
-import { postAuthRegister } from '../../../REST/Resources';
-import { route } from '../../../routes/routeConstants';
+} from 'config';
 
-import SpinnerForAuthBtn from '../../../components/common/spinner/spinnerForAuthBtn';
 import { Extra } from '../sign-in/loginStyle';
 
 const SignUp = () => {
@@ -90,15 +90,9 @@ const SignUp = () => {
             history.push(route.login);
           } catch (err) {
             setLoading(false);
-            if (err.response.status === 400) {
+            if (err.response.status === 409) {
               const { error: message } = err.response.data;
-              const field =
-                message.includes('login') ||
-                message.includes('логіном') ||
-                message.includes('имя')
-                  ? 'username'
-                  : 'email';
-              onSubmitProps.setErrors({ [field]: message });
+              onSubmitProps.setErrors({ username: message });
             }
           }
         }}

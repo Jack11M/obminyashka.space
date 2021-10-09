@@ -38,6 +38,22 @@ const Login = () => {
   });
   const initialLoginValues = validationLoginSchema.cast({});
 
+  const onSubmitHandler = async (values, onSubmitProps) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      setLoading(false);
+      await dispatch(putUserThunk(values, checkbox));
+    } catch (err) {
+      setLoading(false);
+      if (err.response.status === 400) {
+        onSubmitProps.setErrors({
+          usernameOrEmail: err.response.data.error,
+        });
+      }
+    }
+  };
+
   return (
     <form>
       <Formik
@@ -45,21 +61,9 @@ const Login = () => {
         validationSchema={validationLoginSchema}
         validateOnBlur
         enableReinitialize
-        onSubmit={async (dataFormik, onSubmitProps) => {
-          if (loading) return;
-          setLoading(true);
-          try {
-            setLoading(false);
-            await dispatch(putUserThunk(dataFormik, checkbox));
-          } catch (err) {
-            setLoading(false);
-            if (err.response.status === 400) {
-              onSubmitProps.setErrors({
-                usernameOrEmail: err.response.data.error,
-              });
-            }
-          }
-        }}
+        onSubmit={async (values, onSubmitProps) =>
+          onSubmitHandler(values, onSubmitProps)
+        }
       >
         {({ errors, handleSubmit, isValid, dirty }) => {
           return (
