@@ -17,5 +17,7 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
       sessionStorage.setItem('user', JSON.stringify(data));
     }
     dispatch(putToken(data));
-  } catch (err) {}
+  } catch (err) {
+    throw err
+  }
 };

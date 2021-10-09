@@ -7,7 +7,6 @@ export const getStorageUser = (option) => {
 export const setStorageUser = (data) => {
   const local = JSON.parse(localStorage.getItem('user'));
   const session = JSON.parse(sessionStorage.getItem('user'));
-  // const newData = local ? {...local, ...data} ? {...session, ...data}
   if (local) {
     const newData = { ...local, ...data };
     localStorage.setItem('user', JSON.stringify(newData));
