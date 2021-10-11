@@ -1,6 +1,8 @@
 package space.obminyashka.items_exchange.service;
 
 import space.obminyashka.items_exchange.dto.CategoryDto;
+import space.obminyashka.items_exchange.model.enums.Size;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -67,4 +69,13 @@ public interface CategoryService {
      * @return {@code true} if a category can be created, {@code false} otherwise.
      */
     boolean isCategoryDtoValidForCreating(CategoryDto categoryDto);
+
+    /**
+     * Return sizes for 'Clothing' and 'Shoes' categories
+     * @param id category identifier
+     * @return sized of selected category
+     * @see Size.Clothing
+     * @see Size.Shoes
+     */
+    List<String> findSizesForCategory(int id);
 }

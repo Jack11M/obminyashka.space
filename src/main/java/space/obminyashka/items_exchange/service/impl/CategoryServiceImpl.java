@@ -5,9 +5,11 @@ import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.dto.SubcategoryDto;
 import space.obminyashka.items_exchange.model.Category;
 import space.obminyashka.items_exchange.model.Subcategory;
+import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -67,6 +69,20 @@ public class CategoryServiceImpl implements CategoryService {
     public boolean isCategoryDtoValidForCreating(CategoryDto categoryDto) {
         return isCategoryNameHasNotDuplicate(categoryDto.getName())
                 && categoryDto.getSubcategories().stream().allMatch(this::isSubcategoryIdEqualsZero);
+    }
+
+    @Override
+    public List<String> findSizesForCategory(int id) {
+        return switch (id) {
+            case 1 -> Arrays.stream(Size.Clothing.values())
+                    .map(Size.Clothing::getRange)
+                    .toList();
+            case 2 -> Arrays.stream(Size.Shoes.values())
+                    .map(Size.Shoes::getLength)
+                    .map(String::valueOf)
+                    .toList();
+            default -> Collections.emptyList();
+        };
     }
 
     private boolean isSubcategoryIdEqualsZero(SubcategoryDto subcategoryDto) {

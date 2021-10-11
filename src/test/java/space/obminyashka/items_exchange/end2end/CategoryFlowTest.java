@@ -5,6 +5,9 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,14 +16,20 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.model.enums.Size;
+
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,6 +70,22 @@ class CategoryFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void getCategoryById_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
         sendUriAndGetMvcResult(get(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
+    }
+
+    @ParameterizedTest
+    @MethodSource("getTestCategoryValues")
+    void getCategorySizesById_shouldReturnValues_whenIdMatches(int categoryId, ResultMatcher expectedStatus, int expectedSize, String firstElement) throws Exception {
+        final var mvcResult = sendUriAndGetResultAction(get(CATEGORY_SIZES, categoryId), expectedStatus)
+                .andExpect(jsonPath("$.length()").value(expectedSize))
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(firstElement));
+    }
+
+    private static Stream<Arguments> getTestCategoryValues() {
+        return Stream.of(
+                Arguments.of(1, status().isOk(), 21, "46 - 50"),
+                Arguments.of(2, status().isOk(), 38, "9.5")
+        );
     }
 
     @Test
