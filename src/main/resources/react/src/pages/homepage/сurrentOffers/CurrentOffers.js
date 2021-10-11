@@ -20,10 +20,10 @@ const CurrentOffers = () => {
   useEffect(() => {
     getCurrentOffers()
       .then(({ data }) => {
-        setOffers(data);
+        if(Array.isArray(data))setOffers(data);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.response);
       });
   }, []);
 

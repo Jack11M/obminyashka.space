@@ -171,6 +171,10 @@ const ru = {
     headline: 'Заголовок объявления',
     selectCategory: 'Выберите категорию',
     selectSubcategory: 'Выберите подкатегорию',
+    exchange: 'Обмен',
+    whatChange: 'На что хотите обменяться?',
+    enterPhrase: 'введите фразу, а потом нажмите Enter',
+    placeholderChange: 'Введите на что хотите обменяться',
   },
   categories: {
     Clothing: 'Одежда',
