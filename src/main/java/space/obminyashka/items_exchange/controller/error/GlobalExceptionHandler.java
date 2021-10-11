@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.exception.handler;
+package space.obminyashka.items_exchange.controller.error;
 
 import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,8 +42,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             InvalidDtoException.class,
             InvalidLocationInitFileCreatingDataException.class,
-            IllegalIdentifierException.class,
-            UserValidationException.class})
+            IllegalIdentifierException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleBadRequestExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
-    @ExceptionHandler({JwtException.class, UnauthorizedException.class, RefreshTokenException.class})
+    @ExceptionHandler({JwtException.class, RefreshTokenException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorMessage handleUnauthorizedExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
@@ -78,16 +78,21 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, e, Level.ERROR);
     }
 
-    @ExceptionHandler(UnsupportedMediaTypeException.class)
-    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-    public ErrorMessage handleUnsupportedMediaTypeException(UnsupportedMediaTypeException ex, ServletWebRequest request){
-        return logAndGetErrorMessage(request, ex, Level.ERROR);
-    }
-
     @ExceptionHandler({IOException.class, ElementsNumberExceedException.class})
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ErrorMessage handleIOException(Exception ex, ServletWebRequest request){
         return logAndGetErrorMessage(request, ex, Level.ERROR);
+    }
+
+    @ExceptionHandler(UndeclaredThrowableException.class)
+    public ResponseEntity<ErrorMessage> handleSneakyThrownException(UndeclaredThrowableException ex, ServletWebRequest request){
+        final var cause = ex.getCause();
+        if (cause instanceof UnsupportedMediaTypeException e) {
+            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(logAndGetErrorMessage(request, e, Level.WARN));
+        } else if (cause instanceof IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(logAndGetErrorMessage(request, e, Level.WARN));
+        }
+        return ResponseEntity.internalServerError().body(logAndGetErrorMessage(request, ex, Level.ERROR));
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {

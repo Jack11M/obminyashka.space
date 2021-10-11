@@ -1,5 +1,14 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.dao.ImageRepository;
 import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
@@ -7,15 +16,6 @@ import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.SupportedMediaTypes;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -71,7 +71,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<byte[]> compress(List<MultipartFile> images) throws IOException, UnsupportedMediaTypeException {
+    public List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException {
         validateImagesTypes(images);
 
         List<byte[]> compressedImages = new ArrayList<>();
@@ -81,8 +81,9 @@ public class ImageServiceImpl implements ImageService {
         return compressedImages;
     }
 
+    @SneakyThrows({IOException.class, UnsupportedMediaTypeException.class})
     @Override
-    public byte[] compress(MultipartFile image) throws IOException, UnsupportedMediaTypeException {
+    public byte[] compress(MultipartFile image) {
         validateImagesTypes(List.of(image));
 
         String contentType = image.getContentType();
@@ -182,6 +183,11 @@ public class ImageServiceImpl implements ImageService {
             log.error("An error occurred while scale an image", e);
             return bytes;
         }
+    }
+
+    @Override
+    public int countImagesForAdvertisement(long id) {
+        return imageRepository.countImageByAdvertisement_Id(id);
     }
 
     private BufferedImage getScaled(Dimension d, BufferedImage originImage) {

@@ -1,8 +1,7 @@
-package space.obminyashka.items_exchange.exception.handler;
+package space.obminyashka.items_exchange.controller.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpMethod;
 
 import java.time.LocalDateTime;
@@ -10,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class ErrorMessage {
 

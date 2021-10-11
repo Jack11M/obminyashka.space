@@ -45,6 +45,7 @@ public abstract class BasicControllerTest {
     protected static final String IMAGE = API + "/image";
     protected static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";
     protected static final String IMAGE_RESOURCE = IMAGE_BY_ADV_ID + "/resource";
+    protected static final String IMAGE_COUNT = IMAGE_BY_ADV_ID + "/total";
     // Location API
     protected static final String LOCATION = API + "/location";
     protected static final String LOCATION_ID = LOCATION + "/{location_id}";

@@ -7,7 +7,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
@@ -44,12 +43,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Value("${display.adv.date.format}")
     private String dateFormat;
-
-    @Override
-    public List<AdvertisementDto> findAll(Pageable pageable) {
-        List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
-        return mapAdvertisementsToDto(content);
-    }
 
     @Override
     public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
@@ -110,12 +103,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto createDto, User user) {
-        Advertisement adv = mapDtoToAdvertisement(createDto);
-        adv.setUser(user);
+    public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto dto, User owner, List<byte[]> compressedImages) {
+        Advertisement adv = mapDtoToAdvertisement(dto);
+        adv.setUser(owner);
         adv.setStatus(Status.NEW);
-        updateSubcategory(adv, createDto.getSubcategoryId());
-        updateLocation(adv, createDto.getLocationId());
+        adv.setImages(compressedImages.stream().map(image -> new Image(0L, image, adv)).toList());
+        adv.setDefaultPhoto(compressedImages.get(0));
+        updateSubcategory(adv, dto.getSubcategoryId());
+        updateLocation(adv, dto.getLocationId());
         return mapAdvertisementToDto(advertisementRepository.save(adv));
     }
 
@@ -170,11 +165,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .ifPresent(advertisement::setDefaultPhoto);
 
         advertisementRepository.saveAndFlush(advertisement);
-    }
-
-    private List<AdvertisementDto> mapAdvertisementsToDto(Iterable<Advertisement> advertisements) {
-        return modelMapper.map(advertisements, new TypeToken<List<AdvertisementDto>>() {
-        }.getType());
     }
 
     private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
