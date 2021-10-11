@@ -7,7 +7,7 @@
     <artifactId>space.obminyahska</artifactId>
     <description>Service that provides possibility to exchange any kids' goods between registered users</description>
     <packaging>jar</packaging>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
