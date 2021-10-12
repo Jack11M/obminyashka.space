@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -18,11 +20,13 @@ import space.obminyashka.items_exchange.dto.UserLoginDto;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.config.SecurityConfig.ACCESS_TOKEN;
 import static space.obminyashka.items_exchange.config.SecurityConfig.REFRESH_TOKEN;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
@@ -84,9 +88,9 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void postRequestWithJWTTokenAndEmptyBodyShouldReturnBadRequest() throws Exception {
         final String tokenWithoutBearerPrefix = obtainToken(createValidUserLoginDto());
-        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().isBadRequest(),
+        final var mvcResult = sendUriWithHeadersAndGetMvcResult(multipart(ADV), status().isBadRequest(),
                 getAuthorizationHeader(tokenWithoutBearerPrefix));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Required request body is missing:"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Required request part 'dto' is not present"));
     }
 
     @Test

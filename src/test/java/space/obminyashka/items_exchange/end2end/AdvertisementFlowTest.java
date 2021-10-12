@@ -42,6 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 @SpringBootTest
 @DBRider
@@ -151,7 +152,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
         AdvertisementModificationDto nonExistDto =
                 AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
-        sendDtoAndGetResultAction(multipart(ADV).file(jpeg), nonExistDto, status().isCreated())
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(nonExistDto).getBytes());
+        sendUriAndGetResultAction(multipart(ADV).file(jpeg).file(dtoJson), status().isCreated())
                 .andExpect(jsonPath("$.id").exists());
     }
 
@@ -176,7 +178,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
 
         dto.setLocationId(INVALID_ID);
         dto.setSubcategoryId(INVALID_ID);
-        final var mvcResult = sendDtoAndGetMvcResult(multipart(ADV).file(jpeg), dto, status().isBadRequest());
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
+        final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
 
         var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
         var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");

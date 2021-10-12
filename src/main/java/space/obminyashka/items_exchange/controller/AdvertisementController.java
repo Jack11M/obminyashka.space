@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
@@ -112,14 +113,14 @@ public class AdvertisementController {
     }
 
     @PostMapping
-    @ApiOperation(value = "Create a new advertisement")
+    @ApiOperation(value = "Create a new advertisement", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "CREATED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
     public AdvertisementModificationDto createAdvertisement(
-            @Validated(New.class) @Valid @RequestBody AdvertisementModificationDto dto,
+            @Validated(New.class) @Valid @RequestPart AdvertisementModificationDto dto,
             @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
             @ApiIgnore Principal principal) throws IllegalIdentifierException {
 

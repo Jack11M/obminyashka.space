@@ -29,6 +29,7 @@ import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.CategoryTestUtil;
 import space.obminyashka.items_exchange.util.ChildDtoCreatingUtil;
+import space.obminyashka.items_exchange.util.JsonConverter;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -68,7 +69,8 @@ class GlobalExceptionHandlerTest extends BasicControllerTest {
     @WithMockUser(username = "anonymous")
     @DataSet("database_init.yml")
     void testHandleUserNotFoundException() throws Exception {
-        MvcResult result = sendDtoAndGetMvcResult(multipart(ADV).file(new MockMultipartFile("image", new byte[0])), nonExistDto, status().isNotFound());
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(nonExistDto).getBytes());
+        MvcResult result = sendUriAndGetMvcResult(multipart(ADV).file(new MockMultipartFile("image", new byte[0])).file(dtoJson), status().isNotFound());
         assertThat(result.getResolvedException(), is(instanceOf(UsernameNotFoundException.class)));
     }
 
