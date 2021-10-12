@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { getCategoryAll } from 'REST/Resources';
 import { Items } from './items';
+import { getTranslatedText } from 'components/local/localisation';
+
 import {
   TitleH3,
   Sections,
@@ -11,7 +13,6 @@ import {
   SectionsItem,
   ItemDescription,
 } from './styles';
-import { getTranslatedText } from '../../../components/local/localisation';
 
 const SelectionSection = ({ category, subcategory, announcement }) => {
   const { lang } = useSelector((state) => state.auth);

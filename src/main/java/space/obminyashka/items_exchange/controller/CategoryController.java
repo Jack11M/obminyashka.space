@@ -1,10 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
-import space.obminyashka.items_exchange.mapper.transfer.Exist;
-import space.obminyashka.items_exchange.mapper.transfer.New;
-import space.obminyashka.items_exchange.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,6 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.dto.CategoryDto;
+import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.mapper.transfer.Exist;
+import space.obminyashka.items_exchange.mapper.transfer.New;
+import space.obminyashka.items_exchange.service.CategoryService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -68,6 +68,20 @@ public class CategoryController {
                                                            @PathVariable("category_id") long id) {
 
         return ResponseEntity.of(categoryService.findCategoryDtoById(id));
+    }
+
+    @GetMapping("/{category_id}/sizes")
+    @ApiOperation(value = "Get a category sizes by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")})
+    public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = "{invalid.exist.id}")
+                                                           @PathVariable("category_id") int id) {
+        var sizes = categoryService.findSizesForCategory(id);
+        return sizes.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(sizes, HttpStatus.OK);
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)

@@ -41,6 +41,7 @@ public abstract class BasicControllerTest {
     protected static final String CATEGORY_NAMES = CATEGORY + "/names";
     protected static final String CATEGORY_ALL = CATEGORY + "/all";
     protected static final String CATEGORY_ID = CATEGORY + "/{category_id}";
+    protected static final String CATEGORY_SIZES = CATEGORY_ID + "/sizes";
     // Image API
     protected static final String IMAGE = API + "/image";
     protected static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";

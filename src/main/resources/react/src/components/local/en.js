@@ -170,6 +170,10 @@ const en = {
     headline: 'Headline',
     selectCategory: 'Select a category',
     selectSubcategory: 'Select a subcategory',
+    exchange: 'Exchange',
+    whatChange: 'What do you want to exchange?',
+    enterPhrase: 'enter the phrase, and then press Enter',
+    placeholderChange: 'Enter what you want to exchange',
   },
   categories: {
     Clothing: 'Clothing',
