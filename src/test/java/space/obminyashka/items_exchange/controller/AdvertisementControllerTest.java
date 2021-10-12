@@ -8,6 +8,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createValidationMessage;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
 @SpringBootTest
@@ -73,7 +76,9 @@ class AdvertisementControllerTest extends BasicControllerTest {
     @MethodSource(value = "createTestDto")
     void createAdvertisement_shouldReturn400WhenAdvIdIsNotZero(AdvertisementModificationDto dto) throws Exception {
         dto.setId(INVALID_ID);
-        final var mvcResult = sendDtoAndGetMvcResult(post(ADV), dto, status().isBadRequest());
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
+        final var image = new MockMultipartFile("image", new byte[0]);
+        final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(dtoJson).file(image), status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("\"error\":\"Validation error(s)"));
     }
 
