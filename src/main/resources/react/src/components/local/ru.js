@@ -263,9 +263,9 @@ const ru = {
     'Other (Books)': 'Другое (Книги)',
   },
   genderEnum: {
-    MALE: 'Мужской',
-    FEMALE: 'Женский',
-    UNSELECTED: 'Не выбран',
+    MALE: 'Мальчик',
+    FEMALE: 'Девочка',
+    UNSELECTED: 'Мальчик/Девочка',
   },
   seasonEnum: {
     WINTER: 'Зима',

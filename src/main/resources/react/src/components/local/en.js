@@ -261,9 +261,9 @@ const en = {
     'Other (Books)': 'Other (Books)',
   },
   genderEnum: {
-    MALE: 'Male',
-    FEMALE: 'Female',
-    UNSELECTED: 'Unselected',
+    MALE: 'For boys',
+    FEMALE: 'For girls',
+    UNSELECTED: 'Boy/Girl',
   },
   seasonEnum: {
     WINTER: 'Winter',

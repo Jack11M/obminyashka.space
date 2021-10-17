@@ -262,9 +262,9 @@ const ua = {
     'Other (Books)': 'Інше (книги)',
   },
   genderEnum: {
-    MALE: 'Чоловіча',
-    FEMALE: 'Жіноча',
-    UNSELECTED: 'Не обрана',
+    MALE: 'Хлопчакові',
+    FEMALE: 'Дівочі',
+    UNSELECTED: 'Хлопчик/Дівчинка',
   },
   seasonEnum: {
     WINTER: 'Зима',
