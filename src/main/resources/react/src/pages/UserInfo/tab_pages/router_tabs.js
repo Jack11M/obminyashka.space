@@ -5,7 +5,7 @@ import MyActivity from './my_activity';
 import MyProfile from './my_profile';
 import MyFavorites from './my_favorites';
 import MySettings from './my_settings';
-import { route } from '../../../routes/routeConstants';
+import { route } from 'routes/routeConstants';
 
 const RouterTabs = ({ url, set }) => {
   const location = useLocation();

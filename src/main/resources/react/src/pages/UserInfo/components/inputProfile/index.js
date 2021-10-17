@@ -1,7 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
 import { useField } from 'formik';
+import styled from 'styled-components';
 import InputMask from 'react-input-mask';
+import { useSelector } from 'react-redux';
 
 const ProfileInput = styled.div`
   position: relative;
@@ -56,8 +57,13 @@ const SpanError = styled.span`
 `;
 
 const InputProfile = ({ id = '', label, ...props }) => {
-  const [field, meta] = useField(props);
+  const { lang } = useSelector((state) => state.auth);
+  const [field, meta, helpers] = useField(props);
   const { error, touched } = meta;
+
+  useEffect(() => {
+    helpers.setError('');
+  }, [lang]);
 
   return (
     <ProfileInput>

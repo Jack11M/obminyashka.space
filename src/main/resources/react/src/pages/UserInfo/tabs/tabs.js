@@ -2,8 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { route } from '../../../routes/routeConstants';
-import { getTranslatedText } from '../../../components/local/localisation';
+import { route } from 'routes/routeConstants';
+import { getTranslatedText } from 'components/local/localisation';
 
 import './tabs.scss';
 

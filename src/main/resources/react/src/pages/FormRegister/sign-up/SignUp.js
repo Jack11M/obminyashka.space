@@ -10,7 +10,6 @@ import { postAuthRegister } from 'REST/Resources';
 import InputForAuth from 'components/common/input';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
-import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
 import {
   NO_SPACE,
   EMAIL_REG_EXP,
@@ -132,19 +131,14 @@ const SignUp = () => {
                 />
               </Extra>
               <Button
-                text={
-                  loading ? (
-                    <SpinnerForAuthBtn />
-                  ) : (
-                    getTranslatedText('auth.signUp', lang)
-                  )
-                }
+                text={getTranslatedText('auth.signUp', lang)}
                 mb="44px"
                 bold
                 type="submit"
                 lHeight="24px"
                 width="222px"
                 height="48px"
+                isLoading={loading}
                 disabling={!checkbox || isSubmitting || (!dirty && !isValid)}
                 click={!errors.email || !errors.username ? handleSubmit : null}
               />

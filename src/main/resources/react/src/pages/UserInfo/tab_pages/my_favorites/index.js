@@ -1,7 +1,7 @@
 import React from 'react';
 
-import TitleBigBlue from '../../../../components/common/title_Big_Blue/title_Big_Blue';
-import ProductCard from '../../../../components/item-card/ProductCard';
+import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
+import ProductCard from 'components/item-card/ProductCard';
 
 import './myFavorites.scss';
 
