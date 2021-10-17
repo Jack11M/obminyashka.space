@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { NO_SPACE } from 'config';
 import { route } from 'routes/routeConstants';
-import { getTranslatedText } from 'components/local/localisation';
-import Button from 'components/common/buttons/button/Button';
+import { putUserThunk } from 'store/auth/thunk';
 import CheckBox from 'components/common/checkbox';
 import InputForAuth from 'components/common/input';
-import { NO_SPACE } from 'config';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localisation';
 
-import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
 import { Extra, ExtraLink } from './loginStyle';
-import { putUserThunk } from 'store/auth/thunk';
+
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -42,8 +42,8 @@ const Login = () => {
     if (loading) return;
     setLoading(true);
     try {
-      setLoading(false);
       await dispatch(putUserThunk(values, checkbox));
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       if (err.response.status === 400) {
@@ -93,19 +93,14 @@ const Login = () => {
                 </ExtraLink>
               </Extra>
               <Button
-                text={
-                  loading ? (
-                    <SpinnerForAuthBtn />
-                  ) : (
-                    getTranslatedText('button.enter', lang)
-                  )
-                }
+                text={getTranslatedText('button.enter', lang)}
                 bold
                 height="48px"
                 lHeight="24px"
                 mb="64px"
                 type="submit"
                 width="222px"
+                isLoading={loading}
                 disabling={!isValid && !dirty}
                 click={!errors.usernameOrEmail ? handleSubmit : null}
               />

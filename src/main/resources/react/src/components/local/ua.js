@@ -174,6 +174,11 @@ const ua = {
     whatChange: 'На що бажаєте обмінятися?',
     enterPhrase: 'введіть фразу, а потім натисніть Enter',
     placeholderChange: 'Введіть на що бажаєте обмінятися',
+    options: 'Характеристики',
+    age: 'Вік',
+    sex: 'Стать',
+    size: 'Розмір (Одяг)',
+    season: 'Сезон',
   },
   categories: {
     Clothing: 'Одяг',
@@ -257,15 +262,15 @@ const ua = {
     'Other (Books)': 'Інше (книги)',
   },
   genderEnum: {
-    male: 'Чоловіча',
-    female: 'Жіноча',
-    unselected: 'Не обрана',
+    MALE: 'Чоловіча',
+    FEMALE: 'Жіноча',
+    UNSELECTED: 'Не обрана',
   },
   seasonEnum: {
-    winter: 'Зима',
-    summer: 'Літо',
-    allSeasons: 'Всі сезони',
-    demiSeason: 'Демісезон',
+    WINTER: 'Зима',
+    SUMMER: 'Літо',
+    ALL_SEASONS: 'Всі сезони',
+    DEMI_SEASON: 'Демісезон',
   },
 };
 

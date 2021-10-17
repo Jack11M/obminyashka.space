@@ -114,8 +114,11 @@
 
       .characteristics_items {
         display: flex;
-        justify-content: space-around;
-        margin-bottom: 30px;
+        justify-content: space-between;
+        margin-bottom: 50px;
+        &:last-child {
+          margin-right: 100px;
+        }
 
         h4 {
           font-size: 22px;

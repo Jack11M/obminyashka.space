@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUserInfo } from '../../REST/Resources';
+import { getUserInfo } from 'REST/Resources';
 
 export const fetchUser = createAsyncThunk(
   'profileMe/fetchUser',

@@ -174,6 +174,11 @@ const en = {
     whatChange: 'What do you want to exchange?',
     enterPhrase: 'enter the phrase, and then press Enter',
     placeholderChange: 'Enter what you want to exchange',
+    options: 'Characteristics',
+    age: 'Age',
+    sex: 'Sex',
+    size: 'Size (Clothing)',
+    season: 'Season',
   },
   categories: {
     Clothing: 'Clothing',
@@ -256,15 +261,15 @@ const en = {
     'Other (Books)': 'Other (Books)',
   },
   genderEnum: {
-    male: 'Male',
-    female: 'Female',
-    unselected: 'Unselected',
+    MALE: 'Male',
+    FEMALE: 'Female',
+    UNSELECTED: 'Unselected',
   },
   seasonEnum: {
-    winter: 'Winter',
-    summer: 'Summer',
-    allSeasons: 'All seasons',
-    demiSeason: 'Demi-season',
+    WINTER: 'Winter',
+    SUMMER: 'Summer',
+    ALL_SEASONS: 'All seasons',
+    DEMI_SEASON: 'Demi-season',
   },
 };
 

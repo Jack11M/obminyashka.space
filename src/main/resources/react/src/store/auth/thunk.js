@@ -5,7 +5,9 @@ export const logoutUserThunk = () => async (dispatch) => {
   try {
     await postAuthLogout();
     dispatch(logOutUser());
-  } catch (err) {}
+  } catch (err) {
+    dispatch(logOutUser());
+  }
 };
 
 export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
