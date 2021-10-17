@@ -29,6 +29,7 @@ public abstract class BasicControllerTest {
     protected static final String ADV_ID = ADV + "/{advertisement_id}";
     protected static final String ADV_FILTER = ADV + "/filter";
     protected static final String ADV_THUMBNAIL = ADV + "/thumbnail";
+    protected static final String ADV_THUMBNAIL_RANDOM = ADV + "/thumbnail/random";
     protected static final String ADV_THUMBNAIL_PARAMS = ADV_THUMBNAIL + "?page={page}&size={size}";
     // Authorization API
     protected static final String AUTH = API + "/auth";
