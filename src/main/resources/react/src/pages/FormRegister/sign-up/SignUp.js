@@ -131,13 +131,7 @@ const SignUp = () => {
                 />
               </Extra>
               <Button
-                text={
-                  // loading ? (
-                  //   <SpinnerForAuthBtn />
-                  // ) : (
-                    getTranslatedText('auth.signUp', lang)
-                  // )
-                }
+                text={getTranslatedText('auth.signUp', lang)}
                 mb="44px"
                 bold
                 type="submit"
