@@ -156,15 +156,7 @@ const AddGoods = () => {
     season: '',
     size: '',
   };
-  const ages = [
-    'YOUNGER_THAN_1',
-    'FROM_1_TO_2',
-    'FROM_3_TO_5',
-    'FROM_6_TO_9',
-    'FROM_10_TO_12',
-    'FROM_12_TO_14',
-    'OLDER_THAN_14',
-  ];
+  const ages = Object.keys(enumAge);
   const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
   const season = ['ALL_SEASONS', 'DEMI_SEASON', 'SUMMER', 'WINTER'];
   const size = ['50-80', '80-92', '92-104', '110-122', '128-146', '146-164'];
