@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.config;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
+@EnableCaching
 @EnableScheduling
 public class AppConfig {
 

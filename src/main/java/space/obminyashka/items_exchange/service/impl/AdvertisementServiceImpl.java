@@ -2,11 +2,14 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
@@ -23,10 +26,7 @@ import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
@@ -40,14 +40,26 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final SubcategoryService subcategoryService;
     private final LocationService locationService;
     private final ImageService imageService;
+    private final Random random = new Random();
 
     @Value("${display.adv.date.format}")
     private String dateFormat;
 
     @Override
+    @Cacheable("advertisements")
     public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
         return mapAdvertisementsToTitleDto(content);
+    }
+
+    @Override
+    @Cacheable("advertisements")
+    public List<AdvertisementTitleDto> findRandom12Thumbnails() {
+        final var totalRecordsSize = advertisementRepository.count();
+        final var resultsQuantity = 12;
+        final var bound = (int) (totalRecordsSize / resultsQuantity);
+        final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
+        return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity));
     }
 
     @Override
@@ -115,6 +127,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
+    @CachePut(value = "advertisement", key = "#dto.id")
     public AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto) {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
@@ -150,6 +163,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
+    @CacheEvict(value = "advertisements", key = "#id")
     public void remove(long id) {
         advertisementRepository.deleteById(id);
         advertisementRepository.flush();
