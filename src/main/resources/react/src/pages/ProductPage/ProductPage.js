@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 import ProductDescription from './ProductDescription/ProductDescription';
-import { getTranslatedText } from '../../components/local/localisation';
+import { getTranslatedText } from 'components/local/localisation';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductPostData from './ProductPostData/ProductPostData';
-import TitleBigBlue from '../../components/common/title_Big_Blue';
+import TitleBigBlue from 'components/common/title_Big_Blue';
 import ProductOffers from './ProductOffers/ProductOffers';
-import { getProduct } from '../../REST/Resources';
+import { getProduct } from 'REST/Resources';
 
 import './ProductPage.scss';
 
@@ -50,50 +50,6 @@ const ProductPage = () => {
       });
   }, [lang]);
 
-  const genderConversion = (gender, lang) => {
-    let resultGender;
-    switch (gender) {
-      case 'MALE':
-        resultGender = getTranslatedText('genderEnum.male', lang);
-        break;
-      case 'FEMALE':
-        resultGender = getTranslatedText('genderEnum.female', lang);
-        break;
-      case 'UNSELECTED':
-        resultGender = getTranslatedText(
-          'genderEnum.unselected',
-          lang
-        );
-        break;
-    }
-    return resultGender;
-  };
-
-  const seasonConversion = (season) => {
-    let resultSeason;
-    switch (season) {
-      case 'SUMMER':
-        resultSeason = getTranslatedText('seasonEnum.summer', lang);
-        break;
-      case 'WINTER':
-        resultSeason = getTranslatedText('seasonEnum.winter', lang);
-        break;
-      case 'ALL_SEASONS':
-        resultSeason = getTranslatedText(
-          'seasonEnum.allSeasons',
-          lang
-        );
-        break;
-      case 'DEMI_SEASON':
-        resultSeason = getTranslatedText(
-          'seasonEnum.demiSeason',
-          lang
-        );
-        break;
-    }
-    return resultSeason;
-  };
-
   return (
     <div>
       <section className="topSection">
@@ -122,9 +78,9 @@ const ProductPage = () => {
                 title={product.topic}
                 wishes={wishes}
                 size={product.size}
-                gender={genderConversion(product.gender, lang)}
+                gender={getTranslatedText(`genderEnum.${product.gender}`, lang)}
                 age={product.age}
-                season={seasonConversion(product.season, lang)}
+                season={ getTranslatedText(`seasonEnum.${product.season}`, lang) }
               />
             </div>
           </div>

@@ -4,15 +4,15 @@ import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
 
 import InputProfile from '../../components/inputProfile';
-import { fetchUser, putUserToStore } from 'store/profile/slice';
-import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
 import Button from 'components/common/buttons/button/Button';
+import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
+import { fetchUser, putUserToStore } from 'store/profile/slice';
+
 import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonsAddRemoveChild from 'pages/UserInfo/components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 import InputGender from '../../components/inputProfile/inputGender';
 import { putUserInfo } from 'REST/Resources';
-import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
 import { ModalContext } from 'components/common/pop-up';
 
 import './myProfile.scss';
@@ -88,6 +88,52 @@ const MyProfile = () => {
   });
   const initialUserValues = validationUserSchema.cast({});
 
+  const handleUserSubmit = async (dataFormik) => {
+    setAboutLoading(true);
+    try {
+      const newUserData = {
+        ...dataFormik,
+        phones: transformPhones(dataFormik.phones),
+      };
+      if (
+        !newUserData.lastName &&
+        !newUserData.firstName &&
+        !newUserData.phones.length
+      ) {
+        setAboutLoading(false);
+        openModal({
+          title: getTranslatedText('popup.errorTitle', lang),
+          children: (
+            <p style={{ textAlign: 'center' }}>
+              {getTranslatedText('popup.notEmptyInput', lang)}
+            </p>
+          ),
+        });
+        return;
+      }
+      const { data } = await putUserInfo(newUserData);
+      openModal({
+        title: getTranslatedText('popup.serverResponse', lang),
+        children: <p>{data}</p>,
+      });
+      setAboutLoading(false);
+      dispatch(putUserToStore(newUserData));
+    } catch (err) {
+      setAboutLoading(false);
+      if (err.response.status === 400) {
+        const indexStart = err.response.data.error.indexOf(':') + 1;
+        openModal({
+          title: getTranslatedText('popup.serverResponse', lang),
+          children: (
+            <p style={{ textAlign: 'center' }}>
+              {err.response.data.error.slice(indexStart)}
+            </p>
+          ),
+        });
+      }
+    }
+  };
+
   return (
     <>
       <Formik
@@ -95,51 +141,7 @@ const MyProfile = () => {
         validationSchema={validationUserSchema}
         validateOnBlur
         enableReinitialize
-        onSubmit={async (dataFormik) => {
-          setAboutLoading(true);
-          try {
-            const newUserData = {
-              ...dataFormik,
-              phones: transformPhones(dataFormik.phones),
-            };
-            if (
-              !newUserData.lastName &&
-              !newUserData.firstName &&
-              !newUserData.phones.length
-            ) {
-              setAboutLoading(false);
-              openModal({
-                title: getTranslatedText('popup.errorTitle', lang),
-                children: (
-                  <p style={{ textAlign: 'center' }}>
-                    {getTranslatedText('popup.notEmptyInput', lang)}
-                  </p>
-                ),
-              });
-              return;
-            }
-            const { data } = await putUserInfo(newUserData);
-            openModal({
-              title: getTranslatedText('popup.serverResponse', lang),
-              children: <p>{data}</p>,
-            });
-            setAboutLoading(false);
-            dispatch(putUserToStore(newUserData));
-          } catch (err) {
-            setAboutLoading(false);
-            if (err.response.status === 400) {
-              const indexStart = err.response.data.error.indexOf(':') + 1;
-              openModal({
-                title: getTranslatedText('popup.serverResponse', lang),
-                children: (
-                  <p style={{ textAlign: 'center' }}>
-                    {err.response.data.error.slice(indexStart)}
-                  </p>
-                ),
-              });
-            }
-          }
-        }}
+        onSubmit={handleUserSubmit}
       >
         {({ values, errors, handleSubmit }) => (
           <>
@@ -199,16 +201,11 @@ const MyProfile = () => {
               }}
             </FieldArray>
             <Button
-              text={
-                aboutLoading ? (
-                  <SpinnerForAuthBtn />
-                ) : (
-                  getTranslatedText('button.saveChanges', lang)
-                )
-              }
+              text={getTranslatedText('button.saveChanges', lang)}
               width={'248px'}
               type={'submit'}
               whatClass={'btn-form-about-me'}
+              isLoading={aboutLoading}
               disabling={Object.keys(errors).length}
               click={handleSubmit}
             />

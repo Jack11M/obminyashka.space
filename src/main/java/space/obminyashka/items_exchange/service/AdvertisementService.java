@@ -1,10 +1,13 @@
 package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
-import space.obminyashka.items_exchange.dto.*;
+import org.springframework.data.domain.Pageable;
+import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
+import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +20,12 @@ public interface AdvertisementService {
      * @return wanted quantity of advertisement on a page
      */
     List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
+
+    /**
+     * Find 12 random advertisements as thumbnails
+     * @return random 12 advertisement
+     */
+    List<AdvertisementTitleDto> findRandom12Thumbnails();
 
     /**
      * Find all advertisements as thumbnails for specific user

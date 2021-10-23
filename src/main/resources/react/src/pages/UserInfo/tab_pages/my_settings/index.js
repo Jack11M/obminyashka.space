@@ -1,20 +1,19 @@
 import React, { useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Formik } from 'formik';
 import * as yup from 'yup';
+import { Formik } from 'formik';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn';
-import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
-import Button from 'components/common/buttons/button/Button';
-import InputProfile from '../../components/inputProfile';
 import { route } from 'routes/routeConstants';
+import InputProfile from '../../components/inputProfile';
+import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
+import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
 
-import { putEmailFetch, putPasswordFetch } from 'REST/Resources';
 import { putEmail } from 'store/auth/slice';
 import { ModalContext } from 'components/common/pop-up';
+import { putEmailFetch, putPasswordFetch } from 'REST/Resources';
 
 import './mySettings.scss';
 
@@ -144,18 +143,13 @@ const MySettings = () => {
               />
             </div>
             <Button
-              text={
-                isFetchPass ? (
-                  <SpinnerForAuthBtn />
-                ) : (
-                  getTranslatedText(`button.save`, lang)
-                )
-              }
+              text={getTranslatedText(`button.save`, lang)}
               whatClass={'btn-profile'}
+              type={'submit'}
               width={'248px'}
               height={'49px'}
+              isLoading={isFetchPass}
               click={!errors.oldPassword ? handleSubmit : null}
-              type={'submit'}
               disabling={!dirty && !isValid}
             />
           </>
@@ -221,18 +215,13 @@ const MySettings = () => {
               />
             </div>
             <Button
-              text={
-                isFetchEmail ? (
-                  <SpinnerForAuthBtn />
-                ) : (
-                  getTranslatedText(`button.saveEmail`, lang)
-                )
-              }
+              text={getTranslatedText(`button.saveEmail`, lang)}
               whatClass={'btn-profile e-mail-button'}
+              type={'submit'}
               width={'300px'}
               height={'49px'}
+              isLoading={isFetchEmail}
               click={!errors.newEmail ? handleSubmit : null}
-              type={'submit'}
               disabling={!isValid && !dirty}
             />
           </>

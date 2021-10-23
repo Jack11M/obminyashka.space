@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -102,13 +103,14 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$[0].ownerName").value("admin"));
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("Should return all advertisements from DB (12 if there is more)")
+    @ValueSource(strings = {ADV_THUMBNAIL, ADV_THUMBNAIL_RANDOM})
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
-                .andExpect(jsonPath("$.length()").value(advertisementRepository.findAll().size()));
+    void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails(String api) throws Exception {
+        sendUriAndGetResultAction(get(api), status().isOk())
+                .andExpect(jsonPath("$.length()").value(advertisementRepository.count()));
     }
 
     @Test

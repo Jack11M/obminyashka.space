@@ -1,25 +1,25 @@
 import React, { useContext, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Form } from 'formik';
+import { useSelector } from 'react-redux';
 
-import { FormHandler } from 'components/common/formik-handler';
+import { enumAge } from 'config/ENUM.js';
 import { ModalContext } from 'components/common/pop-up';
-import CheckBox from 'components/common/checkbox/index';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
+import { FormHandler, FormikCheckBox } from 'components/common/formik';
 
+import { Exchange } from './exchange';
 import { convertToMB } from './add-image/helper';
 import { ImagePhoto } from './add-image/image-photo';
 import { SelectionSection } from './selection-section';
 import { AddFileInput } from './add-image/add-file-input';
-import { Exchange } from './exchange';
 
 import './AddGoods.scss';
 
 const AddGoods = () => {
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const [categoryItems, setCategoryItems] = useState('');
   const [subCategoryItems, setSubCategoryItems] = useState('');
   const [announcementTitle, setAnnouncementTitle] = useState('');
@@ -146,212 +146,143 @@ const AddGoods = () => {
   };
 
   const handleSubmit = (values) => {
+    console.log(values);
     return values;
   };
 
+  const initialValues = {
+    age: [],
+    gender: '',
+    season: '',
+    size: '',
+  };
+  const ages = Object.keys(enumAge);
+  const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
+  const season = ['ALL_SEASONS', 'DEMI_SEASON', 'SUMMER', 'WINTER'];
+  const size = ['50-80', '80-92', '92-104', '110-122', '128-146', '146-164'];
   return (
     <FormHandler
       onSubmit={handleSubmit}
-      // initialValues={initialValues}
+      initialValues={initialValues}
       // validationSchema={createSchema}
     >
-      <main className="add">
-        <div className="add_container">
-          <div className="add_inner">
-            <SelectionSection
-              category={{ categoryItems, setCategoryItems }}
-              subcategory={{ subCategoryItems, setSubCategoryItems }}
-              announcement={{ announcementTitle, setAnnouncementTitle }}
-            />
-            <Exchange data={exchangeList} setExchange={setExchangeList} />
+      <Form>
+        <main className="add">
+          <div className="add_container">
+            <div className="add_inner">
+              <SelectionSection
+                category={{ categoryItems, setCategoryItems }}
+                subcategory={{ subCategoryItems, setSubCategoryItems }}
+                announcement={{ announcementTitle, setAnnouncementTitle }}
+              />
+              <Exchange data={exchangeList} setExchange={setExchangeList} />
 
-            <div className="characteristics">
-              <h3> Характеристики</h3>
-              <div className="characteristics_items">
-                <div className="characteristics_item ">
-                  <h4>Возраст</h4>
-                  <CheckBox
-                    text="0"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="1-2"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="2-4"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="5-7"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="8-11"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="11-14"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                </div>
-                <div className="characteristics_item">
-                  <h4>Пол</h4>
-                  <CheckBox
-                    text="Женский"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="Мужской"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="Мальчик/Девочка"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                </div>
-                <div className="characteristics_item">
-                  <h4>Размер (одежда)</h4>
-                  <CheckBox
-                    text="50 - 80 см"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="80 - 92 см"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="92 - 104 см"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="110 - 122 см"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="128 - 146 см"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="146 - 164 см"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                </div>
-                <div className="characteristics_item">
-                  <h4>Сезон</h4>
-                  <CheckBox
-                    text="Демисезон"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="Лето"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
-                  <CheckBox
-                    text="Зима"
-                    margin="0 0 15px 0"
-                    fontSize="14px"
-                    checked={false}
-                    click={null}
-                  />
+              <div className="characteristics">
+                <h3>{getTranslatedText(`addAdv.options`, lang)}</h3>
+                <div className="characteristics_items">
+                  <div className="characteristics_item">
+                    <h4>{getTranslatedText(`addAdv.age`, lang)}:</h4>
+                    {ages.map((item, idx) => (
+                      <FormikCheckBox
+                        key={item + idx}
+                        text={enumAge[item]}
+                        value={item}
+                        name="age"
+                        type="checkbox"
+                        margin="0 0 15px -7px"
+                      />
+                    ))}
+                  </div>
+                  <div className="characteristics_item">
+                    <h4>{getTranslatedText(`addAdv.sex`, lang)}:</h4>
+                    {sex.map((item, idx) => (
+                      <FormikCheckBox
+                        key={item + idx}
+                        text={getTranslatedText(`genderEnum.${item}`, lang)}
+                        value={item}
+                        name="gender"
+                        type="radio"
+                        margin="0 0 15px -7px"
+                      />
+                    ))}
+                  </div>
+                  <div className="characteristics_item">
+                    <h4>{getTranslatedText(`addAdv.size`, lang)}:</h4>
+                    {size.map((item, idx) => (
+                      <FormikCheckBox
+                        key={item + idx}
+                        text={`${item} см`}
+                        value={item}
+                        name="size"
+                        type="radio"
+                        margin="0 0 15px -7px"
+                      />
+                    ))}
+                  </div>
+                  <div className="characteristics_item">
+                    <h4>{getTranslatedText(`addAdv.season`, lang)}:</h4>
+                    {season.map((item, idx) => (
+                      <FormikCheckBox
+                        key={item + idx}
+                        text={getTranslatedText(`seasonEnum.${item}`, lang)}
+                        value={item}
+                        name="season"
+                        type="radio"
+                        margin="0 0 15px -7px"
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="description">
-              <h3 className="description_title"> Описание</h3>
-              <p className="description_subtitle">
-                <span className="span_star">*</span> Опишите Вашу вещь:
-                деффекты, особенности использования, и пр
-              </p>
-              <textarea className="description_textarea" />
-            </div>
-            <div className="files">
-              <h3>Загрузите фотографии ваших вещей</h3>
-              <p>Первое фото станет обложкой карточки товара</p>
-              <p>Загружено фотографий {imageFiles.length} из 10</p>
-              <div className="files_wrapper">
-                {preViewImage.map((url, index) => (
-                  <ImagePhoto
-                    key={index}
-                    url={url}
-                    index={index}
-                    onDragStart={(e) => dragStartHandler(e, index)}
-                    onDragLeave={(e) => dragEndHandler(e)}
-                    onDragEnd={(e) => dragEndHandler(e)}
-                    onDragOver={(e) => dragOverHandler(e)}
-                    onDrop={(e) => dropHandler(e, index)}
-                    removeImage={removeImage}
-                  />
-                ))}
+              <div className="description">
+                <h3 className="description_title"> Описание</h3>
+                <p className="description_subtitle">
+                  <span className="span_star">*</span> Опишите Вашу вещь:
+                  деффекты, особенности использования, и пр
+                </p>
+                <textarea className="description_textarea" />
+              </div>
+              <div className="files">
+                <h3>Загрузите фотографии ваших вещей</h3>
+                <p>Первое фото станет обложкой карточки товара</p>
+                <p>Загружено фотографий {imageFiles.length} из 10</p>
+                <div className="files_wrapper">
+                  {preViewImage.map((url, index) => (
+                    <ImagePhoto
+                      key={index}
+                      url={url}
+                      index={index}
+                      onDragStart={(e) => dragStartHandler(e, index)}
+                      onDragLeave={(e) => dragEndHandler(e)}
+                      onDragEnd={(e) => dragEndHandler(e)}
+                      onDragOver={(e) => dragOverHandler(e)}
+                      onDrop={(e) => dropHandler(e, index)}
+                      removeImage={removeImage}
+                    />
+                  ))}
 
-                {imageFiles.length < 10 && (
-                  <AddFileInput onChange={filesAddHandler} />
-                )}
+                  {imageFiles.length < 10 && (
+                    <AddFileInput onChange={filesAddHandler} />
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="bottom_block">
-              <div className="buttons_block">
-                <ButtonAdv type="submit" />
-                <Button whatClass="preview" text="Предпросмотр" width="222px" />
-              </div>
-              <div className="cancel">
-                <p>Отменить все</p>
+              <div className="bottom_block">
+                <div className="buttons_block">
+                  <ButtonAdv type="submit" />
+                  <Button
+                    whatClass="preview"
+                    text="Предпросмотр"
+                    width="222px"
+                  />
+                </div>
+                <div className="cancel">
+                  <p>Отменить все</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </Form>
     </FormHandler>
   );
 };

@@ -68,6 +68,18 @@ public class AdvertisementController {
                 new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
+    @GetMapping("/thumbnail/random")
+    @ApiOperation(value = "Find 12 random advertisement as thumbnails and return them as a result")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Database is empty")})
+    public ResponseEntity<List<AdvertisementTitleDto>> findRandom12Thumbnails() {
+        final var dtoList = advertisementService.findRandom12Thumbnails();
+        return dtoList.isEmpty() ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
     @GetMapping("/{advertisement_id}")
     @ApiOperation(value = "Find an advertisement by its ID")
     @ApiResponses(value = {
