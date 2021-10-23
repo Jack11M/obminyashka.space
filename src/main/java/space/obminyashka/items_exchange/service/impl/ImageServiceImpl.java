@@ -25,10 +25,7 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.transaction.Transactional;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,14 +83,16 @@ public class ImageServiceImpl implements ImageService {
     public byte[] compress(MultipartFile image) {
         validateImagesTypes(List.of(image));
 
-        String contentType = image.getContentType();
-        if (contentType == null || contentType.equals(MediaType.IMAGE_GIF_VALUE)) {
-            return image.getBytes();
-        }
-
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (InputStream is = new BufferedInputStream(image.getInputStream());
+             ByteArrayOutputStream baos = new ByteArrayOutputStream();
              BufferedOutputStream bos = new BufferedOutputStream(baos);
              ImageOutputStream ios = ImageIO.createImageOutputStream(bos)) {
+
+            // Getting original file's type from stream instead of the file's name type
+            final var contentType = URLConnection.guessContentTypeFromStream(is);
+            if (contentType == null || contentType.equals(MediaType.IMAGE_GIF_VALUE)) {
+                return image.getBytes();
+            }
 
             ImageWriter writer = ImageIO.getImageWritersByMIMEType(contentType).next();
             writer.setOutput(ios);
