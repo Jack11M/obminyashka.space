@@ -25,6 +25,7 @@ import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.exception.RoleNotFoundException;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.UserService;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -117,7 +118,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")
     })
-    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(Authentication authentication,
+    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@ApiIgnore Authentication authentication,
                                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         try {
             return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
