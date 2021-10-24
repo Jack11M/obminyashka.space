@@ -1,13 +1,5 @@
 package space.obminyashka.items_exchange.service.impl;
 
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
-import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -16,8 +8,18 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.UserRepository;
+import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Phone;
+import space.obminyashka.items_exchange.model.Role;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.service.RoleService;
+import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.PatternHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,19 +27,24 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-import static space.obminyashka.items_exchange.mapper.UtilMapper.*;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
+import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
 import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private static final String ROLE_USER = "ROLE_USER";
+    private static final String EMPTY_STRING = "";
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final RoleService roleService;
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -68,19 +75,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role) {
-        User registeredUser = userRegistrationDtoToUser(userRegistrationDto, role);
+    public boolean registerNewUser(UserRegistrationDto userRegistrationDto) {
+        User registeredUser = userRegistrationDtoToUser(userRegistrationDto);
         return userRepository.save(registeredUser).getId() != 0;
     }
 
-    private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto, Role role) {
+    @Override
+    public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
+        var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
+        return optionalUser.orElseGet(() -> userRepository.save(oAuth2UserToUser(oauth2User)));
+    }
 
+    private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
         var user = new User();
         BeanUtils.copyProperties(userRegistrationDto, user);
-        user.setFirstName("");
-        user.setLastName("");
-        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()));
-        user.setRole(role);
+        return setUserFields(user, userRegistrationDto.getPassword(), EMPTY_STRING, EMPTY_STRING);
+    }
+
+    private User oAuth2UserToUser(DefaultOidcUser oAuth2User) {
+        final var user = new User();
+        final var email = oAuth2User.getEmail();
+        final var firstName = getStringValueOrDefault(oAuth2User.getGivenName(), EMPTY_STRING);
+        final var lastName = getStringValueOrDefault(oAuth2User.getFamilyName(), EMPTY_STRING);
+        final var password = getStringValueOrDefault(oAuth2User.getIdToken().getTokenValue(),
+                UUID.randomUUID().toString());
+        user.setEmail(email);
+        user.setUsername(email);
+        return setUserFields(user, password, firstName, lastName);
+    }
+
+    private User setUserFields(User user, String password, String firstName, String lastName) {
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        Optional<Role> optionalRole = roleService.getRole(ROLE_USER);
+        optionalRole.ifPresent(user::setRole);
         user.setOnline(false);
         user.setAvatarImage(new byte[0]);
         var now = LocalDateTime.now();
@@ -173,7 +202,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isPasswordMatches(User user, String encodedPassword){
+    public boolean isPasswordMatches(User user, String encodedPassword) {
         return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
     }
 
@@ -229,12 +258,16 @@ public class UserServiceImpl implements UserService {
 
     private Set<Phone> convertPhone(Set<PhoneDto> phones) {
         Converter<String, Long> stringLongConverter = context ->
-                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
+                Long.parseLong(context.getSource().replaceAll("[^\\d]", EMPTY_STRING));
 
         modelMapper.typeMap(PhoneDto.class, Phone.class)
                 .addMappings(mapper -> mapper.using(stringLongConverter)
                         .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
-        return modelMapper.map(phones, new TypeToken<Set<Phone>>() {}.getType());
+        return modelMapper.map(phones, new TypeToken<Set<Phone>>() {
+        }.getType());
     }
 
+    private String getStringValueOrDefault(String value, String defaultValue) {
+        return Optional.ofNullable(value).orElse(defaultValue);
+    }
 }
