@@ -11,3 +11,7 @@ export const postAuthRegister = (data) => {
 export const postAuthLogout = () => {
   return obminyashkaApi.post('/auth/logout');
 };
+
+export const postOAuth2Success = () => {
+  return obminyashkaApi.post('/auth/oauth2/success').then(({ data }) => data);
+};

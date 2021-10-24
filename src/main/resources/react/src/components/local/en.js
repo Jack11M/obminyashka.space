@@ -81,6 +81,7 @@ const en = {
     removeField: 'Remove field',
     saveChanges: 'Save changes',
     enter: 'Enter',
+    googleOAuth: 'Enter (Google)',
     look: 'View',
     save: 'SAVE',
     saveEmail: 'SAVE EMAIL',

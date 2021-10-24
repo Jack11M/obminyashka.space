@@ -120,7 +120,6 @@ public class AuthController {
     public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(Authentication authentication,
                                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         try {
-            authenticationManager.authenticate(authentication);
             return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource("invalid.oauth2.login"));
