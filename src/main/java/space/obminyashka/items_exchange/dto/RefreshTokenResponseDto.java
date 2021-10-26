@@ -1,12 +1,10 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 
-import static space.obminyashka.items_exchange.config.SecurityConfig.ACCESS_TOKEN;
-import static space.obminyashka.items_exchange.config.SecurityConfig.REFRESH_TOKEN;
-
-public record RefreshTokenResponseDto(@JsonProperty(ACCESS_TOKEN) String accessToken,
-                                      @JsonProperty(REFRESH_TOKEN) String refreshToken,
+public record RefreshTokenResponseDto(@JsonProperty(OAuth2ParameterNames.ACCESS_TOKEN) String accessToken,
+                                      @JsonProperty(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken,
                                       @JsonProperty("expires_in") String accessTokenExpiration,
                                       @JsonProperty("refresh_expires_in") String refreshTokenExpiration) {
 }

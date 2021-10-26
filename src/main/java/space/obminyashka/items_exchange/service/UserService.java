@@ -1,8 +1,8 @@
 package space.obminyashka.items_exchange.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 
 import java.util.List;
@@ -41,12 +41,11 @@ public interface UserService {
     Optional<UserDto> findByUsername(String username);
 
     /**
-     * Register new user with received role
+     * Register new user
      * @param userRegistrationDto DTO which contains all required data for registration the user
-     * @param role provided role which has to be set to the user
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role);
+    boolean registerNewUser(UserRegistrationDto userRegistrationDto);
 
     /**
      * Update an existed user with new data
@@ -163,4 +162,11 @@ public interface UserService {
      * @param user user whom the image has to be set as new avatar image
      */
     void setUserAvatar(byte[] newAvatarImage, User user);
+
+    /**
+     * Find {@link User} from OAuth2User credentials, register if user is new
+     * @param oauth2User instance of {@link DefaultOidcUser} with the required credentials for user login/registration
+     * @return {@link User} from OAuth2User credentials if exists, otherwise register a new user and return it
+     */
+    User loginUserWithOAuth2(DefaultOidcUser oauth2User);
 }
