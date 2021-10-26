@@ -93,9 +93,9 @@ public class UserServiceImpl implements UserService {
     private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
         final var user = new User();
         final var email = oAuth2User.getEmail();
-        final var firstName = getStringValueOrDefault(oAuth2User.getGivenName(), "");
-        final var lastName = getStringValueOrDefault(oAuth2User.getFamilyName(), "");
-        final var password = getStringValueOrDefault(oAuth2User.getIdToken().getTokenValue(),
+        final var firstName = Objects.requireNonNullElse(oAuth2User.getGivenName(), "");
+        final var lastName = Objects.requireNonNullElse(oAuth2User.getFamilyName(), "");
+        final var password = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(),
                 UUID.randomUUID().toString());
         user.setEmail(email);
         user.setUsername(email);
@@ -260,9 +260,5 @@ public class UserServiceImpl implements UserService {
                         .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
         return modelMapper.map(phones, new TypeToken<Set<Phone>>() {
         }.getType());
-    }
-
-    private String getStringValueOrDefault(String value, String defaultValue) {
-        return Objects.requireNonNullElse(value, defaultValue);
     }
 }
