@@ -14,7 +14,6 @@ import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Phone;
-import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -39,7 +38,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class UserServiceImpl implements UserService {
 
     private static final String ROLE_USER = "ROLE_USER";
-    private static final String EMPTY_STRING = "";
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
@@ -83,20 +81,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
         var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
-        return optionalUser.orElseGet(() -> userRepository.save(oAuth2UserToUser(oauth2User)));
+        return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
         var user = new User();
         BeanUtils.copyProperties(userRegistrationDto, user);
-        return setUserFields(user, userRegistrationDto.getPassword(), EMPTY_STRING, EMPTY_STRING);
+        return setUserFields(user, userRegistrationDto.getPassword(), "", "");
     }
 
-    private User oAuth2UserToUser(DefaultOidcUser oAuth2User) {
+    private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
         final var user = new User();
         final var email = oAuth2User.getEmail();
-        final var firstName = getStringValueOrDefault(oAuth2User.getGivenName(), EMPTY_STRING);
-        final var lastName = getStringValueOrDefault(oAuth2User.getFamilyName(), EMPTY_STRING);
+        final var firstName = getStringValueOrDefault(oAuth2User.getGivenName(), "");
+        final var lastName = getStringValueOrDefault(oAuth2User.getFamilyName(), "");
         final var password = getStringValueOrDefault(oAuth2User.getIdToken().getTokenValue(),
                 UUID.randomUUID().toString());
         user.setEmail(email);
@@ -108,13 +106,10 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(bCryptPasswordEncoder.encode(password));
-        Optional<Role> optionalRole = roleService.getRole(ROLE_USER);
-        optionalRole.ifPresent(user::setRole);
+        roleService.getRole(ROLE_USER).ifPresent(user::setRole);
         user.setOnline(false);
         user.setAvatarImage(new byte[0]);
         var now = LocalDateTime.now();
-        user.setCreated(now);
-        user.setUpdated(now);
         user.setLastOnlineTime(now);
         user.setStatus(Status.ACTIVE);
         return user;
@@ -258,7 +253,7 @@ public class UserServiceImpl implements UserService {
 
     private Set<Phone> convertPhone(Set<PhoneDto> phones) {
         Converter<String, Long> stringLongConverter = context ->
-                Long.parseLong(context.getSource().replaceAll("[^\\d]", EMPTY_STRING));
+                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
 
         modelMapper.typeMap(PhoneDto.class, Phone.class)
                 .addMappings(mapper -> mapper.using(stringLongConverter)
@@ -268,6 +263,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getStringValueOrDefault(String value, String defaultValue) {
-        return Optional.ofNullable(value).orElse(defaultValue);
+        return Objects.requireNonNullElse(value, defaultValue);
     }
 }

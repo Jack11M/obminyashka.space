@@ -30,8 +30,6 @@ import space.obminyashka.items_exchange.service.UserService;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String HAS_ROLE_ADMIN = "hasRole('ROLE_ADMIN')";
-    public static final String REFRESH_TOKEN = "refresh_token";
-    public static final String ACCESS_TOKEN = "access_token";
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final OAuthLoginSuccessHandler oauthLoginSuccessHandler;

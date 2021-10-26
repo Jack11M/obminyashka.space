@@ -22,7 +22,6 @@ import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.exception.RoleNotFoundException;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.UserService;
 import springfox.documentation.annotations.ApiIgnore;
@@ -84,7 +83,7 @@ public class AuthController {
             @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto)
-            throws BadRequestException, RoleNotFoundException, DataConflictException {
+            throws BadRequestException, DataConflictException {
 
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
             throw new DataConflictException(getMessageSource("username-email.duplicate"));

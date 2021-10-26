@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
         return errorMessage;
     }
 
-    @ExceptionHandler({IllegalOperationException.class, AccessDeniedException.class, RoleNotFoundException.class})
+    @ExceptionHandler({IllegalOperationException.class, AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorMessage handleIllegalOperation(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);

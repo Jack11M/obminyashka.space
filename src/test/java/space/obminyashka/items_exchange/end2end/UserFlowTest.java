@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -27,8 +26,8 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -250,20 +249,14 @@ class UserFlowTest extends BasicControllerTest {
         var emailKey = "email";
         var subKey = "sub";
 
-        var claims = new HashMap<String, Object>();
-        claims.put(groupsKey, roleUser);
-        claims.put(subKey, 123);
-        var idToken = new OidcIdToken(ID_TOKEN, Instant.now(), Instant.now().plusSeconds(60), claims);
+        var idToken = new OidcIdToken(
+                ID_TOKEN,
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of(groupsKey, roleUser, subKey, 123)
+        );
 
-        var oidcUserInfoClaims = new HashMap<String, Object>();
-        oidcUserInfoClaims.put(emailKey, email);
-        oidcUserInfoClaims.put(givenName, USER_FIRST_NAME);
-        oidcUserInfoClaims.put(familyName, USER_LAST_NAME);
-        var userInfo = new OidcUserInfo(oidcUserInfoClaims);
-
-        var authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(roleUser));
-
-        return new DefaultOidcUser(authorities, idToken, userInfo);
+        final var userInfo = new OidcUserInfo(Map.of(emailKey, email, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
+        return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 }
