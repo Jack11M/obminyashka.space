@@ -56,4 +56,5 @@ public class ApiKey {
     public static final String FRONT_ADV_ADD = "/add-good/**";
     public static final String FRONT_LOGIN = "/login/**";
     public static final String FRONT_USER = "/user/**";
+    public static final String FRONT_PRODUCT = "/product-page/**";
 }

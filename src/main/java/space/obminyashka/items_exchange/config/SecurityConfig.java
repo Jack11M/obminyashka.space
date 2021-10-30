@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js",
                         "/**/*.ttf")
                 .antMatchers("/swagger-ui/**", "/error", ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN)
-                .antMatchers(HttpMethod.GET, ApiKey.FRONT_LOGIN, ApiKey.FRONT_USER, ApiKey.FRONT_ADV_ADD,
+                .antMatchers(HttpMethod.GET, ApiKey.FRONT_LOGIN, ApiKey.FRONT_USER, ApiKey.FRONT_ADV_ADD, ApiKey.FRONT_PRODUCT,
                         ApiKey.ADV + "/**",
                         ApiKey.IMAGE + "/**",
                         ApiKey.CATEGORY + "/**",
