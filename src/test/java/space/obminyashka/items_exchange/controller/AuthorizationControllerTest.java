@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.AUTH_REGISTER;
 
 @SpringBootTest
 @AutoConfigureMockMvc

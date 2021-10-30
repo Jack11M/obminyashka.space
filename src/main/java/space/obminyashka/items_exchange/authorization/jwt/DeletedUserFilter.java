@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.security.jwt;
+package space.obminyashka.items_exchange.authorization.jwt;
 
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;

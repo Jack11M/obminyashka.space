@@ -41,6 +41,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_BY_ADV_ID;
+import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_COUNT;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
@@ -88,8 +90,8 @@ class ImageControllerTest extends BasicControllerTest {
     @Test
     void saveImages_shouldThrowExceptionWhenTotalAmountMoreThan10() throws Exception {
         MvcResult mvcResult = mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
-                .file(jpeg)
-                .accept(MediaType.APPLICATION_JSON))
+                        .file(jpeg)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
@@ -125,7 +127,7 @@ class ImageControllerTest extends BasicControllerTest {
     @Test
     void saveImages_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 50L)
-                .file(jpeg))
+                        .file(jpeg))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }

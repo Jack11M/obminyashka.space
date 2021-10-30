@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
@@ -35,7 +36,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(ApiKey.AUTH)
 @Api(tags = "Authorization")
 @RequiredArgsConstructor
 @Validated
@@ -117,8 +118,7 @@ public class AuthController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")
     })
-    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@ApiIgnore Authentication authentication,
-                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@ApiIgnore Authentication authentication) {
         try {
             return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
         } catch (AuthenticationException e) {

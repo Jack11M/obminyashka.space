@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.mapper.transfer.Exist;
@@ -26,7 +27,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
-@RequestMapping("/api/v1/category")
+@RequestMapping(ApiKey.CATEGORY)
 @Api(tags = "Category")
 @RequiredArgsConstructor
 @Validated
@@ -65,7 +66,7 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = "{invalid.exist.id}")
-                                                           @PathVariable("category_id") long id) {
+                                                       @PathVariable("category_id") long id) {
 
         return ResponseEntity.of(categoryService.findCategoryDtoById(id));
     }
@@ -77,7 +78,7 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = "{invalid.exist.id}")
-                                                           @PathVariable("category_id") int id) {
+                                                             @PathVariable("category_id") int id) {
         var sizes = categoryService.findSizesForCategory(id);
         return sizes.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)

@@ -37,7 +37,7 @@ const Routes = () => {
         redirect={route.login}
       />
     <Route path={route.oauthSuccess} component={OAuthSuccess} />
-    <Route path={`${route.productPage}:id`} component={ProductPage} />
+    <Route path={`${route.productPage}/:id`} component={ProductPage} />
     <Route path={route.noMatch} component={FourOhFourPage} />
     </Switch>
   );

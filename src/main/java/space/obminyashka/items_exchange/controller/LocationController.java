@@ -1,10 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
-import space.obminyashka.items_exchange.mapper.UtilMapper;
-import space.obminyashka.items_exchange.model.enums.I18n;
-import space.obminyashka.items_exchange.service.LocationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -17,6 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.dto.LocationDto;
+import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
+import space.obminyashka.items_exchange.mapper.UtilMapper;
+import space.obminyashka.items_exchange.model.enums.I18n;
+import space.obminyashka.items_exchange.service.LocationService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -29,7 +30,7 @@ import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_AD
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
-@RequestMapping("/api/v1/location")
+@RequestMapping(ApiKey.LOCATION)
 @Api(tags = "Location")
 @RequiredArgsConstructor
 @Validated

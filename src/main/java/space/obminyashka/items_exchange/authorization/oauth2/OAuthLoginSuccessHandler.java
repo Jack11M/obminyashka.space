@@ -1,11 +1,11 @@
-package space.obminyashka.items_exchange.oauth2;
+package space.obminyashka.items_exchange.authorization.oauth2;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.service.UserService;
 
 import javax.servlet.ServletException;
