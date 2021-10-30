@@ -124,4 +124,10 @@ public interface AdvertisementService {
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
     boolean existById(Long id);
+
+    /**
+     * Count total amount of existed advertisements
+     * @return quantity of saved advertisements
+     */
+    long count();
 }

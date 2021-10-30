@@ -20,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
@@ -112,6 +113,15 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails(String api) throws Exception {
         sendUriAndGetResultAction(get(api), status().isOk())
                 .andExpect(jsonPath("$.length()").value(advertisementRepository.count()));
+    }
+
+    @Test
+    @DisplayName("Should return total size of existed advertisements")
+    @DataSet("database_init.yml")
+    void countAdvertisements_shouldReturnTotalAmount() throws Exception {
+        final var count = advertisementRepository.count();
+        final var mvcResult = sendUriAndGetMvcResult(get(ADV_TOTAL), status().isOk());
+        assertEquals(String.valueOf(count), mvcResult.getResponse().getContentAsString());
     }
 
     @Test
