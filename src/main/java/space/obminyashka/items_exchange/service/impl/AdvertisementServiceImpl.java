@@ -120,7 +120,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         adv.setUser(owner);
         adv.setStatus(Status.NEW);
         adv.setImages(compressedImages.stream().map(image -> new Image(0L, image, adv)).toList());
-        adv.setDefaultPhoto(compressedImages.get(0));
+        adv.setDefaultPhoto(imageService.scale(compressedImages.get(0)));
         updateSubcategory(adv, dto.getSubcategoryId());
         updateLocation(adv, dto.getLocationId());
         return mapAdvertisementToDto(advertisementRepository.save(adv));
@@ -170,7 +170,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public void setDefaultImage(Advertisement advertisement, Long imageId, User owner) {
+    public void setDefaultImage(Advertisement advertisement, Long imageId) {
         advertisement.getImages().stream()
                 .filter(img -> img.getId() == imageId)
                 .findFirst()

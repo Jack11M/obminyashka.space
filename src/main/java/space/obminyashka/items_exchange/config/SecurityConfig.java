@@ -7,17 +7,18 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import space.obminyashka.items_exchange.oauth2.OAuthLoginSuccessHandler;
-import space.obminyashka.items_exchange.security.jwt.DeletedUserFilter;
-import space.obminyashka.items_exchange.security.jwt.JwtAuthenticationEntryPoint;
-import space.obminyashka.items_exchange.security.jwt.JwtTokenFilter;
-import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
-import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.authorization.jwt.DeletedUserFilter;
+import space.obminyashka.items_exchange.authorization.jwt.JwtAuthenticationEntryPoint;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenFilter;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
+import space.obminyashka.items_exchange.authorization.oauth2.OAuthLoginSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -34,12 +35,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final OAuthLoginSuccessHandler oauthLoginSuccessHandler;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
+    private final DeletedUserFilter deletedUserFilter;
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    public JwtTokenFilter authenticationTokenFilterBean() {
+        return new JwtTokenFilter(jwtTokenProvider);
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers(
+                        "/",
+                        "/favicon.ico",
+                        "/**/*.png",
+                        "/**/*.gif",
+                        "/**/*.svg",
+                        "/**/*.jpg",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/**/*.ttf")
+                .antMatchers("/swagger-ui/**", "/error", ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN)
+                .antMatchers(HttpMethod.GET, ApiKey.FRONT_LOGIN, ApiKey.FRONT_USER, ApiKey.FRONT_ADV_ADD,
+                        ApiKey.ADV + "/**",
+                        ApiKey.IMAGE + "/**",
+                        ApiKey.CATEGORY + "/**",
+                        ApiKey.SUBCATEGORY + "/**",
+                        ApiKey.LOCATION + "/**");
     }
 
     @Override
@@ -53,30 +80,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(
-                        "/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/user/**").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/v1/auth/logout").authenticated()
-                .antMatchers(HttpMethod.GET, "/**", "/api/v1/**").permitAll()
-                .antMatchers("/api/v1/adv/**", "/api/v1/category/**", "/api/v1/subcategory/**", "/api/v1/user/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2Login()
                 .successHandler(oauthLoginSuccessHandler)
                 .and()
-                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new DeletedUserFilter(userService), BasicAuthenticationFilter.class)
+                .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(deletedUserFilter, BasicAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 }

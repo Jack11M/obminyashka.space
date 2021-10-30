@@ -1,15 +1,21 @@
 package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.authorization.jwt.JwtUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Child;
@@ -34,8 +40,9 @@ import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private static final String ROLE_USER = "ROLE_USER";
 
@@ -46,6 +53,31 @@ public class UserServiceImpl implements UserService {
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = findByUsernameOrEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("IN UserDetailsService (loadUserByUsername): " +
+                        "user with username: " + username + " not found"));
+
+        JwtUser jwtUser = create(user);
+        log.info("IN UserDetailsService (loadUserByUsername): user with username: {} successfully loaded", username);
+        return jwtUser;
+    }
+
+    private static JwtUser create(User user) {
+        return new JwtUser(
+                user.getId(),
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority(user.getRole().getName())),
+                user.getStatus().equals(Status.ACTIVE),
+                user.getUpdated()
+        );
+    }
 
     @Override
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {

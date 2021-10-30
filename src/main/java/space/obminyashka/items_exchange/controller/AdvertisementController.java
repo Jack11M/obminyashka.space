@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -38,7 +39,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
-@RequestMapping("/api/v1/adv")
+@RequestMapping(ApiKey.ADV)
 @Api(tags = "Advertisement")
 @RequiredArgsConstructor
 @Validated
@@ -198,7 +199,7 @@ public class AdvertisementController {
         owner.getAdvertisements().parallelStream()
                 .filter(advertisement -> advertisement.getId() == advertisementId)
                 .findFirst()
-                .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId, owner));
+                .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId));
     }
 
     private void validateAdvertisementOwner(long advertisementId, User owner) throws IllegalOperationException {

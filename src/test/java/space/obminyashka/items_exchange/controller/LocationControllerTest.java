@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.LOCATION;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDtoForCreatingWithInvalidCity;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDtoWithId;
 

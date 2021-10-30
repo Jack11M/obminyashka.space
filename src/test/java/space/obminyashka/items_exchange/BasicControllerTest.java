@@ -21,54 +21,6 @@ import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 @RequiredArgsConstructor
 public abstract class BasicControllerTest {
 
-    protected static final String API = "/api/v1";
-    // Advertisement API
-    protected static final String ADV = API + "/adv";
-    protected static final String ADV_SEARCH_PAGINATED = ADV + "/search/{keyword}?page={page}&size={size}";
-    protected static final String ADV_DEFAULT_IMAGE = ADV + "/default-image/{advertisementId}/{imageId}";
-    protected static final String ADV_ID = ADV + "/{advertisement_id}";
-    protected static final String ADV_FILTER = ADV + "/filter";
-    protected static final String ADV_THUMBNAIL = ADV + "/thumbnail";
-    protected static final String ADV_THUMBNAIL_RANDOM = ADV + "/thumbnail/random";
-    protected static final String ADV_THUMBNAIL_PARAMS = ADV_THUMBNAIL + "?page={page}&size={size}";
-    // Authorization API
-    protected static final String AUTH = API + "/auth";
-    protected static final String AUTH_REGISTER = AUTH + "/register";
-    protected static final String AUTH_LOGIN = AUTH + "/login";
-    protected static final String AUTH_LOGOUT = AUTH + "/logout";
-    protected static final String AUTH_REFRESH_TOKEN = AUTH + "/refresh/token";
-    // Category API
-    protected static final String CATEGORY = API + "/category";
-    protected static final String CATEGORY_NAMES = CATEGORY + "/names";
-    protected static final String CATEGORY_ALL = CATEGORY + "/all";
-    protected static final String CATEGORY_ID = CATEGORY + "/{category_id}";
-    protected static final String CATEGORY_SIZES = CATEGORY_ID + "/sizes";
-    // Image API
-    protected static final String IMAGE = API + "/image";
-    protected static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";
-    protected static final String IMAGE_RESOURCE = IMAGE_BY_ADV_ID + "/resource";
-    protected static final String IMAGE_COUNT = IMAGE_BY_ADV_ID + "/total";
-    // Location API
-    protected static final String LOCATION = API + "/location";
-    protected static final String LOCATION_ID = LOCATION + "/{location_id}";
-    protected static final String LOCATION_ALL = LOCATION + "/all";
-    protected static final String LOCATIONS_INIT = LOCATION + "/locations-init";
-    // Subcategory API
-    protected static final String SUBCATEGORY = API + "/subcategory";
-    protected static final String SUBCATEGORY_ID = SUBCATEGORY + "/{subcategory_id}";
-    protected static final String SUBCATEGORY_NAMES = SUBCATEGORY + "/{category_id}/names";
-    // User API
-    protected static final String USER = API + "/user";
-    protected static final String USER_MY_INFO = USER + "/my-info";
-    protected static final String USER_MY_ADV = USER + "/my-adv";
-    protected static final String USER_CHILD = USER + "/child";
-    protected static final String USER_SERVICE = USER + "/service";
-    protected static final String USER_SERVICE_CHANGE_PASSWORD = USER_SERVICE + "/pass";
-    protected static final String USER_SERVICE_CHANGE_EMAIL = USER_SERVICE + "/email";
-    protected static final String USER_SERVICE_CHANGE_AVATAR = USER_SERVICE + "/avatar";
-    protected static final String USER_SERVICE_DELETE = USER_SERVICE + "/delete";
-    protected static final String USER_SERVICE_RESTORE = USER_SERVICE + "/restore";
-
     protected final MockMvc mockMvc;
 
     protected <T> MvcResult sendDtoAndGetMvcResult(MockHttpServletRequestBuilder method, T dto, ResultMatcher expectedStatus) throws Exception {
@@ -77,12 +29,6 @@ public abstract class BasicControllerTest {
 
     protected <T> ResultActions sendDtoAndGetResultAction(MockHttpServletRequestBuilder method, T dto, ResultMatcher expectedStatus) throws Exception {
         return getResultActionsAndExpectStatus(method, dto, expectedStatus);
-    }
-
-    protected <T> ResultActions sendDtoWithHeadersAndGetResultAction(MockHttpServletRequestBuilder method, T dto,
-                                                                     ResultMatcher expectedStatus,
-                                                                     HttpHeaders headers) throws Exception {
-        return getResultActionsAndExpectStatus(method.headers(headers), dto, expectedStatus);
     }
 
     protected MvcResult sendUriAndGetMvcResult(MockHttpServletRequestBuilder method, ResultMatcher expectedStatus) throws Exception {

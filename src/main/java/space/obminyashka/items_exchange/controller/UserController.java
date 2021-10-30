@@ -1,14 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.exception.*;
-import space.obminyashka.items_exchange.mapper.UtilMapper;
-import space.obminyashka.items_exchange.mapper.transfer.New;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.service.AdvertisementService;
-import space.obminyashka.items_exchange.service.ImageService;
-import space.obminyashka.items_exchange.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,13 +14,25 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.exception.DataConflictException;
+import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
+import space.obminyashka.items_exchange.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.mapper.UtilMapper;
+import space.obminyashka.items_exchange.mapper.transfer.New;
+import space.obminyashka.items_exchange.model.Child;
+import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.service.AdvertisementService;
+import space.obminyashka.items_exchange.service.ImageService;
+import space.obminyashka.items_exchange.service.UserService;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -37,7 +40,7 @@ import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping(ApiKey.USER)
 @Api(tags = "User")
 @RequiredArgsConstructor
 @Validated
@@ -186,7 +189,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
     public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                 List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
+                                              List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
         User user = getUser(principal.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
@@ -204,7 +207,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
-                                           List<@NotNull Long> childrenIdToRemove, Principal principal) {
+                                       List<@NotNull Long> childrenIdToRemove, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
@@ -221,7 +224,7 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                           List<@Valid ChildDto> childrenDto, Principal principal) {
+                                                 List<@Valid ChildDto> childrenDto, Principal principal) {
         final User user = getUser(principal.getName());
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
@@ -240,7 +243,7 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) throws IOException, UnsupportedMediaTypeException {
+    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) {
         User user = getUser(principal.getName());
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
