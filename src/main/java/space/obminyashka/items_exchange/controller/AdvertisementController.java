@@ -81,6 +81,18 @@ public class AdvertisementController {
                 new ResponseEntity<>(dtoList, HttpStatus.OK);
     }
 
+    @GetMapping("/total-amount")
+    @ApiOperation(value = "Count existed advertisements and return total records amount number")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Database is empty")})
+    public ResponseEntity<Long> countAdvertisements() {
+        final long totalAmount = advertisementService.count();
+        return totalAmount == 0 ?
+                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(totalAmount, HttpStatus.OK);
+    }
+
     @GetMapping("/{advertisement_id}")
     @ApiOperation(value = "Find an advertisement by its ID")
     @ApiResponses(value = {

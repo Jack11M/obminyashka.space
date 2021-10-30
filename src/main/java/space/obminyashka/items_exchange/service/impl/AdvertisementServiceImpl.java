@@ -5,8 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,10 +27,10 @@ import space.obminyashka.items_exchange.service.SubcategoryService;
 import javax.persistence.EntityNotFoundException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
 
+@CacheConfig(cacheNames = "titles")
 @Service
 @RequiredArgsConstructor
 public class AdvertisementServiceImpl implements AdvertisementService {
@@ -46,28 +46,30 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    @Cacheable("advertisements")
+    @Cacheable(key = "#pageable.pageNumber")
     public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
         return mapAdvertisementsToTitleDto(content);
     }
 
     @Override
-    @Cacheable("advertisements")
+    @Cacheable
     public List<AdvertisementTitleDto> findRandom12Thumbnails() {
-        final var totalRecordsSize = advertisementRepository.count();
+        final var totalRecordsSize = count();
         final var resultsQuantity = 12;
         final var bound = (int) (totalRecordsSize / resultsQuantity);
         final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
         return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity));
     }
 
+    @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
         final var allForUser = advertisementRepository.findAllByUserUsername(username);
         return mapAdvertisementsToTitleDto(allForUser);
     }
 
+    @Cacheable(key = "#keyword")
     @Override
     public Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable) {
         final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
@@ -127,7 +129,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    @CachePut(value = "advertisement", key = "#dto.id")
     public AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto) {
         Advertisement toUpdate = mapDtoToAdvertisement(dto);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
@@ -163,7 +164,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    @CacheEvict(value = "advertisements", key = "#id")
+    @CacheEvict(key = "#id")
     public void remove(long id) {
         advertisementRepository.deleteById(id);
         advertisementRepository.flush();
@@ -182,7 +183,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
-        return advertisements.stream().map(this::buildAdvertisementTitle).collect(Collectors.toList());
+        return advertisements.stream().map(this::buildAdvertisementTitle).toList();
     }
 
     private Advertisement mapDtoToAdvertisement(AdvertisementModificationDto dto) {
@@ -202,6 +203,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)
                 .anyMatch(image -> image.getId() == imageId);
+    }
+
+    @Override
+    public long count() {
+        return advertisementRepository.count();
     }
 
     private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
