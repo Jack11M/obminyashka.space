@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -24,9 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.config.SecurityConfig.ACCESS_TOKEN;
-import static space.obminyashka.items_exchange.config.SecurityConfig.REFRESH_TOKEN;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
@@ -117,9 +113,9 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
         final var refreshToken = getRefreshTokenValue();
         TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isOk());
+                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isOk());
         final var newAccessToken = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
-                .get(ACCESS_TOKEN).textValue();
+                .get(OAuth2ParameterNames.REFRESH_TOKEN).textValue();
         assertNotNull(newAccessToken);
     }
 
@@ -128,10 +124,10 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     void postRequestWithExpiredRefreshTokenIsUnauthorized() throws Exception {
         final var content = sendDtoAndGetMvcResult(post(AUTH_LOGIN), createValidUserLoginDto(),
                 status().isOk()).getResponse().getContentAsString();
-        final var refreshToken = objectMapper.readTree(content).get(REFRESH_TOKEN).textValue();
+        final var refreshToken = objectMapper.readTree(content).get(OAuth2ParameterNames.REFRESH_TOKEN).textValue();
         TimeUnit.SECONDS.sleep(refreshTokenExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isUnauthorized());
+                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
@@ -139,7 +135,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void postRequestWithInvalidRefreshTokenIsUnauthorized() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(REFRESH_TOKEN, BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
+                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
@@ -161,7 +157,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     private String getRefreshTokenValue() throws Exception {
         final var content = sendDtoAndGetMvcResult(post(AUTH_LOGIN), createValidUserLoginDto(),
                 status().isOk()).getResponse().getContentAsString();
-        return objectMapper.readTree(content).get(REFRESH_TOKEN).textValue();
+        return objectMapper.readTree(content).get(OAuth2ParameterNames.REFRESH_TOKEN).textValue();
     }
 
     private UserLoginDto createValidUserLoginDto() {
