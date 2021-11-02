@@ -59,10 +59,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/**/*.ttf")
-                .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs", "/webjars/**", "/actuator/health", "/error")
-                .antMatchers(ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN)
-                .antMatchers(HttpMethod.GET, ApiKey.FRONT_LOGIN, ApiKey.FRONT_USER, ApiKey.FRONT_ADV_ADD, ApiKey.FRONT_PRODUCT,
+                        "/**/*.ttf",
+                        "/**/*.chunk.*")
+                .antMatchers("/swagger-ui,/**", "/swagger-resources/**", "/v3/api-docs", "/webjars/**", "/actuator/health", "/error")
+                .antMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN)
+                .antMatchers(HttpMethod.GET, ApiKey.FRONT_LOGIN, ApiKey.FRONT_SIGN, ApiKey.FRONT_USER, ApiKey.FRONT_ADV_ADD, ApiKey.FRONT_PRODUCT,
+                        ApiKey.OAUTH2_SUCCESS,
                         ApiKey.ADV + "/**",
                         ApiKey.IMAGE + "/**",
                         ApiKey.CATEGORY + "/**",
