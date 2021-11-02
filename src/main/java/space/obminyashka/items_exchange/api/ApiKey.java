@@ -52,10 +52,15 @@ public class ApiKey {
     public static final String USER_SERVICE_CHANGE_AVATAR = USER_SERVICE + "/avatar";
     public static final String USER_SERVICE_DELETE = USER_SERVICE + "/delete";
     public static final String USER_SERVICE_RESTORE = USER_SERVICE + "/restore";
+    // OAuth2 API
+    public static final String OAUTH2 = "/oauth2/**";
+    public static final String OAUTH2_LOGIN = "/login" + OAUTH2;
+    public static final String OAUTH2_SUCCESS = "/oauth-success";
 
     // Front API from routeConstants
     public static final String FRONT_ADV_ADD = "/add-good/**";
-    public static final String FRONT_LOGIN = "/login/**";
+    public static final String FRONT_LOGIN = "/login";
+    public static final String FRONT_SIGN = FRONT_LOGIN + "/sign";
     public static final String FRONT_USER = "/user/**";
     public static final String FRONT_PRODUCT = "/product-page/**";
 }
