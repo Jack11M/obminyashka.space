@@ -31,9 +31,9 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         if(Array.isArray(categories)) {
           setReceivedCategories(categories);
         }
-        throw {message: 'OOps'};
+        throw 'OOps';
       } catch (err) {
-        console.log(err.response?.data ?? err.message);
+        console.log(err.response?.data ?? err);
       }
     })();
   }, []);

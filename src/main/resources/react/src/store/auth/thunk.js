@@ -1,6 +1,5 @@
 import api from 'REST/Resources';
 import { logOutUser, putToken } from './slice';
-import { postOAuth2Success } from "REST/Resources/fetchAuth";
 
 export const logoutUserThunk = () => async (dispatch) => {
   try {
@@ -27,7 +26,7 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
 
 export const putOauthUserThunk = () => async (dispatch) => {
   try {
-    const user = await postOAuth2Success();
+    const user = await api.fetchAuth.postOAuth2Success();
     if(user !== "") {
       localStorage.setItem('user', JSON.stringify(user));
       dispatch(putToken(user));
