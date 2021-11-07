@@ -4,16 +4,15 @@ import { Formik } from 'formik';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import api from 'REST/Resources';
+import { putEmail } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
+import { ModalContext } from 'components/common/pop-up';
 import InputProfile from '../../components/inputProfile';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
-
-import { putEmail } from 'store/auth/slice';
-import { ModalContext } from 'components/common/pop-up';
-import { putEmailFetch, putPasswordFetch } from 'REST/Resources';
 
 import './mySettings.scss';
 
@@ -108,7 +107,7 @@ const MySettings = () => {
         onSubmit={async (values, onSubmitProps) => {
           setIsFetchPass(true);
           try {
-            const { data } = await putPasswordFetch(values);
+            const { data } = await api.fetchProfile.putPasswordFetch(values);
             openModal({
               title: getTranslatedText('popup.serverResponse', lang),
               children: <p>{data}</p>,
@@ -168,7 +167,7 @@ const MySettings = () => {
           const { newEmail, newEmailConfirmation } = values;
           setIsFetchEmail(true);
           try {
-            const { data } = await putEmailFetch({
+            const { data } = await api.fetchProfile.putEmailFetch({
               newEmail,
               newEmailConfirmation,
             });

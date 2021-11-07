@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getUserInfo } from 'REST/Resources';
+import api from 'REST/Resources';
 
 export const fetchUser = createAsyncThunk(
   'profileMe/fetchUser',
   async (_, { dispatch }) => {
     try {
-      const { data } = await getUserInfo();
+      const { data } = await api.fetchProfile.getUserInfo();
       return data;
     } catch (err) {}
   }

@@ -171,6 +171,7 @@ const en = {
     headline: 'Headline',
     selectCategory: 'Select a category',
     selectSubcategory: 'Select a subcategory',
+    readyForOffers: 'I will consider your offer',
     exchange: 'Exchange',
     whatChange: 'What do you want to exchange?',
     enterPhrase: 'enter the phrase, and then press Enter',
@@ -180,6 +181,9 @@ const en = {
     sex: 'Sex',
     size: 'Size (Clothing)',
     season: 'Season',
+    districtKyiv: 'Kyivska',
+    district: 'Area',
+    city: 'Locality',
   },
   categories: {
     Clothing: 'Clothing',

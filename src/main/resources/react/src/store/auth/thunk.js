@@ -1,10 +1,9 @@
-import { postAuthLogin, postAuthLogout } from 'REST/Resources';
+import api from 'REST/Resources';
 import { logOutUser, putToken } from './slice';
-import { postOAuth2Success } from "REST/Resources/fetchAuth";
 
 export const logoutUserThunk = () => async (dispatch) => {
   try {
-    await postAuthLogout();
+    await api.fetchAuth.postAuthLogout();
     dispatch(logOutUser());
   } catch (err) {
     dispatch(logOutUser());
@@ -13,7 +12,7 @@ export const logoutUserThunk = () => async (dispatch) => {
 
 export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
   try {
-    const data = await postAuthLogin(dataFormik);
+    const data = await api.fetchAuth.postAuthLogin(dataFormik);
     if (checkbox) {
       localStorage.setItem('user', JSON.stringify(data));
     } else {
@@ -27,7 +26,7 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
 
 export const putOauthUserThunk = () => async (dispatch) => {
   try {
-    const user = await postOAuth2Success();
+    const user = await api.fetchAuth.postOAuth2Success();
     if(user !== "") {
       localStorage.setItem('user', JSON.stringify(user));
       dispatch(putToken(user));

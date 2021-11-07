@@ -4,9 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
+import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import CheckBox from 'components/common/checkbox';
-import { postAuthRegister } from 'REST/Resources';
 import InputForAuth from 'components/common/input';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
@@ -84,7 +84,7 @@ const SignUp = () => {
         onSubmit={async (dataFormik, onSubmitProps) => {
           setLoading(true);
           try {
-            await postAuthRegister(dataFormik);
+            await api.fetchAuth.postAuthRegister(dataFormik);
             setLoading(false);
             history.push(route.login);
           } catch (err) {

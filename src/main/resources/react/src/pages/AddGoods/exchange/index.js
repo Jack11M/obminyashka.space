@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 import { getTranslatedText } from 'components/local/localisation';
 
-const Exchange = ({ data, setExchange }) => {
+const Exchange = ({ exchangeList, setExchange }) => {
   const { lang } = useSelector((state) => state.auth);
   const [exchangeInput, setExchangeInput] = useState('');
+  const [border, setBorder] = useState(false);
 
-  const transitions = useTransition(data.length ? data : [], {
+  const transitions = useTransition(exchangeList.length ? exchangeList : [], {
     from: { opacity: 0, scale: 0 },
     enter: { opacity: 1, scale: 1 },
     leave: { opacity: 0, scale: 0 },
@@ -27,8 +28,16 @@ const Exchange = ({ data, setExchange }) => {
   };
 
   const removeExchangeItem = (text) => {
-    const newExchangeList = data.filter((item) => item !== text);
+    const newExchangeList = exchangeList.filter((item) => item !== text);
     setExchange(newExchangeList);
+  };
+
+  const onFocus = () => {
+    setBorder(true);
+  };
+
+  const onBlur = () => {
+    setBorder(false);
   };
 
   return (
@@ -43,7 +52,9 @@ const Exchange = ({ data, setExchange }) => {
       <p className="change-description_title">
         ({getTranslatedText('addAdv.enterPhrase', lang)})
       </p>
-      <div className="change_wrapper">
+      <div
+        className={border ? 'change_wrapper border_focus' : 'change_wrapper'}
+      >
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
             <div className="change_item">
@@ -57,9 +68,11 @@ const Exchange = ({ data, setExchange }) => {
             className="change_input"
             type="text"
             placeholder={getTranslatedText('addAdv.placeholderChange', lang)}
-            onChange={handleInput}
+            onBlur={onBlur}
+            onFocus={onFocus}
             value={exchangeInput}
             onKeyPress={keyEnter}
+            onChange={handleInput}
           />
         </div>
       </div>

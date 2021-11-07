@@ -1,13 +1,13 @@
-export { postAuthLogin, postAuthRegister, postAuthLogout } from './fetchAuth';
-export { getCategoryAll } from './fetchCategories';
-export { getCurrentOffers } from './fetchHome';
-export { getProduct } from './fetchProduct';
-export {
-  getUserInfo,
-  putUserInfo,
-  postUserChildren,
-  putUserChildren,
-  deleteUserChildren,
-  putPasswordFetch,
-  putEmailFetch,
-} from './fetchProfile';
+import * as fetchAddGood from './fetchAddGood.js';
+import * as fetchAuth from './fetchAuth.js';
+import * as fetchHome from './fetchHome.js';
+import * as fetchProduct from './fetchProduct.js';
+import * as fetchProfile from './fetchProfile.js';
+
+export default {
+  fetchAuth,
+  fetchHome,
+  fetchProduct,
+  fetchAddGood,
+  fetchProfile,
+};

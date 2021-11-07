@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getCategoryAll } from 'REST/Resources';
+import api from 'REST/Resources';
 import { Items } from './items';
 import { getTranslatedText } from 'components/local/localisation';
 
@@ -13,6 +13,7 @@ import {
   SectionsItem,
   ItemDescription,
 } from './styles';
+import { FormikCheckBox } from 'components/common/formik';
 
 const SelectionSection = ({ category, subcategory, announcement }) => {
   const { lang } = useSelector((state) => state.auth);
@@ -25,8 +26,15 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
 
   useEffect(() => {
     (async () => {
-      const categories = await getCategoryAll();
-      setReceivedCategories(categories);
+      try {
+      const categories = await api.fetchAddGood.getCategoryAll();
+        if(Array.isArray(categories)) {
+          setReceivedCategories(categories);
+        }
+        throw 'OOps';
+      } catch (err) {
+        console.log(err.response?.data ?? err);
+      }
     })();
   }, []);
 
@@ -39,10 +47,10 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   const getArrayKeys = (name) => {
     if (name) {
       return receivedCategories
-        .find((item) => item.name === category.categoryItems)
-        ?.subcategories.map((item) => item.name);
+        .find((item) => item?.name === category.categoryItems)
+        ?.subcategories.map((item) => item?.name);
     }
-    return receivedCategories.map((item) => item.name);
+    return receivedCategories.map((item) => item?.name);
   };
 
   return (
@@ -92,6 +100,12 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
           />
         </SectionsItem>
       </Sections>
+      <FormikCheckBox
+        type="checkbox"
+        margin="22px 0 0 -7px"
+        name="readyForOffers"
+        text={getTranslatedText('addAdv.readyForOffers', lang)}
+      />
     </AddChoose>
   );
 };
