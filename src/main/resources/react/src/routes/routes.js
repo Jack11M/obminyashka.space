@@ -9,6 +9,7 @@ import Protected from './protectedRoute';
 import FourOhFourPage from '../pages/ErrorPages/FourOhFourPage';
 import ProductPage from '../pages/ProductPage/ProductPage';
 import AddGoods from '../pages/AddGoods/AddGoods';
+import OAuthSuccess from "../pages/OAuthSuccess";
 import { route } from './routeConstants';
 
 const Routes = () => {
@@ -35,8 +36,9 @@ const Routes = () => {
         permission={isAuthed}
         redirect={route.login}
       />
-      <Route path={`${route.productPage}:id`} component={ProductPage} />
-      <Route path={route.noMatch} component={FourOhFourPage} />
+    <Route path={route.oauthSuccess} component={OAuthSuccess} />
+    <Route path={`${route.productPage}/:id`} component={ProductPage} />
+    <Route path={route.noMatch} component={FourOhFourPage} />
     </Switch>
   );
 };

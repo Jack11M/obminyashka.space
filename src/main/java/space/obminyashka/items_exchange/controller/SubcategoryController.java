@@ -1,7 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
-import space.obminyashka.items_exchange.service.SubcategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -12,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -20,7 +21,7 @@ import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_AD
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 
 @RestController
-@RequestMapping("/api/v1/subcategory")
+@RequestMapping(ApiKey.SUBCATEGORY)
 @Api(tags = "Subcategory")
 @RequiredArgsConstructor
 @Validated
@@ -35,7 +36,7 @@ public class SubcategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id")
-                                                                            @PositiveOrZero(message = "{invalid.id}") long id) {
+                                                                        @PositiveOrZero(message = "{invalid.id}") long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
         return subcategoriesNames.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :

@@ -8,8 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,11 +25,17 @@ import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Map;
+
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
@@ -35,6 +46,13 @@ import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 @AutoConfigureMockMvc
 @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class UserFlowTest extends BasicControllerTest {
+
+    private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
+    private static final String EXISTED_USER_EMAIL = "admin@gmail.com";
+    private static final String NEW_USER_EMAIL = "test@test.com";
+    private static final String USER_FIRST_NAME = "First";
+    private static final String USER_LAST_NAME = "Last";
+    private static final String ADMIN_USERNAME = "admin";
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -50,15 +68,15 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     void getUserDto_shouldReturnUserDtoIfExists() throws Exception {
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
-                .andExpect(jsonPath("$.username").value("admin"));
+                .andExpect(jsonPath("$.username").value(ADMIN_USERNAME));
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated", "email"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
@@ -66,11 +84,10 @@ class UserFlowTest extends BasicControllerTest {
 
         var responseContentAsString = mvcResult.getResponse().getContentAsString();
         assertTrue(responseContentAsString.contains(getMessageSource("changed.user.info")));
-
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     void getCreatedAdvertisements_shouldReturnAll() throws Exception {
         sendUriAndGetResultAction(get(USER_MY_ADV), status().isOk())
@@ -83,7 +100,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
         sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
@@ -95,7 +112,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "/children/create.yml", ignoreCols = {"birth_date", "sex"})
     void addChildren_Success_ShouldReturnHttpStatusOk() throws Exception {
@@ -112,7 +129,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/delete.yml")
     void removeChild_Success_ShouldReturnHttpStatusOk() throws Exception {
@@ -120,7 +137,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/update.yml")
     void updateChild_Success_ShouldReturnHttpStatusOk() throws Exception {
@@ -137,7 +154,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
@@ -146,7 +163,7 @@ class UserFlowTest extends BasicControllerTest {
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isAccepted());
 
-        String pwd = userService.findByUsernameOrEmail("admin").map(User::getPassword).orElse("");
+        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
         assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(), pwd));
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.password")));
@@ -166,7 +183,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/delete_user_first_expected.yml",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
@@ -189,5 +206,58 @@ class UserFlowTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("account.made.active.again")));
+    }
+
+    @Test
+    @Commit
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "user/login_with_oauth2.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
+    @WithMockUser(username = NEW_USER_EMAIL)
+    void loginNewUserViaOauth2_shouldCreateValidUser() throws Exception {
+        var oauth2User = createDefaultOidcUser(NEW_USER_EMAIL);
+        var user = userService.loginUserWithOAuth2(oauth2User);
+        assertNotNull(user);
+
+        sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
+                .andExpect(jsonPath("$.username").value(NEW_USER_EMAIL))
+                .andExpect(jsonPath("$.email").value(NEW_USER_EMAIL))
+                .andExpect(jsonPath("$.firstName").value(USER_FIRST_NAME))
+                .andExpect(jsonPath("$.lastName").value(USER_LAST_NAME));
+    }
+
+    @Test
+    @Commit
+    @DataSet("database_init.yml")
+    @WithMockUser(username = ADMIN_USERNAME)
+    void loginExistedUserViaOauth2_shouldReturnUser() throws Exception {
+        var adminFirstName = "super";
+        var oauth2User = createDefaultOidcUser(EXISTED_USER_EMAIL);
+        var user = userService.loginUserWithOAuth2(oauth2User);
+        assertNotNull(user);
+
+        sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
+                .andExpect(jsonPath("$.username").value(ADMIN_USERNAME))
+                .andExpect(jsonPath("$.email").value(EXISTED_USER_EMAIL))
+                .andExpect(jsonPath("$.firstName").value(adminFirstName))
+                .andExpect(jsonPath("$.lastName").value(ADMIN_USERNAME));
+    }
+
+    private DefaultOidcUser createDefaultOidcUser(String email) {
+        var familyName = "family_name";
+        var givenName = "given_name";
+        var roleUser = "ROLE_USER";
+        var groupsKey = "groups";
+        var emailKey = "email";
+        var subKey = "sub";
+
+        var idToken = new OidcIdToken(
+                ID_TOKEN,
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of(groupsKey, roleUser, subKey, 123)
+        );
+
+        final var userInfo = new OidcUserInfo(Map.of(emailKey, email, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
+        return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 }

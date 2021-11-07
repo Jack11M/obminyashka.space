@@ -40,7 +40,7 @@ public interface RefreshTokenService {
     /**
      * Regenerates a new Access JWT Token by Refresh token
      *
-     * @param refreshToken is a value of {@link RefreshToken#token}
+     * @param refreshToken is a value of {@link RefreshToken#getToken()}
      * @return an Optional {@link String} as a new Access JWT Token
      * if Refresh Token exists in the database and not expired, {@link Optional#empty()} otherwise
      */

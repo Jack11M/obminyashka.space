@@ -44,14 +44,15 @@ docker-compose up
 openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout obminyashka.key -out obminyashka.crt
 openssl pkcs12 -export -in obminyashka.crt -inkey obminyashka.key -out keystore.p12 -name tomcat -caname root -passout pass:your_keystore_pass
 ```
-2. Install [nginx](https://nginx.org/en/download.html) and copy [default.conf](nginx/conf.d/default.conf) content into `http { ... }` section of `ngix.conf` or replace `default.conf` file.
-3. Replace path to previously created SSL certificate and key into `ssl_certificate` and `ssl_certificate_key` sections resp
+2. Install [nginx](https://nginx.org/en/download.html) and copy [default.conf](nginx/conf.d/default.conf) content replacing `http { ... }` section of `ngix.conf` or replace `default.conf` file (if you're on Linux)
+3. Replace string `web-server` in the config file with `localhost`
+4. Replace path to previously created SSL certificate and key into `ssl_certificate` and `ssl_certificate_key` sections resp
    of the previously copied nginx configuration file.
-4. Reload changes into nginx. 
+5. Reload changes into nginx. 
    - **Ubuntu**: `systemctl reload nginx`
    - **Windows**: `nginx -s reload` or with Explorer:`Win+R -> services.msc -> nginx (Restart)`
 
-5. Use a project builder [maven](https://maven.apache.org/index.html) to install and run the project 
+6. Use a project builder [maven](https://maven.apache.org/index.html) to install and run the project 
    (check before run into [application.properties](src/main/resources/application.properties) all required properties) 
 ```bash
 mvn clean install

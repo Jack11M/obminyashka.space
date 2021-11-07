@@ -18,3 +18,8 @@ export const ExtraLink = styled(Link)`
   text-decoration-line: none;
   color: ${({ theme: { colors } }) => colors['btn-blue-normal']};
 `;
+
+export const WrapperButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

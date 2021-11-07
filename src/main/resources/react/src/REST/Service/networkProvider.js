@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { store } from 'store';
 
-import { setStorageUser, getStorageUser, getStorageLang } from 'Utils';
 import { logOutUser } from 'store/auth/slice';
+import { setStorageUser, getStorageUser, getStorageLang } from 'Utils';
 
 const refreshUrl = '/auth/refresh/token';
 
@@ -18,7 +18,8 @@ function initObminyashka({ onAuthError }) {
   };
 
   axios.interceptors.request.use((config) => {
-    const token = getStorageUser('user').access_token;
+    const token = getStorageUser('user').access_token ||
+        sessionStorage.getItem('code') || '';
     const newConfig = { ...config };
     if (token) newConfig.headers.Authorization = 'Bearer ' + token;
     else delete newConfig.headers.Authorization;

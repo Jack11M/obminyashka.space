@@ -20,7 +20,7 @@
         <java.version>17</java.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
-        <liquibase.version>4.4.3</liquibase.version>
+        <liquibase.version>4.5.0</liquibase.version>
         <mapper.version>2.4.4</mapper.version>
         <db-rider.version>1.31.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
@@ -48,6 +48,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
 
         <!--  Databases -->

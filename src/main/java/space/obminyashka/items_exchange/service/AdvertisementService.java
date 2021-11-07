@@ -105,9 +105,8 @@ public interface AdvertisementService {
      * Set an image as title image of an advertisement
      * @param advertisement advertisement for setting the title image
      * @param imageId id of an image that planned to be set as title image
-     * @param owner user-author of selected advertisement
      */
-    void setDefaultImage(Advertisement advertisement, Long imageId, User owner);
+    void setDefaultImage(Advertisement advertisement, Long imageId);
 
     /**
      * Check if a user owns such advertisement and it has selected image
@@ -125,4 +124,10 @@ public interface AdvertisementService {
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
     boolean existById(Long id);
+
+    /**
+     * Count total amount of existed advertisements
+     * @return quantity of saved advertisements
+     */
+    long count();
 }

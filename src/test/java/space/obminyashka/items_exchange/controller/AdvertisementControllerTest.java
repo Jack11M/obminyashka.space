@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.ADV;
+import static space.obminyashka.items_exchange.api.ApiKey.ADV_SEARCH_PAGINATED;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createValidationMessage;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;

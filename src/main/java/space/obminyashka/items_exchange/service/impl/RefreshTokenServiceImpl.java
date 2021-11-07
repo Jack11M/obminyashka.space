@@ -3,9 +3,9 @@ package space.obminyashka.items_exchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.dao.RefreshTokenRepository;
 import space.obminyashka.items_exchange.model.RefreshToken;
-import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.UserService;
 
