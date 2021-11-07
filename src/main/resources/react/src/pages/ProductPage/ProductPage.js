@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
-import ProductDescription from './ProductDescription/ProductDescription';
+import api from 'REST/Resources';
+import ProductOffers from './ProductOffers/ProductOffers';
+import TitleBigBlue from 'components/common/title_Big_Blue';
+import ProductPostData from './ProductPostData/ProductPostData';
 import { getTranslatedText } from 'components/local/localisation';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
-import ProductPostData from './ProductPostData/ProductPostData';
-import TitleBigBlue from 'components/common/title_Big_Blue';
-import ProductOffers from './ProductOffers/ProductOffers';
-import { getProduct } from 'REST/Resources';
+import ProductDescription from './ProductDescription/ProductDescription';
+import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 
 import './ProductPage.scss';
 
@@ -24,7 +24,7 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState({});
 
   useEffect(() => {
-    getProduct(param.params.id)
+    api.fetchProduct.getProduct(param.params.id)
       .then(({ data }) => {
         const {
           images,

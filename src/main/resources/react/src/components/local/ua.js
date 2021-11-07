@@ -170,6 +170,7 @@ const ua = {
     headline: 'Заголовок оголошення',
     selectCategory: 'Виберіть категорію',
     selectSubcategory: 'Виберіть підкатегорію',
+    readyForOffers: 'Розгляну Вашу пропозицію',
     exchange: 'Обмін',
     whatChange: 'На що бажаєте обмінятися?',
     enterPhrase: 'введіть фразу, а потім натисніть Enter',
@@ -179,6 +180,9 @@ const ua = {
     sex: 'Стать',
     size: 'Розмір (Одяг)',
     season: 'Сезон',
+    districtKyiv: 'Київська',
+    district: 'Область',
+    city: 'Населений пункт',
   },
   categories: {
     Clothing: 'Одяг',

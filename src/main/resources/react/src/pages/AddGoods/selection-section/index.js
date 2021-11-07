@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getCategoryAll } from 'REST/Resources';
+import api from 'REST/Resources';
 import { Items } from './items';
 import { getTranslatedText } from 'components/local/localisation';
 
@@ -13,6 +13,7 @@ import {
   SectionsItem,
   ItemDescription,
 } from './styles';
+import { FormikCheckBox } from 'components/common/formik';
 
 const SelectionSection = ({ category, subcategory, announcement }) => {
   const { lang } = useSelector((state) => state.auth);
@@ -25,7 +26,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
 
   useEffect(() => {
     (async () => {
-      const categories = await getCategoryAll();
+      const categories = await api.fetchAddGood.getCategoryAll();
       setReceivedCategories(categories);
     })();
   }, []);
@@ -92,6 +93,12 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
           />
         </SectionsItem>
       </Sections>
+      <FormikCheckBox
+        type="checkbox"
+        margin="22px 0 0 -7px"
+        name="readyForOffers"
+        text={getTranslatedText('addAdv.readyForOffers', lang)}
+      />
     </AddChoose>
   );
 };

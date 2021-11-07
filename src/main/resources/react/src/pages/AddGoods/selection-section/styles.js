@@ -43,6 +43,9 @@ const InputText = styled.input`
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
   caret-color: #00C0FF;
+  &:focus {
+    border-color: hsl(0, 0%, 44%);
+  }
 `;
 
 export {

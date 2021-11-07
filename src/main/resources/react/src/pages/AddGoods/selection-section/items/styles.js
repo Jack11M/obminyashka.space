@@ -32,11 +32,15 @@ const DropItems = styled.div`
   background-color: #fff;
   overflow: hidden;
   z-index: 2;
+  & > div:last-child > div {
+    border-bottom: none;
+  }
 `;
 const SelectItem = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #bcbcbc;
+  transition: ease-in-out 0.3s;
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '8px' : 0)};
   ${(p) =>
@@ -44,7 +48,7 @@ const SelectItem = styled.div`
     css`
       background-color: hsl(195, 100%, 80%);
     `}
-  :hover {
+  &:hover {
     background-color: hsl(195, 100%, 90%);
   }
 `;

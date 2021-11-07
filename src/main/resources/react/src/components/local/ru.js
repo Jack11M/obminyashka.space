@@ -171,6 +171,7 @@ const ru = {
     headline: 'Заголовок объявления',
     selectCategory: 'Выберите категорию',
     selectSubcategory: 'Выберите подкатегорию',
+    readyForOffers: 'Рассмотрю Ваше предложение',
     exchange: 'Обмен',
     whatChange: 'На что хотите обменяться?',
     enterPhrase: 'введите фразу, а потом нажмите Enter',
@@ -180,6 +181,9 @@ const ru = {
     sex: 'Пол',
     size: 'Размер (одежда)',
     season: 'Сезон',
+    districtKyiv: 'Киевская',
+    district: 'Область',
+    city: 'Населенный пункт',
   },
   categories: {
     Clothing: 'Одежда',

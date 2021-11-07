@@ -9,6 +9,7 @@ import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
 
+import { Location } from './location';
 import { Exchange } from './exchange';
 import { convertToMB } from './add-image/helper';
 import { ImagePhoto } from './add-image/image-photo';
@@ -20,12 +21,18 @@ import './AddGoods.scss';
 const AddGoods = () => {
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
-  const [categoryItems, setCategoryItems] = useState('');
-  const [subCategoryItems, setSubCategoryItems] = useState('');
+
+  const [categoryId, setCategoryId] = useState('');
+  const [subCategoryId, setSubCategoryId] = useState('');
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [exchangeList, setExchangeList] = useState([]);
-
+  const [locationId, setLocationId] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
+
+  const [categoryItems, setCategoryItems] = useState('');
+  const [subCategoryItems, setSubCategoryItems] = useState('');
+  const [locationCurrent, setLocationCurrent] = useState(null);
+
   const [preViewImage, setPreViewImage] = useState([]);
   const [currentIndexImage, setCurrentIndexImage] = useState(null);
 
@@ -151,10 +158,20 @@ const AddGoods = () => {
   };
 
   const initialValues = {
-    age: [],
+    id: 0,
+    dealType: 'EXCHANGE',
+    categoryId: null,
+    subcategoryId: null,
+    topic: announcementTitle,
+    readyForOffers: false,
+    wishesToExchange: exchangeList.join(','),
+    age: '',
     gender: '',
     season: '',
     size: '',
+    description: '',
+    locationId: locationId,
+    images: imageFiles,
   };
   const ages = Object.keys(enumAge);
   const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
@@ -175,7 +192,11 @@ const AddGoods = () => {
                 subcategory={{ subCategoryItems, setSubCategoryItems }}
                 announcement={{ announcementTitle, setAnnouncementTitle }}
               />
-              <Exchange data={exchangeList} setExchange={setExchangeList} />
+
+              <Exchange
+                exchangeList={exchangeList}
+                setExchange={setExchangeList}
+              />
 
               <div className="characteristics">
                 <h3>{getTranslatedText(`addAdv.options`, lang)}</h3>
@@ -188,7 +209,7 @@ const AddGoods = () => {
                         text={enumAge[item]}
                         value={item}
                         name="age"
-                        type="checkbox"
+                        type="radio"
                         margin="0 0 15px -7px"
                       />
                     ))}
@@ -242,6 +263,12 @@ const AddGoods = () => {
                 </p>
                 <textarea className="description_textarea" />
               </div>
+
+              <Location
+                setLocationId={setLocationId}
+                setLocationCurrent={setLocationCurrent}
+              />
+
               <div className="files">
                 <h3>Загрузите фотографии ваших вещей</h3>
                 <p>Первое фото станет обложкой карточки товара</p>

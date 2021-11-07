@@ -131,6 +131,14 @@ body {
   background-color: $bg-content;
 }
 
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+input {
+  outline: none;
+}
+
 a {
   text-decoration: none;
   color: inherit;

@@ -1,19 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { FieldArray, Formik } from 'formik';
 import * as yup from 'yup';
+import { FieldArray, Formik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
 
+import api from 'REST/Resources';
+import { ModalContext } from 'components/common/pop-up';
 import InputProfile from '../../components/inputProfile';
+import TitleBigBlue from 'components/common/title_Big_Blue';
 import Button from 'components/common/buttons/button/Button';
 import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
 import { fetchUser, putUserToStore } from 'store/profile/slice';
-
-import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localisation';
-import ButtonsAddRemoveChild from 'pages/UserInfo/components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 import InputGender from '../../components/inputProfile/inputGender';
-import { putUserInfo } from 'REST/Resources';
-import { ModalContext } from 'components/common/pop-up';
+import ButtonsAddRemoveChild from '../../components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 
 import './myProfile.scss';
 
@@ -111,7 +110,7 @@ const MyProfile = () => {
         });
         return;
       }
-      const { data } = await putUserInfo(newUserData);
+      const data = await api.fetchProfile.putUserInfo(newUserData);
       openModal({
         title: getTranslatedText('popup.serverResponse', lang),
         children: <p>{data}</p>,
@@ -166,7 +165,7 @@ const MyProfile = () => {
                     {values.phones.map((phone, index, arr) => {
                       const lastIndex = arr.length - 1;
                       const biggerThanStartIndex = arr.length > 1;
-                      const maxArray = index < 10;
+                      const maxArray = index < 2;
                       const errorField = errors.phones && errors.phones[index];
                       return (
                         <div
