@@ -26,8 +26,15 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
 
   useEffect(() => {
     (async () => {
+      try {
       const categories = await api.fetchAddGood.getCategoryAll();
-      setReceivedCategories(categories);
+        if(Array.isArray(categories)) {
+          setReceivedCategories(categories);
+        }
+        throw {message: 'OOps'};
+      } catch (err) {
+        console.log(err.response?.data ?? err.message);
+      }
     })();
   }, []);
 
@@ -40,10 +47,10 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   const getArrayKeys = (name) => {
     if (name) {
       return receivedCategories
-        .find((item) => item.name === category.categoryItems)
-        ?.subcategories.map((item) => item.name);
+        .find((item) => item?.name === category.categoryItems)
+        ?.subcategories.map((item) => item?.name);
     }
-    return receivedCategories.map((item) => item.name);
+    return receivedCategories.map((item) => item?.name);
   };
 
   return (

@@ -20,7 +20,6 @@ const Location = ({ setLocationId, setLocationCurrent }) => {
     UA: [],
     EN: [],
   });
-  console.log(location);
 
   return (
     <WrapContainer>
