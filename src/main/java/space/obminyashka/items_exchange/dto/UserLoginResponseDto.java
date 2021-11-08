@@ -15,7 +15,7 @@ public class UserLoginResponseDto {
     private String lastname;
     @JsonProperty(OAuth2ParameterNames.ACCESS_TOKEN)
     private String accessToken;
-    @JsonProperty("expires_in")
+    @JsonProperty(OAuth2ParameterNames.EXPIRES_IN)
     private String accessTokenExpirationDate;
     @JsonProperty(OAuth2ParameterNames.REFRESH_TOKEN)
     private String refreshToken;

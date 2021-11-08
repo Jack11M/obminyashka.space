@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.dto;
 
-import space.obminyashka.items_exchange.model.enums.I18n;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -8,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.util.Locale;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +37,5 @@ public class LocationDto {
 
     @ApiModelProperty(required = true)
     @NotNull(message = "{invalid.not-null}")
-    private I18n i18N;
+    private Locale i18N;
 }

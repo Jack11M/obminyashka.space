@@ -4,7 +4,6 @@ import space.obminyashka.items_exchange.dao.LocationRepository;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import space.obminyashka.items_exchange.model.Location;
-import space.obminyashka.items_exchange.model.enums.I18n;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
@@ -52,7 +52,7 @@ class LocationServiceTest {
 
     @BeforeEach
     void setUp() {
-        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", I18n.EN, Collections.emptyList());
+        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", Locale.ENGLISH.getLanguage(), Collections.emptyList());
         locationDto = convertTo(location, LocationDto.class);
     }
 

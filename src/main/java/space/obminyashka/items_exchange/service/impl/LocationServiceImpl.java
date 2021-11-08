@@ -1,32 +1,28 @@
 package space.obminyashka.items_exchange.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.LocationRepository;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import space.obminyashka.items_exchange.model.Location;
 import space.obminyashka.items_exchange.service.LocationService;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
-import space.obminyashka.items_exchange.model.enums.I18n;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
@@ -53,8 +49,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<LocationDto> findAllForCurrentLanguage(I18n lang) {
-        return new ArrayList<>(convertAllTo(locationRepository.findByI18n(lang), LocationDto.class, ArrayList::new));
+    public List<LocationDto> findAllForCurrentLanguage(Locale lang) {
+        return new ArrayList<>(convertAllTo(locationRepository.findByI18nIgnoreCase(lang.getLanguage()), LocationDto.class, ArrayList::new));
     }
 
     @Override
