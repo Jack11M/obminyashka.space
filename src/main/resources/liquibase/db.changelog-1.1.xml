@@ -176,4 +176,10 @@
                                  referencedColumnNames="id"
                                  referencedTableName="user"/>
     </changeSet>
+
+    <changeSet id="1.1.13: Add preferable language to a user" author="rpkyrych">
+        <addColumn tableName="User">
+            <column name="language" type="varchar(10)" defaultValue="ua"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

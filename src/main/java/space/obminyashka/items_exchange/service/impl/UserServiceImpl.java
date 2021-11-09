@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -106,8 +107,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto) {
-        User registeredUser = userRegistrationDtoToUser(userRegistrationDto);
-        return userRepository.save(registeredUser).getId() != 0;
+        User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
+        final var locale = LocaleContextHolder.getLocale();
+        userToRegister.setLanguage(locale);
+        return userRepository.save(userToRegister).getId() != 0;
     }
 
     @Override
@@ -276,6 +279,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void setUserAvatar(byte[] newAvatarImage, User user) {
         user.setAvatarImage(newAvatarImage);
         userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void updatePreferableLanguage(String refreshToken) {
+        final var locale = LocaleContextHolder.getLocale();
+        userRepository.findByRefreshToken_Token(refreshToken)
+                .filter(user -> !user.getLanguage().equals(locale))
+                .ifPresent(user -> {
+                    user.setLanguage(locale);
+                    userRepository.saveAndFlush(user);
+                    log.info("Preferable language was successfully updated for User: {}", user.getUsername());
+                });
     }
 
     private void addNewChildren(User user, Collection<Child> children) {

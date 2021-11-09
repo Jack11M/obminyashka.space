@@ -1,27 +1,34 @@
 package space.obminyashka.items_exchange.service;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
+import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
+import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
 class UserServiceTest {
@@ -32,6 +39,8 @@ class UserServiceTest {
 
     @MockBean
     private UserRepository userRepository;
+    @Captor
+    private ArgumentCaptor<User> userArgumentCaptor;
     @Autowired
     private UserService userService;
     @Autowired
@@ -120,5 +129,22 @@ class UserServiceTest {
         user.setUpdated(LocalDateTime.now().minusDays(delay));
 
         return user;
+    }
+
+    @ParameterizedTest
+    @MethodSource("getTestLocales")
+    void updatePreferableLanguage_shouldSetLanguageAccordingContext(Locale expectedLocale) {
+        LocaleContextHolder.setLocale(expectedLocale);
+        final var user = new User();
+        user.setLanguage(Locale.FRANCE);
+        when(userRepository.findByRefreshToken_Token(anyString())).thenReturn(Optional.of(user));
+
+        userService.updatePreferableLanguage("mocked token");
+        verify(userRepository).saveAndFlush(userArgumentCaptor.capture());
+        assertEquals(expectedLocale, userArgumentCaptor.getValue().getLanguage());
+    }
+
+    private static List<Locale> getTestLocales() {
+        return List.of(Locale.ENGLISH, new Locale("ua"), new Locale("ru"));
     }
 }

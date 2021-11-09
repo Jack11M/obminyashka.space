@@ -96,6 +96,7 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
+    language: 'ua'
     created: '2019-01-01 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
@@ -110,6 +111,7 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
+    language: 'ua'
     created: '2019-01-01 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
@@ -123,6 +125,7 @@ user:
     last_name: ""
     avatar_image: null
     last_online_time: '2020-06-03 23:04:01'
+    language: 'en'
     created: '2020-06-03'
     updated: '2020-06-03'
     status: 'ACTIVE'

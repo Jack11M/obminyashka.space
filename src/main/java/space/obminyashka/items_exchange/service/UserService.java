@@ -164,6 +164,13 @@ public interface UserService {
     void setUserAvatar(byte[] newAvatarImage, User user);
 
     /**
+     * Get {@link org.springframework.http.HttpHeaders#ACCEPT_LANGUAGE} and compare with stored language setting
+     * and update if they aren't equals
+     * @param refreshToken token linked with stored user in the DB
+     */
+    void updatePreferableLanguage(String refreshToken);
+
+    /**
      * Find {@link User} from OAuth2User credentials, register if user is new
      * @param oauth2User instance of {@link DefaultOidcUser} with the required credentials for user login/registration
      * @return {@link User} from OAuth2User credentials if exists, otherwise register a new user and return it

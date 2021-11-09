@@ -8,10 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -40,6 +37,8 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "last_online_time", columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime lastOnlineTime;
+
+    private Locale language;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
@@ -74,6 +73,9 @@ public class User extends BaseEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "blocker_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "blocked_id", referencedColumnName = "id"))
     private List<User> blacklistedUsers;
+
+    @OneToOne(mappedBy = "user")
+    private RefreshToken refreshToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
