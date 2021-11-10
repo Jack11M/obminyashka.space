@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.mapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,17 +32,18 @@ public class UtilMapper {
     }
 
     public static <T, K> K convertTo(T src, Class<K> kClass) {
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return mapper.map(src, kClass);
     }
 
     public static <T, K> List<K> convertToDto(Collection<T> tCollection, Class<K> kClass) {
         return tCollection.stream()
                 .map(t -> mapper.map(t, kClass))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static <T, E> List<E> mapBy(Collection<T> collection, Function<T, E> mapper) {
         return collection.stream().map(mapper)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

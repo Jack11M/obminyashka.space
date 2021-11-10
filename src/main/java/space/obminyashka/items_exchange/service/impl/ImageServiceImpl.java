@@ -55,7 +55,7 @@ public class ImageServiceImpl implements ImageService {
     public List<byte[]> getImagesResourceByAdvertisementId(long advertisementId) {
         return imageRepository.findByAdvertisementId(advertisementId).stream()
                 .map(Image::getResource)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ImageServiceImpl implements ImageService {
     public void saveToAdvertisement(Advertisement advertisement, List<byte[]> images) {
         List<Image> imagesToSave = images.stream()
                 .map(populateNewImage(advertisement))
-                .collect(Collectors.toList());
+                .toList();
         imageRepository.saveAll(imagesToSave);
     }
 
@@ -128,11 +128,6 @@ public class ImageServiceImpl implements ImageService {
 
     private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
         return bytes -> new Image(0, bytes, ownerAdvertisement);
-    }
-
-    @Override
-    public boolean isExistsById(long imageId) {
-        return imageRepository.existsById(imageId);
     }
 
     @Override

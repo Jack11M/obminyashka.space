@@ -13,6 +13,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
 
 import java.nio.charset.StandardCharsets;
@@ -101,8 +103,12 @@ class LocationFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet("location/create.yml")
     void createLocation_shouldCreateNewLocation() throws Exception {
-        sendDtoAndGetResultAction(post(LOCATION), createLocationDtoWithId(0), status().isCreated())
-                .andExpect(jsonPath("$.id").value("2"))
+        sendAndCompareLocationResponse(post(LOCATION), 0, status().isCreated(), "2");
+    }
+
+    private void sendAndCompareLocationResponse(MockHttpServletRequestBuilder request, long id, ResultMatcher created, String expectedId) throws Exception {
+        sendDtoAndGetResultAction(request, createLocationDtoWithId(id), created)
+                .andExpect(jsonPath("$.id").value(expectedId))
                 .andExpect(jsonPath("$.city").value(NEW_VALID_CITY))
                 .andExpect(jsonPath("$.district").value(NEW_VALID_DISTRICT))
                 .andReturn();
@@ -119,11 +125,7 @@ class LocationFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet("location/update.yml")
     void updateLocation_shouldUpdateExistedLocation() throws Exception {
-        sendDtoAndGetResultAction(put(LOCATION), createLocationDtoWithId(1L), status().isOk())
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.city").value(NEW_VALID_CITY))
-                .andExpect(jsonPath("$.district").value(NEW_VALID_DISTRICT))
-                .andReturn();
+        sendAndCompareLocationResponse(put(LOCATION), 1L, status().isOk(), "1");
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})

@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.authorization.jwt;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -18,7 +19,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
+    public void doFilterInternal(@NonNull HttpServletRequest req, @NonNull HttpServletResponse res, @NonNull FilterChain filterChain)
             throws IOException, ServletException {
         String token = jwtTokenProvider.getTokenFromHeader(req, HttpHeaders.AUTHORIZATION);
         if (isTokenValid(req, token)) {
