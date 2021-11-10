@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import space.obminyashka.items_exchange.annotation.ValidChildAge;
 import space.obminyashka.items_exchange.annotation.Zero;
 import space.obminyashka.items_exchange.mapper.transfer.Exist;
 import space.obminyashka.items_exchange.mapper.transfer.New;
@@ -26,6 +27,7 @@ public class ChildDto {
     private long id;
     @NotNull(message = "{invalid.not-null}")
     private Gender sex;
+    @ValidChildAge(message = "{invalid.child.age}")
     @ApiModelProperty(required = true, example = "yyyy-MM-dd")
     @NotNull(message = "{invalid.not-null}")
     @PastOrPresent(message = "{invalid.past-or-present.date}")
