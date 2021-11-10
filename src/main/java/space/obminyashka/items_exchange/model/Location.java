@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-import space.obminyashka.items_exchange.model.enums.I18n;
 
 @Entity
 @NoArgsConstructor
@@ -23,8 +22,7 @@ public class Location {
     private String city;
 
     @JsonAlias("lang")
-    @Enumerated(EnumType.STRING)
-    private I18n i18n;
+    private String i18n;
 
     @OneToMany(mappedBy = "location")
     private List<Advertisement> advertisements;

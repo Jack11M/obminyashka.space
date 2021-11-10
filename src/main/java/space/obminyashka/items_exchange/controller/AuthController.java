@@ -12,10 +12,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
@@ -106,9 +108,11 @@ public class AuthController {
             @ApiResponse(code = 401, message = "Refresh token is expired or not exist")
     })
     @ResponseStatus(HttpStatus.OK)
-    public RefreshTokenResponseDto refreshToken(@ApiParam(required = true) @RequestHeader("refresh_token") String refreshToken)
-            throws RefreshTokenException {
-        return authService.renewAccessTokenByRefresh(refreshToken);
+    public RefreshTokenResponseDto refreshToken(@ApiParam(required = true)
+                                                @RequestHeader(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken) throws RefreshTokenException {
+        final var resolvedToken = JwtTokenProvider.resolveToken(refreshToken);
+        userService.updatePreferableLanguage(resolvedToken);
+        return authService.renewAccessTokenByRefresh(resolvedToken);
     }
 
     @PostMapping(value = "/oauth2/success", produces = MediaType.APPLICATION_JSON_VALUE)

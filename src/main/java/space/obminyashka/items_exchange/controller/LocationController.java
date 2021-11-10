@@ -1,12 +1,11 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +15,6 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import space.obminyashka.items_exchange.mapper.UtilMapper;
-import space.obminyashka.items_exchange.model.enums.I18n;
 import space.obminyashka.items_exchange.service.LocationService;
 
 import javax.validation.Valid;
@@ -53,9 +51,10 @@ public class LocationController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<LocationDto>> getAllLocationsForCurrentLanguage(
-            @RequestHeader("accept-language") I18n lang) {
-
+    @ApiImplicitParam(name = HttpHeaders.ACCEPT_LANGUAGE, value = "Localization header", paramType = "header",
+            required = true, dataTypeClass = String.class, allowableValues = "ua, ru, en", defaultValue = "ua")
+    public ResponseEntity<List<LocationDto>> getAllLocationsForCurrentLanguage() {
+        final var lang = LocaleContextHolder.getLocale();
         List<LocationDto> locations = locationService.findAllForCurrentLanguage(lang);
         return locations.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NOT_FOUND)

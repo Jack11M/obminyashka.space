@@ -1,7 +1,8 @@
 package space.obminyashka.items_exchange.util;
 
 import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.model.enums.I18n;
+
+import java.util.Locale;
 
 public class LocationDtoCreatingUtil {
     public static final String NEW_VALID_CITY = "Kyiv";
@@ -10,14 +11,14 @@ public class LocationDtoCreatingUtil {
     public static final String NEW_VALID_AREA = "Kyivska";
 
     public static LocationDto createLocationDtoWithId(long id) {
-        return getBuild(id, NEW_VALID_CITY, NEW_VALID_DISTRICT, NEW_VALID_AREA, I18n.EN);
+        return getBuild(id, NEW_VALID_CITY, NEW_VALID_DISTRICT, NEW_VALID_AREA, Locale.ENGLISH);
     }
 
     public static LocationDto createLocationDtoForCreatingWithInvalidCity() {
-        return getBuild(1L, NEW_INVALID_CITY, NEW_VALID_DISTRICT, NEW_VALID_AREA, I18n.EN);
+        return getBuild(1L, NEW_INVALID_CITY, NEW_VALID_DISTRICT, NEW_VALID_AREA, Locale.ENGLISH);
     }
 
-    public static LocationDto getBuild(long id, String city, String district, String area, I18n i18N) {
+    public static LocationDto getBuild(long id, String city, String district, String area, Locale i18N) {
         return LocationDto.builder()
                 .id(id)
                 .city(city)
