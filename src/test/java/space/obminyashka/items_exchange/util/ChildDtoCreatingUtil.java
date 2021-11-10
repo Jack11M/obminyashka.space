@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
-
 public class ChildDtoCreatingUtil {
 
     public static List<ChildDto> getTestChildren(long maleId, long femaleId, int year) {

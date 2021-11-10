@@ -43,13 +43,6 @@ public interface AdvertisementService {
     Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
 
     /**
-     * Find an advertisement by id
-     * @param advertisementId advertisement id
-     * @return {@link Optional} as result
-     */
-    Optional<Advertisement> findById(long advertisementId);
-
-    /**
      * Find an advertisement with additional owner check
      * @param advertisementId ID of an advertisement
      * @param ownerName login or email of the advertisement's owner
@@ -96,7 +89,7 @@ public interface AdvertisementService {
     AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto);
 
     /**
-     * Remove an advertisement by it's id
+     * Remove an advertisement by its id
      * @param id id of the advertisement to remove
      */
     void remove(long id);
@@ -109,7 +102,7 @@ public interface AdvertisementService {
     void setDefaultImage(Advertisement advertisement, Long imageId);
 
     /**
-     * Check if a user owns such advertisement and it has selected image
+     * Check if a user owns such advertisement, and it has selected image
      * @param advertisementId id of selected advertisement to check
      * @param imageId id of an image to check into the advertisement
      * @param owner user to check the advertisement and the image

@@ -1,6 +1,8 @@
 package space.obminyashka.items_exchange.i18n;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,22 +46,11 @@ class InternationalizationTest {
                 .contains("ID value has to be positive"));
     }
 
-    @Test
-    void testRussianLocalizationWithAccept_LanguageHeaderIsRu() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"ru", "ru-RU"})
+    void testRussianLocalizationWithAccept_LanguageHeaderIsRu(String locale) throws Exception {
         MvcResult mvcResult = mockMvc.perform(get("/api/v1/image/{advertisement_id}", -100L)
-                .header("Accept-Language", "ru")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andReturn();
-
-        assertTrue(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8)
-                .contains("Идентификатор должен быть положительным"));
-    }
-
-    @Test
-    void testRussianLocalizationWithAccept_LanguageHeaderIsRu_Ru() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/v1/image/{advertisement_id}", -100L)
-                .header("Accept-Language", "ru-Ru")
+                .header("Accept-Language", locale)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();

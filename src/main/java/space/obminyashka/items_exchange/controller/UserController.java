@@ -99,12 +99,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
                                      Principal principal) throws InvalidDtoException {
-        User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, userChangePasswordDto.getOldPassword())) {
-            throw new InvalidDtoException(getMessageSource(incorrectPassword));
-        }
+        User user = findUserByValidCredentials(principal, userChangePasswordDto.getOldPassword());
 
         return userService.updateUserPassword(userChangePasswordDto, user);
+    }
+
+    private User findUserByValidCredentials(Principal principal, String password) throws InvalidDtoException {
+        User user = getUser(principal.getName());
+        if (!userService.isPasswordMatches(user, password)) {
+            throw new InvalidDtoException(getMessageSource(incorrectPassword));
+        }
+        return user;
     }
 
     @PutMapping("/service/email")
@@ -137,10 +142,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
             throws InvalidDtoException {
-        User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
-            throw new InvalidDtoException(getMessageSource(incorrectPassword));
-        }
+        User user = findUserByValidCredentials(principal, userDeleteFlowDto.getPassword());
         userService.selfDeleteRequest(user);
 
         return getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user));
@@ -155,10 +157,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
             throws InvalidDtoException, IllegalOperationException {
-        User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, userDeleteFlowDto.getPassword())) {
-            throw new InvalidDtoException(getMessageSource(incorrectPassword));
-        }
+        User user = findUserByValidCredentials(principal, userDeleteFlowDto.getPassword());
         if (!user.getStatus().equals(DELETED)) {
             throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
         }

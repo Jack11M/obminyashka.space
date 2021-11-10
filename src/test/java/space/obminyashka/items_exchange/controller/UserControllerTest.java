@@ -15,6 +15,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Child;
@@ -185,11 +187,15 @@ class UserControllerTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "user")
     void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isBadRequest());
+        updateUserEmailBasicTest(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL, status().isBadRequest(), "invalid.confirm.email");
+    }
+
+    private void updateUserEmailBasicTest(String email, String confirmationEmail, ResultMatcher expectedStatus, String expectedExceptionKey) throws Exception {
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email, confirmationEmail);
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, expectedStatus);
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource("invalid.confirm.email")));
+        assertTrue(message.contains(getMessageSource(expectedExceptionKey)));
     }
 
     @Test
@@ -197,11 +203,7 @@ class UserControllerTest extends BasicControllerTest {
     void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isConflict());
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource("exception.email.old")));
+        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL, status().isConflict(), "exception.email.old");
     }
 
     @Test
@@ -210,12 +212,7 @@ class UserControllerTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.existsByEmail(any())).thenReturn(true);
 
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isConflict());
-
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource("email.duplicate")));
+        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL, status().isConflict(), "email.duplicate");
     }
 
     @Test
@@ -230,13 +227,17 @@ class UserControllerTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     void selfDeleteRequest_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(false);
-
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isBadRequest());
+        MvcResult mvcResult = selfDeleteRequestBasicTest(false, WRONG_OLD_PASSWORD, delete(USER_SERVICE_DELETE), status().isBadRequest());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
+    }
+
+    private MvcResult selfDeleteRequestBasicTest(boolean isUsernameExists, String oldPassword, MockHttpServletRequestBuilder request, ResultMatcher expectedResult) throws Exception {
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+        when(userService.isPasswordMatches(any(), any())).thenReturn(isUsernameExists);
+
+        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(oldPassword, oldPassword);
+        return sendDtoAndGetMvcResult(request, userDeleteFlowDto, expectedResult);
     }
 
     @ParameterizedTest
@@ -257,18 +258,6 @@ class UserControllerTest extends BasicControllerTest {
         );
     }
 
-    @Test
-    @WithMockUser(username = "deletedUser")
-    void makeAccountActiveAgain_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(false);
-
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(WRONG_OLD_PASSWORD, WRONG_OLD_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isBadRequest());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
-    }
-
     @ParameterizedTest
     @WithMockUser(username = "deletedUser")
     @MethodSource("selfDeleteTestData")
@@ -283,11 +272,7 @@ class UserControllerTest extends BasicControllerTest {
     @Test
     @WithMockUser("admin")
     void makeAccountActiveAgain_WhenUserHasNotStatusDeletedShouldThrowIllegalOperationException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(true);
-
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isForbidden());
+        MvcResult mvcResult = selfDeleteRequestBasicTest(true, CORRECT_OLD_PASSWORD, put(USER_SERVICE_RESTORE), status().isForbidden());
 
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 

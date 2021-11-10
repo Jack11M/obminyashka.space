@@ -1,14 +1,13 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.SubcategoryRepository;
 import space.obminyashka.items_exchange.model.Subcategory;
 import space.obminyashka.items_exchange.service.SubcategoryService;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +46,6 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     public List<Long> findAllSubcategoryIds() {
         return subcategoryRepository.findAll().stream()
                 .map(Subcategory::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

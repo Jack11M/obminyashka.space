@@ -26,6 +26,7 @@ public class UserChangePasswordDto {
     @NotEmpty(message = "{empty.confirm.password}")
     private String confirmNewPassword;
 
+    @SuppressWarnings("unused")                         // Used in validation process by Spring Validator
     @AssertTrue(message = "{different.passwords}")
     private boolean isPasswordsEquals() {
         return newPassword.equals(confirmNewPassword);
