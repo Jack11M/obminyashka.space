@@ -298,4 +298,15 @@ class UserControllerTest extends BasicControllerTest {
 
         return user;
     }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void addChild_InvalidChildAge_ShouldReturnHttpStatusBadRequest() throws Exception {
+        var childDto = getTestChildren(0L, 0L, 2001);
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+
+        final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), childDto, status().isBadRequest());
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
+                .contains(getParametrizedMessageSource("invalid.child.age")));
+    }
 }
