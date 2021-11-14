@@ -22,7 +22,6 @@ const InputLocation = ({
   const [filteredLocation, setFilteredLocation] = useState([]);
   const [uniqueLocation, setUniqueLocation] = useState([]);
 
-
   const getLocationId = (elem) => {
     const city =
       elem.indexOf('(') === -1
@@ -75,8 +74,6 @@ const InputLocation = ({
   }, [lang]);
 
   const getFiltered = (value) => {
-
-    console.log(value);
     return uniqueLocation.filter((item) =>
       item.toLowerCase().includes(value.toLowerCase())
     );
@@ -110,7 +107,6 @@ const InputLocation = ({
         city: '',
       }));
     }
-
     setFilteredLocation(getFiltered(value));
     setShowDrop(true);
 
@@ -145,7 +141,7 @@ const InputLocation = ({
       />
 
       {showDrop && (
-        <WrapDropItems>
+        <WrapDropItems showDrop={showDrop}>
           {filteredLocation.map((item, index) => (
             <SelectedItem
               key={`${item}_${index}`}

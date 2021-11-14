@@ -18,7 +18,7 @@ const FormikCheckBox = ({
     <Div margin={margin}>
       <Label fontSize={fontSize}>
         <Input type={type} {...field} {...props} />
-        <LabelSquare>
+        <LabelSquare type={type}>
           <CheckSvg />
         </LabelSquare>
         <span>{text}</span>
