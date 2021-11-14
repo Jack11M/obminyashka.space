@@ -21,7 +21,7 @@ public class UserDtoCreatingUtil {
     public static final String WRONG_OLD_PASSWORD = "123456wWWW";
     public static final String NEW_PASSWORD = "123456wW";
     public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
-    private static final int MAX_AMOUNT_OF_PHONES = 5;
+    private static final int MAX_AMOUNT_OF_PHONES = 3;
     public static final Set<PhoneDto> NEW_INVALID_PHONES = createWithInvalidSizeListOfPhones();
 
     public static UserUpdateDto createUserUpdateDto() {
