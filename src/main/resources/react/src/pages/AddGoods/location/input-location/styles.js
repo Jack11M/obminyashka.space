@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 const Wrap = styled.div`
   position: relative;
   width: 350px;
+  z-index: 1;
 `;
 
 const Label = styled.label`
@@ -28,17 +29,20 @@ const Input = styled.input`
     border-color: hsl(0, 0%, 44%);
   }
   ${(p) =>
-          p.focus &&
-          css`
+    p.focus &&
+    css`
       border-color: hsl(0, 0%, 44%);
     `};
 `;
 const WrapDropItems = styled.div`
+  position: absolute;
+  width: 100%;
+  max-height: 470px;
+  background-color: #fff;
   border: 1px solid hsl(0, 0%, 44%);
   border-top: none;
-  &:last-child {
-    border-bottom: none;
-  }
+  overflow-y: auto;
+  z-index: 2;
 `;
 
 const SelectedItem = styled.div`
@@ -47,6 +51,9 @@ const SelectedItem = styled.div`
   border-bottom: 1px solid hsl(0, 0%, 44%);
   cursor: pointer;
   transition: ease-in-out 0.3s;
+  &:last-child {
+    border-bottom: none;
+  }
   & > p {
     padding: 10px;
     line-height: 26px;
