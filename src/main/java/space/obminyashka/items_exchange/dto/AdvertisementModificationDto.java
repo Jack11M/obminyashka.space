@@ -25,7 +25,6 @@ public class AdvertisementModificationDto {
 
     @Positive(groups = Exist.class, message = "{invalid.exist.id}")
     @Zero(groups = New.class, message = "{new.advertisement.id.not-zero}")
-    @NotNull(message = "{invalid.not-null}")
     private long id;
 
     @ApiModelProperty(required = true)
@@ -48,7 +47,6 @@ public class AdvertisementModificationDto {
     @NotNull(message = "{invalid.not-null}")
     private AgeRange age;
 
-    @NotNull(message = "{invalid.not-null}")
     private boolean readyForOffers;
 
     @NotNull(message = "{invalid.not-null}")
@@ -61,9 +59,6 @@ public class AdvertisementModificationDto {
     @Size(min = 1, max = 50, message = "{invalid.size}")
     private String size;
 
-    @NotNull(message = "{invalid.not-null}")
     private long subcategoryId;
-
-    @NotNull(message = "{invalid.not-null}")
     private long locationId;
 }

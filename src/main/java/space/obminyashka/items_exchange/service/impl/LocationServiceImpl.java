@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
@@ -144,7 +143,7 @@ public class LocationServiceImpl implements LocationService {
                 .stream()
                 .map(this::prepareLocation)
                 .map(this::parseLocation)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private String prepareLocation(String locationLine) {

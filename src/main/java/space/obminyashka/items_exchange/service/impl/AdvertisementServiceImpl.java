@@ -2,7 +2,6 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.model.User;
@@ -84,18 +84,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Optional<Advertisement> findById(long advertisementId) {
-        return advertisementRepository.findById(advertisementId);
-    }
-
-    @Override
     public Optional<Advertisement> findByIdAndOwnerUsername(long advertisementId, String ownerName) {
         return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
     }
 
     @Override
     public Optional<AdvertisementDisplayDto> findDtoById(long id) {
-        return findById(id).map(this::buildAdvertisementDisplayDto);
+        return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }
 
     @Override
@@ -118,19 +113,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto dto, User owner, List<byte[]> compressedImages) {
-        Advertisement adv = mapDtoToAdvertisement(dto);
+        Advertisement adv = UtilMapper.convertTo(dto, Advertisement.class);
         adv.setUser(owner);
         adv.setStatus(Status.NEW);
         adv.setImages(compressedImages.stream().map(image -> new Image(0L, image, adv)).toList());
         adv.setDefaultPhoto(imageService.scale(compressedImages.get(0)));
         updateSubcategory(adv, dto.getSubcategoryId());
         updateLocation(adv, dto.getLocationId());
-        return mapAdvertisementToDto(advertisementRepository.save(adv));
+        return UtilMapper.convertTo(advertisementRepository.save(adv), AdvertisementModificationDto.class);
     }
 
     @Override
     public AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto) {
-        Advertisement toUpdate = mapDtoToAdvertisement(dto);
+        Advertisement toUpdate = UtilMapper.convertTo(dto, Advertisement.class);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
@@ -139,7 +134,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         updateLocation(fromDB, toUpdate.getLocation().getId());
         fromDB.setStatus(Status.UPDATED);
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
-        return mapAdvertisementToDto(updatedAdvertisement);
+        return UtilMapper.convertTo(updatedAdvertisement, AdvertisementModificationDto.class);
     }
 
     @Override
@@ -184,16 +179,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
         return advertisements.stream().map(this::buildAdvertisementTitle).toList();
-    }
-
-    private Advertisement mapDtoToAdvertisement(AdvertisementModificationDto dto) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return modelMapper.map(dto, Advertisement.class);
-    }
-
-    private AdvertisementModificationDto mapAdvertisementToDto(Advertisement advertisement) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return modelMapper.map(advertisement, AdvertisementModificationDto.class);
     }
 
     @Override

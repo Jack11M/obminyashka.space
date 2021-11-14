@@ -60,7 +60,7 @@ class AdvertisementControllerTest extends BasicControllerTest {
                 createValidationMessage("topic", existDtoForUpdate.getTopic(), "3", "70");
         final var validationMessageDescription =
                 createValidationMessage("description", existDtoForUpdate.getDescription(), "255");
-        final var validationMessageWhishes =
+        final var validationMessageWishes =
                 createValidationMessage("wishesToExchange", existDtoForUpdate.getWishesToExchange(), "210");
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(ADV), existDtoForUpdate, status().isBadRequest());
@@ -69,7 +69,7 @@ class AdvertisementControllerTest extends BasicControllerTest {
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageSize, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageDescription, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageTopic, mvcResult)),
-                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWhishes, mvcResult))
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWishes, mvcResult))
         );
     }
 

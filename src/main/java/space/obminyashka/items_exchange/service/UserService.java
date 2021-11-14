@@ -18,22 +18,6 @@ public interface UserService {
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
 
     /**
-     * Find a user into DB by checking gained param either username or email columns
-     * @param username login of the user
-     * @param email email of the user
-     * @return {@link Optional} with the user as the result
-     */
-    Optional<User> findByUsernameOrEmail(String username, String email);
-
-    /**
-     * Find a user into DB by email or username and encrypted user's password
-     * @param usernameOrEmail login or email to be checked
-     * @param encodedPassword encoded password of the user
-     * @return result of the check
-     */
-    Optional<User> findByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword);
-
-    /**
      * Find a user into DB by checking gained username and convert it into DTO
      * @param username login of the user
      * @return {@link Optional} with the converted user as the result
@@ -109,14 +93,6 @@ public interface UserService {
      * @return result of the check
      */
     boolean existsByUsernameOrEmail(String username, String email);
-
-    /**
-     * Check whether the user exist into DB by email or username and encrypted user's password
-     * @param usernameOrEmail login or email to be checked
-     * @param encodedPassword encoded password of the user
-     * @return result of the check
-     */
-    boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword);
 
     /**
      * Check whether received user's password matches to gained user

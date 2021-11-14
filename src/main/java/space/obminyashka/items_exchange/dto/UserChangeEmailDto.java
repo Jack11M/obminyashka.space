@@ -20,6 +20,7 @@ public class UserChangeEmailDto {
     @NotEmpty(message = "{invalid.not-empty}")
     private String newEmailConfirmation;
 
+    @SuppressWarnings("unused")                         // Used in validation process by Spring Validator
     @AssertTrue(message = "{invalid.confirm.email}")
     private boolean isEmailEquals() {
         return newEmail.equals(newEmailConfirmation);

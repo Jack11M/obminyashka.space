@@ -1,14 +1,9 @@
 package space.obminyashka.items_exchange.dto;
 
-import space.obminyashka.items_exchange.util.PatternHandler;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import space.obminyashka.items_exchange.util.PatternHandler;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -26,6 +21,5 @@ public class PhoneDto {
     @Pattern(regexp = PatternHandler.PHONE_NUMBER, message = "{invalid.phone.number}")
     private String phoneNumber;
 
-    @NotNull(message = "{invalid.not-null}")
     private boolean defaultPhone;
 }

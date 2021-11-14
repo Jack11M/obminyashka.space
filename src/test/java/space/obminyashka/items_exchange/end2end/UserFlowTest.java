@@ -119,13 +119,7 @@ class UserFlowTest extends BasicControllerTest {
         var validCreatingChildDtoJson = getTestChildren(0L, 0L, 2019);
 
         sendDtoAndGetResultAction(post(USER_CHILD), validCreatingChildDtoJson, status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value("3"))
-                .andExpect(jsonPath("$[0].birthDate").value("2019-03-03"))
-                .andExpect(jsonPath("$[0].sex").value("MALE"))
-                .andExpect(jsonPath("$[1].id").value("4"))
-                .andExpect(jsonPath("$[1].birthDate").value("2019-04-04"))
-                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
@@ -144,13 +138,7 @@ class UserFlowTest extends BasicControllerTest {
         var validUpdatingChildDtoJson = getTestChildren(1L, 2L, 2018);
 
         sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value("1"))
-                .andExpect(jsonPath("$[0].birthDate").value("2018-03-03"))
-                .andExpect(jsonPath("$[0].sex").value("MALE"))
-                .andExpect(jsonPath("$[1].id").value("2"))
-                .andExpect(jsonPath("$[1].birthDate").value("2018-04-04"))
-                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
@@ -214,7 +202,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/login_with_oauth2.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
     @WithMockUser(username = NEW_USER_EMAIL)
     void loginNewUserViaOauth2_shouldCreateValidUser() throws Exception {
-        var oauth2User = createDefaultOidcUser(NEW_USER_EMAIL);
+        var oauth2User = createDefaultOidcUser();
         var user = userService.loginUserWithOAuth2(oauth2User);
         assertNotNull(user);
 
@@ -225,24 +213,7 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.lastName").value(USER_LAST_NAME));
     }
 
-    @Test
-    @Commit
-    @DataSet("database_init.yml")
-    @WithMockUser(username = ADMIN_USERNAME)
-    void loginExistedUserViaOauth2_shouldReturnUser() throws Exception {
-        var adminFirstName = "super";
-        var oauth2User = createDefaultOidcUser(EXISTED_USER_EMAIL);
-        var user = userService.loginUserWithOAuth2(oauth2User);
-        assertNotNull(user);
-
-        sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
-                .andExpect(jsonPath("$.username").value(ADMIN_USERNAME))
-                .andExpect(jsonPath("$.email").value(EXISTED_USER_EMAIL))
-                .andExpect(jsonPath("$.firstName").value(adminFirstName))
-                .andExpect(jsonPath("$.lastName").value(ADMIN_USERNAME));
-    }
-
-    private DefaultOidcUser createDefaultOidcUser(String email) {
+    private DefaultOidcUser createDefaultOidcUser() {
         var familyName = "family_name";
         var givenName = "given_name";
         var roleUser = "ROLE_USER";
@@ -257,7 +228,7 @@ class UserFlowTest extends BasicControllerTest {
                 Map.of(groupsKey, roleUser, subKey, 123)
         );
 
-        final var userInfo = new OidcUserInfo(Map.of(emailKey, email, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
+        final var userInfo = new OidcUserInfo(Map.of(emailKey, NEW_USER_EMAIL, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 }

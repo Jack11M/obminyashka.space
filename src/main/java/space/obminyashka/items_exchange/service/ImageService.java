@@ -29,10 +29,11 @@ public interface ImageService {
      * Make in-memory compressing (20% of basic quality) only for supported types of images
      * @param images list of images for further compression
      * @return compressed images' bytes
-     * @throws IOException in cases when some of received images is corrupted or it's impossible to read it properly
      * @throws UnsupportedMediaTypeException in case receiving unsupported types
+     * @apiNote throw IOException in cases when some of received images is corrupted, or it's impossible to read it properly
      * @see SupportedMediaTypes supported media types
      */
+    @SneakyThrows(IOException.class)
     List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException;
 
     /**
@@ -47,7 +48,7 @@ public interface ImageService {
     byte[] compress(MultipartFile image);
 
     /**
-     * Create new entity for each received image, link them to the Advertisement using it's ID and store them to the DB
+     * Create new entity for each received image, link them to the Advertisement using its ID and store them to the DB
      * @see Image entity as representation of all images
      * @param advertisement to link images with
      * @param images list of images that need to be linked with the Advertisement and saved to the DB
@@ -55,18 +56,11 @@ public interface ImageService {
     void saveToAdvertisement(Advertisement advertisement, List<byte[]> images);
 
     /**
-     * Create new entity for received image, link to the Advertisement using it's ID and store it to the DB
+     * Create new entity for received image, link to the Advertisement using its ID and store it to the DB
      * @param advertisement advertisement to link images with
      * @param image image that needs to be linked with the Advertisement and saved to the DB
      */
     void saveToAdvertisement(Advertisement advertisement, byte[] image);
-
-    /**
-     * Check if the image exists into the DB by its ID
-     * @param imageId ID of the image to check
-     * @return result of check
-     */
-    boolean isExistsById(long imageId);
 
     /**
      * Check whether all images with gained IDs received into an advertisement
@@ -83,7 +77,7 @@ public interface ImageService {
     void removeById(List<Long> imageIdList);
 
     /**
-     * Remove image from the DB by it's ID
+     * Remove image from the DB by its ID
      * @param imageId ID image to remove
      */
     void removeById(long imageId);

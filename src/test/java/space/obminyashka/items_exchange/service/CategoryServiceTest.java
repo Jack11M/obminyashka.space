@@ -1,30 +1,28 @@
 package space.obminyashka.items_exchange.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import space.obminyashka.items_exchange.dao.CategoryRepository;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.model.Category;
 import space.obminyashka.items_exchange.model.Subcategory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
 import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class CategoryServiceTest {
@@ -146,54 +144,54 @@ class CategoryServiceTest {
         assertFalse(result);
     }
 
-    @Test
-    void isCategoryDtoUpdatable_whenCategoryExistsByIdAndNameAndSubcategoriesExist_shouldReturnTrue() {
+    @ParameterizedTest
+    @MethodSource("getTestCategoriesData")
+    void isCategoryDtoUpdatable_whenCategoryExistsByIdAndNameAndSubcategories_shouldReturnTrue(CategoryDto testCategory, boolean expectedResult) {
         when(categoryRepository.existsByIdAndNameIgnoreCase(anyLong(), anyString())).thenReturn(true);
         when(subcategoryService.findAllSubcategoryIds()).thenReturn(List.of(EXISTING_ENTITY_ID));
 
-        final CategoryDto updatedCategoryDto = getUpdatedCategoryDto(EXISTING_ENTITY_ID,
-                EXISTING_ENTITY_ID,
-                EXISTING_CATEGORY_NAME);
+        final boolean result = categoryService.isCategoryDtoUpdatable(testCategory);
+        assertEquals(expectedResult, result);
+        verify(categoryRepository).existsByIdAndNameIgnoreCase(EXISTING_ENTITY_ID, EXISTING_CATEGORY_NAME);
+        verify(subcategoryService).findAllSubcategoryIds();
+    }
 
-        final boolean result = categoryService.isCategoryDtoUpdatable(updatedCategoryDto);
-        assertTrue(result);
-        verify(categoryRepository, times(1)).existsByIdAndNameIgnoreCase(EXISTING_ENTITY_ID,
-                EXISTING_CATEGORY_NAME);
-        verify(subcategoryService, times(1)).findAllSubcategoryIds();
+    private static Stream<Arguments> getTestCategoriesData() {
+        return Stream.of(
+                Arguments.of(getUpdatedCategoryDto(EXISTING_ENTITY_ID, EXISTING_ENTITY_ID, EXISTING_CATEGORY_NAME), true),
+                Arguments.of(getUpdatedCategoryDto(NONEXISTENT_ENTITY_ID, EXISTING_ENTITY_ID, EXISTING_CATEGORY_NAME), false)
+        );
     }
 
     @Test
     void isCategoryDtoUpdatable_whenCategoryExistsByIdAndCategoryNameHasNotDuplicateAndSubcategoriesExist_shouldReturnTrue() {
-        when(categoryRepository.existsByIdAndNameIgnoreCase(anyLong(), anyString())).thenReturn(false);
-        when(categoryRepository.existsById(anyLong())).thenReturn(true);
-        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
+        prepareCategoryBasicMocks(false);
         when(subcategoryService.findAllSubcategoryIds()).thenReturn(List.of(EXISTING_ENTITY_ID));
 
-        final CategoryDto updatedCategoryDto = getUpdatedCategoryDto(EXISTING_ENTITY_ID,
-                EXISTING_ENTITY_ID,
-                UPDATED_CATEGORY_NAME);
-
-        final boolean result = categoryService.isCategoryDtoUpdatable(updatedCategoryDto);
-        assertTrue(result);
-        verify(categoryRepository, times(1)).existsByIdAndNameIgnoreCase(EXISTING_ENTITY_ID,
-                UPDATED_CATEGORY_NAME);
-        verify(categoryRepository, times(1)).existsById(EXISTING_ENTITY_ID);
-        verify(categoryRepository, times(1)).existsByNameIgnoreCase(UPDATED_CATEGORY_NAME);
+        isCategoryDtoUpdatableBasicTest(true);
         verify(subcategoryService, times(1)).findAllSubcategoryIds();
     }
 
     @Test
     void isCategoryDtoUpdatable_whenCategoryExistsByIdAndCategoryNameHasDuplicate_shouldReturnFalse() {
+        prepareCategoryBasicMocks(true);
+
+        isCategoryDtoUpdatableBasicTest(false);
+    }
+
+    private void prepareCategoryBasicMocks(boolean isExists) {
         when(categoryRepository.existsByIdAndNameIgnoreCase(anyLong(), anyString())).thenReturn(false);
         when(categoryRepository.existsById(anyLong())).thenReturn(true);
-        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(true);
+        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(isExists);
+    }
 
+    private void isCategoryDtoUpdatableBasicTest(boolean expectedResult) {
         final CategoryDto updatedCategoryDto = getUpdatedCategoryDto(EXISTING_ENTITY_ID,
                 EXISTING_ENTITY_ID,
                 CATEGORY_NAME_TOYS);
 
         final boolean result = categoryService.isCategoryDtoUpdatable(updatedCategoryDto);
-        assertFalse(result);
+        assertEquals(expectedResult, result);
         verify(categoryRepository, times(1)).existsByIdAndNameIgnoreCase(EXISTING_ENTITY_ID,
                 CATEGORY_NAME_TOYS);
         verify(categoryRepository, times(1)).existsByNameIgnoreCase(CATEGORY_NAME_TOYS);
@@ -214,39 +212,21 @@ class CategoryServiceTest {
                 EXISTING_CATEGORY_NAME);
     }
 
-    @Test
-    void isCategoryDtoUpdatable_whenCategoryExistsByIdAndNameAndSubcategoriesDoNotExist_shouldReturnFalse() {
-        when(categoryRepository.existsByIdAndNameIgnoreCase(anyLong(), anyString())).thenReturn(true);
-        when(subcategoryService.findAllSubcategoryIds()).thenReturn(List.of(EXISTING_ENTITY_ID));
+    @ParameterizedTest
+    @MethodSource("getTestCategories")
+    void isCategoryDtoValidForCreating_whenCategoryNameHasNotDuplicateAndAllItsSubcategoryIdsEqualsZero_shouldReturnTrue(
+            boolean isExists, CategoryDto dto, boolean expectedResult, String categoryName) {
+        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(isExists);
 
-        final CategoryDto updatedCategoryDto = getUpdatedCategoryDto(NONEXISTENT_ENTITY_ID,
-                EXISTING_ENTITY_ID,
-                EXISTING_CATEGORY_NAME);
-
-        final boolean result = categoryService.isCategoryDtoUpdatable(updatedCategoryDto);
-        assertFalse(result);
-        verify(categoryRepository, times(1)).existsByIdAndNameIgnoreCase(EXISTING_ENTITY_ID,
-                EXISTING_CATEGORY_NAME);
-        verify(subcategoryService, times(1)).findAllSubcategoryIds();
+        final boolean result = categoryService.isCategoryDtoValidForCreating(dto);
+        assertEquals(expectedResult, result);
+        verify(categoryRepository).existsByNameIgnoreCase(categoryName);
     }
 
-    @Test
-    void isCategoryDtoValidForCreating_whenCategoryNameHasNotDuplicateAndAllItsSubcategoryIdsEqualsZero_shouldReturnTrue() {
-        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(false);
-
-        final CategoryDto newValidCategoryDto = createNonExistValidCategoryDto();
-        final boolean result = categoryService.isCategoryDtoValidForCreating(newValidCategoryDto);
-        assertTrue(result);
-        verify(categoryRepository, times(1)).existsByNameIgnoreCase(CATEGORY_NAME_BOOKS);
-    }
-
-    @Test
-    void isCategoryDtoValidForCreating_whenCategoryNameHasDuplicate_shouldReturnFalse() {
-        when(categoryRepository.existsByNameIgnoreCase(anyString())).thenReturn(true);
-
-        final CategoryDto newInvalidCategoryDto = createCategoryDtoWithDuplicateName();
-        final boolean result = categoryService.isCategoryDtoValidForCreating(newInvalidCategoryDto);
-        assertFalse(result);
-        verify(categoryRepository, times(1)).existsByNameIgnoreCase(EXISTING_CATEGORY_NAME);
+    private static Stream<Arguments> getTestCategories() {
+        return Stream.of(
+                Arguments.of(false, createNonExistValidCategoryDto(), true, CATEGORY_NAME_BOOKS),
+                Arguments.of(true, createCategoryDtoWithDuplicateName(), false, EXISTING_CATEGORY_NAME)
+        );
     }
 }

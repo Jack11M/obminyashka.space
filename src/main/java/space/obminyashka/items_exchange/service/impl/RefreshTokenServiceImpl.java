@@ -25,11 +25,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final UserService userService;
 
     @Override
-    public Optional<RefreshToken> findByToken(String token) {
-        return refreshTokenRepository.findByToken(token);
-    }
-
-    @Override
     public RefreshToken createRefreshToken(String username) {
         final var user = userService.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(getMessageSource("exception.user.not-found")));
@@ -37,8 +32,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 jwtTokenProvider.generateRefreshTokenExpirationTime()));
     }
 
-    @Override
-    public boolean isRefreshTokenExpired(RefreshToken refreshToken) {
+    private boolean isRefreshTokenExpired(RefreshToken refreshToken) {
         if (refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             refreshTokenRepository.delete(refreshToken);
             return true;
@@ -53,7 +47,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public Optional<String> renewAccessTokenByRefresh(String refreshToken) {
-        return findByToken(refreshToken)
+        return refreshTokenRepository.findByToken(refreshToken)
                 .filter(Predicate.not(this::isRefreshTokenExpired))
                 .map(RefreshToken::getUser)
                 .map(user -> jwtTokenProvider.createAccessToken(user.getUsername(), user.getRole()));

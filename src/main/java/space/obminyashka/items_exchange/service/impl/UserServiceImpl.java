@@ -25,13 +25,11 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.PatternHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
@@ -83,26 +81,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
-    }
-
-    @Override
-    public Optional<User> findByUsernameOrEmail(String username, String email) {
-        return userRepository.findByEmailOrUsername(username, email);
-    }
-
-    @Override
-    public Optional<User> findByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword) {
-        Pattern usernamePattern = Pattern.compile(PatternHandler.USERNAME);
-        Optional<User> user = usernamePattern.matcher(usernameOrEmail).matches()
-                ? userRepository.findByUsername(usernameOrEmail)
-                : userRepository.findByEmail(usernameOrEmail);
-
-        return user.filter(u -> isPasswordMatches(u, encodedPassword));
-    }
-
-    @Override
-    public boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encryptedPassword) {
-        return findByUsernameOrEmailAndPassword(usernameOrEmail, encryptedPassword).isPresent();
     }
 
     @Override

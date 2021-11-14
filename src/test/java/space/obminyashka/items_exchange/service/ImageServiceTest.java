@@ -21,8 +21,6 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -77,7 +75,7 @@ class ImageServiceTest extends BasicImageCreator{
     }
 
     @Test
-    void compressImage_shouldCompressImage_WhenValidImageType() throws IOException, UnsupportedMediaTypeException {
+    void compressImage_shouldCompressImage_WhenValidImageType() throws IOException {
         byte[] compressImage = imageService.compress(testJpg);
         assertTrue(testJpg.getBytes().length > compressImage.length);
     }
