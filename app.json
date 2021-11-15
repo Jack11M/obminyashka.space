@@ -1,10 +1,14 @@
-"environments": {
-  "test": {
-    "formation": {
-      "test": {
-        "quantity": 1,
-        "size": "standard-2x"
+{
+  "environments": {
+    "test": {
+      "formation": {
+        "test": {
+          "quantity": 1,
+          "size": "standard-2x"
+        }
       }
     }
   }
 }
+
+
