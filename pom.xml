@@ -20,13 +20,13 @@
         <java.version>17</java.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
-        <liquibase.version>4.5.0</liquibase.version>
+        <liquibase.version>4.6.1</liquibase.version>
+        <node.version>v16.13.0</node.version>
+        <npm.version>6.14.15</npm.version>
+        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <mapper.version>2.4.4</mapper.version>
         <db-rider.version>1.32.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
-        <node.version>v16.4.2</node.version>
-        <yarn.version>v1.22.10</yarn.version>
-        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -159,7 +159,7 @@
 
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
-                    <yarnVersion>${yarn.version}</yarnVersion>
+                    <npmVersion>${npm.version}</npmVersion>
                     <workingDirectory>${frontend-src-dir}</workingDirectory>
                     <installDirectory>${project.basedir}/build_tools</installDirectory>
                 </configuration>
@@ -168,14 +168,14 @@
                     <execution>
                         <id>install-frontend-tools</id>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
+                            <goal>install-node-and-npm</goal>
                         </goals>
                     </execution>
 
                     <execution>
-                        <id>yarn-install</id>
+                        <id>npm-install</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>install</arguments>
@@ -185,7 +185,7 @@
                     <execution>
                         <id>build-frontend</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>build</arguments>
