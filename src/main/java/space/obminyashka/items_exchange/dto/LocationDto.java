@@ -7,7 +7,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.Locale;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +36,5 @@ public class LocationDto {
 
     @ApiModelProperty(required = true)
     @NotNull(message = "{invalid.not-null}")
-    private Locale i18N;
+    private String i18N;
 }

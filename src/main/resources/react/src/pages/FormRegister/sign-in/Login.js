@@ -112,7 +112,6 @@ const Login = () => {
                     mb="64px"
                     type="button"
                     width="222px"
-                    isLoading={loading}
                     disabling={!isValid && !dirty}
                     click={() => window.location.assign('/oauth2/authorization/google')}
                 />

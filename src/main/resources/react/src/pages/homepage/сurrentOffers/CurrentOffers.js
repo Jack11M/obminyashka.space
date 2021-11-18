@@ -18,7 +18,8 @@ const CurrentOffers = () => {
   const [offers, setOffers] = useState([]);
 
   useEffect(() => {
-    api.fetchHome.getCurrentOffers()
+    api.fetchHome
+      .getCurrentOffers()
       .then(({ data }) => {
         if (Array.isArray(data)) setOffers(data);
       })
@@ -28,7 +29,7 @@ const CurrentOffers = () => {
   }, []);
 
   const moveToProductPage = (id) => {
-    history.push(route.productPage + id);
+    history.push(route.productPage.replace(':id', id));
   };
 
   return (

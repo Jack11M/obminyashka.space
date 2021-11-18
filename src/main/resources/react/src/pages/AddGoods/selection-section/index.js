@@ -27,13 +27,14 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   useEffect(() => {
     (async () => {
       try {
-      const categories = await api.fetchAddGood.getCategoryAll();
-        if(Array.isArray(categories)) {
+        const categories = await api.fetchAddGood.getCategoryAll();
+        if (Array.isArray(categories)) {
           setReceivedCategories(categories);
+        } else {
+          throw { message: 'OOps I didn’t get the category' };
         }
-        throw 'OOps';
       } catch (err) {
-        console.log(err.response?.data ?? err);
+        console.log(err.response?.data ?? err.message);
       }
     })();
   }, []);

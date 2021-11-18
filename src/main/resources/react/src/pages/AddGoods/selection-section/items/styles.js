@@ -27,7 +27,7 @@ const DropItems = styled.div`
   position: absolute;
   max-width: 350px;
   width: 100%;
-  border: ${(p) => p.notOpen? 'none': '1px solid #bcbcbc'};
+  border: ${(p) => (p.notOpen ? 'none' : '1px solid #bcbcbc')};
   border-top-width: 0;
   background-color: #fff;
   overflow: hidden;

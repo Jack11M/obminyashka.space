@@ -26,6 +26,7 @@ const AddGoods = () => {
   const [subCategoryId, setSubCategoryId] = useState('');
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [exchangeList, setExchangeList] = useState([]);
+  const [description, setDescription] = useState('');
   const [locationId, setLocationId] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
 
@@ -54,7 +55,7 @@ const AddGoods = () => {
           title: getTranslatedText('popup.errorTitle', lang),
           children: (
             <p style={{ textAlign: 'center' }}>
-              Файл который Вы добавляете, уже существует.
+              {getTranslatedText('popup.addedFile', lang)}
             </p>
           ),
         });
@@ -66,7 +67,7 @@ const AddGoods = () => {
           title: getTranslatedText('popup.errorTitle', lang),
           children: (
             <p style={{ textAlign: 'center' }}>
-              Пожалуйста, выберите картинку с расширением ( jpg, jpeg, png ).
+              {getTranslatedText('popup.pictureSelection', lang)} ( jpg, jpeg, png, git ).
             </p>
           ),
         });
@@ -79,8 +80,8 @@ const AddGoods = () => {
           title: getTranslatedText('popup.errorTitle', lang),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {`Размер вашего файла ${valueString}, `}
-              <br /> Выберите файл меньше 10 МБ.
+              {getTranslatedText('popup.sizeFile', lang)} {valueString}
+              <br /> {getTranslatedText('popup.selectFile', lang)}
             </p>
           ),
         });
@@ -91,7 +92,7 @@ const AddGoods = () => {
           title: getTranslatedText('popup.errorTitle', lang),
           children: (
             <p style={{ textAlign: 'center' }}>
-              Вы не можете сохранить больше 10 файлов.
+              {getTranslatedText('popup.noSaveMore', lang)}
             </p>
           ),
         });
@@ -169,7 +170,7 @@ const AddGoods = () => {
     gender: '',
     season: '',
     size: '',
-    description: '',
+    description: description,
     locationId: locationId,
     images: imageFiles,
   };
@@ -256,12 +257,17 @@ const AddGoods = () => {
                 </div>
               </div>
               <div className="description">
-                <h3 className="description_title"> Описание</h3>
+                <h3 className="description_title">
+                  {getTranslatedText(`addAdv.describeTitle`, lang)}
+                </h3>
                 <p className="description_subtitle">
-                  <span className="span_star">*</span> Опишите Вашу вещь:
-                  деффекты, особенности использования, и пр
+                  <span className="span_star">*</span>
+                  {getTranslatedText(`addAdv.describeText`, lang)}
                 </p>
-                <textarea className="description_textarea" />
+                <textarea
+                  className="description_textarea"
+                  onChange={(e) => setDescription(e.target.value)}
+                />
               </div>
 
               <Location
@@ -270,9 +276,15 @@ const AddGoods = () => {
               />
 
               <div className="files">
-                <h3>Загрузите фотографии ваших вещей</h3>
-                <p>Первое фото станет обложкой карточки товара</p>
-                <p>Загружено фотографий {imageFiles.length} из 10</p>
+                <h3>{getTranslatedText(`addAdv.uploadDescription`, lang)}</h3>
+                <p>
+                  {getTranslatedText(`addAdv.firstUploadDescription`, lang)}
+                </p>
+                <p>
+                  {getTranslatedText(`addAdv.photosUploaded`, lang)}{' '}
+                  {imageFiles.length} {getTranslatedText(`addAdv.from`, lang)}{' '}
+                  10
+                </p>
                 <div className="files_wrapper">
                   {preViewImage.map((url, index) => (
                     <ImagePhoto
