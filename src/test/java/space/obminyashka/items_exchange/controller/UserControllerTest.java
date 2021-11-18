@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +31,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -116,7 +115,7 @@ class UserControllerTest extends BasicControllerTest {
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), dto, status().isBadRequest());
         String responseContentAsString = getResponseContentAsString(mvcResult);
-        Assertions.assertAll(
+        assertAll(
                 () -> assertTrue(responseContentAsString.contains(errorMessageForInvalidFirstName)),
                 () -> assertTrue(responseContentAsString.contains(errorMessageForInvalidLastName))
         );
@@ -306,7 +305,11 @@ class UserControllerTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), childDto, status().isBadRequest());
-        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getParametrizedMessageSource("invalid.child.age")));
+        final var resolvedException = mvcResult.getResolvedException();
+        assertAll(
+                () -> assertNotNull(resolvedException),
+                () -> assertNotNull(resolvedException.getMessage()),
+                () -> assertTrue(resolvedException.getMessage()
+                        .contains(getParametrizedMessageSource("invalid.child.age"))));
     }
 }
