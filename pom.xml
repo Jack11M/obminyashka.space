@@ -21,12 +21,12 @@
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
         <liquibase.version>4.6.1</liquibase.version>
-        <node.version>v16.13.0</node.version>
-        <npm.version>6.14.15</npm.version>
-        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
         <mapper.version>2.4.4</mapper.version>
         <db-rider.version>1.32.0</db-rider.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
+        <node.version>v16.4.2</node.version>
+        <yarn.version>v1.22.10</yarn.version>
+        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -159,7 +159,7 @@
 
                 <configuration>
                     <nodeVersion>${node.version}</nodeVersion>
-                    <npmVersion>${npm.version}</npmVersion>
+                    <yarnVersion>${yarn.version}</yarnVersion>
                     <workingDirectory>${frontend-src-dir}</workingDirectory>
                     <installDirectory>${project.basedir}/build_tools</installDirectory>
                 </configuration>
@@ -168,14 +168,14 @@
                     <execution>
                         <id>install-frontend-tools</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-yarn</goal>
                         </goals>
                     </execution>
 
                     <execution>
-                        <id>npm-install</id>
+                        <id>yarn-install</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <configuration>
                             <arguments>install</arguments>
@@ -185,7 +185,7 @@
                     <execution>
                         <id>build-frontend</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>yarn</goal>
                         </goals>
                         <configuration>
                             <arguments>build</arguments>
@@ -206,3 +206,4 @@
         </resources>
     </build>
 </project>
+
