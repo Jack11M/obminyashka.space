@@ -1,17 +1,8 @@
+import { DropDownInput } from 'pages/AddGoods/drop-down-input';
 import { useEffect, useMemo, useState } from 'react';
 
 import api from 'REST/Resources';
-import { CloseSvg } from 'assets/icons';
 import { getTranslatedText } from 'components/local/localisation.js';
-
-import {
-  Wrap,
-  Label,
-  Input,
-  WrapSvg,
-  SelectedItem,
-  WrapDropItems,
-} from './styles.js';
 
 const InputLocation = ({
   lang,
@@ -67,7 +58,7 @@ const InputLocation = ({
       }
     };
     setUniqueLocation(uniqueField());
-  }, [location, inputLocation]);
+  }, [location, inputLocation, langToUpperCase, name]);
 
   useEffect(() => {
     if (name === 'city') {
@@ -80,7 +71,11 @@ const InputLocation = ({
     });
     setFilteredLocation([]);
     setShowDrop(false);
-  }, [lang]);
+  }, [lang, name, setInputLocation, setLocationCurrent, setLocationId]);
+
+  useEffect(() => {
+    if (inputLocation.area === '') setShowDrop(false);
+  }, [inputLocation]);
 
   const getFiltered = (value) => {
     return uniqueLocation.filter((item) =>
@@ -135,48 +130,37 @@ const InputLocation = ({
   };
 
   const clearInput = () => {
-    // setInputLocation()
-    setInputLocation((prevLocation) => ({
-      ...prevLocation,
-      [name]: '',
-    }));
+    if (name === 'area') {
+      setInputLocation({
+        city: '',
+        area: '',
+      });
+    } else {
+      setInputLocation((prevLocation) => ({
+        ...prevLocation,
+        [name]: '',
+      }));
+    }
+
     setFilteredLocation([]);
     setShowDrop(false);
   };
 
   return (
-    <Wrap>
-      <Label>
-        <span className="span_star">*</span> {title}:
-      </Label>
-      <Input
-        name={name}
-        onFocus={focus}
-        focus={showDrop}
-        autocomplete="off"
-        onChange={handleInput}
-        value={inputLocation[name]}
-        disabled={name !== 'area' && !inputLocation.area}
-      />
-      {inputLocation[name] && (
-        <WrapSvg onClick={clearInput}>
-          <CloseSvg />
-        </WrapSvg>
-      )}
-
-      {showDrop && (
-        <WrapDropItems showDrop={showDrop}>
-          {filteredLocation.map((item, index) => (
-            <SelectedItem
-              key={`${item}_${index}`}
-              onClick={() => handleClick(item)}
-            >
-              <p>{item}</p>
-            </SelectedItem>
-          ))}
-        </WrapDropItems>
-      )}
-    </Wrap>
+    <DropDownInput
+      name={name}
+      title={title}
+      onFocus={focus}
+      focus={showDrop}
+      showDrop={showDrop}
+      clearInput={clearInput}
+      data={filteredLocation}
+      choiceItem={handleClick}
+      value={inputLocation[name]}
+      onChangeInput={handleInput}
+      checkInputValue={inputLocation[name]}
+      disabled={name !== 'area' && !inputLocation.area}
+    />
   );
 };
 export { InputLocation };

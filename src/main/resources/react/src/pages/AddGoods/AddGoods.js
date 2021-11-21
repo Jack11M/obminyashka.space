@@ -1,7 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Form } from 'formik';
 import { useSelector } from 'react-redux';
 
+import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM.js';
 import { ModalContext } from 'components/common/pop-up';
 import Button from 'components/common/buttons/button/Button';
@@ -178,6 +179,10 @@ const AddGoods = () => {
   const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
   const season = ['ALL_SEASONS', 'DEMI_SEASON', 'SUMMER', 'WINTER'];
   const size = ['50-80', '80-92', '92-104', '110-122', '128-146', '146-164'];
+  useEffect(() => {
+   api.fetchAddGood.getSize(2).then(data => console.log(data))
+  }, [])
+
   return (
     <FormHandler
       onSubmit={handleSubmit}
