@@ -11,6 +11,7 @@ import {
 
 const DropDownInput = ({
   name,
+  size,
   data,
   title,
   value,
@@ -25,9 +26,11 @@ const DropDownInput = ({
 }) => {
   return (
     <Wrap>
-      <Label>
-        <span className="span_star">*</span> {title}:
-      </Label>
+      {!size && (
+        <Label>
+          <span className="span_star">*</span> {title}:
+        </Label>
+      )}
       <Input
         name={name}
         onFocus={onFocus}

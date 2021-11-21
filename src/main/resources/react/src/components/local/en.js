@@ -23,6 +23,7 @@ const en = {
     sizeFile: 'Your photo total size',
     selectFile: 'Select a photo up to 10 MB total size',
     noSaveMore: 'The maximum capacity of photos to be stored can be up to 10 pcs',
+    selectSize: 'Select Clothing or Shoes first',
   },
   errors: {
     requireField: 'Field is required',
@@ -184,7 +185,7 @@ const en = {
     options: 'Characteristics',
     age: 'Age',
     sex: 'Sex',
-    size: 'Size (Clothing)',
+    size: 'Size',
     season: 'Season',
     describeTitle: 'Your item\'s description',
     describeText: 'Describe your item: defects, usage patterns, etc.',

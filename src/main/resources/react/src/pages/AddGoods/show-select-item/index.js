@@ -1,30 +1,34 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useClickAway } from 'react-use';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { animated, useSpring, useTransition } from 'react-spring';
 
-import { categoryImages } from './config';
+import { useOutsideClick } from 'hooks/useOutsideClick';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localisation';
+
+import { categoryImages } from './config';
+
 import {
-  AnimatedLabel,
-  DropItems,
   Image,
-  PlaceHolder,
+  DropItems,
   SelectItem,
+  WrapSelect,
+  PlaceHolder,
   SelectLabel,
   SelectTitle,
-  WrapSelect,
+  AnimatedLabel,
 } from './styles';
 
-const Items = ({
+const ShowSelectItem = ({
   data,
-  showImg,
-  refClickAway,
-  valueCategory,
-  refHeightCategory,
-  setItem,
+  text,
+  value,
+  onClick,
+  typeError,
   placeholder,
+  showImg = false,
+  overflows = false,
+  categories = false,
 }) => {
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
@@ -32,16 +36,20 @@ const Items = ({
 
   useEffect(() => {
     if (opened && !data) {
+      setOpened(false);
       openModal({
         title: getTranslatedText('popup.errorTitle', lang),
         children: (
           <p style={{ textAlign: 'center' }}>
-            {getTranslatedText('popup.selectCategory', lang)}
+            {getTranslatedText(typeError, lang)}
           </p>
         ),
       });
     }
-  }, [data, opened, lang]);
+  }, [data, opened, lang, openModal, typeError]);
+
+  const refClickAway = useRef();
+  const refHeightCategory = useRef();
 
   const spring = useSpring({
     opacity: !opened ? 1 : 0,
@@ -56,33 +64,29 @@ const Items = ({
   });
 
   const transition = useTransition(opened ? data : [], {
-    trail: 100,
+    trail: 75,
     from: { opacity: 0, scale: 0 },
     enter: { opacity: 1, scale: 1, transformOrigin: 5 },
     leave: { opacity: 0, scale: 0 },
     config: { mass: 1, tension: 120, friction: 14 },
   });
 
-  const handleCategory = (item) => {
-    setItem(item);
+  const handleClick = (item) => {
+    onClick(item);
     setOpened((prev) => !prev);
   };
 
-  useClickAway(refClickAway, () => {
+  useOutsideClick(refClickAway, () => {
     setOpened(false);
   });
 
   return (
     <WrapSelect ref={refClickAway}>
       <SelectLabel showImg={showImg} onClick={() => setOpened((prev) => !prev)}>
-        {valueCategory ? (
+        {value ? (
           <AnimatedLabel style={spring}>
-            {showImg && (
-              <Image src={categoryImages[valueCategory]} alt={valueCategory} />
-            )}
-            <SelectTitle>
-              {getTranslatedText(`categories.${valueCategory}`, lang)}
-            </SelectTitle>
+            {showImg && <Image src={categoryImages[value]} alt={value} />}
+            <SelectTitle>{text}</SelectTitle>
           </AnimatedLabel>
         ) : (
           <PlaceHolder>{placeholder}</PlaceHolder>
@@ -92,19 +96,28 @@ const Items = ({
         (styles, item) =>
           item && (
             <animated.div style={{ ...styles }}>
-              <DropItems ref={refHeightCategory} notOpen={opened && !data}>
+              <DropItems
+                overflows={overflows}
+                ref={refHeightCategory}
+                notOpen={opened && !data}
+              >
                 {transition((styles, item) => (
                   <animated.div key={item} style={{ ...styles }}>
                     <SelectItem
                       showImg={showImg}
-                      onClick={() => handleCategory(item)}
-                      selectedItem={valueCategory === item}
+                      onClick={() => handleClick(item)}
+                      selectedItem={value === item?.name ?? item}
                     >
                       {showImg && (
-                        <Image src={categoryImages[item]} alt={item} />
+                        <Image
+                          src={categoryImages[item.name]}
+                          alt={item.name}
+                        />
                       )}
                       <SelectTitle>
-                        {getTranslatedText(`categories.${item}`, lang)}
+                        {categories
+                          ? getTranslatedText(`categories.${item?.name}`, lang)
+                          : item}
                       </SelectTitle>
                     </SelectItem>
                   </animated.div>
@@ -117,4 +130,4 @@ const Items = ({
   );
 };
 
-export { Items };
+export { ShowSelectItem };

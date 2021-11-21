@@ -31,6 +31,13 @@ const DropItems = styled.div`
   border-top-width: 0;
   background-color: #fff;
   overflow: hidden;
+  ${(p) =>
+    p.overflows &&
+    css`
+      height: 282px;
+      overflow-y: scroll;
+    `}
+
   z-index: 2;
   & > div:last-child > div {
     border-bottom: none;

@@ -23,6 +23,7 @@ const ru = {
     sizeFile: 'Размер вашего фото',
     selectFile: 'Выберите фото меньше 10 МБ.',
     noSaveMore: 'Вы не можете сохранить больше 10 фото.',
+    selectSize: 'Выберите сначала категорию Одежда или Обувь',
   },
   errors: {
     requireField: 'Поле обязательно',
@@ -185,7 +186,7 @@ const ru = {
     options: 'Характеристики',
     age: 'Возраст',
     sex: 'Пол',
-    size: 'Размер (одежда)',
+    size: 'Размер',
     season: 'Сезон',
     describeTitle: 'Описание',
     describeText:

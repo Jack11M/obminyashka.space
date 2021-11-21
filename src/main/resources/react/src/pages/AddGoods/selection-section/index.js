@@ -1,9 +1,11 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { Items } from './items';
+import { FormikCheckBox } from 'components/common/formik';
 import { getTranslatedText } from 'components/local/localisation';
+
+import { SelectItem } from './select-item';
 
 import {
   TitleH3,
@@ -13,16 +15,10 @@ import {
   SectionsItem,
   ItemDescription,
 } from './styles';
-import { FormikCheckBox } from 'components/common/formik';
 
 const SelectionSection = ({ category, subcategory, announcement }) => {
   const { lang } = useSelector((state) => state.auth);
   const [receivedCategories, setReceivedCategories] = useState([]);
-
-  const refCategory = useRef();
-  const refCloseCategory = useRef();
-  const refSubCategory = useRef();
-  const refCloseSubCategory = useRef();
 
   useEffect(() => {
     (async () => {
@@ -48,10 +44,13 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   const getArrayKeys = (name) => {
     if (name) {
       return receivedCategories
-        .find((item) => item?.name === category.categoryItems)
-        ?.subcategories.map((item) => item?.name);
+        .find((item) => item?.name === category.categoryItems.name)
+        ?.subcategories.map((item) => ({ name: item?.name, id: item?.id }));
     }
-    return receivedCategories.map((item) => item?.name);
+    return receivedCategories.map((item) => ({
+      id: item?.id,
+      name: item?.name,
+    }));
   };
 
   return (
@@ -65,13 +64,11 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             <span className="span_star">*</span>{' '}
             {getTranslatedText(`addAdv.category`, lang)}
           </ItemDescription>
-          <Items
+          <SelectItem
             showImg
             data={getArrayKeys()}
             setItem={category.setCategoryItems}
             valueCategory={category.categoryItems}
-            refClickAway={refCloseCategory}
-            refHeightCategory={refCategory}
             placeholder={getTranslatedText(`addAdv.selectCategory`, lang)}
           />
         </SectionsItem>
@@ -80,15 +77,14 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             <span className="span_star">*</span>{' '}
             {getTranslatedText(`addAdv.subcategory`, lang)}
           </ItemDescription>
-          <Items
+          <SelectItem
             data={getArrayKeys('subcategories')}
             setItem={subcategory.setSubCategoryItems}
             valueCategory={subcategory.subCategoryItems}
-            refClickAway={refCloseSubCategory}
-            refHeightCategory={refSubCategory}
             placeholder={getTranslatedText(`addAdv.selectSubcategory`, lang)}
           />
         </SectionsItem>
+
         <SectionsItem>
           <ItemDescription>
             <span className="span_star">*</span>{' '}
