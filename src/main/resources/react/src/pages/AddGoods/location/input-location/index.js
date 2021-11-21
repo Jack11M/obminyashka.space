@@ -1,9 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import api from 'REST/Resources';
+import { CloseSvg } from 'assets/icons';
 import { getTranslatedText } from 'components/local/localisation.js';
 
-import { Label, Input, Wrap, SelectedItem, WrapDropItems } from './styles.js';
+import {
+  Wrap,
+  Label,
+  Input,
+  WrapSvg,
+  SelectedItem,
+  WrapDropItems,
+} from './styles.js';
 
 const InputLocation = ({
   lang,
@@ -71,6 +79,7 @@ const InputLocation = ({
       area: '',
     });
     setFilteredLocation([]);
+    setShowDrop(false);
   }, [lang]);
 
   const getFiltered = (value) => {
@@ -125,6 +134,16 @@ const InputLocation = ({
     setShowDrop(false);
   };
 
+  const clearInput = () => {
+    // setInputLocation()
+    setInputLocation((prevLocation) => ({
+      ...prevLocation,
+      [name]: '',
+    }));
+    setFilteredLocation([]);
+    setShowDrop(false);
+  };
+
   return (
     <Wrap>
       <Label>
@@ -132,13 +151,18 @@ const InputLocation = ({
       </Label>
       <Input
         name={name}
-        focus={showDrop}
         onFocus={focus}
-        value={inputLocation[name]}
-        onChange={handleInput}
+        focus={showDrop}
         autocomplete="off"
+        onChange={handleInput}
+        value={inputLocation[name]}
         disabled={name !== 'area' && !inputLocation.area}
       />
+      {inputLocation[name] && (
+        <WrapSvg onClick={clearInput}>
+          <CloseSvg />
+        </WrapSvg>
+      )}
 
       {showDrop && (
         <WrapDropItems showDrop={showDrop}>

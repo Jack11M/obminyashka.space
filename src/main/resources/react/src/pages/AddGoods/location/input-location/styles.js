@@ -18,7 +18,7 @@ const Label = styled.label`
 const Input = styled.input`
   width: 100%;
   height: 48px;
-  padding: 0 14px;
+  padding: 0 30px 0 14px;
   line-height: 24px;
   font-size: 16px;
   border: 1px solid #bcbcbc;
@@ -34,6 +34,14 @@ const Input = styled.input`
       border-color: hsl(0, 0%, 44%);
     `};
 `;
+
+const WrapSvg = styled.div`
+  position: absolute;
+  right: 5px;
+  bottom: 10px;
+  cursor: pointer;
+`;
+
 const WrapDropItems = styled.div`
   position: absolute;
   width: 100%;
@@ -65,4 +73,4 @@ const SelectedItem = styled.div`
   }
 `;
 
-export { Label, Input, SelectedItem, Wrap, WrapDropItems };
+export { Label, Input, WrapSvg, SelectedItem, Wrap, WrapDropItems };
