@@ -26,7 +26,7 @@ const Sizes = ({ categories, dimension  }) => {
       setReceivedSizes(null)
       dimension.setSize('')
     }
-  }, [categories, dimension]);
+  }, [categories]);
 
   return (
     <div className="characteristics_item">
