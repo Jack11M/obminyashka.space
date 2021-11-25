@@ -25,6 +25,7 @@ const ShowSelectItem = ({
   value,
   onClick,
   typeError,
+  titleError,
   placeholder,
   showImg = false,
   overflows = false,
@@ -38,7 +39,7 @@ const ShowSelectItem = ({
     if (opened && !data) {
       setOpened(false);
       openModal({
-        title: getTranslatedText('popup.errorTitle', lang),
+        title: getTranslatedText(titleError, lang),
         children: (
           <p style={{ textAlign: 'center' }}>
             {getTranslatedText(typeError, lang)}

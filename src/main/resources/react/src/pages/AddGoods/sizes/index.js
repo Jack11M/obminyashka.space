@@ -6,7 +6,7 @@ import { getTranslatedText } from 'components/local/localisation';
 
 import { ShowSelectItem } from '../show-select-item';
 
-const Sizes = ({ categories, dimension  }) => {
+const Sizes = ({ categories, dimension }) => {
   const { lang } = useSelector((state) => state.auth);
 
   const [receivedSizes, setReceivedSizes] = useState(null);
@@ -14,7 +14,7 @@ const Sizes = ({ categories, dimension  }) => {
 
   useEffect(() => {
     if (categories.id === 1 || categories.id === 2) {
-      dimension.setSize('')
+      dimension.setSize('');
       api.fetchAddGood
         .getSize(`${categories.id}`)
         .then((data) => {
@@ -23,8 +23,8 @@ const Sizes = ({ categories, dimension  }) => {
         })
         .catch((err) => err.response?.data ?? err.message);
     } else {
-      setReceivedSizes(null)
-      dimension.setSize('')
+      setReceivedSizes(null);
+      dimension.setSize('');
     }
   }, [categories]);
 
@@ -36,7 +36,6 @@ const Sizes = ({ categories, dimension  }) => {
           ` (${getTranslatedText(`categories.${translatedText}`, lang)})`}
       </h4>
       <ShowSelectItem
-        // overflow
         overflows
         data={receivedSizes}
         text={dimension.size}
@@ -44,6 +43,7 @@ const Sizes = ({ categories, dimension  }) => {
         onClick={dimension.setSize}
         placeholder="Выберите размер"
         typeError="popup.selectSize"
+        titleError="popup.errorTitleSize"
       />
     </div>
   );

@@ -17,6 +17,7 @@ const SelectItem = ({ data, showImg, setItem, placeholder, valueCategory }) => {
       placeholder={placeholder}
       value={valueCategory.name}
       typeError="popup.selectCategory"
+      titleError="popup.errorTitleSubCategory"
       text={getTranslatedText(`categories.${valueCategory.name}`, lang)}
     />
   );
