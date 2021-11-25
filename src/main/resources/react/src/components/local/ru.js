@@ -16,13 +16,16 @@ const ru = {
   popup: {
     serverResponse: 'Ответ от сервера',
     errorTitle: 'Ошибка',
+    errorTitleSize: 'Обратите внимание',
+    errorTitleSubCategory: 'Внимание / Информация',
     notEmptyInput: 'Требуется хотя бы одно поле заполнено.',
-    selectCategory: 'Выберите сначала категорию',
+    selectCategory: 'Изначально нужно выбрать категорию',
     addedFile: 'Фото, которое Вы добавляете, уже существует.',
     pictureSelection: 'Пожалуйста, выберите фото с расширением',
     sizeFile: 'Размер вашего фото',
     selectFile: 'Выберите фото меньше 10 МБ.',
     noSaveMore: 'Вы не можете сохранить больше 10 фото.',
+    selectSize: 'Размеры доступны исключительно для Одежды и Обуви',
   },
   errors: {
     requireField: 'Поле обязательно',
@@ -185,7 +188,7 @@ const ru = {
     options: 'Характеристики',
     age: 'Возраст',
     sex: 'Пол',
-    size: 'Размер (одежда)',
+    size: 'Размер',
     season: 'Сезон',
     describeTitle: 'Описание',
     describeText:

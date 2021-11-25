@@ -7,3 +7,7 @@ export const getCategoryAll = () => {
 export const getLocationLanguageAll = () => {
   return obminyashkaApi.get('/location/all').then(({ data }) => data);
 };
+
+export const getSize = (id) => {
+  return obminyashkaApi.get(`/category/${id}/sizes`).then(({ data }) => data);
+};

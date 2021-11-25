@@ -9,6 +9,7 @@ import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
 
+import { Sizes } from './sizes';
 import { Location } from './location';
 import { Exchange } from './exchange';
 import { convertToMB } from './add-image/helper';
@@ -22,8 +23,6 @@ const AddGoods = () => {
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
 
-  const [categoryId, setCategoryId] = useState('');
-  const [subCategoryId, setSubCategoryId] = useState('');
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [exchangeList, setExchangeList] = useState([]);
   const [description, setDescription] = useState('');
@@ -32,6 +31,7 @@ const AddGoods = () => {
 
   const [categoryItems, setCategoryItems] = useState('');
   const [subCategoryItems, setSubCategoryItems] = useState('');
+  const [size, setSize] = useState('');
   const [locationCurrent, setLocationCurrent] = useState(null);
 
   const [preViewImage, setPreViewImage] = useState([]);
@@ -67,7 +67,8 @@ const AddGoods = () => {
           title: getTranslatedText('popup.errorTitle', lang),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.pictureSelection', lang)} ( jpg, jpeg, png, git ).
+              {getTranslatedText('popup.pictureSelection', lang)} ( jpg, jpeg,
+              png, git ).
             </p>
           ),
         });
@@ -161,15 +162,15 @@ const AddGoods = () => {
   const initialValues = {
     id: 0,
     dealType: 'EXCHANGE',
-    categoryId: null,
-    subcategoryId: null,
+    categoryId: categoryItems?.id,
+    subcategoryId: subCategoryItems?.id,
     topic: announcementTitle,
     readyForOffers: false,
     wishesToExchange: exchangeList.join(','),
     age: '',
     gender: '',
     season: '',
-    size: '',
+    size: size,
     description: description,
     locationId: locationId,
     images: imageFiles,
@@ -177,7 +178,7 @@ const AddGoods = () => {
   const ages = Object.keys(enumAge);
   const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
   const season = ['ALL_SEASONS', 'DEMI_SEASON', 'SUMMER', 'WINTER'];
-  const size = ['50-80', '80-92', '92-104', '110-122', '128-146', '146-164'];
+
   return (
     <FormHandler
       onSubmit={handleSubmit}
@@ -228,19 +229,7 @@ const AddGoods = () => {
                       />
                     ))}
                   </div>
-                  <div className="characteristics_item">
-                    <h4>{getTranslatedText(`addAdv.size`, lang)}:</h4>
-                    {size.map((item, idx) => (
-                      <FormikCheckBox
-                        key={item + idx}
-                        text={`${item} см`}
-                        value={item}
-                        name="size"
-                        type="radio"
-                        margin="0 0 15px -7px"
-                      />
-                    ))}
-                  </div>
+
                   <div className="characteristics_item">
                     <h4>{getTranslatedText(`addAdv.season`, lang)}:</h4>
                     {season.map((item, idx) => (
@@ -254,6 +243,8 @@ const AddGoods = () => {
                       />
                     ))}
                   </div>
+
+                  <Sizes categories={categoryItems} dimension={{ size, setSize }} />
                 </div>
               </div>
               <div className="description">

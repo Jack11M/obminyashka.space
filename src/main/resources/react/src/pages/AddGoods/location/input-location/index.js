@@ -1,9 +1,8 @@
+import { DropDownInput } from 'pages/AddGoods/drop-down-input';
 import { useEffect, useMemo, useState } from 'react';
 
 import api from 'REST/Resources';
 import { getTranslatedText } from 'components/local/localisation.js';
-
-import { Label, Input, Wrap, SelectedItem, WrapDropItems } from './styles.js';
 
 const InputLocation = ({
   lang,
@@ -59,7 +58,7 @@ const InputLocation = ({
       }
     };
     setUniqueLocation(uniqueField());
-  }, [location, inputLocation]);
+  }, [location, inputLocation, langToUpperCase, name]);
 
   useEffect(() => {
     if (name === 'city') {
@@ -71,7 +70,12 @@ const InputLocation = ({
       area: '',
     });
     setFilteredLocation([]);
-  }, [lang]);
+    setShowDrop(false);
+  }, [lang, name, setInputLocation, setLocationCurrent, setLocationId]);
+
+  useEffect(() => {
+    if (inputLocation.area === '') setShowDrop(false);
+  }, [inputLocation]);
 
   const getFiltered = (value) => {
     return uniqueLocation.filter((item) =>
@@ -125,34 +129,38 @@ const InputLocation = ({
     setShowDrop(false);
   };
 
-  return (
-    <Wrap>
-      <Label>
-        <span className="span_star">*</span> {title}:
-      </Label>
-      <Input
-        name={name}
-        focus={showDrop}
-        onFocus={focus}
-        value={inputLocation[name]}
-        onChange={handleInput}
-        autocomplete="off"
-        disabled={name !== 'area' && !inputLocation.area}
-      />
+  const clearInput = () => {
+    if (name === 'area') {
+      setInputLocation({
+        city: '',
+        area: '',
+      });
+    } else {
+      setInputLocation((prevLocation) => ({
+        ...prevLocation,
+        [name]: '',
+      }));
+    }
 
-      {showDrop && (
-        <WrapDropItems showDrop={showDrop}>
-          {filteredLocation.map((item, index) => (
-            <SelectedItem
-              key={`${item}_${index}`}
-              onClick={() => handleClick(item)}
-            >
-              <p>{item}</p>
-            </SelectedItem>
-          ))}
-        </WrapDropItems>
-      )}
-    </Wrap>
+    setFilteredLocation([]);
+    setShowDrop(false);
+  };
+
+  return (
+    <DropDownInput
+      name={name}
+      title={title}
+      onFocus={focus}
+      focus={showDrop}
+      showDrop={showDrop}
+      clearInput={clearInput}
+      data={filteredLocation}
+      choiceItem={handleClick}
+      value={inputLocation[name]}
+      onChangeInput={handleInput}
+      checkInputValue={inputLocation[name]}
+      disabled={name !== 'area' && !inputLocation.area}
+    />
   );
 };
 export { InputLocation };
