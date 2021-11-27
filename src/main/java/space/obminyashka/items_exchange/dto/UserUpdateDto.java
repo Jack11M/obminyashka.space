@@ -25,7 +25,7 @@ public class UserUpdateDto {
     @NotNull(message = "{invalid.not-null}")
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")
     private String lastName;
-    @Size(max = 5, message = "{invalid.phones-amount}")
+    @Size(max = 3, message = "{invalid.phones-amount}")
     @NotNull(message = "{invalid.not-null}")
     private Set<@Valid PhoneDto> phones;
 }

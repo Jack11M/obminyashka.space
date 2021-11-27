@@ -8,6 +8,7 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
@@ -31,4 +32,10 @@ public class ChildDto {
     @PastOrPresent(message = "{invalid.past-or-present.date}")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
+
+    @SuppressWarnings("unused") // Used in validation process by Spring Validator
+    @AssertTrue(message = "{invalid.child.age}")
+    private boolean isChildAgeIsValid() {
+        return LocalDate.now().compareTo(birthDate) < 18;
+    }
 }

@@ -4,7 +4,6 @@ import space.obminyashka.items_exchange.dao.LocationRepository;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
 import space.obminyashka.items_exchange.model.Location;
-import space.obminyashka.items_exchange.model.enums.I18n;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,14 +21,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.NEW_VALID_CITY;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.NEW_VALID_DISTRICT;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,7 +50,7 @@ class LocationServiceTest {
 
     @BeforeEach
     void setUp() {
-        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", I18n.EN, Collections.emptyList());
+        location = new Location(1L, "Kharkivska", "Kharkivska district", "Kharkiv", Locale.ENGLISH.getLanguage(), Collections.emptyList());
         locationDto = convertTo(location, LocationDto.class);
     }
 
@@ -77,18 +75,7 @@ class LocationServiceTest {
                 () -> assertEquals(location.getId(), foundLocation.getId()),
                 () -> assertEquals(location.getCity(), foundLocation.getCity()),
                 () -> assertEquals(location.getDistrict(), foundLocation.getDistrict())));
-        verify(locationRepository, times(1)).findById(anyLong());
-    }
-
-    @Test
-    void getById_shouldReturnLocationDto() {
-        when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
-
-        locationService.getById(1L).ifPresent(foundLocation -> assertAll("Checking objects' data equal",
-                () -> assertEquals(location.getId(), foundLocation.getId()),
-                () -> assertEquals(location.getCity(), foundLocation.getCity()),
-                () -> assertEquals(location.getDistrict(), foundLocation.getDistrict())));
-        verify(locationRepository, times(1)).findById(anyLong());
+        verify(locationRepository).findById(anyLong());
     }
 
     @Test
@@ -102,6 +89,10 @@ class LocationServiceTest {
 
     @Test
     void save_shouldSaveLocation_WithLocationParameter() {
+        saveLocationBasicTest();
+    }
+
+    private void saveLocationBasicTest() {
         locationService.save(location);
         verify(locationRepository, times(1)).save(locationCaptor.capture());
         assertAll("Checking objects' data equal",
@@ -113,11 +104,7 @@ class LocationServiceTest {
     void save_shouldSaveLocation_WithLocationDtoParameter() {
         when(locationRepository.saveAndFlush(any())).thenReturn(location);
 
-        locationService.save(locationDto);
-        verify(locationRepository, times(1)).saveAndFlush(locationCaptor.capture());
-        assertAll("Checking objects' data equal",
-                () -> assertEquals(locationCaptor.getValue().getCity(), locationDto.getCity()),
-                () -> assertEquals(locationCaptor.getValue().getDistrict(), locationDto.getDistrict()));
+        saveLocationBasicTest();
     }
 
     @Test

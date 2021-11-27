@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.security.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.UserService;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean logout(String accessToken, String username) {
-        final String token = jwtTokenProvider.resolveToken(accessToken);
+        final String token = JwtTokenProvider.resolveToken(accessToken);
         if (!token.isEmpty()) {
             jwtTokenProvider.invalidateAccessToken(token);
             refreshTokenService.deleteByUsername(username);
@@ -56,8 +56,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RefreshTokenResponseDto renewAccessTokenByRefresh(String refreshToken) throws RefreshTokenException {
-        final var token = jwtTokenProvider.resolveToken(refreshToken);
-        return refreshTokenService.renewAccessTokenByRefresh(token)
+        return refreshTokenService.renewAccessTokenByRefresh(refreshToken)
                 .filter(Predicate.not(String::isEmpty))
                 .map(accessToken -> new RefreshTokenResponseDto(accessToken, refreshToken,
                         jwtTokenProvider.getAccessTokenExpiration(LocalDateTime.now()),

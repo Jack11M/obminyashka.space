@@ -4,13 +4,14 @@ const LabelSquare = styled.div`
   position: relative;
   margin-right: 20px;
   box-sizing: border-box;
-  width: 17px;
-  height: 17px;
   vertical-align: bottom;
   cursor: pointer;
   transition: all ease-in-out 0.3s;
-  ${({ theme: { colors } }) => css`
+  ${({ theme: { colors }, type }) => css`
+    width: ${type === 'radio' ? '20px' : '17px'};
+    height: ${type === 'radio' ? '20px' : '17px'};
     border: 3px solid ${colors.colorGrey};
+    border-radius: ${type === 'radio' ? '50%' : '1px'};
   `}
 
   & > svg {

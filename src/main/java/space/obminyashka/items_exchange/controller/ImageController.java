@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
@@ -29,7 +30,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
-@RequestMapping("/api/v1/image")
+@RequestMapping(ApiKey.IMAGE)
 @Api(tags = "Image")
 @RequiredArgsConstructor
 @Validated
@@ -48,7 +49,7 @@ public class ImageController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<byte[]>> getImagesResource(@ApiParam(value = "ID of the Advertisement for getting all the images", required = true)
-                                                              @PathVariable("advertisement_id")
+                                                          @PathVariable("advertisement_id")
                                                           @Positive(message = "{invalid.not-positive.id}") long id) {
         List<byte[]> imagesResource = imageService.getImagesResourceByAdvertisementId(id);
         return imagesResource.isEmpty()

@@ -43,13 +43,6 @@ public interface AdvertisementService {
     Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
 
     /**
-     * Find an advertisement by id
-     * @param advertisementId advertisement id
-     * @return {@link Optional} as result
-     */
-    Optional<Advertisement> findById(long advertisementId);
-
-    /**
      * Find an advertisement with additional owner check
      * @param advertisementId ID of an advertisement
      * @param ownerName login or email of the advertisement's owner
@@ -96,7 +89,7 @@ public interface AdvertisementService {
     AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto);
 
     /**
-     * Remove an advertisement by it's id
+     * Remove an advertisement by its id
      * @param id id of the advertisement to remove
      */
     void remove(long id);
@@ -105,12 +98,11 @@ public interface AdvertisementService {
      * Set an image as title image of an advertisement
      * @param advertisement advertisement for setting the title image
      * @param imageId id of an image that planned to be set as title image
-     * @param owner user-author of selected advertisement
      */
-    void setDefaultImage(Advertisement advertisement, Long imageId, User owner);
+    void setDefaultImage(Advertisement advertisement, Long imageId);
 
     /**
-     * Check if a user owns such advertisement and it has selected image
+     * Check if a user owns such advertisement, and it has selected image
      * @param advertisementId id of selected advertisement to check
      * @param imageId id of an image to check into the advertisement
      * @param owner user to check the advertisement and the image
@@ -125,4 +117,10 @@ public interface AdvertisementService {
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
     boolean existById(Long id);
+
+    /**
+     * Count total amount of existed advertisements
+     * @return quantity of saved advertisements
+     */
+    long count();
 }

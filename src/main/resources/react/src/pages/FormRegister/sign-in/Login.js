@@ -11,8 +11,7 @@ import InputForAuth from 'components/common/input';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 
-import { Extra, ExtraLink } from './loginStyle';
-
+import { Extra, ExtraLink, WrapperButton } from './loginStyle';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -92,18 +91,31 @@ const Login = () => {
                   {getTranslatedText('auth.noLogin', lang)}
                 </ExtraLink>
               </Extra>
-              <Button
-                text={getTranslatedText('button.enter', lang)}
-                bold
-                height="48px"
-                lHeight="24px"
-                mb="64px"
-                type="submit"
-                width="222px"
-                isLoading={loading}
-                disabling={!isValid && !dirty}
-                click={!errors.usernameOrEmail ? handleSubmit : null}
-              />
+              <WrapperButton>
+                <Button
+                  text={getTranslatedText('button.enter', lang)}
+                  bold
+                  height="48px"
+                  lHeight="24px"
+                  mb="64px"
+                  type="submit"
+                  width="222px"
+                  isLoading={loading}
+                  disabling={!isValid && !dirty}
+                  click={!errors.usernameOrEmail ? handleSubmit : null}
+                />
+                <Button
+                    text={getTranslatedText('button.googleOAuth', lang)}
+                    bold
+                    height="48px"
+                    lHeight="24px"
+                    mb="64px"
+                    type="button"
+                    width="222px"
+                    disabling={!isValid && !dirty}
+                    click={() => window.location.assign('/oauth2/authorization/google')}
+                />
+              </WrapperButton>
             </>
           );
         }}

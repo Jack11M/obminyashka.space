@@ -8,6 +8,7 @@ export const route = {
   myFavorite: '/favorites',
   mySettings: '/settings',
   exit: '/exit',
-  productPage: '/product-page',
+  productPage: '/product-page/:id',
+  oauthSuccess: '/oauth-success',
   noMatch: '*',
 };

@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.security.jwt;
+package space.obminyashka.items_exchange.authorization.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

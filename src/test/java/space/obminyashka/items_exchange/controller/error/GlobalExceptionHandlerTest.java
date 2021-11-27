@@ -29,7 +29,6 @@ import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.CategoryTestUtil;
 import space.obminyashka.items_exchange.util.ChildDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.JsonConverter;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
@@ -40,6 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.ADV;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 @SpringBootTest

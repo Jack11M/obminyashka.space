@@ -42,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
@@ -111,6 +112,15 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails(String api) throws Exception {
         sendUriAndGetResultAction(get(api), status().isOk())
                 .andExpect(jsonPath("$.length()").value(advertisementRepository.count()));
+    }
+
+    @Test
+    @DisplayName("Should return total size of existed advertisements")
+    @DataSet("database_init.yml")
+    void countAdvertisements_shouldReturnTotalAmount() throws Exception {
+        final var count = advertisementRepository.count();
+        final var mvcResult = sendUriAndGetMvcResult(get(ADV_TOTAL), status().isOk());
+        assertEquals(String.valueOf(count), mvcResult.getResponse().getContentAsString());
     }
 
     @Test

@@ -1,8 +1,8 @@
 package space.obminyashka.items_exchange.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 
 import java.util.List;
@@ -18,22 +18,6 @@ public interface UserService {
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
 
     /**
-     * Find a user into DB by checking gained param either username or email columns
-     * @param username login of the user
-     * @param email email of the user
-     * @return {@link Optional} with the user as the result
-     */
-    Optional<User> findByUsernameOrEmail(String username, String email);
-
-    /**
-     * Find a user into DB by email or username and encrypted user's password
-     * @param usernameOrEmail login or email to be checked
-     * @param encodedPassword encoded password of the user
-     * @return result of the check
-     */
-    Optional<User> findByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword);
-
-    /**
      * Find a user into DB by checking gained username and convert it into DTO
      * @param username login of the user
      * @return {@link Optional} with the converted user as the result
@@ -41,12 +25,11 @@ public interface UserService {
     Optional<UserDto> findByUsername(String username);
 
     /**
-     * Register new user with received role
+     * Register new user
      * @param userRegistrationDto DTO which contains all required data for registration the user
-     * @param role provided role which has to be set to the user
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto, Role role);
+    boolean registerNewUser(UserRegistrationDto userRegistrationDto);
 
     /**
      * Update an existed user with new data
@@ -112,14 +95,6 @@ public interface UserService {
     boolean existsByUsernameOrEmail(String username, String email);
 
     /**
-     * Check whether the user exist into DB by email or username and encrypted user's password
-     * @param usernameOrEmail login or email to be checked
-     * @param encodedPassword encoded password of the user
-     * @return result of the check
-     */
-    boolean existsByUsernameOrEmailAndPassword(String usernameOrEmail, String encodedPassword);
-
-    /**
      * Check whether received user's password matches to gained user
      * @param user user to check password
      * @param encodedPassword encoded password
@@ -163,4 +138,18 @@ public interface UserService {
      * @param user user whom the image has to be set as new avatar image
      */
     void setUserAvatar(byte[] newAvatarImage, User user);
+
+    /**
+     * Get {@link org.springframework.http.HttpHeaders#ACCEPT_LANGUAGE} and compare with stored language setting
+     * and update if they aren't equals
+     * @param refreshToken token linked with stored user in the DB
+     */
+    void updatePreferableLanguage(String refreshToken);
+
+    /**
+     * Find {@link User} from OAuth2User credentials, register if user is new
+     * @param oauth2User instance of {@link DefaultOidcUser} with the required credentials for user login/registration
+     * @return {@link User} from OAuth2User credentials if exists, otherwise register a new user and return it
+     */
+    User loginUserWithOAuth2(DefaultOidcUser oauth2User);
 }

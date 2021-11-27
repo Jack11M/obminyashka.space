@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.dto;
 
-import space.obminyashka.items_exchange.model.enums.I18n;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
@@ -37,5 +36,5 @@ public class LocationDto {
 
     @ApiModelProperty(required = true)
     @NotNull(message = "{invalid.not-null}")
-    private I18n i18N;
+    private String i18N;
 }

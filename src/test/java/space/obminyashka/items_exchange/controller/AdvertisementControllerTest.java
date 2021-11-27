@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static space.obminyashka.items_exchange.api.ApiKey.ADV;
+import static space.obminyashka.items_exchange.api.ApiKey.ADV_SEARCH_PAGINATED;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.createValidationMessage;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
@@ -58,7 +60,7 @@ class AdvertisementControllerTest extends BasicControllerTest {
                 createValidationMessage("topic", existDtoForUpdate.getTopic(), "3", "70");
         final var validationMessageDescription =
                 createValidationMessage("description", existDtoForUpdate.getDescription(), "255");
-        final var validationMessageWhishes =
+        final var validationMessageWishes =
                 createValidationMessage("wishesToExchange", existDtoForUpdate.getWishesToExchange(), "210");
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(ADV), existDtoForUpdate, status().isBadRequest());
@@ -67,7 +69,7 @@ class AdvertisementControllerTest extends BasicControllerTest {
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageSize, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageDescription, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationMessageTopic, mvcResult)),
-                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWhishes, mvcResult))
+                () -> assertTrue(isResponseContainsExpectedResponse(validationMessageWishes, mvcResult))
         );
     }
 

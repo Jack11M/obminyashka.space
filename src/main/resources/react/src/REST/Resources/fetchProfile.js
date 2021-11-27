@@ -5,7 +5,7 @@ export const getUserInfo = () => {
 };
 
 export const putUserInfo = (data) => {
-  return obminyashkaApi.put('/user/my-info', data);
+  return obminyashkaApi.put('/user/my-info', data).then(({data}) => data);
 };
 
 export const postUserChildren = (data) => {

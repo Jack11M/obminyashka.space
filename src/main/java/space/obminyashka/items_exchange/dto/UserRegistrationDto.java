@@ -29,6 +29,7 @@ public class UserRegistrationDto {
     @NotEmpty(message = "{empty.confirm.password}")
     private String confirmPassword;
 
+    @SuppressWarnings("unused")                         // Used in validation process by Spring Validator
     @AssertTrue(message = "{different.passwords}")
     private boolean isPasswordsEquals() {
         return password.equals(confirmPassword);

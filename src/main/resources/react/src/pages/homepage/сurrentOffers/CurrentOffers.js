@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { route } from '../../../routes/routeConstants';
-import ProductCard from '../../../components/item-card';
-import TitleBigBlue from '../../../components/common/title_Big_Blue';
-import { getCurrentOffers } from '../../../REST/Resources';
-import { getTranslatedText } from '../../../components/local/localisation';
-import noPhotos from '../../../assets/img/showAdv/noPhoto.svg';
+import api from 'REST/Resources';
+import { route } from 'routes/routeConstants';
+import ProductCard from 'components/item-card';
+import noPhotos from 'assets/img/showAdv/noPhoto.svg';
+import TitleBigBlue from 'components/common/title_Big_Blue';
+import { getTranslatedText } from 'components/local/localisation';
 
 import './currentOffers.scss';
 
@@ -18,7 +18,8 @@ const CurrentOffers = () => {
   const [offers, setOffers] = useState([]);
 
   useEffect(() => {
-    getCurrentOffers()
+    api.fetchHome
+      .getCurrentOffers()
       .then(({ data }) => {
         if (Array.isArray(data)) setOffers(data);
       })
@@ -28,7 +29,7 @@ const CurrentOffers = () => {
   }, []);
 
   const moveToProductPage = (id) => {
-    history.push(route.productPage + id);
+    history.push(route.productPage.replace(':id', id));
   };
 
   return (

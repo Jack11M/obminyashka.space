@@ -25,8 +25,7 @@ public class UserDto {
     @NotEmpty(message = "{invalid.not-empty}")
     @Email(message = "{invalid.email}")
     private String email;
-    @NotNull(message = "{invalid.not-null}")
-    private Boolean online;
+    private boolean online;
     @ApiModelProperty(value = "Empty or 2-50 symbols", example = "Mariana, Мар'яна, Марьяна")
     @NotNull(message = "{invalid.not-null}")
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50, message = "{invalid.first-or-last.name}")

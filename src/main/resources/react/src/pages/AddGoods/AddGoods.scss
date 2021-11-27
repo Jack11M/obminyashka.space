@@ -90,6 +90,7 @@
             .change_input {
               position: relative;
               min-width: 250px;
+              box-sizing: border-box;
               height: 32px;
               margin: 7px;
               border: none;
@@ -99,6 +100,9 @@
               caret-color: #00c0ff;
             }
           }
+        }
+        .border_focus {
+          border-color: hsl(0, 0%, 44%);
         }
       }
 
@@ -135,12 +139,19 @@
 
         .description_textarea {
           margin-top: 16px;
-          resize: none;
-          width: 100%;
-          min-height: 115px;
-          font-size: 16px;
-          outline: none;
           padding: 10px;
+          width: 100%;
+          min-height: 150px;
+          font-size: 16px;
+          line-height: 24px;
+          outline: none;
+          resize: none;
+          border: 1px solid #bcbcbc;
+          border-radius: 2px;
+          caret-color: #00c0ff;
+          &:focus {
+            border-color: hsl(0, 0%, 44%);
+          }
         }
       }
 

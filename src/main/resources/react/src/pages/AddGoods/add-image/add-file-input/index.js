@@ -33,7 +33,7 @@ const AddFileInput = ({ onChange }) => {
         multiple
         type="file"
         name="file"
-        accept=".png, .jpg, .jpeg"
+        accept=".png, .jpg, .jpeg, .gif"
         onChange={onChange}
       />
       {drag ? <Image src={dropsPng} alt="drop" /> : <SpanAdd />}

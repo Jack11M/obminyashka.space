@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.security.jwt;
+package space.obminyashka.items_exchange.authorization.jwt;
 
 import io.jsonwebtoken.*;
 import liquibase.util.StringUtil;
@@ -128,7 +128,7 @@ public class JwtTokenProvider {
         return resolvedToken;
     }
 
-    public String resolveToken(String token) {
+    public static String resolveToken(String token) {
         if (!StringUtil.isEmpty(token)) {
             if (token.startsWith(BEARER_PREFIX)) {
                 return token.substring(BEARER_PREFIX.length());

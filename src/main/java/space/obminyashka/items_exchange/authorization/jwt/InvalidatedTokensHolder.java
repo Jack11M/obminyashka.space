@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.security.jwt;
+package space.obminyashka.items_exchange.authorization.jwt;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

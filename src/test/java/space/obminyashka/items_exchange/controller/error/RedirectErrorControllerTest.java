@@ -17,10 +17,10 @@ class RedirectErrorControllerTest {
     @Test
     void redirectError_shouldReturn404AndFallTrough_whenUrlNotFound() {
 
-        ResponseEntity<String> response = template.getForEntity("/page-not-exist", String.class);
+        ResponseEntity<String> response = template.getForEntity("/user/page-not-exist", String.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         final var body = response.getBody();
         assertNotNull(body);
-        assertTrue(body.contains("\"path\":\"/page-not-exist\""), "ErrorController has to pass URL and 404 to React part");
+        assertTrue(body.contains("\"path\":\"/user/page-not-exist\""), "ErrorController has to pass URL and 404 to React part");
     }
 }

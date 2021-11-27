@@ -12,9 +12,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
@@ -22,11 +25,9 @@ import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.exception.RoleNotFoundException;
-import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.service.AuthService;
-import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,17 +38,14 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(ApiKey.AUTH)
 @Api(tags = "Authorization")
 @RequiredArgsConstructor
 @Validated
 public class AuthController {
 
-    private static final String ROLE_USER = "ROLE_USER";
-
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final RoleService roleService;
     private final AuthService authService;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,14 +86,13 @@ public class AuthController {
             @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto)
-            throws BadRequestException, RoleNotFoundException, DataConflictException {
+            throws BadRequestException, DataConflictException {
 
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
             throw new DataConflictException(getMessageSource("username-email.duplicate"));
         }
 
-        Role role = roleService.getRole(ROLE_USER).orElseThrow(RoleNotFoundException::new);
-        if (userService.registerNewUser(userRegistrationDto, role)) {
+        if (userService.registerNewUser(userRegistrationDto)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
             return new ResponseEntity<>(getMessageSource("user.created"), HttpStatus.CREATED);
         }
@@ -111,8 +108,25 @@ public class AuthController {
             @ApiResponse(code = 401, message = "Refresh token is expired or not exist")
     })
     @ResponseStatus(HttpStatus.OK)
-    public RefreshTokenResponseDto refreshToken(@ApiParam(required = true) @RequestHeader("refresh_token") String refreshToken)
-            throws RefreshTokenException {
-        return authService.renewAccessTokenByRefresh(refreshToken);
+    public RefreshTokenResponseDto refreshToken(@ApiParam(required = true)
+                                                @RequestHeader(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken) throws RefreshTokenException {
+        final var resolvedToken = JwtTokenProvider.resolveToken(refreshToken);
+        userService.updatePreferableLanguage(resolvedToken);
+        return authService.renewAccessTokenByRefresh(resolvedToken);
+    }
+
+    @PostMapping(value = "/oauth2/success", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Finish login via OAuth2")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "BAD REQUEST"),
+            @ApiResponse(code = 404, message = "NOT FOUND")
+    })
+    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@ApiIgnore Authentication authentication) {
+        try {
+            return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException(getMessageSource("invalid.oauth2.login"));
+        }
     }
 }

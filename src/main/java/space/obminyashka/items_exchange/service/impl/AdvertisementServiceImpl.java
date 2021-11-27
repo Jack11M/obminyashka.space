@@ -2,11 +2,10 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.model.User;
@@ -27,10 +27,10 @@ import space.obminyashka.items_exchange.service.SubcategoryService;
 import javax.persistence.EntityNotFoundException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
 
+@CacheConfig(cacheNames = "titles")
 @Service
 @RequiredArgsConstructor
 public class AdvertisementServiceImpl implements AdvertisementService {
@@ -46,28 +46,30 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    @Cacheable("advertisements")
+    @Cacheable(key = "#pageable.pageNumber")
     public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
         List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
         return mapAdvertisementsToTitleDto(content);
     }
 
     @Override
-    @Cacheable("advertisements")
+    @Cacheable
     public List<AdvertisementTitleDto> findRandom12Thumbnails() {
-        final var totalRecordsSize = advertisementRepository.count();
+        final var totalRecordsSize = count();
         final var resultsQuantity = 12;
         final var bound = (int) (totalRecordsSize / resultsQuantity);
         final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
         return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity));
     }
 
+    @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
         final var allForUser = advertisementRepository.findAllByUserUsername(username);
         return mapAdvertisementsToTitleDto(allForUser);
     }
 
+    @Cacheable(key = "#keyword")
     @Override
     public Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable) {
         final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
@@ -82,18 +84,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Optional<Advertisement> findById(long advertisementId) {
-        return advertisementRepository.findById(advertisementId);
-    }
-
-    @Override
     public Optional<Advertisement> findByIdAndOwnerUsername(long advertisementId, String ownerName) {
         return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
     }
 
     @Override
     public Optional<AdvertisementDisplayDto> findDtoById(long id) {
-        return findById(id).map(this::buildAdvertisementDisplayDto);
+        return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }
 
     @Override
@@ -116,20 +113,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto dto, User owner, List<byte[]> compressedImages) {
-        Advertisement adv = mapDtoToAdvertisement(dto);
+        Advertisement adv = UtilMapper.convertTo(dto, Advertisement.class);
         adv.setUser(owner);
         adv.setStatus(Status.NEW);
         adv.setImages(compressedImages.stream().map(image -> new Image(0L, image, adv)).toList());
-        adv.setDefaultPhoto(compressedImages.get(0));
+        adv.setDefaultPhoto(imageService.scale(compressedImages.get(0)));
         updateSubcategory(adv, dto.getSubcategoryId());
         updateLocation(adv, dto.getLocationId());
-        return mapAdvertisementToDto(advertisementRepository.save(adv));
+        return UtilMapper.convertTo(advertisementRepository.save(adv), AdvertisementModificationDto.class);
     }
 
     @Override
-    @CachePut(value = "advertisement", key = "#dto.id")
     public AdvertisementModificationDto updateAdvertisement(AdvertisementModificationDto dto) {
-        Advertisement toUpdate = mapDtoToAdvertisement(dto);
+        Advertisement toUpdate = UtilMapper.convertTo(dto, Advertisement.class);
         Advertisement fromDB = advertisementRepository.findById(dto.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
@@ -138,7 +134,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         updateLocation(fromDB, toUpdate.getLocation().getId());
         fromDB.setStatus(Status.UPDATED);
         Advertisement updatedAdvertisement = advertisementRepository.saveAndFlush(fromDB);
-        return mapAdvertisementToDto(updatedAdvertisement);
+        return UtilMapper.convertTo(updatedAdvertisement, AdvertisementModificationDto.class);
     }
 
     @Override
@@ -163,14 +159,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    @CacheEvict(value = "advertisements", key = "#id")
+    @CacheEvict(key = "#id")
     public void remove(long id) {
         advertisementRepository.deleteById(id);
         advertisementRepository.flush();
     }
 
     @Override
-    public void setDefaultImage(Advertisement advertisement, Long imageId, User owner) {
+    public void setDefaultImage(Advertisement advertisement, Long imageId) {
         advertisement.getImages().stream()
                 .filter(img -> img.getId() == imageId)
                 .findFirst()
@@ -182,17 +178,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
-        return advertisements.stream().map(this::buildAdvertisementTitle).collect(Collectors.toList());
-    }
-
-    private Advertisement mapDtoToAdvertisement(AdvertisementModificationDto dto) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return modelMapper.map(dto, Advertisement.class);
-    }
-
-    private AdvertisementModificationDto mapAdvertisementToDto(Advertisement advertisement) {
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        return modelMapper.map(advertisement, AdvertisementModificationDto.class);
+        return advertisements.stream().map(this::buildAdvertisementTitle).toList();
     }
 
     @Override
@@ -202,6 +188,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)
                 .anyMatch(image -> image.getId() == imageId);
+    }
+
+    @Override
+    public long count() {
+        return advertisementRepository.count();
     }
 
     private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
