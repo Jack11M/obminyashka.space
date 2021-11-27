@@ -27,7 +27,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         if (Array.isArray(categories)) {
           setReceivedCategories(categories);
         } else {
-          throw { message: 'OOps I didn’t get the category' };
+          throw { message: 'OOps, I didn’t get the category' };
         }
       } catch (err) {
         console.log(err.response?.data ?? err.message);

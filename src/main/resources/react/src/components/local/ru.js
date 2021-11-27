@@ -90,7 +90,7 @@ const ru = {
     removeField: 'Удалить поле',
     saveChanges: 'Сохранить изменения',
     enter: 'Войти',
-    googleOAuth: 'Войти (Google)',
+    googleOAuth: 'Войти',
     look: 'Смотреть',
     save: 'СОХРАНИТЬ',
     saveEmail: 'СОХРАНИТЬ EMAIL',

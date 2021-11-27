@@ -20,8 +20,12 @@ const Exchange = ({ exchangeList, setExchange }) => {
   };
 
   const keyEnter = (event) => {
-    if (!exchangeInput) return;
-    if (event.which === 13) {
+    if (!exchangeInput) {
+      if (event.key === 'Enter') event.preventDefault();
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
       setExchange((prev) => [...prev, exchangeInput]);
       setExchangeInput('');
     }
@@ -65,14 +69,14 @@ const Exchange = ({ exchangeList, setExchange }) => {
 
         <div className="change_input-wrapper">
           <input
-            className="change_input"
             type="text"
-            placeholder={getTranslatedText('addAdv.placeholderChange', lang)}
             onBlur={onBlur}
             onFocus={onFocus}
             value={exchangeInput}
             onKeyPress={keyEnter}
             onChange={handleInput}
+            className="change_input"
+            placeholder={getTranslatedText('addAdv.placeholderChange', lang)}
           />
         </div>
       </div>

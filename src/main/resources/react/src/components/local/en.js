@@ -90,7 +90,7 @@ const en = {
     removeField: 'Remove field',
     saveChanges: 'Save changes',
     enter: 'Enter',
-    googleOAuth: 'Enter (Google)',
+    googleOAuth: 'Enter',
     look: 'View',
     save: 'SAVE',
     saveEmail: 'SAVE EMAIL',

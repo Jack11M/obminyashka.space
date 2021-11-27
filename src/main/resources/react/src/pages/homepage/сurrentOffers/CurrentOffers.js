@@ -21,6 +21,7 @@ const CurrentOffers = () => {
     api.fetchHome
       .getCurrentOffers()
       .then(({ data }) => {
+        console.log(data);
         if (Array.isArray(data)) setOffers(data);
       })
       .catch((e) => {

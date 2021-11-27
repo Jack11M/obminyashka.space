@@ -1,5 +1,9 @@
 import { obminyashkaApi } from '../Service/networkProvider';
 
+export const sendNewAdv = (payload) => {
+  return obminyashkaApi.post('/adv', payload).then(({ data }) => data);
+};
+
 export const getCategoryAll = () => {
   return obminyashkaApi.get('/category/all').then(({ data }) => data);
 };

@@ -11,6 +11,7 @@ import { ReactComponent as QuestionMarkSvg } from './question-mark.svg';
 import { ReactComponent as SearchSvg } from './search.svg';
 import { ReactComponent as SettingsSvg } from './settings.svg';
 import { ReactComponent as StarSvg } from './star.svg';
+import { ReactComponent as GoogleSvg } from './google.svg';
 
 export {
   HomeSvg,
@@ -21,6 +22,7 @@ export {
   PhoneSvg,
   LogoutSvg,
   SearchSvg,
+  GoogleSvg,
   ProfileSvg,
   ActivitySvg,
   LocationSvg,

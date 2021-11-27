@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { NO_SPACE } from 'config';
+import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
 import CheckBox from 'components/common/checkbox';
@@ -105,15 +106,17 @@ const Login = () => {
                   click={!errors.usernameOrEmail ? handleSubmit : null}
                 />
                 <Button
-                    text={getTranslatedText('button.googleOAuth', lang)}
-                    bold
-                    height="48px"
-                    lHeight="24px"
-                    mb="64px"
-                    type="button"
-                    width="222px"
-                    disabling={!isValid && !dirty}
-                    click={() => window.location.assign('/oauth2/authorization/google')}
+                  bold
+                  mb="64px"
+                  height="48px"
+                  type="button"
+                  width="175px"
+                  lHeight="24px"
+                  icon={<GoogleSvg />}
+                  text={getTranslatedText('button.googleOAuth', lang)}
+                  click={() =>
+                    window.location.assign('/oauth2/authorization/google')
+                  }
                 />
               </WrapperButton>
             </>

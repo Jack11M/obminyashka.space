@@ -89,7 +89,7 @@ const ua = {
     removeField: 'Видалити поле',
     saveChanges: 'Зберегти зміни',
     enter: 'Увійти',
-    googleOAuth: 'Увійти (Google)',
+    googleOAuth: 'Увійти',
     look: 'Дивитись',
     save: 'ЗБЕРЕГТИ',
     saveEmail: 'ЗБЕРЕГТИ EMAIL',

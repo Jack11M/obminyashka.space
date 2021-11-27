@@ -2,12 +2,14 @@ import React, { useContext, useState } from 'react';
 import { Form } from 'formik';
 import { useSelector } from 'react-redux';
 
+import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM.js';
 import { ModalContext } from 'components/common/pop-up';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
+import { sendNewAdv } from 'REST/Resources/fetchAddGood';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -154,9 +156,31 @@ const AddGoods = () => {
     changeStateForImagesWhenDrop(imageFiles, setImageFiles, index);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     console.log(values);
-    return values;
+    const { images, ...rest } = values;
+
+    console.log(images, rest);
+
+    let data = new FormData();
+
+    //
+    data.append('dto', JSON.stringify(rest));
+    // data.append()
+    images.forEach((item) => data.append('image', item));
+
+    // const arr = Object.entries(rest);
+    //
+    // arr.forEach(([key, value]) => {
+    //   console.log( {key, value});
+    //   data.append(key, value);
+    // });
+    try {
+      const a = await api.fetchAddGood.sendNewAdv(data);
+      console.log(a);
+    } catch (e) {
+      console.log(e.response);
+    }
   };
 
   const initialValues = {
@@ -244,7 +268,10 @@ const AddGoods = () => {
                     ))}
                   </div>
 
-                  <Sizes categories={categoryItems} dimension={{ size, setSize }} />
+                  <Sizes
+                    categories={categoryItems}
+                    dimension={{ size, setSize }}
+                  />
                 </div>
               </div>
               <div className="description">
