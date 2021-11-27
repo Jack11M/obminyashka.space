@@ -137,8 +137,8 @@ public class AdvertisementController {
                 new ResponseEntity<>(advertisementsByMultipleParams, HttpStatus.OK);
     }
 
-    @PostMapping
-    @ApiOperation(value = "Create a new advertisement", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @ApiOperation(value = "Create a new advertisement")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "CREATED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
