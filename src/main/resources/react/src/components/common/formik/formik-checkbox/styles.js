@@ -8,10 +8,10 @@ const LabelSquare = styled.div`
   cursor: pointer;
   transition: all ease-in-out 0.3s;
   ${({ theme: { colors }, type }) => css`
-    width: ${type === 'radio' ? '20px' : '17px'};
-    height: ${type === 'radio' ? '20px' : '17px'};
+    width: ${type === 'checkbox' ? '17px' : '20px'};
+    height: ${type === 'checkbox' ? '17px' : '20px'};
     border: 3px solid ${colors.colorGrey};
-    border-radius: ${type === 'radio' ? '50%' : '1px'};
+    border-radius: ${type === 'checkbox' ? '1px' : '50%'};
   `}
 
   & > svg {
@@ -41,6 +41,7 @@ const Input = styled.input`
 const Div = styled.div`
   display: flex;
   transition: all ease-in-out 0.3s;
+  width: fit-content;
 
   ${(p) => css`
     margin: ${p.margin || '0 0 22px 0'};

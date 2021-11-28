@@ -2,7 +2,7 @@ import React from 'react';
 
 import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn.js';
 
-import { ButtonBlue , WrapIcon} from './styles.js';
+import { ButtonBlue, WrapIcon } from './styles.js';
 
 const Button = ({
   mb,
@@ -29,7 +29,7 @@ const Button = ({
       className={whatClass}
     >
       {isLoading ? <SpinnerForAuthBtn /> : text}
-      <WrapIcon>{icon}</WrapIcon>
+      {icon && <WrapIcon>{icon}</WrapIcon>}
     </ButtonBlue>
   );
 };

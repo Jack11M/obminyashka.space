@@ -16,7 +16,12 @@ import {
   ItemDescription,
 } from './styles';
 
-const SelectionSection = ({ category, subcategory, announcement }) => {
+const SelectionSection = ({
+  category,
+  subcategory,
+  announcement,
+  readyOffers,
+}) => {
   const { lang } = useSelector((state) => state.auth);
   const [receivedCategories, setReceivedCategories] = useState([]);
 
@@ -101,6 +106,9 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         type="checkbox"
         margin="22px 0 0 -7px"
         name="readyForOffers"
+        value="readyForOffers"
+        onChange={readyOffers.setReadyOffer}
+        selectedValues={readyOffers.readyOffer}
         text={getTranslatedText('addAdv.readyForOffers', lang)}
       />
     </AddChoose>

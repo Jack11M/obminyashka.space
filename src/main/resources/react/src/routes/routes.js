@@ -16,6 +16,9 @@ const Routes = () => {
   const { isAuthed } = useSelector((state) => state.auth);
 
   return (
+    <div>
+
+
     <Switch>
       <Route path={route.home} component={HomePage} exact />
       <Protected
@@ -40,6 +43,7 @@ const Routes = () => {
     <Route path={`${route.productPage}`} component={ProductPage} />
     <Route path={route.noMatch} component={FourOhFourPage} />
     </Switch>
+    </div>
   );
 };
 

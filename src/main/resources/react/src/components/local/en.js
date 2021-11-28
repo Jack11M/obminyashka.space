@@ -200,6 +200,8 @@ const en = {
       'The first uploaded photo will be the title photo of the item',
     photosUploaded: 'Photos uploaded',
     from: 'from',
+    preview: 'Preview',
+    cancel: 'Cancel everything',
   },
   categories: {
     Clothing: 'Clothing',

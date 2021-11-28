@@ -7,13 +7,8 @@ import { InputLocation } from './input-location';
 
 import { WrapContainer } from './styles.js';
 
-const Location = ({ setLocationId, setLocationCurrent }) => {
+const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
   const { lang } = useSelector((state) => state.auth);
-
-  const [inputLocation, setInputLocation] = useState({
-    city: '',
-    area: '',
-  });
 
   const [location, setLocation] = useState({
     RU: [],
@@ -28,8 +23,8 @@ const Location = ({ setLocationId, setLocationCurrent }) => {
         name="area"
         location={location}
         setLocation={setLocation}
-        inputLocation={inputLocation}
-        setInputLocation={setInputLocation}
+        inputLocation={onInputLocation.showLocation}
+        setInputLocation={onInputLocation.setShowLocation}
         title={getTranslatedText('addAdv.district', lang)}
       />
       <InputLocation
@@ -37,10 +32,10 @@ const Location = ({ setLocationId, setLocationCurrent }) => {
         name="city"
         location={location}
         setLocation={setLocation}
-        inputLocation={inputLocation}
         setLocationId={setLocationId}
-        setInputLocation={setInputLocation}
         setLocationCurrent={setLocationCurrent}
+        inputLocation={onInputLocation.showLocation}
+        setInputLocation={onInputLocation.setShowLocation}
         title={getTranslatedText('addAdv.city', lang)}
       />
     </WrapContainer>

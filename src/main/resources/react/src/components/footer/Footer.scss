@@ -1,11 +1,12 @@
 @import '../partials/variables';
 
 .HomePageFooter {
+  position: relative;
+  margin-top: auto;
   background-image: url(../../assets/img/footerBg.png);
   background-size: cover;
   background-position: top;
   background-repeat: no-repeat;
-  position: relative;
   z-index: 2;
   color: #fff;
 

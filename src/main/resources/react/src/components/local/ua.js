@@ -198,6 +198,8 @@ const ua = {
     firstUploadDescription: 'Перше фото стане обкладинкою картки товару',
     photosUploaded: 'Завантажено фотографій',
     from: 'з',
+    preview: 'Попередній перегляд',
+    cancel: 'Скасувати все',
   },
   categories: {
     Clothing: 'Одяг',

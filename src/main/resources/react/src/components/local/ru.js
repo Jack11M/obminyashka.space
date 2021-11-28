@@ -200,6 +200,8 @@ const ru = {
     firstUploadDescription: 'Первое фото станет обложкой карточки товара',
     photosUploaded: 'Загружено фотографий',
     from: 'из',
+    preview: 'Предпросмотр',
+    cancel: 'Отменить все',
   },
   categories: {
     Clothing: 'Одежда',

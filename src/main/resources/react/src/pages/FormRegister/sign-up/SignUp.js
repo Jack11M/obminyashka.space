@@ -1,3 +1,4 @@
+import { GoogleSvg } from 'assets/icons';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -19,6 +20,7 @@ import {
 } from 'config';
 
 import { Extra } from '../sign-in/loginStyle';
+import { WrapperButton } from '../sign-in/loginStyle';
 
 const SignUp = () => {
   const history = useHistory();
@@ -76,77 +78,98 @@ const SignUp = () => {
   const initialRegisterValues = validationRegisterSchema.cast({});
 
   return (
-    <form>
-      <Formik
-        initialValues={initialRegisterValues}
-        validationSchema={validationRegisterSchema}
-        validateOnBlur
-        onSubmit={async (dataFormik, onSubmitProps) => {
-          setLoading(true);
-          try {
-            await api.fetchAuth.postAuthRegister(dataFormik);
-            setLoading(false);
-            history.push(route.login);
-          } catch (err) {
-            setLoading(false);
-            if (err.response.status === 409) {
-              const { error: message } = err.response.data;
-              onSubmitProps.setErrors({ username: message });
+    <>
+      <form>
+        <Formik
+          initialValues={initialRegisterValues}
+          validationSchema={validationRegisterSchema}
+          validateOnBlur
+          onSubmit={async (dataFormik, onSubmitProps) => {
+            setLoading(true);
+            try {
+              await api.fetchAuth.postAuthRegister(dataFormik);
+              setLoading(false);
+              history.push(route.login);
+            } catch (err) {
+              setLoading(false);
+              if (err.response.status === 409) {
+                const { error: message } = err.response.data;
+                onSubmitProps.setErrors({ username: message });
+              }
             }
-          }
-        }}
-      >
-        {({ errors, isSubmitting, handleSubmit, isValid, dirty }) => {
-          return (
-            <>
-              <div>
-                <InputForAuth
-                  text={getTranslatedText('auth.regEmail', lang)}
-                  name="email"
-                  type="email"
-                />
-                <InputForAuth
-                  text={getTranslatedText('auth.regLogin', lang)}
-                  name="username"
-                  type="text"
-                />
-                <InputForAuth
-                  text={getTranslatedText('auth.regPassword', lang)}
-                  name="password"
-                  type="password"
-                />
-                <InputForAuth
-                  text={getTranslatedText('auth.regConfirm', lang)}
-                  name="confirmPassword"
-                  type="password"
-                />
-              </div>
-              <Extra>
-                <CheckBox
-                  text={getTranslatedText('auth.agreement', lang)}
-                  margin="0 0 44px 0"
-                  fontSize="14px"
-                  checked={checkbox}
-                  click={changeCheckBox}
-                />
-              </Extra>
-              <Button
-                text={getTranslatedText('auth.signUp', lang)}
-                mb="44px"
-                bold
-                type="submit"
-                lHeight="24px"
-                width="222px"
-                height="48px"
-                isLoading={loading}
-                disabling={!checkbox || isSubmitting || (!dirty && !isValid)}
-                click={!errors.email || !errors.username ? handleSubmit : null}
-              />
-            </>
-          );
-        }}
-      </Formik>
-    </form>
+          }}
+        >
+          {({ errors, isSubmitting, handleSubmit, isValid, dirty }) => {
+            return (
+              <>
+                <div>
+                  <InputForAuth
+                    text={getTranslatedText('auth.regEmail', lang)}
+                    name="email"
+                    type="email"
+                  />
+                  <InputForAuth
+                    text={getTranslatedText('auth.regLogin', lang)}
+                    name="username"
+                    type="text"
+                  />
+                  <InputForAuth
+                    text={getTranslatedText('auth.regPassword', lang)}
+                    name="password"
+                    type="password"
+                  />
+                  <InputForAuth
+                    text={getTranslatedText('auth.regConfirm', lang)}
+                    name="confirmPassword"
+                    type="password"
+                  />
+                </div>
+                <Extra>
+                  <CheckBox
+                    text={getTranslatedText('auth.agreement', lang)}
+                    margin="0 0 44px 0"
+                    fontSize="14px"
+                    checked={checkbox}
+                    click={changeCheckBox}
+                  />
+                </Extra>
+                <WrapperButton>
+                  <Button
+                    text={getTranslatedText('auth.signUp', lang)}
+                    bold
+                    mb="44px"
+                    type="submit"
+                    width="222px"
+                    height="48px"
+                    lHeight="24px"
+                    isLoading={loading}
+                    disabling={
+                      !checkbox || isSubmitting || (!dirty && !isValid)
+                    }
+                    click={
+                      !errors.email || !errors.username ? handleSubmit : null
+                    }
+                  />
+                  <Button
+                    bold
+                    mb="64px"
+                    height="48px"
+                    type="button"
+                    width="222px"
+                    lHeight="24px"
+                    icon={<GoogleSvg />}
+                    text={getTranslatedText('auth.signUp', lang)}
+                    click={() =>
+                      window.location.assign('/oauth2/authorization/google')
+                    }
+                  />
+                </WrapperButton>
+              </>
+            );
+          }}
+        </Formik>
+      </form>
+    </>
   );
 };
 

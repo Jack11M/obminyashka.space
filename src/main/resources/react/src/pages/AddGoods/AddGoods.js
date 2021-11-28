@@ -1,15 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { Form } from 'formik';
+import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
+import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM.js';
 import { ModalContext } from 'components/common/pop-up';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
-import { sendNewAdv } from 'REST/Resources/fetchAddGood';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -22,6 +23,7 @@ import { AddFileInput } from './add-image/add-file-input';
 import './AddGoods.scss';
 
 const AddGoods = () => {
+  const { genderEnum, seasonEnum } = ru;
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
 
@@ -33,8 +35,16 @@ const AddGoods = () => {
 
   const [categoryItems, setCategoryItems] = useState('');
   const [subCategoryItems, setSubCategoryItems] = useState('');
+  const [readyOffer, setReadyOffer] = useState([]);
+  const [age, setAge] = useState([]);
+  const [gender, setGender] = useState([]);
+  const [season, setSeason] = useState([]);
   const [size, setSize] = useState('');
   const [locationCurrent, setLocationCurrent] = useState(null);
+  const [showLocation, setShowLocation] = useState({
+    city: '',
+    area: '',
+  });
 
   const [preViewImage, setPreViewImage] = useState([]);
   const [currentIndexImage, setCurrentIndexImage] = useState(null);
@@ -156,64 +166,81 @@ const AddGoods = () => {
     changeStateForImagesWhenDrop(imageFiles, setImageFiles, index);
   };
 
+  const validationAdv = Yup.object().shape({
+    id: Yup.number().default(() => 0),
+    dealType: Yup.string().default(() => 'EXCHANGE'),
+    categoryId: Yup.number().default(() => categoryItems?.id),
+    subcategoryId: Yup.number().default(() => subCategoryItems?.id),
+    topic: Yup.string()
+      .min(3, () => console.log('topic 3'))
+      .max(30, () => console.log('topic 70'))
+      .default(() => announcementTitle),
+    readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
+    wishesToExchange: Yup.string()
+      .required(() => console.log('required'))
+      .default(() => exchangeList.join(',')),
+    age: Yup.string().default(() => age.join('')),
+    gender: Yup.string().default(() => gender.join('')),
+    season: Yup.string().default(() => season.join('')),
+    size: Yup.string().default(() => size),
+    description: Yup.string().max(255, () => console.log('description')).default(() => description),
+    locationId: Yup.string().default(() => locationId),
+    images: Yup.array()
+      .nullable()
+      .default(() => imageFiles),
+  });
+
   const handleSubmit = async (values) => {
-    console.log(values);
     const { images, ...rest } = values;
-
-    console.log(images, rest);
-
+    console.log(values);
     let data = new FormData();
-
-    //
     data.append('dto', JSON.stringify(rest));
-    // data.append()
+
     images.forEach((item) => data.append('image', item));
 
-    // const arr = Object.entries(rest);
-    //
-    // arr.forEach(([key, value]) => {
-    //   console.log( {key, value});
-    //   data.append(key, value);
-    // });
     try {
       const a = await api.fetchAddGood.sendNewAdv(data);
       console.log(a);
-    } catch (e) {
-      console.log(e.response);
+    } catch (err) {
+      console.log(err.response.data);
     }
   };
+  const initialValues = validationAdv.cast({});
+  const agesShow = Object.keys(enumAge);
+  const sexShow = Object.keys(genderEnum);
+  const seasonShow = Object.keys(seasonEnum);
 
-  const initialValues = {
-    id: 0,
-    dealType: 'EXCHANGE',
-    categoryId: categoryItems?.id,
-    subcategoryId: subCategoryItems?.id,
-    topic: announcementTitle,
-    readyForOffers: false,
-    wishesToExchange: exchangeList.join(','),
-    age: '',
-    gender: '',
-    season: '',
-    size: size,
-    description: description,
-    locationId: locationId,
-    images: imageFiles,
+  const resetAll = () => {
+    setAnnouncementTitle('');
+    setExchangeList([]);
+    setDescription('');
+    setLocationId(null);
+    setImageFiles([]);
+    setCategoryItems('');
+    setSubCategoryItems('');
+    setReadyOffer([]);
+    setAge([]);
+    setGender([]);
+    setSeason([]);
+    setSize('');
+    setLocationCurrent(null);
+    setPreViewImage([]);
+    setCurrentIndexImage(null);
+    setShowLocation({ city: '', area: '' });
   };
-  const ages = Object.keys(enumAge);
-  const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
-  const season = ['ALL_SEASONS', 'DEMI_SEASON', 'SUMMER', 'WINTER'];
 
   return (
     <FormHandler
       onSubmit={handleSubmit}
       initialValues={initialValues}
-      // validationSchema={createSchema}
+      validationSchema={validationAdv}
     >
       <Form>
         <main className="add">
           <div className="add_container">
             <div className="add_inner">
               <SelectionSection
+                readyOffers={{ readyOffer, setReadyOffer }}
                 category={{ categoryItems, setCategoryItems }}
                 subcategory={{ subCategoryItems, setSubCategoryItems }}
                 announcement={{ announcementTitle, setAnnouncementTitle }}
@@ -229,7 +256,7 @@ const AddGoods = () => {
                 <div className="characteristics_items">
                   <div className="characteristics_item">
                     <h4>{getTranslatedText(`addAdv.age`, lang)}:</h4>
-                    {ages.map((item, idx) => (
+                    {agesShow.map((item, idx) => (
                       <FormikCheckBox
                         key={item + idx}
                         text={enumAge[item]}
@@ -237,33 +264,39 @@ const AddGoods = () => {
                         name="age"
                         type="radio"
                         margin="0 0 15px -7px"
+                        onChange={setAge}
+                        selectedValues={age}
                       />
                     ))}
                   </div>
                   <div className="characteristics_item">
                     <h4>{getTranslatedText(`addAdv.sex`, lang)}:</h4>
-                    {sex.map((item, idx) => (
+                    {sexShow.map((item, idx) => (
                       <FormikCheckBox
                         key={item + idx}
-                        text={getTranslatedText(`genderEnum.${item}`, lang)}
                         value={item}
                         name="gender"
                         type="radio"
                         margin="0 0 15px -7px"
+                        onChange={setGender}
+                        selectedValues={gender}
+                        text={getTranslatedText(`genderEnum.${item}`, lang)}
                       />
                     ))}
                   </div>
 
                   <div className="characteristics_item">
                     <h4>{getTranslatedText(`addAdv.season`, lang)}:</h4>
-                    {season.map((item, idx) => (
+                    {seasonShow.map((item, idx) => (
                       <FormikCheckBox
                         key={item + idx}
-                        text={getTranslatedText(`seasonEnum.${item}`, lang)}
                         value={item}
                         name="season"
                         type="radio"
                         margin="0 0 15px -7px"
+                        onChange={setSeason}
+                        selectedValues={season}
+                        text={getTranslatedText(`seasonEnum.${item}`, lang)}
                       />
                     ))}
                   </div>
@@ -283,6 +316,7 @@ const AddGoods = () => {
                   {getTranslatedText(`addAdv.describeText`, lang)}
                 </p>
                 <textarea
+                  value={description}
                   className="description_textarea"
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -291,6 +325,7 @@ const AddGoods = () => {
               <Location
                 setLocationId={setLocationId}
                 setLocationCurrent={setLocationCurrent}
+                onInputLocation={{ showLocation, setShowLocation }}
               />
 
               <div className="files">
@@ -328,12 +363,13 @@ const AddGoods = () => {
                   <ButtonAdv type="submit" />
                   <Button
                     whatClass="preview"
-                    text="Предпросмотр"
-                    width="222px"
+                    text={getTranslatedText(`addAdv.preview`, lang)}
+                    width={lang === 'ua' ? '270px' : '222px'}
                   />
                 </div>
-                <div className="cancel">
-                  <p>Отменить все</p>
+                <div className="cancel" onClick={resetAll}>
+                  <div className="cross" />
+                  <p>{getTranslatedText(`addAdv.cancel`, lang)}</p>
                 </div>
               </div>
             </div>
