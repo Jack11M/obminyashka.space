@@ -13,7 +13,8 @@ import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.UserService;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -23,6 +24,8 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParamet
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
+    private static final String TIMEZONE_KIEV = "Europe/Kiev";
 
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenProvider jwtTokenProvider;
@@ -35,8 +38,8 @@ public class AuthServiceImpl implements AuthService {
             final var userLoginResponseDto = modelMapper.map(user.get(), UserLoginResponseDto.class);
             userLoginResponseDto.setAccessToken(jwtTokenProvider.createAccessToken(username, user.get().getRole()));
             userLoginResponseDto.setRefreshToken(refreshTokenService.createRefreshToken(username).getToken());
-            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenProvider.getAccessTokenExpiration(LocalDateTime.now()));
-            userLoginResponseDto.setRefreshTokenExpirationDate(jwtTokenProvider.getRefreshTokenExpiration(LocalDateTime.now()));
+            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenProvider.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
+            userLoginResponseDto.setRefreshTokenExpirationDate(jwtTokenProvider.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
             log.info("User {} is successfully logged in", username);
             return Optional.of(userLoginResponseDto);
         }
@@ -59,8 +62,8 @@ public class AuthServiceImpl implements AuthService {
         return refreshTokenService.renewAccessTokenByRefresh(refreshToken)
                 .filter(Predicate.not(String::isEmpty))
                 .map(accessToken -> new RefreshTokenResponseDto(accessToken, refreshToken,
-                        jwtTokenProvider.getAccessTokenExpiration(LocalDateTime.now()),
-                        jwtTokenProvider.getRefreshTokenExpiration(LocalDateTime.now())))
+                        jwtTokenProvider.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))),
+                        jwtTokenProvider.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV)))))
                 .orElseThrow(() -> new RefreshTokenException(getParametrizedMessageSource("refresh.token.invalid", refreshToken)));
     }
 }
