@@ -1,3 +1,5 @@
+import { useField } from 'formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -24,7 +26,8 @@ const SelectionSection = ({
 }) => {
   const { lang } = useSelector((state) => state.auth);
   const [receivedCategories, setReceivedCategories] = useState([]);
-
+  const [, meta] = useField({ name: 'topic' });
+  const { error, touched } = meta;
   useEffect(() => {
     (async () => {
       try {
@@ -71,6 +74,7 @@ const SelectionSection = ({
           </ItemDescription>
           <SelectItem
             showImg
+            name="categoryId"
             data={getArrayKeys()}
             setItem={category.setCategoryItems}
             valueCategory={category.categoryItems}
@@ -83,6 +87,7 @@ const SelectionSection = ({
             {getTranslatedText(`addAdv.subcategory`, lang)}
           </ItemDescription>
           <SelectItem
+            name="subcategoryId"
             data={getArrayKeys('subcategories')}
             setItem={subcategory.setSubCategoryItems}
             valueCategory={subcategory.subCategoryItems}
@@ -96,10 +101,13 @@ const SelectionSection = ({
             {getTranslatedText(`addAdv.headline`, lang)}
           </ItemDescription>
           <InputText
-            value={announcement.announcementTitle}
             type="text"
+            error={touched && !!error}
+            value={announcement.announcementTitle}
             onChange={(e) => announcement.setAnnouncementTitle(e.target.value)}
           />
+
+          <ErrorDisplay error={touched && error} />
         </SectionsItem>
       </Sections>
       <FormikCheckBox

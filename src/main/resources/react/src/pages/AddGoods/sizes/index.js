@@ -36,6 +36,7 @@ const Sizes = ({ categories, dimension }) => {
           ` (${getTranslatedText(`categories.${translatedText}`, lang)})`}
       </h4>
       <ShowSelectItem
+        name="size"
         overflows
         data={receivedSizes}
         text={dimension.size}

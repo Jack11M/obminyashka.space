@@ -1,3 +1,5 @@
+import { useField } from 'formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { animated, useSpring, useTransition } from 'react-spring';
@@ -20,6 +22,7 @@ import {
 } from './styles';
 
 const ShowSelectItem = ({
+  name,
   data,
   text,
   value,
@@ -34,6 +37,10 @@ const ShowSelectItem = ({
   const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
   const [opened, setOpened] = useState(false);
+
+  const [, meta] = useField(name);
+  const { error, touched } = meta;
+  console.log(meta);
 
   useEffect(() => {
     if (opened && !data) {
@@ -83,16 +90,21 @@ const ShowSelectItem = ({
 
   return (
     <WrapSelect ref={refClickAway}>
-      <SelectLabel showImg={showImg} onClick={() => setOpened((prev) => !prev)}>
+      <SelectLabel
+        error={!!error}
+        showImg={showImg}
+        onClick={() => setOpened((prev) => !prev)}
+      >
         {value ? (
           <AnimatedLabel style={spring}>
             {showImg && <Image src={categoryImages[value]} alt={value} />}
             <SelectTitle>{text}</SelectTitle>
           </AnimatedLabel>
         ) : (
-          <PlaceHolder>{placeholder}</PlaceHolder>
+          <PlaceHolder error={!!error}>{placeholder}</PlaceHolder>
         )}
       </SelectLabel>
+      <ErrorDisplay error={!!error && error} />
       {dropDown(
         (styles, item) =>
           item && (

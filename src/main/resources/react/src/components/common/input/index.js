@@ -17,7 +17,6 @@ const InputForAuth = ({ text, ...props }) => {
   useEffect(() => {
     helpers.setError('');
   }, [lang]);
-
   return (
     <InputDiv path={path}>
       <Label>

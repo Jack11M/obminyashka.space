@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 
-
 import { ReactComponent as CheckSvg } from 'assets/icons/Check.svg';
 
 import { Div, LabelSquare, Label, Input } from './styles.js';
@@ -9,11 +8,11 @@ const FormikCheckBox = ({
   text,
   type,
   name,
+  value,
   margin,
   fontSize,
   onChange,
   selectedValues,
-  value,
 }) => {
   const handleChange = (item) => {
     if (type === 'checkbox') {

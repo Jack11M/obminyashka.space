@@ -9,7 +9,7 @@ const WrapSelect = styled.div`
 const SelectLabel = styled.label`
   display: flex;
   align-items: center;
-  border: 1px solid #bcbcbc;
+  border: 1px solid ${(p) => (p.error ? '#ff4c4c' : '#bcbcbc')};
   border-radius: 2px;
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '6px' : 0)};
@@ -21,7 +21,7 @@ const AnimatedLabel = styled(animated.div)`
 const PlaceHolder = styled.p`
   padding: 10px;
   line-height: 26px;
-  color: #8e8e8e;
+  color: ${(p) => (p.error ? '#ff4c4c' : '#8e8e8e')};
 `;
 const DropItems = styled.div`
   position: absolute;

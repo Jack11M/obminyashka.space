@@ -147,9 +147,9 @@ const AddGoods = () => {
   };
 
   const changeStateForImagesWhenDrop = (
+    index,
     processedArray,
-    setProcessedArray,
-    index
+    setProcessedArray
   ) => {
     const newPrevArr = [...processedArray];
     const underPrevImage = newPrevArr[index];
@@ -169,11 +169,15 @@ const AddGoods = () => {
   const validationAdv = Yup.object().shape({
     id: Yup.number().default(() => 0),
     dealType: Yup.string().default(() => 'EXCHANGE'),
-    categoryId: Yup.number().default(() => categoryItems?.id),
-    subcategoryId: Yup.number().default(() => subCategoryItems?.id),
+    categoryId: Yup.number()
+      .required('Is required')
+      .default(() => categoryItems?.id),
+    subcategoryId: Yup.number()
+      .required('Is required')
+      .default(() => subCategoryItems?.id),
     topic: Yup.string()
-      .min(3, () => console.log('topic 3'))
-      .max(30, () => console.log('topic 70'))
+      .min(3, 'min 3 symbol')
+      .max(30, 'min 3 symbol')
       .default(() => announcementTitle),
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
@@ -183,7 +187,9 @@ const AddGoods = () => {
     gender: Yup.string().default(() => gender.join('')),
     season: Yup.string().default(() => season.join('')),
     size: Yup.string().default(() => size),
-    description: Yup.string().max(255, () => console.log('description')).default(() => description),
+    description: Yup.string()
+      .max(255, () => console.log('description'))
+      .default(() => description),
     locationId: Yup.string().default(() => locationId),
     images: Yup.array()
       .nullable()
