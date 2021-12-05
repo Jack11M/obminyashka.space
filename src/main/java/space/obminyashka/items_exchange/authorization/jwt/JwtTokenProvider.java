@@ -15,6 +15,7 @@ import space.obminyashka.items_exchange.model.Role;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
@@ -107,13 +108,13 @@ public class JwtTokenProvider {
         return LocalDateTime.now().plusSeconds(jwtRefreshTokenExpirationSeconds);
     }
 
-    public String getAccessTokenExpiration(LocalDateTime localDateTime) {
-        return localDateTime.plusSeconds(TimeUnit.MILLISECONDS.toSeconds(jwtAccessTokenExpirationMillis))
+    public String getAccessTokenExpiration(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.plusSeconds(TimeUnit.MILLISECONDS.toSeconds(jwtAccessTokenExpirationMillis))
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
-    public String getRefreshTokenExpiration(LocalDateTime localDateTime) {
-        return localDateTime.plusSeconds(jwtRefreshTokenExpirationSeconds)
+    public String getRefreshTokenExpiration(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.plusSeconds(jwtRefreshTokenExpirationSeconds)
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
