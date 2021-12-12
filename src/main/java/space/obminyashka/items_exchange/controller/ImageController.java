@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +24,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.security.Principal;
 import java.util.List;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -100,13 +100,13 @@ public class ImageController {
                                                            @PathVariable("advertisement_id") @Positive(message = "{invalid.not-positive.id}") long advertisementId,
                                                            @ApiParam(value = "Select the image to Upload", required = true)
                                                            @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
-                                                           @ApiIgnore Principal principal)
+                                                           @ApiIgnore Authentication authentication)
             throws ElementsNumberExceedException, IllegalOperationException {
 
         if (!advertisementService.existById(advertisementId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND);
         }
-        final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, principal.getName())
+        final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
                 .orElseThrow(() -> new IllegalOperationException(getMessageSource("user.not-owner")));
         if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
             throw new ElementsNumberExceedException(
@@ -130,10 +130,10 @@ public class ImageController {
                              @PathVariable("advertisement_id") @Positive(message = "{invalid.not-positive.id}") long advertisementId,
                              @ApiParam(value = "Input image(s) ID for delete", required = true)
                              @RequestParam("ids") List<Long> imageIdList,
-                             @ApiIgnore Principal principal)
+                             @ApiIgnore Authentication authentication)
             throws IllegalOperationException, IllegalIdentifierException {
 
-        final var existedAdvertisement = advertisementService.findByIdAndOwnerUsername(advertisementId, principal.getName())
+        final var existedAdvertisement = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
                 .orElseThrow(() -> new IllegalOperationException(getMessageSource("user.not-owner")));
 
         final var isAllImageExistInAdvertisement = imageService.existAllById(imageIdList, advertisementId);
