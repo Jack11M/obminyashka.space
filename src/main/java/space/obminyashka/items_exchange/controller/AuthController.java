@@ -69,7 +69,9 @@ public class AuthController {
     @PostMapping("/logout")
     @ApiOperation(value = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(HttpServletRequest req, HttpServletResponse resp, @ApiIgnore Authentication authentication,
+    public void logout(HttpServletRequest req,
+                       HttpServletResponse resp,
+                       @ApiIgnore Authentication authentication,
                        @ApiIgnore @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         new SecurityContextLogoutHandler().logout(req, resp, authentication);
         if (!authService.logout(token, authentication.getName())) {
