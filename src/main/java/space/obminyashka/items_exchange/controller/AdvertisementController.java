@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.security.Principal;
 import java.util.List;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
@@ -116,7 +116,7 @@ public class AdvertisementController {
             @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @ApiParam(value = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size){
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         Page<AdvertisementTitleDto> allByKeyword = advertisementService.findByKeyword(keyword, PageRequest.of(page, size, Sort.by("topic")));
         return allByKeyword.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -147,10 +147,10 @@ public class AdvertisementController {
     public AdvertisementModificationDto createAdvertisement(
             @Validated(New.class) @Valid @RequestPart AdvertisementModificationDto dto,
             @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
-            @ApiIgnore Principal principal) throws IllegalIdentifierException {
+            @ApiIgnore Authentication authentication) throws IllegalIdentifierException {
 
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
-        final var owner = getUser(principal.getName());
+        final var owner = getUser(authentication.getName());
         final var compressedImages = images.parallelStream()
                 .map(imageService::compress)
                 .toList();
@@ -167,10 +167,10 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AdvertisementModificationDto updateAdvertisement(@Validated(Exist.class)
                                                             @Valid @RequestBody AdvertisementModificationDto dto,
-                                                            @ApiIgnore Principal principal)
+                                                            @ApiIgnore Authentication authentication)
             throws IllegalIdentifierException, IllegalOperationException {
 
-        validateAdvertisementOwner(dto.getId(), getUser(principal.getName()));
+        validateAdvertisementOwner(dto.getId(), getUser(authentication.getName()));
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         return advertisementService.updateAdvertisement(dto);
     }
@@ -183,10 +183,10 @@ public class AdvertisementController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable("advertisement_id") @Positive(message = "{invalid.exist.id}") long id,
-                                    @ApiIgnore Principal principal)
+                                    @ApiIgnore Authentication authentication)
             throws IllegalOperationException {
 
-        User owner = getUser(principal.getName());
+        User owner = getUser(authentication.getName());
         validateAdvertisementOwner(id, owner);
         advertisementService.remove(id);
     }
@@ -203,8 +203,8 @@ public class AdvertisementController {
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long advertisementId,
             @ApiParam(value = "ID of existed image")
             @PathVariable @PositiveOrZero(message = "{invalid.id}") Long imageId,
-            @ApiIgnore Principal principal) throws BadRequestException {
-        User owner = getUser(principal.getName());
+            @ApiIgnore Authentication authentication) throws BadRequestException {
+        User owner = getUser(authentication.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
             throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
         }

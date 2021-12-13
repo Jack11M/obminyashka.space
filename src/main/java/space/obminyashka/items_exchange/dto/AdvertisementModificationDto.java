@@ -55,10 +55,12 @@ public class AdvertisementModificationDto {
     @NotNull(message = "{invalid.not-null}")
     private Season season;
 
-    @NotNull(message = "{invalid.not-null}")
     @Size(min = 1, max = 50, message = "{invalid.size}")
     private String size;
 
+    @ApiModelProperty(required = true)
     private long subcategoryId;
+
+    @ApiModelProperty(required = true)
     private long locationId;
 }

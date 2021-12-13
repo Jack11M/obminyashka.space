@@ -10,6 +10,7 @@ import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.validation.groups.Default;
-import java.security.Principal;
 import java.util.List;
 
 import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
@@ -62,8 +62,8 @@ public class UserController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<UserDto> getPersonalInfo(Principal principal) {
-        return ResponseEntity.of(userService.findByUsername(principal.getName()));
+    public ResponseEntity<UserDto> getPersonalInfo(@ApiIgnore Authentication authentication) {
+        return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
 
     @PutMapping("/my-info")
@@ -73,8 +73,8 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @ApiIgnore Principal principal) {
-        return userService.update(userUpdateDto, getUser(principal.getName()));
+    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @ApiIgnore Authentication authentication) {
+        return userService.update(userUpdateDto, getUser(authentication.getName()));
     }
 
     @GetMapping("/my-adv")
@@ -83,8 +83,8 @@ public class UserController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementTitleDto>> getCreatedAdvertisements(@ApiIgnore Principal principal) {
-        final var allByUsername = advService.findAllByUsername(principal.getName());
+    public ResponseEntity<List<AdvertisementTitleDto>> getCreatedAdvertisements(@ApiIgnore Authentication authentication) {
+        final var allByUsername = advService.findAllByUsername(authentication.getName());
         return allByUsername.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allByUsername, HttpStatus.OK);
@@ -98,18 +98,10 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     Principal principal) throws InvalidDtoException {
-        User user = findUserByValidCredentials(principal, userChangePasswordDto.getOldPassword());
+                                     @ApiIgnore Authentication authentication) throws InvalidDtoException {
+        User user = findUserByValidCredentials(authentication, userChangePasswordDto.getOldPassword());
 
         return userService.updateUserPassword(userChangePasswordDto, user);
-    }
-
-    private User findUserByValidCredentials(Principal principal, String password) throws InvalidDtoException {
-        User user = getUser(principal.getName());
-        if (!userService.isPasswordMatches(user, password)) {
-            throw new InvalidDtoException(getMessageSource(incorrectPassword));
-        }
-        return user;
     }
 
     @PutMapping("/service/email")
@@ -120,9 +112,9 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, Principal principal)
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, @ApiIgnore Authentication authentication)
             throws DataConflictException {
-        User user = getUser(principal.getName());
+        User user = getUser(authentication.getName());
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
             throw new DataConflictException(getMessageSource("exception.email.old"));
         }
@@ -140,9 +132,9 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
+    public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @ApiIgnore Authentication authentication)
             throws InvalidDtoException {
-        User user = findUserByValidCredentials(principal, userDeleteFlowDto.getPassword());
+        User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         userService.selfDeleteRequest(user);
 
         return getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user));
@@ -155,9 +147,9 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, Principal principal)
+    public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @ApiIgnore Authentication authentication)
             throws InvalidDtoException, IllegalOperationException {
-        User user = findUserByValidCredentials(principal, userDeleteFlowDto.getPassword());
+        User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         if (!user.getStatus().equals(DELETED)) {
             throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
         }
@@ -171,8 +163,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<ChildDto>> getChildren(Principal principal) {
-        List<ChildDto> children = userService.getChildren(getUser(principal.getName()));
+    public ResponseEntity<List<ChildDto>> getChildren(@ApiIgnore Authentication authentication) {
+        List<ChildDto> children = userService.getChildren(getUser(authentication.getName()));
         return children.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(children, HttpStatus.OK);
@@ -188,8 +180,8 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @Validated({Default.class, New.class})
     public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                              List<@Valid ChildDto> childrenDto, Principal principal) throws ElementsNumberExceedException {
-        User user = getUser(principal.getName());
+                                              List<@Valid ChildDto> childrenDto, @ApiIgnore Authentication authentication) throws ElementsNumberExceedException {
+        User user = getUser(authentication.getName());
         int amountOfChildren = childrenDto.size() + user.getChildren().size();
         if (amountOfChildren > maxChildrenAmount) {
             throw new ElementsNumberExceedException(getParametrizedMessageSource(
@@ -206,8 +198,8 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
-                                       List<@NotNull Long> childrenIdToRemove, Principal principal) {
-        final User user = getUser(principal.getName());
+                                       List<@NotNull Long> childrenIdToRemove, @ApiIgnore Authentication authentication) {
+        final User user = getUser(authentication.getName());
         if (isNotAllIdPresent(user, childrenIdToRemove)) {
             throw new IllegalIdentifierException(
                     getMessageSource("exception.invalid.dto"));
@@ -223,8 +215,8 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                                 List<@Valid ChildDto> childrenDto, Principal principal) {
-        final User user = getUser(principal.getName());
+                                                 List<@Valid ChildDto> childrenDto, @ApiIgnore Authentication authentication) {
+        final User user = getUser(authentication.getName());
         if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(
@@ -242,10 +234,18 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.OK)
-    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, Principal principal) {
-        User user = getUser(principal.getName());
+    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, @ApiIgnore Authentication authentication) {
+        User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
+    }
+
+    private User findUserByValidCredentials(Authentication authentication, String password) throws InvalidDtoException {
+        User user = getUser(authentication.getName());
+        if (!userService.isPasswordMatches(user, password)) {
+            throw new InvalidDtoException(getMessageSource(incorrectPassword));
+        }
+        return user;
     }
 
     private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {

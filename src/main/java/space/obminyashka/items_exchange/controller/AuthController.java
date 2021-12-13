@@ -69,9 +69,12 @@ public class AuthController {
     @PostMapping("/logout")
     @ApiOperation(value = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(HttpServletRequest req, HttpServletResponse resp, Authentication auth, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        new SecurityContextLogoutHandler().logout(req, resp, auth);
-        if (!authService.logout(token, auth.getName())) {
+    public void logout(HttpServletRequest req,
+                       HttpServletResponse resp,
+                       @ApiIgnore Authentication authentication,
+                       @ApiIgnore @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        new SecurityContextLogoutHandler().logout(req, resp, authentication);
+        if (!authService.logout(token, authentication.getName())) {
             String errorMessageTokenNotStartWithBearerPrefix = getMessageSource("invalid.token");
             log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
             req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
