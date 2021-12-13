@@ -21,7 +21,7 @@ const AnimatedLabel = styled(animated.div)`
 const PlaceHolder = styled.p`
   padding: 10px;
   line-height: 26px;
-  color: ${(p) => (p.error ? '#ff4c4c' : '#8e8e8e')};
+  color: #8e8e8e;
 `;
 const DropItems = styled.div`
   position: absolute;

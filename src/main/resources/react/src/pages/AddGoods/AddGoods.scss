@@ -37,7 +37,6 @@
           min-width: 350px;
           border: 1px solid #bcbcbc;
           border-radius: 2px;
-          margin-bottom: 20px;
 
           .change_item {
             position: relative;
@@ -104,6 +103,9 @@
         .border_focus {
           border-color: hsl(0, 0%, 44%);
         }
+        .border_error {
+          border-color: #ff4c4c;
+        }
       }
 
       .change-description {
@@ -123,6 +125,7 @@
         flex-wrap: wrap;
 
         .characteristics_item:last-child {
+          color: #383838;
           width: 350px;
         }
         h4 {
@@ -133,7 +136,7 @@
 
       .description {
         padding-bottom: 40px;
-        .description_subtitile {
+        .description_subtitle {
           color: #8e8e8e;
           margin-bottom: 10px;
         }

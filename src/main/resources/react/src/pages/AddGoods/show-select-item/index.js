@@ -1,12 +1,13 @@
-import { useField } from 'formik';
-import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import React, { useState, useRef, useEffect, useContext } from 'react';
+import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 import { animated, useSpring, useTransition } from 'react-spring';
 
 import { useOutsideClick } from 'hooks/useOutsideClick';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localisation';
+
+import { ErrorDisplay } from '../error-display';
 
 import { categoryImages } from './config';
 
@@ -34,13 +35,16 @@ const ShowSelectItem = ({
   overflows = false,
   categories = false,
 }) => {
-  const { openModal } = useContext(ModalContext);
   const { lang } = useSelector((state) => state.auth);
+  const { openModal } = useContext(ModalContext);
   const [opened, setOpened] = useState(false);
 
-  const [, meta] = useField(name);
-  const { error, touched } = meta;
-  console.log(meta);
+  const [, meta, helpers] = useField(name);
+  const { error } = meta;
+
+  useEffect(() => {
+    helpers.setError(undefined);
+  }, [lang]);
 
   useEffect(() => {
     if (opened && !data) {
@@ -89,57 +93,62 @@ const ShowSelectItem = ({
   });
 
   return (
-    <WrapSelect ref={refClickAway}>
-      <SelectLabel
-        error={!!error}
-        showImg={showImg}
-        onClick={() => setOpened((prev) => !prev)}
-      >
-        {value ? (
-          <AnimatedLabel style={spring}>
-            {showImg && <Image src={categoryImages[value]} alt={value} />}
-            <SelectTitle>{text}</SelectTitle>
-          </AnimatedLabel>
-        ) : (
-          <PlaceHolder error={!!error}>{placeholder}</PlaceHolder>
+    <>
+      <WrapSelect ref={refClickAway}>
+        <SelectLabel
+          error={!!error}
+          showImg={showImg}
+          onClick={() => setOpened((prev) => !prev)}
+        >
+          {value ? (
+            <AnimatedLabel style={spring}>
+              {showImg && <Image src={categoryImages[value]} alt={value} />}
+              <SelectTitle>{text}</SelectTitle>
+            </AnimatedLabel>
+          ) : (
+            <PlaceHolder>{placeholder}</PlaceHolder>
+          )}
+        </SelectLabel>
+        {dropDown(
+          (styles, item) =>
+            item && (
+              <animated.div style={{ ...styles }}>
+                <DropItems
+                  overflows={overflows}
+                  ref={refHeightCategory}
+                  notOpen={opened && !data}
+                >
+                  {transition((styles, item) => (
+                    <animated.div key={item} style={{ ...styles }}>
+                      <SelectItem
+                        showImg={showImg}
+                        onClick={() => handleClick(item)}
+                        selectedItem={value === item?.name ?? item}
+                      >
+                        {showImg && (
+                          <Image
+                            src={categoryImages[item.name]}
+                            alt={item.name}
+                          />
+                        )}
+                        <SelectTitle>
+                          {categories
+                            ? getTranslatedText(
+                                `categories.${item?.name}`,
+                                lang
+                              )
+                            : item}
+                        </SelectTitle>
+                      </SelectItem>
+                    </animated.div>
+                  ))}
+                </DropItems>
+              </animated.div>
+            )
         )}
-      </SelectLabel>
+      </WrapSelect>
       <ErrorDisplay error={!!error && error} />
-      {dropDown(
-        (styles, item) =>
-          item && (
-            <animated.div style={{ ...styles }}>
-              <DropItems
-                overflows={overflows}
-                ref={refHeightCategory}
-                notOpen={opened && !data}
-              >
-                {transition((styles, item) => (
-                  <animated.div key={item} style={{ ...styles }}>
-                    <SelectItem
-                      showImg={showImg}
-                      onClick={() => handleClick(item)}
-                      selectedItem={value === item?.name ?? item}
-                    >
-                      {showImg && (
-                        <Image
-                          src={categoryImages[item.name]}
-                          alt={item.name}
-                        />
-                      )}
-                      <SelectTitle>
-                        {categories
-                          ? getTranslatedText(`categories.${item?.name}`, lang)
-                          : item}
-                      </SelectTitle>
-                    </SelectItem>
-                  </animated.div>
-                ))}
-              </DropItems>
-            </animated.div>
-          )
-      )}
-    </WrapSelect>
+    </>
   );
 };
 

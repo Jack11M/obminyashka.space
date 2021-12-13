@@ -43,7 +43,6 @@ const Login = () => {
     setLoading(true);
     try {
       await dispatch(putUserThunk(values, checkbox));
-      setLoading(false);
     } catch (err) {
       setLoading(false);
       if (err.response.status === 400) {

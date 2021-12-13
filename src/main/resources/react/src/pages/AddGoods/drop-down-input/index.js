@@ -1,4 +1,10 @@
+import React, { useEffect } from 'react';
+import { useField } from 'formik';
+import { useSelector } from 'react-redux';
+
 import { CloseSvg } from 'assets/icons';
+
+import { ErrorDisplay } from '../error-display';
 
 import {
   Wrap,
@@ -24,6 +30,13 @@ const DropDownInput = ({
   onChangeInput,
   checkInputValue,
 }) => {
+  const { lang } = useSelector((state) => state.auth);
+  const [, meta, helpers] = useField({ name: 'locationId' });
+  const { error } = meta;
+
+  useEffect(() => {
+    helpers.setError(undefined);
+  }, [lang]);
   return (
     <Wrap>
       {!size && (
@@ -33,18 +46,20 @@ const DropDownInput = ({
       )}
       <Input
         name={name}
-        onFocus={onFocus}
         focus={focus}
-        autocomplete="off"
-        onChange={onChangeInput}
+        error={error}
         value={value}
+        onFocus={onFocus}
+        autocomplete="off"
         disabled={disabled}
+        onChange={onChangeInput}
       />
       {checkInputValue && (
         <WrapSvg onClick={clearInput}>
           <CloseSvg />
         </WrapSvg>
       )}
+      <ErrorDisplay error={!!error && error} />
 
       {showDrop && (
         <WrapDropItems showDrop={showDrop}>

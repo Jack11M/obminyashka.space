@@ -9,7 +9,7 @@ const FilesLabel = styled.label`
   margin-bottom: 30px;
   width: 198px;
   height: 208px;
-  border: 2px dotted #c4c4c4;
+  border: 2px dotted ${(p) => (p.error ? p.theme.colors.colorError : '#c4c4c4')};
   border-radius: 19px;
   cursor: pointer;
 `;
@@ -17,7 +17,10 @@ const FilesLabel = styled.label`
 const Input = styled.input`
   display: none;
 `;
-
+const WrapError = styled.div`
+  position: absolute;
+  top: 100%;
+`;
 const SpanAdd = styled.span`
   position: absolute;
   display: inline-flex;
@@ -90,4 +93,4 @@ const Image = styled.img`
   font-size: 0;
 `;
 
-export { FilesLabel, Input, SpanAdd, SpanClose, Image };
+export { FilesLabel, Input, WrapError, SpanAdd, SpanClose, Image };

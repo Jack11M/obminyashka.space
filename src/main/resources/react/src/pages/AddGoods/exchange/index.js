@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
+
 import { getTranslatedText } from 'components/local/localisation';
+
+import { ErrorDisplay } from '../error-display';
 
 const Exchange = ({ exchangeList, setExchange }) => {
   const { lang } = useSelector((state) => state.auth);
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
+
+  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
+  const { error } = meta;
+
+  useEffect(() => {
+    helpers.setError(undefined);
+  }, [lang]);
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
     from: { opacity: 0, scale: 0 },
@@ -43,7 +54,11 @@ const Exchange = ({ exchangeList, setExchange }) => {
   const onBlur = () => {
     setBorder(false);
   };
-
+  const getBorderClassName = (border, error) => {
+    if (border) return 'border_focus';
+    if (error) return 'border_error';
+    return '';
+  };
   return (
     <div className="change">
       <h3 className="change_title">
@@ -56,9 +71,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
       <p className="change-description_title">
         ({getTranslatedText('addAdv.enterPhrase', lang)})
       </p>
-      <div
-        className={border ? 'change_wrapper border_focus' : 'change_wrapper'}
-      >
+      <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
             <div className="change_item">
@@ -80,6 +93,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
           />
         </div>
       </div>
+      <ErrorDisplay error={!!error && error} />
     </div>
   );
 };

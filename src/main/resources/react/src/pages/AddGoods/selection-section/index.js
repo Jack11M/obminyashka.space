@@ -21,13 +21,18 @@ import {
 const SelectionSection = ({
   category,
   subcategory,
-  announcement,
   readyOffers,
+  announcement,
 }) => {
   const { lang } = useSelector((state) => state.auth);
   const [receivedCategories, setReceivedCategories] = useState([]);
-  const [, meta] = useField({ name: 'topic' });
+  const [, meta, helpers] = useField({ name: 'topic' });
   const { error, touched } = meta;
+
+  useEffect(() => {
+    helpers.setError(undefined);
+  }, [lang]);
+
   useEffect(() => {
     (async () => {
       try {

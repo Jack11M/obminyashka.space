@@ -1,10 +1,23 @@
-import { useState } from 'react';
+import { useField } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import dropsPng from 'assets/img/drag-n-drop.png';
-import { FilesLabel, Input, SpanAdd, Image } from './styles';
+
+import { ErrorDisplay } from '../../error-display';
+
+import { FilesLabel, Input, SpanAdd, Image, WrapError } from './styles';
 
 const AddFileInput = ({ onChange }) => {
+  const { lang } = useSelector((state) => state.auth);
   const [drag, setDrag] = useState(false);
+
+  const [, meta, helpers] = useField({ name: 'images' });
+  const { error } = meta;
+
+  useEffect(() => {
+    helpers.setError(undefined);
+  }, [lang]);
 
   function dragStartHandler(e) {
     e.preventDefault();
@@ -24,10 +37,11 @@ const AddFileInput = ({ onChange }) => {
 
   return (
     <FilesLabel
+      error={error}
+      onDrop={(e) => dropHandler(e)}
+      onDragOver={(e) => dragStartHandler(e)}
       onDragStart={(e) => dragStartHandler(e)}
       onDragLeave={(e) => dragLeaveHandler(e)}
-      onDragOver={(e) => dragStartHandler(e)}
-      onDrop={(e) => dropHandler(e)}
     >
       <Input
         multiple
@@ -37,6 +51,11 @@ const AddFileInput = ({ onChange }) => {
         onChange={onChange}
       />
       {drag ? <Image src={dropsPng} alt="drop" /> : <SpanAdd />}
+      {error && (
+        <WrapError>
+          <ErrorDisplay error={!!error && error} />
+        </WrapError>
+      )}
     </FilesLabel>
   );
 };
