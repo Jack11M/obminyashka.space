@@ -1,6 +1,14 @@
 import styled, { css } from 'styled-components';
 
- export const ButtonBlue = styled.button`
+export const WrapIcon = styled.span`
+	line-height: 0;
+	margin-left: 8px;
+`;
+
+export const ButtonBlue = styled.button`
+	display: flex;
+	justify-content: center;
+	align-items: center;
   background-color: ${({ theme: { colors } }) => colors['btn-blue-normal']};
   border-radius: 25px;
   border: 0;
@@ -15,8 +23,8 @@ import styled, { css } from 'styled-components';
   text-transform: uppercase;
   transition: background-color 0.3s ease;
   ${({ mb }) =>
-	mb &&
-	css`
+    mb &&
+    css`
       margin-bottom: ${mb};
     `}
   color: #fdf9ff;
@@ -24,6 +32,12 @@ import styled, { css } from 'styled-components';
   &:hover {
     cursor: pointer;
     background-color: ${({ theme: { colors } }) => colors['btn-blue-hover']};
+	  > span > svg {
+		  path {
+      transition: all 0.3s ease;
+			  fill: white;
+		  }
+	  }
   }
 
   &:active {
@@ -35,3 +49,5 @@ import styled, { css } from 'styled-components';
     background-color: ${({ theme: { colors } }) => colors['btn-gb-disabled']};
   }
 `;
+
+

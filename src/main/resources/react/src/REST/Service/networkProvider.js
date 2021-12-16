@@ -18,8 +18,10 @@ function initObminyashka({ onAuthError }) {
   };
 
   axios.interceptors.request.use((config) => {
-    const token = getStorageUser('user').access_token ||
-        sessionStorage.getItem('code') || '';
+    const token =
+      getStorageUser('user').access_token ||
+      sessionStorage.getItem('code') ||
+      '';
     const newConfig = { ...config };
     if (token) newConfig.headers.Authorization = 'Bearer ' + token;
     else delete newConfig.headers.Authorization;

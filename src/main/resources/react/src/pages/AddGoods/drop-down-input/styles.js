@@ -21,7 +21,7 @@ const Input = styled.input`
   padding: 0 30px 0 14px;
   line-height: 24px;
   font-size: 16px;
-  border: 1px solid #bcbcbc;
+  border: 1px solid ${(p) => (p.error ? p.theme.colors.colorError : '#bcbcbc')};
   border-radius: 2px;
   caret-color: #00c0ff;
 

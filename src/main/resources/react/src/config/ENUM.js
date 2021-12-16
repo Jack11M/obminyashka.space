@@ -7,3 +7,5 @@ export const enumAge = {
   FROM_12_TO_14: '12 - 14',
   OLDER_THAN_14: '14 +',
 };
+
+export const enumSex = { FEMALE: 'FEMALE', MALE: 'MALE', UNSELECTED: 'UNSELECTED' };

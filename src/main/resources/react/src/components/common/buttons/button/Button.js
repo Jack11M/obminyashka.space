@@ -2,32 +2,34 @@ import React from 'react';
 
 import SpinnerForAuthBtn from 'components/common/spinner/spinnerForAuthBtn.js';
 
-import { ButtonBlue } from './styles.js'
+import { ButtonBlue, WrapIcon } from './styles.js';
 
 const Button = ({
-  whatClass = null,
-  type,
   mb,
+  type,
   bold,
-  lHeight,
-  disabling = null,
+  icon,
   text,
-  click = null,
   width,
-  isLoading
+  lHeight,
+  isLoading,
+  click = null,
+  whatClass = null,
+  disabling = null,
 }) => {
   return (
     <ButtonBlue
-      className={whatClass}
-      type={type}
-      disabled={disabling}
-      onClick={click}
-      width={width}
       mb={mb}
+      type={type}
       bold={bold}
+      width={width}
+      onClick={click}
       lHeight={lHeight}
+      disabled={disabling}
+      className={whatClass}
     >
       {isLoading ? <SpinnerForAuthBtn /> : text}
+      {icon && <WrapIcon>{icon}</WrapIcon>}
     </ButtonBlue>
   );
 };

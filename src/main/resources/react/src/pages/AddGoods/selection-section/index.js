@@ -1,3 +1,5 @@
+import { useField } from 'formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -16,9 +18,20 @@ import {
   ItemDescription,
 } from './styles';
 
-const SelectionSection = ({ category, subcategory, announcement }) => {
+const SelectionSection = ({
+  category,
+  subcategory,
+  readyOffers,
+  announcement,
+}) => {
   const { lang } = useSelector((state) => state.auth);
   const [receivedCategories, setReceivedCategories] = useState([]);
+  const [, meta, helpers] = useField({ name: 'topic' });
+  const { error, touched } = meta;
+
+  useEffect(() => {
+    helpers.setError(undefined);
+  }, [lang]);
 
   useEffect(() => {
     (async () => {
@@ -27,7 +40,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         if (Array.isArray(categories)) {
           setReceivedCategories(categories);
         } else {
-          throw { message: 'OOps I didn’t get the category' };
+          throw { message: 'OOps, I didn’t get the category' };
         }
       } catch (err) {
         console.log(err.response?.data ?? err.message);
@@ -66,6 +79,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
           </ItemDescription>
           <SelectItem
             showImg
+            name="categoryId"
             data={getArrayKeys()}
             setItem={category.setCategoryItems}
             valueCategory={category.categoryItems}
@@ -78,6 +92,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             {getTranslatedText(`addAdv.subcategory`, lang)}
           </ItemDescription>
           <SelectItem
+            name="subcategoryId"
             data={getArrayKeys('subcategories')}
             setItem={subcategory.setSubCategoryItems}
             valueCategory={subcategory.subCategoryItems}
@@ -91,16 +106,22 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             {getTranslatedText(`addAdv.headline`, lang)}
           </ItemDescription>
           <InputText
-            value={announcement.announcementTitle}
             type="text"
+            error={touched && !!error}
+            value={announcement.announcementTitle}
             onChange={(e) => announcement.setAnnouncementTitle(e.target.value)}
           />
+
+          <ErrorDisplay error={touched && error} />
         </SectionsItem>
       </Sections>
       <FormikCheckBox
         type="checkbox"
         margin="22px 0 0 -7px"
         name="readyForOffers"
+        value="readyForOffers"
+        onChange={readyOffers.setReadyOffer}
+        selectedValues={readyOffers.readyOffer}
         text={getTranslatedText('addAdv.readyForOffers', lang)}
       />
     </AddChoose>

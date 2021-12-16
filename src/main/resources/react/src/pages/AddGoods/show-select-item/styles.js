@@ -9,7 +9,7 @@ const WrapSelect = styled.div`
 const SelectLabel = styled.label`
   display: flex;
   align-items: center;
-  border: 1px solid #bcbcbc;
+  border: 1px solid ${(p) => (p.error ? '#ff4c4c' : '#bcbcbc')};
   border-radius: 2px;
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '6px' : 0)};

@@ -1,18 +1,20 @@
+import { useField } from 'formik';
 import { useState } from 'react';
 
-import { WrapImage, SpanClose, ImgPhoto } from './styles';
+import { ImgPhoto, WrapImage, SpanClose } from './styles';
 
 const ImagePhoto = ({
   url,
   index,
-  removeImage,
   onDrop,
   onDragEnd,
   onDragOver,
+  removeImage,
   onDragStart,
   onDragLeave,
 }) => {
   const [isRemove, setIsRemove] = useState(false);
+
   const delayRemove = (event, index) => {
     setIsRemove(true);
     const timeoutForDelete = setTimeout(() => {
@@ -23,13 +25,13 @@ const ImagePhoto = ({
   };
   return (
     <WrapImage
-      isRemove={isRemove}
+      onDrop={onDrop}
       draggable={true}
-      onDragStart={onDragStart}
-      onDragLeave={onDragLeave}
+      isRemove={isRemove}
       onDragEnd={onDragEnd}
       onDragOver={onDragOver}
-      onDrop={onDrop}
+      onDragStart={onDragStart}
+      onDragLeave={onDragLeave}
     >
       <ImgPhoto src={url} alt="photo" />
       <SpanClose onClick={(event) => delayRemove(event, index)} />

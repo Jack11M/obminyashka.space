@@ -1,9 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
+import * as Yup from 'yup';
 import { Form } from 'formik';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
+import api from 'REST/Resources';
+import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM.js';
-import { ModalContext } from 'components/common/pop-up';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
@@ -12,184 +15,135 @@ import { FormHandler, FormikCheckBox } from 'components/common/formik';
 import { Sizes } from './sizes';
 import { Location } from './location';
 import { Exchange } from './exchange';
-import { convertToMB } from './add-image/helper';
-import { ImagePhoto } from './add-image/image-photo';
+import { PhotoFiles } from './photo-files';
 import { SelectionSection } from './selection-section';
-import { AddFileInput } from './add-image/add-file-input';
+import { WrapCharacteristic } from './wrap-characteristic';
 
 import './AddGoods.scss';
 
 const AddGoods = () => {
-  const { openModal } = useContext(ModalContext);
+  const history = useHistory();
+  const { genderEnum, seasonEnum } = ru;
   const { lang } = useSelector((state) => state.auth);
 
   const [announcementTitle, setAnnouncementTitle] = useState('');
   const [exchangeList, setExchangeList] = useState([]);
   const [description, setDescription] = useState('');
-  const [locationId, setLocationId] = useState(null);
+  const [locationId, setLocationId] = useState(0);
   const [imageFiles, setImageFiles] = useState([]);
 
   const [categoryItems, setCategoryItems] = useState('');
   const [subCategoryItems, setSubCategoryItems] = useState('');
+  const [readyOffer, setReadyOffer] = useState([]);
+  const [age, setAge] = useState([]);
+  const [gender, setGender] = useState([]);
+  const [season, setSeason] = useState([]);
   const [size, setSize] = useState('');
   const [locationCurrent, setLocationCurrent] = useState(null);
+  const [showLocation, setShowLocation] = useState({
+    city: '',
+    area: '',
+  });
 
   const [preViewImage, setPreViewImage] = useState([]);
   const [currentIndexImage, setCurrentIndexImage] = useState(null);
 
-  const filesAddHandler = (event, dropFiles = null) => {
-    event.preventDefault();
+  const validationAdv = Yup.object().shape({
+    id: Yup.number().default(() => 0),
+    dealType: Yup.string().default(() => 'EXCHANGE'),
+    categoryId: Yup.number()
+      .required(getTranslatedText('errors.requireField', lang))
+      .default(() => categoryItems?.id),
+    subcategoryId: Yup.number()
+      .required(getTranslatedText('errors.requireField', lang))
+      .default(() => subCategoryItems?.id),
+    topic: Yup.string()
+      .required(getTranslatedText('errors.requireField', lang))
+      .min(3, getTranslatedText('errors.min3', lang))
+      .max(30, getTranslatedText('errors.max5', lang))
+      .default(() => announcementTitle),
+    readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
+    wishesToExchange: Yup.string()
+      .required(getTranslatedText('errors.requireField', lang))
+      .default(() => exchangeList.join(',')),
+    age: Yup.string()
+      .required(getTranslatedText('errors.requireField', lang))
+      .default(() => age.join('')),
+    gender: Yup.string()
+      .required(getTranslatedText('errors.requireField', lang))
+      .default(() => gender.join('')),
+    season: Yup.string()
+      .required()
+      .default(() => season.join('')),
+    size: Yup.string().default(() => size),
+    description: Yup.string()
+      .max(255, getTranslatedText('errors.max255', lang))
+      .default(() => description),
+    locationId: Yup.number()
+      .nullable()
+      .required(getTranslatedText('errors.requireField', lang))
+      .default(() => locationId),
+    images: Yup.array()
+      .test(
+        '',
+        getTranslatedText('errors.minPhoto', lang),
+        (photo) => !!photo.length
+      )
+      .default(() => imageFiles),
+  });
 
-    const files = Array.from(dropFiles || event.target.files);
+  const handleSubmit = async (values) => {
+    const { images, size, ...rest } = values;
+    let data = new FormData();
+    if (size) {
+      data.append('dto', JSON.stringify({ ...rest, size }));
+    } else data.append('dto', JSON.stringify(rest));
 
-    files.forEach((file, index, iterableArray) => {
-      const notAbilityToDownload =
-        10 - imageFiles.length - iterableArray.length < 0;
+    images.forEach((item) => data.append('image', item));
 
-      const foundSameFile = imageFiles.filter(
-        (image) => image.name === file.name
-      );
-
-      if (foundSameFile.length) {
-        openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.addedFile', lang)}
-            </p>
-          ),
-        });
-        return;
-      }
-
-      if (!file.type.match('image') || file.type.match('image/svg')) {
-        openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.pictureSelection', lang)} ( jpg, jpeg,
-              png, git ).
-            </p>
-          ),
-        });
-        return;
-      }
-
-      const { value, valueString } = convertToMB(file.size);
-      if (value >= 10 && valueString.includes('MB')) {
-        openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.sizeFile', lang)} {valueString}
-              <br /> {getTranslatedText('popup.selectFile', lang)}
-            </p>
-          ),
-        });
-        return;
-      }
-      if (notAbilityToDownload) {
-        openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.noSaveMore', lang)}
-            </p>
-          ),
-        });
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        if (event.target.readyState === 2) {
-          setPreViewImage((prev) => [...prev, event.target.result]);
-          setImageFiles((prev) => [...prev, file]);
-        }
-      };
-    });
+    try {
+      await api.fetchAddGood.sendNewAdv(data);
+      history.push('/');
+    } catch (err) {
+      console.log(err.response.data);
+    }
   };
+  const initialValues = validationAdv.cast({});
+  const agesShow = Object.keys(enumAge);
+  const sexShow = Object.keys(genderEnum);
+  const seasonShow = Object.keys(seasonEnum);
 
-  const removeImage = (event, index) => {
-    event.preventDefault();
-    const newImageFiles = [...imageFiles];
-    const newPreViewImage = [...preViewImage];
-    newPreViewImage.splice(index, 1);
-    newImageFiles.splice(index, 1);
-    setImageFiles(newImageFiles);
-    setPreViewImage(newPreViewImage);
+  const resetAll = () => {
+    setAnnouncementTitle('');
+    setExchangeList([]);
+    setDescription('');
+    setLocationId(null);
+    setImageFiles([]);
+    setCategoryItems('');
+    setSubCategoryItems('');
+    setReadyOffer([]);
+    setAge([]);
+    setGender([]);
+    setSeason([]);
+    setSize('');
+    setLocationCurrent(null);
+    setPreViewImage([]);
+    setCurrentIndexImage(null);
+    setShowLocation({ city: '', area: '' });
   };
-
-  const dragStartHandler = (e, index) => {
-    setCurrentIndexImage(index);
-  };
-
-  const dragEndHandler = (e) => {
-    e.target.style.background = 'white';
-  };
-
-  const dragOverHandler = (e) => {
-    e.preventDefault();
-    e.target.style.background = 'lightgrey';
-  };
-
-  const changeStateForImagesWhenDrop = (
-    processedArray,
-    setProcessedArray,
-    index
-  ) => {
-    const newPrevArr = [...processedArray];
-    const underPrevImage = newPrevArr[index];
-    const currentPrevImage = newPrevArr[currentIndexImage];
-    newPrevArr[currentIndexImage] = underPrevImage;
-    newPrevArr[index] = currentPrevImage;
-    setProcessedArray(newPrevArr);
-  };
-
-  const dropHandler = (e, index) => {
-    e.preventDefault();
-    e.target.style.background = 'white';
-    changeStateForImagesWhenDrop(preViewImage, setPreViewImage, index);
-    changeStateForImagesWhenDrop(imageFiles, setImageFiles, index);
-  };
-
-  const handleSubmit = (values) => {
-    console.log(values);
-    return values;
-  };
-
-  const initialValues = {
-    id: 0,
-    dealType: 'EXCHANGE',
-    categoryId: categoryItems?.id,
-    subcategoryId: subCategoryItems?.id,
-    topic: announcementTitle,
-    readyForOffers: false,
-    wishesToExchange: exchangeList.join(','),
-    age: '',
-    gender: '',
-    season: '',
-    size: size,
-    description: description,
-    locationId: locationId,
-    images: imageFiles,
-  };
-  const ages = Object.keys(enumAge);
-  const sex = ['FEMALE', 'MALE', 'UNSELECTED'];
-  const season = ['ALL_SEASONS', 'DEMI_SEASON', 'SUMMER', 'WINTER'];
 
   return (
     <FormHandler
       onSubmit={handleSubmit}
       initialValues={initialValues}
-      // validationSchema={createSchema}
+      validationSchema={validationAdv}
     >
       <Form>
         <main className="add">
           <div className="add_container">
             <div className="add_inner">
               <SelectionSection
+                readyOffers={{ readyOffer, setReadyOffer }}
                 category={{ categoryItems, setCategoryItems }}
                 subcategory={{ subCategoryItems, setSubCategoryItems }}
                 announcement={{ announcementTitle, setAnnouncementTitle }}
@@ -204,47 +158,68 @@ const AddGoods = () => {
                 <h3>{getTranslatedText(`addAdv.options`, lang)}</h3>
                 <div className="characteristics_items">
                   <div className="characteristics_item">
-                    <h4>{getTranslatedText(`addAdv.age`, lang)}:</h4>
-                    {ages.map((item, idx) => (
-                      <FormikCheckBox
-                        key={item + idx}
-                        text={enumAge[item]}
-                        value={item}
-                        name="age"
-                        type="radio"
-                        margin="0 0 15px -7px"
-                      />
-                    ))}
+                    <WrapCharacteristic
+                      name="age"
+                      title={getTranslatedText(`addAdv.age`, lang)}
+                    >
+                      {agesShow.map((item, idx) => (
+                        <FormikCheckBox
+                          name="age"
+                          value={item}
+                          type="radio"
+                          key={item + idx}
+                          onChange={setAge}
+                          text={enumAge[item]}
+                          selectedValues={age}
+                          margin="0 0 15px -7px"
+                        />
+                      ))}
+                    </WrapCharacteristic>
                   </div>
                   <div className="characteristics_item">
-                    <h4>{getTranslatedText(`addAdv.sex`, lang)}:</h4>
-                    {sex.map((item, idx) => (
-                      <FormikCheckBox
-                        key={item + idx}
-                        text={getTranslatedText(`genderEnum.${item}`, lang)}
-                        value={item}
-                        name="gender"
-                        type="radio"
-                        margin="0 0 15px -7px"
-                      />
-                    ))}
+                    <WrapCharacteristic
+                      name="gender"
+                      title={getTranslatedText(`addAdv.sex`, lang)}
+                    >
+                      {sexShow.map((item, idx) => (
+                        <FormikCheckBox
+                          value={item}
+                          type="radio"
+                          name="gender"
+                          key={item + idx}
+                          onChange={setGender}
+                          margin="0 0 15px -7px"
+                          selectedValues={gender}
+                          text={getTranslatedText(`genderEnum.${item}`, lang)}
+                        />
+                      ))}
+                    </WrapCharacteristic>
                   </div>
 
                   <div className="characteristics_item">
-                    <h4>{getTranslatedText(`addAdv.season`, lang)}:</h4>
-                    {season.map((item, idx) => (
-                      <FormikCheckBox
-                        key={item + idx}
-                        text={getTranslatedText(`seasonEnum.${item}`, lang)}
-                        value={item}
-                        name="season"
-                        type="radio"
-                        margin="0 0 15px -7px"
-                      />
-                    ))}
+                    <WrapCharacteristic
+                      name="season"
+                      title={getTranslatedText(`addAdv.season`, lang)}
+                    >
+                      {seasonShow.map((item, idx) => (
+                        <FormikCheckBox
+                          key={item + idx}
+                          value={item}
+                          name="season"
+                          type="radio"
+                          margin="0 0 15px -7px"
+                          onChange={setSeason}
+                          selectedValues={season}
+                          text={getTranslatedText(`seasonEnum.${item}`, lang)}
+                        />
+                      ))}
+                    </WrapCharacteristic>
                   </div>
 
-                  <Sizes categories={categoryItems} dimension={{ size, setSize }} />
+                  <Sizes
+                    categories={categoryItems}
+                    dimension={{ size, setSize }}
+                  />
                 </div>
               </div>
               <div className="description">
@@ -256,6 +231,7 @@ const AddGoods = () => {
                   {getTranslatedText(`addAdv.describeText`, lang)}
                 </p>
                 <textarea
+                  value={description}
                   className="description_textarea"
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -264,49 +240,30 @@ const AddGoods = () => {
               <Location
                 setLocationId={setLocationId}
                 setLocationCurrent={setLocationCurrent}
+                onInputLocation={{ showLocation, setShowLocation }}
               />
 
-              <div className="files">
-                <h3>{getTranslatedText(`addAdv.uploadDescription`, lang)}</h3>
-                <p>
-                  {getTranslatedText(`addAdv.firstUploadDescription`, lang)}
-                </p>
-                <p>
-                  {getTranslatedText(`addAdv.photosUploaded`, lang)}{' '}
-                  {imageFiles.length} {getTranslatedText(`addAdv.from`, lang)}{' '}
-                  10
-                </p>
-                <div className="files_wrapper">
-                  {preViewImage.map((url, index) => (
-                    <ImagePhoto
-                      key={index}
-                      url={url}
-                      index={index}
-                      onDragStart={(e) => dragStartHandler(e, index)}
-                      onDragLeave={(e) => dragEndHandler(e)}
-                      onDragEnd={(e) => dragEndHandler(e)}
-                      onDragOver={(e) => dragOverHandler(e)}
-                      onDrop={(e) => dropHandler(e, index)}
-                      removeImage={removeImage}
-                    />
-                  ))}
+              <PhotoFiles
+                imageFiles={imageFiles}
+                preViewImage={preViewImage}
+                setImageFiles={setImageFiles}
+                setPreViewImage={setPreViewImage}
+                currentIndexImage={currentIndexImage}
+                setCurrentIndexImage={setCurrentIndexImage}
+              />
 
-                  {imageFiles.length < 10 && (
-                    <AddFileInput onChange={filesAddHandler} />
-                  )}
-                </div>
-              </div>
               <div className="bottom_block">
                 <div className="buttons_block">
                   <ButtonAdv type="submit" />
                   <Button
                     whatClass="preview"
-                    text="Предпросмотр"
-                    width="222px"
+                    text={getTranslatedText(`addAdv.preview`, lang)}
+                    width={lang === 'ua' ? '270px' : '222px'}
                   />
                 </div>
-                <div className="cancel">
-                  <p>Отменить все</p>
+                <div className="cancel" onClick={resetAll}>
+                  <div className="cross" />
+                  <p>{getTranslatedText(`addAdv.cancel`, lang)}</p>
                 </div>
               </div>
             </div>

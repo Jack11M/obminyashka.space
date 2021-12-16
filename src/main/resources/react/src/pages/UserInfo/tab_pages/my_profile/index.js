@@ -26,7 +26,7 @@ const MyProfile = () => {
   const [aboutLoading, setAboutLoading] = useState(false);
 
   const phoneForInitial =
-    (!phones.length && ['']) || phones.map((phone) => phone.phoneNumber);
+    (!phones?.length && ['']) || phones?.map((phone) => phone.phoneNumber);
 
   useEffect(() => {
     dispatch(fetchUser());

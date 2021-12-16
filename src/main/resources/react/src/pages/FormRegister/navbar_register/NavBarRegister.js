@@ -1,9 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { getTranslatedText } from '../../../components/local/localisation';
+
+import { route } from 'routes/routeConstants';
+import { getTranslatedText } from 'components/local/localisation';
+
 import cls from './registerTabs.module.scss';
-import { route } from '../../../routes/routeConstants';
 
 const NavBarRegister = () => {
   const { lang } = useSelector((state) => state.auth);
