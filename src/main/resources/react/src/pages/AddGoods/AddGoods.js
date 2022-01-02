@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import api from 'REST/Resources';
 import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM.js';
+import { route } from 'routes/routeConstants';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
@@ -103,7 +104,7 @@ const AddGoods = () => {
 
     try {
       await api.fetchAddGood.sendNewAdv(data);
-      history.push('/');
+      history.push(route.home);
     } catch (err) {
       console.log(err.response.data);
     }
