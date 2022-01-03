@@ -10,7 +10,7 @@ const settings = {
   slidesToScroll: 1,
   centerMode: false,
   vertical: true,
-  verticalSwiping: false,
+  verticalSwiping: true,
 };
 
 const SliderOrNot = ({ photos, showBigImg, bigPhoto }) => {

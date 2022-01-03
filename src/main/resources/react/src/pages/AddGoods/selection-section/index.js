@@ -25,6 +25,9 @@ const SelectionSection = ({
   announcement,
 }) => {
   const { lang } = useSelector((state) => state.auth);
+
+  const [currLang, setCurrLang] = useState(lang);
+  const [tempCategory, setTempCategory] = useState(category.categoryItems);
   const [receivedCategories, setReceivedCategories] = useState([]);
   const [, meta, helpers] = useField({ name: 'topic' });
   const { error, touched } = meta;
@@ -49,10 +52,18 @@ const SelectionSection = ({
   }, []);
 
   useEffect(() => {
-    if (category.categoryItems) {
-      subcategory.setSubCategoryItems('');
+    if (currLang !== lang) {
+      if (category.categoryItems) {
+        subcategory.setSubCategoryItems('');
+      }
+      setCurrLang(lang);
     }
-  }, [category.categoryItems]);
+
+    if (tempCategory !== category.categoryItems) {
+      subcategory.setSubCategoryItems('');
+      setTempCategory(category.categoryItems);
+    }
+  }, [category.categoryItems, lang, tempCategory]);
 
   const getArrayKeys = (name) => {
     if (name) {
@@ -60,6 +71,7 @@ const SelectionSection = ({
         .find((item) => item?.name === category.categoryItems.name)
         ?.subcategories.map((item) => ({ name: item?.name, id: item?.id }));
     }
+
     return receivedCategories.map((item) => ({
       id: item?.id,
       name: item?.name,
@@ -71,12 +83,14 @@ const SelectionSection = ({
       <TitleH3 className="add-title">
         {getTranslatedText(`addAdv.chooseSection`, lang)}
       </TitleH3>
+
       <Sections>
         <SectionsItem>
           <ItemDescription>
             <span className="span_star">*</span>{' '}
             {getTranslatedText(`addAdv.category`, lang)}
           </ItemDescription>
+
           <SelectItem
             showImg
             name="categoryId"
@@ -86,11 +100,13 @@ const SelectionSection = ({
             placeholder={getTranslatedText(`addAdv.selectCategory`, lang)}
           />
         </SectionsItem>
+
         <SectionsItem>
           <ItemDescription>
             <span className="span_star">*</span>{' '}
             {getTranslatedText(`addAdv.subcategory`, lang)}
           </ItemDescription>
+
           <SelectItem
             name="subcategoryId"
             data={getArrayKeys('subcategories')}
@@ -105,6 +121,7 @@ const SelectionSection = ({
             <span className="span_star">*</span>{' '}
             {getTranslatedText(`addAdv.headline`, lang)}
           </ItemDescription>
+
           <InputText
             type="text"
             error={touched && !!error}
@@ -115,6 +132,7 @@ const SelectionSection = ({
           <ErrorDisplay error={touched && error} />
         </SectionsItem>
       </Sections>
+
       <FormikCheckBox
         type="checkbox"
         margin="22px 0 0 -7px"

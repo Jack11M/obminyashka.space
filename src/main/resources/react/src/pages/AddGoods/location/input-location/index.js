@@ -1,7 +1,7 @@
-import { DropDownInput } from 'pages/AddGoods/drop-down-input';
 import { useEffect, useMemo, useState } from 'react';
 
 import api from 'REST/Resources';
+import { DropDownInput } from 'pages/AddGoods/drop-down-input';
 import { getTranslatedText } from 'components/local/localisation.js';
 
 const InputLocation = ({
@@ -17,6 +17,7 @@ const InputLocation = ({
 }) => {
   const langToUpperCase = useMemo(() => lang.toUpperCase(), [lang]);
 
+  const [currLang, setCurrLang] = useState(langToUpperCase);
   const [showDrop, setShowDrop] = useState(false);
   const [filteredLocation, setFilteredLocation] = useState([]);
   const [uniqueLocation, setUniqueLocation] = useState([]);
@@ -26,6 +27,7 @@ const InputLocation = ({
       elem.indexOf('(') === -1
         ? elem
         : elem.substring(0, elem.indexOf('(') - 1);
+
     const district =
       elem.indexOf('(') === -1
         ? ''
@@ -35,6 +37,7 @@ const InputLocation = ({
       if (district) return item.district === district && item.city === city;
       return item.city === city;
     });
+
     setLocationId(finalLocation?.id);
     setLocationCurrent(finalLocation);
   };
@@ -61,17 +64,22 @@ const InputLocation = ({
   }, [location, inputLocation, langToUpperCase, name]);
 
   useEffect(() => {
-    if (name === 'city') {
-      setLocationId(null);
-      setLocationCurrent(null);
+    if (currLang !== langToUpperCase) {
+      if (name === 'city') {
+        setLocationId(null);
+        setLocationCurrent(null);
+      }
+
+      setInputLocation({
+        city: '',
+        area: '',
+      });
+
+      setFilteredLocation([]);
+      setShowDrop(false);
+      setCurrLang(langToUpperCase);
     }
-    setInputLocation({
-      city: '',
-      area: '',
-    });
-    setFilteredLocation([]);
-    setShowDrop(false);
-  }, [lang, name, setInputLocation, setLocationCurrent, setLocationId]);
+  }, [langToUpperCase]);
 
   useEffect(() => {
     if (inputLocation.area === '') setShowDrop(false);

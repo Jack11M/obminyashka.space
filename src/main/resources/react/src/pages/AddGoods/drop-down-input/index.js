@@ -37,6 +37,7 @@ const DropDownInput = ({
   useEffect(() => {
     helpers.setError(undefined);
   }, [lang]);
+
   return (
     <Wrap>
       {!size && (
