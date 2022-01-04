@@ -1,13 +1,25 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import Button from '../../../components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localisation';
+import Button from 'components/common/buttons/button/Button';
 
 import './ProductPostData.scss';
-import { useSelector } from 'react-redux';
-import { getTranslatedText } from '../../../components/local/localisation';
 
-const ProductPostData = ({ title, wishes, gender, age, season, size }) => {
+const ProductPostData = ({
+  age,
+  size,
+  title,
+  wishes,
+  gender,
+  season,
+  readyForOffers,
+}) => {
   const { lang } = useSelector((state) => state.auth);
+
+  const transformWishes = readyForOffers
+    ? [wishes, getTranslatedText('product.checkInUl', lang)]
+    : wishes;
 
   return (
     <div className="productPostData">
@@ -19,7 +31,7 @@ const ProductPostData = ({ title, wishes, gender, age, season, size }) => {
           <span>{getTranslatedText('product.changesTo', lang)}:</span>
         </p>
         <ol>
-          {wishes.map((item, idx) => (
+          {transformWishes.map((item, idx) => (
             <li key={`li_${idx}`}> {item} </li>
           ))}
         </ol>

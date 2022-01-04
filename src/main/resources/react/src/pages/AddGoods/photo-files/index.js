@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ModalContext } from 'components/common/pop-up';
@@ -50,7 +50,7 @@ const PhotoFiles = ({
           children: (
             <p style={{ textAlign: 'center' }}>
               {getTranslatedText('popup.pictureSelection', lang)} ( jpg, jpeg,
-              png, git ).
+              png, gif ).
             </p>
           ),
         });

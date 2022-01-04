@@ -27,6 +27,7 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         setInputLocation={onInputLocation.setShowLocation}
         title={getTranslatedText('addAdv.district', lang)}
       />
+
       <InputLocation
         lang={lang}
         name="city"

@@ -35,8 +35,8 @@ const ShowSelectItem = ({
   overflows = false,
   categories = false,
 }) => {
-  const { lang } = useSelector((state) => state.auth);
   const { openModal } = useContext(ModalContext);
+  const { lang } = useSelector((state) => state.auth);
   const [opened, setOpened] = useState(false);
 
   const [, meta, helpers] = useField(name);
@@ -109,6 +109,7 @@ const ShowSelectItem = ({
             <PlaceHolder>{placeholder}</PlaceHolder>
           )}
         </SelectLabel>
+
         {dropDown(
           (styles, item) =>
             item && (
@@ -131,6 +132,7 @@ const ShowSelectItem = ({
                             alt={item.name}
                           />
                         )}
+
                         <SelectTitle>
                           {categories
                             ? getTranslatedText(
@@ -147,6 +149,7 @@ const ShowSelectItem = ({
             )
         )}
       </WrapSelect>
+
       <ErrorDisplay error={!!error && error} />
     </>
   );

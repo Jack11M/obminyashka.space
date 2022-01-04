@@ -9,32 +9,51 @@ import { ShowSelectItem } from '../show-select-item';
 const Sizes = ({ categories, dimension }) => {
   const { lang } = useSelector((state) => state.auth);
 
+  const [tempId, setTempId] = useState(categories.id);
   const [receivedSizes, setReceivedSizes] = useState(null);
   const [translatedText, setTranslatedText] = useState('');
 
+  const getText = (id) => {
+    switch (id) {
+      case 1:
+        return 'Clothing';
+      case 2:
+        return 'Shoes';
+      default:
+        return '';
+    }
+  };
+
   useEffect(() => {
     if (categories.id === 1 || categories.id === 2) {
-      dimension.setSize('');
+      if (tempId !== categories.id) {
+        dimension.setSize('');
+        setTempId(categories.id);
+      }
+
       api.fetchAddGood
-        .getSize(`${categories.id}`)
+        .getSize(categories.id)
         .then((data) => {
           setReceivedSizes(data);
-          setTranslatedText(categories.id === 1 ? 'Clothing' : 'Shoes');
         })
         .catch((err) => err.response?.data ?? err.message);
     } else {
       setReceivedSizes(null);
       dimension.setSize('');
     }
+
+    setTranslatedText(getText(categories.id));
   }, [categories]);
 
   return (
     <div className="characteristics_item">
       <h4>
         {getTranslatedText('addAdv.size', lang)}
+        {lang === 'en' ? ' cm' : ' см'}
         {translatedText &&
           ` (${getTranslatedText(`categories.${translatedText}`, lang)})`}
       </h4>
+
       <ShowSelectItem
         name="size"
         overflows
@@ -42,8 +61,8 @@ const Sizes = ({ categories, dimension }) => {
         text={dimension.size}
         value={dimension.size}
         onClick={dimension.setSize}
-        placeholder="Выберите размер"
         typeError="popup.selectSize"
+        placeholder="Выберите размер"
         titleError="popup.errorTitleSize"
       />
     </div>

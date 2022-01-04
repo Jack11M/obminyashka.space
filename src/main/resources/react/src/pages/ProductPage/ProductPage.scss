@@ -4,6 +4,12 @@
   padding-top: 50px;
 }
 
+.bottomSection {
+  margin: auto;
+  max-width: 1220px;
+  padding-top: 100px;
+}
+
 .productPageInner {
   font-family: Roboto, sans-serif;
   display: flex;
@@ -27,17 +33,17 @@
 .carouselAndDescription {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 765px;
   height: 935px;
-  justify-content: space-between;
 }
 
 .ownerAndPost {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 420px;
   height: 935px;
-  justify-content: space-between;
 }
 
 .sectionHeading {
@@ -54,6 +60,7 @@
   height: 140px;
   width: 140px;
   margin: 10px 0;
+  object-fit: contain;
 }
 
 .bigNoPhoto {

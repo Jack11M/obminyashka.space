@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM.js';
+import { route } from 'routes/routeConstants';
+import { saveAdv, clearAdv } from 'store/adv/slice';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
@@ -23,30 +25,33 @@ import './AddGoods.scss';
 
 const AddGoods = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const { genderEnum, seasonEnum } = ru;
   const { lang } = useSelector((state) => state.auth);
+  const adv = useSelector((state) => state.adv);
 
-  const [announcementTitle, setAnnouncementTitle] = useState('');
-  const [exchangeList, setExchangeList] = useState([]);
-  const [description, setDescription] = useState('');
-  const [locationId, setLocationId] = useState(0);
-  const [imageFiles, setImageFiles] = useState([]);
+  const regexp = /data:image\/(jpg|jpeg|png|gif);base64,/;
 
-  const [categoryItems, setCategoryItems] = useState('');
-  const [subCategoryItems, setSubCategoryItems] = useState('');
-  const [readyOffer, setReadyOffer] = useState([]);
-  const [age, setAge] = useState([]);
-  const [gender, setGender] = useState([]);
-  const [season, setSeason] = useState([]);
-  const [size, setSize] = useState('');
-  const [locationCurrent, setLocationCurrent] = useState(null);
-  const [showLocation, setShowLocation] = useState({
-    city: '',
-    area: '',
-  });
+  const [buttonPreview, setButtonPreview] = useState(false);
 
-  const [preViewImage, setPreViewImage] = useState([]);
-  const [currentIndexImage, setCurrentIndexImage] = useState(null);
+  const [announcementTitle, setAnnouncementTitle] = useState(adv.topic);
+  const [exchangeList, setExchangeList] = useState(adv.wishesToExchange);
+  const [description, setDescription] = useState(adv.descriptionStore);
+  const [locationId, setLocationId] = useState(adv.idLocation);
+  const [imageFiles, setImageFiles] = useState(adv.fileImage);
+
+  const [categoryItems, setCategoryItems] = useState(adv.category);
+  const [subCategoryItems, setSubCategoryItems] = useState(adv.subcategory);
+  const [readyOffer, setReadyOffer] = useState(adv.readyForOffers);
+  const [age, setAge] = useState(adv.ageStore);
+  const [gender, setGender] = useState(adv.genderStore);
+  const [season, setSeason] = useState(adv.seasonStore);
+  const [size, setSize] = useState(adv.sizeStore);
+  const [locationCurrent, setLocationCurrent] = useState(adv.currLocation);
+  const [showLocation, setShowLocation] = useState(adv.locationShow);
+
+  const [preViewImage, setPreViewImage] = useState(adv.viewImage);
+  const [currentIndexImage, setCurrentIndexImage] = useState(adv.indexImage);
 
   const validationAdv = Yup.object().shape({
     id: Yup.number().default(() => 0),
@@ -75,7 +80,20 @@ const AddGoods = () => {
     season: Yup.string()
       .required()
       .default(() => season.join('')),
-    size: Yup.string().default(() => size),
+    size: Yup.string()
+      .when('categoryId', {
+        is: (value) => value === 1,
+        then: Yup.string().required(
+          getTranslatedText('errors.requireField', lang)
+        ),
+      })
+      .when('categoryId', {
+        is: (value) => value === 2,
+        then: Yup.string().required(
+          getTranslatedText('errors.requireField', lang)
+        ),
+      })
+      .default(() => size),
     description: Yup.string()
       .max(255, getTranslatedText('errors.max255', lang))
       .default(() => description),
@@ -92,7 +110,8 @@ const AddGoods = () => {
       .default(() => imageFiles),
   });
 
-  const handleSubmit = async (values) => {
+  const createAdvertisement = async (values) => {
+    setButtonPreview(false);
     const { images, size, ...rest } = values;
     let data = new FormData();
     if (size) {
@@ -103,12 +122,64 @@ const AddGoods = () => {
 
     try {
       await api.fetchAddGood.sendNewAdv(data);
-      history.push('/');
+      dispatch(clearAdv());
+      history.push(route.home);
     } catch (err) {
       console.log(err.response.data);
     }
   };
+
+  const previewSentToPage = () => {
+    setButtonPreview(false);
+    dispatch(
+      saveAdv({
+        age,
+        size,
+        gender,
+        season,
+        locationId,
+        imageFiles,
+        readyOffer,
+        description,
+        exchangeList,
+        showLocation,
+        preViewImage,
+        categoryItems,
+        locationCurrent,
+        subCategoryItems,
+        announcementTitle,
+        currentIndexImage,
+      })
+    );
+
+    history.push(route.productPage, {
+      wishes: exchangeList,
+      category: categoryItems,
+      subcategory: subCategoryItems,
+      currentLocation: locationCurrent,
+      product: {
+        age,
+        size,
+        gender,
+        season,
+        description,
+        topic: announcementTitle,
+        readyForOffers: !!readyOffer.length,
+      },
+      photos: preViewImage.map((photo, index) => ({
+        id: index,
+        resource: photo.replace(regexp, ''),
+      })),
+    });
+  };
+
+  const handleSubmit = async (values) => {
+    if (buttonPreview) previewSentToPage();
+    else createAdvertisement(values);
+  };
+
   const initialValues = validationAdv.cast({});
+
   const agesShow = Object.keys(enumAge);
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
@@ -130,6 +201,7 @@ const AddGoods = () => {
     setPreViewImage([]);
     setCurrentIndexImage(null);
     setShowLocation({ city: '', area: '' });
+    dispatch(clearAdv());
   };
 
   return (
@@ -156,6 +228,7 @@ const AddGoods = () => {
 
               <div className="characteristics">
                 <h3>{getTranslatedText(`addAdv.options`, lang)}</h3>
+
                 <div className="characteristics_items">
                   <div className="characteristics_item">
                     <WrapCharacteristic
@@ -176,6 +249,7 @@ const AddGoods = () => {
                       ))}
                     </WrapCharacteristic>
                   </div>
+
                   <div className="characteristics_item">
                     <WrapCharacteristic
                       name="gender"
@@ -222,14 +296,17 @@ const AddGoods = () => {
                   />
                 </div>
               </div>
+
               <div className="description">
                 <h3 className="description_title">
                   {getTranslatedText(`addAdv.describeTitle`, lang)}
                 </h3>
+
                 <p className="description_subtitle">
                   <span className="span_star">*</span>
                   {getTranslatedText(`addAdv.describeText`, lang)}
                 </p>
+
                 <textarea
                   value={description}
                   className="description_textarea"
@@ -255,12 +332,16 @@ const AddGoods = () => {
               <div className="bottom_block">
                 <div className="buttons_block">
                   <ButtonAdv type="submit" />
+
                   <Button
+                    type="submit"
                     whatClass="preview"
-                    text={getTranslatedText(`addAdv.preview`, lang)}
                     width={lang === 'ua' ? '270px' : '222px'}
+                    click={() => setButtonPreview(true)}
+                    text={getTranslatedText(`addAdv.preview`, lang)}
                   />
                 </div>
+
                 <div className="cancel" onClick={resetAll}>
                   <div className="cross" />
                   <p>{getTranslatedText(`addAdv.cancel`, lang)}</p>
