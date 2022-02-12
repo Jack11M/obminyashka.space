@@ -20,7 +20,7 @@
         <java.version>17</java.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
-        <liquibase.version>4.7.0</liquibase.version>
+        <liquibase.version>4.7.1</liquibase.version>
         <mapper.version>2.4.5</mapper.version>
         <db-rider.version>1.32.0</db-rider.version>
         <log4j2.version>2.17.1</log4j2.version>
