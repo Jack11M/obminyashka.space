@@ -37,7 +37,7 @@ const SignUp = () => {
       .string()
       .email(getTranslatedText('errors.invalidEmailFormat', lang))
       .required(getTranslatedText('errors.requireField', lang))
-      .matches(EMAIL_REG_EXP, getTranslatedText('errors.emailMatch', lang))
+      .matches(EMAIL_REG_EXP, getTranslatedText('errors.max129', lang))
       .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
       .default(() => ''),
     username: yup
