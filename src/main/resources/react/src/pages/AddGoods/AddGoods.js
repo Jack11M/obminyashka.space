@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
-import { useHistory } from 'react-router-dom';
+import { useNavigate  } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
@@ -24,7 +24,7 @@ import { WrapCharacteristic } from './wrap-characteristic';
 import './AddGoods.scss';
 
 const AddGoods = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { genderEnum, seasonEnum } = ru;
   const { lang } = useSelector((state) => state.auth);
@@ -123,7 +123,7 @@ const AddGoods = () => {
     try {
       await api.fetchAddGood.sendNewAdv(data);
       dispatch(clearAdv());
-      history.push(route.home);
+      navigate(route.home);
     } catch (err) {
       console.log(err.response.data);
     }
@@ -152,7 +152,7 @@ const AddGoods = () => {
       })
     );
 
-    history.push(route.productPage, {
+    navigate(route.productPage, {
       wishes: exchangeList,
       category: categoryItems,
       subcategory: subCategoryItems,

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Formik } from 'formik';
 import * as yup from 'yup';
+import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { NO_SPACE } from 'config';
 import { GoogleSvg } from 'assets/icons';
@@ -56,13 +57,11 @@ const Login = () => {
   return (
     <form>
       <Formik
-        initialValues={initialLoginValues}
-        validationSchema={validationLoginSchema}
         validateOnBlur
         enableReinitialize
-        onSubmit={async (values, onSubmitProps) =>
-          onSubmitHandler(values, onSubmitProps)
-        }
+        onSubmit={onSubmitHandler}
+        initialValues={initialLoginValues}
+        validationSchema={validationLoginSchema}
       >
         {({ errors, handleSubmit, isValid, dirty }) => {
           return (
@@ -87,7 +86,7 @@ const Login = () => {
                   checked={checkbox}
                   click={changeCheckBox}
                 />
-                <ExtraLink to={`${route.login}${route.signUp}`}>
+                <ExtraLink to={`${route.login}/${route.signUp}`}>
                   {getTranslatedText('auth.noLogin', lang)}
                 </ExtraLink>
               </Extra>

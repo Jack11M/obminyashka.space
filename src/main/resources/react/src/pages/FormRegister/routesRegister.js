@@ -1,17 +1,22 @@
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
 
 import Login from './sign-in/Login';
 import SignUp from './sign-up/SignUp';
 
-export default () => {
+const RoutesRegister = () => {
+  const location = useLocation();
+  console.log(location);
   return (
-    <Switch>
-      <Route path={route.login} exact component={Login} />
-      <Route path={`${route.login}${route.signUp}`} exact component={SignUp} />
-      <Redirect to={route.login} />
-    </Switch>
+    <Routes>
+      <Route path={route.login} element={<Login />} />
+      <Route path={route.signUp} element={<SignUp />} />
+
+      {/* <Navigate to={route.login} /> */}
+    </Routes>
   );
 };
+
+export default RoutesRegister;

@@ -23,7 +23,7 @@ const NavTop = () => {
               {getTranslatedText('header.about', lang)}
             </Link>
             <Link to={route.home} className="navbar-top-link">
-              <HeartSvg className="navbar-top-link-svg"/>
+              <HeartSvg className="navbar-top-link-svg" />
               {getTranslatedText('header.goodness', lang)}
             </Link>
           </div>
@@ -31,7 +31,8 @@ const NavTop = () => {
             <Link to={isAuthed ? route.userInfo : route.login}>
               <Avatar whatIsClass={'user-photo'} width={30} height={28} />
               <span>
-                {profile?.username || getTranslatedText('header.myOffice', lang)}
+                {profile?.username ||
+                  getTranslatedText('header.myOffice', lang)}
               </span>
             </Link>
             <SelectLang />

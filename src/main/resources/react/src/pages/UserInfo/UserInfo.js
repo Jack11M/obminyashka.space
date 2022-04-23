@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useNavigate, useMatch } from 'react-router-dom';
 
 import Tabs from './tabs';
-import RouterTabs from './tab_pages/router_tabs';
-import ActiveProfile from './active_profile';
 import Exit from './tab_pages/exit';
+import ActiveProfile from './active_profile';
+import RouterTabs from './tab_pages/router_tabs';
 
 import './UserInfo.scss';
 
 const UserInfo = () => {
-  let { url } = useRouteMatch();
-  let history = useHistory();
+  let { url } = useMatch();
+  let navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prevLocation, setPrevLocation] = useState('');
 
@@ -25,8 +25,8 @@ const UserInfo = () => {
 
   const close = useCallback(() => {
     setIsModalOpen(false);
-    history.push(prevLocation);
-  }, [prevLocation, history]);
+    navigate(prevLocation);
+  }, [prevLocation, navigate]);
 
   return (
     <div className="container">

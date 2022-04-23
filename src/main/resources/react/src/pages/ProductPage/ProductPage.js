@@ -1,6 +1,6 @@
 import { enumAge } from 'config/ENUM';
 import React, { useEffect, useState } from 'react';
-import { useRouteMatch, useLocation } from 'react-router-dom';
+import { useMatch, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
@@ -18,7 +18,7 @@ import './ProductPage.scss';
 const ProductPage = () => {
   const { lang, profile } = useSelector((state) => state.auth);
 
-  const param = useRouteMatch();
+  const param = useMatch();
   const location = useLocation();
   const { id } = param.params;
 

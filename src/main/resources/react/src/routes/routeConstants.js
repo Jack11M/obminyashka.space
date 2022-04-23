@@ -2,7 +2,7 @@ export const route = {
   home: '/',
   addAdv: '/add-good',
   login: '/login',
-  signUp: '/sign',
+  signUp: 'sign',
   userInfo: '/user',
   myProfile: '/profile',
   myFavorite: '/favorites',

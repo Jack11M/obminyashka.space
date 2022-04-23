@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
 import logout2 from 'assets/img/log-out-2.png';
@@ -12,15 +12,15 @@ import { route } from 'routes/routeConstants';
 import './exit.scss';
 
 const Exit = ({ toggle, setIsModalOpen }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const ref = React.useRef(null);
   const { lang } = useSelector((state) => state.auth);
 
   const setLogOut = useCallback(async () => {
     await dispatch(logoutUserThunk());
-    history.push(route.home);
-  }, [dispatch, history]);
+    navigate(route.home);
+  }, [dispatch, navigate]);
 
   useClickAway(ref, () => {
     setIsModalOpen(false);

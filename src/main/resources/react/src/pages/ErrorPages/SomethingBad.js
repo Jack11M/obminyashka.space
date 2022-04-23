@@ -1,51 +1,52 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import Button from '../../components/common/buttons/button/Button';
-import { getTranslatedText } from '../../components/local/localisation';
+import { useNavigate } from 'react-router-dom';
+
+import { route } from 'routes/routeConstants';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localisation';
 import {
-  greenDots,
   loop,
+  greenDots,
   orangeDots,
-} from '../../assets/img/all_images_export/errorPage';
-import { route } from '../../routes/routeConstants';
+} from 'assets/img/all_images_export/errorPage';
 
 import './somethingBad.scss';
 
 const SomethingBad = ({ deactivateError }) => {
   const { lang } = useSelector((state) => state.auth);
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const goTo = (event) => {
     deactivateError(false);
     if (event.target.className.includes('onMain')) {
-      history.push(route.home);
+      navigate(route.home);
     } else {
-      history.goBack();
+      navigate(-1);
     }
   };
 
   return (
-    <div className={'somethingBad'}>
-      <div className={'blockOrangeImage'}>
-        <img src={orangeDots} alt={'orange dots'} />
+    <div className="somethingBad">
+      <div className="blockOrangeImage">
+        <img src={orangeDots} alt="orange dots" />
       </div>
-      <div className={'blockGreenImage'}>
+      <div className="blockGreenImage">
         <img src={greenDots} alt={'green dots'} />
       </div>
-      <div className={'blockRightImage'}>
+      <div className="blockRightImage">
         <img src={loop} alt={'loop'} />
       </div>
-      <div className={'blockControls'}>
+      <div className="blockControls">
         <h2>{getTranslatedText('somethingBad.error', lang)}</h2>
-        <div className={'blockButtons'}>
+        <div className="blockButtons">
           <Button
-            whatClass={'onMain'}
+            whatClass="onMain"
             text={getTranslatedText('fourOhFour.mainPage', lang)}
             click={goTo}
           />
           <Button
-            whatClass={'back'}
+            whatClass="back"
             text={getTranslatedText('fourOhFour.backPage', lang)}
             click={goTo}
           />

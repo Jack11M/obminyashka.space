@@ -14,7 +14,7 @@ import Routes from 'routes/routes';
 import Header from 'components/header/Header';
 import Footer from 'components/footer/Footer';
 
-import { Page } from './styles'
+import { Page } from './styles';
 
 const App = () => {
   return (

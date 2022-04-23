@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/buttons/button/Button';
 import { getTranslatedText } from '../../components/local/localisation';
 import {
@@ -17,12 +17,12 @@ import './errorPage.scss';
 
 const FourOhFourPage = () => {
   const { lang } = useSelector((state) => state.auth);
-  let history = useHistory();
+  let navigate = useNavigate();
   const goTo = (event) => {
     if (event.target.className.includes('onMain')) {
-      history.push(route.home);
+      navigate(route.home);
     } else {
-      history.goBack();
+      navigate(-1);
     }
   };
 

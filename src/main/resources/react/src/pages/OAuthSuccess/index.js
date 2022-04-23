@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { putOauthUserThunk } from "store/auth/thunk";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const OAuthSuccess = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const location = useLocation();
     const code = location.search.replace('?code=', '');
@@ -13,7 +13,7 @@ const OAuthSuccess = () => {
         sessionStorage.setItem('code', code);
         try {
             await dispatch(putOauthUserThunk());
-            history.push('/');
+            navigate('/');
         } catch (e) {
             console.log(e.response);
         }

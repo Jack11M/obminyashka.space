@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import MyActivity from './my_activity';
 import MyProfile from './my_profile';
@@ -16,34 +16,34 @@ const RouterTabs = ({ url, set }) => {
   }, [setPrevLocation, location]);
 
   const findComponentForExit = useCallback(() => {
-    let lastComponent = MyActivity;
+    let LastComponent = MyActivity;
     switch (prevLocation) {
       case route.userInfo:
-        lastComponent = MyActivity;
-        return MyActivity;
+        LastComponent = MyActivity;
+        return <MyActivity />;
       case `${route.userInfo}${route.myProfile}`:
-        lastComponent = MyProfile;
-        return MyProfile;
+        LastComponent = MyProfile;
+        return <MyProfile />;
       case `${route.userInfo}${route.myFavorite}`:
-        lastComponent = MyFavorites;
-        return MyFavorites;
+        LastComponent = MyFavorites;
+        return <MyFavorites />;
       case `${route.userInfo}${route.mySettings}`:
-        lastComponent = MySettings;
-        return MySettings;
+        LastComponent = MySettings;
+        return <MySettings />;
       default:
-        return lastComponent;
+        return <LastComponent />;
     }
   }, [prevLocation]);
 
   return (
-    <Switch>
-      <Route path={`${url}`} component={MyActivity} exact />
-      <Route path={`${url}${route.myProfile}`} component={MyProfile} />
-      <Route path={`${url}${route.myFavorite}`} component={MyFavorites} />
-      <Route path={`${url}${route.mySettings}`} component={MySettings} />
-      <Route path={`${url}${route.exit}`} component={findComponentForExit()} />
-      <Redirect to={`${url}`} />
-    </Switch>
+    <Routes>
+      <Route path={`${url}`} element={<MyActivity />} exact />
+      <Route path={`${url}${route.myProfile}`} element={<MyProfile />} />
+      <Route path={`${url}${route.myFavorite}`} element={<MyFavorites />} />
+      <Route path={`${url}${route.mySettings}`} element={<MySettings />} />
+      <Route path={`${url}${route.exit}`} element={findComponentForExit()} />
+      <Navigate to={`${url}`} />
+    </Routes>
   );
 };
 

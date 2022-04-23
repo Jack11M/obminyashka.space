@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes as Switch } from 'react-router-dom';
 
 import Auth from 'pages/FormRegister/Auth';
 import OAuthSuccess from 'pages/OAuthSuccess';
@@ -9,9 +9,14 @@ import UserInfo from 'pages/UserInfo/UserInfo';
 import AddGoods from 'pages/AddGoods/AddGoods';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
+import Login from 'pages/FormRegister/sign-in/Login';
+import SignUp from 'pages/FormRegister/sign-up/SignUp';
 
 import { route } from './routeConstants';
-import Protected from './protectedRoute';
+import Protected, {
+  AuthorizedRoute,
+  UnauthorizedRoute,
+} from './protectedRoute';
 
 const Routes = () => {
   const { isAuthed } = useSelector((state) => state.auth);
@@ -19,33 +24,78 @@ const Routes = () => {
   return (
     <div>
       <Switch>
-        <Route path={route.home} component={HomePage} exact />
-        <Protected
+        <Route path={route.home} element={<HomePage />} />
+        {/* <Protected
           path={route.login}
-          component={Auth}
+          Component={<Auth />}
           permission={!isAuthed}
           redirect={route.home}
-        />
+        /> */}
 
-        <Protected
+        {/* <Route
+          path={route.auth}
+          element={
+            <UnauthorizedRoute>
+              <Auth />
+            </UnauthorizedRoute>
+          }
+        >
+          <Route path={route.login} element={<Login />} />
+          <Route path={route.signUp} element={<SignUp />} />
+        </Route> */}
+
+        {/*
+        <Route
+          path={`${route.login}${route.signUp}`}
+          element={
+            <UnauthorizedRoute>
+              <SignUp />
+            </UnauthorizedRoute>
+          }
+        /> */}
+
+        <Route
           path={route.userInfo}
-          component={UserInfo}
-          permission={isAuthed}
-          redirect={route.login}
+          element={
+            <AuthorizedRoute>
+              <UserInfo />
+            </AuthorizedRoute>
+          }
         />
 
-        <Protected
+        <Route
           path={route.addAdv}
-          component={AddGoods}
-          permission={isAuthed}
-          redirect={route.login}
+          element={
+            <AuthorizedRoute>
+              <AddGoods />
+            </AuthorizedRoute>
+          }
         />
 
-        <Route path={route.oauthSuccess} component={OAuthSuccess} />
+        {/* <Protected
+          path={route.userInfo}
+          Component={UserInfo}
+          permission={isAuthed}
+          redirect={route.login}
+        /> */}
 
-        <Route path={`${route.productPage}`} component={ProductPage} />
+        {/* <Protected
+          path={route.addAdv}
+          Component={AddGoods}
+          permission={isAuthed}
+          redirect={route.login}
+        /> */}
 
-        <Route path={route.noMatch} component={FourOhFourPage} />
+        <Route path={route.oauthSuccess} element={<OAuthSuccess />} />
+
+        <Route path={route.productPage} element={<ProductPage />} />
+
+        <Route path={route.login} element={<Auth />}>
+          <Route index element={<Login />} />
+          <Route path={route.signUp} element={<SignUp />} />
+        </Route>
+
+        <Route path={route.noMatch} element={<FourOhFourPage />} />
       </Switch>
     </div>
   );

@@ -1,11 +1,11 @@
-import { GoogleSvg } from 'assets/icons';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { Formik } from 'formik';
 import * as yup from 'yup';
+import { Formik } from 'formik';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
+import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import CheckBox from 'components/common/checkbox';
 import InputForAuth from 'components/common/input';
@@ -23,7 +23,7 @@ import { Extra } from '../sign-in/loginStyle';
 import { WrapperButton } from '../sign-in/loginStyle';
 
 const SignUp = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { lang } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [checkbox, setCheckbox] = useState(false);
@@ -81,15 +81,15 @@ const SignUp = () => {
     <>
       <form>
         <Formik
+          validateOnBlur
           initialValues={initialRegisterValues}
           validationSchema={validationRegisterSchema}
-          validateOnBlur
           onSubmit={async (dataFormik, onSubmitProps) => {
             setLoading(true);
             try {
               await api.fetchAuth.postAuthRegister(dataFormik);
               setLoading(false);
-              history.push(route.login);
+              navigate(route.login);
             } catch (err) {
               setLoading(false);
               if (err.response.status === 409) {

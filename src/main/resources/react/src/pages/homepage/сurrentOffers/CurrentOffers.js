@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
@@ -12,7 +12,7 @@ import { getTranslatedText } from 'components/local/localisation';
 import './currentOffers.scss';
 
 const CurrentOffers = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { lang } = useSelector((state) => state.auth);
 
   const [offers, setOffers] = useState([]);
@@ -29,7 +29,7 @@ const CurrentOffers = () => {
   }, []);
 
   const moveToProductPage = (id) => {
-    history.push(route.productPage.replace(':id', id));
+    navigate(route.productPage.replace(':id', id));
   };
 
   return (

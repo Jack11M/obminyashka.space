@@ -16,6 +16,7 @@ const ButtonAdv = ({ type }) => {
           <span>{getTranslatedText('button.addAdv', lang)}</span>
         </Link>
       )}
+
       {type === 'submit' && (
         <button type={type} className="btn-adv">
           <span>{getTranslatedText('button.addAdv', lang)}</span>

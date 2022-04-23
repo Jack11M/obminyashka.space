@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { getTranslatedText } from '../../../components/local/localisation';
-import furniture from '../../../assets/img/clouds/STEP-one.png';
-import monitor from '../../../assets/img/clouds/STEPtwo.png';
-import toys from '../../../assets/img/clouds/STEPthree.png';
+import toys from 'assets/img/clouds/STEPthree.png';
+import monitor from 'assets/img/clouds/STEPtwo.png';
+import furniture from 'assets/img/clouds/STEP-one.png';
+import { getTranslatedText } from 'components/local/localisation';
 
 import './headerInMain.scss';
 import './moveCloud.scss';
