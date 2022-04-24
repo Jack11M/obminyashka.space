@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
-import MyActivity from './my_activity';
 import MyProfile from './my_profile';
-import MyFavorites from './my_favorites';
+import MyActivity from './my_activity';
 import MySettings from './my_settings';
+import MyFavorites from './my_favorites';
 import { route } from 'routes/routeConstants';
 
 const RouterTabs = ({ url, set }) => {
@@ -15,8 +15,9 @@ const RouterTabs = ({ url, set }) => {
     return () => setPrevLocation(location.pathname);
   }, [setPrevLocation, location]);
 
-  const findComponentForExit = useCallback(() => {
+  const findComponentForExit = () => {
     let LastComponent = MyActivity;
+
     switch (prevLocation) {
       case route.userInfo:
         LastComponent = MyActivity;
@@ -33,18 +34,17 @@ const RouterTabs = ({ url, set }) => {
       default:
         return <LastComponent />;
     }
-  }, [prevLocation]);
+  };
 
   return (
     <Routes>
-      <Route path={`${url}`} element={<MyActivity />} exact />
-      <Route path={`${url}${route.myProfile}`} element={<MyProfile />} />
-      <Route path={`${url}${route.myFavorite}`} element={<MyFavorites />} />
-      <Route path={`${url}${route.mySettings}`} element={<MySettings />} />
-      <Route path={`${url}${route.exit}`} element={findComponentForExit()} />
-      <Navigate to={`${url}`} />
+      <Route index element={<MyActivity />} />
+      <Route path={route.myProfile} element={<MyProfile />} />
+      <Route path={route.myFavorite} element={<MyFavorites />} />
+      <Route path={route.mySettings} element={<MySettings />} />
+      <Route path={route.exit} element={findComponentForExit()} />
     </Routes>
   );
 };
 
-export default RouterTabs;
+export { RouterTabs };

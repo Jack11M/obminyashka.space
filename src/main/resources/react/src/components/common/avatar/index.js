@@ -31,4 +31,4 @@ const Avatar = ({ whatIsClass = '', width, height, avatar }) => {
   );
 };
 
-export default Avatar;
+export { Avatar };

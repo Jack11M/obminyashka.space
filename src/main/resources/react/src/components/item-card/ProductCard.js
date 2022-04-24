@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import Button from '../common/buttons/button/Button';
 import SvgStar from './FavoriteMarker';
 import InboxMessageSvg from './inboxMessageSvg';
-import Avatar from '../common/avatar/avatar';
+import { Avatar } from 'components/common/avatar';
 import { getTranslatedText } from '../local/localisation';
 
 import {

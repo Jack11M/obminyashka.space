@@ -1,0 +1,106 @@
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+--- a/pom.xml	(revision b2d2c70b214bb0952997fdb624de569a2908984d)
++++ b/pom.xml	(date 1650722733371)
+@@ -20,13 +20,13 @@
+         <java.version>17</java.version>
+         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+         <swagger.version>3.0.0</swagger.version>
+-        <liquibase.version>4.7.0</liquibase.version>
+-        <mapper.version>2.4.5</mapper.version>
+-        <db-rider.version>1.32.0</db-rider.version>
+-        <log4j2.version>2.17.1</log4j2.version>
++        <liquibase.version>4.9.1</liquibase.version>
++        <mapper.version>3.1.0</mapper.version>
++        <db-rider.version>1.32.3</db-rider.version>
++        <log4j2.version>2.17.2</log4j2.version>
+         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
+-        <node.version>v16.4.2</node.version>
+-        <yarn.version>v1.22.10</yarn.version>
++        <node.version>v17.9.0</node.version>
++        <yarn.version>v1.22.15</yarn.version>
+         <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
+     </properties>
+ 
+Index: Dockerfile
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Dockerfile b/Dockerfile
+--- a/Dockerfile	(revision b2d2c70b214bb0952997fdb624de569a2908984d)
++++ b/Dockerfile	(date 1650731896595)
+@@ -1,5 +1,5 @@
+-FROM maven:3.8-openjdk-17-slim
++FROM maven:3.8.5-openjdk-17-slim
+ COPY pom.xml /tmp/
+ COPY src /tmp/src/
+ WORKDIR /tmp/
+-RUN mvn clean install
+\ No newline at end of file
++RUN mvn clean install -Dmaven.test.skip=true
+\ No newline at end of file
+Index: src/main/resources/react/package.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/react/package.json b/src/main/resources/react/package.json
+--- a/src/main/resources/react/package.json	(revision b2d2c70b214bb0952997fdb624de569a2908984d)
++++ b/src/main/resources/react/package.json	(date 1650732335449)
+@@ -3,27 +3,27 @@
+   "version": "0.1.0",
+   "private": true,
+   "dependencies": {
+-    "@reduxjs/toolkit": "^1.6.0",
+-    "@testing-library/jest-dom": "^5.14.1",
+-    "@testing-library/react": "^12.0.0",
+-    "@testing-library/user-event": "^13.1.9",
+-    "axios": "^0.25.0",
++    "@reduxjs/toolkit": "^1.8.1",
++    "@testing-library/jest-dom": "^5.16.4",
++    "@testing-library/react": "^13.1.1",
++    "@testing-library/user-event": "^14.1.1",
++    "axios": "^0.26.1",
+     "formik": "^2.2.9",
+-    "node-sass": "^7.0.0",
+-    "react": "^17.0.2",
+-    "react-dom": "^17.0.2",
++    "node-sass": "^7.0.1",
++    "react": "^18.0.0",
++    "react-dom": "^18.0.0",
+     "react-input-mask": "^2.0.4",
+-    "react-redux": "^7.2.4",
++    "react-redux": "^8.0.1",
+     "react-router-dom": "^6.3.0",
+-    "react-scripts": "^5.0.0",
+-    "react-slick": "^0.28.1",
+-    "react-spring": "^9.2.4",
+-    "react-use": "^17.2.4",
+-    "redux": "^4.1.0",
++    "react-scripts": "^5.0.1",
++    "react-slick": "^0.29.0",
++    "react-spring": "^9.4.4",
++    "react-use": "^17.3.2",
++    "redux": "^4.2.0",
+     "redux-devtools-extension": "^2.13.9",
+     "slick-carousel": "^1.8.1",
+-    "styled-components": "^5.3.0",
+-    "yup": "^0.32.9"
++    "styled-components": "^5.3.5",
++    "yup": "^0.32.11"
+   },
+   "scripts": {
+     "start": "react-scripts start",
+@@ -47,6 +47,6 @@
+     ]
+   },
+   "devDependencies": {
+-    "prettier": "^2.3.2"
++    "prettier": "^2.6.2"
+   }
+ }

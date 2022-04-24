@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Route, Routes as Switch } from 'react-router-dom';
 
 import Auth from 'pages/FormRegister/Auth';
@@ -7,20 +6,15 @@ import OAuthSuccess from 'pages/OAuthSuccess';
 import HomePage from 'pages/homepage/HomePage';
 import UserInfo from 'pages/UserInfo/UserInfo';
 import AddGoods from 'pages/AddGoods/AddGoods';
-import ProductPage from 'pages/ProductPage/ProductPage';
-import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 import Login from 'pages/FormRegister/sign-in/Login';
 import SignUp from 'pages/FormRegister/sign-up/SignUp';
+import ProductPage from 'pages/ProductPage/ProductPage';
+import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';
-import Protected, {
-  AuthorizedRoute,
-  UnauthorizedRoute,
-} from './protectedRoute';
+import { AuthorizedRoute, UnauthorizedRoute } from './protectedRoute';
 
 const Routes = () => {
-  const { isAuthed } = useSelector((state) => state.auth);
-
   return (
     <div>
       <Switch>
@@ -55,7 +49,7 @@ const Routes = () => {
         /> */}
 
         <Route
-          path={route.userInfo}
+          path={'user/*'}
           element={
             <AuthorizedRoute>
               <UserInfo />
@@ -90,7 +84,14 @@ const Routes = () => {
 
         <Route path={route.productPage} element={<ProductPage />} />
 
-        <Route path={route.login} element={<Auth />}>
+        <Route
+          path={route.login}
+          element={
+            <UnauthorizedRoute>
+              <Auth />
+            </UnauthorizedRoute>
+          }
+        >
           <Route index element={<Login />} />
           <Route path={route.signUp} element={<SignUp />} />
         </Route>

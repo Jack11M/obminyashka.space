@@ -17,7 +17,7 @@ import './errorPage.scss';
 
 const FourOhFourPage = () => {
   const { lang } = useSelector((state) => state.auth);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const goTo = (event) => {
     if (event.target.className.includes('onMain')) {
       navigate(route.home);
@@ -32,6 +32,7 @@ const FourOhFourPage = () => {
         <div className={'blockCenterImage-fourOhfour'}>
           <img src={fourOhFour} alt={'404'} />
         </div>
+
         <div className={'blockCenterImage-shadow'}>
           <img
             className={'blockCenterImage-shadow_light'}
@@ -45,16 +46,21 @@ const FourOhFourPage = () => {
           />
         </div>
       </div>
+
       <div className={'blockOrangeImage'}>
         <img src={orangeDots} alt={'orange dots'} />
       </div>
+
       <div className={'blockGreenImage'}>
         <img src={greenDots} alt={'green dots'} />
       </div>
+
       <div className={'blockRightImage'}>
         <img src={loop} alt={'loop'} />
       </div>
+
       <h2>{getTranslatedText('fourOhFour.noPage', lang)}</h2>
+
       <div className={'blockButtons'}>
         <Button
           whatClass={'onMain'}

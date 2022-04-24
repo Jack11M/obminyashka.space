@@ -13,13 +13,17 @@ import InputForAuth from 'components/common/input';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localisation';
 
-import { Extra, ExtraLink, WrapperButton } from './loginStyle';
+import { Extra, ExtraLink, WrapperButton } from './styles';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { lang } = useSelector((state) => state.auth);
   const [checkbox, setCheckbox] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const fromPage = location.state?.from?.pathname || '/';
 
   const changeCheckBox = () => {
     setCheckbox((prev) => !prev);
@@ -44,6 +48,7 @@ const Login = () => {
     setLoading(true);
     try {
       await dispatch(putUserThunk(values, checkbox));
+      navigate(fromPage, { replace: true });
     } catch (err) {
       setLoading(false);
       if (err.response.status === 400) {
@@ -78,6 +83,7 @@ const Login = () => {
                   type="password"
                 />
               </div>
+
               <Extra>
                 <CheckBox
                   text={getTranslatedText('auth.remember', lang)}
@@ -90,6 +96,7 @@ const Login = () => {
                   {getTranslatedText('auth.noLogin', lang)}
                 </ExtraLink>
               </Extra>
+
               <WrapperButton>
                 <Button
                   text={getTranslatedText('button.enter', lang)}
@@ -103,6 +110,7 @@ const Login = () => {
                   disabling={!isValid && !dirty}
                   click={!errors.usernameOrEmail ? handleSubmit : null}
                 />
+
                 <Button
                   bold
                   mb="64px"

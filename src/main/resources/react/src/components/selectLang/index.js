@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { setLanguage } from '../../store/auth/slice';
+import { setLanguage } from 'store/auth/slice';
 
 const LanguagePanel = styled.div`
   display: flex;
@@ -73,4 +73,4 @@ const CustomSelect = () => {
   );
 };
 
-export default CustomSelect;
+export { CustomSelect };

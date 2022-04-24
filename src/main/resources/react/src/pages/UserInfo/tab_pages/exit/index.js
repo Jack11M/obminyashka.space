@@ -46,4 +46,4 @@ const Exit = ({ toggle, setIsModalOpen }) => {
     </div>
   );
 };
-export default Exit;
+export { Exit };

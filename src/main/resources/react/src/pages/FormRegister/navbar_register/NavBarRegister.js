@@ -15,7 +15,6 @@ const NavBarRegister = () => {
     <>
       <div className={cls.tabs}>
         <CustomLink to="">{getTranslatedText('auth.login', lang)}</CustomLink>
-
         <CustomLink to={route.signUp}>
           {getTranslatedText('auth.signUp', lang)}
         </CustomLink>

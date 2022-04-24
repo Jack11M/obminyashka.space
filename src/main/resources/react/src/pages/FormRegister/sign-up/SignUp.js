@@ -19,8 +19,8 @@ import {
   USERNAME_ALT_CODE_EXP,
 } from 'config';
 
-import { Extra } from '../sign-in/loginStyle';
-import { WrapperButton } from '../sign-in/loginStyle';
+import { Extra } from '../sign-in/styles';
+import { WrapperButton } from '../sign-in/styles';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -124,6 +124,7 @@ const SignUp = () => {
                     type="password"
                   />
                 </div>
+
                 <Extra>
                   <CheckBox
                     text={getTranslatedText('auth.agreement', lang)}
@@ -133,6 +134,7 @@ const SignUp = () => {
                     click={changeCheckBox}
                   />
                 </Extra>
+
                 <WrapperButton>
                   <Button
                     text={getTranslatedText('auth.signUp', lang)}
@@ -150,6 +152,7 @@ const SignUp = () => {
                       !errors.email || !errors.username ? handleSubmit : null
                     }
                   />
+
                   <Button
                     bold
                     mb="64px"

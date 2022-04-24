@@ -15,7 +15,7 @@ import './somethingBad.scss';
 
 const SomethingBad = ({ deactivateError }) => {
   const { lang } = useSelector((state) => state.auth);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const goTo = (event) => {
     deactivateError(false);
