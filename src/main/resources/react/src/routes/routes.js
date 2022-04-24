@@ -50,16 +50,10 @@ const Routes = () => {
           }
         />
 
-        {/* <Protected
-          path={route.addAdv}
-          Component={AddGoods}
-          permission={isAuthed}
-          redirect={route.login}
-        /> */}
-
         <Route path={route.oauthSuccess} element={<OAuthSuccess />} />
 
         <Route path={route.productPage} element={<ProductPage />} />
+        <Route path={route.prevProductPage} element={<ProductPage />} />
 
         <Route path={route.noMatch} element={<FourOhFourPage />} />
       </Switch>

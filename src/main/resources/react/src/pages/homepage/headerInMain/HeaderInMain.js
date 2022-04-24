@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import toys from 'assets/img/clouds/STEPthree.png';
 import monitor from 'assets/img/clouds/STEPtwo.png';
 import furniture from 'assets/img/clouds/STEP-one.png';
@@ -10,7 +11,7 @@ import './headerInMain.scss';
 import './moveCloud.scss';
 
 const HeaderInMain = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   return (
     <div className="present-section">

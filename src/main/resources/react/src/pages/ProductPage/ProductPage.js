@@ -1,14 +1,16 @@
-import { enumAge } from 'config/ENUM';
-import React, { useEffect, useState } from 'react';
-import { useMatch, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
+import { enumAge } from 'config/ENUM';
+import { getLang, getProfile } from 'store/auth/slice';
+import TitleBigBlue from 'components/common/title_Big_Blue';
+import { getTranslatedText } from 'components/local/localization';
+
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers/ProductOffers';
-import TitleBigBlue from 'components/common/title_Big_Blue';
 import ProductPostData from './ProductPostData/ProductPostData';
-import { getTranslatedText } from 'components/local/localization';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductDescription from './ProductDescription/ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
@@ -16,13 +18,10 @@ import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
 import './ProductPage.scss';
 
 const ProductPage = () => {
-  const { lang, profile } = useSelector((state) => state.auth);
-
-  const param = useMatch();
+  const { id } = useParams();
   const location = useLocation();
-  const { id } = param.params;
-
-  console.log(param);
+  const lang = useSelector(getLang);
+  const profile = useSelector(getProfile);
 
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
@@ -31,7 +30,7 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState({});
   const [currentLocation, setCurrentLocation] = useState({});
 
-  const setPreviewData = () => {
+  const setPreviewData = useCallback(() => {
     const { state } = location;
     setCategory(state.category);
     setSubcategory(state.subcategory);
@@ -39,7 +38,7 @@ const ProductPage = () => {
     setWishes(state.wishes);
     setProduct(state.product);
     setPhotos(state.photos);
-  };
+  }, [location]);
 
   useEffect(() => {
     if (location.state) setPreviewData();
@@ -66,7 +65,7 @@ const ProductPage = () => {
           console.log(e);
         });
     }
-  }, [lang, id, location]);
+  }, [lang, id, location, setPreviewData]);
 
   return (
     <div>

@@ -56,13 +56,20 @@ const {
   },
 } = authSlice;
 
+const getAuth = (state) => state.auth.isAuthed;
+const getLang = (state) => state.auth.lang;
+const getProfile = (state) => state.auth.profile;
+
 export {
-  setLanguage,
+  getAuth,
+  getLang,
   putEmail,
+  putToken,
   setAuthed,
   setLoader,
+  getProfile,
   logOutUser,
-  putToken,
+  setLanguage,
   authReducer,
   authInitialState,
 };

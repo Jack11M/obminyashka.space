@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import logoFooter from 'assets/img/Logo-footer.png';
 import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
@@ -13,7 +14,7 @@ import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBu
 import './Footer.scss';
 
 const Footer = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const timeDate = new Date();
   const yearNow = timeDate.getFullYear();
 

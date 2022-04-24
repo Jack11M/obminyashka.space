@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import logout2 from 'assets/img/log-out-2.png';
 import { logoutUserThunk } from 'store/auth/thunk';
@@ -15,7 +16,7 @@ const Exit = ({ toggle, setIsModalOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const ref = React.useRef(null);
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   const setLogOut = useCallback(async () => {
     await dispatch(logoutUserThunk());

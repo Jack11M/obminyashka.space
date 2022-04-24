@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ShowSelectItem } from '../../show-select-item';
@@ -13,7 +14,7 @@ const SelectItem = ({
   placeholder,
   valueCategory,
 }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   return (
     <ShowSelectItem

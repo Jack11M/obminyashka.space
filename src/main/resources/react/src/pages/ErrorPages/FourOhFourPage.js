@@ -1,23 +1,26 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Button from '../../components/common/buttons/button/Button';
-import { getTranslatedText } from '../../components/local/localization';
+
+import { getLang } from 'store/auth/slice';
+import { route } from 'routes/routeConstants';
 import {
-  fourOhFour,
-  greenDots,
   loop,
-  orangeDots,
   shadow,
+  greenDots,
+  fourOhFour,
+  orangeDots,
   shadowDark,
-} from '../../assets/img/all_images_export/errorPage';
-import { route } from '../../routes/routeConstants';
+} from 'assets/img/all_images_export/errorPage';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localization';
 
 import './errorPage.scss';
 
 const FourOhFourPage = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const navigate = useNavigate();
+
   const goTo = (event) => {
     if (event.target.className.includes('onMain')) {
       navigate(route.home);

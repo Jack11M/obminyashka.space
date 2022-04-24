@@ -2,19 +2,20 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
-import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
   greenDots,
   orangeDots,
 } from 'assets/img/all_images_export/errorPage';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localization';
 
 import './somethingBad.scss';
 
 const SomethingBad = ({ deactivateError }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const navigate = useNavigate();
 
   const goTo = (event) => {

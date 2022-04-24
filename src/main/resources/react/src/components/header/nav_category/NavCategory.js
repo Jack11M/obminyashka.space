@@ -1,23 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
+import { getLang } from 'store/auth/slice';
+import { route } from 'routes/routeConstants';
 import {
+  toys,
   books,
+  other,
+  shoes,
   clothes,
   furniture,
   kidsUpToYear,
-  other,
-  shoes,
-  toys,
   transportForChildren,
 } from 'assets/img/all_images_export/navItems';
-import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
 import './navCategory.scss';
 
 const NavCategory = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   return (
     <ul className="navbarBurger-list">
       <div className="wrapper">

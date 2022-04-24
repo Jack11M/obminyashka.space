@@ -4,13 +4,15 @@ import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
+import { getLang } from 'store/auth/slice';
 import { ModalContext } from 'components/common/pop-up';
-import InputProfile from '../../components/inputProfile';
 import TitleBigBlue from 'components/common/title_Big_Blue';
 import Button from 'components/common/buttons/button/Button';
 import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
 import { fetchUser, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
+
+import InputProfile from '../../components/inputProfile';
 import InputGender from '../../components/inputProfile/inputGender';
 import ButtonsAddRemoveChild from '../../components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 
@@ -19,7 +21,7 @@ import './myProfile.scss';
 const MyProfile = () => {
   const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const { firstName, lastName, children, phones } = useSelector(
     (state) => state.profileMe
   );

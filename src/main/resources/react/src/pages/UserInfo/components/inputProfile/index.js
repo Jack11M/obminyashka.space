@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import InputMask from 'react-input-mask';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
+
 const ProfileInput = styled.div`
   position: relative;
   display: flex;
@@ -36,7 +38,7 @@ const Input = styled.input`
   color: ${({ theme: { colors } }) => colors['right-color-text']};
 
   &::placeholder {
-    color: #A3A3A3;
+    color: #a3a3a3;
   }
   &:focus,
   &:hover {
@@ -57,7 +59,7 @@ const SpanError = styled.span`
 `;
 
 const InputProfile = ({ id = '', label, ...props }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const [field, meta, helpers] = useField(props);
   const { error, touched } = meta;
 
@@ -80,9 +82,7 @@ const InputProfile = ({ id = '', label, ...props }) => {
           {...props}
           error={touched && error}
         >
-          {(inputProps) => (
-            <Input {...inputProps} disableUnderline />
-          )}
+          {(inputProps) => <Input {...inputProps} disableUnderline />}
         </InputMask>
       ) : (
         <Input

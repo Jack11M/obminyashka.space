@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -16,7 +17,7 @@ const PhotoFiles = ({
   currentIndexImage,
   setCurrentIndexImage,
 }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const { openModal } = useContext(ModalContext);
 
   const filesAddHandler = (event, dropFiles = null) => {

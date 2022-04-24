@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization.js';
 
 import { InputLocation } from './input-location';
@@ -8,7 +9,7 @@ import { InputLocation } from './input-location';
 import { WrapContainer } from './styles.js';
 
 const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   const [location, setLocation] = useState({
     RU: [],

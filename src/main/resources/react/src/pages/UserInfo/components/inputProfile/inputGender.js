@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 const GenderDiv = styled.div`
@@ -92,7 +93,7 @@ const Span = styled.span`
 `;
 
 const InputGender = ({ gender, id, click }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   return (
     <GenderDiv>
       <Label>{getTranslatedText('ownInfo.gender', lang)}</Label>

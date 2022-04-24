@@ -68,4 +68,6 @@ const {
   actions: { saveAdv, clearAdv },
 } = advSlice;
 
-export { saveAdv, clearAdv, advReducer };
+const getAdv = (state) => state.adv;
+
+export { saveAdv, clearAdv, advReducer, getAdv };

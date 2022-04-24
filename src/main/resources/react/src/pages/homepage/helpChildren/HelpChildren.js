@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBusiness';
 
 import './helpchildren.scss';
 
 const HelpChildren = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   return (
     <div className="HelpChildren">

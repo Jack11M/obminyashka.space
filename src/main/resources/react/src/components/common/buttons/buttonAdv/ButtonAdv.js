@@ -2,13 +2,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
 import './buttonAdv.scss';
 
 const ButtonAdv = ({ type }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   return (
     <>
       {type === 'link' && (

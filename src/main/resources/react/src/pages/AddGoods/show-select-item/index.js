@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 import { animated, useSpring, useTransition } from 'react-spring';
 
+import { getLang } from 'store/auth/slice';
 import { useOutsideClick } from 'hooks/useOutsideClick';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localization';
@@ -36,7 +37,7 @@ const ShowSelectItem = ({
   categories = false,
 }) => {
   const { openModal } = useContext(ModalContext);
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const [opened, setOpened] = useState(false);
 
   const [, meta, helpers] = useField(name);

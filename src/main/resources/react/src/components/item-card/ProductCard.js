@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import Button from 'components/common/buttons/button/Button';
 
@@ -23,7 +24,7 @@ import {
 import './avatarForCard.scss';
 
 const ProductCard = (props) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const avatar = props.avatar === '' || props.avatar;
 
   return (

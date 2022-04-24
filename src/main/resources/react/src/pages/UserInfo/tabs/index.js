@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { links } from './config';
@@ -9,7 +10,7 @@ import { links } from './config';
 import './tabs.scss';
 
 const Tabs = ({ toggle }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   return (
     <div className="tabs">

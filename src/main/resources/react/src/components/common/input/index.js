@@ -1,14 +1,15 @@
 import React, { memo, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 
 import { InputAuth, InputDiv, Label, SpanError } from './styles';
 
 const InputForAuth = ({ text, ...props }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const location = useLocation();
   const path = location.pathname === route.login;
   const [field, meta, helpers] = useField(props);

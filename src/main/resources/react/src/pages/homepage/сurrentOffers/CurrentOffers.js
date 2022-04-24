@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import ProductCard from 'components/item-card';
 import noPhotos from 'assets/img/showAdv/noPhoto.svg';
@@ -13,7 +14,7 @@ import './currentOffers.scss';
 
 const CurrentOffers = () => {
   const navigate = useNavigate();
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   const [offers, setOffers] = useState([]);
 

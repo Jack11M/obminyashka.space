@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from 'react-slick';
 
+import { getLang } from 'store/auth/slice';
 import {
   toySlider,
   childSlider,
@@ -18,7 +19,7 @@ import 'slick-carousel/slick/slick.scss';
 import 'slick-carousel/slick/slick-theme.scss';
 
 const Sliders = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   const isImg = [
     {

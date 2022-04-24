@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import api from 'REST/Resources';
 import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM.js';
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
-import { saveAdv, clearAdv } from 'store/adv/slice';
+import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localization';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
@@ -26,9 +27,9 @@ import './AddGoods.scss';
 const AddGoods = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const adv = useSelector(getAdv);
+  const lang = useSelector(getLang);
   const { genderEnum, seasonEnum } = ru;
-  const { lang } = useSelector((state) => state.auth);
-  const adv = useSelector((state) => state.adv);
 
   const regexp = /data:image\/(jpg|jpeg|png|gif);base64,/;
 
@@ -152,7 +153,7 @@ const AddGoods = () => {
       })
     );
 
-    navigate(route.productPage, {
+    navigate(route.prevProductPage, {
       state: {
         wishes: exchangeList,
         category: categoryItems,

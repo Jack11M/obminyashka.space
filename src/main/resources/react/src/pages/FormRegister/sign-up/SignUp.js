@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import CheckBox from 'components/common/checkbox';
 import InputForAuth from 'components/common/input';
@@ -24,7 +25,7 @@ import { WrapperButton } from '../sign-in/styles';
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const [loading, setLoading] = useState(false);
   const [checkbox, setCheckbox] = useState(false);
 

@@ -9,6 +9,7 @@ export const route = {
   mySettings: 'settings',
   exit: 'exit',
   productPage: '/product-page/:id',
+  prevProductPage: '/product-page',
   oauthSuccess: '/oauth-success',
   noMatch: '*',
 };

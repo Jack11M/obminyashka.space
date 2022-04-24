@@ -5,26 +5,27 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { putEmail } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
+import { putEmail, getLang, getProfile } from 'store/auth/slice';
 import { ModalContext } from 'components/common/pop-up';
-import InputProfile from '../../components/inputProfile';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localization';
 import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
+
+import InputProfile from '../../components/inputProfile';
 
 import './mySettings.scss';
 
 const MySettings = () => {
   const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
+
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
-  const {
-    lang,
-    profile: { email: currentEmail },
-  } = useSelector((state) => state.auth);
+
+  const lang = useSelector(getLang);
+  const { email: currentEmail } = useSelector(getProfile);
 
   const validationPasswordSchema = yup.object().shape({
     oldPassword: yup

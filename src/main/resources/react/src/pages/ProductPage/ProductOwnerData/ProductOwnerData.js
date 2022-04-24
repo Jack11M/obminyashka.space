@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import { getTranslatedText } from 'components/local/localization';
 
 import './ProductOwnerData.scss';
 
 const ProductOwnerData = ({ ava, name, date, city, phone }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   return (
     <div className="productOwnerDataBox">

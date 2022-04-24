@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -9,7 +10,7 @@ import { CustomLink } from './custom-link';
 import cls from './registerTabs.module.scss';
 
 const NavBarRegister = () => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   return (
     <>

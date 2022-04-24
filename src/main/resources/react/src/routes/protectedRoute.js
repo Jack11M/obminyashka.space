@@ -1,24 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+
+import { getAuth } from 'store/auth/slice';
 
 import { route } from './routeConstants';
 
-const Protected = ({ path, Component, permission, redirect }) => {
-  return permission ? (
-    <Routes>
-      <Route path={path} element={Component} />
-    </Routes>
-  ) : (
-    <Navigate to={redirect} />
-  );
-};
-export default Protected;
-
 export const UnauthorizedRoute = ({ children }) => {
-  const { isAuthed } = useSelector((state) => state.auth);
+  const isAuth = useSelector(getAuth);
 
-  if (isAuthed) {
+  if (isAuth) {
     return <Navigate to={route.home} />;
   }
 
@@ -26,10 +17,10 @@ export const UnauthorizedRoute = ({ children }) => {
 };
 
 export const AuthorizedRoute = ({ children }) => {
-  const { isAuthed } = useSelector((state) => state.auth);
+  const isAuth = useSelector(getAuth);
   const location = useLocation();
 
-  if (!isAuthed) {
+  if (!isAuth) {
     return <Navigate to={route.login} state={{ from: location }} />;
   }
 

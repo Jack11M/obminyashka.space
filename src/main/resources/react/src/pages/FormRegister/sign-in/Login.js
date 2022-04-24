@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import { NO_SPACE } from 'config';
 import { GoogleSvg } from 'assets/icons';
+import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
 import CheckBox from 'components/common/checkbox';
@@ -19,7 +20,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const [checkbox, setCheckbox] = useState(false);
   const [loading, setLoading] = useState(false);
 

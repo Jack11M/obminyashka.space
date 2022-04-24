@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { getLang } from 'store/auth/slice';
 import Button from 'components/common/buttons/button/Button';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -15,7 +16,7 @@ const ProductPostData = ({
   season,
   readyForOffers,
 }) => {
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
 
   const transformWishes = readyForOffers
     ? [wishes, getTranslatedText('product.checkInUl', lang)]
