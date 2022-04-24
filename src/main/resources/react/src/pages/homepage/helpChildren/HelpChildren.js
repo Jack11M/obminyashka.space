@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBusiness';
 
 import './helpchildren.scss';

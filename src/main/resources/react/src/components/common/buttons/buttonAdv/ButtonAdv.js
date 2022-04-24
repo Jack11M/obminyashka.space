@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import './buttonAdv.scss';
 

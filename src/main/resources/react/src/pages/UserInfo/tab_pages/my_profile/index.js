@@ -10,7 +10,7 @@ import TitleBigBlue from 'components/common/title_Big_Blue';
 import Button from 'components/common/buttons/button/Button';
 import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
 import { fetchUser, putUserToStore } from 'store/profile/slice';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import InputGender from '../../components/inputProfile/inputGender';
 import ButtonsAddRemoveChild from '../../components/buttonsAddRemoveChild/buttonsAddRemoveChild';
 

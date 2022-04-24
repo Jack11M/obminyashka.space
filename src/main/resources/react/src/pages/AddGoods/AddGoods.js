@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
@@ -10,7 +10,7 @@ import { enumAge } from 'config/ENUM.js';
 import { route } from 'routes/routeConstants';
 import { saveAdv, clearAdv } from 'store/adv/slice';
 import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
 
@@ -153,23 +153,25 @@ const AddGoods = () => {
     );
 
     navigate(route.productPage, {
-      wishes: exchangeList,
-      category: categoryItems,
-      subcategory: subCategoryItems,
-      currentLocation: locationCurrent,
-      product: {
-        age,
-        size,
-        gender,
-        season,
-        description,
-        topic: announcementTitle,
-        readyForOffers: !!readyOffer.length,
+      state: {
+        wishes: exchangeList,
+        category: categoryItems,
+        subcategory: subCategoryItems,
+        currentLocation: locationCurrent,
+        product: {
+          age,
+          size,
+          gender,
+          season,
+          description,
+          topic: announcementTitle,
+          readyForOffers: !!readyOffer.length,
+        },
+        photos: preViewImage.map((photo, index) => ({
+          id: index,
+          resource: photo.replace(regexp, ''),
+        })),
       },
-      photos: preViewImage.map((photo, index) => ({
-        id: index,
-        resource: photo.replace(regexp, ''),
-      })),
     });
   };
 

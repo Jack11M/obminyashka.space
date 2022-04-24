@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from 'react-slick';
 
-import { getTranslatedText } from '../../../components/local/localisation';
 import {
+  toySlider,
   childSlider,
+  shoesSlider,
   clothesSlider,
   furnitureSlider,
-  shoesSlider,
   strollersSlider,
-  toySlider,
-} from '../../../assets/img/all_images_export/sliderImages';
+} from 'assets/img/all_images_export/sliderImages';
+import { getTranslatedText } from 'components/local/localization';
 
 import './slider.scss';
 import 'slick-carousel/slick/slick.scss';

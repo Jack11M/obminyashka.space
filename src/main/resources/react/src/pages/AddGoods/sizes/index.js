@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import { ShowSelectItem } from '../show-select-item';
 

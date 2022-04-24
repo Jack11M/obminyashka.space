@@ -10,7 +10,7 @@ import { route } from 'routes/routeConstants';
 import { ModalContext } from 'components/common/pop-up';
 import InputProfile from '../../components/inputProfile';
 import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
 

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { route } from 'routes/routeConstants';
 import { Avatar } from 'components/common/avatar';
 import { CustomSelect } from 'components/selectLang';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import './navtop.scss';

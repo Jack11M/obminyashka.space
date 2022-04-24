@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import Button from '../common/buttons/button/Button';
+import { Avatar } from 'components/common/avatar';
+import Button from 'components/common/buttons/button/Button';
+
 import SvgStar from './FavoriteMarker';
 import InboxMessageSvg from './inboxMessageSvg';
-import { Avatar } from 'components/common/avatar';
-import { getTranslatedText } from '../local/localisation';
+import { getTranslatedText } from '../local/localization';
 
 import {
   ButtonBlock,

@@ -19,37 +19,21 @@ const Routes = () => {
     <div>
       <Switch>
         <Route path={route.home} element={<HomePage />} />
-        {/* <Protected
-          path={route.login}
-          Component={<Auth />}
-          permission={!isAuthed}
-          redirect={route.home}
-        /> */}
 
-        {/* <Route
-          path={route.auth}
+        <Route
+          path={route.login}
           element={
             <UnauthorizedRoute>
               <Auth />
             </UnauthorizedRoute>
           }
         >
-          <Route path={route.login} element={<Login />} />
+          <Route index element={<Login />} />
           <Route path={route.signUp} element={<SignUp />} />
-        </Route> */}
-
-        {/*
-        <Route
-          path={`${route.login}${route.signUp}`}
-          element={
-            <UnauthorizedRoute>
-              <SignUp />
-            </UnauthorizedRoute>
-          }
-        /> */}
+        </Route>
 
         <Route
-          path={'user/*'}
+          path={`${route.userInfo}/*`}
           element={
             <AuthorizedRoute>
               <UserInfo />
@@ -67,13 +51,6 @@ const Routes = () => {
         />
 
         {/* <Protected
-          path={route.userInfo}
-          Component={UserInfo}
-          permission={isAuthed}
-          redirect={route.login}
-        /> */}
-
-        {/* <Protected
           path={route.addAdv}
           Component={AddGoods}
           permission={isAuthed}
@@ -83,18 +60,6 @@ const Routes = () => {
         <Route path={route.oauthSuccess} element={<OAuthSuccess />} />
 
         <Route path={route.productPage} element={<ProductPage />} />
-
-        <Route
-          path={route.login}
-          element={
-            <UnauthorizedRoute>
-              <Auth />
-            </UnauthorizedRoute>
-          }
-        >
-          <Route index element={<Login />} />
-          <Route path={route.signUp} element={<SignUp />} />
-        </Route>
 
         <Route path={route.noMatch} element={<FourOhFourPage />} />
       </Switch>

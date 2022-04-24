@@ -1,5 +1,5 @@
 import { getStorageLang } from '.';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 const errorHandling = (errors, key, isValid, forArray) => {
   let errorText;

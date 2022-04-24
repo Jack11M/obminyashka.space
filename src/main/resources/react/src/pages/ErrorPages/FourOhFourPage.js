@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/buttons/button/Button';
-import { getTranslatedText } from '../../components/local/localisation';
+import { getTranslatedText } from '../../components/local/localization';
 import {
   fourOhFour,
   greenDots,

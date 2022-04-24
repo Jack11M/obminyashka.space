@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import api from 'REST/Resources';
 import { DropDownInput } from 'pages/AddGoods/drop-down-input';
-import { getTranslatedText } from 'components/local/localisation.js';
+import { getTranslatedText } from 'components/local/localization.js';
 
 const InputLocation = ({
   lang,

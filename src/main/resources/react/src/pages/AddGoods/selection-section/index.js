@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import { FormikCheckBox } from 'components/common/formik';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import { SelectItem } from './select-item';
 

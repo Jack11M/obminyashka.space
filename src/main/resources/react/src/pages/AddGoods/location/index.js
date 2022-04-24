@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getTranslatedText } from 'components/local/localisation.js';
+import { getTranslatedText } from 'components/local/localization.js';
 
 import { InputLocation } from './input-location';
 

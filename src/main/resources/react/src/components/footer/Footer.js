@@ -2,13 +2,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBusiness.js';
+import { route } from 'routes/routeConstants';
+import logoFooter from 'assets/img/Logo-footer.png';
+import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
+import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as PhoneSvg } from 'assets/icons/phone.svg';
 import { ReactComponent as QuestionSvg } from 'assets/icons/question-mark.svg';
-import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
-import { getTranslatedText } from 'components/local/localisation';
-import logoFooter from 'assets/img/Logo-footer.png';
-import { route } from 'routes/routeConstants';
+import BtnGoodBusiness from 'components/common/buttons/btnGoodBusiness/BtnGoodBusiness.js';
 
 import './Footer.scss';
 

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ModalContext } from 'components/common/pop-up';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import { convertToMB } from './helper';
 import { ImagePhoto } from './image-photo';

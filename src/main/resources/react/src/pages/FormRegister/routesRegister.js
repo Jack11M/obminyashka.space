@@ -13,8 +13,6 @@ const RoutesRegister = () => {
     <Routes>
       <Route path={route.login} element={<Login />} />
       <Route path={route.signUp} element={<SignUp />} />
-
-      {/* <Navigate to={route.login} /> */}
     </Routes>
   );
 };

@@ -2,9 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { Avatar } from 'components/common/avatar';
+import { getTranslatedText } from 'components/local/localization';
 
 import './ProductOwnerData.scss';
-import { getTranslatedText } from 'components/local/localisation';
 
 const ProductOwnerData = ({ ava, name, date, city, phone }) => {
   const { lang } = useSelector((state) => state.auth);

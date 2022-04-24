@@ -11,7 +11,7 @@ import { putUserThunk } from 'store/auth/thunk';
 import CheckBox from 'components/common/checkbox';
 import InputForAuth from 'components/common/input';
 import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import { Extra, ExtraLink, WrapperButton } from './styles';
 

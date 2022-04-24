@@ -8,7 +8,7 @@ import { getDate } from './helpers';
 import ProductOffers from './ProductOffers/ProductOffers';
 import TitleBigBlue from 'components/common/title_Big_Blue';
 import ProductPostData from './ProductPostData/ProductPostData';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
 import ProductDescription from './ProductDescription/ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
@@ -22,12 +22,14 @@ const ProductPage = () => {
   const location = useLocation();
   const { id } = param.params;
 
-  const [product, setProduct] = useState({});
+  console.log(param);
+
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
-  const [currentLocation, setCurrentLocation] = useState({});
+  const [product, setProduct] = useState({});
   const [category, setCategory] = useState({});
   const [subcategory, setSubcategory] = useState({});
+  const [currentLocation, setCurrentLocation] = useState({});
 
   const setPreviewData = () => {
     const { state } = location;

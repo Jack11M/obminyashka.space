@@ -7,7 +7,7 @@ import { route } from 'routes/routeConstants';
 import ProductCard from 'components/item-card';
 import noPhotos from 'assets/img/showAdv/noPhoto.svg';
 import TitleBigBlue from 'components/common/title_Big_Blue';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import './currentOffers.scss';
 

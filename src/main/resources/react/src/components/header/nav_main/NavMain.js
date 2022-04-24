@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+
+import NavCategory from '../nav_category/NavCategory.js';
+import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 import ButtonAdv from 'components/common/buttons/buttonAdv/ButtonAdv.js';
-import { getTranslatedText } from 'components/local/localisation';
-import NavCategory from '../nav_category/NavCategory.js';
 
 import './navMain.scss';
 

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import toys from 'assets/img/clouds/STEPthree.png';
 import monitor from 'assets/img/clouds/STEPtwo.png';
 import furniture from 'assets/img/clouds/STEP-one.png';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import './headerInMain.scss';
 import './moveCloud.scss';

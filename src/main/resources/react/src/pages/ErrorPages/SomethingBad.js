@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
 import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
   greenDots,

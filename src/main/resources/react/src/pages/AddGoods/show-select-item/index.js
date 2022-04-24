@@ -5,7 +5,7 @@ import { animated, useSpring, useTransition } from 'react-spring';
 
 import { useOutsideClick } from 'hooks/useOutsideClick';
 import { ModalContext } from 'components/common/pop-up';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 

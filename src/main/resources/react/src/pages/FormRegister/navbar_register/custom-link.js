@@ -2,7 +2,7 @@ import { useMatch, useResolvedPath } from 'react-router-dom';
 import { StyledLink } from './styles';
 
 const CustomLink = ({ children, to, ...props }) => {
-  let resolved = useResolvedPath(to);
+  const resolved = useResolvedPath(to);
   const match = useMatch({ path: resolved.pathname });
 
   return (

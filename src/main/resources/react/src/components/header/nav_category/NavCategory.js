@@ -11,8 +11,8 @@ import {
   toys,
   transportForChildren,
 } from 'assets/img/all_images_export/navItems';
-import { getTranslatedText } from 'components/local/localisation';
 import { route } from 'routes/routeConstants';
+import { getTranslatedText } from 'components/local/localization';
 
 import './navCategory.scss';
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { getTranslatedText } from 'components/local/localisation';
 import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localization';
 
 import './ProductPostData.scss';
 

@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useClickAway } from 'react-use';
 
-import logout2 from 'assets/img/log-out-2.png';
-import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localisation';
-import { logoutUserThunk } from 'store/auth/thunk';
 import { route } from 'routes/routeConstants';
+import logout2 from 'assets/img/log-out-2.png';
+import { logoutUserThunk } from 'store/auth/thunk';
+import Button from 'components/common/buttons/button/Button';
+import { getTranslatedText } from 'components/local/localization';
 
 import './exit.scss';
 

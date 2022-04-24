@@ -10,7 +10,7 @@ import { route } from 'routes/routeConstants';
 import CheckBox from 'components/common/checkbox';
 import InputForAuth from 'components/common/input';
 import Button from 'components/common/buttons/button/Button';
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 import {
   NO_SPACE,
   EMAIL_REG_EXP,

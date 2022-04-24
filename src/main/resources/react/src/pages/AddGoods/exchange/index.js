@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 
-import { getTranslatedText } from 'components/local/localisation';
+import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 

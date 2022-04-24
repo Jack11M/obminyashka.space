@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import { route } from 'routes/routeConstants';
+
 import MyProfile from './my_profile';
 import MyActivity from './my_activity';
 import MySettings from './my_settings';
 import MyFavorites from './my_favorites';
-import { route } from 'routes/routeConstants';
 
-const RouterTabs = ({ url, set }) => {
+const RouterTabs = ({ set }) => {
   const location = useLocation();
   const [prevLocation, setPrevLocation] = set;
 
