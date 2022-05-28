@@ -1,0 +1,92 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "extends": ["plugin:react/recommended", "airbnb"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["react"],
+  "rules": {
+    "linebreak-style": "off",
+    "object-curly-newline": "off",
+    "no-confusing-arrow": "off",
+    "function-paren-newline": "off",
+    "react/jsx-props-no-spreading": "off",
+    "import/no-cycle": [2, { "maxDepth": 1 }],
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "ArrayExpression": 1,
+        "outerIIFEBody": "off",
+        "SwitchCase": 1,
+        "ObjectExpression": 1,
+        "offsetTernaryExpressions": true,
+
+        "CallExpression": {
+          "arguments": "off"
+        }
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-curly-newline": "off",
+    "react/jsx-filename-extension": "off",
+    "react/prop-types": "off",
+    "implicit-arrow-linebreak": "off",
+    "operator-linebreak": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "required": {
+          "some": ["nesting", "id"]
+        }
+      }
+    ],
+    // "prop": "ignore",
+    "react/jsx-one-expression-per-line": "off",
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ],
+    "import/no-unresolved": [0, { "caseSensitiveStrict": true }],
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function"
+      }
+    ]
+  }
+}

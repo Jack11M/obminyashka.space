@@ -1,5 +1,6 @@
-import { getStorageLang } from '.';
 import { getTranslatedText } from 'components/local/localization';
+
+import { getStorageLang } from '.';
 
 const errorHandling = (errors, key, isValid, forArray) => {
   let errorText;
@@ -8,10 +9,10 @@ const errorHandling = (errors, key, isValid, forArray) => {
       errorText = '+38(123)456-78-90, 381234567890';
       break;
     case 'children':
-      errorText = getTranslatedText(`errors.children`, getStorageLang());
+      errorText = getTranslatedText('errors.children', getStorageLang());
       break;
     default:
-      errorText = getTranslatedText(`errors.regNick`, getStorageLang());
+      errorText = getTranslatedText('errors.regNick', getStorageLang());
   }
 
   const newError = {
@@ -21,22 +22,21 @@ const errorHandling = (errors, key, isValid, forArray) => {
 
   if (isValid) {
     return errors.filter((error) => error.key !== key);
-  } else {
-    return errors.some((error) => error.key === key)
-      ? errors
-      : [...errors, newError];
   }
+
+  return errors.some((error) => error.key === key)
+    ? errors
+    : [...errors, newError];
 };
 
-const translateErrors = (state) => {
-  return state.map((child) => {
+const translateErrors = (state) =>
+  state.map((child) => {
     const field = Number.isInteger(child.key) ? 'children' : 'regNick';
     return {
       ...child,
       errorText: getTranslatedText(`errors.${field}`, getStorageLang()),
     };
   });
-};
 
 const permissionToSendProfile = (state) => {
   const phones = !state.phones.length
@@ -61,13 +61,13 @@ const permissionToSendChildren = (state) => {
   }
   return (
     state.children[state.children.length - 1].birthDate &&
-    !!!state.errorsChildren.length
+    !state.errorsChildren.length
   );
 };
 
 export {
-  permissionToSendChildren,
-  permissionToSendProfile,
-  translateErrors,
   errorHandling,
+  translateErrors,
+  permissionToSendProfile,
+  permissionToSendChildren,
 };

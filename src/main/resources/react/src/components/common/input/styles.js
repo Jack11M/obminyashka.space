@@ -30,12 +30,12 @@ export const InputAuth = styled.input`
   outline: none;
   border: 1px solid
     ${({ theme: { colors }, error }) =>
-      error ? colors['colorError'] : 'hsl(0, 0%, 74%)'};
+      error ? colors.colorError : 'hsl(0, 0%, 74%)'};
   color: ${({ theme: { colors } }) => colors['right-color-text']};
 
   &:focus {
     border-color: ${({ theme: { colors }, error }) =>
-      error ? colors['colorError'] : 'hsl(0, 0%, 44%)'};
+      error ? colors.colorError : 'hsl(0, 0%, 44%)'};
   }
 `;
 
@@ -52,5 +52,5 @@ export const SpanError = styled.span`
     border-color: ${({ theme: { colors }, error }) =>
       error && colors.colorError};
   }
-  color: ${({ theme: { colors } }) => colors['colorError']};
+  color: ${({ theme: { colors } }) => colors.colorError};
 `;

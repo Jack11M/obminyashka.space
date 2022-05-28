@@ -6,7 +6,7 @@ const CustomLink = ({ children, to, ...props }) => {
   const match = useMatch({ path: resolved.pathname });
 
   return (
-    <StyledLink to={to} className={!!match ? 'active-link' : ''} {...props}>
+    <StyledLink to={to} className={match ? 'active-link' : ''} {...props}>
       {children}
     </StyledLink>
   );

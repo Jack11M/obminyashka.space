@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import Slider from 'react-slick';
 
 import NoPhoto from './ProductPhotoCarousel/NoPhoto';
@@ -24,8 +25,8 @@ const SliderOrNot = ({ photos, showBigImg, bigPhoto }) => {
         {photos.map((photo) => (
           <div key={`index-${photo.id}`}>
             <img
-              src={`data:image/jpeg;base64,${photo.resource}`}
               alt={photo.id}
+              src={`data:image/jpeg;base64,${photo.resource}`}
               onClick={() => showBigImg(photo.id)}
               className={`noCarouselImg ${
                 bigPhoto.id === photo.id ? 'selected' : ''

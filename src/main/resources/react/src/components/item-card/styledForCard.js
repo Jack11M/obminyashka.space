@@ -7,7 +7,7 @@ export const Card = styled.div`
   border-radius: 20px;
   border: 2px dotted #c4c4c4;
   background-color: #fff;
-  margin: ${({ margin }) => (margin ? margin : '10px 14px')};
+  margin: ${({ margin }) => margin || '10px 14px'};
   -webkit-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   -moz-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
@@ -97,14 +97,14 @@ export const InboxDiv = styled.div`
 
   &:hover {
     cursor: pointer;
-    ${InboxSvg}: hover {
+    ${InboxSvg}:hover {
       cursor: pointer;
       path {
         fill: hsl(116, 60%, 45%);
       }
-    };
-      
-    ${InboxSvg}: active {
+    }
+
+    ${InboxSvg}:active {
       cursor: pointer;
       path {
         fill: hsl(116, 60%, 41%);

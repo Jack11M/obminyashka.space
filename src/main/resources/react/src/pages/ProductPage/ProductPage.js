@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 
@@ -9,11 +9,11 @@ import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
-import ProductOffers from './ProductOffers/ProductOffers';
-import ProductPostData from './ProductPostData/ProductPostData';
-import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
-import ProductDescription from './ProductDescription/ProductDescription';
-import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
+import ProductOffers from './ProductOffers';
+import ProductPostData from './ProductPostData';
+import ProductOwnerData from './ProductOwnerData';
+import ProductDescription from './ProductDescription';
+import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import './ProductPage.scss';
 

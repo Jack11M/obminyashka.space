@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -51,11 +51,10 @@ const CustomSelect = () => {
         : { ...item, checked: false }
     );
     setLanguageArray(newLang);
-    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang]);
 
-  const handleSelected = (lang) => {
-    dispatch(setLanguage(lang));
+  const handleSelected = (langValue) => {
+    dispatch(setLanguage(langValue));
   };
 
   return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 
@@ -9,11 +8,9 @@ import { route } from './routeConstants';
 export const UnauthorizedRoute = ({ children }) => {
   const isAuth = useSelector(getAuth);
 
-  if (isAuth) {
-    return <Navigate to={route.home} />;
-  }
+  if (isAuth) return <Navigate to={route.home} />;
 
-  return <>{children}</>;
+  return children;
 };
 
 export const AuthorizedRoute = ({ children }) => {
@@ -24,5 +21,5 @@ export const AuthorizedRoute = ({ children }) => {
     return <Navigate to={route.login} state={{ from: location }} />;
   }
 
-  return <>{children}</>;
+  return children;
 };
