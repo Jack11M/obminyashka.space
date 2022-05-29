@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const AddRemoveItem = styled.div`
   display: inline-flex;
@@ -29,36 +29,34 @@ const Span = styled.span`
   background-color: ${(props) =>
     props.addRemove ? 'hsl(134, 45%, 48%)' : 'hsl(0, 0%, 47%)'};
   transition: 0.2s;
+  ${({ addRemove }) => css`
+    &:hover {
+      cursor: pointer;
+      background-color: ${addRemove ? 'hsl(134, 45%, 43%)' : 'hsl(0, 0%, 42%)'};
+    }
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${(props) =>
-      props.addRemove ? 'hsl(134, 45%, 43%)' : 'hsl(0, 0%, 42%)'};
-  }
+    :before {
+      position: absolute;
+      content: '';
+      top: 16px;
+      left: 12px;
+      width: 10px;
+      height: 2px;
+      background-color: #fff;
+      transform: ${addRemove ? 'rotate(0deg)' : 'rotate(45deg)'};
+    }
 
-  :before {
-    position: absolute;
-    content: '';
-    top: 16px;
-    left: 12px;
-    width: 10px;
-    height: 2px;
-    background-color: #fff;
-    transform: ${(props) =>
-      props.addRemove ? 'rotate(0deg)' : 'rotate(45deg)'};
-  }
-
-  :after {
-    position: absolute;
-    content: '';
-    top: 12px;
-    left: 16px;
-    width: 2px;
-    height: 10px;
-    background-color: #fff;
-    transform: ${(props) =>
-      props.addRemove ? 'rotate(0deg)' : 'rotate(45deg)'};
-  }
+    :after {
+      position: absolute;
+      content: '';
+      top: 12px;
+      left: 16px;
+      width: 2px;
+      height: 10px;
+      background-color: #fff;
+      transform: ${addRemove ? 'rotate(0deg)' : 'rotate(45deg)'};
+    }
+  `}
 `;
 
 const ButtonsAddRemoveChild = ({ className, addRemove, text, onClick }) => (

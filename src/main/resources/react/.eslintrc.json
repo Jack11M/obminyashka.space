@@ -14,7 +14,7 @@
       }
     }
   },
-  "extends": ["plugin:react/recommended", "airbnb"],
+  "extends": ["plugin:prettier/recommended", "airbnb"],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -24,7 +24,24 @@
   },
   "plugins": ["react"],
   "rules": {
+    "react/jsx-wrap-multilines": [
+      "error",
+      {
+        "prop": "ignore"
+      }
+    ],
+
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      },
+      {
+        "usePrettierrc": true
+      }
+    ],
     "linebreak-style": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
     "object-curly-newline": "off",
     "no-confusing-arrow": "off",
     "function-paren-newline": "off",
@@ -32,21 +49,6 @@
     "import/no-cycle": [2, { "maxDepth": 1 }],
     "jsx-a11y/no-static-element-interactions": "off",
     "jsx-a11y/click-events-have-key-events": "off",
-    "indent": [
-      "error",
-      2,
-      {
-        "ArrayExpression": 1,
-        "outerIIFEBody": "off",
-        "SwitchCase": 1,
-        "ObjectExpression": 1,
-        "offsetTernaryExpressions": true,
-
-        "CallExpression": {
-          "arguments": "off"
-        }
-      }
-    ],
     "import/prefer-default-export": "off",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
@@ -63,7 +65,6 @@
         }
       }
     ],
-    // "prop": "ignore",
     "react/jsx-one-expression-per-line": "off",
     "comma-dangle": [
       "error",

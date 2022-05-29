@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const InputDiv = styled.div`
   position: relative;
@@ -28,15 +28,14 @@ export const InputAuth = styled.input`
   font-size: 16px;
   line-height: 24px;
   outline: none;
-  border: 1px solid
-    ${({ theme: { colors }, error }) =>
-      error ? colors.colorError : 'hsl(0, 0%, 74%)'};
-  color: ${({ theme: { colors } }) => colors['right-color-text']};
+  ${({ theme, error }) => css`
+    border: 1px solid ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
+    color: ${theme.colors['right-color-text']};
 
-  &:focus {
-    border-color: ${({ theme: { colors }, error }) =>
-      error ? colors.colorError : 'hsl(0, 0%, 44%)'};
-  }
+    &:focus {
+      border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 44%)'};
+    }
+  `}
 `;
 
 export const SpanError = styled.span`
@@ -48,9 +47,10 @@ export const SpanError = styled.span`
   font-weight: 400;
   line-height: 20px;
 
-  ${InputAuth} {
-    border-color: ${({ theme: { colors }, error }) =>
-      error && colors.colorError};
-  }
-  color: ${({ theme: { colors } }) => colors.colorError};
+  ${({ theme, error }) => css`
+    ${InputAuth} {
+      border-color: ${error && theme.colors.colorError};
+    }
+    color: ${theme.colors.colorError};
+  `}
 `;

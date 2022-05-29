@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+/* eslint-disable indent */
+import styled, { css } from 'styled-components';
 
 export const Card = styled.div`
   position: relative;
@@ -22,20 +23,24 @@ export const FavoriteMarker = styled.span`
   border-radius: 0 0 25px 25px;
   transform: translate(-50%);
   transition: background-color 0.3s ease;
-  background-color: ${({ isFavorite = false }) =>
-    isFavorite ? '#FEE200' : '#A0A0A0'};
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ isFavorite = false }) =>
-      isFavorite ? 'hsl(53, 100%, 48%)' : 'hsl(0, 0%, 59%)'};
-  }
+  ${({ isFavorite = false }) => css`
+    background-color: ${isFavorite ? '#FEE200' : '#A0A0A0'};
 
-  &:active {
-    cursor: pointer;
-    background-color: ${({ isFavorite = false }) =>
-      isFavorite ? 'hsl(53, 100%, 44%)' : 'hsl(0, 0%, 59%)'};
-  }
+    &:hover {
+      cursor: pointer;
+      background-color: ${isFavorite
+        ? 'hsl(53, 100%, 48%)'
+        : 'hsl(0, 0%, 59%)'};
+    }
+
+    &:active {
+      cursor: pointer;
+      background-color: ${isFavorite
+        ? 'hsl(53, 100%, 44%)'
+        : 'hsl(0, 0%, 59%)'};
+    }
+  `}
 `;
 
 export const DivPicture = styled.div`

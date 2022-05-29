@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 
@@ -67,7 +67,7 @@ const DropDownInput = ({
         <WrapDropItems showDrop={showDrop}>
           {data.map((item, index) => (
             <SelectedItem
-              key={`${item}_${index}`}
+              key={String(`${item}_${index}`)}
               onClick={() => choiceItem(item)}
             >
               <p>{item}</p>

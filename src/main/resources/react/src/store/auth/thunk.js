@@ -21,7 +21,7 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
     dispatch(putToken(data));
     dispatch(setAuthed(true));
   } catch (err) {
-    throw err;
+    console.log(err);
   }
 };
 
@@ -34,9 +34,8 @@ export const putOauthUserThunk = () => async (dispatch) => {
       sessionStorage.removeItem('code');
     } else {
       console.log('User not signed up via OAUTH');
-      throw 'User not signed up via OAUTH';
     }
   } catch (err) {
-    throw err;
+    console.log(err);
   }
 };

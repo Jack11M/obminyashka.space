@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+/* eslint-disable indent */
+import styled, { css } from 'styled-components';
 import { useSelector } from 'react-redux';
 
 import { getLang } from 'store/auth/slice';
@@ -34,44 +35,56 @@ const CircleBoy = styled.span`
   display: inline-flex;
   width: 15px;
   height: 15px;
-  border: 4px solid ${({ theme: { colors } }) => colors['btn-blue-normal']};
   border-radius: 50%;
-  background-color: ${({ theme: { colors }, gender }) =>
-    gender === 'MALE' ? colors['btn-blue-normal'] : colors['bg-content']};
-  & + span {
-    color: ${({ theme: { colors }, gender }) =>
-      gender === 'MALE' && colors['black-color-text']};
-  }
+
+  ${({ theme: { colors }, gender }) => css`
+    background-color: ${gender === 'MALE'
+      ? colors['btn-blue-normal']
+      : colors['bg-content']};
+
+    border: 4px solid ${colors['btn-blue-normal']};
+    & + span {
+      color: ${gender === 'MALE' && colors['black-color-text']};
+    }
+  `}
 `;
 
 const CircleGirl = styled.span`
   display: inline-flex;
   width: 15px;
   height: 15px;
-  border: 4px solid ${({ theme: { colors } }) => colors['btn-blue-normal']};
   border-radius: 50%;
-  background-color: ${({ theme: { colors }, gender }) =>
-    gender === 'FEMALE' ? colors['btn-blue-normal'] : colors['bg-content']};
 
-  & + span {
-    color: ${({ theme: { colors }, gender }) =>
-      gender === 'FEMALE' && colors['black-color-text']};
-  }
+  ${({ theme: { colors }, gender }) => css`
+    background-color: ${gender === 'FEMALE'
+      ? colors['btn-blue-normal']
+      : colors['bg-content']};
+
+    border: 4px solid ${colors['btn-blue-normal']};
+
+    & + span {
+      color: ${gender === 'FEMALE' && colors['black-color-text']};
+    }
+  `}
 `;
 
 const CircleUnselected = styled.span`
   display: inline-flex;
   width: 15px;
   height: 15px;
-  border: 4px solid ${({ theme: { colors } }) => colors['btn-blue-normal']};
   border-radius: 50%;
-  background-color: ${({ theme: { colors }, gender }) =>
-    gender === 'UNSELECTED' ? colors['btn-blue-normal'] : colors['bg-content']};
 
-  & + span {
-    color: ${({ theme: { colors }, gender }) =>
-      gender === 'UNSELECTED' && colors['black-color-text']};
-  }
+  ${({ theme: { colors }, gender }) => css`
+    background-color: ${gender === 'UNSELECTED'
+      ? colors['btn-blue-normal']
+      : colors['bg-content']};
+
+    border: 4px solid ${colors['btn-blue-normal']};
+
+    & + span {
+      color: ${gender === 'UNSELECTED' && colors['black-color-text']};
+    }
+  `}
 `;
 
 const Span = styled.span`

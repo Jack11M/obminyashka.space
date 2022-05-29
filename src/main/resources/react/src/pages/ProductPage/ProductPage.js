@@ -45,22 +45,23 @@ const ProductPage = () => {
     else {
       api.fetchProduct
         .getProduct(id)
-        .then(({ data }) => {
-          const {
+        .then(
+          ({
             images,
             wishesToExchange,
-            category,
-            subcategory,
-            location,
+            category: categoryValue,
+            subcategory: subcategoryValue,
+            location: locationValue,
             ...rest
-          } = data;
-          setWishes(wishesToExchange.split(', '));
-          setPhotos(images);
-          setProduct(rest);
-          setCategory(category);
-          setSubcategory(subcategory);
-          setCurrentLocation(location);
-        })
+          }) => {
+            setWishes(wishesToExchange.split(', '));
+            setPhotos(images);
+            setProduct(rest);
+            setCategory(categoryValue);
+            setSubcategory(subcategoryValue);
+            setCurrentLocation(locationValue);
+          }
+        )
         .catch((e) => {
           console.log(e);
         });

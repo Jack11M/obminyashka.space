@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useField } from 'formik';
-import styled from 'styled-components';
 import InputMask from 'react-input-mask';
 import { useSelector } from 'react-redux';
+import styled, { css } from 'styled-components';
 
 import { getLang } from 'store/auth/slice';
 
@@ -32,18 +32,18 @@ const Input = styled.input`
   font-size: 16px;
   line-height: 16px;
   font-family: inherit;
-  border: 1px solid
-    ${({ theme: { colors }, error }) =>
-      error ? colors.colorError : 'hsl(0, 0%, 74%)'};
-  color: ${({ theme: { colors } }) => colors['right-color-text']};
+  ${({ theme, error }) => css`
+    border: 1px solid ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
+    color: ${theme.colors['right-color-text']};
+
+    &:focus,
+    &:hover {
+      border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 44%)'};
+    }
+  `}
 
   &::placeholder {
     color: #a3a3a3;
-  }
-  &:focus,
-  &:hover {
-    border-color: ${({ theme: { colors }, error }) =>
-      error ? colors.colorError : 'hsl(0, 0%, 44%)'};
   }
 `;
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
 import { useEffect } from 'react';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';

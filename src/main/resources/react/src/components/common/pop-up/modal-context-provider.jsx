@@ -15,10 +15,13 @@ export const ModalProvider = ({ children }) => {
     setModalOpened(false);
   };
 
-  const valueModalProvider = useMemo(() => ({
-    openModal,
-    closeModal,
-  }), []);
+  const valueModalProvider = useMemo(
+    () => ({
+      openModal,
+      closeModal,
+    }),
+    []
+  );
 
   return (
     <ModalContext.Provider value={valueModalProvider}>

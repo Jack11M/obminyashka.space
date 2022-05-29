@@ -1,5 +1,3 @@
-import React from 'react';
-
 import lot3 from 'assets/img/cards/lot3.jpg';
 import mommy from 'assets/img/mama_1_04232631 1.png';
 import TitleBigBlue from 'components/common/title_Big_Blue';
@@ -123,4 +121,4 @@ const MyActivity = () => {
   );
 };
 
-export default React.memo(MyActivity);
+export default MyActivity;
