@@ -1,8 +1,8 @@
-import * as fetchAddGood from './fetchAddGood.js';
-import * as fetchAuth from './fetchAuth.js';
-import * as fetchHome from './fetchHome.js';
-import * as fetchProduct from './fetchProduct.js';
-import * as fetchProfile from './fetchProfile.js';
+import * as fetchAddGood from './fetchAddGood';
+import * as fetchAuth from './fetchAuth';
+import * as fetchHome from './fetchHome';
+import * as fetchProduct from './fetchProduct';
+import * as fetchProfile from './fetchProfile';
 
 export default {
   fetchAuth,

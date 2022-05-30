@@ -3,13 +3,11 @@ const CHILDREN_MAX = 10;
 const MAX_AGE = 17;
 const date = new Date();
 
-export const getCurrentDate = () => {
-  return date.toISOString().substr(0, 10);
-};
+export const getCurrentDate = () => date.toISOString().substr(0, 10);
 
 export const getMinDate = () => {
-  let year = getCurrentDate().slice(0, 4) - MAX_AGE;
-  let rest = getCurrentDate().slice(4);
+  const year = getCurrentDate().slice(0, 4) - MAX_AGE;
+  const rest = getCurrentDate().slice(4);
   return `${year}${rest}`;
 };
 
@@ -21,13 +19,13 @@ export const fillUserInfo = (data) => {
   if (!phones.length) {
     return { ...children, ...rest };
   }
+  return {};
 };
 
-export const changePhoneInputOrChildren = (state, value, id, property) => {
-  return state.map((item, idx) =>
+export const changePhoneInputOrChildren = (state, value, id, property) =>
+  state.map((item, idx) =>
     idx === id ? { ...item, [property]: value } : item
   );
-};
 
 export const addPhone = (data, errors) => {
   if (
@@ -47,12 +45,11 @@ export const putChildren = (state, child) => {
   return arrayChildren;
 };
 
-export const genderChange = (state, sex, id) => {
-  return state.map((child, idx) => (idx === id ? { ...child, sex } : child));
-};
+export const genderChange = (state, sex, id) =>
+  state.map((child, idx) => (idx === id ? { ...child, sex } : child));
 
 export const deleteLastPhone = (data) => {
-  let newData = [...data];
+  const newData = [...data];
   newData.pop();
   return newData;
 };
@@ -74,20 +71,16 @@ export const addChild = (state, errors) => {
   return [...state, newChild];
 };
 
-export const deleteItem = (state, id) => {
-  return state.filter((item, idx) => idx !== id);
-};
-export const deleteReceivedChildren = (state, id) => {
-  return state.filter((item) => item.id !== id);
-};
+export const deleteItem = (state, id) =>
+  state.filter((_item, idx) => idx !== id);
+export const deleteReceivedChildren = (state, id) =>
+  state.filter((item) => item.id !== id);
 
-export const dateValidation = (date) => {
-  const chooseDate = Date.parse(date);
+export const dateValidation = (dateValue) => {
+  const chooseDate = Date.parse(dateValue);
   const currentDate = Date.parse(getCurrentDate());
   const lastDate = Date.parse(getMinDate());
   return chooseDate >= lastDate && chooseDate <= currentDate;
 };
 
-export const getArray = (state, mock) => {
-  return !state.length ? mock : state;
-};
+export const getArray = (state, mock) => (!state.length ? mock : state);

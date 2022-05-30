@@ -23,16 +23,15 @@ function initObminyashka({ onAuthError }) {
       sessionStorage.getItem('code') ||
       '';
     const newConfig = { ...config };
-    if (token) newConfig.headers.Authorization = 'Bearer ' + token;
+    if (token) newConfig.headers.Authorization = `Bearer ${token}`;
     else delete newConfig.headers.Authorization;
     newConfig.headers['accept-language'] = getStorageLang();
     return newConfig;
   });
 
   axios.interceptors.response.use(
-    (response) => {
-      return response;
-    },
+    (response) => response,
+
     async (error) => {
       const originalRequest = error.config;
       const refreshToken = getStorageUser('user').refresh_token;
@@ -52,7 +51,7 @@ function initObminyashka({ onAuthError }) {
             refreshUrl,
             {},
             {
-              headers: { refresh_token: 'Bearer ' + refreshToken },
+              headers: { refresh_token: `Bearer ${refreshToken}` },
             }
           )
           .then((res) => {
@@ -62,9 +61,7 @@ function initObminyashka({ onAuthError }) {
             }
             return handleAuthError(error, onAuthError);
           })
-          .catch(() => {
-            return handleAuthError(error, onAuthError);
-          });
+          .catch(() => handleAuthError(error, onAuthError));
       }
       return Promise.reject(error);
     }
