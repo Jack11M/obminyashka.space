@@ -1,35 +1,36 @@
-import { enumAge } from 'config/ENUM';
-import React, { useEffect, useState } from 'react';
-import { useRouteMatch, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
-import { getDate } from './helpers';
-import ProductOffers from './ProductOffers/ProductOffers';
+import { enumAge } from 'config/ENUM';
+import { getLang, getProfile } from 'store/auth/slice';
 import TitleBigBlue from 'components/common/title_Big_Blue';
-import ProductPostData from './ProductPostData/ProductPostData';
-import { getTranslatedText } from 'components/local/localisation';
-import ProductOwnerData from './ProductOwnerData/ProductOwnerData';
-import ProductDescription from './ProductDescription/ProductDescription';
-import ProductPhotoCarousel from './ProductPhotoCarousel/ProductPhotoCarousel';
+import { getTranslatedText } from 'components/local/localization';
+
+import { getDate } from './helpers';
+import ProductOffers from './ProductOffers';
+import ProductPostData from './ProductPostData';
+import ProductOwnerData from './ProductOwnerData';
+import ProductDescription from './ProductDescription';
+import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import './ProductPage.scss';
 
 const ProductPage = () => {
-  const { lang, profile } = useSelector((state) => state.auth);
-
-  const param = useRouteMatch();
+  const { id } = useParams();
   const location = useLocation();
-  const { id } = param.params;
+  const lang = useSelector(getLang);
+  const profile = useSelector(getProfile);
 
-  const [product, setProduct] = useState({});
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
-  const [currentLocation, setCurrentLocation] = useState({});
+  const [product, setProduct] = useState({});
   const [category, setCategory] = useState({});
   const [subcategory, setSubcategory] = useState({});
+  const [currentLocation, setCurrentLocation] = useState({});
 
-  const setPreviewData = () => {
+  const setPreviewData = useCallback(() => {
     const { state } = location;
     setCategory(state.category);
     setSubcategory(state.subcategory);
@@ -37,34 +38,35 @@ const ProductPage = () => {
     setWishes(state.wishes);
     setProduct(state.product);
     setPhotos(state.photos);
-  };
+  }, [location]);
 
   useEffect(() => {
     if (location.state) setPreviewData();
     else {
       api.fetchProduct
         .getProduct(id)
-        .then(({ data }) => {
-          const {
+        .then(
+          ({
             images,
             wishesToExchange,
-            category,
-            subcategory,
-            location,
+            category: categoryValue,
+            subcategory: subcategoryValue,
+            location: locationValue,
             ...rest
-          } = data;
-          setWishes(wishesToExchange.split(', '));
-          setPhotos(images);
-          setProduct(rest);
-          setCategory(category);
-          setSubcategory(subcategory);
-          setCurrentLocation(location);
-        })
+          }) => {
+            setWishes(wishesToExchange.split(', '));
+            setPhotos(images);
+            setProduct(rest);
+            setCategory(categoryValue);
+            setSubcategory(subcategoryValue);
+            setCurrentLocation(locationValue);
+          }
+        )
         .catch((e) => {
           console.log(e);
         });
     }
-  }, [lang, id, location]);
+  }, [lang, id, location, setPreviewData]);
 
   return (
     <div>

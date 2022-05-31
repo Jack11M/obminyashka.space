@@ -1,54 +1,61 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes as Switch } from 'react-router-dom';
 
 import Auth from 'pages/FormRegister/Auth';
 import OAuthSuccess from 'pages/OAuthSuccess';
 import HomePage from 'pages/homepage/HomePage';
 import UserInfo from 'pages/UserInfo/UserInfo';
 import AddGoods from 'pages/AddGoods/AddGoods';
+import Login from 'pages/FormRegister/sign-in';
+import SignUp from 'pages/FormRegister/sign-up';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';
-import Protected from './protectedRoute';
+import { AuthorizedRoute, UnauthorizedRoute } from './protectedRoute';
 
-const Routes = () => {
-  const { isAuthed } = useSelector((state) => state.auth);
+const Routes = () => (
+  <div>
+    <Switch>
+      <Route path={route.home} element={<HomePage />} />
 
-  return (
-    <div>
-      <Switch>
-        <Route path={route.home} component={HomePage} exact />
-        <Protected
-          path={route.login}
-          component={Auth}
-          permission={!isAuthed}
-          redirect={route.home}
-        />
+      <Route
+        path={route.login}
+        element={
+          <UnauthorizedRoute>
+            <Auth />
+          </UnauthorizedRoute>
+        }
+      >
+        <Route index element={<Login />} />
+        <Route path={route.signUp} element={<SignUp />} />
+      </Route>
 
-        <Protected
-          path={route.userInfo}
-          component={UserInfo}
-          permission={isAuthed}
-          redirect={route.login}
-        />
+      <Route
+        path={`${route.userInfo}/*`}
+        element={
+          <AuthorizedRoute>
+            <UserInfo />
+          </AuthorizedRoute>
+        }
+      />
 
-        <Protected
-          path={route.addAdv}
-          component={AddGoods}
-          permission={isAuthed}
-          redirect={route.login}
-        />
+      <Route
+        path={route.addAdv}
+        element={
+          <AuthorizedRoute>
+            <AddGoods />
+          </AuthorizedRoute>
+        }
+      />
 
-        <Route path={route.oauthSuccess} component={OAuthSuccess} />
+      <Route path={route.oauthSuccess} element={<OAuthSuccess />} />
 
-        <Route path={`${route.productPage}`} component={ProductPage} />
+      <Route path={route.productPage} element={<ProductPage />} />
+      <Route path={route.prevProductPage} element={<ProductPage />} />
 
-        <Route path={route.noMatch} component={FourOhFourPage} />
-      </Switch>
-    </div>
-  );
-};
+      <Route path={route.noMatch} element={<FourOhFourPage />} />
+    </Switch>
+  </div>
+);
 
 export default Routes;

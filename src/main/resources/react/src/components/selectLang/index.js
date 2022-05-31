@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { setLanguage } from '../../store/auth/slice';
+import { setLanguage, getLang } from 'store/auth/slice';
 
 const LanguagePanel = styled.div`
   display: flex;
@@ -37,7 +37,7 @@ const LanguageItem = styled.div`
 
 const CustomSelect = () => {
   const dispatch = useDispatch();
-  const { lang } = useSelector((state) => state.auth);
+  const lang = useSelector(getLang);
   const [languageArray, setLanguageArray] = useState([
     { value: 'ru', checked: false },
     { value: 'ua', checked: false },
@@ -51,11 +51,10 @@ const CustomSelect = () => {
         : { ...item, checked: false }
     );
     setLanguageArray(newLang);
-    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang]);
 
-  const handleSelected = (lang) => {
-    dispatch(setLanguage(lang));
+  const handleSelected = (langValue) => {
+    dispatch(setLanguage(langValue));
   };
 
   return (
@@ -73,4 +72,4 @@ const CustomSelect = () => {
   );
 };
 
-export default CustomSelect;
+export { CustomSelect };

@@ -21,8 +21,7 @@ const initialState = {
 
 const advSlice = createSlice({
   name: 'advertisement',
-  initialState: initialState,
-
+  initialState,
   reducers: {
     saveAdv: (state, { payload }) => {
       state.topic = payload.announcementTitle;
@@ -68,4 +67,6 @@ const {
   actions: { saveAdv, clearAdv },
 } = advSlice;
 
-export { saveAdv, clearAdv, advReducer };
+const getAdv = (state) => state.adv;
+
+export { saveAdv, clearAdv, advReducer, getAdv };

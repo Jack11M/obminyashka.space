@@ -1,23 +1,20 @@
-import React from 'react';
-
-import HeaderInMain from './headerInMain/HeaderInMain';
-import Sliders from './slider/Sliders';
-import HelpChildren from './helpChildren/HelpChildren';
-import CurrentOffers from './сurrentOffers/CurrentOffers';
+import Sliders from './slider';
+import HeaderInMain from './headerInMain';
+import HelpChildren from './helpChildren';
+import CurrentOffers from './сurrentOffers';
 
 import './homePage.scss';
 
-const HomePage = () => {
-  return (
-    <main className="Main-page">
-      <HeaderInMain />
-      <div className="wrapper">
-        <CurrentOffers />
-        <Sliders />
-        <HelpChildren />
-      </div>
-    </main>
-  );
-};
+const HomePage = () => (
+  <main className="Main-page">
+    <HeaderInMain />
+
+    <div className="wrapper">
+      <CurrentOffers />
+      <Sliders />
+      <HelpChildren />
+    </div>
+  </main>
+);
 
 export default HomePage;
