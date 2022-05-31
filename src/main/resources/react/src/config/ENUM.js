@@ -8,4 +8,8 @@ export const enumAge = {
   OLDER_THAN_14: '14 +',
 };
 
-export const enumSex = { FEMALE: 'FEMALE', MALE: 'MALE', UNSELECTED: 'UNSELECTED' };
+export const enumSex = {
+  FEMALE: 'FEMALE',
+  MALE: 'MALE',
+  UNSELECTED: 'UNSELECTED',
+};

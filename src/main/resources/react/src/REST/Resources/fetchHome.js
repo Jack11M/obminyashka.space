@@ -1,5 +1,4 @@
 import { obminyashkaApi } from '../Service/networkProvider';
 
-export const getCurrentOffers = () => {
-  return obminyashkaApi.get(`/adv/thumbnail/random`);
-};
+export const getCurrentOffers = () =>
+  obminyashkaApi.get('/adv/thumbnail/random');

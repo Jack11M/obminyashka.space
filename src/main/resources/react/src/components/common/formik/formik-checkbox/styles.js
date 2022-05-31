@@ -50,7 +50,7 @@ const Div = styled.div`
 
 const Label = styled.label`
   display: flex;
-  font-size: ${({ fontSize }) => (fontSize ? fontSize : '14px')};
+  font-size: ${({ fontSize }) => fontSize || '14px'};
   line-height: 17px;
   vertical-align: middle;
   cursor: pointer;

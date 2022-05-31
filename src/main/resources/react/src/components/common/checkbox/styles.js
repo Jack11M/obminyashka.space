@@ -29,15 +29,14 @@ const LabelSquare = styled.div`
 const Label = styled.label`
   display: block;
   margin-left: ${(props) => (props.distanceBetween ? '9px' : '22px')};
-  font-size: ${({ fontSize }) => (fontSize ? fontSize : '14px')};
+  font-size: ${({ fontSize }) => fontSize || '14px'};
   line-height: 17px;
   vertical-align: middle;
   cursor: pointer;
   max-width: 679px;
   width: 100%;
-  color: ${({ theme: { colors }, checked }) => {
-    return checked ? colors['black-color-text'] : colors.colorTextDisabled;
-  }};
+  color: ${({ theme: { colors }, checked }) =>
+    checked ? colors['black-color-text'] : colors.colorTextDisabled};
 `;
 
 const Div = styled.div`

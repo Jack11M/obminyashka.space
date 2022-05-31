@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+/* eslint-disable indent */
+import styled, { css } from 'styled-components';
 
 export const Card = styled.div`
   position: relative;
@@ -7,7 +8,7 @@ export const Card = styled.div`
   border-radius: 20px;
   border: 2px dotted #c4c4c4;
   background-color: #fff;
-  margin: ${({ margin }) => (margin ? margin : '10px 14px')};
+  margin: ${({ margin }) => margin || '10px 14px'};
   -webkit-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   -moz-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
@@ -22,20 +23,24 @@ export const FavoriteMarker = styled.span`
   border-radius: 0 0 25px 25px;
   transform: translate(-50%);
   transition: background-color 0.3s ease;
-  background-color: ${({ isFavorite = false }) =>
-    isFavorite ? '#FEE200' : '#A0A0A0'};
 
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ isFavorite = false }) =>
-      isFavorite ? 'hsl(53, 100%, 48%)' : 'hsl(0, 0%, 59%)'};
-  }
+  ${({ isFavorite = false }) => css`
+    background-color: ${isFavorite ? '#FEE200' : '#A0A0A0'};
 
-  &:active {
-    cursor: pointer;
-    background-color: ${({ isFavorite = false }) =>
-      isFavorite ? 'hsl(53, 100%, 44%)' : 'hsl(0, 0%, 59%)'};
-  }
+    &:hover {
+      cursor: pointer;
+      background-color: ${isFavorite
+        ? 'hsl(53, 100%, 48%)'
+        : 'hsl(0, 0%, 59%)'};
+    }
+
+    &:active {
+      cursor: pointer;
+      background-color: ${isFavorite
+        ? 'hsl(53, 100%, 44%)'
+        : 'hsl(0, 0%, 59%)'};
+    }
+  `}
 `;
 
 export const DivPicture = styled.div`
@@ -97,14 +102,14 @@ export const InboxDiv = styled.div`
 
   &:hover {
     cursor: pointer;
-    ${InboxSvg}: hover {
+    ${InboxSvg}:hover {
       cursor: pointer;
       path {
         fill: hsl(116, 60%, 45%);
       }
-    };
-      
-    ${InboxSvg}: active {
+    }
+
+    ${InboxSvg}:active {
       cursor: pointer;
       path {
         fill: hsl(116, 60%, 41%);

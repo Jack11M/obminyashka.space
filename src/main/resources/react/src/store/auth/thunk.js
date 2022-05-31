@@ -1,5 +1,5 @@
 import api from 'REST/Resources';
-import { logOutUser, putToken } from './slice';
+import { logOutUser, putToken, setAuthed } from './slice';
 
 export const logoutUserThunk = () => async (dispatch) => {
   try {
@@ -19,23 +19,23 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
       sessionStorage.setItem('user', JSON.stringify(data));
     }
     dispatch(putToken(data));
+    dispatch(setAuthed(true));
   } catch (err) {
-    throw err
+    console.log(err);
   }
 };
 
 export const putOauthUserThunk = () => async (dispatch) => {
   try {
     const user = await api.fetchAuth.postOAuth2Success();
-    if(user !== "") {
+    if (user !== '') {
       localStorage.setItem('user', JSON.stringify(user));
       dispatch(putToken(user));
       sessionStorage.removeItem('code');
-    } else{
-      console.log("User not signed up via OAUTH");
-      throw "User not signed up via OAUTH";
+    } else {
+      console.log('User not signed up via OAUTH');
     }
   } catch (err) {
-    throw err;
+    console.log(err);
   }
 };

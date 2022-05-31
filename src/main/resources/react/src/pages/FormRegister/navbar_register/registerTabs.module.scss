@@ -2,34 +2,8 @@
 @import '../../../fonts/font';
 
 .tabs {
-  margin-bottom: 44px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  a {
-    @include font(Roboto);
-    padding-top: 14px;
-    padding-bottom: 10px;
-    width: 50%;
-
-    text-decoration: none;
-    list-style-type: none;
-    text-align: center;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 24px;
-    text-transform: uppercase;
-    border-bottom: 2px solid $colorGrey;
-    color: $colorGrey;
-    cursor: pointer;
-  }
-
-  .active {
-    border-bottom: 2px solid $btn-bh-active;
-    font-weight: bold;
-    color: $btn-bh-active;
-  }
+  margin-bottom: 44px;
 }
