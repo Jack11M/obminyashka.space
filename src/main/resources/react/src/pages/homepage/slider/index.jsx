@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Slider from 'react-slick';
 
-import { getLang } from 'store/auth/slice';
 import {
   toySlider,
   childSlider,
@@ -18,49 +16,47 @@ import 'slick-carousel/slick/slick.scss';
 import 'slick-carousel/slick/slick-theme.scss';
 
 const Sliders = () => {
-  const lang = useSelector(getLang);
-
   const isImg = [
     {
       src: toySlider,
-      subtitle: getTranslatedText('mainPage.blueSlideSubtitle', lang),
-      title: getTranslatedText('mainPage.blueSlideTitle', lang),
+      subtitle: getTranslatedText('mainPage.blueSlideSubtitle'),
+      title: getTranslatedText('mainPage.blueSlideTitle'),
       href: '#',
       width: 290,
     },
     {
       src: clothesSlider,
-      subtitle: getTranslatedText('mainPage.greenSlideSubtitle', lang),
-      title: getTranslatedText('mainPage.greenSlideTitle', lang),
+      subtitle: getTranslatedText('mainPage.greenSlideSubtitle'),
+      title: getTranslatedText('mainPage.greenSlideTitle'),
       href: '#',
       width: 600,
     },
     {
       src: childSlider,
-      subtitle: getTranslatedText('mainPage.yellowSlideSubtitle', lang),
-      title: getTranslatedText('mainPage.yellowSlideTitle', lang),
+      subtitle: getTranslatedText('mainPage.yellowSlideSubtitle'),
+      title: getTranslatedText('mainPage.yellowSlideTitle'),
       href: '#',
       width: 290,
     },
     {
       src: furnitureSlider,
-      subtitle: getTranslatedText('mainPage.pinkSlideSubtitle', lang),
-      title: getTranslatedText('mainPage.pinkSlideTitle', lang),
+      subtitle: getTranslatedText('mainPage.pinkSlideSubtitle'),
+      title: getTranslatedText('mainPage.pinkSlideTitle'),
       href: '#',
       width: 290,
     },
     {
       src: shoesSlider,
-      subtitle: getTranslatedText('mainPage.lilacSlideSubtitle', lang),
-      title: getTranslatedText('mainPage.lilacSlideTitle', lang),
+      subtitle: getTranslatedText('mainPage.lilacSlideSubtitle'),
+      title: getTranslatedText('mainPage.lilacSlideTitle'),
       href: '#',
       width: 600,
     },
 
     {
       src: strollersSlider,
-      subtitle: getTranslatedText('mainPage.orangeSlideSubtitle', lang),
-      title: getTranslatedText('mainPage.orangeSlideTitle', lang),
+      subtitle: getTranslatedText('mainPage.orangeSlideSubtitle'),
+      title: getTranslatedText('mainPage.orangeSlideTitle'),
       href: '#',
       width: 290,
     },

@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import { Button } from 'components/common/buttons';
 
@@ -32,7 +29,6 @@ const ProductCard = ({
   inboxMessage,
   clickOnButton,
 }) => {
-  const lang = useSelector(getLang);
   const avatarValue = avatar === '' || avatar;
 
   return (
@@ -65,7 +61,7 @@ const ProductCard = ({
           <Button
             click={clickOnButton}
             whatClass=""
-            text={getTranslatedText('button.look', lang)}
+            text={getTranslatedText('button.look')}
             width={inboxMessage ? '190px' : '222px'}
           />
 

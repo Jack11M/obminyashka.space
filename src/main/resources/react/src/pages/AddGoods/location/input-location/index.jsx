@@ -100,7 +100,7 @@ const InputLocation = ({
         const modifiedLocation = locationToLang.map((item) =>
           item.area
             ? item
-            : { ...item, area: getTranslatedText('addAdv.districtKyiv', lang) }
+            : { ...item, area: getTranslatedText('addAdv.districtKyiv') }
         );
         setLocation({
           ...location,

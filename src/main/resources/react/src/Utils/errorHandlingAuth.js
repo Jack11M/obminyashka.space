@@ -1,7 +1,4 @@
-/* eslint-disable indent */
 import { getTranslatedText } from 'components/local/localization';
-
-import { getStorageLang } from '.';
 
 const errorAuth = (errors, key, isValid) => {
   if (isValid) {
@@ -9,16 +6,13 @@ const errorAuth = (errors, key, isValid) => {
   }
   return errors.some((error) => Object.keys(error).join('') === key)
     ? errors
-    : [
-        ...errors,
-        { [key]: getTranslatedText(`errors.${key}`, getStorageLang()) },
-      ];
+    : [...errors, { [key]: getTranslatedText(`errors.${key}`) }];
 };
 const translateErrorsAuth = (state) =>
   state.map((error) => {
     const key = Object.keys(error);
     return {
-      [key]: getTranslatedText(`errors.${key}`, getStorageLang()),
+      [key]: getTranslatedText(`errors.${key}`),
     };
   });
 

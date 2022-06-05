@@ -1,7 +1,5 @@
 import { useContext } from 'react';
-import { useSelector } from 'react-redux';
 
-import { getLang } from 'store/auth/slice';
 import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -17,7 +15,6 @@ const PhotoFiles = ({
   currentIndexImage,
   setCurrentIndexImage,
 }) => {
-  const lang = useSelector(getLang);
   const { openModal } = useContext(ModalContext);
 
   const filesAddHandler = (event, dropFiles = null) => {
@@ -35,10 +32,10 @@ const PhotoFiles = ({
 
       if (foundSameFile.length) {
         openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
+          title: getTranslatedText('popup.errorTitle'),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.addedFile', lang)}
+              {getTranslatedText('popup.addedFile')}
             </p>
           ),
         });
@@ -47,10 +44,10 @@ const PhotoFiles = ({
 
       if (!file.type.match('image') || file.type.match('image/svg')) {
         openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
+          title: getTranslatedText('popup.errorTitle'),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.pictureSelection', lang)}
+              {getTranslatedText('popup.pictureSelection')}
               &nbsp;( jpg, jpeg, png, gif ).
             </p>
           ),
@@ -61,15 +58,15 @@ const PhotoFiles = ({
       const { value, valueString } = convertToMB(file.size);
       if (value >= 10 && valueString.includes('MB')) {
         openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
+          title: getTranslatedText('popup.errorTitle'),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.sizeFile', lang)}
+              {getTranslatedText('popup.sizeFile')}
               &nbsp;
               {valueString}
               <br />
               &nbsp;
-              {getTranslatedText('popup.selectFile', lang)}
+              {getTranslatedText('popup.selectFile')}
             </p>
           ),
         });
@@ -77,10 +74,10 @@ const PhotoFiles = ({
       }
       if (notAbilityToDownload) {
         openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
+          title: getTranslatedText('popup.errorTitle'),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.noSaveMore', lang)}
+              {getTranslatedText('popup.noSaveMore')}
             </p>
           ),
         });
@@ -143,14 +140,14 @@ const PhotoFiles = ({
   };
   return (
     <div className="files">
-      <h3>{getTranslatedText('addAdv.uploadDescription', lang)}</h3>
-      <p>{getTranslatedText('addAdv.firstUploadDescription', lang)}</p>
+      <h3>{getTranslatedText('addAdv.uploadDescription')}</h3>
+      <p>{getTranslatedText('addAdv.firstUploadDescription')}</p>
 
       <p>
-        {getTranslatedText('addAdv.photosUploaded', lang)}
+        {getTranslatedText('addAdv.photosUploaded')}
         &nbsp;
         {imageFiles.length}
-        {getTranslatedText('addAdv.from', lang)}
+        {getTranslatedText('addAdv.from')}
         &nbsp; 10
       </p>
 

@@ -99,6 +99,7 @@ const en = {
     save: 'SAVE',
     saveEmail: 'SAVE EMAIL',
     remove: 'REMOVE ACCOUNT',
+    back: 'Back',
   },
   header: {
     about: 'About the project',

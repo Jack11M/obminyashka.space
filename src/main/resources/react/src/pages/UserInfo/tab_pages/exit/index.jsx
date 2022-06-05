@@ -1,9 +1,8 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useClickAway } from 'react-use';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import logout2 from 'assets/img/log-out-2.png';
 import { logoutUserThunk } from 'store/auth/thunk';
@@ -16,7 +15,6 @@ const Exit = ({ toggle, setIsModalOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const ref = React.useRef(null);
-  const lang = useSelector(getLang);
 
   const setLogOut = useCallback(async () => {
     await dispatch(logoutUserThunk());
@@ -31,15 +29,13 @@ const Exit = ({ toggle, setIsModalOpen }) => {
       <div className="modal" ref={ref}>
         <div onClick={toggle} className="modal__cross js-modal-close" />
 
-        <p className="modal__title">
-          {getTranslatedText('exit.question', lang)}
-        </p>
+        <p className="modal__title">{getTranslatedText('exit.question')}</p>
 
-        <p className="modal__text">{getTranslatedText('exit.text', lang)}</p>
+        <p className="modal__text">{getTranslatedText('exit.text')}</p>
 
         <Button
           whatClass="button"
-          text={getTranslatedText('exit.exit', lang)}
+          text={getTranslatedText('exit.exit')}
           width="179px"
           click={setLogOut}
         />

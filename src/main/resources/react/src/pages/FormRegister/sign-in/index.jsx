@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { NO_SPACE } from 'config';
 import { GoogleSvg } from 'assets/icons';
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
 import CheckBox from 'components/common/checkbox';
@@ -20,7 +19,6 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const lang = useSelector(getLang);
   const [checkbox, setCheckbox] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -33,13 +31,13 @@ const Login = () => {
   const validationLoginSchema = yup.object().shape({
     usernameOrEmail: yup
       .string()
-      .required(getTranslatedText('errors.requireField', lang))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
+      .required(getTranslatedText('errors.requireField'))
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
       .default(() => ''),
     password: yup
       .string()
-      .required(getTranslatedText('errors.requireField', lang))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace', lang))
+      .required(getTranslatedText('errors.requireField'))
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
       .default(() => ''),
   });
   const initialLoginValues = validationLoginSchema.cast({});
@@ -73,12 +71,12 @@ const Login = () => {
           <>
             <div>
               <InputForAuth
-                text={getTranslatedText('auth.logEmail', lang)}
+                text={getTranslatedText('auth.logEmail')}
                 name="usernameOrEmail"
                 type="text"
               />
               <InputForAuth
-                text={getTranslatedText('auth.logPassword', lang)}
+                text={getTranslatedText('auth.logPassword')}
                 name="password"
                 type="password"
               />
@@ -86,14 +84,14 @@ const Login = () => {
 
             <Extra>
               <CheckBox
-                text={getTranslatedText('auth.remember', lang)}
+                text={getTranslatedText('auth.remember')}
                 margin="0 0 44px 0"
                 fontSize="14px"
                 checked={checkbox}
                 click={changeCheckBox}
               />
               <ExtraLink to={`${route.login}/${route.signUp}`}>
-                {getTranslatedText('auth.noLogin', lang)}
+                {getTranslatedText('auth.noLogin')}
               </ExtraLink>
             </Extra>
 
@@ -107,7 +105,7 @@ const Login = () => {
                 lHeight="24px"
                 isLoading={loading}
                 disabling={!isValid && !dirty}
-                text={getTranslatedText('button.enter', lang)}
+                text={getTranslatedText('button.enter')}
                 click={!errors.usernameOrEmail ? handleSubmit : null}
               />
 
@@ -119,7 +117,7 @@ const Login = () => {
                 width="175px"
                 lHeight="24px"
                 icon={<GoogleSvg />}
-                text={getTranslatedText('button.googleOAuth', lang)}
+                text={getTranslatedText('button.googleOAuth')}
                 click={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }

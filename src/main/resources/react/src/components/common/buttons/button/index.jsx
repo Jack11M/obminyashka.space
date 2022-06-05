@@ -14,6 +14,7 @@ const Button = ({
   click = null,
   whatClass = null,
   disabling = null,
+  ...props
 }) => (
   <ButtonBlue
     mb={mb}
@@ -24,6 +25,7 @@ const Button = ({
     lHeight={lHeight}
     disabled={disabling}
     className={whatClass}
+    {...props}
   >
     {isLoading ? <SpinnerForAuthBtn /> : text}
     {icon && <WrapIcon>{icon}</WrapIcon>}

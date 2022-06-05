@@ -22,7 +22,7 @@ const InputForAuth = ({ text, ...props }) => {
   return (
     <InputDiv path={path}>
       <Label>
-        {text}
+        <span>{text}</span>
         <InputAuth error={touched && error} {...field} {...props} />
       </Label>
       <SpanError>{touched && error}</SpanError>

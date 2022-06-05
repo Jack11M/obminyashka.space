@@ -4,14 +4,13 @@ import { useSelector } from 'react-redux';
 import { route } from 'routes/routeConstants';
 import { Avatar } from 'components/common/avatar';
 import { CustomSelect } from 'components/selectLang';
-import { getAuth, getProfile, getLang } from 'store/auth/slice';
+import { getAuth, getProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import './navtop.scss';
 
 const NavTop = () => {
-  const lang = useSelector(getLang);
   const isAuthed = useSelector(getAuth);
   const profile = useSelector(getProfile);
 
@@ -21,12 +20,12 @@ const NavTop = () => {
         <div className="navbar-top">
           <div className="navbar-top-links">
             <Link to="/" className="navbar-top-link">
-              {getTranslatedText('header.about', lang)}
+              {getTranslatedText('header.about')}
             </Link>
 
             <Link to={route.home} className="navbar-top-link">
               <HeartSvg className="navbar-top-link-svg" />
-              {getTranslatedText('header.goodness', lang)}
+              {getTranslatedText('header.goodness')}
             </Link>
           </div>
 
@@ -35,8 +34,7 @@ const NavTop = () => {
               <Avatar whatIsClass="user-photo" width={30} height={28} />
 
               <span>
-                {profile?.username ||
-                  getTranslatedText('header.myOffice', lang)}
+                {profile?.username || getTranslatedText('header.myOffice')}
               </span>
             </Link>
             <CustomSelect />

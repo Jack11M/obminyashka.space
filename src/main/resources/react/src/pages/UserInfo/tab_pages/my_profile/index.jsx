@@ -4,7 +4,6 @@ import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { getLang } from 'store/auth/slice';
 import { Button } from 'components/common/buttons';
 import { ModalContext } from 'components/common/pop-up';
 import TitleBigBlue from 'components/common/title_Big_Blue';
@@ -21,7 +20,6 @@ import './myProfile.scss';
 const MyProfile = () => {
   const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
-  const lang = useSelector(getLang);
   const { firstName, lastName, children, phones } = useSelector(
     (state) => state.profileMe
   );
@@ -48,32 +46,24 @@ const MyProfile = () => {
   const validationUserSchema = yup.object().shape({
     firstName: yup
       .string()
-      .min(2, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.min2', lang))
-      )
-      .max(50, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.max50', lang))
-      )
+      .min(2, (obj) => errorMessage(obj, getTranslatedText('errors.min2')))
+      .max(50, (obj) => errorMessage(obj, getTranslatedText('errors.max50')))
       .matches(NO_SPACE, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.noSpace', lang))
+        errorMessage(obj, getTranslatedText('errors.noSpace'))
       )
       .matches(NAME_REG_EXP, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.nameMatch', lang))
+        errorMessage(obj, getTranslatedText('errors.nameMatch'))
       )
       .default(() => firstName),
     lastName: yup
       .string()
-      .min(2, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.min2', lang))
-      )
-      .max(50, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.max50', lang))
-      )
+      .min(2, (obj) => errorMessage(obj, getTranslatedText('errors.min2')))
+      .max(50, (obj) => errorMessage(obj, getTranslatedText('errors.max50')))
       .matches(NO_SPACE, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.noSpace', lang))
+        errorMessage(obj, getTranslatedText('errors.noSpace'))
       )
       .matches(NAME_REG_EXP, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.nameMatch', lang))
+        errorMessage(obj, getTranslatedText('errors.nameMatch'))
       )
       .default(() => lastName),
     phones: yup
@@ -81,7 +71,7 @@ const MyProfile = () => {
       .of(
         yup
           .string()
-          .matches(PHONE_REG_EXP, getTranslatedText('errors.phoneMatch', lang))
+          .matches(PHONE_REG_EXP, getTranslatedText('errors.phoneMatch'))
       )
       .default(() => phoneForInitial),
   });
@@ -101,10 +91,10 @@ const MyProfile = () => {
       ) {
         setAboutLoading(false);
         openModal({
-          title: getTranslatedText('popup.errorTitle', lang),
+          title: getTranslatedText('popup.errorTitle'),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.notEmptyInput', lang)}
+              {getTranslatedText('popup.notEmptyInput')}
             </p>
           ),
         });
@@ -112,7 +102,7 @@ const MyProfile = () => {
       }
       const data = await api.fetchProfile.putUserInfo(newUserData);
       openModal({
-        title: getTranslatedText('popup.serverResponse', lang),
+        title: getTranslatedText('popup.serverResponse'),
         children: <p>{data}</p>,
       });
       setAboutLoading(false);
@@ -122,7 +112,7 @@ const MyProfile = () => {
       if (err.response.status === 400) {
         const indexStart = err.response.data.error.indexOf(':') + 1;
         openModal({
-          title: getTranslatedText('popup.serverResponse', lang),
+          title: getTranslatedText('popup.serverResponse'),
           children: (
             <p style={{ textAlign: 'center' }}>
               {err.response.data.error.slice(indexStart)}
@@ -146,15 +136,15 @@ const MyProfile = () => {
           <>
             <TitleBigBlue
               whatClass="myProfile-title"
-              text={getTranslatedText('ownInfo.aboutMe', lang)}
+              text={getTranslatedText('ownInfo.aboutMe')}
             />
             <InputProfile
-              label={getTranslatedText('ownInfo.firstName', lang)}
+              label={getTranslatedText('ownInfo.firstName')}
               type="text"
               name="firstName"
             />
             <InputProfile
-              label={getTranslatedText('ownInfo.lastName', lang)}
+              label={getTranslatedText('ownInfo.lastName')}
               type="text"
               name="lastName"
             />
@@ -173,7 +163,7 @@ const MyProfile = () => {
                         style={{ position: 'relative' }}
                       >
                         <InputProfile
-                          label={getTranslatedText('ownInfo.phone', lang)}
+                          label={getTranslatedText('ownInfo.phone')}
                           type="tel"
                           name={`phones[${index}]`}
                           placeholder="+38(123) 456-78-90"
@@ -181,7 +171,7 @@ const MyProfile = () => {
                         {lastIndex === index && maxArray && (
                           <ButtonsAddRemoveChild
                             className="add-field"
-                            text={getTranslatedText('button.addField', lang)}
+                            text={getTranslatedText('button.addField')}
                             addRemove="add"
                             onClick={() => !!phone && !errorField && push('')}
                           />
@@ -205,7 +195,7 @@ const MyProfile = () => {
               isLoading={aboutLoading}
               whatClass="btn-form-about-me"
               disabling={Object.keys(errors).length}
-              text={getTranslatedText('button.saveChanges', lang)}
+              text={getTranslatedText('button.saveChanges')}
             />
           </>
         )}
@@ -215,14 +205,14 @@ const MyProfile = () => {
         <div className="block-children">
           <TitleBigBlue
             whatClass="myProfile-title"
-            text={getTranslatedText('ownInfo.children', lang)}
+            text={getTranslatedText('ownInfo.children')}
           />
           {children.map((child, idx) => (
             // eslint-disable-next-line react/no-array-index-key
             <div className="block-child" key={`${idx}_child`}>
               <InputProfile
                 id={idx}
-                label={getTranslatedText('ownInfo.dateOfBirth', lang)}
+                label={getTranslatedText('ownInfo.dateOfBirth')}
                 type="date"
                 name="birthDate"
                 value={child.birthDate}
@@ -236,7 +226,7 @@ const MyProfile = () => {
           width="248px"
           disabling={false}
           whatClass="btn-form-children"
-          text={getTranslatedText('button.saveChanges', lang)}
+          text={getTranslatedText('button.saveChanges')}
         />
       </form>
     </>

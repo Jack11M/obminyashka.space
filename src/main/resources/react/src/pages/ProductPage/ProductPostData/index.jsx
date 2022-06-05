@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
 import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -15,10 +12,8 @@ const ProductPostData = ({
   season,
   readyForOffers,
 }) => {
-  const lang = useSelector(getLang);
-
   const transformWishes = readyForOffers
-    ? [wishes, getTranslatedText('product.checkInUl', lang)]
+    ? [wishes, getTranslatedText('product.checkInUl')]
     : wishes;
 
   return (
@@ -28,7 +23,7 @@ const ProductPostData = ({
       </div>
       <div className="postDataDescription">
         <p>
-          <span>{`${getTranslatedText('product.changesTo', lang)}:`}</span>
+          <span>{`${getTranslatedText('product.changesTo')}:`}</span>
         </p>
         <ol>
           {transformWishes.map((item, idx) => (
@@ -37,30 +32,26 @@ const ProductPostData = ({
         </ol>
       </div>
       <div className="postButton">
-        <Button
-          text={getTranslatedText('product.button', lang)}
-          width="250px"
-        />
+        <Button text={getTranslatedText('product.button')} width="250px" />
       </div>
       <div className="postHeading">
-        <h2>{`${getTranslatedText('product.description', lang)}:`}</h2>
+        <h2>{`${getTranslatedText('product.description')}:`}</h2>
       </div>
       <div className="postDataBox">
         <div className="postDataDescription">
           <ul>
             <li>
               <span>
-                {`${getTranslatedText(
-                  'product.size',
-                  lang
-                )} / ${getTranslatedText('product.age', lang)}:`}
+                {`${getTranslatedText('product.size')} / ${getTranslatedText(
+                  'product.age'
+                )}:`}
               </span>
             </li>
             <li>
-              <span>{`${getTranslatedText('product.season', lang)}:`}</span>
+              <span>{`${getTranslatedText('product.season')}:`}</span>
             </li>
             <li>
-              <span>{`${getTranslatedText('product.sex', lang)}:`}</span>
+              <span>{`${getTranslatedText('product.sex')}:`}</span>
             </li>
           </ul>
         </div>

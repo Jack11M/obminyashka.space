@@ -62,18 +62,16 @@ const Exchange = ({ exchangeList, setExchange }) => {
   };
   return (
     <div className="change">
-      <h3 className="change_title">
-        {getTranslatedText('addAdv.exchange', lang)}
-      </h3>
+      <h3 className="change_title">{getTranslatedText('addAdv.exchange')}</h3>
 
       <p className="change-description">
         <span className="span_star">*</span>
         &nbsp;
-        {getTranslatedText('addAdv.whatChange', lang)}
+        {getTranslatedText('addAdv.whatChange')}
       </p>
 
       <p className="change-description_title">
-        {getTranslatedText('addAdv.enterPhrase', lang)}
+        {getTranslatedText('addAdv.enterPhrase')}
       </p>
 
       <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
@@ -96,7 +94,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
             onKeyPress={keyEnter}
             onChange={handleInput}
             className="change_input"
-            placeholder={getTranslatedText('addAdv.placeholderChange', lang)}
+            placeholder={getTranslatedText('addAdv.placeholderChange')}
           />
         </div>
       </div>

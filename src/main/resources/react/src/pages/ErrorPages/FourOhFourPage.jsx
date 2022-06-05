@@ -1,7 +1,5 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import {
   loop,
@@ -17,7 +15,6 @@ import './errorPage.scss';
 import { Button } from 'components/common/buttons';
 
 const FourOhFourPage = () => {
-  const lang = useSelector(getLang);
   const navigate = useNavigate();
 
   const goTo = (event) => {
@@ -61,17 +58,17 @@ const FourOhFourPage = () => {
         <img src={loop} alt="loop" />
       </div>
 
-      <h2>{getTranslatedText('fourOhFour.noPage', lang)}</h2>
+      <h2>{getTranslatedText('fourOhFour.noPage')}</h2>
 
       <div className="blockButtons">
         <Button
           whatClass="onMain"
-          text={getTranslatedText('fourOhFour.mainPage', lang)}
+          text={getTranslatedText('fourOhFour.mainPage')}
           click={goTo}
         />
         <Button
           whatClass="back"
-          text={getTranslatedText('fourOhFour.backPage', lang)}
+          text={getTranslatedText('fourOhFour.backPage')}
           click={goTo}
         />
       </div>

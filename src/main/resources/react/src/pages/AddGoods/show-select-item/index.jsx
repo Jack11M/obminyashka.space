@@ -51,11 +51,9 @@ const ShowSelectItem = ({
     if (opened && !data) {
       setOpened(false);
       openModal({
-        title: getTranslatedText(titleError, lang),
+        title: getTranslatedText(titleError),
         children: (
-          <p style={{ textAlign: 'center' }}>
-            {getTranslatedText(typeError, lang)}
-          </p>
+          <p style={{ textAlign: 'center' }}>{getTranslatedText(typeError)}</p>
         ),
       });
     }
@@ -136,7 +134,7 @@ const ShowSelectItem = ({
 
                         <SelectTitle>
                           {categories &&
-                            getTranslatedText(`categories.${item?.name}`, lang)}
+                            getTranslatedText(`categories.${item?.name}`)}
 
                           {!categories && item}
                         </SelectTitle>

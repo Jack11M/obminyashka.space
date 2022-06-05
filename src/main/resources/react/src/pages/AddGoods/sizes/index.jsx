@@ -49,10 +49,10 @@ const Sizes = ({ categories, dimension }) => {
   return (
     <div className="characteristics_item">
       <h4>
-        {getTranslatedText('addAdv.size', lang)}
+        {getTranslatedText('addAdv.size')}
         {lang === 'en' ? ' cm' : ' см'}
         {translatedText &&
-          ` (${getTranslatedText(`categories.${translatedText}`, lang)})`}
+          ` (${getTranslatedText(`categories.${translatedText}`)})`}
       </h4>
 
       <ShowSelectItem

@@ -5,6 +5,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getLang, getProfile } from 'store/auth/slice';
+import { BackButton } from 'components/common/buttons';
 import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -72,10 +73,15 @@ const ProductPage = () => {
     <div>
       <section className="topSection">
         <div className="productPageContainer">
+          <BackButton
+            style={{ marginBottom: 16 }}
+            text={getTranslatedText('button.back')}
+          />
+
           <div className="breadСrumbs">
-            {getTranslatedText('product.categories', lang)}/
-            {getTranslatedText(`categories.${category.name}`, lang)}/
-            {getTranslatedText(`categories.${subcategory.name}`, lang)}/
+            {getTranslatedText('product.categories')}/
+            {getTranslatedText(`categories.${category.name}`)}/
+            {getTranslatedText(`categories.${subcategory.name}`)}/
             {product.topic}
           </div>
 
@@ -103,8 +109,8 @@ const ProductPage = () => {
                 title={product.topic}
                 readyForOffers={product.readyForOffers}
                 age={enumAge[product.age] || product.age}
-                gender={getTranslatedText(`genderEnum.${product.gender}`, lang)}
-                season={getTranslatedText(`seasonEnum.${product.season}`, lang)}
+                gender={getTranslatedText(`genderEnum.${product.gender}`)}
+                season={getTranslatedText(`seasonEnum.${product.season}`)}
               />
             </div>
           </div>
@@ -115,9 +121,7 @@ const ProductPage = () => {
         <div className="productPageContainer">
           <div className="productPageInner">
             <div className="sectionHeading">
-              <TitleBigBlue
-                text={getTranslatedText('product.blueTitle', lang)}
-              />
+              <TitleBigBlue text={getTranslatedText('product.blueTitle')} />
             </div>
 
             <ProductOffers />

@@ -1,7 +1,5 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
@@ -14,7 +12,6 @@ import {
 import './somethingBad.scss';
 
 const SomethingBad = ({ deactivateError }) => {
-  const lang = useSelector(getLang);
   const navigate = useNavigate();
 
   const goTo = (event) => {
@@ -38,16 +35,16 @@ const SomethingBad = ({ deactivateError }) => {
         <img src={loop} alt="loop" />
       </div>
       <div className="blockControls">
-        <h2>{getTranslatedText('somethingBad.error', lang)}</h2>
+        <h2>{getTranslatedText('somethingBad.error')}</h2>
         <div className="blockButtons">
           <Button
             whatClass="onMain"
-            text={getTranslatedText('fourOhFour.mainPage', lang)}
+            text={getTranslatedText('fourOhFour.mainPage')}
             click={goTo}
           />
           <Button
             whatClass="back"
-            text={getTranslatedText('fourOhFour.backPage', lang)}
+            text={getTranslatedText('fourOhFour.backPage')}
             click={goTo}
           />
         </div>

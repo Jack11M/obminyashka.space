@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import { useSelector } from 'react-redux';
+
 import { Link } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import logoFooter from 'assets/img/Logo-footer.png';
 import { BtnGoodBusiness } from 'components/common/buttons';
@@ -14,7 +13,6 @@ import { ReactComponent as QuestionSvg } from 'assets/icons/question-mark.svg';
 import './Footer.scss';
 
 const Footer = () => {
-  const lang = useSelector(getLang);
   const timeDate = new Date();
   const yearNow = timeDate.getFullYear();
 
@@ -46,15 +44,15 @@ const Footer = () => {
             </span>
 
             <Link to={route.home} className="footer-list_rules">
-              {getTranslatedText('footer.rules', lang)}
+              {getTranslatedText('footer.rules')}
             </Link>
 
             <Link to={route.home} className="footer-list_rules">
-              {getTranslatedText('footer.charity', lang)}
+              {getTranslatedText('footer.charity')}
             </Link>
 
             <Link to={route.home} className="footer-list_rules">
-              {getTranslatedText('footer.questions', lang)}
+              {getTranslatedText('footer.questions')}
             </Link>
           </li>
 
@@ -70,7 +68,7 @@ const Footer = () => {
             <BtnGoodBusiness
               href="#"
               whatClass="btn-Help-Children"
-              text={getTranslatedText('header.goodness', lang)}
+              text={getTranslatedText('header.goodness')}
             />
           </li>
         </ul>
@@ -79,7 +77,7 @@ const Footer = () => {
       <div className="copyright">
         <span>
           &copy;
-          {getTranslatedText('footer.protect', lang)}
+          {getTranslatedText('footer.protect')}
         </span>
         <span id="dataYear">{`${yearNow} / Обменяшка`}</span>
       </div>
