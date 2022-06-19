@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import * as yup from 'yup';
 import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
-import { fetchUser, putUserToStore } from 'store/profile/slice';
+import { fetchUser, getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { ModalContext, TitleBigBlue, Button } from 'components/common';
 
+import { validationUserSchema } from './config';
 import InputProfile from '../../components/inputProfile';
 import InputGender from '../../components/inputProfile/inputGender';
 import ButtonsAddRemoveChild from '../../components/buttonsAddRemoveChild';
@@ -18,9 +17,7 @@ import './myProfile.scss';
 const MyProfile = () => {
   const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
-  const { firstName, lastName, children, phones } = useSelector(
-    (state) => state.profileMe
-  );
+  const { firstName, lastName, children, phones } = useSelector(getProfile);
   const [aboutLoading, setAboutLoading] = useState(false);
 
   const phoneForInitial =
@@ -38,42 +35,17 @@ const MyProfile = () => {
       }))
       .filter((phone) => phone.phoneNumber !== '');
 
-  const errorMessage = (validatedObject, message) =>
-    validatedObject.value.length > 0 ? message : undefined;
-
-  const validationUserSchema = yup.object().shape({
-    firstName: yup
-      .string()
-      .min(2, (obj) => errorMessage(obj, getTranslatedText('errors.min2')))
-      .max(50, (obj) => errorMessage(obj, getTranslatedText('errors.max50')))
-      .matches(NO_SPACE, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.noSpace'))
-      )
-      .matches(NAME_REG_EXP, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.nameMatch'))
-      )
-      .default(() => firstName),
-    lastName: yup
-      .string()
-      .min(2, (obj) => errorMessage(obj, getTranslatedText('errors.min2')))
-      .max(50, (obj) => errorMessage(obj, getTranslatedText('errors.max50')))
-      .matches(NO_SPACE, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.noSpace'))
-      )
-      .matches(NAME_REG_EXP, (obj) =>
-        errorMessage(obj, getTranslatedText('errors.nameMatch'))
-      )
-      .default(() => lastName),
-    phones: yup
-      .array()
-      .of(
-        yup
-          .string()
-          .matches(PHONE_REG_EXP, getTranslatedText('errors.phoneMatch'))
-      )
-      .default(() => phoneForInitial),
+  const validationSchema = validationUserSchema({
+    firstName,
+    lastName,
+    phoneForInitial,
   });
-  const initialUserValues = validationUserSchema.cast({});
+
+  const initialUserValues = validationUserSchema({
+    firstName,
+    lastName,
+    phoneForInitial,
+  }).cast({});
 
   const handleUserSubmit = async (dataFormik) => {
     setAboutLoading(true);
@@ -124,11 +96,10 @@ const MyProfile = () => {
   return (
     <>
       <Formik
-        initialValues={initialUserValues}
-        validationSchema={validationUserSchema}
-        validateOnBlur
         enableReinitialize
         onSubmit={handleUserSubmit}
+        initialValues={initialUserValues}
+        validationSchema={validationSchema}
       >
         {({ values, errors, handleSubmit }) => (
           <>
@@ -136,16 +107,19 @@ const MyProfile = () => {
               whatClass="myProfile-title"
               text={getTranslatedText('ownInfo.aboutMe')}
             />
+
             <InputProfile
-              label={getTranslatedText('ownInfo.firstName')}
               type="text"
               name="firstName"
+              label={getTranslatedText('ownInfo.firstName')}
             />
+
             <InputProfile
-              label={getTranslatedText('ownInfo.lastName')}
               type="text"
               name="lastName"
+              label={getTranslatedText('ownInfo.lastName')}
             />
+
             <FieldArray name="phones">
               {({ push, remove }) => (
                 <>
@@ -156,24 +130,25 @@ const MyProfile = () => {
                     const errorField = errors.phones && errors.phones[index];
                     return (
                       <div
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`phones[${index}]`}
+                        key={String(`phones[${index}]`)}
                         style={{ position: 'relative' }}
                       >
                         <InputProfile
-                          label={getTranslatedText('ownInfo.phone')}
                           type="tel"
                           name={`phones[${index}]`}
                           placeholder="+38(123) 456-78-90"
+                          label={getTranslatedText('ownInfo.phone')}
                         />
+
                         {lastIndex === index && maxArray && (
                           <ButtonsAddRemoveChild
+                            addRemove="add"
                             className="add-field"
                             text={getTranslatedText('button.addField')}
-                            addRemove="add"
                             onClick={() => !!phone && !errorField && push('')}
                           />
                         )}
+
                         {biggerThanStartIndex && (
                           <ButtonsAddRemoveChild
                             className="remove-field"
@@ -186,6 +161,7 @@ const MyProfile = () => {
                 </>
               )}
             </FieldArray>
+
             <Button
               width="248px"
               type="submit"
@@ -205,17 +181,18 @@ const MyProfile = () => {
             whatClass="myProfile-title"
             text={getTranslatedText('ownInfo.children')}
           />
+
           {children.map((child, idx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <div className="block-child" key={`${idx}_child`}>
+            <div className="block-child" key={String(`${idx}_child`)}>
               <InputProfile
                 id={idx}
-                label={getTranslatedText('ownInfo.dateOfBirth')}
                 type="date"
+                onChange={null}
                 name="birthDate"
                 value={child.birthDate}
-                onChange={null}
+                label={getTranslatedText('ownInfo.dateOfBirth')}
               />
+
               <InputGender gender={child.sex} id={idx} click={null} />
             </div>
           ))}
