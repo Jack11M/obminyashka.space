@@ -57,6 +57,8 @@ const profileMeSlice = createSlice({
   },
 });
 
+export const getProfile = (state) => state.profileMe;
+
 const {
   reducer: profileMeReducer,
   actions: { putUserToStore },

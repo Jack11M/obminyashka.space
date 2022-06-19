@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
-import { getLang, getProfile } from 'store/auth/slice';
-import { BackButton } from 'components/common/buttons';
-import TitleBigBlue from 'components/common/title_Big_Blue';
+import { getErrorMessage } from 'Utils/error';
+import { BackButton, TitleBigBlue } from 'components/common';
+import { getAuthLang, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
@@ -21,8 +22,8 @@ import './ProductPage.scss';
 const ProductPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const lang = useSelector(getLang);
-  const profile = useSelector(getProfile);
+  const lang = useSelector(getAuthLang);
+  const profile = useSelector(getAuthProfile);
 
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
@@ -64,7 +65,7 @@ const ProductPage = () => {
           }
         )
         .catch((e) => {
-          console.log(e);
+          toast.error(getErrorMessage(e));
         });
     }
   }, [lang, id, location, setPreviewData]);

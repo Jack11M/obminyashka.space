@@ -3,13 +3,13 @@ import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 
-import { getLang } from 'store/auth/slice';
+import { getAuthLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 
 const Exchange = ({ exchangeList, setExchange }) => {
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 

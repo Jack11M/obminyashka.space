@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 
 import { CloseSvg } from 'assets/icons';
-import { getLang } from 'store/auth/slice';
+import { getAuthLang } from 'store/auth/slice';
 
 import { ErrorDisplay } from '../error-display';
 
@@ -31,7 +31,7 @@ const DropDownInput = ({
   onChangeInput,
   checkInputValue,
 }) => {
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
   const [, meta, helpers] = useField({ name: 'locationId' });
   const { error } = meta;
 

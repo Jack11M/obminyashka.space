@@ -1,4 +1,4 @@
-import { Button } from 'components/common/buttons';
+import { Button } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import './ProductPostData.scss';

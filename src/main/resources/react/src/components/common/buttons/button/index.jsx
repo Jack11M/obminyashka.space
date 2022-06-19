@@ -1,4 +1,4 @@
-import SpinnerForAuthBtn from 'components/common/spinner';
+import { Loader } from 'components/common';
 
 import { ButtonBlue, WrapIcon } from './styles';
 
@@ -21,13 +21,13 @@ const Button = ({
     type={type}
     bold={bold}
     width={width}
-    onClick={click}
     lHeight={lHeight}
     disabled={disabling}
     className={whatClass}
+    onClick={!isLoading ? click : undefined}
     {...props}
   >
-    {isLoading ? <SpinnerForAuthBtn /> : text}
+    {isLoading ? <Loader /> : text}
     {icon && <WrapIcon>{icon}</WrapIcon>}
   </ButtonBlue>
 );

@@ -1,5 +1,4 @@
-import { Avatar } from 'components/common/avatar';
-import { Button } from 'components/common/buttons';
+import { Button, Avatar } from 'components/common';
 
 import SvgStar from './FavoriteMarker';
 import InboxMessageSvg from './inboxMessageSvg';

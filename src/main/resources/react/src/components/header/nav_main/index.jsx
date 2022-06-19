@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { ButtonAdv } from 'components/common/buttons';
+import { ButtonAdv } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 

@@ -63,6 +63,15 @@ const permissionToSendChildren = (state) => {
   );
 };
 
+export const getErrorMessage = (error) => {
+  if (typeof error === 'string') return error;
+  return (
+    error?.response?.data?.error?.message ||
+    error?.message ||
+    'Something went wrong'
+  );
+};
+
 export {
   errorHandling,
   translateErrors,

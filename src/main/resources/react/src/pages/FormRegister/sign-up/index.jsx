@@ -6,10 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
-import CheckBox from 'components/common/checkbox';
-import InputForAuth from 'components/common/input';
-import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
+import { CheckBox, Button, InputForAuth } from 'components/common';
 import {
   NO_SPACE,
   EMAIL_REG_EXP,

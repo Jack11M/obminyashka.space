@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
+import { getErrorMessage } from 'Utils/error';
 import ProductCard from 'components/item-card';
+import { TitleBigBlue } from 'components/common';
 import noPhotos from 'assets/img/showAdv/noPhoto.svg';
-import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localization';
 
 import './currentOffers.scss';
@@ -22,7 +24,7 @@ const CurrentOffers = () => {
         if (Array.isArray(data)) setOffers(data);
       })
       .catch((e) => {
-        console.log(e.response);
+        toast.error(getErrorMessage(e));
       });
   }, []);
 

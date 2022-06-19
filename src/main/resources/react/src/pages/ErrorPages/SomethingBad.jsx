@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
+import { Button } from 'components/common';
 import { route } from 'routes/routeConstants';
-import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 import {
   loop,

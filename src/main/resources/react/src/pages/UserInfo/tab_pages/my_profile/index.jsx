@@ -4,12 +4,10 @@ import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { Button } from 'components/common/buttons';
-import { ModalContext } from 'components/common/pop-up';
-import TitleBigBlue from 'components/common/title_Big_Blue';
 import { NAME_REG_EXP, NO_SPACE, PHONE_REG_EXP } from 'config';
 import { fetchUser, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
+import { ModalContext, TitleBigBlue, Button } from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
 import InputGender from '../../components/inputProfile/inputGender';

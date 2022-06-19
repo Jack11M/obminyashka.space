@@ -47,27 +47,24 @@ const authSlice = createSlice({
 const {
   reducer: authReducer,
   actions: {
-    setLanguage,
     putEmail,
+    putToken,
     setAuthed,
     setLoader,
     logOutUser,
-    putToken,
+    setLanguage,
   },
 } = authSlice;
 
-const getAuth = (state) => state.auth.isAuthed;
-const getLang = (state) => state.auth.lang;
-const getProfile = (state) => state.auth.profile;
+export const getAuth = (state) => state.auth.isAuthed;
+export const getAuthLang = (state) => state.auth.lang;
+export const getAuthProfile = (state) => state.auth.profile;
 
 export {
-  getAuth,
-  getLang,
   putEmail,
   putToken,
   setAuthed,
   setLoader,
-  getProfile,
   logOutUser,
   setLanguage,
   authReducer,

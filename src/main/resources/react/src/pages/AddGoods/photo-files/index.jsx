@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { ModalContext } from 'components/common/pop-up';
+import { ModalContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import { convertToMB } from './helper';

@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM';
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
+import { getErrorMessage } from 'Utils/error';
+import { getAuthLang } from 'store/auth/slice';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
-import { Button, ButtonAdv, BackButton } from 'components/common/buttons';
+import { Button, ButtonAdv, BackButton } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -26,7 +28,7 @@ import './AddGoods.scss';
 const AddGoods = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
   const adv = useSelector(getAdv);
 
   const { genderEnum, seasonEnum } = ru;
@@ -118,7 +120,7 @@ const AddGoods = () => {
       dispatch(clearAdv());
       navigate(route.home);
     } catch (err) {
-      console.log(err.response.data);
+      toast.error(getErrorMessage(err));
     }
   };
 

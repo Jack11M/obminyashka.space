@@ -3,12 +3,12 @@ import { useField } from 'formik';
 import InputMask from 'react-input-mask';
 import { useSelector } from 'react-redux';
 
-import { getLang } from 'store/auth/slice';
+import { getAuthLang } from 'store/auth/slice';
 
 import * as Styles from './styles';
 
 const InputProfile = ({ id = '', label, ...props }) => {
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
   const [field, meta, helpers] = useField(props);
   const { error, touched } = meta;
 

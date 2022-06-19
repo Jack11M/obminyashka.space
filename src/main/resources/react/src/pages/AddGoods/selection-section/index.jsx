@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { getLang } from 'store/auth/slice';
+import { getAuthLang } from 'store/auth/slice';
 import { FormikCheckBox } from 'components/common/formik';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -25,7 +25,7 @@ const SelectionSection = ({
   readyOffers,
   announcement,
 }) => {
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
 
   const [currLang, setCurrLang] = useState(lang);
   const [tempCategory, setTempCategory] = useState(category.categoryItems);

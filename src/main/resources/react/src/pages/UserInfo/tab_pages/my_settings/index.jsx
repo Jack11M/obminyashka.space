@@ -6,11 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
-import { Button } from 'components/common/buttons';
-import { ModalContext } from 'components/common/pop-up';
-import { putEmail, getProfile } from 'store/auth/slice';
+import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
+import { TitleBigBlue, ModalContext, Button } from 'components/common';
 import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
 
 import InputProfile from '../../components/inputProfile';
@@ -24,7 +22,7 @@ const MySettings = () => {
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
-  const { email: currentEmail } = useSelector(getProfile);
+  const { email: currentEmail } = useSelector(getAuthProfile);
 
   const validationPasswordSchema = yup.object().shape({
     oldPassword: yup

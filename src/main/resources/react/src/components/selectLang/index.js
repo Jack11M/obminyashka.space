@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { setLanguage, getLang } from 'store/auth/slice';
+import { setLanguage, getAuthLang } from 'store/auth/slice';
 
 const LanguagePanel = styled.div`
   display: flex;
@@ -37,7 +37,7 @@ const LanguageItem = styled.div`
 
 const CustomSelect = () => {
   const dispatch = useDispatch();
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
   const [languageArray, setLanguageArray] = useState([
     { value: 'ru', checked: false },
     { value: 'ua', checked: false },

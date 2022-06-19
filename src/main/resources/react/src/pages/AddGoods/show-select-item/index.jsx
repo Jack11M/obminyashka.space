@@ -3,15 +3,13 @@ import { useField } from 'formik';
 import { useSelector } from 'react-redux';
 import { animated, useSpring, useTransition } from 'react-spring';
 
-import { getLang } from 'store/auth/slice';
+import { getAuthLang } from 'store/auth/slice';
+import { ModalContext } from 'components/common';
 import { useOutsideClick } from 'hooks/useOutsideClick';
-import { ModalContext } from 'components/common/pop-up';
 import { getTranslatedText } from 'components/local/localization';
 
-import { ErrorDisplay } from '../error-display';
-
 import { categoryImages } from './config';
-
+import { ErrorDisplay } from '../error-display';
 import {
   Image,
   DropItems,
@@ -37,7 +35,7 @@ const ShowSelectItem = ({
   categories = false,
 }) => {
   const { openModal } = useContext(ModalContext);
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
   const [opened, setOpened] = useState(false);
 
   const [, meta, helpers] = useField(name);

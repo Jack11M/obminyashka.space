@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
 import logoFooter from 'assets/img/Logo-footer.png';
-import { BtnGoodBusiness } from 'components/common/buttons';
+import { BtnGoodBusiness } from 'components/common';
 import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as PhoneSvg } from 'assets/icons/phone.svg';

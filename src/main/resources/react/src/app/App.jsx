@@ -7,7 +7,7 @@ import { theme } from 'styledTheme';
 import ScrollToTop from 'components/scrollToTop';
 import ErrorBoundary from 'components/errorBoundary';
 import { GlobalStyles } from 'styledTheme/globalStyles';
-import { ModalProvider } from 'components/common/pop-up';
+import { ModalProvider, Toast } from 'components/common';
 
 import Routes from 'routes/routes';
 import Header from 'components/header';
@@ -27,6 +27,7 @@ const App = () => (
               <Header />
               <Routes />
               <Footer />
+              <Toast />
             </Page>
           </ModalProvider>
         </ErrorBoundary>

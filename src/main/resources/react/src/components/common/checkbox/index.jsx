@@ -27,4 +27,4 @@ const CheckBox = ({
   </Div>
 );
 
-export default CheckBox;
+export { CheckBox };

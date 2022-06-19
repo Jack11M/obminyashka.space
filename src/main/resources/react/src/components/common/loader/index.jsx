@@ -1,10 +1,10 @@
 import './spinnerForAuthBtn.scss';
 
-const SpinnerForAuthBtn = () => (
+const Loader = () => (
   <div className="lds-ripple">
     <div />
     <div />
   </div>
 );
 
-export default SpinnerForAuthBtn;
+export { Loader };

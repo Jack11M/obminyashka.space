@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 
+import { Button } from 'components/common';
 import { route } from 'routes/routeConstants';
+import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
   shadow,
@@ -9,10 +11,8 @@ import {
   orangeDots,
   shadowDark,
 } from 'assets/img/all_images_export/errorPage';
-import { getTranslatedText } from 'components/local/localization';
 
 import './errorPage.scss';
-import { Button } from 'components/common/buttons';
 
 const FourOhFourPage = () => {
   const navigate = useNavigate();
