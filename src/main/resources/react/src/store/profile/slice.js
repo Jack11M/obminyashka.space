@@ -1,15 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-
-import api from 'REST/Resources';
-
-export const fetchUser = createAsyncThunk('profileMe/fetchUser', async () => {
-  try {
-    const { data } = await api.fetchProfile.getUserInfo();
-    return data;
-  } catch (err) {
-    return Promise.reject(err);
-  }
-});
+import { createSlice } from '@reduxjs/toolkit';
 
 const profileMeInitialState = {
   userLoading: false,
@@ -36,9 +25,7 @@ const profileMeSlice = createSlice({
       state.lastName = payload.lastName;
       state.phones = payload.phones;
     },
-  },
-  extraReducers: {
-    [fetchUser.fulfilled]: (state, { payload }) => {
+    putProfile: (state, { payload }) => {
       state.avatarImage = payload?.avatarImage;
       state.children = payload?.children;
       state.email = payload?.email;
@@ -51,9 +38,6 @@ const profileMeSlice = createSlice({
       state.updated = payload?.updated;
       state.username = payload?.username;
     },
-    [fetchUser.rejected]: (state) => {
-      console.log(state);
-    },
   },
 });
 
@@ -61,7 +45,7 @@ export const getProfile = (state) => state.profileMe;
 
 const {
   reducer: profileMeReducer,
-  actions: { putUserToStore },
+  actions: { putUserToStore, putProfile },
 } = profileMeSlice;
 
-export { putUserToStore, profileMeReducer, profileMeInitialState };
+export { putUserToStore, putProfile, profileMeReducer, profileMeInitialState };

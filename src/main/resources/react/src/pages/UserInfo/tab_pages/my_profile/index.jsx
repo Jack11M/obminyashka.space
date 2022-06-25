@@ -3,7 +3,8 @@ import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { fetchUser, getProfile, putUserToStore } from 'store/profile/slice';
+import { getUserThunk } from 'store/profile/thunk';
+import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { ModalContext, TitleBigBlue, Button } from 'components/common';
 
@@ -24,7 +25,7 @@ const MyProfile = () => {
     (!phones?.length && ['']) || phones?.map((phone) => phone.phoneNumber);
 
   useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(getUserThunk());
   }, [dispatch]);
 
   const transformPhones = (array) =>
@@ -41,11 +42,7 @@ const MyProfile = () => {
     phoneForInitial,
   });
 
-  const initialUserValues = validationUserSchema({
-    firstName,
-    lastName,
-    phoneForInitial,
-  }).cast({});
+  const initialUserValues = validationSchema.cast({});
 
   const handleUserSubmit = async (dataFormik) => {
     setAboutLoading(true);

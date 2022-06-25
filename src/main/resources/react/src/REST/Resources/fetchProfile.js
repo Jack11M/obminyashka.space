@@ -1,6 +1,7 @@
 import { obminyashkaApi } from '../Service/networkProvider';
 
-export const getUserInfo = () => obminyashkaApi.get('/user/my-info');
+export const getUserInfo = () =>
+  obminyashkaApi.get('/user/my-info').then(({ data }) => data);
 
 export const putUserInfo = (payload) =>
   obminyashkaApi.put('/user/my-info', payload).then(({ data }) => data);
