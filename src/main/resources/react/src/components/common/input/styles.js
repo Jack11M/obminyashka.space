@@ -30,7 +30,7 @@ export const InputAuth = styled.input`
   outline: none;
   ${({ theme, error }) => css`
     border: 1px solid ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
-    color: ${theme.colors['right-color-text']};
+    color: ${theme.colors.rightColorText};
 
     &:focus {
       border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 44%)'};

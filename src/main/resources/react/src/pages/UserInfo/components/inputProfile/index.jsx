@@ -34,7 +34,7 @@ const Input = styled.input`
   font-family: inherit;
   ${({ theme, error }) => css`
     border: 1px solid ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
-    color: ${theme.colors['right-color-text']};
+    color: ${theme.colors.rightColorText};
 
     &:focus,
     &:hover {
