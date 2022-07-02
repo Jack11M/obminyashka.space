@@ -3,7 +3,7 @@ import React from 'react';
 import ProductCard from 'components/item-card/ProductCard';
 import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 
-import './myFavorites.scss';
+import { CardsContainer } from './styles';
 
 const MyFavorites = () => {
   const isFavorite = true;
@@ -13,7 +13,7 @@ const MyFavorites = () => {
       <div className="content">
         <TitleBigBlue whatClass="myProfile-title" text="Избранные объявления" />
 
-        <div className="cards_replies">
+        <CardsContainer>
           <ProductCard
             city="Харьков"
             text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
@@ -55,7 +55,7 @@ const MyFavorites = () => {
             picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
           />
-        </div>
+        </CardsContainer>
       </div>
     </section>
   );
