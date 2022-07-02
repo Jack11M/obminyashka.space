@@ -11,8 +11,8 @@ const LabelSquare = styled.div`
   transition: all ease-in-out 0.3s;
 
   ${({ theme: { colors }, checked }) => css`
-    border: 3px solid ${checked ? colors['btn-blue-normal'] : colors.colorGrey};
-    background-color: ${checked && colors['btn-blue-normal']};
+    border: 3px solid ${checked ? colors.btnBlue : colors.colorGrey};
+    background-color: ${checked && colors.btnBlue};
   `}
 
   & > svg {
@@ -36,7 +36,7 @@ const Label = styled.label`
   max-width: 679px;
   width: 100%;
   color: ${({ theme: { colors }, checked }) =>
-    checked ? colors['black-color-text'] : colors.colorTextDisabled};
+    checked ? colors.blackColorText : colors.colorTextDisabled};
 `;
 
 const Div = styled.div`

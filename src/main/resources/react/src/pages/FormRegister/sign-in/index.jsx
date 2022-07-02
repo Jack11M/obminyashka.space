@@ -14,7 +14,7 @@ import { Button } from 'components/common/buttons';
 import InputForAuth from 'components/common/input';
 import { getTranslatedText } from 'components/local/localization';
 
-import { Extra, ExtraLink, WrapperButton } from './styles';
+import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const Login = () => {
   };
 
   return (
-    <form>
+    <Form>
       <Formik
         validateOnBlur
         enableReinitialize
@@ -128,7 +128,7 @@ const Login = () => {
           </>
         )}
       </Formik>
-    </form>
+    </Form>
   );
 };
 
