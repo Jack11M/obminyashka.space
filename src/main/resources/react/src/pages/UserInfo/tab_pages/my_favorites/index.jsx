@@ -16,44 +16,44 @@ const MyFavorites = () => {
         <CardsContainer>
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
         </CardsContainer>
       </div>
