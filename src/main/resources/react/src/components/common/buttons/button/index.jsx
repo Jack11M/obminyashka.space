@@ -9,6 +9,7 @@ const Button = ({
   icon,
   text,
   width,
+  style,
   lHeight,
   isLoading,
   click = null,
@@ -20,6 +21,7 @@ const Button = ({
     type={type}
     bold={bold}
     width={width}
+    style={style}
     onClick={click}
     lHeight={lHeight}
     disabled={disabling}
