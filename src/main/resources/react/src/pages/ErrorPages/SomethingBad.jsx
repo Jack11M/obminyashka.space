@@ -11,6 +11,16 @@ import {
   orangeDots,
 } from 'assets/img/all_images_export/errorPage';
 
+import {
+  Container,
+  WrapOImg,
+  WrapGImg,
+  WrapRImg,
+  WrapTittle,
+  Tittle,
+  BlockButtons,
+} from './styles-bad';
+
 import './somethingBad.scss';
 
 const SomethingBad = ({ deactivateError }) => {
@@ -27,19 +37,20 @@ const SomethingBad = ({ deactivateError }) => {
   };
 
   return (
-    <div className="somethingBad">
-      <div className="blockOrangeImage">
+    <Container>
+      <WrapOImg>
         <img src={orangeDots} alt="orange dots" />
-      </div>
-      <div className="blockGreenImage">
+      </WrapOImg>
+      <WrapGImg>
         <img src={greenDots} alt="green dots" />
-      </div>
-      <div className="blockRightImage">
+      </WrapGImg>
+      <WrapRImg>
         <img src={loop} alt="loop" />
-      </div>
-      <div className="blockControls">
-        <h2>{getTranslatedText('somethingBad.error', lang)}</h2>
-        <div className="blockButtons">
+      </WrapRImg>
+      <WrapTittle>
+        <Tittle>{getTranslatedText('somethingBad.error', lang)}</Tittle>
+
+        <BlockButtons>
           <Button
             whatClass="onMain"
             text={getTranslatedText('fourOhFour.mainPage', lang)}
@@ -50,9 +61,9 @@ const SomethingBad = ({ deactivateError }) => {
             text={getTranslatedText('fourOhFour.backPage', lang)}
             click={goTo}
           />
-        </div>
-      </div>
-    </div>
+        </BlockButtons>
+      </WrapTittle>
+    </Container>
   );
 };
 export default SomethingBad;
