@@ -37,6 +37,7 @@ const NavTop = () => {
                 {profile?.username || getTranslatedText('header.myOffice')}
               </span>
             </Link>
+
             <CustomSelect />
           </div>
         </div>

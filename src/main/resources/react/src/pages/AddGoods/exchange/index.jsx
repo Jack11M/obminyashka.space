@@ -1,24 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useField } from 'formik';
-import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 
-import { getAuthLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 
 const Exchange = ({ exchangeList, setExchange }) => {
-  const lang = useSelector(getAuthLang);
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
-  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
+  const [, meta] = useField({ name: 'wishesToExchange' });
   const { error } = meta;
-
-  useEffect(() => {
-    helpers.setError(undefined);
-  }, [lang]);
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
     from: { opacity: 0, scale: 0 },

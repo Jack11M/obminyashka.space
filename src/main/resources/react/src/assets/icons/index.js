@@ -1,31 +1,14 @@
-import { ReactComponent as ActivitySvg } from './activity.svg';
-import { ReactComponent as CheckSvg } from './Check.svg';
-import { ReactComponent as CloseSvg } from './Close.svg';
-import { ReactComponent as HeartSvg } from './heart.svg';
-import { ReactComponent as HomeSvg } from './home.svg';
-import { ReactComponent as LocationSvg } from './location.svg';
-import { ReactComponent as LogoutSvg } from './logout.svg';
-import { ReactComponent as PhoneSvg } from './phone.svg';
-import { ReactComponent as ProfileSvg } from './profile.svg';
-import { ReactComponent as QuestionMarkSvg } from './question-mark.svg';
-import { ReactComponent as SearchSvg } from './search.svg';
-import { ReactComponent as SettingsSvg } from './settings.svg';
-import { ReactComponent as StarSvg } from './star.svg';
-import { ReactComponent as GoogleSvg } from './google.svg';
-
-export {
-  HomeSvg,
-  StarSvg,
-  CheckSvg,
-  CloseSvg,
-  HeartSvg,
-  PhoneSvg,
-  LogoutSvg,
-  SearchSvg,
-  GoogleSvg,
-  ProfileSvg,
-  ActivitySvg,
-  LocationSvg,
-  SettingsSvg,
-  QuestionMarkSvg,
-};
+export { ReactComponent as ActivitySvg } from './activity.svg';
+export { ReactComponent as CheckSvg } from './Check.svg';
+export { ReactComponent as CloseSvg } from './Close.svg';
+export { ReactComponent as GoogleSvg } from './google.svg';
+export { ReactComponent as HeartSvg } from './heart.svg';
+export { ReactComponent as HomeSvg } from './home.svg';
+export { ReactComponent as LocationSvg } from './location.svg';
+export { ReactComponent as LogoutSvg } from './logout.svg';
+export { ReactComponent as PhoneSvg } from './phone.svg';
+export { ReactComponent as ProfileSvg } from './profile.svg';
+export { ReactComponent as QuestionMarkSvg } from './question-mark.svg';
+export { ReactComponent as SearchSvg } from './search.svg';
+export { ReactComponent as SettingsSvg } from './settings.svg';
+export { ReactComponent as StarSvg } from './star.svg';

@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useField } from 'formik';
-import { useSelector } from 'react-redux';
 import { animated, useSpring, useTransition } from 'react-spring';
 
-import { getAuthLang } from 'store/auth/slice';
 import { ModalContext } from 'components/common';
 import { useOutsideClick } from 'hooks/useOutsideClick';
 import { getTranslatedText } from 'components/local/localization';
@@ -35,15 +33,10 @@ const ShowSelectItem = ({
   categories = false,
 }) => {
   const { openModal } = useContext(ModalContext);
-  const lang = useSelector(getAuthLang);
   const [opened, setOpened] = useState(false);
 
-  const [, meta, helpers] = useField(name);
+  const [, meta] = useField(name);
   const { error } = meta;
-
-  useEffect(() => {
-    helpers.setError(undefined);
-  }, [lang]);
 
   useEffect(() => {
     if (opened && !data) {
@@ -55,7 +48,7 @@ const ShowSelectItem = ({
         ),
       });
     }
-  }, [data, opened, lang, openModal, typeError]);
+  }, [data, opened, openModal, typeError]);
 
   const refClickAway = useRef();
   const refHeightCategory = useRef();

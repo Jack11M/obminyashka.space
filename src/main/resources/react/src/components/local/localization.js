@@ -10,8 +10,8 @@ const getTranslatedText = (key) => {
   const { lang } = store.getState().auth;
   const arrayKeys = key.split('.');
   const [keys, value] = arrayKeys;
-
   const currentTranslation = translations[lang];
+
   return currentTranslation[keys][value];
 };
 

@@ -30,12 +30,8 @@ const SelectionSection = ({
   const [currLang, setCurrLang] = useState(lang);
   const [tempCategory, setTempCategory] = useState(category.categoryItems);
   const [receivedCategories, setReceivedCategories] = useState([]);
-  const [, meta, helpers] = useField({ name: 'topic' });
+  const [, meta] = useField({ name: 'topic' });
   const { error, touched } = meta;
-
-  useEffect(() => {
-    helpers.setError(undefined);
-  }, [lang]);
 
   useEffect(() => {
     (async () => {

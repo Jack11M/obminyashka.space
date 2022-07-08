@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router-dom';
 
-import { getAuth } from 'store/auth/slice';
+import { getAuthed } from 'store/auth/slice';
 
 import { route } from './routeConstants';
 
 export const UnauthorizedRoute = ({ children }) => {
-  const isAuth = useSelector(getAuth);
+  const isAuth = useSelector(getAuthed);
 
   if (isAuth) return <Navigate to={route.home} />;
 
@@ -14,7 +14,7 @@ export const UnauthorizedRoute = ({ children }) => {
 };
 
 export const AuthorizedRoute = ({ children }) => {
-  const isAuth = useSelector(getAuth);
+  const isAuth = useSelector(getAuthed);
   const location = useLocation();
 
   if (!isAuth) {
