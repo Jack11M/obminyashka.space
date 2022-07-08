@@ -20,7 +20,7 @@ import {
   USERNAME_ALT_CODE_EXP,
 } from 'config';
 
-import { Extra, WrapperButton } from '../sign-in/styles';
+import { Extra, WrapperButton, Form } from '../sign-in/styles';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ const SignUp = () => {
   const initialRegisterValues = validationRegisterSchema.cast({});
 
   return (
-    <form>
+    <Form>
       <Formik
         validateOnBlur
         initialValues={initialRegisterValues}
@@ -164,7 +164,7 @@ const SignUp = () => {
           </>
         )}
       </Formik>
-    </form>
+    </Form>
   );
 };
 

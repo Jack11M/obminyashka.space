@@ -6,7 +6,7 @@ export const ButtonAdd = styled(Link)`
   display: block;
   width: 290px;
   color: #fff;
-  background-color: ${({ theme: { colors } }) => colors['btn-green-normal']};
+  background-color: ${({ theme: { colors } }) => colors.btnGreen};
   border-radius: 25px;
   padding: 13px 35px 13px 61px;
   overflow: hidden;

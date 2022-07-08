@@ -16,8 +16,6 @@ import InputProfile from '../../components/inputProfile';
 import InputGender from '../../components/inputProfile/inputGender';
 import ButtonsAddRemoveChild from '../../components/buttonsAddRemoveChild';
 
-import './myProfile.scss';
-
 const MyProfile = () => {
   const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
@@ -136,28 +134,31 @@ const MyProfile = () => {
   return (
     <>
       <Formik
-        initialValues={initialUserValues}
-        validationSchema={validationUserSchema}
         validateOnBlur
         enableReinitialize
         onSubmit={handleUserSubmit}
+        initialValues={initialUserValues}
+        validationSchema={validationUserSchema}
       >
         {({ values, errors, handleSubmit }) => (
           <>
             <TitleBigBlue
-              whatClass="myProfile-title"
+              style={{ margin: '65px 0 40px' }}
               text={getTranslatedText('ownInfo.aboutMe', lang)}
             />
+
             <InputProfile
-              label={getTranslatedText('ownInfo.firstName', lang)}
               type="text"
               name="firstName"
+              label={getTranslatedText('ownInfo.firstName', lang)}
             />
+
             <InputProfile
-              label={getTranslatedText('ownInfo.lastName', lang)}
               type="text"
               name="lastName"
+              label={getTranslatedText('ownInfo.lastName', lang)}
             />
+
             <FieldArray name="phones">
               {({ push, remove }) => (
                 <>
@@ -173,16 +174,16 @@ const MyProfile = () => {
                         style={{ position: 'relative' }}
                       >
                         <InputProfile
-                          label={getTranslatedText('ownInfo.phone', lang)}
                           type="tel"
                           name={`phones[${index}]`}
                           placeholder="+38(123) 456-78-90"
+                          label={getTranslatedText('ownInfo.phone', lang)}
                         />
                         {lastIndex === index && maxArray && (
                           <ButtonsAddRemoveChild
+                            addRemove="add"
                             className="add-field"
                             text={getTranslatedText('button.addField', lang)}
-                            addRemove="add"
                             onClick={() => !!phone && !errorField && push('')}
                           />
                         )}
@@ -203,7 +204,7 @@ const MyProfile = () => {
               type="submit"
               click={handleSubmit}
               isLoading={aboutLoading}
-              whatClass="btn-form-about-me"
+              style={{ marginBottom: '10px' }}
               disabling={Object.keys(errors).length}
               text={getTranslatedText('button.saveChanges', lang)}
             />
@@ -214,7 +215,7 @@ const MyProfile = () => {
       <form>
         <div className="block-children">
           <TitleBigBlue
-            whatClass="myProfile-title"
+            style={{ margin: '65px 0 40px' }}
             text={getTranslatedText('ownInfo.children', lang)}
           />
           {children.map((child, idx) => (
@@ -222,11 +223,11 @@ const MyProfile = () => {
             <div className="block-child" key={`${idx}_child`}>
               <InputProfile
                 id={idx}
-                label={getTranslatedText('ownInfo.dateOfBirth', lang)}
                 type="date"
+                onChange={null}
                 name="birthDate"
                 value={child.birthDate}
-                onChange={null}
+                label={getTranslatedText('ownInfo.dateOfBirth', lang)}
               />
               <InputGender gender={child.sex} id={idx} click={null} />
             </div>
@@ -235,7 +236,7 @@ const MyProfile = () => {
         <Button
           width="248px"
           disabling={false}
-          whatClass="btn-form-children"
+          style={{ marginBottom: '219px' }}
           text={getTranslatedText('button.saveChanges', lang)}
         />
       </form>
