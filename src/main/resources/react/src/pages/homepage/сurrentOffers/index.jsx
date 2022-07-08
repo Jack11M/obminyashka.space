@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { getLang } from 'store/auth/slice';
