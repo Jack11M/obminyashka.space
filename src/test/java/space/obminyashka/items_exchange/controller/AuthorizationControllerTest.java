@@ -1,39 +1,67 @@
 package space.obminyashka.items_exchange.controller;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import space.obminyashka.items_exchange.BasicControllerTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.service.MailService;
+import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.EmailType;
+import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
-import java.util.stream.Stream;
+import java.io.IOException;
+import java.util.Locale;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.AUTH_REGISTER;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class AuthorizationControllerTest extends BasicControllerTest {
+@ExtendWith(MockitoExtension.class)
+class AuthorizationControllerTest {
+    @InjectMocks
+    private MessageSourceUtil messageSourceUtil;
+    @Mock
+    private UserService userService;
+    @Mock
+    private MailService mailService;
+    @InjectMocks
+    private AuthController authController;
+    private final UserRegistrationDto dto = new UserRegistrationDto("user", "user@mail.ua", "pass", "pass");
 
-    @Autowired
-    public AuthorizationControllerTest(MockMvc mockMvc) {
-        super(mockMvc);
+    @BeforeEach
+    void setUp() {
+        messageSourceUtil.setMSource(mock(MessageSource.class));
     }
 
-    @ParameterizedTest
-    @MethodSource("invalidTestData")
-    void register_whenUserRegistrationDtoIsEmpty_shouldReturnBadRequest(Object uriVar) throws Exception {
-        sendUriAndGetMvcResult(post(AUTH_REGISTER, uriVar), status().isBadRequest());
+    @Test
+    void register_whenAllServicesPositiveFlow_shouldReturnCreated() throws Exception {
+        when(userService.registerNewUser(any())).thenReturn(true);
+
+        final var responseEntity = authController.registerUser(dto);
+
+        assertAll("Verify invoking services one by one and expected status",
+                () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
+                () -> verify(mailService).sendMail(dto.getEmail(), EmailType.REGISTRATION, Locale.getDefault()),
+                () -> verify(userService).registerNewUser(dto),
+                () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()));
     }
 
-    private static Stream<Arguments> invalidTestData() {
-        return Stream.of(
-                Arguments.of(""),
-                Arguments.of((Object) null)
-        );
+    @Test
+    void register_whenMailServiceFailed_shouldReturnServiceUnavailable() throws Exception {
+        doThrow(new IOException("Expected exception!")).when(mailService).sendMail(anyString(), any(), any());
+
+        final var responseEntity = authController.registerUser(dto);
+
+        assertAll("Verify invoking services one by one and expected status",
+                () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
+                () -> verify(mailService).sendMail(dto.getEmail(), EmailType.REGISTRATION, Locale.getDefault()),
+                () -> verifyNoMoreInteractions(userService),
+                () -> assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode()));
     }
 }
