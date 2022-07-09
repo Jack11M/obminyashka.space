@@ -98,7 +98,8 @@ const MySettings = () => {
   return (
     <>
       <TitleBigBlue
-        whatClass="myProfile-title"
+        // whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changePassword', lang)}
       />
       <Formik
@@ -142,6 +143,7 @@ const MySettings = () => {
                 label={getTranslatedText('settings.confirmPassword', lang)}
               />
             </div>
+
             <Button
               type="submit"
               width="248px"
@@ -157,7 +159,8 @@ const MySettings = () => {
       </Formik>
 
       <TitleBigBlue
-        whatClass="myProfile-title"
+        // whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changeEmail', lang)}
       />
       <Formik
@@ -214,6 +217,7 @@ const MySettings = () => {
                 label={getTranslatedText('settings.confirmEmail', lang)}
               />
             </div>
+
             <Button
               type="submit"
               width="300px"
@@ -228,9 +232,11 @@ const MySettings = () => {
         )}
       </Formik>
       <TitleBigBlue
-        whatClass="myProfile-title"
+        // whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.remove', lang)}
       />
+
       <p className="delete-text">
         {getTranslatedText('settings.describe', lang)}{' '}
         <Link to={`${route.userInfo}${route.myProfile}`}>
