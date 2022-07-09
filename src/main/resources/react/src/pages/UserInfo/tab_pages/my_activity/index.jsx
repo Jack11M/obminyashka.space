@@ -3,9 +3,7 @@ import ProductCard from 'components/item-card';
 import mommy from 'assets/img/mama_1_04232631 1.png';
 import TitleBigBlue from 'components/common/title_Big_Blue';
 
-import { CardBlock, Container } from './styles';
-
-import './myActyvity.scss';
+import { CardBlock, Container, StyledCardBlock } from './styles';
 
 const MyActivity = () => {
   const isFavorite = true;
@@ -17,62 +15,62 @@ const MyActivity = () => {
       <CardBlock>
         <ProductCard
           city="Харьков"
-          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
           picture={lot3}
           inboxMessage={12}
+          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
           city="Львов"
-          text="Велосипед для девочки 5 лет"
           picture={lot3}
-          inboxMessage={222}
           avatar={mommy}
+          inboxMessage={222}
+          text="Велосипед для девочки 5 лет"
         />
 
         <ProductCard
           city="Киев"
-          text="Велосипед для девочки 5 лет"
           picture={lot3}
           inboxMessage={50}
+          text="Велосипед для девочки 5 лет"
         />
 
         <ProductCard
           city="Ужгород"
-          text="Велосипед для девочки 5 лет"
           picture={lot3}
-          inboxMessage={12}
           avatar={mommy}
+          inboxMessage={12}
+          text="Велосипед для девочки 5 лет"
         />
 
         <ProductCard
           city="Киев"
-          text="Велосипед для девочки 5 лет"
           picture={lot3}
           inboxMessage={5}
+          text="Велосипед для девочки 5 лет"
         />
 
         <ProductCard
           city="Киев"
-          text="Велосипед для девочки 5 лет"
           picture={lot3}
-          inboxMessage={33}
           avatar={mommy}
+          inboxMessage={33}
+          text="Велосипед для девочки 5 лет"
         />
       </CardBlock>
 
       <TitleBigBlue
-        whatClass="outgoing__replies-text"
         text="Исходящие ответы"
+        whatClass="outgoing__replies-text"
       />
 
-      <CardBlock>
+      <StyledCardBlock>
         <ProductCard
-          isFavorite={isFavorite}
           picture={lot3}
           city="Харьков"
-          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
           inboxMessage={3}
+          isFavorite={isFavorite}
+          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
@@ -83,22 +81,44 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          isFavorite={isFavorite}
           picture={lot3}
-          city="Ивано-Франковск"
-          text="Велосипед для девочки 5 лет"
           inboxMessage={25}
+          city="Ивано-Франковск"
+          isFavorite={isFavorite}
+          text="Велосипед для девочки 5 лет"
         />
 
         <ProductCard
           picture={lot3}
           city="Харьков"
-          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
           inboxMessage={3}
+          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
+          picture={lot3}
+          city="Харьков"
+          text="Велосипед"
+          inboxMessage={10}
           isFavorite={isFavorite}
+        />
+
+        <ProductCard
+          picture={lot3}
+          inboxMessage={25}
+          city="Ивано-Франковск"
+          text="Велосипед для девочки 5 лет"
+        />
+
+        <ProductCard
+          picture={lot3}
+          city="Харьков"
+          inboxMessage={3}
+          isFavorite={isFavorite}
+          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
+        />
+
+        <ProductCard
           picture={lot3}
           city="Харьков"
           text="Велосипед"
@@ -107,34 +127,12 @@ const MyActivity = () => {
 
         <ProductCard
           picture={lot3}
-          city="Ивано-Франковск"
-          text="Велосипед для девочки 5 лет"
           inboxMessage={25}
-        />
-
-        <ProductCard
-          isFavorite={isFavorite}
-          picture={lot3}
-          city="Харьков"
-          text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
-          inboxMessage={3}
-        />
-
-        <ProductCard
-          picture={lot3}
-          city="Харьков"
-          text="Велосипед"
-          inboxMessage={10}
-        />
-
-        <ProductCard
-          isFavorite={isFavorite}
-          picture={lot3}
           city="Ивано-Франковск"
+          isFavorite={isFavorite}
           text="Велосипед для девочки 5 лет"
-          inboxMessage={25}
         />
-      </CardBlock>
+      </StyledCardBlock>
     </Container>
   );
 };
