@@ -69,17 +69,13 @@ const FourOhFourPage = () => {
       <Tittle>{getTranslatedText('fourOhFour.noPage', lang)}</Tittle>
 
       <WrapperButton>
-        <MainButton
-          whatClass="onMain"
-          text={getTranslatedText('fourOhFour.mainPage', lang)}
-          click={goTo}
-        />
+        <MainButton click={goTo}>
+          {getTranslatedText('fourOhFour.mainPage', lang)}
+        </MainButton>
 
-        <BackButton
-          whatClass="back"
-          text={getTranslatedText('fourOhFour.backPage', lang)}
-          click={goTo}
-        />
+        <BackButton click={goTo}>
+          {getTranslatedText('fourOhFour.backPage', lang)}
+        </BackButton>
       </WrapperButton>
     </div>
   );

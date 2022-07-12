@@ -80,7 +80,7 @@ export const WrapperButton = styled.div`
   margin: 0 auto 50px;
 `;
 
-export const Button = styled.button`
+export const button = css`
   margin: 0 5px 20px;
   border-radius: 24px;
   border: 0;
@@ -98,7 +98,9 @@ export const Button = styled.button`
   color: #ffffff;
 `;
 
-export const MainButton = styled(Button)`
+export const MainButton = styled.button`
+  ${button};
+
   ${({ theme }) => css`
     background-color: ${theme.colors['btn-blue-normal']};
 
@@ -117,7 +119,9 @@ export const MainButton = styled(Button)`
   `}
 `;
 
-export const BackButton = styled(Button)`
+export const BackButton = styled.button`
+  ${button};
+
   ${({ theme }) => css`
     background-color: ${theme.colors['btn-green-normal']};
 
