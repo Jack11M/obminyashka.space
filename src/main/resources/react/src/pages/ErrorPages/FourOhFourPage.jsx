@@ -13,8 +13,21 @@ import {
 } from 'assets/img/all_images_export/errorPage';
 import { getTranslatedText } from 'components/local/localization';
 
-import './errorPage.scss';
-import { Button } from 'components/common/buttons';
+// import './errorPage.scss';
+import {
+  Tittle,
+  WrapOImg,
+  WrapGImg,
+  WrapRImg,
+  WrapCenter,
+  WrapImg404,
+  MainButton,
+  BackButton,
+  WrapperDark,
+  WrapperLight,
+  WrapperShadow,
+  WrapperButton,
+} from './styled-error';
 
 const FourOhFourPage = () => {
   const lang = useSelector(getLang);
@@ -30,51 +43,40 @@ const FourOhFourPage = () => {
 
   return (
     <div className="error-page">
-      <div className="blockCenterImage">
-        <div className="blockCenterImage-fourOhfour">
+      <WrapCenter>
+        <WrapImg404>
           <img src={fourOhFour} alt="404" />
-        </div>
+        </WrapImg404>
 
-        <div className="blockCenterImage-shadow">
-          <img
-            className="blockCenterImage-shadow_light"
-            src={shadow}
-            alt="shadow"
-          />
-          <img
-            className="blockCenterImage-shadow_dark"
-            src={shadowDark}
-            alt="shadow dark"
-          />
-        </div>
-      </div>
+        <WrapperShadow>
+          <WrapperLight src={shadow} alt="shadow" />
+          <WrapperDark src={shadowDark} alt="shadow dark" />
+        </WrapperShadow>
+      </WrapCenter>
 
-      <div className="blockOrangeImage">
+      <WrapOImg>
         <img src={orangeDots} alt="orange dots" />
-      </div>
+      </WrapOImg>
 
-      <div className="blockGreenImage">
+      <WrapGImg>
         <img src={greenDots} alt="green dots" />
-      </div>
+      </WrapGImg>
 
-      <div className="blockRightImage">
+      <WrapRImg>
         <img src={loop} alt="loop" />
-      </div>
+      </WrapRImg>
 
-      <h2>{getTranslatedText('fourOhFour.noPage', lang)}</h2>
+      <Tittle>{getTranslatedText('fourOhFour.noPage', lang)}</Tittle>
 
-      <div className="blockButtons">
-        <Button
-          whatClass="onMain"
-          text={getTranslatedText('fourOhFour.mainPage', lang)}
-          click={goTo}
-        />
-        <Button
-          whatClass="back"
-          text={getTranslatedText('fourOhFour.backPage', lang)}
-          click={goTo}
-        />
-      </div>
+      <WrapperButton>
+        <MainButton click={goTo}>
+          {getTranslatedText('fourOhFour.mainPage', lang)}
+        </MainButton>
+
+        <BackButton click={goTo}>
+          {getTranslatedText('fourOhFour.backPage', lang)}
+        </BackButton>
+      </WrapperButton>
     </div>
   );
 };
