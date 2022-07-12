@@ -9,7 +9,7 @@ const InputProfile = ({ id = '', label, ...props }) => {
 
   return (
     <Styles.ProfileInput>
-      <Styles.Label htmlFor={id}>{`${label}`}</Styles.Label>
+      <Styles.Label htmlFor={id}>{label}</Styles.Label>
 
       {field.name.includes('phones') ? (
         <InputMask

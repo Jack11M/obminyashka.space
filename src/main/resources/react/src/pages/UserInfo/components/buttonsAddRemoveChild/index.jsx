@@ -19,6 +19,7 @@ const AddRemoveItem = styled.div`
     right: -50px;
   }
 `;
+
 const Span = styled.span`
   position: relative;
   display: inline-flex;
