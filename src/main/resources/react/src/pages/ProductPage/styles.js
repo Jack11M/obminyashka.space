@@ -17,19 +17,19 @@ export const ProductPageContainer = styled.div`
 `;
 
 export const BreadCrumbs = styled.div`
-  font-family: Roboto, sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 16px;
   line-height: 26px;
   color: #8f8f8f;
   margin-bottom: 30px;
+`;
 
-  .breadСrumbs span {
-    color: #11171f;
-  }
+export const Span = styled.span`
+  color: #11171f;
 `;
 
 export const ProductPageInner = styled.div`
-  font-family: Roboto, sans-serif;
+  font-family: 'Roboto', sans-serif;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;

@@ -16,6 +16,7 @@ import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
+  Span,
   TopSection,
   BreadCrumbs,
   OwnerAndPost,
@@ -82,10 +83,10 @@ const ProductPage = () => {
       <TopSection>
         <ProductPageContainer>
           <BreadCrumbs>
-            {product.topic}
             {getTranslatedText('product.categories', lang)}/
             {getTranslatedText(`categories.${category.name}`, lang)}/
             {getTranslatedText(`categories.${subcategory.name}`, lang)}/
+            <Span>{product.topic}</Span>
           </BreadCrumbs>
 
           <ProductPageInner>

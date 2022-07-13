@@ -4,7 +4,20 @@ import { getLang } from 'store/auth/slice';
 import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 
-import './ProductPostData.scss';
+import {
+  TitleH2,
+  Container,
+  TitleContainer,
+  ButtonContainer,
+  PostDataDescription,
+  PostDataBoxContainer,
+  PostDataDescriptionOl,
+  PostDataDescriptionUl,
+  PostDataDescriptionText,
+  PostDataDescriptionSpan,
+  PostDataDescriptionOlItem,
+  PostDataDescriptionUlItem,
+} from './styles';
 
 const ProductPostData = ({
   age,
@@ -22,58 +35,77 @@ const ProductPostData = ({
     : wishes;
 
   return (
-    <div className="productPostData">
-      <div className="postHeading">
-        <h2>{title}</h2>
-      </div>
-      <div className="postDataDescription">
-        <p>
-          <span>{`${getTranslatedText('product.changesTo', lang)}:`}</span>
-        </p>
-        <ol>
+    <Container>
+      <TitleContainer>
+        <TitleH2>{title}</TitleH2>
+      </TitleContainer>
+
+      <PostDataDescription>
+        <PostDataDescriptionText>
+          <PostDataDescriptionSpan>
+            {`${getTranslatedText('product.changesTo', lang)}:`}
+          </PostDataDescriptionSpan>
+        </PostDataDescriptionText>
+
+        <PostDataDescriptionOl>
           {transformWishes.map((item, idx) => (
-            <li key={String(`li_${idx}`)}>{item}</li>
+            <PostDataDescriptionOlItem key={String(`li_${idx}`)}>
+              {item}
+            </PostDataDescriptionOlItem>
           ))}
-        </ol>
-      </div>
-      <div className="postButton">
+        </PostDataDescriptionOl>
+      </PostDataDescription>
+
+      <ButtonContainer>
         <Button
           text={getTranslatedText('product.button', lang)}
           width="250px"
         />
-      </div>
-      <div className="postHeading">
-        <h2>{`${getTranslatedText('product.description', lang)}:`}</h2>
-      </div>
-      <div className="postDataBox">
-        <div className="postDataDescription">
-          <ul>
-            <li>
-              <span>
+      </ButtonContainer>
+
+      <TitleContainer>
+        <TitleH2>
+          {`${getTranslatedText('product.description', lang)}:`}
+        </TitleH2>
+      </TitleContainer>
+
+      <PostDataBoxContainer>
+        <PostDataDescription>
+          <PostDataDescriptionUl>
+            <PostDataDescriptionUlItem>
+              <PostDataDescriptionSpan>
                 {`${getTranslatedText(
                   'product.size',
                   lang
                 )} / ${getTranslatedText('product.age', lang)}:`}
-              </span>
-            </li>
-            <li>
-              <span>{`${getTranslatedText('product.season', lang)}:`}</span>
-            </li>
-            <li>
-              <span>{`${getTranslatedText('product.sex', lang)}:`}</span>
-            </li>
-          </ul>
-        </div>
-        <div className="postDataDescription">
-          <ul>
-            <li>{`${size} / ${age}`}</li>
+              </PostDataDescriptionSpan>
+            </PostDataDescriptionUlItem>
 
-            <li>{season}</li>
-            <li>{gender}</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+            <PostDataDescriptionUlItem>
+              <PostDataDescriptionSpan>
+                {`${getTranslatedText('product.season', lang)}:`}
+              </PostDataDescriptionSpan>
+            </PostDataDescriptionUlItem>
+
+            <PostDataDescriptionUlItem>
+              <PostDataDescriptionSpan>
+                {`${getTranslatedText('product.sex', lang)}:`}
+              </PostDataDescriptionSpan>
+            </PostDataDescriptionUlItem>
+          </PostDataDescriptionUl>
+        </PostDataDescription>
+
+        <PostDataDescription>
+          <PostDataDescriptionUl>
+            <PostDataDescriptionUlItem>{`${size} / ${age}`}</PostDataDescriptionUlItem>
+
+            <PostDataDescriptionUlItem>{season}</PostDataDescriptionUlItem>
+
+            <PostDataDescriptionUlItem>{gender}</PostDataDescriptionUlItem>
+          </PostDataDescriptionUl>
+        </PostDataDescription>
+      </PostDataBoxContainer>
+    </Container>
   );
 };
 export default ProductPostData;
