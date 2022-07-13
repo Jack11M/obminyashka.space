@@ -82,10 +82,10 @@ const ProductPage = () => {
       <TopSection>
         <ProductPageContainer>
           <BreadCrumbs>
-            {product.topic}
             {getTranslatedText('product.categories', lang)}/
             {getTranslatedText(`categories.${category.name}`, lang)}/
             {getTranslatedText(`categories.${subcategory.name}`, lang)}/
+            {product.topic}
           </BreadCrumbs>
 
           <ProductPageInner>
