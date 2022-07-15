@@ -42,6 +42,7 @@
     ],
     "linebreak-style": "off",
     "object-curly-newline": "off",
+    "arrow-body-style": "off",
     "no-confusing-arrow": "off",
     "function-paren-newline": "off",
     "react/jsx-props-no-spreading": "off",

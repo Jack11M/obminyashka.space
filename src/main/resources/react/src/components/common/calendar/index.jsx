@@ -1,73 +1,71 @@
-import { useState } from 'react';
-import DatePicker, { registerLocale } from 'react-datepicker';
+import { useMemo, useState } from 'react';
+import { subYears } from 'date-fns';
 import { useSelector } from 'react-redux';
-
-import { ru, enUS } from 'date-fns/locale';
-// import eng from 'date-fns/locale/en-US';
+import { ru, enUS, uk } from 'date-fns/locale';
+import DatePicker, { registerLocale } from 'react-datepicker';
 
 import { getAuth } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
+import { Header } from './header';
 import * as Styles from './styles';
 import { withRef } from './withRef';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
+const Input = withRef(Styles.Input);
+
+const YEARS_OLD = 14;
+
 const Calendar = () => {
-  console.log(navigator.language);
   const { lang } = useSelector(getAuth);
+  const [startDate, setStartDate] = useState(new Date());
+
+  const language = useMemo(() => {
+    switch (lang) {
+      case 'en':
+        return enUS;
+      case 'ru':
+        return ru;
+      default:
+        return uk;
+    }
+  }, [lang]);
 
   const isEng = lang === 'en';
 
-  const l = isEng ? enUS : ru;
-
-  registerLocale('lang', l);
-  const [startDate, setStartDate] = useState(new Date());
-  // const [endDate, setEndDate] = useState();
-
-  // console.log(endDate);
-
-  // eslint-disable-next-line react/no-unstable-nested-components
-  // const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-  //   // <button
-  //   //   type="button"
-  //   //   // className="example-custom-input"
-  //   //   onClick={onClick}
-  //   //   ref={ref}
-  //   // >
-  //   //   {value}
-  //   // </button>
-  //   <Styles.Input type="text" value={value} ref={ref} onClick={onClick} />
-  // ));
-
-  const A = withRef(Styles.Input);
+  registerLocale('lang', language);
 
   return (
-    <Styles.Block>
+    <Styles.Container>
       <Styles.Label htmlFor="date">
         {getTranslatedText('ownInfo.dateOfBirth')}
       </Styles.Label>
-      {/* <Styles.Input id="data" type="date" /> */}
-      <div>
-        <DatePicker
-          selected={startDate}
-          dateFormat={isEng ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
-          withPortal
-          // fixedHeight
-          locale="lang"
-          showMonthDropdown
-          showYearDropdown
-          dateFormatCalendar="MMMM"
-          yearDropdownItemNumber={19}
-          scrollableYearDropdown
-          // dateFormat="Pp"
-          // minDate={subMonths(new Date(), 6)}
-          calendarStartDay={isEng ? 0 : 1}
-          onChange={(date) => setStartDate(date)}
-          customInput={<A type="text" value={startDate} />}
-        />
-      </div>
-    </Styles.Block>
+
+      <DatePicker
+        withPortal
+        fixedHeight
+        locale="lang"
+        maxDate={new Date()}
+        selected={startDate}
+        calendarStartDay={isEng ? 0 : 1}
+        onChange={(date) => setStartDate(date)}
+        minDate={subYears(new Date(), YEARS_OLD)}
+        dateFormat={isEng ? 'MM/dd/yyyy' : 'dd-MM-yyyy'}
+        customInput={<Input type="text" value={startDate} />}
+        renderCustomHeader={(props) => (
+          <Header {...props} lang={lang} yearsOld={YEARS_OLD} />
+        )}
+        popperModifiers={[
+          {
+            name: 'preventOverflow',
+            options: {
+              rootBoundary: 'viewport',
+            },
+          },
+        ]}
+      />
+    </Styles.Container>
   );
 };
 

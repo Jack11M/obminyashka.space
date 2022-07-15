@@ -19,7 +19,7 @@ const SomethingBad = ({ deactivateError }) => {
     if (event.target.className.includes('onMain')) {
       navigate(route.home);
     } else {
-      navigate(-1);
+      navigate(0);
     }
   };
 

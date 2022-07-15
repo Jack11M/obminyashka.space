@@ -1,5 +1,7 @@
 export { ReactComponent as ActivitySvg } from './activity.svg';
 export { ReactComponent as CheckSvg } from './Check.svg';
+export { ReactComponent as ChevronLeft } from './chevron-left.svg';
+export { ReactComponent as ChevronRight } from './chevron-right.svg';
 export { ReactComponent as CloseSvg } from './Close.svg';
 export { ReactComponent as GoogleSvg } from './google.svg';
 export { ReactComponent as HeartSvg } from './heart.svg';
