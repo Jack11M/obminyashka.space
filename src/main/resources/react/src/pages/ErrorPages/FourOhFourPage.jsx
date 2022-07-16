@@ -13,21 +13,7 @@ import {
 } from 'assets/img/all_images_export/errorPage';
 import { getTranslatedText } from 'components/local/localization';
 
-// import './errorPage.scss';
-import {
-  Tittle,
-  WrapOImg,
-  WrapGImg,
-  WrapRImg,
-  WrapCenter,
-  WrapImg404,
-  MainButton,
-  BackButton,
-  WrapperDark,
-  WrapperLight,
-  WrapperShadow,
-  WrapperButton,
-} from './styled-error';
+import * as Styles from './styled-error';
 
 const FourOhFourPage = () => {
   const lang = useSelector(getLang);
@@ -42,42 +28,44 @@ const FourOhFourPage = () => {
   };
 
   return (
-    <div className="error-page">
-      <WrapCenter>
-        <WrapImg404>
+    <>
+      <Styles.WrapCenter>
+        <Styles.WrapImg404>
           <img src={fourOhFour} alt="404" />
-        </WrapImg404>
+        </Styles.WrapImg404>
 
-        <WrapperShadow>
-          <WrapperLight src={shadow} alt="shadow" />
-          <WrapperDark src={shadowDark} alt="shadow dark" />
-        </WrapperShadow>
-      </WrapCenter>
+        <Styles.WrapperShadow>
+          <Styles.WrapperLight src={shadow} alt="shadow" />
+          <Styles.WrapperDark src={shadowDark} alt="shadow dark" />
+        </Styles.WrapperShadow>
+      </Styles.WrapCenter>
 
-      <WrapOImg>
+      <Styles.WrapOImg>
         <img src={orangeDots} alt="orange dots" />
-      </WrapOImg>
+      </Styles.WrapOImg>
 
-      <WrapGImg>
+      <Styles.WrapGImg>
         <img src={greenDots} alt="green dots" />
-      </WrapGImg>
+      </Styles.WrapGImg>
 
-      <WrapRImg>
+      <Styles.WrapRImg>
         <img src={loop} alt="loop" />
-      </WrapRImg>
+      </Styles.WrapRImg>
 
-      <Tittle>{getTranslatedText('fourOhFour.noPage', lang)}</Tittle>
+      <Styles.Tittle>
+        {getTranslatedText('fourOhFour.noPage', lang)}
+      </Styles.Tittle>
 
-      <WrapperButton>
-        <MainButton click={goTo}>
+      <Styles.WrapperButton>
+        <Styles.MainButton click={goTo}>
           {getTranslatedText('fourOhFour.mainPage', lang)}
-        </MainButton>
+        </Styles.MainButton>
 
-        <BackButton click={goTo}>
+        <Styles.BackButton click={goTo}>
           {getTranslatedText('fourOhFour.backPage', lang)}
-        </BackButton>
-      </WrapperButton>
-    </div>
+        </Styles.BackButton>
+      </Styles.WrapperButton>
+    </>
   );
 };
 export default FourOhFourPage;

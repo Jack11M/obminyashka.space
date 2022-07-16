@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import SomethingBad from 'assets/img/errorPage/SomethingBad.png';
 
 export const WrapCenter = styled.div`
   position: relative;
@@ -47,6 +48,7 @@ export const WrapImg = styled.div`
     height: calc(100vh - 3px);
   }
 `;
+
 export const WrapOImg = styled(WrapImg)`
   left: 360px;
 `;
@@ -54,7 +56,7 @@ export const WrapGImg = styled(WrapImg)`
   left: 0;
 `;
 export const WrapRImg = styled(WrapImg)`
-  right: 50;
+  right: 50px;
 `;
 
 export const Tittle = styled.h2`
@@ -69,6 +71,49 @@ export const Tittle = styled.h2`
   color: #bababa;
   text-align: center;
   margin-bottom: 27px;
+`;
+
+export const Container = styled.div`
+  min-height: 100vh;
+  position: relative;
+  background: url(${SomethingBad});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  @media (max-width: 576px) {
+    background-size: 300%;
+    background-position: top;
+    background-position-y: 15%;
+  }
+`;
+
+export const WrapOrange = styled(WrapImg)`
+  left: 360px;
+  z-index: -1;
+`;
+export const WrapGreen = styled(WrapImg)`
+  left: 0;
+  z-index: -1;
+`;
+export const WrapRight = styled(WrapImg)`
+  right: 50px;
+  z-index: -1;
+`;
+
+export const WrapTittleBad = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10%;
+`;
+
+export const TittleBad = styled(Tittle)`
+  padding: 10px 5px;
+
+  @media (max-width: 576px) {
+    font-size: 16px;
+  }
 `;
 
 export const WrapperButton = styled.div`
