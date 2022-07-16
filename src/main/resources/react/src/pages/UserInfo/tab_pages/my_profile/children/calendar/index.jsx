@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useField } from 'formik';
 import { subYears } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { ru, enUS, uk } from 'date-fns/locale';
@@ -17,9 +18,10 @@ const Input = withRef(Styles.Input);
 
 const YEARS_OLD = 14;
 
-const Calendar = () => {
+const Calendar = ({ name }) => {
   const { lang } = useSelector(getAuth);
-  const [startDate, setStartDate] = useState(new Date());
+  const [field, , helpers] = useField(name);
+  const { value } = field;
 
   const language = useMemo(() => {
     switch (lang) {
@@ -33,7 +35,6 @@ const Calendar = () => {
   }, [lang]);
 
   const isEng = lang === 'en';
-
   registerLocale('lang', language);
 
   return (
@@ -46,13 +47,13 @@ const Calendar = () => {
         withPortal
         fixedHeight
         locale="lang"
+        selected={value}
         maxDate={new Date()}
-        selected={startDate}
         calendarStartDay={isEng ? 0 : 1}
-        onChange={(date) => setStartDate(date)}
         minDate={subYears(new Date(), YEARS_OLD)}
-        dateFormat={isEng ? 'MM/dd/yyyy' : 'dd-MM-yyyy'}
-        customInput={<Input type="text" value={startDate} />}
+        onChange={(date) => helpers.setValue(date)}
+        dateFormat={isEng ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
+        customInput={<Input type="text" value={value} />}
         renderCustomHeader={(props) => (
           <Header {...props} lang={lang} yearsOld={YEARS_OLD} />
         )}

@@ -1,54 +1,49 @@
-import { Form, Formik } from 'formik';
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { FieldArray, Form, Formik } from 'formik';
 
-import { Calendar } from 'components/common';
-// import { getProfile } from 'store/profile/slice';
+import { getProfile } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
-// import InputProfile from '../../../components/inputProfile';
-import InputGender from '../../../components/inputProfile/inputGender';
-
+import { Gender } from './gender';
 import * as Styles from './styles';
+import { Calendar } from './calendar';
+import { getInitialValues, validationSchema } from './config';
 
 const Children = () => {
-  //   const { children } = useSelector(getProfile);
+  const { children } = useSelector(getProfile);
 
-  const child1 = [
-    {
-      birthDate: '2022-07-10',
-      id: 0,
-      sex: 'FEMALE',
-    },
-  ];
+  const initialValues = getInitialValues(children);
 
-  const onSubmit = () => {};
+  const onSubmit = (values) => {
+    console.log('submit ', values);
+  };
 
   return (
-    <Formik onSubmit={onSubmit} validationSchema={{}} initialValues={{}}>
-      {() => (
+    <Formik
+      onSubmit={onSubmit}
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+    >
+      {({ values }) => (
         <Form>
-          <Styles.Block>
-            {child1.map((child, idx) => (
-              <div key={String(`${idx}_child`)}>
-                {/* <InputProfile
-                  id={idx}
-                  type="date"
-                  onChange={null}
-                  name="birthDate"
-                  value={child.birthDate}
-                  label={getTranslatedText('ownInfo.dateOfBirth')}
-                /> */}
-
-                <Calendar />
-
-                <InputGender gender={child.sex} id={idx} click={null} />
-              </div>
-            ))}
-          </Styles.Block>
+          <FieldArray name="children">
+            {() => {
+              return (
+                <Styles.Block>
+                  {values.children.map((child, idx) => (
+                    <div key={child.id}>
+                      <Calendar name={`children.${idx}.birthDate`} />
+                      <Gender name={`children.${idx}.sex`} />
+                    </div>
+                  ))}
+                </Styles.Block>
+              );
+            }}
+          </FieldArray>
 
           <Styles.StyledButton
+            type="submit"
             width="248px"
-            disabling={false}
             text={getTranslatedText('button.saveChanges')}
           />
         </Form>

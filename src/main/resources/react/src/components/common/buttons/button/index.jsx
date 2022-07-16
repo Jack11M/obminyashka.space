@@ -11,9 +11,9 @@ const Button = ({
   width,
   lHeight,
   isLoading,
+  disabling,
   click = null,
   whatClass = null,
-  disabling = null,
   ...props
 }) => (
   <ButtonBlue

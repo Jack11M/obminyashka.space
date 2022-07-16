@@ -1,7 +1,6 @@
 export { Toast } from './toast';
 export { Loader } from './loader';
 export { Avatar } from './avatar';
-export { Calendar } from './calendar';
 export { CheckBox } from './checkbox';
 export { InputForAuth } from './input';
 export { Modal } from './pop-up/modal';

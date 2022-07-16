@@ -33,7 +33,6 @@ export const Elements = styled.div`
   overflow: hidden;
   border-radius: 8px;
   z-index: 1;
-  /* border: 1px solid black; */
 `;
 
 export const Span = styled.span`
