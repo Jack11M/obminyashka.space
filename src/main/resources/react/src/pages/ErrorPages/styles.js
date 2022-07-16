@@ -1,6 +1,77 @@
-/* eslint-disable prettier/prettier */
 import styled, { css } from 'styled-components';
 import SomethingBad from 'assets/img/errorPage/SomethingBad.png';
+
+export const WrapCenter = styled.div`
+  position: relative;
+  width: 596px;
+  margin: 278px auto 73px;
+`;
+
+export const WrapImg404 = styled(WrapCenter)`
+  position: relative;
+  z-index: 10;
+`;
+
+export const WrapperShadow = styled(WrapCenter)`
+  position: absolute;
+  left: calc(50% - (483px / 2));
+  bottom: -72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 483px;
+  background-color: #e2e2e2;
+  z-index: 0;
+
+  img {
+    display: inline-flex;
+  }
+`;
+
+export const WrapperLight = styled(WrapperShadow)`
+  width: 483px;
+  position: relative;
+`;
+
+export const WrapperDark = styled(WrapperShadow)`
+  width: 178px;
+  position: absolute;
+`;
+export const WrapImg = styled.div`
+  position: absolute;
+  top: 0;
+  z-index: 0;
+  img {
+    max-width: 100%;
+    height: calc(100vh - 3px);
+  }
+`;
+
+export const WrapOImg = styled(WrapImg)`
+  left: 360px;
+`;
+export const WrapGImg = styled(WrapImg)`
+  left: 0;
+`;
+export const WrapRImg = styled(WrapImg)`
+  right: 50px;
+`;
+
+export const Tittle = styled.h2`
+  font-family: 'Pollywog Cyr', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 27px;
+  line-height: 24px;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #bababa;
+  text-align: center;
+  margin-bottom: 27px;
+`;
 
 export const Container = styled.div`
   min-height: 100vh;
@@ -17,45 +88,27 @@ export const Container = styled.div`
   }
 `;
 
-export const WrapImg = styled.div`
-  position: absolute;
-  top: 0;
-  z-index: -1;
-  img {
-    max-width: 100%;
-    height: calc(100vh - 3px);
-  }
-`;
-export const WrapOImg = styled(WrapImg)`
+export const WrapOrange = styled(WrapImg)`
   left: 360px;
+  z-index: -1;
 `;
-export const WrapGImg = styled(WrapImg)`
-  left: -78px;
+export const WrapGreen = styled(WrapImg)`
+  left: 0;
+  z-index: -1;
 `;
-export const WrapRImg = styled(WrapImg)`
+export const WrapRight = styled(WrapImg)`
   right: 50px;
+  z-index: -1;
 `;
 
-export const WrapTittle = styled.div`
+export const WrapTittleBad = styled.div`
   position: absolute;
   left: 0;
   right: 0;
   bottom: 10%;
 `;
 
-export const Tittle = styled.h2`
-  font-family: 'Pollywog Cyr', sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 27px;
-  line-height: 24px;
-
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #bababa;
-  text-align: center;
-
-  margin-bottom: 27px;
+export const TittleBad = styled(Tittle)`
   padding: 10px 5px;
 
   @media (max-width: 576px) {

@@ -10,10 +10,7 @@ import {
   orangeDots,
 } from 'assets/img/all_images_export/errorPage';
 
-import * as Styles from './styles-bad';
-
-import './somethingBad.scss';
-// import { BackButton, MainButton, WrapperButton } from './styled-error';
+import * as Styles from './styles';
 
 const SomethingBad = ({ deactivateError }) => {
   const lang = useSelector(getLang);
@@ -30,22 +27,22 @@ const SomethingBad = ({ deactivateError }) => {
 
   return (
     <Styles.Container>
-      <Styles.WrapOImg>
+      <Styles.WrapOrange>
         <img src={orangeDots} alt="orange dots" />
-      </Styles.WrapOImg>
+      </Styles.WrapOrange>
 
-      <Styles.WrapGImg>
+      <Styles.WrapGreen>
         <img src={greenDots} alt="green dots" />
-      </Styles.WrapGImg>
+      </Styles.WrapGreen>
 
-      <Styles.WrapRImg>
+      <Styles.WrapRight>
         <img src={loop} alt="loop" />
-      </Styles.WrapRImg>
+      </Styles.WrapRight>
 
-      <Styles.WrapTittle>
-        <Styles.Tittle>
+      <Styles.WrapTittleBad>
+        <Styles.TittleBad>
           {getTranslatedText('somethingBad.error', lang)}
-        </Styles.Tittle>
+        </Styles.TittleBad>
 
         <Styles.WrapperButton>
           <Styles.MainButton click={goTo}>
@@ -56,7 +53,7 @@ const SomethingBad = ({ deactivateError }) => {
             {getTranslatedText('fourOhFour.backPage', lang)}
           </Styles.BackButton>
         </Styles.WrapperButton>
-      </Styles.WrapTittle>
+      </Styles.WrapTittleBad>
     </Styles.Container>
   );
 };
