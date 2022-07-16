@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import SomethingBad from 'assets/img/errorPage/SomethingBad.png';
 
 export const Container = styled.div`
@@ -30,10 +30,10 @@ export const WrapOImg = styled(WrapImg)`
   left: 360px;
 `;
 export const WrapGImg = styled(WrapImg)`
-  left: 0;
+  left: -78px;
 `;
 export const WrapRImg = styled(WrapImg)`
-  right: 50;
+  right: 50px;
 `;
 
 export const WrapTittle = styled.div`
@@ -63,56 +63,71 @@ export const Tittle = styled.h2`
   }
 `;
 
-export const BlockButtons = styled.div`
+export const WrapperButton = styled.div`
   position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   max-width: 480px;
   margin: 0 auto 50px;
-  button {
-    margin: 0 5px 20px;
-    border-radius: 24px;
-    border: 0;
-    outline: none;
-    width: 222px;
-    height: 50px;
+`;
 
-    font-family: 'Roboto', sans-serif;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 16px;
-    line-height: 19px;
-    text-transform: uppercase;
+export const button = css`
+  margin: 0 5px 20px;
+  border-radius: 24px;
+  border: 0;
+  outline: none;
+  width: 222px;
+  height: 50px;
 
-    color: #ffffff;
-  }
-  .onMain {
-    background-color: ${({ theme: { colors } }) => colors['btn-bh-normal']};
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  text-transform: uppercase;
+
+  color: #ffffff;
+`;
+
+export const MainButton = styled.button`
+  ${button};
+
+  ${({ theme }) => css`
+    background-color: ${theme.colors['btn-blue-normal']};
+
     &:hover {
       cursor: pointer;
-      background-color: ${({ theme: { colors } }) => colors['btn-blue-hover']};
+      background-color: ${theme.colors['btn-blue-hover']};
     }
+
     &:active {
-      background-color: ${({ theme: { colors } }) => colors['btn-blue-active']};
+      background-color: ${theme.colors['btn-blue-active']};
     }
 
     &:disabled {
-      background-color: ${({ theme: { colors } }) => colors['btn-gb-disabled']};
+      background-color: ${theme.colors['btn-gb-disabled']};
     }
-  }
-  .back {
-    background-color: ${({ theme: { colors } }) => colors['btn-green-normal']};
+  `}
+`;
+
+export const BackButton = styled.button`
+  ${button};
+
+  ${({ theme }) => css`
+    background-color: ${theme.colors['btn-green-normal']};
+
     &:hover {
       cursor: pointer;
-      background-color: ${({ theme: { colors } }) => colors['btn-green-hover']};
+      background-color: ${theme.colors['btn-green-hover']};
     }
+
     &:active {
-      background-color: ${({ theme: { colors } }) => colors['btn-green-active']};
+      background-color: ${theme.colors['btn-green-active']};
     }
 
     &:disabled {
-      background-color: ${({ theme: { colors } }) => colors['btn-gb-disabled']};
+      background-color: ${theme.colors['btn-gb-disabled']};
     }
-  }
+  `}
 `;
