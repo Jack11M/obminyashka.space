@@ -22,28 +22,28 @@ export const WrapperShadow = styled(WrapCenter)`
   width: 483px;
   background-color: #e2e2e2;
   z-index: 0;
-  img {
-    display: inline-flex;
-  }
 `;
 
-export const WrapperLight = styled(WrapperShadow)`
+export const ImageLight = styled.img`
+  display: inline-flex;
   width: 483px;
   position: relative;
+  top: 105px;
 `;
-
-export const WrapperDark = styled(WrapperShadow)`
+export const ImageDark = styled.img`
+  display: inline-flex;
   width: 178px;
   position: absolute;
+  top: 105px;
 `;
+
 export const WrapImg = styled.div`
   position: absolute;
   top: 0;
   z-index: 0;
-  img {
-    max-width: 100%;
-    height: calc(100vh - 3px);
-  }
+`;
+export const Image = styled.img`
+  max-width: 100%;
 `;
 
 export const WrapOImg = styled(WrapImg)`

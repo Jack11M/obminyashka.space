@@ -31,25 +31,25 @@ const FourOhFourPage = () => {
     <div className="error-page">
       <Styles.WrapCenter>
         <Styles.WrapImg404>
-          <img src={fourOhFour} alt="404" />
+          <Styles.Image src={fourOhFour} alt="404" />
         </Styles.WrapImg404>
 
         <Styles.WrapperShadow>
-          <Styles.WrapperLight src={shadow} alt="shadow" />
-          <Styles.WrapperDark src={shadowDark} alt="shadow dark" />
+          <Styles.ImageLight src={shadow} alt="shadow" />
+          <Styles.ImageDark src={shadowDark} alt="shadow dark" />
         </Styles.WrapperShadow>
       </Styles.WrapCenter>
 
       <Styles.WrapOImg>
-        <img src={orangeDots} alt="orange dots" />
+        <Styles.Image src={orangeDots} alt="orange dots" />
       </Styles.WrapOImg>
 
       <Styles.WrapGImg>
-        <img src={greenDots} alt="green dots" />
+        <Styles.Image src={greenDots} alt="green dots" />
       </Styles.WrapGImg>
 
       <Styles.WrapRImg>
-        <img src={loop} alt="loop" />
+        <Styles.Image src={loop} alt="loop" />
       </Styles.WrapRImg>
 
       <Styles.Tittle>
