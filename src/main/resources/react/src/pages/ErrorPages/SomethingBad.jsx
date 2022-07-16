@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
-import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
@@ -11,7 +10,7 @@ import {
   orangeDots,
 } from 'assets/img/all_images_export/errorPage';
 
-import './somethingBad.scss';
+import * as Styles from './styles';
 
 const SomethingBad = ({ deactivateError }) => {
   const lang = useSelector(getLang);
@@ -27,32 +26,35 @@ const SomethingBad = ({ deactivateError }) => {
   };
 
   return (
-    <div className="somethingBad">
-      <div className="blockOrangeImage">
+    <Styles.Container>
+      <Styles.WrapOrange>
         <img src={orangeDots} alt="orange dots" />
-      </div>
-      <div className="blockGreenImage">
+      </Styles.WrapOrange>
+
+      <Styles.WrapGreen>
         <img src={greenDots} alt="green dots" />
-      </div>
-      <div className="blockRightImage">
+      </Styles.WrapGreen>
+
+      <Styles.WrapRight>
         <img src={loop} alt="loop" />
-      </div>
-      <div className="blockControls">
-        <h2>{getTranslatedText('somethingBad.error', lang)}</h2>
-        <div className="blockButtons">
-          <Button
-            whatClass="onMain"
-            text={getTranslatedText('fourOhFour.mainPage', lang)}
-            click={goTo}
-          />
-          <Button
-            whatClass="back"
-            text={getTranslatedText('fourOhFour.backPage', lang)}
-            click={goTo}
-          />
-        </div>
-      </div>
-    </div>
+      </Styles.WrapRight>
+
+      <Styles.WrapTittleBad>
+        <Styles.TittleBad>
+          {getTranslatedText('somethingBad.error', lang)}
+        </Styles.TittleBad>
+
+        <Styles.WrapperButton>
+          <Styles.MainButton click={goTo}>
+            {getTranslatedText('fourOhFour.mainPage', lang)}
+          </Styles.MainButton>
+
+          <Styles.BackButton click={goTo}>
+            {getTranslatedText('fourOhFour.backPage', lang)}
+          </Styles.BackButton>
+        </Styles.WrapperButton>
+      </Styles.WrapTittleBad>
+    </Styles.Container>
   );
 };
 export default SomethingBad;

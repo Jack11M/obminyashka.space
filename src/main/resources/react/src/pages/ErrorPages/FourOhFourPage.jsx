@@ -13,7 +13,7 @@ import {
 } from 'assets/img/all_images_export/errorPage';
 import { getTranslatedText } from 'components/local/localization';
 
-import * as Styles from './styled-error';
+import * as Styles from './styles';
 
 const FourOhFourPage = () => {
   const lang = useSelector(getLang);
@@ -28,7 +28,7 @@ const FourOhFourPage = () => {
   };
 
   return (
-    <>
+    <div className="error-page">
       <Styles.WrapCenter>
         <Styles.WrapImg404>
           <img src={fourOhFour} alt="404" />
@@ -65,7 +65,7 @@ const FourOhFourPage = () => {
           {getTranslatedText('fourOhFour.backPage', lang)}
         </Styles.BackButton>
       </Styles.WrapperButton>
-    </>
+    </div>
   );
 };
 export default FourOhFourPage;
