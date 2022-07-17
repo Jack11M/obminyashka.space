@@ -13,11 +13,11 @@ export const Img404 = styled.img`
 `;
 
 export const WrapperShadow = styled.div`
-  ${WrapCenter}
+  ${WrapCenter};
+
   position: absolute;
   left: calc(50% - (483px / 2));
   bottom: -72px;
-
   display: flex;
   align-items: center;
   justify-content: center;
