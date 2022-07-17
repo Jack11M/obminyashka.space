@@ -1,18 +1,19 @@
 import styled, { css } from 'styled-components';
 import SomethingBad from 'assets/img/errorPage/SomethingBad.png';
 
-export const WrapCenter = styled.div`
+export const WrapCenter = css`
   position: relative;
   width: 596px;
   margin: 278px auto 73px;
 `;
 
-export const WrapImg404 = styled(WrapCenter)`
+export const Img404 = styled.img`
   position: relative;
   z-index: 10;
 `;
 
-export const WrapperShadow = styled(WrapCenter)`
+export const WrapperShadow = styled.div`
+  ${WrapCenter}
   position: absolute;
   left: calc(50% - (483px / 2));
   bottom: -72px;
@@ -24,42 +25,45 @@ export const WrapperShadow = styled(WrapCenter)`
   width: 483px;
   background-color: #e2e2e2;
   z-index: 0;
-
-  img {
-    display: inline-flex;
-  }
 `;
 
-export const WrapperLight = styled(WrapperShadow)`
+export const ImageLight = styled.img`
+  display: inline-flex;
   width: 483px;
   position: relative;
 `;
 
-export const WrapperDark = styled(WrapperShadow)`
+export const ImageDark = styled.img`
+  display: inline-flex;
   width: 178px;
   position: absolute;
 `;
-export const WrapImg = styled.div`
+
+export const wrapper = css`
   position: absolute;
   top: 0;
   z-index: 0;
-  img {
-    max-width: 100%;
-    height: calc(100vh - 3px);
-  }
 `;
 
-export const WrapOImg = styled(WrapImg)`
+export const Image = styled.img`
+  max-width: 100%;
+  height: calc(100vh - 3px);
+`;
+
+export const WrapOImg = styled.div`
+  ${wrapper};
   left: 360px;
 `;
-export const WrapGImg = styled(WrapImg)`
+export const WrapGImg = styled.div`
+  ${wrapper};
   left: 0;
 `;
-export const WrapRImg = styled(WrapImg)`
+export const WrapRImg = styled.div`
+  ${wrapper};
   right: 50px;
 `;
 
-export const Tittle = styled.h2`
+export const Tittle = css`
   font-family: 'Pollywog Cyr', sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -88,15 +92,18 @@ export const Container = styled.div`
   }
 `;
 
-export const WrapOrange = styled(WrapImg)`
+export const WrapOrange = styled.div`
+  ${wrapper};
   left: 360px;
   z-index: -1;
 `;
-export const WrapGreen = styled(WrapImg)`
+export const WrapGreen = styled.div`
+  ${wrapper};
   left: 0;
   z-index: -1;
 `;
-export const WrapRight = styled(WrapImg)`
+export const WrapRight = styled.div`
+  ${wrapper};
   right: 50px;
   z-index: -1;
 `;
@@ -108,7 +115,8 @@ export const WrapTittleBad = styled.div`
   bottom: 10%;
 `;
 
-export const TittleBad = styled(Tittle)`
+export const TittleBad = styled.h2`
+  ${Tittle};
   padding: 10px 5px;
 
   @media (max-width: 576px) {

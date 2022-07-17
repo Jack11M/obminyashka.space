@@ -28,15 +28,15 @@ const SomethingBad = ({ deactivateError }) => {
   return (
     <Styles.Container>
       <Styles.WrapOrange>
-        <img src={orangeDots} alt="orange dots" />
+        <Styles.Image src={orangeDots} alt="orange dots" />
       </Styles.WrapOrange>
 
       <Styles.WrapGreen>
-        <img src={greenDots} alt="green dots" />
+        <Styles.Image src={greenDots} alt="green dots" />
       </Styles.WrapGreen>
 
       <Styles.WrapRight>
-        <img src={loop} alt="loop" />
+        <Styles.Image src={loop} alt="loop" />
       </Styles.WrapRight>
 
       <Styles.WrapTittleBad>
