@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { getLang } from 'store/auth/slice';
-import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
@@ -10,20 +9,12 @@ import {
   orangeDots,
 } from 'assets/img/all_images_export/errorPage';
 
+import { goTo } from './helpers';
 import * as Styles from './styles';
 
 const SomethingBad = ({ deactivateError }) => {
   const lang = useSelector(getLang);
   const navigate = useNavigate();
-
-  const goTo = (event) => {
-    deactivateError(false);
-    if (event.target.className.includes('onMain')) {
-      navigate(route.home);
-    } else {
-      navigate(-1);
-    }
-  };
 
   return (
     <Styles.Container>
@@ -45,11 +36,15 @@ const SomethingBad = ({ deactivateError }) => {
         </Styles.TittleBad>
 
         <Styles.WrapperButton>
-          <Styles.MainButton click={goTo}>
+          <Styles.MainButton
+            onClick={() => goTo('home', navigate, deactivateError)}
+          >
             {getTranslatedText('fourOhFour.mainPage', lang)}
           </Styles.MainButton>
 
-          <Styles.BackButton click={goTo}>
+          <Styles.BackButton
+            onClick={() => goTo('', navigate, deactivateError)}
+          >
             {getTranslatedText('fourOhFour.backPage', lang)}
           </Styles.BackButton>
         </Styles.WrapperButton>

@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { getLang } from 'store/auth/slice';
-import { route } from 'routes/routeConstants';
 import {
   loop,
   shadow,
@@ -13,22 +12,15 @@ import {
 } from 'assets/img/all_images_export/errorPage';
 import { getTranslatedText } from 'components/local/localization';
 
+import { goTo } from './helpers';
 import * as Styles from './styles';
 
 const FourOhFourPage = () => {
   const lang = useSelector(getLang);
   const navigate = useNavigate();
 
-  const goTo = (event) => {
-    if (event.target.className.includes('onMain')) {
-      navigate(route.home);
-    } else {
-      navigate(-1);
-    }
-  };
-
   return (
-    <div className="error-page">
+    <>
       <Styles.WrapCenter>
         <Styles.Img404 src={fourOhFour} alt="404" />
 
@@ -55,15 +47,15 @@ const FourOhFourPage = () => {
       </Styles.Tittle>
 
       <Styles.WrapperButton>
-        <Styles.MainButton click={goTo}>
+        <Styles.MainButton onClick={() => goTo('home', navigate)}>
           {getTranslatedText('fourOhFour.mainPage', lang)}
         </Styles.MainButton>
 
-        <Styles.BackButton click={goTo}>
+        <Styles.BackButton onClick={() => goTo('', navigate)}>
           {getTranslatedText('fourOhFour.backPage', lang)}
         </Styles.BackButton>
       </Styles.WrapperButton>
-    </div>
+    </>
   );
 };
 export default FourOhFourPage;

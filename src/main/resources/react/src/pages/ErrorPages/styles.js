@@ -1,7 +1,30 @@
 import styled, { css } from 'styled-components';
+
 import SomethingBad from 'assets/img/errorPage/SomethingBad.png';
 
-export const WrapCenter = css`
+export const button = css`
+  margin: 0 5px 20px;
+  border-radius: 24px;
+  border: 0;
+  outline: none;
+  width: 222px;
+  height: 50px;
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 19px;
+  text-transform: uppercase;
+  color: #ffffff;
+`;
+
+export const wrapper = css`
+  position: absolute;
+  top: 0;
+  z-index: 0;
+`;
+
+export const WrapCenter = styled.div`
   position: relative;
   width: 596px;
   margin: 278px auto 73px;
@@ -13,8 +36,6 @@ export const Img404 = styled.img`
 `;
 
 export const WrapperShadow = styled.div`
-  ${WrapCenter};
-
   position: absolute;
   left: calc(50% - (483px / 2));
   bottom: -72px;
@@ -38,12 +59,6 @@ export const ImageDark = styled.img`
   position: absolute;
 `;
 
-export const wrapper = css`
-  position: absolute;
-  top: 0;
-  z-index: 0;
-`;
-
 export const Image = styled.img`
   max-width: 100%;
   height: calc(100vh - 3px);
@@ -53,16 +68,18 @@ export const WrapOImg = styled.div`
   ${wrapper};
   left: 360px;
 `;
+
 export const WrapGImg = styled.div`
   ${wrapper};
   left: 0;
 `;
+
 export const WrapRImg = styled.div`
   ${wrapper};
   right: 50px;
 `;
 
-export const Tittle = css`
+export const Tittle = styled.h2`
   font-family: 'Pollywog Cyr', sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -82,6 +99,7 @@ export const Container = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+
   @media (max-width: 576px) {
     background-size: 300%;
     background-position: top;
@@ -94,11 +112,13 @@ export const WrapOrange = styled.div`
   left: 360px;
   z-index: -1;
 `;
+
 export const WrapGreen = styled.div`
   ${wrapper};
   left: 0;
   z-index: -1;
 `;
+
 export const WrapRight = styled.div`
   ${wrapper};
   right: 50px;
@@ -113,7 +133,6 @@ export const WrapTittleBad = styled.div`
 `;
 
 export const TittleBad = styled.h2`
-  ${Tittle};
   padding: 10px 5px;
 
   @media (max-width: 576px) {
@@ -130,39 +149,23 @@ export const WrapperButton = styled.div`
   margin: 0 auto 50px;
 `;
 
-export const button = css`
-  margin: 0 5px 20px;
-  border-radius: 24px;
-  border: 0;
-  outline: none;
-  width: 222px;
-  height: 50px;
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 19px;
-  text-transform: uppercase;
-  color: #ffffff;
-`;
-
 export const MainButton = styled.button`
   ${button};
 
   ${({ theme }) => css`
-    background-color: ${theme.colors['btn-blue-normal']};
+    background-color: ${theme.colors.btnBlue};
 
     &:hover {
       cursor: pointer;
-      background-color: ${theme.colors['btn-blue-hover']};
+      background-color: ${theme.colors.btnBlueHover};
     }
 
     &:active {
-      background-color: ${theme.colors['btn-blue-active']};
+      background-color: ${theme.colors.btnBlueActive};
     }
 
     &:disabled {
-      background-color: ${theme.colors['btn-gb-disabled']};
+      background-color: ${theme.colors.btnGbDisabled};
     }
   `}
 `;
@@ -171,19 +174,19 @@ export const BackButton = styled.button`
   ${button};
 
   ${({ theme }) => css`
-    background-color: ${theme.colors['btn-green-normal']};
+    background-color: ${theme.colors.btnGreen};
 
     &:hover {
       cursor: pointer;
-      background-color: ${theme.colors['btn-green-hover']};
+      background-color: ${theme.colors.btnGreenHover};
     }
 
     &:active {
-      background-color: ${theme.colors['btn-green-active']};
+      background-color: ${theme.colors.btnGreenActive};
     }
 
     &:disabled {
-      background-color: ${theme.colors['btn-gb-disabled']};
+      background-color: ${theme.colors.btnGbDisabled};
     }
   `}
 `;
