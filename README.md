@@ -20,7 +20,7 @@ Our aim is to give our users opportunity to share or exchange any children's clo
 ## Usage
 ### Requirements for manual build
 
- - [OpenJDK](https://openjdk.java.net/projects/jdk/17/) `version 17`
+ - [OpenJDK](https://openjdk.java.net/projects/jdk/18/) `version 18`
  - [NGINX](https://nginx.org) `version 1.18.0`
  - [MySQL](https://www.mysql.com/downloads/) `version 8` ( scheme `evo_exchange` will be created after the very first local run )
  - [maven](https://maven.apache.org/index.html) `version 3.8.1`

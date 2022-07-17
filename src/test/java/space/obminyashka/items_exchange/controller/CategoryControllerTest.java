@@ -36,12 +36,6 @@ class CategoryControllerTest extends BasicControllerTest {
         super(mockMvc);
     }
 
-    @Test
-    void createCategory_whenUserDoesNotHaveRoleAdmin_shouldReturnUnauthorized() throws Exception {
-        CategoryDto nonExistCategoryDto = createNonExistValidCategoryDto();
-        sendDtoAndGetMvcResult(post(CATEGORY), nonExistCategoryDto, status().isUnauthorized());
-    }
-
     @ParameterizedTest
     @MethodSource("categoryTestData")
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})

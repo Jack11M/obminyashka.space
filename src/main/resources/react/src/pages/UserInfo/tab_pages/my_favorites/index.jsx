@@ -3,7 +3,7 @@ import React from 'react';
 import ProductCard from 'components/item-card/ProductCard';
 import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 
-import './myFavorites.scss';
+import { CardsContainer } from './styles';
 
 const MyFavorites = () => {
   const isFavorite = true;
@@ -11,51 +11,54 @@ const MyFavorites = () => {
   return (
     <section id="content3" className="tabs__content">
       <div className="content">
-        <TitleBigBlue whatClass="myProfile-title" text="Избранные объявления" />
+        <TitleBigBlue
+          text="Избранные объявления"
+          style={{ margin: '65px 0 40px' }}
+        />
 
-        <div className="cards_replies">
+        <CardsContainer>
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
 
           <ProductCard
             city="Харьков"
-            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            picture="https://static.toiimg.com/photo/72975551.cms"
             isFavorite={isFavorite}
+            picture="https://static.toiimg.com/photo/72975551.cms"
+            text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
           />
-        </div>
+        </CardsContainer>
       </div>
     </section>
   );

@@ -14,7 +14,7 @@ import { Button } from 'components/common/buttons';
 import InputForAuth from 'components/common/input';
 import { getTranslatedText } from 'components/local/localization';
 
-import { Extra, ExtraLink, WrapperButton } from './styles';
+import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const Login = () => {
   };
 
   return (
-    <form>
+    <Form>
       <Formik
         validateOnBlur
         enableReinitialize
@@ -73,24 +73,24 @@ const Login = () => {
           <>
             <div>
               <InputForAuth
-                text={getTranslatedText('auth.logEmail', lang)}
-                name="usernameOrEmail"
                 type="text"
+                name="usernameOrEmail"
+                text={getTranslatedText('auth.logEmail', lang)}
               />
               <InputForAuth
-                text={getTranslatedText('auth.logPassword', lang)}
                 name="password"
                 type="password"
+                text={getTranslatedText('auth.logPassword', lang)}
               />
             </div>
 
             <Extra>
               <CheckBox
-                text={getTranslatedText('auth.remember', lang)}
-                margin="0 0 44px 0"
                 fontSize="14px"
                 checked={checkbox}
+                margin="0 0 44px 0"
                 click={changeCheckBox}
+                text={getTranslatedText('auth.remember', lang)}
               />
               <ExtraLink to={`${route.login}/${route.signUp}`}>
                 {getTranslatedText('auth.noLogin', lang)}
@@ -128,7 +128,7 @@ const Login = () => {
           </>
         )}
       </Formik>
-    </form>
+    </Form>
   );
 };
 

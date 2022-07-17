@@ -21,7 +21,6 @@ export const WrapperShadow = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
   width: 483px;
   background-color: #e2e2e2;
   z-index: 0;
@@ -69,7 +68,6 @@ export const Tittle = css`
   font-weight: normal;
   font-size: 27px;
   line-height: 24px;
-
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #bababa;
@@ -84,7 +82,6 @@ export const Container = styled.div`
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-
   @media (max-width: 576px) {
     background-size: 300%;
     background-position: top;
@@ -140,14 +137,12 @@ export const button = css`
   outline: none;
   width: 222px;
   height: 50px;
-
   font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 19px;
   text-transform: uppercase;
-
   color: #ffffff;
 `;
 

@@ -25,10 +25,10 @@ import './avatarForCard.scss';
 const ProductCard = ({
   text,
   city,
-  avatar = '',
   picture,
   isFavorite,
   margin = 0,
+  avatar = '',
   inboxMessage,
   clickOnButton,
 }) => {
@@ -40,10 +40,10 @@ const ProductCard = ({
       <FavoriteMarker isFavorite={isFavorite}>
         {avatar ? (
           <Avatar
-            whatIsClass="avatar-for-card"
-            avatar={avatarValue}
             width="40px"
             height="40px"
+            avatar={avatarValue}
+            whatIsClass="avatar-for-card"
           />
         ) : (
           <SvgStar isFavorite={isFavorite} />
@@ -61,12 +61,13 @@ const ProductCard = ({
           <span className="icon-location" />
           <CitySpan>{city}</CitySpan>
         </LocationIcon>
+
         <ButtonBlock>
           <Button
-            click={clickOnButton}
             whatClass=""
-            text={getTranslatedText('button.look', lang)}
+            click={clickOnButton}
             width={inboxMessage ? '190px' : '222px'}
+            text={getTranslatedText('button.look', lang)}
           />
 
           {inboxMessage && <InboxMessageSvg inboxMessage={inboxMessage} />}

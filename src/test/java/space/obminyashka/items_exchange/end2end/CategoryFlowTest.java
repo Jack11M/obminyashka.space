@@ -88,6 +88,12 @@ class CategoryFlowTest extends BasicControllerTest {
     }
 
     @Test
+    void createCategory_whenUserDoesNotHaveRoleAdmin_shouldReturnUnauthorized() throws Exception {
+        CategoryDto nonExistCategoryDto = createNonExistValidCategoryDto();
+        sendDtoAndGetMvcResult(post(CATEGORY), nonExistCategoryDto, status().isUnauthorized());
+    }
+
+    @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @Commit
     @DataSet("database_init.yml")

@@ -68,7 +68,7 @@ export const TextContent = styled.h6`
   height: 37px;
   font-size: 16px;
   line-height: 19px;
-  color: ${({ theme: { colors } }) => colors['black-color-text']};
+  color: ${({ theme: { colors } }) => colors.blackColorText};
   margin: -5px 44px 10px;
   text-align: center;
 
@@ -83,7 +83,7 @@ export const LocationIcon = styled.div`
   margin-bottom: ${({ inbox }) => (inbox ? '36px' : '23px')};
 `;
 export const CitySpan = styled.span`
-  color: ${({ theme: { colors } }) => colors['btn-blue-hover']};
+  color: ${({ theme: { colors } }) => colors.btnBlueHover};
   font-size: 14px;
   margin-left: 9px;
 `;

@@ -15,7 +15,16 @@ import ProductOwnerData from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
-import './ProductPage.scss';
+import {
+  TopSection,
+  BreadCrumbs,
+  OwnerAndPost,
+  BottomSection,
+  SectionHeading,
+  ProductPageInner,
+  ProductPageContainer,
+  CarouselAndDescription,
+} from './styles';
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -69,26 +78,26 @@ const ProductPage = () => {
   }, [lang, id, location, setPreviewData]);
 
   return (
-    <div>
-      <section className="topSection">
-        <div className="productPageContainer">
-          <div className="breadСrumbs">
+    <>
+      <TopSection>
+        <ProductPageContainer>
+          <BreadCrumbs>
+            {product.topic}
             {getTranslatedText('product.categories', lang)}/
             {getTranslatedText(`categories.${category.name}`, lang)}/
             {getTranslatedText(`categories.${subcategory.name}`, lang)}/
-            {product.topic}
-          </div>
+          </BreadCrumbs>
 
-          <div className="productPageInner">
-            <div className="carouselAndDescription">
+          <ProductPageInner>
+            <CarouselAndDescription>
               <ProductPhotoCarousel photos={photos} />
               <ProductDescription
                 title={product.topic}
                 description={product.description}
               />
-            </div>
+            </CarouselAndDescription>
 
-            <div className="ownerAndPost">
+            <OwnerAndPost>
               <ProductOwnerData
                 phone={product.phone}
                 city={currentLocation.city}
@@ -106,25 +115,25 @@ const ProductPage = () => {
                 gender={getTranslatedText(`genderEnum.${product.gender}`, lang)}
                 season={getTranslatedText(`seasonEnum.${product.season}`, lang)}
               />
-            </div>
-          </div>
-        </div>
-      </section>
+            </OwnerAndPost>
+          </ProductPageInner>
+        </ProductPageContainer>
+      </TopSection>
 
-      <section className="bottomSection">
-        <div className="productPageContainer">
-          <div className="productPageInner">
-            <div className="sectionHeading">
+      <BottomSection>
+        <ProductPageContainer>
+          <ProductPageInner>
+            <SectionHeading>
               <TitleBigBlue
                 text={getTranslatedText('product.blueTitle', lang)}
               />
-            </div>
+            </SectionHeading>
 
             <ProductOffers />
-          </div>
-        </div>
-      </section>
-    </div>
+          </ProductPageInner>
+        </ProductPageContainer>
+      </BottomSection>
+    </>
   );
 };
 export default ProductPage;

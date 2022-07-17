@@ -38,13 +38,11 @@ const CircleBoy = styled.span`
   border-radius: 50%;
 
   ${({ theme: { colors }, gender }) => css`
-    background-color: ${gender === 'MALE'
-      ? colors['btn-blue-normal']
-      : colors['bg-content']};
+    background-color: ${gender === 'MALE' ? colors.btnBlue : colors.bgContent};
 
-    border: 4px solid ${colors['btn-blue-normal']};
+    border: 4px solid ${colors.btnBlue};
     & + span {
-      color: ${gender === 'MALE' && colors['black-color-text']};
+      color: ${gender === 'MALE' && colors.blackColorText};
     }
   `}
 `;
@@ -57,13 +55,13 @@ const CircleGirl = styled.span`
 
   ${({ theme: { colors }, gender }) => css`
     background-color: ${gender === 'FEMALE'
-      ? colors['btn-blue-normal']
-      : colors['bg-content']};
+      ? colors.btnBlue
+      : colors.bgContent};
 
-    border: 4px solid ${colors['btn-blue-normal']};
+    border: 4px solid ${colors.btnBlue};
 
     & + span {
-      color: ${gender === 'FEMALE' && colors['black-color-text']};
+      color: ${gender === 'FEMALE' && colors.blackColorText};
     }
   `}
 `;
@@ -76,13 +74,13 @@ const CircleUnselected = styled.span`
 
   ${({ theme: { colors }, gender }) => css`
     background-color: ${gender === 'UNSELECTED'
-      ? colors['btn-blue-normal']
-      : colors['bg-content']};
+      ? colors.btnBlue
+      : colors.bgContent};
 
-    border: 4px solid ${colors['btn-blue-normal']};
+    border: 4px solid ${colors.btnBlue};
 
     & + span {
-      color: ${gender === 'UNSELECTED' && colors['black-color-text']};
+      color: ${gender === 'UNSELECTED' && colors.blackColorText};
     }
   `}
 `;
