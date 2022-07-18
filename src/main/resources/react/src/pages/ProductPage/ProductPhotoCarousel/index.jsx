@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 
+import NoPhoto from './NoPhoto/NoPhoto';
 import SliderOrNot from '../SliderOrNot';
-import NoPhoto from './NoPhoto';
 
-import './ProductPhotoCarousel.scss';
+import {
+  CarouselBox,
+  ProductPhotoSlideBig,
+  SliderPosition,
+  Image,
+} from './styles';
 
 const ProductPhotoCarousel = ({ photos }) => {
   const [state, setState] = useState({
@@ -25,10 +30,10 @@ const ProductPhotoCarousel = ({ photos }) => {
 
   let noArr;
   if (!state.photos.length) {
-    noArr = <NoPhoto noPhoto="bigNoPhoto" noPhotoImg="bigNoPhotoImg" />;
+    noArr = <NoPhoto noPhoto />;
   } else {
     noArr = (
-      <img
+      <Image
         src={`data:image/jpeg;base64,${state.bigPhoto.resource}`}
         alt="activeSlide"
       />
@@ -36,16 +41,16 @@ const ProductPhotoCarousel = ({ photos }) => {
   }
 
   return (
-    <div className="carouselBox">
-      <div className="sliderPosition">
+    <CarouselBox>
+      <SliderPosition>
         <SliderOrNot
           photos={state.photos}
           showBigImg={showBigImg}
           bigPhoto={state.bigPhoto}
         />
-      </div>
-      <div className="productPhotoSlideBig">{noArr}</div>
-    </div>
+      </SliderPosition>
+      <ProductPhotoSlideBig>{noArr}</ProductPhotoSlideBig>
+    </CarouselBox>
   );
 };
 export default ProductPhotoCarousel;

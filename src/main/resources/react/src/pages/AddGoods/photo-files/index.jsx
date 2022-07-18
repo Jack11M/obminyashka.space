@@ -150,8 +150,9 @@ const PhotoFiles = ({
         {getTranslatedText('addAdv.photosUploaded', lang)}
         &nbsp;
         {imageFiles.length}
+        &nbsp;
         {getTranslatedText('addAdv.from', lang)}
-        &nbsp; 10
+        &nbsp;10
       </p>
 
       <div className="files_wrapper">
