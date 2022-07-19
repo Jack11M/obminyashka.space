@@ -98,10 +98,10 @@ const MySettings = () => {
   return (
     <>
       <TitleBigBlue
-        // whatClass="myProfile-title"
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changePassword', lang)}
       />
+
       <Formik
         initialValues={initialPasswordValues}
         validateOnBlur
@@ -132,11 +132,13 @@ const MySettings = () => {
                 name="oldPassword"
                 label={getTranslatedText('settings.currentPassword', lang)}
               />
+
               <InputProfile
                 type="password"
                 name="newPassword"
                 label={getTranslatedText('settings.newPassword', lang)}
               />
+
               <InputProfile
                 type="password"
                 name="confirmNewPassword"
@@ -159,10 +161,10 @@ const MySettings = () => {
       </Formik>
 
       <TitleBigBlue
-        // whatClass="myProfile-title"
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changeEmail', lang)}
       />
+
       <Formik
         validateOnBlur
         initialValues={initialEmailValues}
@@ -206,11 +208,13 @@ const MySettings = () => {
                 value={currentEmail}
                 label={getTranslatedText('settings.oldEmail', lang)}
               />
+
               <InputProfile
                 type="email"
                 name="newEmail"
                 label={getTranslatedText('settings.newEmail', lang)}
               />
+
               <InputProfile
                 type="email"
                 name="newEmailConfirmation"
@@ -231,8 +235,8 @@ const MySettings = () => {
           </>
         )}
       </Formik>
+
       <TitleBigBlue
-        // whatClass="myProfile-title"
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.remove', lang)}
       />
