@@ -1,29 +1,32 @@
 import ProductCard from '../../../components/item-card';
 
-import './ProductOffers.scss';
+import { OffersContainer } from './styles';
 
 const ProductOffers = () => (
-  <div className="offersBoxes">
+  <OffersContainer>
     <ProductCard
       city="Харьков"
-      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
       picture="https://static.toiimg.com/photo/72975551.cms"
+      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
     />
+
     <ProductCard
       city="Харьков"
-      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
       picture="https://static.toiimg.com/photo/72975551.cms"
+      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
     />
+
     <ProductCard
       city="Харьков"
-      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
       picture="https://static.toiimg.com/photo/72975551.cms"
+      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
     />
+
     <ProductCard
       city="Харьков"
-      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
       picture="https://static.toiimg.com/photo/72975551.cms"
+      text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
     />
-  </div>
+  </OffersContainer>
 );
 export default ProductOffers;
