@@ -1,4 +1,4 @@
-import noPhotos from '../../../../assets/img/showAdv/noPhoto.svg';
+import noPhotos from 'assets/img/showAdv/noPhoto.svg';
 
 import { NoPhotoContainer, NoPhotoImg } from './styles';
 

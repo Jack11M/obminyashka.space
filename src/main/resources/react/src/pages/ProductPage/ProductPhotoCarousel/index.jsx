@@ -4,10 +4,10 @@ import NoPhoto from './NoPhoto/NoPhoto';
 import SliderOrNot from '../SliderOrNot';
 
 import {
-  CarouselBox,
-  ProductPhotoSlideBig,
-  SliderPosition,
   Image,
+  CarouselBox,
+  SliderPosition,
+  ProductPhotoSlideBig,
 } from './styles';
 
 const ProductPhotoCarousel = ({ photos }) => {
@@ -34,8 +34,8 @@ const ProductPhotoCarousel = ({ photos }) => {
   } else {
     noArr = (
       <Image
-        src={`data:image/jpeg;base64,${state.bigPhoto.resource}`}
         alt="activeSlide"
+        src={`data:image/jpeg;base64,${state.bigPhoto.resource}`}
       />
     );
   }

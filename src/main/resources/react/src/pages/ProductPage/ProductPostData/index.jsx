@@ -4,20 +4,7 @@ import { getLang } from 'store/auth/slice';
 import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 
-import {
-  TitleH2,
-  Container,
-  TitleContainer,
-  ButtonContainer,
-  PostDataDescription,
-  PostDataBoxContainer,
-  PostDataDescriptionOl,
-  PostDataDescriptionUl,
-  PostDataDescriptionText,
-  PostDataDescriptionSpan,
-  PostDataDescriptionOlItem,
-  PostDataDescriptionUlItem,
-} from './styles';
+import * as Styles from './styles';
 
 const ProductPostData = ({
   age,
@@ -35,77 +22,83 @@ const ProductPostData = ({
     : wishes;
 
   return (
-    <Container>
-      <TitleContainer>
-        <TitleH2>{title}</TitleH2>
-      </TitleContainer>
+    <Styles.Container>
+      <Styles.TitleContainer>
+        <Styles.TitleH2>{title}</Styles.TitleH2>
+      </Styles.TitleContainer>
 
-      <PostDataDescription>
-        <PostDataDescriptionText>
-          <PostDataDescriptionSpan>
+      <Styles.PostDataDescription>
+        <Styles.PostDataDescriptionText>
+          <Styles.PostDataDescriptionSpan>
             {`${getTranslatedText('product.changesTo', lang)}:`}
-          </PostDataDescriptionSpan>
-        </PostDataDescriptionText>
+          </Styles.PostDataDescriptionSpan>
+        </Styles.PostDataDescriptionText>
 
-        <PostDataDescriptionOl>
+        <Styles.PostDataDescriptionOl>
           {transformWishes.map((item, idx) => (
-            <PostDataDescriptionOlItem key={String(`li_${idx}`)}>
+            <Styles.PostDataDescriptionOlItem key={String(`li_${idx}`)}>
               {item}
-            </PostDataDescriptionOlItem>
+            </Styles.PostDataDescriptionOlItem>
           ))}
-        </PostDataDescriptionOl>
-      </PostDataDescription>
+        </Styles.PostDataDescriptionOl>
+      </Styles.PostDataDescription>
 
-      <ButtonContainer>
+      <Styles.ButtonContainer>
         <Button
           text={getTranslatedText('product.button', lang)}
           width="250px"
         />
-      </ButtonContainer>
+      </Styles.ButtonContainer>
 
-      <TitleContainer>
-        <TitleH2>
+      <Styles.TitleContainer>
+        <Styles.TitleH2>
           {`${getTranslatedText('product.description', lang)}:`}
-        </TitleH2>
-      </TitleContainer>
+        </Styles.TitleH2>
+      </Styles.TitleContainer>
 
-      <PostDataBoxContainer>
-        <PostDataDescription>
-          <PostDataDescriptionUl>
-            <PostDataDescriptionUlItem>
-              <PostDataDescriptionSpan>
+      <Styles.PostDataBoxContainer>
+        <Styles.PostDataDescription>
+          <Styles.PostDataDescriptionUl>
+            <Styles.PostDataDescriptionUlItem>
+              <Styles.PostDataDescriptionSpan>
                 {`${getTranslatedText(
                   'product.size',
                   lang
                 )} / ${getTranslatedText('product.age', lang)}:`}
-              </PostDataDescriptionSpan>
-            </PostDataDescriptionUlItem>
+              </Styles.PostDataDescriptionSpan>
+            </Styles.PostDataDescriptionUlItem>
 
-            <PostDataDescriptionUlItem>
-              <PostDataDescriptionSpan>
+            <Styles.PostDataDescriptionUlItem>
+              <Styles.PostDataDescriptionSpan>
                 {`${getTranslatedText('product.season', lang)}:`}
-              </PostDataDescriptionSpan>
-            </PostDataDescriptionUlItem>
+              </Styles.PostDataDescriptionSpan>
+            </Styles.PostDataDescriptionUlItem>
 
-            <PostDataDescriptionUlItem>
-              <PostDataDescriptionSpan>
+            <Styles.PostDataDescriptionUlItem>
+              <Styles.PostDataDescriptionSpan>
                 {`${getTranslatedText('product.sex', lang)}:`}
-              </PostDataDescriptionSpan>
-            </PostDataDescriptionUlItem>
-          </PostDataDescriptionUl>
-        </PostDataDescription>
+              </Styles.PostDataDescriptionSpan>
+            </Styles.PostDataDescriptionUlItem>
+          </Styles.PostDataDescriptionUl>
+        </Styles.PostDataDescription>
 
-        <PostDataDescription>
-          <PostDataDescriptionUl>
-            <PostDataDescriptionUlItem>{`${size} / ${age}`}</PostDataDescriptionUlItem>
+        <Styles.PostDataDescription>
+          <Styles.PostDataDescriptionUl>
+            <Styles.PostDataDescriptionUlItem>
+              {`${size} / ${age}`}
+            </Styles.PostDataDescriptionUlItem>
 
-            <PostDataDescriptionUlItem>{season}</PostDataDescriptionUlItem>
+            <Styles.PostDataDescriptionUlItem>
+              {season}
+            </Styles.PostDataDescriptionUlItem>
 
-            <PostDataDescriptionUlItem>{gender}</PostDataDescriptionUlItem>
-          </PostDataDescriptionUl>
-        </PostDataDescription>
-      </PostDataBoxContainer>
-    </Container>
+            <Styles.PostDataDescriptionUlItem>
+              {gender}
+            </Styles.PostDataDescriptionUlItem>
+          </Styles.PostDataDescriptionUl>
+        </Styles.PostDataDescription>
+      </Styles.PostDataBoxContainer>
+    </Styles.Container>
   );
 };
 export default ProductPostData;
