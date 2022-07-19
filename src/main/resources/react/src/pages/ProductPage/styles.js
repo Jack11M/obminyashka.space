@@ -17,7 +17,7 @@ export const ProductPageContainer = styled.div`
 `;
 
 export const BreadCrumbs = styled.div`
-  font-family: 'Roboto', sans-serif;
+  font-family: Roboto, sans-serif;
   font-size: 16px;
   line-height: 26px;
   color: #8f8f8f;
@@ -29,7 +29,7 @@ export const Span = styled.span`
 `;
 
 export const ProductPageInner = styled.div`
-  font-family: 'Roboto', sans-serif;
+  font-family: Roboto, sans-serif;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
