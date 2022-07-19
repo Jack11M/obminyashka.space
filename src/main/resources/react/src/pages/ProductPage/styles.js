@@ -22,10 +22,10 @@ export const BreadCrumbs = styled.div`
   line-height: 26px;
   color: #8f8f8f;
   margin-bottom: 30px;
+`;
 
-  .breadСrumbs span {
-    color: #11171f;
-  }
+export const Span = styled.span`
+  color: #11171f;
 `;
 
 export const ProductPageInner = styled.div`
