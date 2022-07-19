@@ -235,6 +235,7 @@ const MySettings = () => {
           </>
         )}
       </Formik>
+
       <TitleBigBlue
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.remove', lang)}

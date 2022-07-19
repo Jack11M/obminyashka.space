@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { getLang } from 'store/auth/slice';
@@ -40,9 +40,6 @@ const CurrentOffers = () => {
           whatClass="products-title-list"
           text={getTranslatedText('mainPage.blueText', lang)}
         />
-        <Link to="/" className="products-link-search">
-          {getTranslatedText('mainPage.blueSearch', lang)}
-        </Link>
       </div>
 
       <ul className="products-list" id="products-list">

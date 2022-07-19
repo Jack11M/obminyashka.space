@@ -2,8 +2,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { getLang } from 'store/auth/slice';
-import { route } from 'routes/routeConstants';
-import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
@@ -11,48 +9,47 @@ import {
   orangeDots,
 } from 'assets/img/all_images_export/errorPage';
 
-import './somethingBad.scss';
+import { goTo } from './helpers';
+import * as Styles from './styles';
 
 const SomethingBad = ({ deactivateError }) => {
   const lang = useSelector(getLang);
   const navigate = useNavigate();
 
-  const goTo = (event) => {
-    deactivateError(false);
-    if (event.target.className.includes('onMain')) {
-      navigate(route.home);
-    } else {
-      navigate(-1);
-    }
-  };
-
   return (
-    <div className="somethingBad">
-      <div className="blockOrangeImage">
-        <img src={orangeDots} alt="orange dots" />
-      </div>
-      <div className="blockGreenImage">
-        <img src={greenDots} alt="green dots" />
-      </div>
-      <div className="blockRightImage">
-        <img src={loop} alt="loop" />
-      </div>
-      <div className="blockControls">
-        <h2>{getTranslatedText('somethingBad.error', lang)}</h2>
-        <div className="blockButtons">
-          <Button
-            whatClass="onMain"
-            text={getTranslatedText('fourOhFour.mainPage', lang)}
-            click={goTo}
-          />
-          <Button
-            whatClass="back"
-            text={getTranslatedText('fourOhFour.backPage', lang)}
-            click={goTo}
-          />
-        </div>
-      </div>
-    </div>
+    <Styles.Container>
+      <Styles.WrapOrange>
+        <Styles.Image src={orangeDots} alt="orange dots" />
+      </Styles.WrapOrange>
+
+      <Styles.WrapGreen>
+        <Styles.Image src={greenDots} alt="green dots" />
+      </Styles.WrapGreen>
+
+      <Styles.WrapRight>
+        <Styles.Image src={loop} alt="loop" />
+      </Styles.WrapRight>
+
+      <Styles.WrapTittleBad>
+        <Styles.TittleBad>
+          {getTranslatedText('somethingBad.error', lang)}
+        </Styles.TittleBad>
+
+        <Styles.WrapperButton>
+          <Styles.MainButton
+            onClick={() => goTo('home', navigate, deactivateError)}
+          >
+            {getTranslatedText('fourOhFour.mainPage', lang)}
+          </Styles.MainButton>
+
+          <Styles.BackButton
+            onClick={() => goTo('', navigate, deactivateError)}
+          >
+            {getTranslatedText('fourOhFour.backPage', lang)}
+          </Styles.BackButton>
+        </Styles.WrapperButton>
+      </Styles.WrapTittleBad>
+    </Styles.Container>
   );
 };
 export default SomethingBad;
