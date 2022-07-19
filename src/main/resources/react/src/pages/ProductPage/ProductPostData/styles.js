@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import checkSvg from 'assets/icons/ProductPostCheck.svg';
+
 export const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -15,7 +17,7 @@ export const TitleContainer = styled.div`
 `;
 
 export const TitleH2 = styled.h2`
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: Proxima Nova, sans-serif;
   font-weight: 600;
   font-style: normal;
   font-size: 22px;
@@ -27,7 +29,7 @@ export const PostDataDescription = styled.div`
 `;
 
 export const PostDataDescriptionText = styled.p`
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: Proxima Nova, sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;
@@ -39,12 +41,13 @@ export const PostDataDescriptionSpan = styled.span`
 `;
 
 export const PostDataDescriptionOl = styled.ol`
-  list-style-image: url('./ProductPostCheck.svg') !important;
+  list-style-image: url(${checkSvg}) !important;
   margin-left: 30px !important;
+  padding-right: 20px;
 `;
 
 export const PostDataDescriptionOlItem = styled.li`
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: Proxima Nova, sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 14px;
@@ -64,7 +67,7 @@ export const PostDataBoxContainer = styled.div`
 export const PostDataDescriptionUl = styled.ul``;
 
 export const PostDataDescriptionUlItem = styled.li`
-  font-family: 'Proxima Nova', sans-serif;
+  font-family: Proxima Nova, sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;

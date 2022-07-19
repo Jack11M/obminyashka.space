@@ -9,7 +9,7 @@ export const button = css`
   outline: none;
   width: 222px;
   height: 50px;
-  font-family: 'Roboto', sans-serif;
+  font-family: Roboto, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -80,7 +80,7 @@ export const WrapRImg = styled.div`
 `;
 
 export const Tittle = styled.h2`
-  font-family: 'Pollywog Cyr', sans-serif;
+  font-family: Pollywog Cyr, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 27px;

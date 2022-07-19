@@ -42,25 +42,6 @@ export const CarouselAndDescription = styled.div`
   justify-content: space-between;
   width: 765px;
   height: 935px;
-
-  .noCarouselImg {
-    height: 140px;
-    width: 140px;
-    margin: 10px 0;
-    object-fit: contain;
-  }
-
-  .bigNoPhoto {
-    width: 600px;
-    height: 680px;
-    background-color: #ffffff;
-
-    .bigNoPhotoImg {
-      width: 40%;
-      height: 40%;
-      margin: 30% 30%;
-    }
-  }
 `;
 
 export const OwnerAndPost = styled.div`
