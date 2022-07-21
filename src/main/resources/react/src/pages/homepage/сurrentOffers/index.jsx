@@ -46,14 +46,14 @@ const CurrentOffers = () => {
         {offers.map((offer) => (
           <li key={offer.advertisementId}>
             <ProductCard
-              clickOnButton={() => moveToProductPage(offer.advertisementId)}
               margin="10px 8px"
               isFavorite={false}
+              text={offer.title}
+              city={offer.location.city || ''}
+              clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
                 offer.image ? `data:image/jpeg;base64,${offer.image}` : noPhotos
               }
-              city={offer.location.city || ''}
-              text={offer.title}
             />
           </li>
         ))}

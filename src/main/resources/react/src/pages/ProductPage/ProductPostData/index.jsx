@@ -35,7 +35,7 @@ const ProductPostData = ({
         </Styles.PostDataDescriptionText>
 
         <Styles.PostDataDescriptionOl>
-          {transformWishes.map((item, idx) => (
+          {transformWishes?.map((item, idx) => (
             <Styles.PostDataDescriptionOlItem key={String(`li_${idx}`)}>
               {item}
             </Styles.PostDataDescriptionOlItem>
