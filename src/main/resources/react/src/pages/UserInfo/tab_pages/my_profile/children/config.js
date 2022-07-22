@@ -1,11 +1,13 @@
 import * as Yup from 'yup';
 import { enumSex } from 'config/ENUM';
 
-export const getInitialValues = (props) => {
+export const getInitialValues = (children) => {
+  const response = children.length > 0 ? children : undefined;
+
   return {
-    children: props?.children || [
+    children: response || [
       {
-        birthDate: new Date(),
+        birthDate: null,
         id: 0,
         sex: enumSex.UNSELECTED,
       },
@@ -16,7 +18,7 @@ export const getInitialValues = (props) => {
 export const validationSchema = Yup.object().shape({
   children: Yup.array().of(
     Yup.object().shape({
-      birthDate: Yup.string().required(),
+      birthDate: Yup.string().nullable().required('Выберите дату рождения'),
       sex: Yup.string(),
     })
   ),

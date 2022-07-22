@@ -25,6 +25,9 @@ const profileMeSlice = createSlice({
       state.lastName = payload.lastName;
       state.phones = payload.phones;
     },
+    putChildrenToStore: (state, { payload }) => {
+      state.children = payload;
+    },
     putProfile: (state, { payload }) => {
       state.avatarImage = payload?.avatarImage;
       state.children = payload?.children;
@@ -45,7 +48,13 @@ export const getProfile = (state) => state.profileMe;
 
 const {
   reducer: profileMeReducer,
-  actions: { putUserToStore, putProfile },
+  actions: { putUserToStore, putProfile, putChildrenToStore },
 } = profileMeSlice;
 
-export { putUserToStore, putProfile, profileMeReducer, profileMeInitialState };
+export {
+  putProfile,
+  putUserToStore,
+  profileMeReducer,
+  putChildrenToStore,
+  profileMeInitialState,
+};

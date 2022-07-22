@@ -52,5 +52,6 @@ export const LabelGander = styled.span`
   margin-left: 8px;
   font-size: 16px;
   line-height: 20px;
+  user-select: none;
   color: ${({ theme }) => theme.colors.colorGrey};
 `;

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useField } from 'formik';
+import dayjs from 'dayjs';
 import { subYears } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { ru, enUS, uk } from 'date-fns/locale';
@@ -20,7 +21,7 @@ const YEARS_OLD = 14;
 
 const Calendar = ({ name }) => {
   const { lang } = useSelector(getAuth);
-  const [field, , helpers] = useField(name);
+  const [field, meta, helpers] = useField(name);
   const { value } = field;
 
   const language = useMemo(() => {
@@ -42,30 +43,43 @@ const Calendar = ({ name }) => {
       <Styles.Label htmlFor="date">
         {getTranslatedText('ownInfo.dateOfBirth')}
       </Styles.Label>
-
-      <DatePicker
-        withPortal
-        fixedHeight
-        locale="lang"
-        selected={value}
-        maxDate={new Date()}
-        calendarStartDay={isEng ? 0 : 1}
-        minDate={subYears(new Date(), YEARS_OLD)}
-        onChange={(date) => helpers.setValue(date)}
-        dateFormat={isEng ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
-        customInput={<Input type="text" value={value} />}
-        renderCustomHeader={(props) => (
-          <Header {...props} lang={lang} yearsOld={YEARS_OLD} />
-        )}
-        popperModifiers={[
-          {
-            name: 'preventOverflow',
-            options: {
-              rootBoundary: 'viewport',
+      <div>
+        <DatePicker
+          withPortal
+          fixedHeight
+          locale="lang"
+          maxDate={new Date()}
+          calendarStartDay={isEng ? 0 : 1}
+          minDate={subYears(new Date(), YEARS_OLD)}
+          selected={value ? dayjs(value).toDate() : null}
+          dateFormat={isEng ? 'MM/dd/yyyy' : 'dd/MM/yyyy'}
+          customInput={
+            <Input
+              type="text"
+              value={value}
+              error={meta.touched && meta.error}
+            />
+          }
+          onChange={(date) =>
+            helpers.setValue(dayjs(date).format('YYYY-MM-DD'))
+          }
+          renderCustomHeader={(props) => (
+            <Header {...props} lang={lang} yearsOld={YEARS_OLD} />
+          )}
+          popperModifiers={[
+            {
+              name: 'preventOverflow',
+              options: {
+                rootBoundary: 'viewport',
+              },
             },
-          },
-        ]}
-      />
+          ]}
+        />
+
+        {meta.touched && meta.error && (
+          <Styles.ErrorSpan>{meta.error}</Styles.ErrorSpan>
+        )}
+      </div>
     </Styles.Container>
   );
 };

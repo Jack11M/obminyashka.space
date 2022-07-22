@@ -31,7 +31,7 @@ export const Container = styled.div`
       font-weight: 600;
       user-select: none;
 
-      :hover:not(.react-datepicker__day--disabled) {
+      :hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--keyboard-selected) {
         background-color: #12b6ed1a;
       }
     }
@@ -66,6 +66,8 @@ export const Label = styled.label`
   line-height: 16px;
   display: inline-flex;
   cursor: pointer;
+  align-self: flex-start;
+  margin-top: 13px;
 `;
 
 export const Input = styled.input`
@@ -93,4 +95,13 @@ export const Input = styled.input`
   &::placeholder {
     color: #a3a3a3;
   }
+`;
+
+export const ErrorSpan = styled.span`
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  margin-top: 8px;
+
+  color: ${({ theme }) => theme.colors.colorError};
 `;

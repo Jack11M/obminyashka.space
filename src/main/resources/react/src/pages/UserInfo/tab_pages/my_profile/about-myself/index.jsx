@@ -1,9 +1,10 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { Button, ModalContext } from 'components/common';
+import { Button } from 'components/common';
 import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -11,9 +12,10 @@ import { validationUserSchema } from './config';
 import InputProfile from '../../../components/inputProfile';
 import ButtonsAddRemoveChild from '../../../components/buttonsAddRemoveChild';
 
+const amount = 3;
+
 const AboutMyself = () => {
   const dispatch = useDispatch();
-  const { openModal } = useContext(ModalContext);
   const { firstName, lastName, phones } = useSelector(getProfile);
 
   const [aboutLoading, setAboutLoading] = useState(false);
@@ -49,37 +51,20 @@ const AboutMyself = () => {
         !newUserData.firstName &&
         !newUserData.phones.length
       ) {
-        setAboutLoading(false);
-        openModal({
-          title: getTranslatedText('popup.errorTitle'),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.notEmptyInput')}
-            </p>
-          ),
-        });
+        toast.success(getTranslatedText('popup.notEmptyInput'));
         return;
       }
-      const data = await api.fetchProfile.putUserInfo(newUserData);
-      openModal({
-        title: getTranslatedText('popup.serverResponse'),
-        children: <p>{data}</p>,
-      });
-      setAboutLoading(false);
+      const data = await api.profile.putUserInfo(newUserData);
       dispatch(putUserToStore(newUserData));
+      toast.success(data);
     } catch (err) {
-      setAboutLoading(false);
-      if (err.response.status === 400) {
-        const indexStart = err.response.data.error.indexOf(':') + 1;
-        openModal({
-          title: getTranslatedText('popup.serverResponse'),
-          children: (
-            <p style={{ textAlign: 'center' }}>
-              {err.response.data.error.slice(indexStart)}
-            </p>
-          ),
-        });
+      if (err.response?.status === 400) {
+        const indexStart =
+          err.response?.data?.error && err.response.data.error.indexOf(':') + 1;
+        toast.success(err.response?.data?.error?.slice(indexStart));
       }
+    } finally {
+      setAboutLoading(false);
     }
   };
 
@@ -106,12 +91,13 @@ const AboutMyself = () => {
 
           <FieldArray name="phones">
             {({ push, remove }) => (
-              <>
+              <div style={{ marginBottom: 55 }}>
                 {values.phones.map((phone, index, arr) => {
                   const lastIndex = arr.length - 1;
                   const biggerThanStartIndex = arr.length > 1;
-                  const maxArray = index < 2;
+                  const maxArray = index + 1 !== amount;
                   const errorField = errors.phones && errors.phones[index];
+
                   return (
                     <div
                       key={String(`phones[${index}]`)}
@@ -126,23 +112,19 @@ const AboutMyself = () => {
 
                       {lastIndex === index && maxArray && (
                         <ButtonsAddRemoveChild
-                          addRemove="add"
-                          className="add-field"
+                          add
                           text={getTranslatedText('button.addField')}
                           onClick={() => !!phone && !errorField && push('')}
                         />
                       )}
 
                       {biggerThanStartIndex && (
-                        <ButtonsAddRemoveChild
-                          className="remove-field"
-                          onClick={() => remove(index)}
-                        />
+                        <ButtonsAddRemoveChild onClick={() => remove(index)} />
                       )}
                     </div>
                   );
                 })}
-              </>
+              </div>
             )}
           </FieldArray>
 
