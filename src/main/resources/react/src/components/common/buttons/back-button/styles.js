@@ -6,7 +6,7 @@ export const Button = styled.button`
   font-weight: 600;
 
   ${({ theme }) => css`
-    color: ${theme.colors['btn-blue-normal']};
+    color: ${theme.colors.btnBlue};
   `}
 `;
 
@@ -20,7 +20,7 @@ export const Icon = styled.span`
 
   ${({ theme }) => css`
     > svg > path {
-      fill: ${theme.colors['btn-blue-normal']};
+      fill: ${theme.colors.btnBlue};
     }
   `}
 `;
