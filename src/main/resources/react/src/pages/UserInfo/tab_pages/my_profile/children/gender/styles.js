@@ -33,16 +33,16 @@ export const Circle = styled.span`
   transition: all 0.3s;
 
   ${({ theme, selected }) => css`
-    border: 4px solid ${theme.colors['btn-blue-normal']};
-    background-color: ${theme.colors['bg-content']};
+    border: 4px solid ${theme.colors.btnBlue};
+    background-color: ${theme.colors.bgContent};
 
     ${selected &&
     css`
-      background-color: ${theme.colors['btn-blue-normal']};
+      background-color: ${theme.colors.btnBlue};
 
       & + span {
         transition: all 0.3s;
-        color: ${theme.colors['black-color-text']};
+        color: ${theme.colors.blackColorText};
       }
     `}
   `}

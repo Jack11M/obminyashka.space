@@ -16,10 +16,14 @@ export const ExtraLink = styled(Link)`
   font-size: 14px;
   line-height: 17px;
   text-decoration-line: none;
-  color: ${({ theme: { colors } }) => colors['btn-blue-normal']};
+  color: ${({ theme }) => theme.colors.btnBlue};
 `;
 
 export const WrapperButton = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+export const Form = styled.form`
+  margin: 0 50px 0 45px;
 `;

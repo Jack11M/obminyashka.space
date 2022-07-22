@@ -8,8 +8,6 @@ import { getTranslatedText } from 'components/local/localization';
 import { Children } from './children';
 import { AboutMyself } from './about-myself';
 
-import './myProfile.scss';
-
 const MyProfile = () => {
   const dispatch = useDispatch();
 
@@ -20,14 +18,14 @@ const MyProfile = () => {
   return (
     <>
       <TitleBigBlue
-        whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('ownInfo.aboutMe')}
       />
 
       <AboutMyself />
 
       <TitleBigBlue
-        whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('ownInfo.children')}
       />
 

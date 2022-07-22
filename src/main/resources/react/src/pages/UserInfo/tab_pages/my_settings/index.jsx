@@ -80,7 +80,7 @@ const MySettings = () => {
   return (
     <>
       <TitleBigBlue
-        whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changePassword')}
       />
 
@@ -97,11 +97,13 @@ const MySettings = () => {
                 name="oldPassword"
                 label={getTranslatedText('settings.currentPassword')}
               />
+
               <InputProfile
                 type="password"
                 name="newPassword"
                 label={getTranslatedText('settings.newPassword')}
               />
+
               <InputProfile
                 type="password"
                 name="confirmNewPassword"
@@ -124,7 +126,7 @@ const MySettings = () => {
       </Formik>
 
       <TitleBigBlue
-        whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changeEmail')}
       />
 
@@ -143,11 +145,13 @@ const MySettings = () => {
                 value={currentEmail}
                 label={getTranslatedText('settings.oldEmail')}
               />
+
               <InputProfile
                 type="email"
                 name="newEmail"
                 label={getTranslatedText('settings.newEmail')}
               />
+
               <InputProfile
                 type="email"
                 name="newEmailConfirmation"
@@ -170,7 +174,7 @@ const MySettings = () => {
       </Formik>
 
       <TitleBigBlue
-        whatClass="myProfile-title"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.remove')}
       />
 

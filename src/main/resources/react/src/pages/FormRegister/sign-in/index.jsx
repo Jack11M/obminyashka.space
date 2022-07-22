@@ -11,7 +11,7 @@ import { putUserThunk } from 'store/auth/thunk';
 import { getTranslatedText } from 'components/local/localization';
 import { CheckBox, Button, InputForAuth } from 'components/common';
 
-import { Extra, ExtraLink, WrapperButton } from './styles';
+import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const Login = () => {
   };
 
   return (
-    <form>
+    <Form>
       <Formik
         validateOnBlur
         enableReinitialize
@@ -69,24 +69,24 @@ const Login = () => {
           <>
             <div>
               <InputForAuth
-                text={getTranslatedText('auth.logEmail')}
-                name="usernameOrEmail"
                 type="text"
+                name="usernameOrEmail"
+                text={getTranslatedText('auth.logEmail')}
               />
               <InputForAuth
-                text={getTranslatedText('auth.logPassword')}
                 name="password"
                 type="password"
+                text={getTranslatedText('auth.logPassword')}
               />
             </div>
 
             <Extra>
               <CheckBox
-                text={getTranslatedText('auth.remember')}
-                margin="0 0 44px 0"
                 fontSize="14px"
                 checked={checkbox}
+                margin="0 0 44px 0"
                 click={changeCheckBox}
+                text={getTranslatedText('auth.remember')}
               />
               <ExtraLink to={`${route.login}/${route.signUp}`}>
                 {getTranslatedText('auth.noLogin')}
@@ -124,7 +124,7 @@ const Login = () => {
           </>
         )}
       </Formik>
-    </form>
+    </Form>
   );
 };
 

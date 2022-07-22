@@ -12,12 +12,22 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import ProductPostData from './ProductPostData';
-import ProductOwnerData from './ProductOwnerData';
+import { ProductPostData } from './ProductPostData';
+import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
-import './ProductPage.scss';
+import {
+  Span,
+  TopSection,
+  BreadCrumbs,
+  OwnerAndPost,
+  BottomSection,
+  SectionHeading,
+  ProductPageInner,
+  ProductPageContainer,
+  CarouselAndDescription,
+} from './styles';
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -34,71 +44,72 @@ const ProductPage = () => {
 
   const setPreviewData = useCallback(() => {
     const { state } = location;
+    setWishes(state.wishes);
+    setPhotos(state.photos);
+    setProduct(state.product);
     setCategory(state.category);
     setSubcategory(state.subcategory);
     setCurrentLocation(state.currentLocation);
-    setWishes(state.wishes);
-    setProduct(state.product);
-    setPhotos(state.photos);
   }, [location]);
+
+  const getProduct = async () => {
+    try {
+      const {
+        images,
+        wishesToExchange,
+        category: categoryValue,
+        location: locationValue,
+        subcategory: subcategoryValue,
+        ...rest
+      } = await api.fetchProduct.getProduct(id);
+
+      setProduct(rest);
+      setPhotos(images);
+      setCategory(categoryValue);
+      setSubcategory(subcategoryValue);
+      setCurrentLocation(locationValue);
+      setWishes(wishesToExchange?.split(', '));
+    } catch (e) {
+      toast.error(getErrorMessage(e));
+    }
+  };
 
   useEffect(() => {
     if (location.state) setPreviewData();
     else {
-      api.fetchProduct
-        .getProduct(id)
-        .then(
-          ({
-            images,
-            wishesToExchange,
-            category: categoryValue,
-            subcategory: subcategoryValue,
-            location: locationValue,
-            ...rest
-          }) => {
-            setWishes(wishesToExchange.split(', '));
-            setPhotos(images);
-            setProduct(rest);
-            setCategory(categoryValue);
-            setSubcategory(subcategoryValue);
-            setCurrentLocation(locationValue);
-          }
-        )
-        .catch((e) => {
-          toast.error(getErrorMessage(e));
-        });
+      getProduct();
     }
   }, [lang, id, location, setPreviewData]);
 
   return (
-    <div>
-      <section className="topSection">
-        <div className="productPageContainer">
+    <>
+      <TopSection>
+        <ProductPageContainer>
           <BackButton
             style={{ marginBottom: 16 }}
             text={getTranslatedText('button.back')}
           />
 
-          <div className="breadСrumbs">
-            {getTranslatedText('product.categories')}/
-            {getTranslatedText(`categories.${category.name}`)}/
-            {getTranslatedText(`categories.${subcategory.name}`)}/
-            {product.topic}
-          </div>
+          <BreadCrumbs>
+            {getTranslatedText('product.categories', lang)}/
+            {getTranslatedText(`categories.${category?.name}`, lang)}/
+            {getTranslatedText(`categories.${subcategory?.name}`, lang)}/
+            <Span>{product.topic}</Span>
+          </BreadCrumbs>
 
-          <div className="productPageInner">
-            <div className="carouselAndDescription">
+          <ProductPageInner>
+            <CarouselAndDescription>
               <ProductPhotoCarousel photos={photos} />
               <ProductDescription
                 title={product.topic}
                 description={product.description}
               />
-            </div>
+            </CarouselAndDescription>
 
-            <div className="ownerAndPost">
+            <OwnerAndPost>
               <ProductOwnerData
                 phone={product.phone}
-                city={currentLocation.city}
+                city={currentLocation?.city}
                 date={product.createdDate || getDate(lang)}
                 name={product.ownerName || profile.username}
                 ava={product.ownerAvatar || profile.avatarImage}
@@ -113,23 +124,23 @@ const ProductPage = () => {
                 gender={getTranslatedText(`genderEnum.${product.gender}`)}
                 season={getTranslatedText(`seasonEnum.${product.season}`)}
               />
-            </div>
-          </div>
-        </div>
-      </section>
+            </OwnerAndPost>
+          </ProductPageInner>
+        </ProductPageContainer>
+      </TopSection>
 
-      <section className="bottomSection">
-        <div className="productPageContainer">
-          <div className="productPageInner">
-            <div className="sectionHeading">
+      <BottomSection>
+        <ProductPageContainer>
+          <ProductPageInner>
+            <SectionHeading>
               <TitleBigBlue text={getTranslatedText('product.blueTitle')} />
-            </div>
+            </SectionHeading>
 
             <ProductOffers />
-          </div>
-        </div>
-      </section>
-    </div>
+          </ProductPageInner>
+        </ProductPageContainer>
+      </BottomSection>
+    </>
   );
 };
 export default ProductPage;

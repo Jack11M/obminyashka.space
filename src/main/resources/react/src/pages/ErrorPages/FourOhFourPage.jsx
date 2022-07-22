@@ -1,8 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from 'components/common';
-import { route } from 'routes/routeConstants';
-import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
   shadow,
@@ -11,68 +8,49 @@ import {
   orangeDots,
   shadowDark,
 } from 'assets/img/all_images_export/errorPage';
+import { getTranslatedText } from 'components/local/localization';
 
-import './errorPage.scss';
+import { goTo } from './helpers';
+import * as Styles from './styles';
 
 const FourOhFourPage = () => {
   const navigate = useNavigate();
 
-  const goTo = (event) => {
-    if (event.target.className.includes('onMain')) {
-      navigate(route.home);
-    } else {
-      navigate(-1);
-    }
-  };
-
   return (
-    <div className="error-page">
-      <div className="blockCenterImage">
-        <div className="blockCenterImage-fourOhfour">
-          <img src={fourOhFour} alt="404" />
-        </div>
+    <>
+      <Styles.WrapCenter>
+        <Styles.Img404 src={fourOhFour} alt="404" />
 
-        <div className="blockCenterImage-shadow">
-          <img
-            className="blockCenterImage-shadow_light"
-            src={shadow}
-            alt="shadow"
-          />
-          <img
-            className="blockCenterImage-shadow_dark"
-            src={shadowDark}
-            alt="shadow dark"
-          />
-        </div>
-      </div>
+        <Styles.WrapperShadow>
+          <Styles.ImageLight src={shadow} alt="shadow" />
+          <Styles.ImageDark src={shadowDark} alt="shadow dark" />
+        </Styles.WrapperShadow>
+      </Styles.WrapCenter>
 
-      <div className="blockOrangeImage">
-        <img src={orangeDots} alt="orange dots" />
-      </div>
+      <Styles.WrapOImg>
+        <Styles.Image src={orangeDots} alt="orange dots" />
+      </Styles.WrapOImg>
 
-      <div className="blockGreenImage">
-        <img src={greenDots} alt="green dots" />
-      </div>
+      <Styles.WrapGImg>
+        <Styles.Image src={greenDots} alt="green dots" />
+      </Styles.WrapGImg>
 
-      <div className="blockRightImage">
-        <img src={loop} alt="loop" />
-      </div>
+      <Styles.WrapRImg>
+        <Styles.Image src={loop} alt="loop" />
+      </Styles.WrapRImg>
 
-      <h2>{getTranslatedText('fourOhFour.noPage')}</h2>
+      <Styles.Tittle>{getTranslatedText('fourOhFour.noPage')}</Styles.Tittle>
 
-      <div className="blockButtons">
-        <Button
-          whatClass="onMain"
-          text={getTranslatedText('fourOhFour.mainPage')}
-          click={goTo}
-        />
-        <Button
-          whatClass="back"
-          text={getTranslatedText('fourOhFour.backPage')}
-          click={goTo}
-        />
-      </div>
-    </div>
+      <Styles.WrapperButton>
+        <Styles.MainButton onClick={() => goTo('home', navigate)}>
+          {getTranslatedText('fourOhFour.mainPage')}
+        </Styles.MainButton>
+
+        <Styles.BackButton onClick={() => goTo('', navigate)}>
+          {getTranslatedText('fourOhFour.backPage')}
+        </Styles.BackButton>
+      </Styles.WrapperButton>
+    </>
   );
 };
 export default FourOhFourPage;

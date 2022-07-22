@@ -16,7 +16,7 @@ import {
   USERNAME_ALT_CODE_EXP,
 } from 'config';
 
-import { Extra, WrapperButton } from '../sign-in/styles';
+import { Extra, WrapperButton, Form } from '../sign-in/styles';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const SignUp = () => {
   const initialRegisterValues = validationRegisterSchema.cast({});
 
   return (
-    <form>
+    <Form>
       <Formik
         validateOnBlur
         initialValues={initialRegisterValues}
@@ -88,34 +88,37 @@ const SignUp = () => {
           <>
             <div>
               <InputForAuth
-                text={getTranslatedText('auth.regEmail')}
                 name="email"
                 type="email"
+                text={getTranslatedText('auth.regEmail')}
               />
+
               <InputForAuth
-                text={getTranslatedText('auth.regLogin')}
-                name="username"
                 type="text"
+                name="username"
+                text={getTranslatedText('auth.regLogin')}
               />
+
               <InputForAuth
-                text={getTranslatedText('auth.regPassword')}
                 name="password"
                 type="password"
+                text={getTranslatedText('auth.regPassword')}
               />
+
               <InputForAuth
-                text={getTranslatedText('auth.regConfirm')}
-                name="confirmPassword"
                 type="password"
+                name="confirmPassword"
+                text={getTranslatedText('auth.regConfirm')}
               />
             </div>
 
             <Extra>
               <CheckBox
-                text={getTranslatedText('auth.agreement')}
-                margin="0 0 44px 0"
                 fontSize="14px"
                 checked={checkbox}
+                margin="0 0 44px 0"
                 click={changeCheckBox}
+                text={getTranslatedText('auth.agreement')}
               />
             </Extra>
 
@@ -150,7 +153,7 @@ const SignUp = () => {
           </>
         )}
       </Formik>
-    </form>
+    </Form>
   );
 };
 

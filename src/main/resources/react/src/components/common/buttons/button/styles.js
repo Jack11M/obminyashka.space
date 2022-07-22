@@ -10,18 +10,22 @@ export const ButtonBlue = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 25px;
-  border: 0;
-  outline: none;
   height: 49px;
   color: #fdf9ff;
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-size: 16px;
   text-transform: uppercase;
+  border: 0;
+  border-radius: 25px;
   transition: background-color 0.3s ease;
+  cursor: pointer;
+  outline: none;
 
-  ${({ theme: { colors }, width, bold, lHeight, mb }) => css`
+  ${({ width, bold, mb, theme, lHeight }) => css`
     width: ${width};
-    background-color: ${colors['btn-blue-normal']};
     font-weight: ${bold ? 'bold' : 'normal'};
+    background-color: ${theme.colors.btnBlue};
     line-height: ${lHeight || '20px'};
 
     ${mb &&
@@ -31,7 +35,7 @@ export const ButtonBlue = styled.button`
 
     &:hover {
       cursor: pointer;
-      background-color: ${colors['btn-blue-hover']};
+      background-color: ${theme.colors.btnBlueHover};
       > span > svg {
         path {
           transition: all 0.3s ease;
@@ -41,12 +45,11 @@ export const ButtonBlue = styled.button`
     }
 
     &:active {
-      cursor: pointer;
-      background-color: ${colors['btn-blue-active']};
+      background-color: ${theme.colors.btnBlueActive};
     }
 
     &:disabled {
-      background-color: ${colors['btn-gb-disabled']};
+      background-color: ${theme.colors.btnGbDisabled};
     }
   `}
 `;

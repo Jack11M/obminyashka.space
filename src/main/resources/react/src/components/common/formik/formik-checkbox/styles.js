@@ -28,12 +28,12 @@ const Input = styled.input`
   height: 0;
   ${({ theme: { colors } }) => css`
     &:checked ~ ${LabelSquare} {
-      border: 3px solid ${colors['btn-blue-normal']};
-      background-color: ${colors['btn-blue-normal']};
+      border: 3px solid ${colors.btnBlue};
+      background-color: ${colors.btnBlue};
     }
 
     &:checked ~ span {
-      color: ${colors['black-color-text']};
+      color: ${colors.blackColorText};
     }
   `}
 `;

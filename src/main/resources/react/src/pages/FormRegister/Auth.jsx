@@ -1,11 +1,11 @@
 import NavBarRegister from './navbar_register/NavBarRegister';
 
-import cls from './Auth.module.scss';
+import { Container } from './styles';
 
 const Auth = () => (
-  <div className={cls.popup}>
+  <Container>
     <NavBarRegister />
-  </div>
+  </Container>
 );
 
 export default Auth;

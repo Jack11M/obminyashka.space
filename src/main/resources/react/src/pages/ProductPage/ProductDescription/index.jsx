@@ -1,13 +1,20 @@
-import './ProductDescription.scss';
+import {
+  Title,
+  Container,
+  TitleContainer,
+  DescriptionText,
+  DescriptionContainer,
+} from './styles';
 
 const ProductDescription = ({ title, description }) => (
-  <div className="descriptionBox">
-    <div className="descriptionHeading">
-      <h2>{title}</h2>
-    </div>
-    <div className="descriptionText">
-      <p>{description}</p>
-    </div>
-  </div>
+  <Container>
+    <TitleContainer>
+      <Title>{title}</Title>
+    </TitleContainer>
+
+    <DescriptionContainer>
+      <DescriptionText>{description}</DescriptionText>
+    </DescriptionContainer>
+  </Container>
 );
 export default ProductDescription;

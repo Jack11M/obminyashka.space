@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,12 +27,15 @@ import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.service.AuthService;
+import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.EmailType;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -47,6 +51,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final AuthService authService;
+    private final MailService mailService;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Login in a registered user")
@@ -93,6 +98,13 @@ public class AuthController {
 
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
             throw new DataConflictException(getMessageSource("username-email.duplicate"));
+        }
+
+        try {
+            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
+        } catch (IOException e) {
+            log.error("Error while sending registration email", e);
+            return new ResponseEntity<>(getMessageSource("exception.emailing.registration"), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
         if (userService.registerNewUser(userRegistrationDto)) {

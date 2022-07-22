@@ -1,6 +1,9 @@
 package space.obminyashka.items_exchange.config;
 
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.objects.Email;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -63,5 +66,15 @@ public class AppConfig {
         var converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(List.of(new MediaType("application", "octet-stream")));
         return converter;
+    }
+
+    @Bean
+    public SendGrid sendGrid(@Value("${spring.sendgrid.api-key}") String apiKey) {
+        return new SendGrid(apiKey);
+    }
+
+    @Bean
+    public Email sender(@Value("${app.mail.address}") String sender) {
+        return new Email(sender);
     }
 }
