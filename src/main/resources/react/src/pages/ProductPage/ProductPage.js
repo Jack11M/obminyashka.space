@@ -42,39 +42,40 @@ const ProductPage = () => {
 
   const setPreviewData = useCallback(() => {
     const { state } = location;
+    setWishes(state.wishes);
+    setPhotos(state.photos);
+    setProduct(state.product);
     setCategory(state.category);
     setSubcategory(state.subcategory);
     setCurrentLocation(state.currentLocation);
-    setWishes(state.wishes);
-    setProduct(state.product);
-    setPhotos(state.photos);
   }, [location]);
+
+  const getProduct = async () => {
+    try {
+      const {
+        images,
+        wishesToExchange,
+        category: categoryValue,
+        location: locationValue,
+        subcategory: subcategoryValue,
+        ...rest
+      } = await api.fetchProduct.getProduct(id);
+
+      setProduct(rest);
+      setPhotos(images);
+      setCategory(categoryValue);
+      setSubcategory(subcategoryValue);
+      setCurrentLocation(locationValue);
+      setWishes(wishesToExchange?.split(', '));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     if (location.state) setPreviewData();
     else {
-      api.fetchProduct
-        .getProduct(id)
-        .then(
-          ({
-            images,
-            wishesToExchange,
-            category: categoryValue,
-            subcategory: subcategoryValue,
-            location: locationValue,
-            ...rest
-          }) => {
-            setWishes(wishesToExchange.split(', '));
-            setPhotos(images);
-            setProduct(rest);
-            setCategory(categoryValue);
-            setSubcategory(subcategoryValue);
-            setCurrentLocation(locationValue);
-          }
-        )
-        .catch((e) => {
-          console.log(e);
-        });
+      getProduct();
     }
   }, [lang, id, location, setPreviewData]);
 
@@ -84,8 +85,8 @@ const ProductPage = () => {
         <ProductPageContainer>
           <BreadCrumbs>
             {getTranslatedText('product.categories', lang)}/
-            {getTranslatedText(`categories.${category.name}`, lang)}/
-            {getTranslatedText(`categories.${subcategory.name}`, lang)}/
+            {getTranslatedText(`categories.${category?.name}`, lang)}/
+            {getTranslatedText(`categories.${subcategory?.name}`, lang)}/
             <Span>{product.topic}</Span>
           </BreadCrumbs>
 
@@ -101,7 +102,7 @@ const ProductPage = () => {
             <OwnerAndPost>
               <ProductOwnerData
                 phone={product.phone}
-                city={currentLocation.city}
+                city={currentLocation?.city}
                 date={product.createdDate || getDate(lang)}
                 name={product.ownerName || profile.username}
                 ava={product.ownerAvatar || profile.avatarImage}

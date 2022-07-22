@@ -10,7 +10,7 @@ import {
   ProductPhotoSlideBig,
 } from './styles';
 
-const ProductPhotoCarousel = ({ photos }) => {
+const ProductPhotoCarousel = ({ photos = [] }) => {
   const [state, setState] = useState({
     photos: [],
     bigPhoto: {},
