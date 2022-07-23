@@ -7,8 +7,6 @@ import { getAuth, getProfile, getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
-import './navtop.scss';
-
 import * as Styles from './styles';
 
 const NavTop = () => {

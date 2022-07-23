@@ -6,7 +6,13 @@ export const Div = styled.div`
   font-family: Roboto, sans-serif;
 `;
 
-export const Wrapper = styled.div``;
+export const Wrapper = styled.div`
+  width: 100%;
+  max-width: 1251px;
+  padding: 0 15px;
+  margin: 0 auto;
+  overflow: hidden;
+`;
 
 export const DivTop = styled.div`
   display: flex;
@@ -48,6 +54,7 @@ export const LoginLink = styled(Link)`
   align-items: center;
   padding: 16px 0 10px;
   cursor: pointer;
+
   & > div {
     width: 30px;
   }
