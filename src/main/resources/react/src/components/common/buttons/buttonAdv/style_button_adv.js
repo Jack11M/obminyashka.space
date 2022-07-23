@@ -12,6 +12,9 @@ export const ButtonAdd = styled(Link)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  @media (min-width: 320px) {
+    display: none;
+  }
   &:before {
     position: absolute;
     content: '';
