@@ -3,6 +3,7 @@ import logo from 'assets/img/logo.png';
 import { Link } from 'react-router-dom';
 
 export const DivWrap = styled.div`
+  font-family: Roboto, sans-serif;
   padding: 20px 0 22px;
   border-radius: 0 0 20px 20px;
   background-color: #fff;
@@ -10,11 +11,11 @@ export const DivWrap = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  font-family: Roboto, sans-serif;
-  padding: 20px 0 22px;
-  border-radius: 0 0 20px 20px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+  max-width: 1251px;
+  overflow: hidden;
+  padding: 0 15px;
+  width: 100%;
 `;
 
 export const WrapMain = styled.div`
