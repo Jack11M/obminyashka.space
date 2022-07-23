@@ -52,7 +52,6 @@ export const Img = styled.img`
 
 export const Span = styled.span`
   display: block;
-
   margin-top: 20px;
   font-size: 14px;
   font-style: normal;
