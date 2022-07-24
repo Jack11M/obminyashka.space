@@ -10,7 +10,7 @@ import noPhotos from 'assets/img/showAdv/noPhoto.svg';
 import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localization';
 
-import './currentOffers.scss';
+import * as Styles from './styles';
 
 const CurrentOffers = () => {
   const navigate = useNavigate();
@@ -34,15 +34,12 @@ const CurrentOffers = () => {
   };
 
   return (
-    <section className="products-section">
-      <div className="products-header">
-        <TitleBigBlue
-          whatClass="products-title-list"
-          text={getTranslatedText('mainPage.blueText', lang)}
-        />
-      </div>
+    <Styles.ProductSection>
+      <Styles.ProductHeader>
+        <TitleBigBlue text={getTranslatedText('mainPage.blueText', lang)} />
+      </Styles.ProductHeader>
 
-      <ul className="products-list" id="products-list">
+      <Styles.ProductListUl>
         {offers.map((offer) => (
           <li key={offer.advertisementId}>
             <ProductCard
@@ -57,8 +54,8 @@ const CurrentOffers = () => {
             />
           </li>
         ))}
-      </ul>
-    </section>
+      </Styles.ProductListUl>
+    </Styles.ProductSection>
   );
 };
 
