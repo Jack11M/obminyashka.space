@@ -3,18 +3,18 @@ import HeaderInMain from './headerInMain';
 import HelpChildren from './helpChildren';
 import CurrentOffers from './сurrentOffers';
 
-import './homePage.scss';
+import * as Styles from './styles';
 
 const HomePage = () => (
-  <main className="Main-page">
+  <Styles.Main>
     <HeaderInMain />
 
-    <div className="wrapper">
+    <Styles.Container>
       <CurrentOffers />
       <Sliders />
       <HelpChildren />
-    </div>
-  </main>
+    </Styles.Container>
+  </Styles.Main>
 );
 
 export default HomePage;

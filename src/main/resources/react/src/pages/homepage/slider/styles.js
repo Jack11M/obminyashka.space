@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-
-import 'fonts/font.scss';
 import { Link } from 'react-router-dom';
 
 export const CategorySlider = styled.div`
@@ -21,7 +19,7 @@ export const CategorySliderSpan = styled.span`
   font-size: 18px;
   line-height: 24px;
   position: absolute;
-  @include font(Roboto);
+  font-family: Roboto;
 
   :active {
     transform: scale(1.05);
@@ -34,7 +32,7 @@ export const CategorySliderImageTitle = styled.b`
   line-height: 44px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  @include font(Pollywog_Cyr);
+  font-family: Pollywog_Cyr;
 `;
 
 export const CategorySliderLink = styled(Link)`
