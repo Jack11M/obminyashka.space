@@ -1,6 +1,7 @@
-import styled from 'styled-components';
-import logo from 'assets/img/logo.png';
 import { Link } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+
+import logo from 'assets/img/logo.png';
 
 export const DivWrap = styled.div`
   font-family: Roboto, sans-serif;
@@ -50,7 +51,7 @@ export const WrapCategories = styled.div`
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;
-  color: ${({ theme: { colors } }) => colors.blackColorText};
+  color: ${({ theme }) => theme.colors.btnBlueActive};
   margin: 25px 0 0 179px;
   padding-bottom: 95px;
   cursor: pointer;
@@ -79,16 +80,18 @@ export const WrapCategoriesTop = styled.div`
   transform: translateY(-50%);
   position: relative;
   bottom: -13px;
-  color: ${({ theme: { colors } }) => colors.blackColorText};
+  ${({ theme }) => css`
+    color: ${theme.colors.blackColorText};
 
-  &:after {
-    position: absolute;
-    right: -18px;
-    bottom: 9px;
-    content: '';
-    border: 5px solid transparent;
-    border-bottom: 5px solid ${({ theme: { colors } }) => colors.btnBlueActive};
-  }
+    &:after {
+      position: absolute;
+      right: -18px;
+      bottom: 9px;
+      content: '';
+      border: 5px solid transparent;
+      border-bottom: 5px solid ${theme.colors.btnBlueActive};
+    }
+  `}
   &:hover {
     opacity: 1;
     transform: translateY(0);
@@ -104,7 +107,7 @@ export const WrapCategoriesBottom = styled.div`
     bottom: 4px;
     content: '';
     border: 5px solid transparent;
-    border-top: 5px solid ${({ theme: { colors } }) => colors.blackColorText};
+    border-top: 5px solid ${({ theme }) => theme.colors.btnBlueActive};
   }
   &:hover {
     opacity: 0;
@@ -142,7 +145,7 @@ export const InputSearch = styled.input`
   height: 50px;
   outline: none;
 
-  border: 1px solid ${({ theme: { colors } }) => colors.btnBlueActive};
+  border: 1px solid ${({ theme }) => theme.colors.btnBlueActive};
   border-radius: 25px;
   font-family: Roboto, sans-serif;
   font-style: italic;
@@ -164,6 +167,6 @@ export const Label = styled.div`
   border-radius: 20px;
   width: 40px;
   height: 40px;
-  background-color: ${({ theme: { colors } }) => colors.btnBlueActive};
+  background-color: ${({ theme }) => theme.colors.btnBlueActive};
   cursor: pointer;
 `;
