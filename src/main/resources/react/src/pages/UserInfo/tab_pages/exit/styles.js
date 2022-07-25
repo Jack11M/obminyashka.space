@@ -8,16 +8,15 @@ export const ModalOverlay = styled.div`
   opacity: 1;
   width: 100%;
   height: 100%;
-  z-index: 99999;
   position: fixed;
   background-color: rgba(18, 182, 237, 0.3);
+  z-index: 99999;
 `;
 
 export const Modal = styled.div`
   top: 50%;
   left: 50%;
   width: 100%;
-  z-index: 30;
   height: 240px;
   padding: 39px;
   position: fixed;
@@ -29,6 +28,7 @@ export const Modal = styled.div`
   background-color: #fff;
   transform: translate(-50%, -50%);
   box-shadow: 0 3px 10px -0.5px rgba(18, 182, 237, 0.3);
+  z-index: 30;
 `;
 
 export const ModalCross = styled.span`
