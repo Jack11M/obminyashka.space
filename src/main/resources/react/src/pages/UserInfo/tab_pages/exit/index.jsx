@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { useClickAway } from 'react-use';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
@@ -10,7 +10,7 @@ import { logoutUserThunk } from 'store/auth/thunk';
 import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 
-import './exit.scss';
+import * as Styles from './styles';
 
 const Exit = ({ toggle, setIsModalOpen }) => {
   const navigate = useNavigate();
@@ -27,27 +27,31 @@ const Exit = ({ toggle, setIsModalOpen }) => {
     setIsModalOpen(false);
   });
   return (
-    <div className="modal-overlay">
-      <div className="modal" ref={ref}>
-        <div onClick={toggle} className="modal__cross js-modal-close" />
+    <Styles.ModalOverlay className="modal-overlay">
+      <Styles.Modal className="modal" ref={ref}>
+        <Styles.ModalCross onClick={toggle} />
 
-        <p className="modal__title">
+        <Styles.ModalTitle>
           {getTranslatedText('exit.question', lang)}
-        </p>
+        </Styles.ModalTitle>
 
-        <p className="modal__text">{getTranslatedText('exit.text', lang)}</p>
+        <Styles.ModalText>
+          {getTranslatedText('exit.text', lang)}
+        </Styles.ModalText>
 
-        <Button
-          whatClass="button"
-          text={getTranslatedText('exit.exit', lang)}
-          width="179px"
-          click={setLogOut}
-        />
-        <div className="background">
-          <img src={logout2} className="log-out-img" alt="log-out" />
-        </div>
-      </div>
-    </div>
+        <Styles.ButtonStyles>
+          <Button
+            width="179px"
+            click={setLogOut}
+            text={getTranslatedText('exit.exit', lang)}
+          />
+        </Styles.ButtonStyles>
+
+        <Styles.ModalBackground>
+          <Styles.ModalImage src={logout2} alt="log-out" />
+        </Styles.ModalBackground>
+      </Styles.Modal>
+    </Styles.ModalOverlay>
   );
 };
 export { Exit };
