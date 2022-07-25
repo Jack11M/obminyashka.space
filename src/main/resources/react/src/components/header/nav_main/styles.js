@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 import logo from 'assets/img/logo.png';
 
 export const DivWrap = styled.div`
-  font-family: Roboto, sans-serif;
   padding: 20px 0 22px;
   border-radius: 0 0 20px 20px;
   background-color: #fff;
@@ -47,7 +46,6 @@ export const LogoLink = styled(Link)`
 export const WrapCategories = styled.div`
   position: absolute;
   height: 56px;
-  font-family: Roboto, sans-serif;
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;
@@ -140,20 +138,18 @@ export const WrapSearch = styled.div`
 `;
 
 export const InputSearch = styled.input`
-  max-width: 541px;
+  padding: 10px 10px 10px 60px;
   width: 100%;
+  max-width: 541px;
   height: 50px;
-  outline: none;
 
-  border: 1px solid ${theme.colors.btnBlueActive};
-  border-radius: 25px;
-  font-family: Roboto, sans-serif;
   font-style: italic;
   font-size: 16px;
   line-height: 24px;
-
+  border: 1px solid ${({ theme }) => theme.colors.btnBlueActive};
+  border-radius: 25px;
   box-sizing: border-box;
-  padding: 10px 10px 10px 60px;
+  outline: none;
 `;
 
 export const Label = styled.div`
