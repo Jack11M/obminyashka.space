@@ -145,7 +145,7 @@ export const InputSearch = styled.input`
   height: 50px;
   outline: none;
 
-  border: 1px solid ${({ theme }) => theme.colors.btnBlueActive};
+  border: 1px solid ${theme.colors.btnBlueActive};
   border-radius: 25px;
   font-family: Roboto, sans-serif;
   font-style: italic;
