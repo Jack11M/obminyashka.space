@@ -27,8 +27,8 @@ const Exit = ({ toggle, setIsModalOpen }) => {
     setIsModalOpen(false);
   });
   return (
-    <Styles.ModalOverlay className="modal-overlay">
-      <Styles.Modal className="modal" ref={ref}>
+    <Styles.ModalOverlay>
+      <Styles.Modal ref={ref}>
         <Styles.ModalCross onClick={toggle} />
 
         <Styles.ModalTitle>
