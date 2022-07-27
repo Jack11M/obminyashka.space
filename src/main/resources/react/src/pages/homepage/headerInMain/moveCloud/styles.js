@@ -1,8 +1,152 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import firstCloud from 'assets/img/clouds/Cloud1.png';
 import secondCloud from 'assets/img/clouds/Cloud2.png';
 import thirdCloud from 'assets/img/clouds/Cloud3.png';
+
+const move1 = keyframes`
+  0% {
+    left: 3vw;
+  }
+  87.3% {
+    opacity: 1;
+    left: 100vw;
+  }
+  87.4% {
+    opacity: 0;
+    left: 100vw;
+  }
+  87.5% {
+    opacity: 0;
+    left: -10vw;
+  }
+  87.6% {
+    opacity: 1;
+  }
+  100% {
+    left: 3vw;
+  }
+`;
+
+const move2 = keyframes`
+  0% {
+    right: 2vw;
+  }
+  88.2% {
+    opacity: 0.6;
+    right: 100vw;
+  }
+  88.3% {
+    opacity: 0;
+    right: 100vw;
+  }
+  88.4% {
+    opacity: 0;
+    right: -10vw;
+  }
+  88.5% {
+    opacity: 0.6;
+  }
+  100% {
+    right: 2vw;
+  }
+`;
+
+const move3 = keyframes`
+  0% {
+    right: 12vw;
+  }
+  79.2% {
+    opacity: 1;
+    right: 100vw;
+  }
+  79.3% {
+    opacity: 0;
+    right: 100vw;
+  }
+  79.4% {
+    opacity: 0;
+    right: -10vw;
+  }
+  79.5% {
+    opacity: 1;
+  }
+  100% {
+    right: 12vw;
+  }
+`;
+
+const move4 = keyframes`
+  0% {
+    left: 42vw;
+  }
+  52.2% {
+    opacity: 0.7;
+    left: 100vw;
+  }
+  52.3% {
+    opacity: 0;
+    left: 100vw;
+  }
+  52.4% {
+    opacity: 0;
+    left: -10vw;
+  }
+  52.5% {
+    opacity: 0.7;
+  }
+  100% {
+    left: 42vw;
+  }
+`;
+
+const move5 = keyframes`
+  0% {
+    left: 11vw;
+  }
+  86.3% {
+    opacity: 1;
+    left: 100vw;
+  }
+  86.4% {
+    opacity: 0;
+    left: 100vw;
+  }
+  86.5% {
+    opacity: 0;
+    left: -4vw;
+  }
+  86.6% {
+    opacity: 1;
+  }
+  100% {
+    left: 11vw;
+  }
+`;
+
+const move6 = keyframes`
+  0% {
+    right: 26vw;
+  }
+  71.78% {
+    opacity: 1;
+    right: 100vw;
+  }
+  71.79% {
+    opacity: 0;
+    right: 100vw;
+  }
+  71.8% {
+    opacity: 0;
+    right: -3vw;
+  }
+  71.82% {
+    opacity: 1;
+  }
+  100% {
+    right: 26vw;
+  }
+`;
 
 export const CloudsWrapper = styled.div`
   overflow: hidden;
@@ -25,35 +169,11 @@ export const FirstCloud = styled.span`
   background-position: center center;
   background-repeat: no-repeat;
 
-  animation-name: moveOne;
+  animation-name: ${move1};
   animation-duration: 100s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: reverse;
-
-  @keyframes moveOne {
-    0% {
-      left: 3vw;
-    }
-    87.3% {
-      opacity: 1;
-      left: 100vw;
-    }
-    87.4% {
-      opacity: 0;
-      left: 100vw;
-    }
-    87.5% {
-      opacity: 0;
-      left: -10vw;
-    }
-    87.6% {
-      opacity: 1;
-    }
-    100% {
-      left: 3vw;
-    }
-  }
 `;
 
 export const SecondCloud = styled.span`
@@ -66,35 +186,11 @@ export const SecondCloud = styled.span`
   background-position: center center;
   background-repeat: no-repeat;
 
-  animation-name: moveTwo;
+  animation-name: ${move2};
   animation-duration: 180s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   opacity: 0.6;
-
-  @keyframes moveTwo {
-    0% {
-      right: 2vw;
-    }
-    88.2% {
-      opacity: 0.6;
-      right: 100vw;
-    }
-    88.3% {
-      opacity: 0;
-      right: 100vw;
-    }
-    88.4% {
-      opacity: 0;
-      right: -10vw;
-    }
-    88.5% {
-      opacity: 0.6;
-    }
-    100% {
-      right: 2vw;
-    }
-  }
 `;
 
 export const ThirdCloud = styled.span`
@@ -107,35 +203,11 @@ export const ThirdCloud = styled.span`
   background-position: center center;
   background-repeat: no-repeat;
 
-  animation-name: moveThree;
+  animation-name: ${move3};
   animation-duration: 150s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   opacity: 1;
-
-  @keyframes moveThree {
-    0% {
-      right: 12vw;
-    }
-    79.2% {
-      opacity: 1;
-      right: 100vw;
-    }
-    79.3% {
-      opacity: 0;
-      right: 100vw;
-    }
-    79.4% {
-      opacity: 0;
-      right: -10vw;
-    }
-    79.5% {
-      opacity: 1;
-    }
-    100% {
-      right: 12vw;
-    }
-  }
 `;
 
 export const FourthCloud = styled.span`
@@ -148,36 +220,12 @@ export const FourthCloud = styled.span`
   background-position: center center;
   background-repeat: no-repeat;
 
-  animation-name: moveFour;
+  animation-name: ${move4};
   animation-duration: 130s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: reverse;
   opacity: 0.7;
-
-  @keyframes moveFour {
-    0% {
-      left: 42vw;
-    }
-    52.2% {
-      opacity: 0.7;
-      left: 100vw;
-    }
-    52.3% {
-      opacity: 0;
-      left: 100vw;
-    }
-    52.4% {
-      opacity: 0;
-      left: -10vw;
-    }
-    52.5% {
-      opacity: 0.7;
-    }
-    100% {
-      left: 42vw;
-    }
-  }
 `;
 
 export const FifthCloud = styled.span`
@@ -190,35 +238,11 @@ export const FifthCloud = styled.span`
   background-position: center center;
   background-repeat: no-repeat;
 
-  animation-name: moveFive;
+  animation-name: ${move5};
   animation-duration: 55s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: reverse;
-
-  @keyframes moveFive {
-    0% {
-      left: 11vw;
-    }
-    86.3% {
-      opacity: 1;
-      left: 100vw;
-    }
-    86.4% {
-      opacity: 0;
-      left: 100vw;
-    }
-    86.5% {
-      opacity: 0;
-      left: -4vw;
-    }
-    86.6% {
-      opacity: 1;
-    }
-    100% {
-      left: 11vw;
-    }
-  }
 `;
 
 export const SixthCloud = styled.span`
@@ -231,32 +255,8 @@ export const SixthCloud = styled.span`
   background-position: center center;
   background-repeat: no-repeat;
 
-  animation-name: moveSix;
+  animation-name: ${move6};
   animation-duration: 90s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-
-  @keyframes moveSix {
-    0% {
-      right: 26vw;
-    }
-    71.78% {
-      opacity: 1;
-      right: 100vw;
-    }
-    71.79% {
-      opacity: 0;
-      right: 100vw;
-    }
-    71.8% {
-      opacity: 0;
-      right: -3vw;
-    }
-    71.82% {
-      opacity: 1;
-    }
-    100% {
-      right: 26vw;
-    }
-  }
 `;
