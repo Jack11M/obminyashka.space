@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { enumSex } from 'config/ENUM';
 
 export const getInitialValues = (children) => {
-  const response = children.length > 0 ? children : undefined;
+  const response = children?.length > 0 ? children : undefined;
 
   return {
     children: response || [
