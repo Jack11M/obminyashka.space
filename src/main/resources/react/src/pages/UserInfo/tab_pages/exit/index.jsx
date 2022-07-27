@@ -9,7 +9,7 @@ import logout2 from 'assets/img/log-out-2.png';
 import { logoutUserThunk } from 'store/auth/thunk';
 import { getTranslatedText } from 'components/local/localization';
 
-import './exit.scss';
+import * as Styles from './styles';
 
 const Exit = ({ toggle, setIsModalOpen }) => {
   const navigate = useNavigate();
@@ -25,25 +25,29 @@ const Exit = ({ toggle, setIsModalOpen }) => {
     setIsModalOpen(false);
   });
   return (
-    <div className="modal-overlay">
-      <div className="modal" ref={ref}>
-        <div onClick={toggle} className="modal__cross js-modal-close" />
+    <Styles.ModalOverlay>
+      <Styles.Modal ref={ref}>
+        <Styles.ModalCross onClick={toggle} />
 
-        <p className="modal__title">{getTranslatedText('exit.question')}</p>
+        <Styles.ModalTitle>
+          {getTranslatedText('exit.question')}
+        </Styles.ModalTitle>
 
-        <p className="modal__text">{getTranslatedText('exit.text')}</p>
+        <Styles.ModalText>{getTranslatedText('exit.text')}</Styles.ModalText>
 
-        <Button
-          whatClass="button"
-          text={getTranslatedText('exit.exit')}
-          width="179px"
-          click={setLogOut}
-        />
-        <div className="background">
-          <img src={logout2} className="log-out-img" alt="log-out" />
-        </div>
-      </div>
-    </div>
+        <Styles.ButtonStyles>
+          <Button
+            width="179px"
+            click={setLogOut}
+            text={getTranslatedText('exit.exit')}
+          />
+        </Styles.ButtonStyles>
+
+        <Styles.ModalBackground>
+          <Styles.ModalImage src={logout2} alt="log-out" />
+        </Styles.ModalBackground>
+      </Styles.Modal>
+    </Styles.ModalOverlay>
   );
 };
 export { Exit };

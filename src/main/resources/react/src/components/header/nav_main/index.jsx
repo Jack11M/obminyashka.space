@@ -1,45 +1,46 @@
-import { Link } from 'react-router-dom';
-
+import { route } from 'routes/routeConstants';
 import { ButtonAdv } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 
+import * as Styles from './styles';
 import NavCategory from '../nav_category';
 
-import './navMain.scss';
+const NavMain = () => {
+  return (
+    <Styles.DivWrap>
+      <Styles.Wrapper>
+        <Styles.WrapMain>
+          <Styles.LogoLink to={route.home} />
 
-const NavMain = () => (
-  <div className="navbar-main-inner">
-    <div className="wrapper">
-      <div className="navbar-main">
-        <Link to="/" className="logo" />
+          <Styles.WrapCategories>
+            <Styles.WrapCategoriesTop>
+              {getTranslatedText('header.categories')}
+            </Styles.WrapCategoriesTop>
 
-        <div className="navbar-main__select">
-          <div className="navbar-main__select-top">
-            {getTranslatedText('header.categories')}
-          </div>
-          <div className="navbar-main__select-bottom">
-            {getTranslatedText('header.categories')}
-          </div>
-          <NavCategory />
-        </div>
+            <Styles.WrapCategoriesBottom>
+              {getTranslatedText('header.categories')}
+            </Styles.WrapCategoriesBottom>
 
-        <div className="navbar-main-search">
-          <input
-            id="search"
-            type="text"
-            placeholder={`${getTranslatedText('header.iSearch')} ...`}
-          />
+            <NavCategory />
+          </Styles.WrapCategories>
 
-          <label htmlFor="search" className="circle">
-            <SearchSvg />
-          </label>
-        </div>
+          <Styles.WrapSearch>
+            <Styles.InputSearch
+              type="text"
+              placeholder={`${getTranslatedText('header.iSearch')} ...`}
+            />
 
-        <ButtonAdv type="link" />
-      </div>
-    </div>
-  </div>
-);
+            <Styles.Label htmlFor="search">
+              <SearchSvg />
+            </Styles.Label>
+          </Styles.WrapSearch>
+
+          <ButtonAdv type="link" />
+        </Styles.WrapMain>
+      </Styles.Wrapper>
+    </Styles.DivWrap>
+  );
+};
 
 export default NavMain;

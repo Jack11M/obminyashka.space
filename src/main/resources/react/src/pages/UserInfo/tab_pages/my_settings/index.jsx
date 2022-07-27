@@ -1,6 +1,5 @@
 import { memo, useContext, useState } from 'react';
 import { Formik } from 'formik';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
@@ -12,7 +11,7 @@ import { TitleBigBlue, ModalContext, Button } from 'components/common';
 import InputProfile from '../../components/inputProfile';
 import { validationEmailSchema, validationPasswordSchema } from './config';
 
-import './mySettings.scss';
+import * as Styles from './styles';
 
 const MySettings = () => {
   const dispatch = useDispatch();
@@ -91,7 +90,7 @@ const MySettings = () => {
       >
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
-            <div className="info-one">
+            <Styles.InputContainer>
               <InputProfile
                 type="password"
                 name="oldPassword"
@@ -109,18 +108,19 @@ const MySettings = () => {
                 name="confirmNewPassword"
                 label={getTranslatedText('settings.confirmPassword')}
               />
-            </div>
+            </Styles.InputContainer>
 
-            <Button
-              type="submit"
-              width="248px"
-              height="49px"
-              whatClass="btn-profile"
-              isLoading={isFetchPass}
-              disabling={!dirty && !isValid}
-              text={getTranslatedText('button.save')}
-              click={!errors.oldPassword ? handleSubmit : null}
-            />
+            <Styles.ButtonContainer>
+              <Button
+                type="submit"
+                width="248px"
+                height="49px"
+                isLoading={isFetchPass}
+                disabling={!dirty && !isValid}
+                text={getTranslatedText('button.save')}
+                click={!errors.oldPassword ? handleSubmit : null}
+              />
+            </Styles.ButtonContainer>
           </>
         )}
       </Formik>
@@ -137,7 +137,7 @@ const MySettings = () => {
       >
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
-            <div className="info-one">
+            <Styles.InputContainer>
               <InputProfile
                 readOnly
                 type="email"
@@ -157,18 +157,20 @@ const MySettings = () => {
                 name="newEmailConfirmation"
                 label={getTranslatedText('settings.confirmEmail')}
               />
-            </div>
+            </Styles.InputContainer>
 
-            <Button
-              type="submit"
-              width="300px"
-              height="49px"
-              isLoading={isFetchEmail}
-              disabling={!isValid && !dirty}
-              whatClass="btn-profile e-mail-button"
-              click={!errors.newEmail ? handleSubmit : null}
-              text={getTranslatedText('button.saveEmail')}
-            />
+            <Styles.ButtonContainer>
+              <Button
+                type="submit"
+                width="363px"
+                height="49px"
+                isLoading={isFetchEmail}
+                style={{ margin: '50px 0' }}
+                disabling={!isValid && !dirty}
+                click={!errors.newEmail ? handleSubmit : null}
+                text={getTranslatedText('button.saveEmail')}
+              />
+            </Styles.ButtonContainer>
           </>
         )}
       </Formik>
@@ -178,20 +180,20 @@ const MySettings = () => {
         text={getTranslatedText('settings.remove')}
       />
 
-      <p className="delete-text">
+      <Styles.WarningText>
         {getTranslatedText('settings.describe')}{' '}
-        <Link to={`${route.userInfo}${route.myProfile}`}>
+        <Styles.StylizedLink to={`${route.userInfo}${route.myProfile}`}>
           &nbsp;{getTranslatedText('settings.profile')}
-        </Link>
-      </p>
+        </Styles.StylizedLink>
+      </Styles.WarningText>
 
-      <div className="btn-wrapper">
+      <Styles.ButtonContainer>
         <Button
           width="248px"
-          whatClass="btn-profile"
+          style={{ marginBottom: '65px' }}
           text={getTranslatedText('button.remove')}
         />
-      </div>
+      </Styles.ButtonContainer>
     </>
   );
 };

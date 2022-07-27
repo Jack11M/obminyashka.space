@@ -1,26 +1,28 @@
 import { BtnGoodBusiness } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
-import './helpchildren.scss';
+import * as Styles from './styles';
 
-const HelpChildren = () => (
-  <div className="HelpChildren">
-    <h3 className="HelpChildren__title">
-      {getTranslatedText('mainPage.helpTitle')}
-    </h3>
+const HelpChildren = () => {
+  return (
+    <Styles.HelpChildren>
+      <Styles.HelpChildrenTitleH3>
+        {getTranslatedText('mainPage.helpTitle')}
+      </Styles.HelpChildrenTitleH3>
 
-    <p className="HelpChildren__text">
-      <strong>{getTranslatedText('mainPage.helpName')}</strong>
-      &nbsp;
-      {getTranslatedText('mainPage.helpText')}
-    </p>
+      <Styles.HelpChildrenText>
+        <Styles.Strong>{getTranslatedText('mainPage.helpName')}</Styles.Strong>
+        &nbsp;
+        {getTranslatedText('mainPage.helpText')}
+      </Styles.HelpChildrenText>
 
-    <BtnGoodBusiness
-      href="#"
-      whatClass="HelpChildren__btn "
-      text={getTranslatedText('mainPage.helpButton')}
-    />
-  </div>
-);
-
+      <Styles.StylizedBtn>
+        <BtnGoodBusiness
+          href="#"
+          text={getTranslatedText('mainPage.helpButton')}
+        />
+      </Styles.StylizedBtn>
+    </Styles.HelpChildren>
+  );
+};
 export default HelpChildren;

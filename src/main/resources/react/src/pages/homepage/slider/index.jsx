@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import Slider from 'react-slick';
 
 import {
@@ -11,92 +10,86 @@ import {
 } from 'assets/img/all_images_export/sliderImages';
 import { getTranslatedText } from 'components/local/localization';
 
-import './slider.scss';
+import * as Styles from './styles';
+import { settings } from './config';
 import 'slick-carousel/slick/slick.scss';
 import 'slick-carousel/slick/slick-theme.scss';
 
 const Sliders = () => {
   const isImg = [
     {
+      href: '#',
+      width: 290,
       src: toySlider,
-      subtitle: getTranslatedText('mainPage.blueSlideSubtitle'),
       title: getTranslatedText('mainPage.blueSlideTitle'),
-      href: '#',
-      width: 290,
-    },
-    {
-      src: clothesSlider,
-      subtitle: getTranslatedText('mainPage.greenSlideSubtitle'),
-      title: getTranslatedText('mainPage.greenSlideTitle'),
-      href: '#',
-      width: 600,
-    },
-    {
-      src: childSlider,
-      subtitle: getTranslatedText('mainPage.yellowSlideSubtitle'),
-      title: getTranslatedText('mainPage.yellowSlideTitle'),
-      href: '#',
-      width: 290,
-    },
-    {
-      src: furnitureSlider,
-      subtitle: getTranslatedText('mainPage.pinkSlideSubtitle'),
-      title: getTranslatedText('mainPage.pinkSlideTitle'),
-      href: '#',
-      width: 290,
-    },
-    {
-      src: shoesSlider,
-      subtitle: getTranslatedText('mainPage.lilacSlideSubtitle'),
-      title: getTranslatedText('mainPage.lilacSlideTitle'),
-      href: '#',
-      width: 600,
+      subtitle: getTranslatedText('mainPage.blueSlideSubtitle'),
     },
 
     {
-      src: strollersSlider,
-      subtitle: getTranslatedText('mainPage.orangeSlideSubtitle'),
-      title: getTranslatedText('mainPage.orangeSlideTitle'),
+      href: '#',
+      width: 600,
+      src: clothesSlider,
+      title: getTranslatedText('mainPage.greenSlideTitle'),
+      subtitle: getTranslatedText('mainPage.greenSlideSubtitle'),
+    },
+
+    {
       href: '#',
       width: 290,
+      src: childSlider,
+      title: getTranslatedText('mainPage.yellowSlideTitle'),
+      subtitle: getTranslatedText('mainPage.yellowSlideSubtitle'),
+    },
+
+    {
+      href: '#',
+      width: 290,
+      src: furnitureSlider,
+      title: getTranslatedText('mainPage.pinkSlideTitle'),
+      subtitle: getTranslatedText('mainPage.pinkSlideSubtitle'),
+    },
+
+    {
+      href: '#',
+      width: 600,
+      src: shoesSlider,
+      title: getTranslatedText('mainPage.lilacSlideTitle'),
+      subtitle: getTranslatedText('mainPage.lilacSlideSubtitle'),
+    },
+
+    {
+      href: '#',
+      width: 290,
+      src: strollersSlider,
+      title: getTranslatedText('mainPage.orangeSlideTitle'),
+      subtitle: getTranslatedText('mainPage.orangeSlideSubtitle'),
     },
   ];
 
-  const settings = {
-    className: 'slider variable-width',
-    dots: false,
-    arrows: false,
-    infinite: true,
-    centerMode: false,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 4000,
-    cssEase: 'ease-in-out',
-    variableWidth: true,
-  };
-
   return (
-    <div className="Home-page-slider">
+    <Styles.CategorySlider>
       <Slider {...settings}>
         {isImg.map((image) => (
-          <Link
-            className="Home-page-slider__link"
+          <Styles.CategorySliderLink
             to={image.href}
-            style={{ width: image.width }}
             key={image.title}
+            style={{ width: image.width }}
           >
             <img src={image.src} alt={image.title} />
-            <span className="Home-page-slider__link-subTitle">
+
+            <Styles.CategorySliderSpan>
               {image.subtitle}
+
               <br />
-              <b>{image.title}</b>
-            </span>
-          </Link>
+
+              <Styles.CategorySliderImageTitle>
+                {image.title}
+              </Styles.CategorySliderImageTitle>
+            </Styles.CategorySliderSpan>
+          </Styles.CategorySliderLink>
         ))}
       </Slider>
-    </div>
+    </Styles.CategorySlider>
   );
 };
 

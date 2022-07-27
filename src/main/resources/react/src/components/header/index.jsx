@@ -1,13 +1,13 @@
 import NavTop from './nav_top';
 import NavMain from './nav_main';
 
-import './Navbar.scss';
+import { NavContainer } from './styles';
 
 const Header = () => (
-  <header className="navbar">
+  <NavContainer>
     <NavTop />
     <NavMain />
-  </header>
+  </NavContainer>
 );
 
 export default Header;

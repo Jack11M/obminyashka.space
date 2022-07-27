@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 import { route } from 'routes/routeConstants';
 import {
   toys,
@@ -13,68 +11,70 @@ import {
 } from 'assets/img/all_images_export/navItems';
 import { getTranslatedText } from 'components/local/localization';
 
-import './navCategory.scss';
+import * as Styles from './styles';
 
-const NavCategory = () => (
-  <ul className="navbarBurger-list">
-    <div className="wrapper">
-      <li className="navbarBurger-element navbarBurger-element-clothes">
-        <Link to={route.home}>
-          <img src={clothes} alt="clothes" />
-          <span>{getTranslatedText('header.clothes')}</span>
-        </Link>
-      </li>
+const NavCategory = () => {
+  return (
+    <Styles.List>
+      <Styles.Wrapper>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={clothes} alt="clothes" />
+            <Styles.Span>{getTranslatedText('header.clothes')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-shoes">
-        <Link to={route.home}>
-          <img src={shoes} alt="shoes" />
-          <span>{getTranslatedText('header.shoes')}</span>
-        </Link>
-      </li>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={shoes} alt="shoes" />
+            <Styles.Span>{getTranslatedText('header.shoes')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-toys">
-        <Link to={route.home}>
-          <img src={toys} alt="toys" />
-          <span>{getTranslatedText('header.toys')}</span>
-        </Link>
-      </li>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={toys} alt="toys" />
+            <Styles.Span>{getTranslatedText('header.toys')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-transportForChildren">
-        <Link to={route.home}>
-          <img src={transportForChildren} alt="transportForChildren" />
-          <span>{getTranslatedText('header.vehicles')}</span>
-        </Link>
-      </li>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={transportForChildren} alt="transportForChildren" />
+            <Styles.Span>{getTranslatedText('header.vehicles')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-furniture">
-        <Link to={route.home}>
-          <img src={furniture} alt="furniture" />
-          <span>{getTranslatedText('header.furniture')}</span>
-        </Link>
-      </li>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={furniture} alt="furniture" />
+            <Styles.Span>{getTranslatedText('header.furniture')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-kidsUpToYear">
-        <Link to={route.home}>
-          <img src={kidsUpToYear} alt="kidsUpToYear" />
-          <span>{getTranslatedText('header.babies')}</span>
-        </Link>
-      </li>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={kidsUpToYear} alt="kidsUpToYear" />
+            <Styles.Span>{getTranslatedText('header.babies')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-books">
-        <Link to={route.home}>
-          <img src={books} alt="books" />
-          <span>{getTranslatedText('header.books')}</span>
-        </Link>
-      </li>
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={books} alt="books" />
+            <Styles.Span>{getTranslatedText('header.books')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
 
-      <li className="navbarBurger-element navbarBurger-element-other">
-        <Link to={route.home}>
-          <img src={other} alt="other" />
-          <span>{getTranslatedText('header.another')}</span>
-        </Link>
-      </li>
-    </div>
-  </ul>
-);
+        <Styles.NavbarLinkContainer>
+          <Styles.NavbarLink to={route.home}>
+            <Styles.Img src={other} alt="other" />
+            <Styles.Span>{getTranslatedText('header.another')}</Styles.Span>
+          </Styles.NavbarLink>
+        </Styles.NavbarLinkContainer>
+      </Styles.Wrapper>
+    </Styles.List>
+  );
+};
 
 export default NavCategory;
