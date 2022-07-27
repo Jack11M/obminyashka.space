@@ -33,11 +33,11 @@ export const LdsRipple = styled.div`
 `;
 
 export const FirstDiv = styled.div`
-  ${styleSet}
+  ${styleSet};
 `;
 
 export const SecondDiv = styled.div`
-  ${styleSet}
+  ${styleSet};
 
   animation-delay: -0.5s;
 `;
