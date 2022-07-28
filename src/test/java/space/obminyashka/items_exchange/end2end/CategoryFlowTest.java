@@ -109,12 +109,12 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "category/update_category.yml")
-    void updateCategory_shouldUpdateExistedCategory() throws Exception {
+    void updateCategory_shouldUpdateExistedCategoryWithAllReceivedSubcategories() throws Exception {
         CategoryDto updatedCategoryDto = getUpdatedCategoryDto(EXISTING_ENTITY_ID, EXISTING_ENTITY_ID, "footwear");
 
-        sendDtoAndGetResultAction(put(CATEGORY), updatedCategoryDto, status().isAccepted())
+        sendDtoAndGetResultAction(put(CATEGORY_ID, updatedCategoryDto.getId()), updatedCategoryDto, status().isAccepted())
                 .andExpect(jsonPath("$.name").value("footwear"))
-                .andExpect(jsonPath("$.subcategories", hasSize(2)));
+                .andExpect(jsonPath("$.subcategories", hasSize(3)));
     }
 
     @Test
@@ -123,17 +123,17 @@ class CategoryFlowTest extends BasicControllerTest {
     void updateCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowIllegalIdentifierException() throws Exception {
         CategoryDto updatedCategoryDto = getUpdatedCategoryDto(EXISTING_ENTITY_ID, NONEXISTENT_ENTITY_ID, NEW_CATEGORY_NAME);
 
-        MvcResult result = sendDtoAndGetMvcResult(put(CATEGORY), updatedCategoryDto, status().isBadRequest());
+        MvcResult result = sendDtoAndGetMvcResult(put(CATEGORY_ID, updatedCategoryDto.getId()), updatedCategoryDto, status().isBadRequest());
         assertThat(result.getResolvedException(), is(instanceOf(IllegalIdentifierException.class)));
     }
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
-    void updateCategory_whenSubcategoryIdDoesNotExistAndNotEqualsZero_shouldReturnBadRequest() throws Exception {
+    void updateCategory_shouldUpdateSubcategory_whenValid() throws Exception {
         CategoryDto updatedCategoryDto = getUpdatedCategoryDto(NONEXISTENT_ENTITY_ID, EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
 
-        sendDtoAndGetMvcResult(put(CATEGORY), updatedCategoryDto, status().isBadRequest());
+        sendDtoAndGetMvcResult(put(CATEGORY_ID, updatedCategoryDto.getId()), updatedCategoryDto, status().isAccepted());
     }
 
     @Test

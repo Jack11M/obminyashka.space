@@ -19,8 +19,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.LOCATION;
+import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDto;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDtoForCreatingWithInvalidCity;
-import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDtoWithId;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,7 +40,7 @@ class LocationControllerTest extends BasicControllerTest {
 
     private static Stream<Arguments> locationPostTestData() {
         return Stream.of(
-                Arguments.of(createLocationDtoWithId(0), status().isForbidden()),
+                Arguments.of(createLocationDto(), status().isForbidden()),
                 Arguments.of(createLocationDtoForCreatingWithInvalidCity(), status().isBadRequest())
         );
     }
@@ -48,7 +48,7 @@ class LocationControllerTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @Test
     void deleteLocations_shouldReturn409WhenUserHasNotRoleAdmin() throws Exception {
-        sendUriAndGetMvcResult(delete(LOCATION).param("ids", "1"), status().isForbidden());
+        sendUriAndGetMvcResult(delete(LOCATION).param("ids", "2c5467f3-b7ee-48b1-9451-7028255b757b"), status().isForbidden());
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})

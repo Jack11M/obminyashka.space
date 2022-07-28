@@ -1,10 +1,8 @@
 package space.obminyashka.items_exchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import space.obminyashka.items_exchange.annotation.Zero;
-import space.obminyashka.items_exchange.mapper.transfer.Exist;
-import space.obminyashka.items_exchange.mapper.transfer.New;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
@@ -12,8 +10,8 @@ import space.obminyashka.items_exchange.model.enums.Season;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,9 +21,8 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(exclude = {"id"})
 public class AdvertisementModificationDto {
 
-    @Positive(groups = Exist.class, message = "{invalid.exist.id}")
-    @Zero(groups = New.class, message = "{new.advertisement.id.not-zero}")
-    private long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UUID id;
 
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-empty}")
@@ -62,5 +59,5 @@ public class AdvertisementModificationDto {
     private long subcategoryId;
 
     @ApiModelProperty(required = true)
-    private long locationId;
+    private UUID locationId;
 }

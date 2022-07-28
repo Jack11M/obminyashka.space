@@ -7,11 +7,11 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import space.obminyashka.items_exchange.model.enums.Status;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
-import space.obminyashka.items_exchange.model.enums.Status;
+import java.util.UUID;
 
 @MappedSuperclass
 @NoArgsConstructor
@@ -22,8 +22,9 @@ import space.obminyashka.items_exchange.model.enums.Status;
 public abstract class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id", insertable = false, updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "created", columnDefinition = "DATE", nullable = false, updatable = false)
     @CreatedDate

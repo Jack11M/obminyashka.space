@@ -1,12 +1,13 @@
 package space.obminyashka.items_exchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +16,8 @@ import javax.validation.constraints.Size;
 @Builder
 @EqualsAndHashCode
 public class LocationDto {
-
-    @PositiveOrZero(message = "{invalid.id}")
-    private long id;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UUID id;
 
     @ApiModelProperty(required = true)
     @NotEmpty(message = "{invalid.not-null}")

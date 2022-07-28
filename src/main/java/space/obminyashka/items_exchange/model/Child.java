@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import space.obminyashka.items_exchange.model.enums.Gender;
 
@@ -16,8 +17,9 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 public class Child {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id", insertable = false, updatable = false, nullable = false)
+    private UUID id;
     @Enumerated(EnumType.STRING)
     private Gender sex;
     @Column(name = "birth_date")

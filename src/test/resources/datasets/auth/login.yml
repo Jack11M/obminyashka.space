@@ -12,12 +12,12 @@ user:
     created: '2020-06-03 00:00:01'
     updated: '2020-06-03 00:00:01'
     status: 'ACTIVE'
-    role_id: 2
+    role_id: c0bb0913-f772-49e9-a9ac-e87246fa3505
 
 role:
-  - id: 1
+  - id: ccfe8c89-bded-4933-afe9-c38f2815057c
     name: 'ROLE_ADMIN'
-  - id: 2
+  - id: c0bb0913-f772-49e9-a9ac-e87246fa3505
     name: 'ROLE_USER'
 
 chat:

@@ -21,6 +21,7 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -36,7 +37,7 @@ import static space.obminyashka.items_exchange.api.ApiKey.*;
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
 class ImageFlowTest extends BasicControllerTest {
-
+    private static final String EXISTED_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
     private static final String TEST_JPEG = "test image jpeg";
     private static final String TEST_PNG = "test image png";
     private final MockMultipartFile txt = new MockMultipartFile("image", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
@@ -48,7 +49,7 @@ class ImageFlowTest extends BasicControllerTest {
 
     @Test
     void getByAdvertisementId_shouldReturnAllImages() throws Exception {
-        sendUriAndGetResultAction(get(IMAGE_RESOURCE, 1L), status().isOk())
+        sendUriAndGetResultAction(get(IMAGE_RESOURCE, EXISTED_ADV_ID), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0]").value(Base64.encodeString(TEST_JPEG)))
                 .andExpect(jsonPath("$[1]").value(Base64.encodeString(TEST_PNG)));
@@ -56,42 +57,42 @@ class ImageFlowTest extends BasicControllerTest {
 
     @Test
     void getImageLinksByAdvertisementId_shouldReturnAllImageLinks() throws Exception {
-        sendUriAndGetResultAction(get(IMAGE_BY_ADV_ID, 1L), status().isOk())
+        sendUriAndGetResultAction(get(IMAGE_BY_ADV_ID, EXISTED_ADV_ID), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].id").value("ebad2511-97c6-4221-a39f-a1b24a7d3251"))
                 .andExpect(jsonPath("$[0].resource").value(Base64.encodeString(TEST_JPEG)))
-                .andExpect(jsonPath("$[1].id").value("2"))
+                .andExpect(jsonPath("$[1].id").value("e6a85b1b-6c6f-4bbb-b336-f68e43bb69f9"))
                 .andExpect(jsonPath("$[1].resource").value(Base64.encodeString(TEST_PNG)));
     }
 
     @ParameterizedTest
     @MethodSource("getAdvertisementIdAndExpectedResult")
-    void countImagesInAdvertisement(long advertisementId, ResultMatcher expectedStatus, String expectedResponse) throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_COUNT, advertisementId), expectedStatus);
+    void countImagesInAdvertisement(String advertisementId, ResultMatcher expectedStatus, String expectedResponse) throws Exception {
+        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_IN_ADV_COUNT, advertisementId), expectedStatus);
         assertEquals(expectedResponse, mvcResult.getResponse().getContentAsString());
     }
 
     private static Stream<Arguments> getAdvertisementIdAndExpectedResult() {
         return Stream.of(
-                Arguments.of(1L, status().isOk(), "2"),
-                Arguments.of(2L, status().isOk(), "0"),
-                Arguments.of(50L, status().isNotFound(), "")
+                Arguments.of(EXISTED_ADV_ID, status().isOk(), "2"),
+                Arguments.of("7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7", status().isOk(), "0"),
+                Arguments.of(UUID.randomUUID().toString(), status().isNotFound(), "")
         );
     }
 
     @WithMockUser("admin")
     @Test
     void saveImages_shouldReturn415WhenNotSupportedType() throws Exception {
-        sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, 1L).file(txt), status().isUnsupportedMediaType());
+        sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, EXISTED_ADV_ID).file(txt), status().isUnsupportedMediaType());
     }
 
     @WithMockUser("admin")
     @Test
     @Commit
-    @ExpectedDataSet(value = "image/delete.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "image/delete.yml", orderBy = {"created", "name"}, ignoreCols = {"created", "updated"})
     void deleteImages_shouldDeleteMultipleImageWhenUserOwnsThemAll() throws Exception {
-        sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, 1L)
-                        .param("ids", "1", "2"),
+        sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
+                        .param("ids", "ebad2511-97c6-4221-a39f-a1b24a7d3251", "e6a85b1b-6c6f-4bbb-b336-f68e43bb69f9"),
                 status().isOk());
     }
 
@@ -100,7 +101,7 @@ class ImageFlowTest extends BasicControllerTest {
     void saveImages_shouldSaveImage() throws Exception {
         var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
                 Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
-        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
+        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
                 .file(jpeg)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andDo(print())

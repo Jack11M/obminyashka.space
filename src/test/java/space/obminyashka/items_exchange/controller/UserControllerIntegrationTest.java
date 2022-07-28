@@ -17,16 +17,16 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.Child;
+import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
+import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
+import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
+import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -45,30 +45,25 @@ import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserControllerTest extends BasicControllerTest {
+class UserControllerIntegrationTest extends BasicControllerTest {
 
     @MockBean
     private UserServiceImpl userService;
 
     private User user;
 
-    private static int maxChildrenAmount;
+    private static final int MAX_CHILDREN_AMOUNT = 10;
     @Value("${max.phones.amount}")
     private String maxPhonesAmount;
 
     @Autowired
-    public UserControllerTest(MockMvc mockMvc) {
+    public UserControllerIntegrationTest(MockMvc mockMvc) {
         super(mockMvc);
     }
 
     @BeforeEach
     void setUp() {
         user = createUser();
-    }
-
-    @Value("${max.children.amount}")
-    public void setMaxChildrenAmount(int maxChildrenAmount) {
-        UserControllerTest.maxChildrenAmount = maxChildrenAmount;
     }
 
     @Test
@@ -121,44 +116,16 @@ class UserControllerTest extends BasicControllerTest {
         );
     }
 
-    @ParameterizedTest
-    @WithMockUser(username = "admin")
-    @MethodSource("userIdentifierTestData")
-    void addChild_NotValidDto_ShouldThrowIllegalIdentifierException(List<ChildDto> testChildren, String expectedErrorMessageKey) throws Exception {
-
-        final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), testChildren, status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(expectedErrorMessageKey)));
-    }
-
-    private static Stream<Arguments> userIdentifierTestData() {
-        return Stream.of(
-                Arguments.of(getTestChildren(111L, 222L, 2019), "invalid.new.entity.id"),
-                Arguments.of(generateTestChildren(maxChildrenAmount + 1), "exception.invalid.dto")
-        );
-    }
-
     @Test
     @WithMockUser(username = "admin")
-    void updateChild_NotValidDto_ShouldThrowIllegalIdentifierException() throws Exception {
-        var notValidUpdatingChildDto = getTestChildren(1L, 999L, 2018);
+    void addChild_BadTotalAmount_ShouldReturnBadRequest() throws Exception {
+        var badTotalAmountChildDto = generateTestChildren(MAX_CHILDREN_AMOUNT + 1);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), notValidUpdatingChildDto, status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Not all children from dto present in"));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void addChild_BadTotalAmount_ShouldThrowEntityAmountException() throws Exception {
-        var badTotalAmountChildDto = generateTestChildren(maxChildrenAmount - 1);
-        user.setChildren(List.of(
-                new Child(1L, Gender.MALE, LocalDate.of(2019, 1, 1), user),
-                new Child(2L, Gender.FEMALE, LocalDate.of(2019, 1, 1), user)));
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-
-        final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), badTotalAmountChildDto, status().isNotAcceptable());
-        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage()
-                .contains(getParametrizedMessageSource("exception.children-amount", maxChildrenAmount)));
+        final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), badTotalAmountChildDto, status().isBadRequest());
+        final var expectedErrorMessage = getParametrizedMessageSource("exception.children-amount")
+                .replace("{max}", String.valueOf(MAX_CHILDREN_AMOUNT));
+        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().contains(expectedErrorMessage));
     }
 
     @Test
@@ -293,7 +260,7 @@ class UserControllerTest extends BasicControllerTest {
         user.setStatus(Status.ACTIVE);
         user.setLastOnlineTime(LocalDateTime.now());
         user.setChildren(Collections.emptyList());
-        user.setPhones(Set.of(new Phone(1L, +381234567890L, true, user)));
+        user.setPhones(Set.of(new Phone(UUID.randomUUID(), +381234567890L, true, user)));
 
         return user;
     }
@@ -301,10 +268,10 @@ class UserControllerTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     void addChild_InvalidChildAge_ShouldReturnHttpStatusBadRequest() throws Exception {
-        var childDto = getTestChildren(0L, 0L, 2001);
+        var childDto = getTestChildren(2001);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        final MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_CHILD), childDto, status().isBadRequest());
+        final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), childDto, status().isBadRequest());
         final var resolvedException = mvcResult.getResolvedException();
         assertAll(
                 () -> assertNotNull(resolvedException),
