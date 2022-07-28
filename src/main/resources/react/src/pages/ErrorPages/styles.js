@@ -79,8 +79,8 @@ export const WrapRImg = styled.div`
   right: 50px;
 `;
 
-export const Tittle = styled.h2`
-  font-family: 'Pollywog Cyr', sans-serif;
+export const tittle = css`
+  font-family: Pollywog Cyr, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 27px;
@@ -90,6 +90,10 @@ export const Tittle = styled.h2`
   color: #bababa;
   text-align: center;
   margin-bottom: 27px;
+`;
+
+export const Tittle = styled.h2`
+  ${tittle};
 `;
 
 export const Container = styled.div`
@@ -133,6 +137,7 @@ export const WrapTittleBad = styled.div`
 `;
 
 export const TittleBad = styled.h2`
+  ${tittle};
   padding: 10px 5px;
 
   @media (max-width: 576px) {
