@@ -257,4 +257,52 @@
                                  referencedTableName="user"/>
     </changeSet>
 
+    <changeSet id="1.2.17: Move all existing ID from 'long' to 'UUID type'" author="rpkyrych">
+        <update tableName="advertisement">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="attachment">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="black_list">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="chat">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="child">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="deal">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="image">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="location">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="message">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="phone">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="refresh_token">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="role">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="user">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="user_deal">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="user_chat">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

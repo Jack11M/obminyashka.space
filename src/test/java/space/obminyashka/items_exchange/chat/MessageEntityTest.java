@@ -17,6 +17,7 @@ import space.obminyashka.items_exchange.model.User;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,6 +69,6 @@ class MessageEntityTest {
     }
 
     private Attachment createAttachment(Message message) {
-        return new Attachment(0L, message, "jpg", "file-content".getBytes());
+        return new Attachment(UUID.randomUUID(), message, "jpg", "file-content".getBytes());
     }
 }
