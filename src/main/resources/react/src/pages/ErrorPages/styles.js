@@ -80,7 +80,7 @@ export const WrapRImg = styled.div`
 `;
 
 export const tittle = css`
-  font-family: Pollywog Cyr, sans-serif;
+  font-family: Caveat, sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 27px;
