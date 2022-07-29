@@ -1,8 +1,12 @@
 package space.obminyashka.items_exchange.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,8 +19,8 @@ import java.util.UUID;
 public class Location {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id", insertable = false, updatable = false, nullable = false)
+    @GeneratedValue
+    @Type(type = "uuid-char")
     private UUID id;
     private String area;
     private String district;

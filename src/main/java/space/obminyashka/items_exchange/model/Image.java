@@ -1,6 +1,9 @@
 package space.obminyashka.items_exchange.model;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -14,12 +17,12 @@ import java.util.UUID;
 public class Image {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id", insertable = false, updatable = false, nullable = false)
+    @GeneratedValue
+    @Type(type = "uuid-char")
     private UUID id;
 
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] resource;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
