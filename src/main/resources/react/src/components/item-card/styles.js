@@ -130,3 +130,11 @@ export const InboxSpan = styled.span`
   font-weight: 800;
   color: #fff;
 `;
+
+export const StylizedAvatar = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  border-radius: 25px;
+  transform: translate(-50%);
+`;

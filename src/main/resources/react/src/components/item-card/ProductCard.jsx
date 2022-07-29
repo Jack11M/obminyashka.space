@@ -4,23 +4,11 @@ import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import { Button } from 'components/common/buttons';
 
-import SvgStar from './FavoriteMarker';
-import InboxMessageSvg from './inboxMessageSvg';
+import SvgStar from './icons/FavoriteMarker';
+import InboxMessageSvg from './icons/inboxMessageSvg';
 import { getTranslatedText } from '../local/localization';
 
-import {
-  Card,
-  Picture,
-  CitySpan,
-  DivPicture,
-  ButtonBlock,
-  CardContent,
-  TextContent,
-  LocationIcon,
-  FavoriteMarker,
-} from './styledForCard';
-
-import './avatarForCard.scss';
+import * as Styles from './styles';
 
 const ProductCard = ({
   text,
@@ -36,44 +24,41 @@ const ProductCard = ({
   const avatarValue = avatar === '' || avatar;
 
   return (
-    <Card margin={margin}>
-      <FavoriteMarker isFavorite={isFavorite}>
+    <Styles.Card margin={margin}>
+      <Styles.FavoriteMarker isFavorite={isFavorite}>
         {avatar ? (
-          <Avatar
-            width="40px"
-            height="40px"
-            avatar={avatarValue}
-            whatIsClass="avatar-for-card"
-          />
+          <Styles.StylizedAvatar>
+            <Avatar width="40px" height="40px" avatar={avatarValue} />
+          </Styles.StylizedAvatar>
         ) : (
           <SvgStar isFavorite={isFavorite} />
         )}
-      </FavoriteMarker>
+      </Styles.FavoriteMarker>
 
-      <DivPicture>
-        <Picture src={picture} alt="lot" />
-      </DivPicture>
+      <Styles.DivPicture>
+        <Styles.Picture src={picture} alt="lot" />
+      </Styles.DivPicture>
 
-      <CardContent>
-        <TextContent>{text}</TextContent>
+      <Styles.CardContent>
+        <Styles.TextContent>{text}</Styles.TextContent>
 
-        <LocationIcon inbox={inboxMessage}>
+        <Styles.LocationIcon inbox={inboxMessage}>
           <span className="icon-location" />
-          <CitySpan>{city}</CitySpan>
-        </LocationIcon>
 
-        <ButtonBlock>
+          <Styles.CitySpan>{city}</Styles.CitySpan>
+        </Styles.LocationIcon>
+
+        <Styles.ButtonBlock>
           <Button
-            whatClass=""
             click={clickOnButton}
             width={inboxMessage ? '190px' : '222px'}
             text={getTranslatedText('button.look', lang)}
           />
 
           {inboxMessage && <InboxMessageSvg inboxMessage={inboxMessage} />}
-        </ButtonBlock>
-      </CardContent>
-    </Card>
+        </Styles.ButtonBlock>
+      </Styles.CardContent>
+    </Styles.Card>
   );
 };
 
