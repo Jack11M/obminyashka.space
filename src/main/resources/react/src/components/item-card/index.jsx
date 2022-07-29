@@ -4,8 +4,7 @@ import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import { Button } from 'components/common/buttons';
 
-import SvgStar from './icons/FavoriteMarker';
-import InboxMessageSvg from './icons/inboxMessageSvg';
+import { InboxMessage } from './inbox-message';
 import { getTranslatedText } from '../local/localization';
 
 import * as Styles from './styles';
@@ -31,7 +30,7 @@ const ProductCard = ({
             <Avatar width="40px" height="40px" avatar={avatarValue} />
           </Styles.StylizedAvatar>
         ) : (
-          <SvgStar isFavorite={isFavorite} />
+          <Styles.FavoriteStar isFavorite={isFavorite} />
         )}
       </Styles.FavoriteMarker>
 
@@ -55,7 +54,7 @@ const ProductCard = ({
             text={getTranslatedText('button.look', lang)}
           />
 
-          {inboxMessage && <InboxMessageSvg inboxMessage={inboxMessage} />}
+          {inboxMessage && <InboxMessage inboxMessage={inboxMessage} />}
         </Styles.ButtonBlock>
       </Styles.CardContent>
     </Styles.Card>
