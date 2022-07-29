@@ -1,7 +1,6 @@
 import { memo, useContext, useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
@@ -15,7 +14,7 @@ import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
 
 import InputProfile from '../../components/inputProfile';
 
-import './mySettings.scss';
+import * as Styles from './styles';
 
 const MySettings = () => {
   const { openModal } = useContext(ModalContext);
@@ -92,16 +91,16 @@ const MySettings = () => {
       .default(() => ''),
   });
 
-  const initialPasswordValues = validationPasswordSchema.cast({});
   const initialEmailValues = validationEmailSchema.cast({});
+  const initialPasswordValues = validationPasswordSchema.cast({});
 
   return (
     <>
       <TitleBigBlue
-        // whatClass="myProfile-title"
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changePassword', lang)}
       />
+
       <Formik
         initialValues={initialPasswordValues}
         validateOnBlur
@@ -126,43 +125,46 @@ const MySettings = () => {
       >
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
-            <div className="info-one">
+            <Styles.InputContainer>
               <InputProfile
                 type="password"
                 name="oldPassword"
                 label={getTranslatedText('settings.currentPassword', lang)}
               />
+
               <InputProfile
                 type="password"
                 name="newPassword"
                 label={getTranslatedText('settings.newPassword', lang)}
               />
+
               <InputProfile
                 type="password"
                 name="confirmNewPassword"
                 label={getTranslatedText('settings.confirmPassword', lang)}
               />
-            </div>
+            </Styles.InputContainer>
 
-            <Button
-              type="submit"
-              width="248px"
-              height="49px"
-              whatClass="btn-profile"
-              isLoading={isFetchPass}
-              disabling={!dirty && !isValid}
-              text={getTranslatedText('button.save', lang)}
-              click={!errors.oldPassword ? handleSubmit : null}
-            />
+            <Styles.ButtonContainer>
+              <Button
+                type="submit"
+                width="248px"
+                height="49px"
+                isLoading={isFetchPass}
+                disabling={!dirty && !isValid}
+                text={getTranslatedText('button.save', lang)}
+                click={!errors.oldPassword ? handleSubmit : null}
+              />
+            </Styles.ButtonContainer>
           </>
         )}
       </Formik>
 
       <TitleBigBlue
-        // whatClass="myProfile-title"
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changeEmail', lang)}
       />
+
       <Formik
         validateOnBlur
         initialValues={initialEmailValues}
@@ -184,6 +186,7 @@ const MySettings = () => {
             setIsFetchEmail(false);
           } catch (e) {
             setIsFetchEmail(false);
+
             if (e.response.status === 409) {
               onSubmitProps.setErrors({
                 newEmailConfirmation: e.response.data.error,
@@ -198,7 +201,7 @@ const MySettings = () => {
       >
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
-            <div className="info-one">
+            <Styles.InputContainer>
               <InputProfile
                 readOnly
                 type="email"
@@ -206,51 +209,55 @@ const MySettings = () => {
                 value={currentEmail}
                 label={getTranslatedText('settings.oldEmail', lang)}
               />
+
               <InputProfile
                 type="email"
                 name="newEmail"
                 label={getTranslatedText('settings.newEmail', lang)}
               />
+
               <InputProfile
                 type="email"
                 name="newEmailConfirmation"
                 label={getTranslatedText('settings.confirmEmail', lang)}
               />
-            </div>
+            </Styles.InputContainer>
 
-            <Button
-              type="submit"
-              width="300px"
-              height="49px"
-              isLoading={isFetchEmail}
-              disabling={!isValid && !dirty}
-              whatClass="btn-profile e-mail-button"
-              click={!errors.newEmail ? handleSubmit : null}
-              text={getTranslatedText('button.saveEmail', lang)}
-            />
+            <Styles.ButtonContainer>
+              <Button
+                type="submit"
+                width="363px"
+                height="49px"
+                isLoading={isFetchEmail}
+                style={{ margin: '50px 0' }}
+                disabling={!isValid && !dirty}
+                click={!errors.newEmail ? handleSubmit : null}
+                text={getTranslatedText('button.saveEmail', lang)}
+              />
+            </Styles.ButtonContainer>
           </>
         )}
       </Formik>
+
       <TitleBigBlue
-        // whatClass="myProfile-title"
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.remove', lang)}
       />
 
-      <p className="delete-text">
+      <Styles.WarningText>
         {getTranslatedText('settings.describe', lang)}{' '}
-        <Link to={`${route.userInfo}${route.myProfile}`}>
+        <Styles.StylizedLink to={`${route.userInfo}${route.myProfile}`}>
           &nbsp;{getTranslatedText('settings.profile', lang)}
-        </Link>
-      </p>
+        </Styles.StylizedLink>
+      </Styles.WarningText>
 
-      <div className="btn-wrapper">
+      <Styles.ButtonContainer>
         <Button
           width="248px"
-          whatClass="btn-profile"
+          style={{ marginBottom: '65px' }}
           text={getTranslatedText('button.remove', lang)}
         />
-      </div>
+      </Styles.ButtonContainer>
     </>
   );
 };

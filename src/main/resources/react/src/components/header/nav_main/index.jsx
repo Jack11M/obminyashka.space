@@ -1,49 +1,47 @@
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { getLang } from 'store/auth/slice';
+import { route } from 'routes/routeConstants';
 import { ButtonAdv } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 
+import * as Styles from './styles';
 import NavCategory from '../nav_category';
-
-import './navMain.scss';
 
 const NavMain = () => {
   const lang = useSelector(getLang);
   return (
-    <div className="navbar-main-inner">
-      <div className="wrapper">
-        <div className="navbar-main">
-          <Link to="/" className="logo" />
+    <Styles.DivWrap>
+      <Styles.Wrapper>
+        <Styles.WrapMain>
+          <Styles.LogoLink to={route.home} />
 
-          <div className="navbar-main__select">
-            <div className="navbar-main__select-top">
+          <Styles.WrapCategories>
+            <Styles.WrapCategoriesTop>
               {getTranslatedText('header.categories', lang)}
-            </div>
-            <div className="navbar-main__select-bottom">
+            </Styles.WrapCategoriesTop>
+            <Styles.WrapCategoriesBottom>
               {getTranslatedText('header.categories', lang)}
-            </div>
+            </Styles.WrapCategoriesBottom>
             <NavCategory />
-          </div>
+          </Styles.WrapCategories>
 
-          <div className="navbar-main-search">
-            <input
-              id="search"
+          <Styles.WrapSearch>
+            <Styles.InputSearch
               type="text"
               placeholder={`${getTranslatedText('header.iSearch', lang)} ...`}
             />
 
-            <label htmlFor="search" className="circle">
+            <Styles.Label htmlFor="search">
               <SearchSvg />
-            </label>
-          </div>
+            </Styles.Label>
+          </Styles.WrapSearch>
 
           <ButtonAdv type="link" />
-        </div>
-      </div>
-    </div>
+        </Styles.WrapMain>
+      </Styles.Wrapper>
+    </Styles.DivWrap>
   );
 };
 

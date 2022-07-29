@@ -9,7 +9,11 @@ export const button = css`
   outline: none;
   width: 222px;
   height: 50px;
+<<<<<<< HEAD
   font-family: 'Roboto', sans-serif;
+=======
+  font-family: Roboto, sans-serif;
+>>>>>>> origin/master
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -79,7 +83,11 @@ export const WrapRImg = styled.div`
   right: 50px;
 `;
 
+<<<<<<< HEAD
 export const tittle = css`
+=======
+export const Tittle = styled.h2`
+>>>>>>> origin/master
   font-family: Pollywog Cyr, sans-serif;
   font-style: normal;
   font-weight: normal;
@@ -92,10 +100,13 @@ export const tittle = css`
   margin-bottom: 27px;
 `;
 
+<<<<<<< HEAD
 export const Tittle = styled.h2`
   ${tittle};
 `;
 
+=======
+>>>>>>> origin/master
 export const Container = styled.div`
   min-height: 100vh;
   position: relative;
@@ -137,7 +148,10 @@ export const WrapTittleBad = styled.div`
 `;
 
 export const TittleBad = styled.h2`
+<<<<<<< HEAD
   ${tittle};
+=======
+>>>>>>> origin/master
   padding: 10px 5px;
 
   @media (max-width: 576px) {
