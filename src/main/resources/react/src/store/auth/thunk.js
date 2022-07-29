@@ -1,4 +1,6 @@
 import api from 'REST/Resources';
+import { showMessage } from 'hooks';
+
 import { logOutUser, putToken, setAuthed } from './slice';
 
 export const logoutUserThunk = () => async (dispatch) => {
@@ -21,7 +23,7 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
     dispatch(putToken(data));
     dispatch(setAuthed(true));
   } catch (err) {
-    console.log(err);
+    showMessage(err);
   }
 };
 
@@ -33,9 +35,9 @@ export const putOauthUserThunk = () => async (dispatch) => {
       dispatch(putToken(user));
       sessionStorage.removeItem('code');
     } else {
-      console.log('User not signed up via OAUTH');
+      showMessage('User not signed up via OAUTH');
     }
   } catch (err) {
-    console.log(err);
+    showMessage(err);
   }
 };

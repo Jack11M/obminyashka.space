@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
+import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
 import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
@@ -70,7 +71,7 @@ const MySettings = () => {
         });
       }
       if (e.response.status === 400) {
-        console.log(e.response.data.error);
+        showMessage(e.response.data.error);
         onSubmitProps.setErrors({ newEmail: e.response.data.error });
       }
     }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
+import { showMessage } from 'hooks';
 import { getAuthLang } from 'store/auth/slice';
 import { FormikCheckBox } from 'components/common/formik';
 import { getTranslatedText } from 'components/local/localization';
@@ -44,7 +45,7 @@ const SelectionSection = ({
           throw { message: 'OOps, I didn’t get the category' };
         }
       } catch (err) {
-        console.log(err.response?.data ?? err.message);
+        showMessage(err.response?.data ?? err.message);
       }
     })();
   }, []);
