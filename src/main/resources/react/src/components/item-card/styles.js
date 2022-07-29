@@ -98,7 +98,10 @@ export const InboxDiv = styled.div`
   position: relative;
   margin-left: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+
+  path {
+    transition: fill 0.3s ease;
+  }
 
   &:hover {
     svg {
