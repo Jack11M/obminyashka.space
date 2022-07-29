@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,13 +42,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_BY_ADV_ID;
-import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_COUNT;
+import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_IN_ADV_COUNT;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ImageControllerTest extends BasicControllerTest {
+class ImageControllerIntegrationTest extends BasicControllerTest {
 
     @MockBean
     private AdvertisementService advertisementService;
@@ -61,9 +62,10 @@ class ImageControllerTest extends BasicControllerTest {
     private ArgumentCaptor<List<byte[]>> listArgumentCaptor;
     private ArrayList<Image> testImages;
     private MockMultipartFile jpeg;
+    private final UUID advertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
 
     @Autowired
-    public ImageControllerTest(MockMvc mockMvc) {
+    public ImageControllerIntegrationTest(MockMvc mockMvc) {
         super(mockMvc);
     }
 
@@ -76,8 +78,10 @@ class ImageControllerTest extends BasicControllerTest {
     }
 
     private void mocksInit() throws IOException {
-        when(advertisementService.existById(1L)).thenReturn(true);
-        when(advertisementService.findByIdAndOwnerUsername(1L, "admin")).thenReturn(Optional.of(advertisement));
+
+        when(advertisementService.existById(advertisementId)).thenReturn(true);
+        when(advertisementService.findByIdAndOwnerUsername(advertisementId, "admin"))
+                .thenReturn(Optional.of(advertisement));
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
         when(advertisement.getImages()).thenReturn(testImages);
@@ -88,25 +92,25 @@ class ImageControllerTest extends BasicControllerTest {
     @WithMockUser("admin")
     @Test
     void saveImages_shouldThrowExceptionWhenTotalAmountMoreThan10() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 1L)
+        MvcResult mvcResult = mockMvc.perform(multipart(IMAGE_BY_ADV_ID, advertisementId)
                         .file(jpeg)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
 
-        verify(advertisementService).existById(anyLong());
-        verify(advertisementService).findByIdAndOwnerUsername(anyLong(), anyString());
+        verify(advertisementService).existById(any());
+        verify(advertisementService).findByIdAndOwnerUsername(any(), anyString());
         assertThat(mvcResult.getResolvedException(), is(instanceOf(ElementsNumberExceedException.class)));
     }
 
     @Test
     void countImagesInAdvertisement() throws Exception {
-        when(imageService.countImagesForAdvertisement(1L)).thenReturn(10);
+        when(imageService.countImagesForAdvertisement(any())).thenReturn(10);
 
-        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_COUNT, 1L), status().isOk());
+        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_IN_ADV_COUNT, advertisementId), status().isOk());
         assertEquals("10", mvcResult.getResponse().getContentAsString());
-        verify(imageService).countImagesForAdvertisement(anyLong());
+        verify(imageService).countImagesForAdvertisement(any());
     }
 
     @WithMockUser("admin")
@@ -114,18 +118,18 @@ class ImageControllerTest extends BasicControllerTest {
     void saveImages_shouldSaveImagesWhenTotalAmountLessThan10() throws Exception {
         testImages.remove(0);
 
-        sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, 1L).file(jpeg), status().isOk());
+        sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, advertisementId).file(jpeg), status().isOk());
 
         verify(imageService).compress(any(MultipartFile.class));
         verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
-        verify(advertisementService).findByIdAndOwnerUsername(anyLong(), anyString());
+        verify(advertisementService).findByIdAndOwnerUsername(any(), anyString());
         assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0));
     }
 
     @WithMockUser("admin")
     @Test
     void saveImages_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
-        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, 50L)
+        mockMvc.perform(multipart(IMAGE_BY_ADV_ID, UUID.randomUUID())
                         .file(jpeg))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -134,22 +138,23 @@ class ImageControllerTest extends BasicControllerTest {
     @WithMockUser("admin")
     @Test
     void deleteImages_shouldThrow400WhenImageIdNotExist() throws Exception {
-        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, 1L)
-                        .param("ids", "999"),
+        final var randomID = UUID.randomUUID();
+        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, advertisementId)
+                        .param("ids", randomID.toString()),
                 status().isBadRequest());
 
-        verify(advertisementService).findByIdAndOwnerUsername(1L, "admin");
-        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource("exception.image.not-existed-id", "[999]"));
+        verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("admin"));
+        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource("exception.image.not-existed-id", "[%s]".formatted(randomID)));
     }
 
     @WithMockUser
     @Test
     void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement() throws Exception {
-        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, 1L)
-                        .param("ids", "1"),
+        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, advertisementId)
+                        .param("ids", UUID.randomUUID().toString()),
                 status().isForbidden());
 
-        verify(advertisementService).findByIdAndOwnerUsername(1L, "user");
+        verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("user"));
         verifyResultException(mvcResult, IllegalOperationException.class, getMessageSource("user.not-owner"));
     }
 }

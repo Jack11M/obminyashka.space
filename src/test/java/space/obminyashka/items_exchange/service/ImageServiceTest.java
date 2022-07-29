@@ -19,6 +19,7 @@ import space.obminyashka.items_exchange.service.basic.BasicImageCreator;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +42,7 @@ class ImageServiceTest extends BasicImageCreator{
 
     @BeforeEach
     void setUp() throws IOException {
-        jpeg = new Image(1, "test jpeg".getBytes(), null);
+        jpeg = new Image("test jpeg".getBytes(), null);
         testJpg = getImageBytes(MediaType.IMAGE_JPEG);
         testPng = getImageBytes(MediaType.IMAGE_PNG);
         testTxt = new MockMultipartFile("image", "text.txt", MediaType.TEXT_PLAIN_VALUE, "plain text".getBytes());
@@ -51,20 +52,20 @@ class ImageServiceTest extends BasicImageCreator{
     void getImagesResourceByAdvertisementId_shouldReturnAllImagesLinkedToAdvertisement_whenAdvertisementExistsAndContainsImages() {
         when(imageRepository.findByAdvertisementId(any())).thenReturn(List.of(jpeg));
 
-        List<byte[]> result = imageService.getImagesResourceByAdvertisementId(1L);
+        List<byte[]> result = imageService.getImagesResourceByAdvertisementId(UUID.randomUUID());
         assertEquals(jpeg.getResource(), result.get(0), "Images' resources should be equal");
-        verify(imageRepository).findByAdvertisementId(anyLong());
+        verify(imageRepository).findByAdvertisementId(any());
     }
 
     @Test
     void getByAdvertisementId_shouldReturnPopulatedImageDto_whenAdvertisementExistsAndContainsImage() {
         when(imageRepository.findByAdvertisementId(any())).thenReturn(List.of(jpeg));
 
-        ImageDto imageDto = imageService.getByAdvertisementId(1L).get(0);
+        ImageDto imageDto = imageService.getByAdvertisementId(UUID.randomUUID()).get(0);
         assertAll("Checking objects' data equal",
                 () -> assertEquals(jpeg.getId(), imageDto.getId()),
                 () -> assertArrayEquals(jpeg.getResource(), imageDto.getResource()));
-        verify(imageRepository).findByAdvertisementId(anyLong());
+        verify(imageRepository).findByAdvertisementId(any());
     }
 
     @Test
@@ -105,7 +106,7 @@ class ImageServiceTest extends BasicImageCreator{
 
     @Test
     void removeById_shouldRemoveAllImagesWithReceivedId() {
-        List<Long> testImagesId = List.of(1L, 2L, 3L);
+        List<UUID> testImagesId = List.of(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
 
         imageService.removeById(testImagesId);
         verify(imageRepository).deleteAllByIdIn(testImagesId);
@@ -114,7 +115,7 @@ class ImageServiceTest extends BasicImageCreator{
 
     @Test
     void removeById_shouldRemoveOneImageWithReceivedId() {
-        long imageId = 1L;
+        var imageId = UUID.randomUUID();
         imageService.removeById(imageId);
         verify(imageRepository).deleteById(imageId);
         verifyNoMoreInteractions(imageRepository);

@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -44,11 +43,9 @@ import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class UserFlowTest extends BasicControllerTest {
 
     private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
-    private static final String EXISTED_USER_EMAIL = "admin@gmail.com";
     private static final String NEW_USER_EMAIL = "test@test.com";
     private static final String USER_FIRST_NAME = "First";
     private static final String USER_LAST_NAME = "Last";
@@ -78,7 +75,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/update.yml", ignoreCols = {"last_online_time", "updated", "email"})
+    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isAccepted());
 
@@ -105,37 +102,16 @@ class UserFlowTest extends BasicControllerTest {
     void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
         sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].sex").value("MALE"))
-                .andExpect(jsonPath("$[1].id").value(2L))
                 .andExpect(jsonPath("$[1].sex").value("FEMALE"));
     }
 
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "/children/create.yml", ignoreCols = {"birth_date", "sex"})
-    void addChildren_Success_ShouldReturnHttpStatusOk() throws Exception {
-        var validCreatingChildDtoJson = getTestChildren(0L, 0L, 2019);
-
-        sendDtoAndGetResultAction(post(USER_CHILD), validCreatingChildDtoJson, status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
-    }
-
-    @Test
-    @WithMockUser(username = ADMIN_USERNAME)
-    @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "children/delete.yml")
-    void removeChild_Success_ShouldReturnHttpStatusOk() throws Exception {
-        sendUriAndGetMvcResult(delete(USER_CHILD + "/1"), status().isNoContent());
-    }
-
-    @Test
-    @WithMockUser(username = ADMIN_USERNAME)
-    @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "children/update.yml")
+    @ExpectedDataSet(value = "children/update.yml", orderBy = {"created", "name", "birth_date"}, ignoreCols = "id")
     void updateChild_Success_ShouldReturnHttpStatusOk() throws Exception {
-        var validUpdatingChildDtoJson = getTestChildren(1L, 2L, 2018);
+        var validUpdatingChildDtoJson = getTestChildren(2018);
 
         sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
@@ -144,7 +120,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
+    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserPassword_WhenDataCorrect_Successfully() throws Exception {
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
@@ -160,7 +136,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "user")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml",
+    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
         UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
@@ -173,7 +149,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/delete_user_first_expected.yml",
+    @ExpectedDataSet(value = "user/delete_user_first_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void selfDeleteRequest_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
@@ -186,7 +162,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "deletedUser")
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
-    @ExpectedDataSet(value = {"database_init.yml", "user/deleted_user_restore_expected.yml"},
+    @ExpectedDataSet(value = "user/deleted_user_restore_expected.yml", orderBy = {"created", "name"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void makeAccountActiveAgain_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
@@ -199,7 +175,8 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @Commit
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/login_with_oauth2.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
+    @ExpectedDataSet(value = "user/login_with_oauth2.yml", orderBy = {"created", "name"},
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     @WithMockUser(username = NEW_USER_EMAIL)
     void loginNewUserViaOauth2_shouldCreateValidUser() throws Exception {
         var oauth2User = createDefaultOidcUser();

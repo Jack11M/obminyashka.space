@@ -1,10 +1,10 @@
 package space.obminyashka.items_exchange.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -15,13 +15,12 @@ import java.util.List;
 public class Location {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id", insertable = false, updatable = false, nullable = false)
+    private UUID id;
     private String area;
     private String district;
     private String city;
-
-    @JsonAlias("lang")
     private String i18n;
 
     @OneToMany(mappedBy = "location")

@@ -12,7 +12,7 @@ user:
     created: '2020-06-03'
     updated: '2020-06-04'
     status: 'ACTIVE'
-    role_id: 2
+    role_id: c0bb0913-f772-49e9-a9ac-e87246fa3505
   - id: 4
     username: 'new_user'
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
@@ -26,7 +26,7 @@ user:
     created: '2020-06-03'
     updated: '2020-06-03'
     status: 'ACTIVE'
-    role_id: 2
+    role_id: c0bb0913-f772-49e9-a9ac-e87246fa3505
 
 child:
   - id: 3

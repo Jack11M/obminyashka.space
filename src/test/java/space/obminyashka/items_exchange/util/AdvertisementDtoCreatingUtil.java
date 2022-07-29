@@ -8,37 +8,39 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 public class AdvertisementDtoCreatingUtil {
 
-    private static final long existedLocationId = 1L;
+    private static final UUID existedLocationId = UUID.fromString("2c5467f3-b7ee-48b1-9451-7028255b757b");
+    private static final UUID existedAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
     private static final String NOT_VALID_DESCRIPTION = createString(256);
     private static final String NOT_VALID_WISHES = createString(211);
     private static final String NOT_VALID_SIZE = createString(0);
     private static final String NOT_VALID_TOPIC = createString(2);
 
     public static AdvertisementModificationDto createNonExistAdvertisementModificationDto() {
-        return getBuild(0L, "topic", "description", "hat",false, DealType.GIVEAWAY,
-                existedLocationId, AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
+        return getBuild(null,"unique topic", "unique description", "house",false, DealType.GIVEAWAY,
+                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
     }
 
     public static AdvertisementModificationDto createExistAdvertisementModificationDto() {
-        return getBuild(1L, "topic", "description", "shoes", true, DealType.EXCHANGE,
-                existedLocationId, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 2L);
+        return getBuild(existedAdvertisementId, "topic", "description", "shoes", true, DealType.EXCHANGE,
+                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 2L);
     }
 
     public static AdvertisementModificationDto createExistAdvertisementModificationDtoForUpdate() {
-        return getBuild(1L, "new topic", "new description", "BMW",true, DealType.EXCHANGE,
-                existedLocationId, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L);
+        return getBuild(existedAdvertisementId, "new topic", "new description", "BMW",true, DealType.EXCHANGE,
+                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L);
     }
 
     public static AdvertisementModificationDto createExistAdvertisementDtoForUpdateWithNotValidFields() {
-        return getBuild(1L, NOT_VALID_TOPIC, NOT_VALID_DESCRIPTION, NOT_VALID_WISHES, true, DealType.EXCHANGE,
-                existedLocationId, AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, NOT_VALID_SIZE, 1L);
+        return getBuild(existedAdvertisementId, NOT_VALID_TOPIC, NOT_VALID_DESCRIPTION, NOT_VALID_WISHES, true, DealType.EXCHANGE,
+                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, NOT_VALID_SIZE, 1L);
     }
 
-    private static AdvertisementModificationDto getBuild(long advId, String topic, String description, String wishes,
-                                                         boolean offer, DealType exchange, long locationId, AgeRange age,
+    private static AdvertisementModificationDto getBuild(UUID advId, String topic, String description, String wishes,
+                                                         boolean offer, DealType exchange, AgeRange age,
                                                          Season season, Gender gender, String size, long subcatId) {
         return AdvertisementModificationDto.builder()
                 .id(advId)
@@ -49,24 +51,11 @@ public class AdvertisementDtoCreatingUtil {
                 .season(season)
                 .dealType(exchange)
                 .readyForOffers(offer)
-                .locationId(locationId)
+                .locationId(AdvertisementDtoCreatingUtil.existedLocationId)
                 .subcategoryId(subcatId)
                 .wishesToExchange(wishes)
                 .description(description)
                 .build();
-    }
-
-    public static String createValidationMessage(String dtoFieldName, String dtoFieldValue, String minValidValue, String maxValidValue) {
-        return MessageSourceUtil.getMessageSource("invalid.size")
-                .replace("${validatedValue}", "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
-                .replace("{min}", minValidValue)
-                .replace("{max}", maxValidValue);
-    }
-
-    public static String createValidationMessage(String dtoFieldName, String dtoFieldValue, String maxValidValue) {
-        return MessageSourceUtil.getMessageSource("invalid.max-size")
-                .replace("${validatedValue}", "updateAdvertisement.dto." + dtoFieldName + ": " + dtoFieldValue)
-                .replace("{max}", maxValidValue);
     }
 
     public static boolean isResponseContainsExpectedResponse(String expectedResponse, MvcResult mvcResult) throws UnsupportedEncodingException {

@@ -16,12 +16,13 @@ import space.obminyashka.items_exchange.model.enums.Season;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository
 @Transactional
-public interface AdvertisementRepository extends JpaRepository<Advertisement, Long> {
+public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID> {
 
-    boolean existsAdvertisementByIdAndUser(Long id, User user);
+    boolean existsAdvertisementByIdAndUser(UUID id, User user);
 
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) LIKE %?1% OR LOWER(a.description) LIKE %?1%")
     Page<Advertisement> search(String keyword, Pageable pageable);
@@ -29,7 +30,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) IN :topics")
     Page<Advertisement> search(@Param("topics") Set<String> topics, Pageable pageable);
 
-    Optional<Advertisement> findAdvertisementByIdAndUserUsername(long id, String username);
+    Optional<Advertisement> findAdvertisementByIdAndUserUsername(UUID id, String username);
 
     @Query("SELECT a from Advertisement a where " +
             "(:age is null or a.age = :age) and " +
@@ -39,13 +40,13 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId) and " +
             "(:categoryId is null or a.subcategory.category.id = :categoryId) and " +
             "(:locationId is null or a.location.id = :locationId)")
-    Iterable<Advertisement> findFirst10ByParams(@Param("age") AgeRange age,
+    Collection<Advertisement> findFirst10ByParams(@Param("age") AgeRange age,
                                                 @Param("gender") Gender gender,
                                                 @Param("size") String size,
                                                 @Param("season") Season season,
                                                 @Param("subcategoryId") Long subcategoryId,
                                                 @Param("categoryId") Long categoryId,
-                                                @Param("locationId") Long locationId);
+                                                @Param("locationId") UUID locationId);
 
     Collection<Advertisement> findAllByUserUsername(String username);
 }

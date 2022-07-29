@@ -14,7 +14,6 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = {"username", "email", "firstName", "lastName"})
 public class User extends BaseEntity implements UserDetails {
 

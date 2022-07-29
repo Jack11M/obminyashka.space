@@ -27,10 +27,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -52,14 +50,14 @@ public class ImageServiceImpl implements ImageService {
     private int thumbnailEdge;
 
     @Override
-    public List<byte[]> getImagesResourceByAdvertisementId(long advertisementId) {
+    public List<byte[]> getImagesResourceByAdvertisementId(UUID advertisementId) {
         return imageRepository.findByAdvertisementId(advertisementId).stream()
                 .map(Image::getResource)
                 .toList();
     }
 
     @Override
-    public List<ImageDto> getByAdvertisementId(long advertisementId) {
+    public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
         return mapImagesToDto(imageRepository.findByAdvertisementId(advertisementId));
     }
 
@@ -127,21 +125,21 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
-        return bytes -> new Image(0, bytes, ownerAdvertisement);
+        return bytes -> new Image(bytes, ownerAdvertisement);
     }
 
     @Override
-    public boolean existAllById(List<Long> ids, long advertisementId) {
+    public boolean existAllById(List<UUID> ids, UUID advertisementId) {
         return imageRepository.existsAllByIdInAndAdvertisement_Id(ids, advertisementId);
     }
 
     @Override
-    public void removeById(List<Long> imageIdList) {
+    public void removeById(List<UUID> imageIdList) {
         imageRepository.deleteAllByIdIn(imageIdList);
     }
 
     @Override
-    public void removeById(long imageId) {
+    public void removeById(UUID imageId) {
         imageRepository.deleteById(imageId);
     }
 
@@ -180,7 +178,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public int countImagesForAdvertisement(long id) {
+    public int countImagesForAdvertisement(UUID id) {
         return imageRepository.countImageByAdvertisement_Id(id);
     }
 

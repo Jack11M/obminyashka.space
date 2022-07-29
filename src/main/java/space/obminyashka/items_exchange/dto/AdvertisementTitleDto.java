@@ -2,6 +2,8 @@ package space.obminyashka.items_exchange.dto;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,7 +11,7 @@ import lombok.*;
 @Builder
 @EqualsAndHashCode(exclude = {"advertisementId"})
 public class AdvertisementTitleDto {
-    private long advertisementId;
+    private UUID advertisementId;
     private byte[] image;
     private String title;
     private LocationDto location;
