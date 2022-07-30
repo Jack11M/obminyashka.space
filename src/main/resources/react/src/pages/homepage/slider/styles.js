@@ -32,7 +32,7 @@ export const CategorySliderImageTitle = styled.b`
   line-height: 44px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-family: Pollywog_Cyr;
+  font-family: Caveat;
 `;
 
 export const CategorySliderLink = styled(Link)`
