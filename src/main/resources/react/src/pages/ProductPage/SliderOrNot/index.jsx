@@ -5,10 +5,10 @@ import * as Styles from './styles';
 import { settings } from './config';
 import NoPhoto from '../ProductPhotoCarousel/NoPhoto/NoPhoto';
 
-const SliderOrNot = ({ photos, showBigImg, bigPhoto }) => {
+const SliderOrNot = ({ photos = [], showBigImg, bigPhoto }) => {
   let variable;
 
-  if (photos.length === 0) {
+  if (photos?.length === 0) {
     variable = <NoPhoto />;
   } else if (photos.length < 5) {
     variable = (
@@ -29,7 +29,7 @@ const SliderOrNot = ({ photos, showBigImg, bigPhoto }) => {
     variable = (
       <Styles.ImageSlider>
         <Slider {...settings}>
-          {photos.map((photo) => (
+          {photos?.map((photo) => (
             <div key={`index-${photo.id}`}>
               <Styles.Image
                 small

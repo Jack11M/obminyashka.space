@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
@@ -8,7 +7,7 @@ import { getAuth, getProfile, getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
-import './navtop.scss';
+import * as Styles from './styles';
 
 const NavTop = () => {
   const lang = useSelector(getLang);
@@ -16,34 +15,34 @@ const NavTop = () => {
   const profile = useSelector(getProfile);
 
   return (
-    <div className="navbar-top-inner">
-      <div className="wrapper">
-        <div className="navbar-top">
-          <div className="navbar-top-links">
-            <Link to="/" className="navbar-top-link">
+    <Styles.Div>
+      <Styles.Wrapper>
+        <Styles.DivTop>
+          <Styles.WrapLinks>
+            <Styles.NavTopLink to="/">
               {getTranslatedText('header.about', lang)}
-            </Link>
+            </Styles.NavTopLink>
 
-            <Link to={route.home} className="navbar-top-link">
-              <HeartSvg className="navbar-top-link-svg" />
+            <Styles.NavTopLink to={route.home}>
+              <HeartSvg />
               {getTranslatedText('header.goodness', lang)}
-            </Link>
-          </div>
+            </Styles.NavTopLink>
+          </Styles.WrapLinks>
 
-          <div id="personalArea">
-            <Link to={isAuthed ? route.userInfo : route.login}>
+          <Styles.WrapPersonal>
+            <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
               <Avatar whatIsClass="user-photo" width={30} height={28} />
 
-              <span>
+              <Styles.ProfileSpan>
                 {profile?.username ||
                   getTranslatedText('header.myOffice', lang)}
-              </span>
-            </Link>
+              </Styles.ProfileSpan>
+            </Styles.LoginLink>
             <CustomSelect />
-          </div>
-        </div>
-      </div>
-    </div>
+          </Styles.WrapPersonal>
+        </Styles.DivTop>
+      </Styles.Wrapper>
+    </Styles.Div>
   );
 };
 

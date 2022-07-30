@@ -1,10 +1,9 @@
-import './spinnerForAuthBtn.scss';
+import * as Styles from './styles';
 
 const SpinnerForAuthBtn = () => (
-  <div className="lds-ripple">
-    <div />
-    <div />
-  </div>
+  <Styles.LdsRipple>
+    <Styles.FirstDiv />
+    <Styles.SecondDiv />
+  </Styles.LdsRipple>
 );
-
 export default SpinnerForAuthBtn;

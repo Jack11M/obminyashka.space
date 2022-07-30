@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ProductCard from 'components/item-card/ProductCard';
+import ProductCard from 'components/item-card';
 import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
 
 import { CardsContainer } from './styles';
