@@ -1,26 +1,25 @@
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
-import './buttonAdv.scss';
+import * as Styles from './styles';
 
 const ButtonAdv = ({ type = 'submit' }) => {
   const lang = useSelector(getLang);
   return (
     <>
       {type === 'link' && (
-        <Link to={route.addAdv} className="btn-adv">
-          <span>{getTranslatedText('button.addAdv', lang)}</span>
-        </Link>
+        <Styles.StylizedLink to={route.addAdv}>
+          <Styles.Span>{getTranslatedText('button.addAdv', lang)}</Styles.Span>
+        </Styles.StylizedLink>
       )}
 
       {type === 'submit' && (
-        <button type="submit" className="btn-adv">
-          <span>{getTranslatedText('button.addAdv', lang)}</span>
-        </button>
+        <Styles.SubmitButton type="submit">
+          <Styles.Span>{getTranslatedText('button.addAdv', lang)}</Styles.Span>
+        </Styles.SubmitButton>
       )}
     </>
   );
