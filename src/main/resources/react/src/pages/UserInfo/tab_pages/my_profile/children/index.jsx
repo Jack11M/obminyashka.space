@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FieldArray, Form, Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { enumSex } from 'config/ENUM';
 import { Button } from 'components/common';
 import { getProfile } from 'store/profile/slice';
-import { postChildrenThunk } from 'store/profile/thunk';
+import { putChildrenThunk } from 'store/profile/thunk';
 import { getTranslatedText } from 'components/local/localization';
 import ButtonsAddRemoveChild from 'pages/UserInfo/components/buttonsAddRemoveChild';
 
@@ -19,15 +19,19 @@ const amount = 10;
 const Children = () => {
   const dispatch = useDispatch();
   const { children } = useSelector(getProfile);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues = useMemo(() => getInitialValues(children), [children]);
 
   const onSubmit = (values) => {
     try {
-      dispatch(postChildrenThunk(values.children));
+      setIsLoading(true);
+      dispatch(putChildrenThunk(values.children));
       toast.success('Дети успешно добавлены');
     } catch (e) {
       toast.error(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,6 +97,7 @@ const Children = () => {
               mb="220px"
               type="submit"
               width="248px"
+              isLoading={isLoading}
               text={getTranslatedText('button.saveChanges')}
             />
           </Form>

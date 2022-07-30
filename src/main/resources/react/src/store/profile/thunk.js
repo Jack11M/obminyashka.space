@@ -13,7 +13,7 @@ export const getUserThunk = () => async (dispatch) => {
   }
 };
 
-export const postChildrenThunk = (children) => async (dispatch) => {
+export const putChildrenThunk = (children) => async (dispatch) => {
   try {
     const data = await api.profile.putUserChildren(children);
     dispatch(putChildrenToStore(data));

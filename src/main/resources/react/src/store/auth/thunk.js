@@ -5,7 +5,7 @@ import { logOutUser, putToken, setAuthed } from './slice';
 
 export const logoutUserThunk = () => async (dispatch) => {
   try {
-    await api.fetchAuth.postAuthLogout();
+    await api.auth.postAuthLogout();
     dispatch(logOutUser());
   } catch (err) {
     dispatch(logOutUser());
@@ -14,7 +14,7 @@ export const logoutUserThunk = () => async (dispatch) => {
 
 export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
   try {
-    const data = await api.fetchAuth.postAuthLogin(dataFormik);
+    const data = await api.auth.postAuthLogin(dataFormik);
     if (checkbox) {
       localStorage.setItem('user', JSON.stringify(data));
     } else {
@@ -29,7 +29,7 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
 
 export const putOauthUserThunk = () => async (dispatch) => {
   try {
-    const user = await api.fetchAuth.postOAuth2Success();
+    const user = await api.auth.postOAuth2Success();
     if (user !== '') {
       localStorage.setItem('user', JSON.stringify(user));
       dispatch(putToken(user));

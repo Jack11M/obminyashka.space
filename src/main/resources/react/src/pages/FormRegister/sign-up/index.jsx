@@ -72,7 +72,7 @@ const SignUp = () => {
         onSubmit={async (dataFormik, onSubmitProps) => {
           setLoading(true);
           try {
-            await api.fetchAuth.postAuthRegister(dataFormik);
+            await api.auth.postAuthRegister(dataFormik);
             setLoading(false);
             navigate(route.login);
           } catch (err) {

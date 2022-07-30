@@ -39,7 +39,7 @@ const AboutMyself = () => {
 
   const initialUserValues = validationSchema.cast({});
 
-  const handleUserSubmit = async (dataFormik) => {
+  const onSubmit = async (dataFormik) => {
     setAboutLoading(true);
     try {
       const newUserData = {
@@ -71,7 +71,7 @@ const AboutMyself = () => {
   return (
     <Formik
       enableReinitialize
-      onSubmit={handleUserSubmit}
+      onSubmit={onSubmit}
       initialValues={initialUserValues}
       validationSchema={validationSchema}
     >
