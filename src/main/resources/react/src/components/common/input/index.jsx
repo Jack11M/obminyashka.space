@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 
-import { InputAuth, InputDiv, Label, SpanError } from './styles';
+import * as Styles from './styles';
 
 const InputForAuth = ({ text, ...props }) => {
   const lang = useSelector(getLang);
@@ -20,13 +20,13 @@ const InputForAuth = ({ text, ...props }) => {
   }, [lang]);
 
   return (
-    <InputDiv path={path}>
-      <Label>
+    <Styles.InputDiv path={path}>
+      <Styles.Label>
         {text}
-        <InputAuth error={touched && error} {...field} {...props} />
-      </Label>
-      <SpanError>{touched && error}</SpanError>
-    </InputDiv>
+        <Styles.InputAuth error={touched && error} {...field} {...props} />
+      </Styles.Label>
+      <Styles.SpanError>{touched && error}</Styles.SpanError>
+    </Styles.InputDiv>
   );
 };
 

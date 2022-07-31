@@ -2,9 +2,10 @@ import styled, { css } from 'styled-components';
 
 export const InputDiv = styled.div`
   position: relative;
-  margin-bottom: ${({ path }) => (path ? '42px' : '22px')};
+  margin-bottom: ${({ path }) => (path ? '30px' : '22px')};
+
   &:last-child {
-    margin-bottom: ${({ path }) => (path ? '26px' : '32px')};
+    margin-bottom: ${({ path }) => (path ? '25px' : '30px')};
   }
 `;
 
@@ -28,9 +29,10 @@ export const InputAuth = styled.input`
   font-size: 16px;
   line-height: 24px;
   outline: none;
+
   ${({ theme, error }) => css`
-    border: 1px solid ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
     color: ${theme.colors.rightColorText};
+    border: 1px solid ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
 
     &:focus {
       border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 44%)'};
@@ -39,9 +41,6 @@ export const InputAuth = styled.input`
 `;
 
 export const SpanError = styled.span`
-  position: absolute;
-  top: 67px;
-  left: 0;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -51,6 +50,7 @@ export const SpanError = styled.span`
     ${InputAuth} {
       border-color: ${error && theme.colors.colorError};
     }
+
     color: ${theme.colors.colorError};
   `}
 `;
