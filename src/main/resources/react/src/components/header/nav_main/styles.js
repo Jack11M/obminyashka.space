@@ -7,7 +7,7 @@ import { List } from '../nav_category/styles';
 export const DivWrap = styled.div`
   padding: 20px 0 22px;
   border-radius: 0 0 20px 20px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 `;
 
@@ -36,21 +36,25 @@ export const LogoLink = styled(Link)`
   &:active {
     transform: scale(1.03);
   }
+
   @media (min-width: 320px) {
     display: none;
   }
+
   @media (min-width: 540px) {
     display: block;
   }
 `;
+
 export const WrapCategoriesTop = styled.div`
   transition: all 0.3s ease;
   opacity: 0;
   transform: translateY(-50%);
   position: relative;
   bottom: -13px;
+
   ${({ theme }) => css`
-    color: ${theme.colors.btnBlueActive};
+    color: ${theme.colors.btnBlue};
 
     &:after {
       position: absolute;
@@ -58,7 +62,7 @@ export const WrapCategoriesTop = styled.div`
       bottom: 9px;
       content: '';
       border: 5px solid transparent;
-      border-bottom: 5px solid ${theme.colors.btnBlueActive};
+      border-bottom: 5px solid ${theme.colors.btnBlue};
     }
   `}
 `;
@@ -91,7 +95,7 @@ export const WrapCategories = styled.div`
   &:hover {
     ${WrapCategoriesTop} {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(10px);
     }
   }
 
@@ -157,7 +161,7 @@ export const InputSearch = styled.input`
   font-style: italic;
   font-size: 16px;
   line-height: 24px;
-  border: 1px solid ${({ theme }) => theme.colors.btnBlueActive};
+  border: 1px solid ${({ theme }) => theme.colors.activeColor};
   border-radius: 25px;
   box-sizing: border-box;
   outline: none;
@@ -174,6 +178,6 @@ export const Label = styled.div`
   border-radius: 20px;
   width: 40px;
   height: 40px;
-  background-color: ${({ theme }) => theme.colors.btnBlueActive};
+  background-color: ${({ theme }) => theme.colors.btnBlue};
   cursor: pointer;
 `;

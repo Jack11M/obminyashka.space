@@ -70,7 +70,7 @@ export const TextContent = styled.h6`
   height: 37px;
   font-size: 16px;
   line-height: 19px;
-  color: ${({ theme: { colors } }) => colors.blackColorText};
+  color: ${({ theme }) => theme.colors.blackColorText};
   margin: -5px 44px 10px;
   text-align: center;
 
