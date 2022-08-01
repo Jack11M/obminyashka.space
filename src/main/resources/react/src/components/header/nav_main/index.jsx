@@ -7,7 +7,7 @@ import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 
 import * as Styles from './styles';
-import NavCategory from '../nav_category';
+import NavCategory from '../nav_category/index';
 
 const NavMain = () => {
   const lang = useSelector(getLang);

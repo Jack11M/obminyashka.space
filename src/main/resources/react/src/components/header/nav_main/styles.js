@@ -2,11 +2,12 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import logo from 'assets/img/logo.png';
+import { List } from '../nav_category/styles';
 
 export const DivWrap = styled.div`
   padding: 20px 0 22px;
   border-radius: 0 0 20px 20px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 `;
 
@@ -35,11 +36,48 @@ export const LogoLink = styled(Link)`
   &:active {
     transform: scale(1.03);
   }
+
   @media (min-width: 320px) {
     display: none;
   }
+
   @media (min-width: 540px) {
     display: block;
+  }
+`;
+
+export const WrapCategoriesTop = styled.div`
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(-50%);
+  position: relative;
+  bottom: -13px;
+
+  ${({ theme }) => css`
+    color: ${theme.colors.btnBlue};
+
+    &:after {
+      position: absolute;
+      right: -18px;
+      bottom: 9px;
+      content: '';
+      border: 5px solid transparent;
+      border-bottom: 5px solid ${theme.colors.btnBlue};
+    }
+  `}
+`;
+
+export const WrapCategoriesBottom = styled.div`
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:after {
+    position: absolute;
+    right: -18px;
+    bottom: 4px;
+    content: '';
+    border: 5px solid transparent;
+    border-top: 5px solid ${({ theme }) => theme.colors.blackColorText};
   }
 `;
 
@@ -49,15 +87,32 @@ export const WrapCategories = styled.div`
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;
-  color: ${({ theme }) => theme.colors.btnBlueActive};
+  color: ${({ theme }) => theme.colors.blackColorText};
   margin: 25px 0 0 179px;
   padding-bottom: 95px;
   cursor: pointer;
 
   &:hover {
-    left: 0;
-    transform: translateY(0);
+    ${WrapCategoriesTop} {
+      opacity: 1;
+      transform: translateY(10px);
+    }
   }
+
+  &:hover {
+    ${WrapCategoriesBottom} {
+      opacity: 0;
+      transform: translateY(50%);
+    }
+  }
+
+  &:hover {
+    ${List} {
+      left: 0;
+      transform: translateY(0);
+    }
+  }
+
   @media (min-width: 320px) {
     display: none;
   }
@@ -70,46 +125,6 @@ export const WrapCategories = styled.div`
   }
   @media (min-width: 1200px) {
     margin-left: 179px;
-  }
-`;
-
-export const WrapCategoriesTop = styled.div`
-  opacity: 0;
-  transform: translateY(-50%);
-  position: relative;
-  bottom: -13px;
-  ${({ theme }) => css`
-    color: ${theme.colors.blackColorText};
-
-    &:after {
-      position: absolute;
-      right: -18px;
-      bottom: 9px;
-      content: '';
-      border: 5px solid transparent;
-      border-bottom: 5px solid ${theme.colors.btnBlueActive};
-    }
-  `}
-  &:hover {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-export const WrapCategoriesBottom = styled.div`
-  position: relative;
-
-  &:after {
-    position: absolute;
-    right: -18px;
-    bottom: 4px;
-    content: '';
-    border: 5px solid transparent;
-    border-top: 5px solid ${({ theme }) => theme.colors.btnBlueActive};
-  }
-  &:hover {
-    opacity: 0;
-    transform: translateY(50%);
   }
 `;
 
@@ -146,7 +161,7 @@ export const InputSearch = styled.input`
   font-style: italic;
   font-size: 16px;
   line-height: 24px;
-  border: 1px solid ${({ theme }) => theme.colors.btnBlueActive};
+  border: 1px solid ${({ theme }) => theme.colors.activeColor};
   border-radius: 25px;
   box-sizing: border-box;
   outline: none;
@@ -163,6 +178,6 @@ export const Label = styled.div`
   border-radius: 20px;
   width: 40px;
   height: 40px;
-  background-color: ${({ theme }) => theme.colors.btnBlueActive};
+  background-color: ${({ theme }) => theme.colors.btnBlue};
   cursor: pointer;
 `;
