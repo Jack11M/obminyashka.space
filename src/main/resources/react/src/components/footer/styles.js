@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import footerBg from '../../assets/img/footerBg.png';
+
+import footerBg from 'assets/img/footerBg.png';
 
 export const Container = styled.div`
   position: relative;
@@ -38,9 +39,6 @@ export const Blocks = styled.ul`
 `;
 
 export const Lists = styled.li`
-  font-family: Proxima Nova, sans-serif;
-  font-style: normal;
-  font-weight: 400;
   align-items: center;
   display: flex;
   flex-direction: column;
