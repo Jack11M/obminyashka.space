@@ -4,10 +4,9 @@ import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import { Button } from 'components/common/buttons';
 
+import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';
 import { getTranslatedText } from '../local/localization';
-
-import * as Styles from './styles';
 
 const ProductCard = ({
   text,
@@ -56,7 +55,9 @@ const ProductCard = ({
             text={getTranslatedText('button.look', lang)}
           />
 
-          {inboxMessage && <InboxMessage inboxMessage={inboxMessage} />}
+          {inboxMessage && (
+            <InboxMessage inboxMessage={inboxMessage} time="today" />
+          )}
         </Styles.ButtonBlock>
       </Styles.CardContent>
     </Styles.Card>
