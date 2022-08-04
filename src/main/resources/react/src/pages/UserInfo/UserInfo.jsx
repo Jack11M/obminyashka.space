@@ -7,7 +7,7 @@ import { Exit } from './tab_pages/exit';
 import { ActiveProfile } from './active_profile';
 import { RouterTabs } from './tab_pages/router_tabs';
 
-import './UserInfo.scss';
+import * as Styles from './styles';
 
 const UserInfo = () => {
   const navigate = useNavigate();
@@ -27,24 +27,24 @@ const UserInfo = () => {
   };
 
   return (
-    <div className="container">
-      <aside className="left-side">
+    <Styles.Container>
+      <Styles.Aside>
         <ActiveProfile
           lastName={lastName}
           avatar={avatarImage}
           firstName={firstName}
         />
         <Tabs toggle={open} />
-      </aside>
+      </Styles.Aside>
 
-      <main className="main-content">
-        <div className="main-content-wrapper">
+      <Styles.Main>
+        <Styles.ContentWrapper>
           <RouterTabs set={[prevLocation, setPrevLocation]} />
-        </div>
-      </main>
+        </Styles.ContentWrapper>
+      </Styles.Main>
 
       {isModalOpen && <Exit toggle={close} setIsModalOpen={setIsModalOpen} />}
-    </div>
+    </Styles.Container>
   );
 };
 
