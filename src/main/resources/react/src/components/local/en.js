@@ -27,6 +27,7 @@ const en = {
     noSaveMore:
       'The maximum capacity of photos to be stored can be up to 10 pcs',
     selectSize: 'Dimensions are only available for Clothing and Shoes',
+    addChildren: 'Children added successfully',
   },
   errors: {
     minPhoto: 'Minimum 1 photo',
@@ -68,6 +69,7 @@ const en = {
     boy: 'Boy',
     girl: 'Girl',
     unselected: 'Unselected',
+    chooseData: 'First you need to choose a date of birth',
   },
   settings: {
     changePassword: 'Change password',
@@ -207,6 +209,7 @@ const en = {
     from: 'from',
     preview: 'Preview',
     cancel: 'Cancel everything',
+    chooseSize: 'Choose a size',
   },
   categories: {
     Clothing: 'Clothing',

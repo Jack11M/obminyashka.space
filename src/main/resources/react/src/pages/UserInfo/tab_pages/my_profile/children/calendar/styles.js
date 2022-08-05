@@ -8,57 +8,60 @@ export const Container = styled.div`
   gap: 10px;
   margin-bottom: 20px;
 
-  .react-datepicker {
-    padding: 8px;
-    border-radius: 16px;
+  ${({ theme }) => css`
+    .react-datepicker {
+      padding: 8px;
+      border-radius: 16px;
 
-    &__header {
-      background-color: transparent;
-      border-radius: 16px 16px 0 0;
-      border: 2px solid #12b6ed;
-    }
+      &__header {
+        background-color: transparent;
+        border-radius: 16px 16px 0 0;
+        border: 2px solid ${theme.colors.btnBlue};
+      }
 
-    &__day-name {
-      color: #12b6ed;
-      font-size: 16px;
-      font-weight: 700;
-      text-transform: capitalize;
-      user-select: none;
-    }
+      &__day-name {
+        color: ${theme.colors.btnBlue};
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: capitalize;
+        user-select: none;
+      }
 
-    &__day {
-      font-size: 14px;
-      font-weight: 600;
-      user-select: none;
+      &__day {
+        font-size: 14px;
+        font-weight: 600;
+        user-select: none;
 
-      :hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--keyboard-selected) {
-        background-color: #12b6ed1a;
+        :hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--keyboard-selected) {
+          background-color: #12b6ed1a;
+        }
+      }
+
+      &__day--today {
+        color: ${theme.colors.btnBlue};
+        border: 1px solid ${theme.colors.btnBlue};
+        border-radius: 10px;
+      }
+
+      &__day--selected,
+      &__day--keyboard-selected {
+        background-color: ${theme.colors.btnBlue};
+        color: ${theme.colors.white};
+        border-radius: 10px;
+      }
+
+      &__day--outside-month {
+        opacity: 0.8;
+        font-weight: 400;
+      }
+
+      &__day--disabled {
+        font-size: 14px;
+        opacity: 0.5;
+        font-weight: 400;
       }
     }
-
-    &__day--today {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    &__day--selected,
-    &__day--keyboard-selected {
-      background-color: #12b6ed;
-      color: #ffffff;
-      border-radius: 10px;
-    }
-
-    &__day--outside-month {
-      opacity: 0.8;
-      font-weight: 400;
-    }
-
-    &__day--disabled {
-      font-size: 14px;
-      opacity: 0.5;
-      font-weight: 400;
-    }
-  }
+  `}
 `;
 
 export const Label = styled.label`
@@ -93,7 +96,7 @@ export const Input = styled.input`
   `}
 
   &::placeholder {
-    color: #a3a3a3;
+    color: ${({ theme }) => theme.colors.colorTextDisabled};
   }
 `;
 
@@ -102,6 +105,5 @@ export const ErrorSpan = styled.span`
   font-size: 12px;
   line-height: 20px;
   margin-top: 8px;
-
   color: ${({ theme }) => theme.colors.colorError};
 `;

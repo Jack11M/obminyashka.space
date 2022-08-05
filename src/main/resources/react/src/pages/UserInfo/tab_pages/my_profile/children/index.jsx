@@ -23,11 +23,11 @@ const Children = () => {
 
   const initialValues = useMemo(() => getInitialValues(children), [children]);
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      dispatch(putChildrenThunk(values.children));
-      toast.success('Дети успешно добавлены');
+      await dispatch(putChildrenThunk(values.children));
+      toast.success(getTranslatedText('popup.addChildren'));
     } catch (e) {
       toast.error(e);
     } finally {
@@ -83,7 +83,9 @@ const Children = () => {
                               sex: enumSex.UNSELECTED,
                             });
                           } else {
-                            toast.error('Сначала надо выбрать дату рождения');
+                            toast.error(
+                              getTranslatedText('ownInfo.chooseData')
+                            );
                           }
                         }}
                       />
