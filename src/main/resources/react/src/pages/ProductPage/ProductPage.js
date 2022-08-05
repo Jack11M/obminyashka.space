@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
-import { getLang, getProfile } from 'store/auth/slice';
-import TitleBigBlue from 'components/common/title_Big_Blue';
+import { getErrorMessage } from 'Utils/error';
+import { BackButton, TitleBigBlue } from 'components/common';
+import { getAuthLang, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import ProductPostData from './ProductPostData';
-import ProductOwnerData from './ProductOwnerData';
+import { ProductPostData } from './ProductPostData';
+import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
@@ -30,8 +32,8 @@ import {
 const ProductPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const lang = useSelector(getLang);
-  const profile = useSelector(getProfile);
+  const lang = useSelector(getAuthLang);
+  const profile = useSelector(getAuthProfile);
 
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
@@ -68,7 +70,7 @@ const ProductPage = () => {
       setCurrentLocation(locationValue);
       setWishes(wishesToExchange?.split(', '));
     } catch (e) {
-      console.log(e);
+      toast.error(getErrorMessage(e));
     }
   };
 
@@ -83,6 +85,11 @@ const ProductPage = () => {
     <>
       <TopSection>
         <ProductPageContainer>
+          <BackButton
+            style={{ marginBottom: 16 }}
+            text={getTranslatedText('button.back')}
+          />
+
           <BreadCrumbs>
             {getTranslatedText('product.categories', lang)}/
             {getTranslatedText(`categories.${category?.name}`, lang)}/
@@ -114,8 +121,8 @@ const ProductPage = () => {
                 title={product.topic}
                 readyForOffers={product.readyForOffers}
                 age={enumAge[product.age] || product.age}
-                gender={getTranslatedText(`genderEnum.${product.gender}`, lang)}
-                season={getTranslatedText(`seasonEnum.${product.season}`, lang)}
+                gender={getTranslatedText(`genderEnum.${product.gender}`)}
+                season={getTranslatedText(`seasonEnum.${product.season}`)}
               />
             </OwnerAndPost>
           </ProductPageInner>
@@ -126,9 +133,7 @@ const ProductPage = () => {
         <ProductPageContainer>
           <ProductPageInner>
             <SectionHeading>
-              <TitleBigBlue
-                text={getTranslatedText('product.blueTitle', lang)}
-              />
+              <TitleBigBlue text={getTranslatedText('product.blueTitle')} />
             </SectionHeading>
 
             <ProductOffers />

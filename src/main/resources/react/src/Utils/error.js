@@ -1,7 +1,5 @@
 import { getTranslatedText } from 'components/local/localization';
 
-import { getStorageLang } from '.';
-
 const errorHandling = (errors, key, isValid, forArray) => {
   let errorText;
   switch (forArray) {
@@ -9,10 +7,10 @@ const errorHandling = (errors, key, isValid, forArray) => {
       errorText = '+38(123)456-78-90, 381234567890';
       break;
     case 'children':
-      errorText = getTranslatedText('errors.children', getStorageLang());
+      errorText = getTranslatedText('errors.children');
       break;
     default:
-      errorText = getTranslatedText('errors.regNick', getStorageLang());
+      errorText = getTranslatedText('errors.regNick');
   }
 
   const newError = {
@@ -34,7 +32,7 @@ const translateErrors = (state) =>
     const field = Number.isInteger(child.key) ? 'children' : 'regNick';
     return {
       ...child,
-      errorText: getTranslatedText(`errors.${field}`, getStorageLang()),
+      errorText: getTranslatedText(`errors.${field}`),
     };
   });
 
@@ -62,6 +60,15 @@ const permissionToSendChildren = (state) => {
   return (
     state.children[state.children.length - 1].birthDate &&
     !state.errorsChildren.length
+  );
+};
+
+export const getErrorMessage = (error) => {
+  if (typeof error === 'string') return error;
+  return (
+    error?.response?.data?.error?.message ||
+    error?.message ||
+    'Something went wrong'
   );
 };
 

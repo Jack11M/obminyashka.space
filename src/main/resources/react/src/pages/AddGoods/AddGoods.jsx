@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import ru from 'components/local/ru';
 import { enumAge } from 'config/ENUM';
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
+import { getErrorMessage } from 'Utils/error';
+import { getAuthLang } from 'store/auth/slice';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
-import { Button, ButtonAdv } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 import { FormHandler, FormikCheckBox } from 'components/common/formik';
+import { Button, ButtonAdv, BackButton } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -26,8 +28,9 @@ import './AddGoods.scss';
 const AddGoods = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const lang = useSelector(getAuthLang);
   const adv = useSelector(getAdv);
-  const lang = useSelector(getLang);
+
   const { genderEnum, seasonEnum } = ru;
 
   const regexp = /data:image\/(jpg|jpeg|png|gif);base64,/;
@@ -57,25 +60,25 @@ const AddGoods = () => {
     id: Yup.number().default(() => 0),
     dealType: Yup.string().default(() => 'EXCHANGE'),
     categoryId: Yup.number()
-      .required(getTranslatedText('errors.requireField', lang))
+      .required(getTranslatedText('errors.requireField'))
       .default(() => categoryItems?.id),
     subcategoryId: Yup.number()
-      .required(getTranslatedText('errors.requireField', lang))
+      .required(getTranslatedText('errors.requireField'))
       .default(() => subCategoryItems?.id),
     topic: Yup.string()
-      .required(getTranslatedText('errors.requireField', lang))
-      .min(3, getTranslatedText('errors.min3', lang))
-      .max(30, getTranslatedText('errors.max5', lang))
+      .required(getTranslatedText('errors.requireField'))
+      .min(3, getTranslatedText('errors.min3'))
+      .max(30, getTranslatedText('errors.max5'))
       .default(() => announcementTitle),
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
-      .required(getTranslatedText('errors.requireField', lang))
+      .required(getTranslatedText('errors.requireField'))
       .default(() => exchangeList.join(',')),
     age: Yup.string()
-      .required(getTranslatedText('errors.requireField', lang))
+      .required(getTranslatedText('errors.requireField'))
       .default(() => age.join('')),
     gender: Yup.string()
-      .required(getTranslatedText('errors.requireField', lang))
+      .required(getTranslatedText('errors.requireField'))
       .default(() => gender.join('')),
     season: Yup.string()
       .required()
@@ -83,30 +86,22 @@ const AddGoods = () => {
     size: Yup.string()
       .when('categoryId', {
         is: (value) => value === 1,
-        then: Yup.string().required(
-          getTranslatedText('errors.requireField', lang)
-        ),
+        then: Yup.string().required(getTranslatedText('errors.requireField')),
       })
       .when('categoryId', {
         is: (value) => value === 2,
-        then: Yup.string().required(
-          getTranslatedText('errors.requireField', lang)
-        ),
+        then: Yup.string().required(getTranslatedText('errors.requireField')),
       })
       .default(() => size),
     description: Yup.string()
-      .max(255, getTranslatedText('errors.max255', lang))
+      .max(255, getTranslatedText('errors.max255'))
       .default(() => description),
     locationId: Yup.number()
       .nullable()
-      .required(getTranslatedText('errors.requireField', lang))
+      .required(getTranslatedText('errors.requireField'))
       .default(() => locationId),
     images: Yup.array()
-      .test(
-        '',
-        getTranslatedText('errors.minPhoto', lang),
-        (photo) => !!photo.length
-      )
+      .test('', getTranslatedText('errors.minPhoto'), (photo) => !!photo.length)
       .default(() => imageFiles),
   });
 
@@ -125,7 +120,7 @@ const AddGoods = () => {
       dispatch(clearAdv());
       navigate(route.home);
     } catch (err) {
-      console.log(err.response.data);
+      toast.error(getErrorMessage(err));
     }
   };
 
@@ -216,6 +211,12 @@ const AddGoods = () => {
         <main className="add">
           <div className="add_container">
             <div className="add_inner">
+              <BackButton
+                type="button"
+                style={{ marginBottom: 16 }}
+                text={getTranslatedText('button.back')}
+              />
+
               <SelectionSection
                 readyOffers={{ readyOffer, setReadyOffer }}
                 category={{ categoryItems, setCategoryItems }}
@@ -229,13 +230,13 @@ const AddGoods = () => {
               />
 
               <div className="characteristics">
-                <h3>{getTranslatedText('addAdv.options', lang)}</h3>
+                <h3>{getTranslatedText('addAdv.options')}</h3>
 
                 <div className="characteristics_items">
                   <div className="characteristics_item">
                     <WrapCharacteristic
                       name="age"
-                      title={getTranslatedText('addAdv.age', lang)}
+                      title={getTranslatedText('addAdv.age')}
                     >
                       {agesShow.map((item, idx) => (
                         <FormikCheckBox
@@ -245,7 +246,7 @@ const AddGoods = () => {
                           onChange={setAge}
                           text={enumAge[item]}
                           selectedValues={age}
-                          margin="0 0 15px -7px"
+                          margin="0 0 15px 0"
                           key={String(item + idx)}
                         />
                       ))}
@@ -255,7 +256,7 @@ const AddGoods = () => {
                   <div className="characteristics_item">
                     <WrapCharacteristic
                       name="gender"
-                      title={getTranslatedText('addAdv.sex', lang)}
+                      title={getTranslatedText('addAdv.sex')}
                     >
                       {sexShow.map((item, idx) => (
                         <FormikCheckBox
@@ -263,10 +264,10 @@ const AddGoods = () => {
                           type="radio"
                           name="gender"
                           onChange={setGender}
-                          margin="0 0 15px -7px"
+                          margin="0 0 15px 0"
                           key={String(item + idx)}
                           selectedValues={gender}
-                          text={getTranslatedText(`genderEnum.${item}`, lang)}
+                          text={getTranslatedText(`genderEnum.${item}`)}
                         />
                       ))}
                     </WrapCharacteristic>
@@ -275,7 +276,7 @@ const AddGoods = () => {
                   <div className="characteristics_item">
                     <WrapCharacteristic
                       name="season"
-                      title={getTranslatedText('addAdv.season', lang)}
+                      title={getTranslatedText('addAdv.season')}
                     >
                       {seasonShow.map((item, idx) => (
                         <FormikCheckBox
@@ -283,10 +284,10 @@ const AddGoods = () => {
                           name="season"
                           type="radio"
                           onChange={setSeason}
-                          margin="0 0 15px -7px"
+                          margin="0 0 15px 0"
                           key={String(item + idx)}
                           selectedValues={season}
-                          text={getTranslatedText(`seasonEnum.${item}`, lang)}
+                          text={getTranslatedText(`seasonEnum.${item}`)}
                         />
                       ))}
                     </WrapCharacteristic>
@@ -301,12 +302,12 @@ const AddGoods = () => {
 
               <div className="description">
                 <h3 className="description_title">
-                  {getTranslatedText('addAdv.describeTitle', lang)}
+                  {getTranslatedText('addAdv.describeTitle')}
                 </h3>
 
                 <p className="description_subtitle">
                   <span className="span_star">*</span>
-                  {getTranslatedText('addAdv.describeText', lang)}
+                  {getTranslatedText('addAdv.describeText')}
                 </p>
 
                 <textarea
@@ -340,13 +341,13 @@ const AddGoods = () => {
                     whatClass="preview"
                     width={lang === 'ua' ? '270px' : '222px'}
                     click={() => setButtonPreview(true)}
-                    text={getTranslatedText('addAdv.preview', lang)}
+                    text={getTranslatedText('addAdv.preview')}
                   />
                 </div>
 
                 <div className="cancel" onClick={resetAll}>
                   <div className="cross" />
-                  <p>{getTranslatedText('addAdv.cancel', lang)}</p>
+                  <p>{getTranslatedText('addAdv.cancel')}</p>
                 </div>
               </div>
             </div>

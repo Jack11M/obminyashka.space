@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
-import ProductCard from 'components/item-card';
+import { getErrorMessage } from 'Utils/error';
+import { TitleBigBlue } from 'components/common';
+import { ProductCard } from 'components/item-card';
 import noPhotos from 'assets/img/showAdv/noPhoto.svg';
-import TitleBigBlue from 'components/common/title_Big_Blue';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
 
 const CurrentOffers = () => {
   const navigate = useNavigate();
-  const lang = useSelector(getLang);
 
   const [offers, setOffers] = useState([]);
 
@@ -25,7 +24,7 @@ const CurrentOffers = () => {
         if (Array.isArray(data)) setOffers(data);
       })
       .catch((e) => {
-        console.log(e.response);
+        toast.error(getErrorMessage(e));
       });
   }, []);
 
@@ -36,7 +35,7 @@ const CurrentOffers = () => {
   return (
     <Styles.ProductSection>
       <Styles.ProductHeader>
-        <TitleBigBlue text={getTranslatedText('mainPage.blueText', lang)} />
+        <TitleBigBlue text={getTranslatedText('mainPage.blueText')} />
       </Styles.ProductHeader>
 
       <Styles.ProductListUl>
@@ -59,4 +58,4 @@ const CurrentOffers = () => {
   );
 };
 
-export default CurrentOffers;
+export { CurrentOffers };

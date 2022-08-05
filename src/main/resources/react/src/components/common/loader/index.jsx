@@ -1,9 +1,10 @@
 import * as Styles from './styles';
 
-const SpinnerForAuthBtn = () => (
+const Loader = () => (
   <Styles.LdsRipple>
     <Styles.FirstDiv />
     <Styles.SecondDiv />
   </Styles.LdsRipple>
 );
-export default SpinnerForAuthBtn;
+
+export { Loader };

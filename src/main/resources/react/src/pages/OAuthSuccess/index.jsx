@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { putOauthUserThunk } from 'store/auth/thunk';
 import { useNavigate, useLocation } from 'react-router-dom';
+
+import { showMessage } from 'hooks';
+import { putOauthUserThunk } from 'store/auth/thunk';
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
@@ -15,12 +17,12 @@ const OAuthSuccess = () => {
       await dispatch(putOauthUserThunk());
       navigate('/');
     } catch (e) {
-      console.log(e.response);
+      showMessage(e.response);
     }
   };
 
   useEffect(() => {
-    getOAuth2User().then((res) => console.log(res));
+    getOAuth2User().then((res) => showMessage(res));
   }, []);
 
   return null;

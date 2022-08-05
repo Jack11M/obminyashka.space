@@ -1,17 +1,17 @@
 export {
   addChild,
   addPhone,
-  changePhoneInputOrChildren,
-  dateValidation,
-  deleteItem,
-  deleteLastPhone,
-  deleteReceivedChildren,
-  fillUserInfo,
-  genderChange,
   getArray,
-  getCurrentDate,
+  deleteItem,
   getMinDate,
   putChildren,
+  fillUserInfo,
+  genderChange,
+  dateValidation,
+  getCurrentDate,
+  deleteLastPhone,
+  deleteReceivedChildren,
+  changePhoneInputOrChildren,
 } from './profileUtils';
 export {
   setStorageUser,
@@ -19,17 +19,11 @@ export {
   getStorageLang,
   removeTokenFromStorage,
 } from './storage';
-// eslint-disable-next-line import/no-cycle
 export {
   errorHandling,
   translateErrors,
   permissionToSendProfile,
   permissionToSendChildren,
-} from './errorHandling';
-// eslint-disable-next-line import/no-cycle
-export {
-  errorAuth,
-  isErrorArray,
-  translateErrorsAuth,
-} from './errorHandlingAuth';
-// export { validation } from './validationInput';
+} from './error';
+
+export { authError, isErrorArray, translateErrorsAuth } from './errorAuth';

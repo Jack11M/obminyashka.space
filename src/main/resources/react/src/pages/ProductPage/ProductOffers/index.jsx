@@ -1,4 +1,4 @@
-import ProductCard from '../../../components/item-card';
+import { ProductCard } from 'components/item-card';
 
 import { OffersContainer } from './styles';
 

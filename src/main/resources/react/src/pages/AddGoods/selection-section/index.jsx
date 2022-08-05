@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import { getLang } from 'store/auth/slice';
+import { showMessage } from 'hooks';
+import { getAuthLang } from 'store/auth/slice';
 import { FormikCheckBox } from 'components/common/formik';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -25,17 +26,13 @@ const SelectionSection = ({
   readyOffers,
   announcement,
 }) => {
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
 
   const [currLang, setCurrLang] = useState(lang);
   const [tempCategory, setTempCategory] = useState(category.categoryItems);
   const [receivedCategories, setReceivedCategories] = useState([]);
-  const [, meta, helpers] = useField({ name: 'topic' });
+  const [, meta] = useField({ name: 'topic' });
   const { error, touched } = meta;
-
-  useEffect(() => {
-    helpers.setError(undefined);
-  }, [lang]);
 
   useEffect(() => {
     (async () => {
@@ -48,7 +45,7 @@ const SelectionSection = ({
           throw { message: 'OOps, I didn’t get the category' };
         }
       } catch (err) {
-        console.log(err.response?.data ?? err.message);
+        showMessage(err.response?.data ?? err.message);
       }
     })();
   }, []);
@@ -83,14 +80,14 @@ const SelectionSection = ({
   return (
     <AddChoose>
       <TitleH3 className="add-title">
-        {getTranslatedText('addAdv.chooseSection', lang)}
+        {getTranslatedText('addAdv.chooseSection')}
       </TitleH3>
 
       <Sections>
         <SectionsItem>
           <ItemDescription>
             <span className="span_star">*</span>{' '}
-            {getTranslatedText('addAdv.category', lang)}
+            {getTranslatedText('addAdv.category')}
           </ItemDescription>
 
           <SelectItem
@@ -99,14 +96,14 @@ const SelectionSection = ({
             data={getArrayKeys()}
             setItem={category.setCategoryItems}
             valueCategory={category.categoryItems}
-            placeholder={getTranslatedText('addAdv.selectCategory', lang)}
+            placeholder={getTranslatedText('addAdv.selectCategory')}
           />
         </SectionsItem>
 
         <SectionsItem>
           <ItemDescription>
             <span className="span_star">*</span>{' '}
-            {getTranslatedText('addAdv.subcategory', lang)}
+            {getTranslatedText('addAdv.subcategory')}
           </ItemDescription>
 
           <SelectItem
@@ -114,14 +111,14 @@ const SelectionSection = ({
             data={getArrayKeys('subcategories')}
             setItem={subcategory.setSubCategoryItems}
             valueCategory={subcategory.subCategoryItems}
-            placeholder={getTranslatedText('addAdv.selectSubcategory', lang)}
+            placeholder={getTranslatedText('addAdv.selectSubcategory')}
           />
         </SectionsItem>
 
         <SectionsItem>
           <ItemDescription>
             <span className="span_star">*</span>{' '}
-            {getTranslatedText('addAdv.headline', lang)}
+            {getTranslatedText('addAdv.headline')}
           </ItemDescription>
 
           <InputText
@@ -137,12 +134,12 @@ const SelectionSection = ({
 
       <FormikCheckBox
         type="checkbox"
-        margin="22px 0 0 -7px"
+        margin="22px 0 0 0"
         name="readyForOffers"
         value="readyForOffers"
         onChange={readyOffers.setReadyOffer}
         selectedValues={readyOffers.readyOffer}
-        text={getTranslatedText('addAdv.readyForOffers', lang)}
+        text={getTranslatedText('addAdv.readyForOffers')}
       />
     </AddChoose>
   );

@@ -1,10 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+
+import { showMessage } from 'hooks';
 import { getStorageLang, getStorageUser } from 'Utils';
 
 const authInitialState = {
   profile: getStorageUser('user'),
   isFetchingAuth: false,
   lang: getStorageLang(),
+  isChangeLang: false,
   isAuthed: !!getStorageUser('user'),
 };
 
@@ -17,9 +20,11 @@ const authSlice = createSlice({
         localStorage.setItem('lang', payload);
         state.lang = payload;
       } catch (e) {
-        console.log(e);
-        console.log('You need to enable a localStorage');
+        showMessage('You need to enable a localStorage');
       }
+    },
+    setChangeLang: (state, { payload }) => {
+      state.isChangeLang = payload;
     },
     putEmail: (state, { payload }) => {
       state.email = payload;
@@ -47,29 +52,29 @@ const authSlice = createSlice({
 const {
   reducer: authReducer,
   actions: {
-    setLanguage,
     putEmail,
+    putToken,
     setAuthed,
     setLoader,
     logOutUser,
-    putToken,
+    setLanguage,
+    setChangeLang,
   },
 } = authSlice;
 
-const getAuth = (state) => state.auth.isAuthed;
-const getLang = (state) => state.auth.lang;
-const getProfile = (state) => state.auth.profile;
+export const getAuth = (state) => state.auth;
+export const getAuthed = (state) => state.auth.isAuthed;
+export const getAuthLang = (state) => state.auth.lang;
+export const getAuthProfile = (state) => state.auth.profile;
 
 export {
-  getAuth,
-  getLang,
   putEmail,
   putToken,
   setAuthed,
   setLoader,
-  getProfile,
   logOutUser,
   setLanguage,
   authReducer,
+  setChangeLang,
   authInitialState,
 };

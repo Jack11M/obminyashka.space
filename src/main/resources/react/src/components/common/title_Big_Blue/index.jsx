@@ -6,4 +6,4 @@ const TitleBigBlue = ({ whatClass = '', text, style }) => (
   </H2>
 );
 
-export default TitleBigBlue;
+export { TitleBigBlue };

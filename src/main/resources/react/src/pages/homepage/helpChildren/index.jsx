@@ -1,32 +1,25 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
-import { BtnGoodBusiness } from 'components/common/buttons';
+import { BtnGoodBusiness } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
 
 const HelpChildren = () => {
-  const lang = useSelector(getLang);
-
   return (
     <Styles.HelpChildren>
       <Styles.HelpChildrenTitleH3>
-        {getTranslatedText('mainPage.helpTitle', lang)}
+        {getTranslatedText('mainPage.helpTitle')}
       </Styles.HelpChildrenTitleH3>
 
       <Styles.HelpChildrenText>
-        <Styles.Strong>
-          {getTranslatedText('mainPage.helpName', lang)}
-        </Styles.Strong>
+        <Styles.Strong>{getTranslatedText('mainPage.helpName')}</Styles.Strong>
         &nbsp;
-        {getTranslatedText('mainPage.helpText', lang)}
+        {getTranslatedText('mainPage.helpText')}
       </Styles.HelpChildrenText>
 
       <Styles.StylizedBtn>
         <BtnGoodBusiness
           href="#"
-          text={getTranslatedText('mainPage.helpButton', lang)}
+          text={getTranslatedText('mainPage.helpButton')}
         />
       </Styles.StylizedBtn>
     </Styles.HelpChildren>

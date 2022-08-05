@@ -1,24 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useField } from 'formik';
-import { useSelector } from 'react-redux';
 import { useTransition, animated } from 'react-spring';
 
-import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 
 const Exchange = ({ exchangeList, setExchange }) => {
-  const lang = useSelector(getLang);
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
-  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
+  const [, meta] = useField({ name: 'wishesToExchange' });
   const { error } = meta;
-
-  useEffect(() => {
-    helpers.setError(undefined);
-  }, [lang]);
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
     from: { opacity: 0, scale: 0 },
@@ -62,18 +55,16 @@ const Exchange = ({ exchangeList, setExchange }) => {
   };
   return (
     <div className="change">
-      <h3 className="change_title">
-        {getTranslatedText('addAdv.exchange', lang)}
-      </h3>
+      <h3 className="change_title">{getTranslatedText('addAdv.exchange')}</h3>
 
       <p className="change-description">
         <span className="span_star">*</span>
         &nbsp;
-        {getTranslatedText('addAdv.whatChange', lang)}
+        {getTranslatedText('addAdv.whatChange')}
       </p>
 
       <p className="change-description_title">
-        {getTranslatedText('addAdv.enterPhrase', lang)}
+        {getTranslatedText('addAdv.enterPhrase')}
       </p>
 
       <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
@@ -96,7 +87,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
             onKeyPress={keyEnter}
             onChange={handleInput}
             className="change_input"
-            placeholder={getTranslatedText('addAdv.placeholderChange', lang)}
+            placeholder={getTranslatedText('addAdv.placeholderChange')}
           />
         </div>
       </div>

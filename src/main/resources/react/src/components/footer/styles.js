@@ -78,7 +78,7 @@ export const Img = styled.img`
   }
 `;
 
-export const BlockButon = styled.div`
+export const BlockButton = styled.div`
   margin-top: 40px;
   background-color: ${({ theme }) => theme.colors.btnBlue};
   padding: 1px 16px;
