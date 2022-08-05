@@ -97,6 +97,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.getStatus() == Status.ACTIVE;
+        return this.getStatus() != Status.DELETED;
     }
 }
