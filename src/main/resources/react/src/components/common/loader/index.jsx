@@ -1,10 +1,10 @@
-import './spinnerForAuthBtn.scss';
+import * as Styles from './styles';
 
 const Loader = () => (
-  <div className="lds-ripple">
-    <div />
-    <div />
-  </div>
+  <Styles.LdsRipple>
+    <Styles.FirstDiv />
+    <Styles.SecondDiv />
+  </Styles.LdsRipple>
 );
 
 export { Loader };

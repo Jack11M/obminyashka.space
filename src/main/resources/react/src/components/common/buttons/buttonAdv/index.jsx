@@ -1,24 +1,24 @@
-import { Link } from 'react-router-dom';
-
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
-import './buttonAdv.scss';
+import * as Styles from './styles';
 
-const ButtonAdv = ({ type = 'submit' }) => (
-  <>
-    {type === 'link' && (
-      <Link to={route.addAdv} className="btn-adv">
-        <span>{getTranslatedText('button.addAdv')}</span>
-      </Link>
-    )}
+const ButtonAdv = ({ type = 'submit' }) => {
+  return (
+    <>
+      {type === 'link' && (
+        <Styles.StylizedLink to={route.addAdv}>
+          <Styles.Span>{getTranslatedText('button.addAdv')}</Styles.Span>
+        </Styles.StylizedLink>
+      )}
 
-    {type === 'submit' && (
-      <button type="submit" className="btn-adv">
-        <span>{getTranslatedText('button.addAdv')}</span>
-      </button>
-    )}
-  </>
-);
+      {type === 'submit' && (
+        <Styles.SubmitButton type="submit">
+          <Styles.Span>{getTranslatedText('button.addAdv')}</Styles.Span>
+        </Styles.SubmitButton>
+      )}
+    </>
+  );
+};
 
 export { ButtonAdv };

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
 
-import { InputAuth, InputDiv, Label, SpanError } from './styles';
+import * as Styles from './styles';
 
 const InputForAuth = ({ text, ...props }) => {
   const location = useLocation();
@@ -12,13 +12,13 @@ const InputForAuth = ({ text, ...props }) => {
   const { error, touched } = meta;
 
   return (
-    <InputDiv path={path}>
-      <Label>
-        <span>{text}</span>
-        <InputAuth error={touched && error} {...field} {...props} />
-      </Label>
-      <SpanError>{touched && error}</SpanError>
-    </InputDiv>
+    <Styles.InputDiv path={path}>
+      <Styles.Label>
+        {text}
+        <Styles.InputAuth error={touched && error} {...field} {...props} />
+      </Styles.Label>
+      <Styles.SpanError>{touched && error}</Styles.SpanError>
+    </Styles.InputDiv>
   );
 };
 

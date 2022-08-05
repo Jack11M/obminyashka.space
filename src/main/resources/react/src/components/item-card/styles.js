@@ -1,6 +1,8 @@
 /* eslint-disable indent */
 import styled, { css } from 'styled-components';
 
+import * as Icon from 'assets/icons';
+
 export const Card = styled.div`
   position: relative;
   width: 290px;
@@ -68,7 +70,7 @@ export const TextContent = styled.h6`
   height: 37px;
   font-size: 16px;
   line-height: 19px;
-  color: ${({ theme: { colors } }) => colors.blackColorText};
+  color: ${({ theme }) => theme.colors.blackColorText};
   margin: -5px 44px 10px;
   text-align: center;
 
@@ -92,25 +94,25 @@ export const ButtonBlock = styled.div`
   display: flex;
 `;
 
-export const InboxSvg = styled.svg`
-  transition: background-color 0.3s ease;
-`;
-
 export const InboxDiv = styled.div`
   position: relative;
   margin-left: 16px;
+  cursor: pointer;
+
+  path {
+    transition: fill 0.3s ease;
+  }
 
   &:hover {
-    cursor: pointer;
-    ${InboxSvg}:hover {
-      cursor: pointer;
+    svg {
       path {
         fill: hsl(116, 60%, 45%);
       }
     }
+  }
 
-    ${InboxSvg}:active {
-      cursor: pointer;
+  &:active {
+    svg {
       path {
         fill: hsl(116, 60%, 41%);
       }
@@ -129,4 +131,24 @@ export const InboxSpan = styled.span`
   font-style: normal;
   font-weight: 800;
   color: #fff;
+`;
+
+export const StylizedAvatar = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  border-radius: 25px;
+  transform: translate(-50%);
+`;
+
+export const FavoriteStar = styled(Icon.FavoriteSarSvg)`
+  display: inline-block;
+  width: 100%;
+  margin: 11px auto;
+`;
+
+export const FavoriteStarWrapper = styled.div`
+  path {
+    fill: ${({ isFavorite }) => (isFavorite ? '#12b6ed' : '#fff')};
+  }
 `;

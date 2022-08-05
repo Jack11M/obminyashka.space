@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { TitleBigBlue } from 'components/common';
-import { ProductCard } from 'components/item-card/ProductCard';
+import { ProductCard } from 'components/item-card';
 
 import { CardsContainer } from './styles';
 

@@ -73,6 +73,7 @@ const Login = () => {
                 name="usernameOrEmail"
                 text={getTranslatedText('auth.logEmail')}
               />
+
               <InputForAuth
                 name="password"
                 type="password"
@@ -88,6 +89,7 @@ const Login = () => {
                 click={changeCheckBox}
                 text={getTranslatedText('auth.remember')}
               />
+
               <ExtraLink to={`${route.login}/${route.signUp}`}>
                 {getTranslatedText('auth.noLogin')}
               </ExtraLink>
