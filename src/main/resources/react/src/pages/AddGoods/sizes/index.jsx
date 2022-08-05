@@ -63,7 +63,7 @@ const Sizes = ({ categories, dimension }) => {
         value={dimension.size}
         onClick={dimension.setSize}
         typeError="popup.selectSize"
-        placeholder="Выберите размер"
+        placeholder="Оберіть розмір"
         titleError="popup.errorTitleSize"
       />
     </div>

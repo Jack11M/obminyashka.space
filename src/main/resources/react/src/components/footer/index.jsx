@@ -43,17 +43,23 @@ const Footer = () => {
               <QuestionSvg />
             </Styles.Span>
 
-            <Styles.FootLink rules to={route.home}>
-              {getTranslatedText('footer.rules', lang)}
-            </Styles.FootLink>
+            <Styles.FootLinkWrapper rules>
+              <Styles.FootLink to={route.home}>
+                {getTranslatedText('footer.rules', lang)}
+              </Styles.FootLink>
+            </Styles.FootLinkWrapper>
 
-            <Styles.FootLink rules to={route.home}>
-              {getTranslatedText('footer.charity', lang)}
-            </Styles.FootLink>
+            <Styles.FootLinkWrapper rules>
+              <Styles.FootLink to={route.home}>
+                {getTranslatedText('footer.charity', lang)}
+              </Styles.FootLink>
+            </Styles.FootLinkWrapper>
 
-            <Styles.FootLink rules to={route.home}>
-              {getTranslatedText('footer.questions', lang)}
-            </Styles.FootLink>
+            <Styles.FootLinkWrapper rules>
+              <Styles.FootLink to={route.home}>
+                {getTranslatedText('footer.questions', lang)}
+              </Styles.FootLink>
+            </Styles.FootLinkWrapper>
           </Styles.Lists>
 
           <Styles.Lists>
@@ -80,7 +86,7 @@ const Footer = () => {
           &copy;
           {getTranslatedText('footer.protect', lang)}
         </Styles.SpanCopy>
-        <Styles.SpanCopy>{`${yearNow} / Обменяшка`}</Styles.SpanCopy>
+        <Styles.SpanCopy>{`${yearNow} / Обміняшка`}</Styles.SpanCopy>
       </Styles.CopyContainer>
     </Styles.Container>
   );

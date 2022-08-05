@@ -69,6 +69,9 @@ export const FootLink = styled(Link)`
   display: block;
   line-height: 24px;
   text-decoration: none;
+`;
+
+export const FootLinkWrapper = styled.div`
   margin-bottom: ${({ rules }) => (rules ? '10px' : '0')};
 `;
 

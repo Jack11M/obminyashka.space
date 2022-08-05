@@ -39,7 +39,6 @@ const CustomSelect = () => {
   const dispatch = useDispatch();
   const lang = useSelector(getLang);
   const [languageArray, setLanguageArray] = useState([
-    { value: 'ru', checked: false },
     { value: 'ua', checked: false },
     { value: 'en', checked: false },
   ]);
