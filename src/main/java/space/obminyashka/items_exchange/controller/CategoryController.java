@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
-import space.obminyashka.items_exchange.mapper.transfer.Exist;
-import space.obminyashka.items_exchange.mapper.transfer.New;
 import space.obminyashka.items_exchange.service.CategoryService;
 
 import javax.validation.Valid;
@@ -27,7 +25,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
-@RequestMapping(ApiKey.CATEGORY)
 @Api(tags = "Category")
 @RequiredArgsConstructor
 @Validated
@@ -35,7 +32,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/names")
+    @GetMapping(ApiKey.CATEGORY_NAMES)
     @ApiOperation(value = "Get all names of existing categories.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -47,7 +44,7 @@ public class CategoryController {
                 new ResponseEntity<>(categoriesNames, HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping(ApiKey.CATEGORY_ALL)
     @ApiOperation(value = "Get all existing categories.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -59,25 +56,25 @@ public class CategoryController {
                 new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @GetMapping("/{category_id}")
+    @GetMapping(ApiKey.CATEGORY_ID)
     @ApiOperation(value = "Get a category by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = "{invalid.exist.id}")
+    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = "{invalid.not-positive.id}")
                                                        @PathVariable("category_id") long id) {
 
         return ResponseEntity.of(categoryService.findCategoryDtoById(id));
     }
 
-    @GetMapping("/{category_id}/sizes")
+    @GetMapping(ApiKey.CATEGORY_SIZES)
     @ApiOperation(value = "Get a category sizes by its ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = "{invalid.exist.id}")
+    public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = "{invalid.not-positive.id}")
                                                              @PathVariable("category_id") int id) {
         var sizes = categoryService.findSizesForCategory(id);
         return sizes.isEmpty()
@@ -86,14 +83,14 @@ public class CategoryController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping
+    @PostMapping(ApiKey.CATEGORY)
     @ApiOperation(value = "Create a new category", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "CREATED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto createCategory(@Validated(New.class) @Valid @RequestBody CategoryDto categoryDto)
+    public CategoryDto createCategory(@Valid @RequestBody CategoryDto categoryDto)
             throws InvalidDtoException {
         if (categoryService.isCategoryDtoValidForCreating(categoryDto)) {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
@@ -103,14 +100,16 @@ public class CategoryController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PutMapping
+    @PutMapping(ApiKey.CATEGORY_ID)
     @ApiOperation(value = "Update an existed category", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public CategoryDto updateCategory(@Validated(Exist.class) @Valid @RequestBody CategoryDto categoryDto) {
+    public CategoryDto updateCategory(@Positive(message = "{invalid.not-positive.id}") @PathVariable("category_id") long id,
+                                      @Valid @RequestBody CategoryDto categoryDto) {
+        categoryDto.setId(id);
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
@@ -119,14 +118,14 @@ public class CategoryController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @DeleteMapping("/{category_id}")
+    @DeleteMapping(ApiKey.CATEGORY_ID)
     @ApiOperation(value = "Delete an existed category", notes = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = "{invalid.exist.id}") long id)
+    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = "{invalid.not-positive.id}") long id)
             throws InvalidDtoException {
 
         if (!categoryService.isCategoryDtoDeletable(id)) {

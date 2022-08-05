@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 
-import javax.validation.ConstraintViolationException;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.CATEGORY;
+import static space.obminyashka.items_exchange.api.ApiKey.CATEGORY_ID;
 import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
 
 @SpringBootTest
@@ -48,10 +47,9 @@ class CategoryControllerTest extends BasicControllerTest {
 
     private static Stream<Arguments> categoryTestData() {
         return Stream.of(
-                Arguments.of(post(CATEGORY), createNonExistCategoryDtoWithInvalidId(), MethodArgumentNotValidException.class),
-                Arguments.of(post(CATEGORY), createNonExistCategoryDtoWithInvalidSubcategoryId(), MethodArgumentNotValidException.class),
-                Arguments.of(post(CATEGORY), createNonExistCategoryDtoWithInvalidName(), ConstraintViolationException.class),
-                Arguments.of(put(CATEGORY), getUpdatedCategoryDtoWithInvalidName(), ConstraintViolationException.class)
+                Arguments.of(post(CATEGORY), createNonExistCategoryDtoWithInvalidSubcategory(), MethodArgumentNotValidException.class),
+                Arguments.of(post(CATEGORY), createNonExistCategoryDtoWithInvalidName(), MethodArgumentNotValidException.class),
+                Arguments.of(put(CATEGORY_ID, 1L), getUpdatedCategoryDtoWithInvalidName(), MethodArgumentNotValidException.class)
         );
     }
 }

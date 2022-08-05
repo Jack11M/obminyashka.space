@@ -1,5 +1,5 @@
 advertisement:
-  - id: 1
+  - id: 65e3ee49-5927-40be-aafd-0461ce45f295
     topic: 'topic'
     description: 'description'
     deal_type: 'EXCHANGE'
@@ -8,76 +8,76 @@ advertisement:
     created: '2019-01-01 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    user_id: 1
-    location_id: 1
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'OLDER_THAN_14'
     gender: 'MALE'
     size: '40'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
-  - id: 2
+  - id: 7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7
     topic: 'Blouses'
     description: 'Blouses description'
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01 00:00:01'
+    created: '2019-01-02 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    user_id: 1
-    location_id: 1
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_3_TO_5'
     gender: 'FEMALE'
     size: '28'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
-  - id: 3
+  - id: 4bd38c87-0f00-4375-bd8f-cd853f0eb9bd
     topic: 'Dresses'
     description: 'Dresses description'
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01 00:00:01'
+    created: '2019-01-03 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    user_id: 1
-    location_id: 1
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_6_TO_9'
     gender: 'FEMALE'
     size: '40'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
-  - id: 4
+  - id: 393f7bfb-cd0a-48e3-adb8-dd5b4c368f04
     topic: 'Skirts'
     description: 'Skirts description'
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01 00:00:01'
+    created: '2019-01-04 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    user_id: 1
-    location_id: 1
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_10_TO_12'
     gender: 'FEMALE'
     size: 'M'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
-  - id: 5
+  - id: 69ea344f-d5ef-4f3a-8772-163a7694da3d
     topic: 'Pajamas'
     description: 'Pajamas description'
     deal_type: 'EXCHANGE'
     ready_for_offers: 'true'
     wishes_to_exchange: 'shoes'
-    created: '2019-01-01 00:00:01'
+    created: '2019-01-05 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    user_id: 1
-    location_id: 1
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_12_TO_14'
     gender: 'UNSELECTED'
     size: 'XS'
@@ -86,7 +86,7 @@ advertisement:
     default_photo: null
 
 user:
-  - id: 1
+  - id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
     username: 'admin'
     # Password encoded from string "@kuIOIY*h986"
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
@@ -100,8 +100,8 @@ user:
     created: '2019-01-01 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    role_id: 1
-  - id: 2
+    role_id: ccfe8c89-bded-4933-afe9-c38f2815057c
+  - id: 9a73b2d0-3528-4123-b2b1-27d61ed5afd3
     username: 'user'
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'user@gmail.com'
@@ -111,43 +111,43 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
-    created: '2019-01-01 00:00:01'
+    created: '2019-01-02 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'ACTIVE'
-    role_id: 2
+    role_id: c0bb0913-f772-49e9-a9ac-e87246fa3505
 
 role:
-  - id: 1
+  - id: ccfe8c89-bded-4933-afe9-c38f2815057c
     name: 'ROLE_ADMIN'
-  - id: 2
+  - id: c0bb0913-f772-49e9-a9ac-e87246fa3505
     name: 'ROLE_USER'
 
 child:
-  - id: 1
+  - id: 63406eb3-309e-4191-88ad-f5958d3c8451
     sex: MALE
     birth_date: '2019-01-01'
-    user_id: 1
-  - id: 2
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+  - id: 322612c0-f8b5-47a2-b42b-49fd9ddf911e
     sex: FEMALE
     birth_date: '2019-02-02'
-    user_id: 1
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
 
 location:
-  - id: 1
+  - id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     area: 'Kharkivska'
     city: 'Kharkiv'
     district: 'Kharkivska district'
     i18n: "EN"
 
 image:
-  - id: 1
+  - id: ebad2511-97c6-4221-a39f-a1b24a7d3251
     # Encoded to byte array with Base64.encodeString("test image jpeg")
     resource: "dGVzdCBpbWFnZSBqcGVn="
-    advertisement_id: 1
-  - id: 2
+    advertisement_id: 65e3ee49-5927-40be-aafd-0461ce45f295
+  - id: e6a85b1b-6c6f-4bbb-b336-f68e43bb69f9
     # Encoded to byte array with Base64.encodeString("test image png")
     resource: "dGVzdCBpbWFnZSBwbmc="
-    advertisement_id: 1
+    advertisement_id: 65e3ee49-5927-40be-aafd-0461ce45f295
 
 category:
   - id: 1
@@ -167,26 +167,26 @@ subcategory:
     category_id: 2
 
 chat:
-  - id: 1
+  - id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
     hash: 'ChatHash'
-    advertisement_id: 2
+    advertisement_id: 7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7
 
 user_chat:
-  - id: 1
-    user_id: 1
-    chat_id: 1
+  - id: 4e2e6676-cb15-4de1-a0f5-7280d810c5b0
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    chat_id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
 
 message:
-  - id: 1
-    chat_id: 1
-    user_id: 1
+  - id: 4fb0be36-6d3a-4041-80e8-f764ce95ed8a
+    chat_id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
     text: 'message text'
     status: 'NEW'
     created: '2019-01-01 00:00:01'
     updated: '2019-01-01 00:00:01'
 
 attachment:
-  - id: 1
-    message_id: 1
+  - id: 6d88550e-c785-4cef-8672-bf0654496b67
+    message_id: 4fb0be36-6d3a-4041-80e8-f764ce95ed8a
     type: 'jpg'
     file_content: 'YWJj'

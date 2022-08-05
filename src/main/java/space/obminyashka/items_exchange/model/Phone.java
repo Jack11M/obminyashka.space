@@ -1,8 +1,10 @@
 package space.obminyashka.items_exchange.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -13,8 +15,9 @@ import javax.persistence.*;
 public class Phone {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+    @Type(type = "uuid-char")
+    private UUID id;
     @Column(name = "phone_number")
     private long phoneNumber;
     @Column(name = "default_phone")

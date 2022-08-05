@@ -2,13 +2,14 @@ package space.obminyashka.items_exchange.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.exception.InvalidLocationInitFileCreatingDataException;
+import space.obminyashka.items_exchange.dto.RawLocation;
 import space.obminyashka.items_exchange.model.Location;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface LocationService {
     /**
@@ -29,14 +30,14 @@ public interface LocationService {
      * @param id Location ID.
      * @return the location with the given id or {@link Optional#empty()} if none found.
      */
-    Optional<Location> findById(long id);
+    Optional<Location> findById(UUID id);
 
     /**
      * Retrieves locations by its id.
      * @param ids List of Location IDs.
      * @return the Location DTOs with the given ids.
      */
-    List<LocationDto> findByIds(List<Long> ids);
+    List<LocationDto> findByIds(List<UUID> ids);
 
     /**
      * Returns an {@code Optional} describing a {@link LocationDto} by its id, if
@@ -44,7 +45,7 @@ public interface LocationService {
      * @param id Location ID.
      * @return the Location DTO with the given id or {@link Optional#empty()} if none found.
      */
-    Optional<LocationDto> getById(long id);
+    Optional<LocationDto> getById(UUID id);
 
     /**
      * Creates a new record in table location in DB.
@@ -64,20 +65,20 @@ public interface LocationService {
      * Removes the location with the given id from DB.
      * @param id Location ID to remove.
      */
-    void removeById(long id);
+    void removeById(UUID id);
 
     /**
      * Removes the locations with the given ids from DB.
      * @param ids list of Location IDs to remove.
      */
-    void removeById(List<Long> ids);
+    void removeById(List<UUID> ids);
 
     /**
      * If a location exists, returns {@code true}, otherwise {@code false}.
      * @param id Location ID.
      * @return true if a location with the given id exists, false otherwise.
      */
-    boolean existsById(long id);
+    boolean existsById(UUID id);
 
     /**
      * Updates a record in location table.
@@ -90,16 +91,8 @@ public interface LocationService {
      * Creates file to initialize locations in database.
      * @param creatingData must match the regular expression for creating of initialization file.
      * @return content of newly created file.
-     * @throws InvalidLocationInitFileCreatingDataException when data to parse not matching to regular expression.
      * @throws JsonProcessingException (extends IOException) when there is error of mapping data to location entity.
      * @throws IOException when there is error of writing data to newly created locations file.
      */
-    String createParsedLocationsFile(String creatingData) throws IOException, InvalidLocationInitFileCreatingDataException;
-
-    /**
-     * Checks a parameter against a pattern of creating of initialization file.
-     * @param creatingData must match the regular expression for creating of initialization file.
-     * @return true if parameter matches the regular expression, false if it's not.
-     */
-    boolean isLocationDataValid(String creatingData);
+    String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException;
 }

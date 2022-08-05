@@ -14,6 +14,7 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class SubcategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id")
-                                                                        @PositiveOrZero(message = "{invalid.id}") long id) {
+                                                                        @Positive(message = "{invalid.not-positive.id}") long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
         return subcategoriesNames.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -51,7 +52,7 @@ public class SubcategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteSubcategoryById(@PathVariable("subcategory_id") @PositiveOrZero(message = "{invalid.id}") long id)
+    public void deleteSubcategoryById(@PathVariable("subcategory_id") @PositiveOrZero(message = "{validation.null.id}") long id)
             throws InvalidDtoException {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
             throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "subcategory.not-deletable"));

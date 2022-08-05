@@ -11,15 +11,17 @@ import space.obminyashka.items_exchange.model.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface AdvertisementService {
 
     /**
      * Find all advertisements as thumbnails and return them by requested quantity (size) and page
+     *
      * @param pageable see {@link Pageable} for more details
      * @return wanted quantity of advertisement on a page
      */
-    List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
+    Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
 
     /**
      * Find 12 random advertisements as thumbnails
@@ -48,14 +50,14 @@ public interface AdvertisementService {
      * @param ownerName login or email of the advertisement's owner
      * @return {@link Optional} as result
      */
-    Optional<Advertisement> findByIdAndOwnerUsername(long advertisementId, String ownerName);
+    Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName);
 
     /**
      * Find an advertisement Display DTO by id
      * @param id advertisement id
      * @return {@link Optional} as result
      */
-    Optional<AdvertisementDisplayDto> findDtoById(long id);
+    Optional<AdvertisementDisplayDto> findDtoById(UUID id);
 
     /**
      * Find first 10 matched advertisements by one of received parameters of the request DTO
@@ -70,7 +72,7 @@ public interface AdvertisementService {
      * @param user for checking authority
      * @return result of the check
      */
-    boolean isUserHasAdvertisementWithId(long id, User user);
+    boolean isUserHasAdvertisementWithId(UUID id, User user);
 
     /**
      * Create a new advertisement
@@ -92,14 +94,14 @@ public interface AdvertisementService {
      * Remove an advertisement by its id
      * @param id id of the advertisement to remove
      */
-    void remove(long id);
+    void remove(UUID id);
 
     /**
      * Set an image as title image of an advertisement
      * @param advertisement advertisement for setting the title image
      * @param imageId id of an image that planned to be set as title image
      */
-    void setDefaultImage(Advertisement advertisement, Long imageId);
+    void setDefaultImage(Advertisement advertisement, UUID imageId);
 
     /**
      * Check if a user owns such advertisement, and it has selected image
@@ -108,7 +110,7 @@ public interface AdvertisementService {
      * @param owner user to check the advertisement and the image
      * @return result of the check
      */
-    boolean isUserHasAdvertisementAndItHasImageWithId(Long advertisementId, Long imageId, User owner);
+    boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, User owner);
 
     /**
      * Returns whether an advertisement with the given id exists.
@@ -116,7 +118,7 @@ public interface AdvertisementService {
      * @param id must not be {@literal null}.
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
-    boolean existById(Long id);
+    boolean existById(UUID id);
 
     /**
      * Count total amount of existed advertisements

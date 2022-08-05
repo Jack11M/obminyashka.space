@@ -1,0 +1,308 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="1.2.00: Remove all constraints for unblocking ID type migration" author="rpkyrych">
+        <dropAllForeignKeyConstraints baseTableName="advertisement"/>
+        <dropAllForeignKeyConstraints baseTableName="attachment"/>
+        <dropAllForeignKeyConstraints baseTableName="black_list"/>
+        <dropAllForeignKeyConstraints baseTableName="chat"/>
+        <dropAllForeignKeyConstraints baseTableName="child"/>
+        <dropAllForeignKeyConstraints baseTableName="image"/>
+        <dropAllForeignKeyConstraints baseTableName="message"/>
+        <dropAllForeignKeyConstraints baseTableName="phone"/>
+        <dropAllForeignKeyConstraints baseTableName="refresh_token"/>
+        <dropAllForeignKeyConstraints baseTableName="user"/>
+        <dropAllForeignKeyConstraints baseTableName="user_deal"/>
+        <dropAllForeignKeyConstraints baseTableName="user_chat"/>
+    </changeSet>
+
+    <changeSet id="1.2.01: Move all 'advertisement' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="advertisement" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="chat" columnName="advertisement_id" newDataType="uuid"/>
+        <modifyDataType tableName="image" columnName="advertisement_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.02: Move 'attachment' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="attachment" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.03: Move 'black_list' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="black_list" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.04: Move all 'chat' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="chat" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="message" columnName="chat_id" newDataType="uuid"/>
+        <modifyDataType tableName="user_chat" columnName="chat_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.05: Move 'child' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="child" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.06: Move 'deal' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="deal" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="user_deal" columnName="deal_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.07: Move 'image' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="image" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.08: Move all 'location' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="location" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="advertisement" columnName="location_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.09: Move all 'message' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="message" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="attachment" columnName="message_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.10: Move 'phone' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="phone" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.11: Move 'refresh_token' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="refresh_token" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.12: Move all 'role' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="role" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="user" columnName="role_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.13: Move all 'user' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="user" columnName="id" newDataType="uuid"/>
+        <modifyDataType tableName="advertisement" columnName="user_id" newDataType="uuid"/>
+        <modifyDataType tableName="black_list" columnName="blocked_id" newDataType="uuid"/>
+        <modifyDataType tableName="black_list" columnName="blocker_id" newDataType="uuid"/>
+        <modifyDataType tableName="child" columnName="user_id" newDataType="uuid"/>
+        <modifyDataType tableName="message" columnName="user_id" newDataType="uuid"/>
+        <modifyDataType tableName="phone" columnName="user_id" newDataType="uuid"/>
+        <modifyDataType tableName="refresh_token" columnName="user_id" newDataType="uuid"/>
+        <modifyDataType tableName="user_chat" columnName="user_id" newDataType="uuid"/>
+        <modifyDataType tableName="user_deal" columnName="user_id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.14: Move 'user_chat' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="user_chat" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.15: Move 'user_deal' ID to UUID format type" author="rpkyrych">
+        <modifyDataType tableName="user_deal" columnName="id" newDataType="uuid"/>
+    </changeSet>
+
+    <changeSet id="1.2.16: add foreign keys back for new ID types" author="rpkyrych">
+
+        <!-- advertisement -->
+
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_location"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="location"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="subcategory_id"
+                                 baseTableName="advertisement"
+                                 constraintName="fk_advertisement_to_subcategory_id"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subcategory"/>
+
+        <!-- attachment -->
+
+        <addForeignKeyConstraint baseColumnNames="message_id"
+                                 baseTableName="attachment"
+                                 constraintName="fk_attachment_to_message_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="message"/>
+
+        <!-- black_list -->
+
+        <addForeignKeyConstraint baseColumnNames="blocked_id"
+                                 baseTableName="black_list"
+                                 constraintName="fk_black_list_to_blocked_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="blocker_id"
+                                 baseTableName="black_list"
+                                 constraintName="fk_black_list_to_blocker_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <!-- chat -->
+
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="chat"
+                                 constraintName="fk_chat_to_advertisement_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisement"/>
+
+        <!-- child -->
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="child"
+                                 constraintName="fk_child_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <!-- image -->
+
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="image"
+                                 constraintName="fk_image_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisement"/>
+
+        <!-- message -->
+
+        <addForeignKeyConstraint baseColumnNames="chat_id"
+                                 baseTableName="message"
+                                 constraintName="fk_message_to_chat_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="chat"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="message"
+                                 constraintName="fk_message_to_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <!-- phone -->
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="phone"
+                                 constraintName="fk_phone_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <!-- refresh_token -->
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="refresh_token"
+                                 constraintName="fk_refresh_token_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <!-- user -->
+
+        <addForeignKeyConstraint baseColumnNames="role_id"
+                                 baseTableName="user"
+                                 constraintName="fk_user_to_role_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="role"/>
+
+        <!-- user_deal -->
+
+        <addForeignKeyConstraint baseColumnNames="deal_id"
+                                 baseTableName="user_deal"
+                                 constraintName="fk_user_deal_to_deal_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="deal"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_deal"
+                                 constraintName="fk_user_deal_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <!-- user_chat -->
+
+        <addForeignKeyConstraint baseColumnNames="chat_id"
+                                 baseTableName="user_chat"
+                                 constraintName="fk_user_chat_to_chat_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="chat"/>
+
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_chat"
+                                 constraintName="fk_user_chat_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet id="1.2.17: Move all existing ID from 'long' to 'UUID type'" author="rpkyrych">
+        <update tableName="advertisement">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="attachment">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="black_list">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="chat">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="child">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="deal">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="image">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="location">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="message">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="phone">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="refresh_token">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="role">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="user">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="user_deal">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+        <update tableName="user_chat">
+            <column name="id" valueComputed="uuid()"/>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.DataConflictException;
-import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
-import space.obminyashka.items_exchange.mapper.UtilMapper;
-import space.obminyashka.items_exchange.mapper.transfer.New;
-import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
@@ -31,16 +26,14 @@ import space.obminyashka.items_exchange.service.UserService;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.validation.groups.Default;
 import java.util.List;
 
 import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
-@RequestMapping(ApiKey.USER)
 @Api(tags = "User")
 @RequiredArgsConstructor
 @Validated
@@ -49,14 +42,13 @@ public class UserController {
 
     @Value("incorrect.password")
     public String incorrectPassword;
-    @Value("${max.children.amount}")
-    private int maxChildrenAmount;
+    private static final int MAX_CHILDREN_AMOUNT = 10;
 
     private final UserService userService;
     private final ImageService imageService;
     private final AdvertisementService advService;
 
-    @GetMapping("/my-info")
+    @GetMapping(ApiKey.USER_MY_INFO)
     @ApiOperation(value = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -66,7 +58,7 @@ public class UserController {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
 
-    @PutMapping("/my-info")
+    @PutMapping(ApiKey.USER_MY_INFO)
     @ApiOperation(value = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -77,7 +69,7 @@ public class UserController {
         return userService.update(userUpdateDto, getUser(authentication.getName()));
     }
 
-    @GetMapping("/my-adv")
+    @GetMapping(ApiKey.USER_MY_ADV)
     @ApiOperation(value = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -90,7 +82,7 @@ public class UserController {
                 new ResponseEntity<>(allByUsername, HttpStatus.OK);
     }
 
-    @PutMapping("/service/pass")
+    @PutMapping(ApiKey.USER_SERVICE_CHANGE_PASSWORD)
     @ApiOperation(value = "Update a user password")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -104,7 +96,7 @@ public class UserController {
         return userService.updateUserPassword(userChangePasswordDto, user);
     }
 
-    @PutMapping("/service/email")
+    @PutMapping(ApiKey.USER_SERVICE_CHANGE_EMAIL)
     @ApiOperation(value = "Update a user email")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -125,7 +117,7 @@ public class UserController {
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
-    @DeleteMapping("/service/delete")
+    @DeleteMapping(ApiKey.USER_SERVICE_DELETE)
     @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -140,7 +132,7 @@ public class UserController {
         return getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user));
     }
 
-    @PutMapping("/service/restore")
+    @PutMapping(ApiKey.USER_SERVICE_RESTORE)
     @ApiOperation(value = "Restore user")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -158,7 +150,7 @@ public class UserController {
         return getMessageSource("account.made.active.again");
     }
 
-    @GetMapping("/child")
+    @GetMapping(ApiKey.USER_CHILD)
     @ApiOperation(value = "Find a registered requested user's children data")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -170,63 +162,21 @@ public class UserController {
                 new ResponseEntity<>(children, HttpStatus.OK);
     }
 
-    @PostMapping("/child")
-    @ApiOperation(value = "Add children data for a registered requested user")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 406, message = "NOT_ACCEPTABLE")})
-    @ResponseStatus(HttpStatus.OK)
-    @Validated({Default.class, New.class})
-    public List<ChildDto> addChildren(@RequestBody @Size(min = 1, max = 10, message = "{exception.invalid.dto}")
-                                              List<@Valid ChildDto> childrenDto, @ApiIgnore Authentication authentication) throws ElementsNumberExceedException {
-        User user = getUser(authentication.getName());
-        int amountOfChildren = childrenDto.size() + user.getChildren().size();
-        if (amountOfChildren > maxChildrenAmount) {
-            throw new ElementsNumberExceedException(getParametrizedMessageSource(
-                    "exception.children-amount", maxChildrenAmount));
-        }
-        return userService.addChildren(user, childrenDto);
-    }
-
-    @DeleteMapping("/child/{id}")
-    @ApiOperation(value = "Delete child data for a registered requested user")
-    @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "NO CONTENT"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeChildren(@PathVariable("id") @Size(min = 1, message = "{exception.invalid.dto}")
-                                       List<@NotNull Long> childrenIdToRemove, @ApiIgnore Authentication authentication) {
-        final User user = getUser(authentication.getName());
-        if (isNotAllIdPresent(user, childrenIdToRemove)) {
-            throw new IllegalIdentifierException(
-                    getMessageSource("exception.invalid.dto"));
-        }
-        userService.removeChildren(user, childrenIdToRemove);
-    }
-
-    @PutMapping("/child")
+    @PutMapping(ApiKey.USER_CHILD)
     @ApiOperation(value = "Update child data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> updateChildren(@RequestBody @Size(min = 1, message = "{exception.invalid.dto}")
-                                                 List<@Valid ChildDto> childrenDto, @ApiIgnore Authentication authentication) {
+    public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{exception.children-amount}")
+                                             @RequestBody List<@Valid ChildDto> childrenDto,
+                                         @ApiIgnore Authentication authentication) {
         final User user = getUser(authentication.getName());
-        if (isNotAllIdPresent(user, UtilMapper.mapBy(childrenDto, ChildDto::getId))) {
-            throw new IllegalIdentifierException(
-                    getExceptionMessageSourceWithAdditionalInfo(
-                            "exception.invalid.dto",
-                            "Not all children from dto present in User"));
-        }
         return userService.updateChildren(user, childrenDto);
     }
 
-    @PostMapping("/service/avatar")
+    @PostMapping(ApiKey.USER_SERVICE_CHANGE_AVATAR)
     @ApiOperation(value = "Update a user avatar image")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
@@ -246,11 +196,6 @@ public class UserController {
             throw new InvalidDtoException(getMessageSource(incorrectPassword));
         }
         return user;
-    }
-
-    private boolean isNotAllIdPresent(User parent, List<Long> childrenId) {
-        final List<Long> userChildrenId = UtilMapper.mapBy(parent.getChildren(), Child::getId);
-        return !userChildrenId.containsAll(childrenId);
     }
 
     private User getUser(String username) {

@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -24,11 +22,10 @@ public class UtilMapper {
         mapper = modelMapper;
     }
 
-    public static <T, K> Collection<K> convertAllTo(Collection<T> tList, Class<K> kClass,
-                                                    Supplier<Collection<K>> collectionFactory) {
+    public static <T, K> List<K> convertAllTo(Collection<T> tList, Class<K> kClass) {
         return tList.stream()
                 .map(t -> mapper.map(t, kClass))
-                .collect(Collectors.toCollection(collectionFactory));
+                .toList();
     }
 
     public static <T, K> K convertTo(T src, Class<K> kClass) {
