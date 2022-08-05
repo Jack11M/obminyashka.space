@@ -1,7 +1,5 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import {
   loop,
   shadow,
@@ -16,7 +14,6 @@ import { goTo } from './helpers';
 import * as Styles from './styles';
 
 const FourOhFourPage = () => {
-  const lang = useSelector(getLang);
   const navigate = useNavigate();
 
   return (
@@ -42,17 +39,15 @@ const FourOhFourPage = () => {
         <Styles.Image src={loop} alt="loop" />
       </Styles.WrapRImg>
 
-      <Styles.Tittle>
-        {getTranslatedText('fourOhFour.noPage', lang)}
-      </Styles.Tittle>
+      <Styles.Tittle>{getTranslatedText('fourOhFour.noPage')}</Styles.Tittle>
 
       <Styles.WrapperButton>
         <Styles.MainButton onClick={() => goTo('home', navigate)}>
-          {getTranslatedText('fourOhFour.mainPage', lang)}
+          {getTranslatedText('fourOhFour.mainPage')}
         </Styles.MainButton>
 
         <Styles.BackButton onClick={() => goTo('', navigate)}>
-          {getTranslatedText('fourOhFour.backPage', lang)}
+          {getTranslatedText('fourOhFour.backPage')}
         </Styles.BackButton>
       </Styles.WrapperButton>
     </>

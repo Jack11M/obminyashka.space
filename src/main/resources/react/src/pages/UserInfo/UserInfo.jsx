@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { getProfile } from 'store/profile/slice';
+
 import { Tabs } from './tabs';
 import { Exit } from './tab_pages/exit';
 import { ActiveProfile } from './active_profile';
@@ -13,9 +15,7 @@ const UserInfo = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prevLocation, setPrevLocation] = useState('');
-  const { firstName, lastName, avatarImage } = useSelector(
-    (state) => state.profileMe
-  );
+  const { firstName, lastName, avatarImage } = useSelector(getProfile);
 
   const open = () => {
     setIsModalOpen(true);

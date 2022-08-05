@@ -15,7 +15,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,7 +39,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @DBRider
 @DataSet("database_init.yml")
 @AutoConfigureMockMvc
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class AuthorizationFlowTest extends BasicControllerTest {
 
     protected static final String VALID_USERNAME = "test";
@@ -61,7 +59,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @Test
     @Commit
-    @ExpectedDataSet(value = "auth/register_user.yml", ignoreCols = {"password", "created", "updated", "last_online_time"})
+    @ExpectedDataSet(value = "auth/register_user.yml", orderBy = {"created", "name"}, ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
         sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
     }
@@ -110,10 +108,10 @@ class AuthorizationFlowTest extends BasicControllerTest {
     @DataSet(value = "auth/login.yml")
     void login_Success_shouldReturnHttpOk() throws Exception {
         sendDtoAndGetResultAction(post(AUTH_LOGIN), new UserLoginDto(VALID_USERNAME, VALID_PASSWORD), status().isOk())
-                .andExpect(content().json("{'firstname':'firstname'}"))
-                .andExpect(content().json("{'lastname':'lastname'}"))
-                .andExpect(content().json("{'email':'test@test.com'}"))
-                .andExpect(content().json("{'avatarImage':'dGVzdCBpbWFnZSBwbmc='}"));
+                .andExpect(content().json("{\"firstname\":\"firstname\"}"))
+                .andExpect(content().json("{\"lastname\":\"lastname\"}"))
+                .andExpect(content().json("{\"email\":\"test@test.com\"}"))
+                .andExpect(content().json("{\"avatarImage\":\"dGVzdCBpbWFnZSBwbmc=\"}"));
     }
 
     @Test

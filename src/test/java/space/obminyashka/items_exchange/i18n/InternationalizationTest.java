@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import space.obminyashka.items_exchange.api.ApiKey;
 
 import java.nio.charset.StandardCharsets;
 
@@ -25,37 +26,37 @@ class InternationalizationTest {
 
     @Test
     void testDefaultLocalizationWithNotExistedAccept_LanguageHeader() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/v1/image/{advertisement_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get(ApiKey.USER_MY_INFO)
                 .header("Accept-Language", "notExisted")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnauthorized())
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString()
-                .contains("ID value has to be positive"));
+                .contains("You must be authenticated"));
     }
 
     @Test
     void testDefaultLocalizationWithoutAccept_LanguageHeader() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/v1/image/{advertisement_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get(ApiKey.USER_MY_INFO)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnauthorized())
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString()
-                .contains("ID value has to be positive"));
+                .contains("You must be authenticated"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"ru", "ru-RU"})
     void testRussianLocalizationWithAccept_LanguageHeaderIsRu(String locale) throws Exception {
-        MvcResult mvcResult = mockMvc.perform(get("/api/v1/image/{advertisement_id}", -100L)
+        MvcResult mvcResult = mockMvc.perform(get(ApiKey.USER_MY_INFO)
                 .header("Accept-Language", locale)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnauthorized())
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8)
-                .contains("Идентификатор должен быть положительным"));
+                .contains("Вы должны быть аутентифицированы"));
     }
 }

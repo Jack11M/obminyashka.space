@@ -99,6 +99,7 @@ const ru = {
     save: 'СОХРАНИТЬ',
     saveEmail: 'СОХРАНИТЬ EMAIL',
     remove: 'УДАЛИТЬ АККАУНТ',
+    back: 'Назад',
   },
   header: {
     about: 'О проекте',

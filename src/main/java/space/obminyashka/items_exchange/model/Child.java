@@ -1,11 +1,12 @@
 package space.obminyashka.items_exchange.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
+import space.obminyashka.items_exchange.model.enums.Gender;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-
-import space.obminyashka.items_exchange.model.enums.Gender;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -16,8 +17,9 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 public class Child {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+    @Type(type = "uuid-char")
+    private UUID id;
     @Enumerated(EnumType.STRING)
     private Gender sex;
     @Column(name = "birth_date")

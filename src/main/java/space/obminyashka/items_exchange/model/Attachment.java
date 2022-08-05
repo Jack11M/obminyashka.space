@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,8 +16,9 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Attachment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+    @Type(type = "uuid-char")
+    private UUID id;
     @ManyToOne
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;

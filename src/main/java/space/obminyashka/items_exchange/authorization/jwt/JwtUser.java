@@ -6,9 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.UUID;
 
 public record JwtUser(
-        @JsonIgnore Long id,
+        @JsonIgnore UUID id,
         String username,
         String firstName,
         String lastName,

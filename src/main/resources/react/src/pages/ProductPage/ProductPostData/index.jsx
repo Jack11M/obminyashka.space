@@ -1,7 +1,4 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
-import { Button } from 'components/common/buttons';
+import { Button } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -15,10 +12,8 @@ const ProductPostData = ({
   season,
   readyForOffers,
 }) => {
-  const lang = useSelector(getLang);
-
   const transformWishes = readyForOffers
-    ? [wishes, getTranslatedText('product.checkInUl', lang)]
+    ? [wishes, getTranslatedText('product.checkInUl')]
     : wishes;
 
   return (
@@ -30,7 +25,7 @@ const ProductPostData = ({
       <Styles.PostDataDescription>
         <Styles.PostDataDescriptionText>
           <Styles.PostDataDescriptionSpan>
-            {`${getTranslatedText('product.changesTo', lang)}:`}
+            {`${getTranslatedText('product.changesTo')}:`}
           </Styles.PostDataDescriptionSpan>
         </Styles.PostDataDescriptionText>
 
@@ -44,15 +39,12 @@ const ProductPostData = ({
       </Styles.PostDataDescription>
 
       <Styles.ButtonContainer>
-        <Button
-          text={getTranslatedText('product.button', lang)}
-          width="250px"
-        />
+        <Button text={getTranslatedText('product.button')} width="250px" />
       </Styles.ButtonContainer>
 
       <Styles.TitleContainer>
         <Styles.TitleH2>
-          {`${getTranslatedText('product.description', lang)}:`}
+          {`${getTranslatedText('product.description')}:`}
         </Styles.TitleH2>
       </Styles.TitleContainer>
 
@@ -61,22 +53,21 @@ const ProductPostData = ({
           <Styles.PostDataDescriptionUl>
             <Styles.PostDataDescriptionUlItem>
               <Styles.PostDataDescriptionSpan>
-                {`${getTranslatedText(
-                  'product.size',
-                  lang
-                )} / ${getTranslatedText('product.age', lang)}:`}
+                {`${getTranslatedText('product.size')} / ${getTranslatedText(
+                  'product.age'
+                )}:`}
               </Styles.PostDataDescriptionSpan>
             </Styles.PostDataDescriptionUlItem>
 
             <Styles.PostDataDescriptionUlItem>
               <Styles.PostDataDescriptionSpan>
-                {`${getTranslatedText('product.season', lang)}:`}
+                {`${getTranslatedText('product.season')}:`}
               </Styles.PostDataDescriptionSpan>
             </Styles.PostDataDescriptionUlItem>
 
             <Styles.PostDataDescriptionUlItem>
               <Styles.PostDataDescriptionSpan>
-                {`${getTranslatedText('product.sex', lang)}:`}
+                {`${getTranslatedText('product.sex')}:`}
               </Styles.PostDataDescriptionSpan>
             </Styles.PostDataDescriptionUlItem>
           </Styles.PostDataDescriptionUl>
@@ -101,4 +92,4 @@ const ProductPostData = ({
     </Styles.Container>
   );
 };
-export default ProductPostData;
+export { ProductPostData };

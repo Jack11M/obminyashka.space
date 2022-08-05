@@ -1,8 +1,5 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
+import { Button } from 'components/common';
 import { Avatar } from 'components/common/avatar';
-import { Button } from 'components/common/buttons';
 
 import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';
@@ -18,7 +15,6 @@ const ProductCard = ({
   inboxMessage,
   clickOnButton,
 }) => {
-  const lang = useSelector(getLang);
   const avatarValue = avatar === '' || avatar;
 
   return (
@@ -29,7 +25,9 @@ const ProductCard = ({
             <Avatar width="40px" height="40px" avatar={avatarValue} />
           </Styles.StylizedAvatar>
         ) : (
-          <Styles.FavoriteStar isFavorite={isFavorite} />
+          <Styles.FavoriteStarWrapper isFavorite={isFavorite}>
+            <Styles.FavoriteStar />
+          </Styles.FavoriteStarWrapper>
         )}
       </Styles.FavoriteMarker>
 
@@ -50,7 +48,7 @@ const ProductCard = ({
           <Button
             click={clickOnButton}
             width={inboxMessage ? '190px' : '222px'}
-            text={getTranslatedText('button.look', lang)}
+            text={getTranslatedText('button.look')}
           />
 
           {inboxMessage && (
@@ -62,4 +60,4 @@ const ProductCard = ({
   );
 };
 
-export default ProductCard;
+export { ProductCard };

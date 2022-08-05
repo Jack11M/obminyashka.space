@@ -5,7 +5,6 @@ import com.github.database.rider.junit5.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 
 import javax.transaction.Transactional;
@@ -14,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @DBRider
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class AdvertisementServiceIntegrationTest {
     @Autowired
     private AdvertisementRepository repository;

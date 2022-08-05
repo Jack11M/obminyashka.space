@@ -26,6 +26,7 @@ const ua = {
     selectFile: 'Виберіть фото обсягом до 10 МБ.',
     noSaveMore: 'Ви не можете мати більше ніж 10 збережених фото.',
     selectSize: 'Розміри доступні виключно для Одягу та Взуття',
+    addChildren: 'Діти успішно додані',
   },
   errors: {
     minPhoto: 'Мінімум 1 фото',
@@ -67,6 +68,7 @@ const ua = {
     boy: 'Хлопчик',
     girl: 'Дівчинка',
     unselected: 'Не вибрано',
+    chooseData: 'Спочатку треба вибрати дату народження',
   },
   settings: {
     changePassword: 'Змінити пароль',
@@ -98,6 +100,7 @@ const ua = {
     save: 'ЗБЕРЕГТИ',
     saveEmail: 'ЗБЕРЕГТИ EMAIL',
     remove: 'ВИДАЛИТИ АКАУНТ',
+    back: 'Назад',
   },
   header: {
     about: 'Про проект',
@@ -204,6 +207,7 @@ const ua = {
     from: 'з',
     preview: 'Попередній перегляд',
     cancel: 'Скасувати все',
+    chooseSize: 'Оберіть розмір',
   },
   categories: {
     Clothing: 'Одяг',

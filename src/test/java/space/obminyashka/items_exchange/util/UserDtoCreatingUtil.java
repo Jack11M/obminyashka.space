@@ -7,8 +7,7 @@ import java.util.Set;
 
 public class UserDtoCreatingUtil {
 
-    public static final Set<PhoneDto> NEW_PHONES = Set.of(
-            new PhoneDto(0, "381234567890", true));
+    public static final Set<PhoneDto> NEW_PHONES = Set.of(new PhoneDto("381234567890", true));
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
     public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
@@ -39,7 +38,7 @@ public class UserDtoCreatingUtil {
     private static Set<PhoneDto> createWithInvalidSizeListOfPhones() {
         Set<PhoneDto> phoneDto = new HashSet<>();
         for (int i = 0; i <= MAX_AMOUNT_OF_PHONES; i++) {
-            phoneDto.add(new PhoneDto(0, "38123456789" + i, true));
+            phoneDto.add(new PhoneDto("38123456789" + i, true));
         }
         return phoneDto;
     }

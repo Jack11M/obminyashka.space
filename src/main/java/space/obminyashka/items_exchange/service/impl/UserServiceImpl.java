@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.authorization.jwt.JwtUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
@@ -32,10 +33,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
+import static space.obminyashka.items_exchange.model.enums.Status.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
         final var locale = LocaleContextHolder.getLocale();
         userToRegister.setLanguage(locale);
-        return userRepository.save(userToRegister).getId() != 0;
+        return userRepository.save(userToRegister).getId() != null;
     }
 
     @Override
@@ -130,18 +129,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String update(UserUpdateDto newUserUpdateDto, User user) {
-        user.setFirstName(newUserUpdateDto.getFirstName());
-        user.setLastName(newUserUpdateDto.getLastName());
-
+        BeanUtils.copyProperties(newUserUpdateDto, user, "phones");
         final var phonesToUpdate = convertPhone(newUserUpdateDto.getPhones());
         final var userPhones = user.getPhones();
-        boolean isEqualsPhones = userPhones.equals(phonesToUpdate);
-        if (!isEqualsPhones) {
-            userPhones.removeIf(Predicate.not((phonesToUpdate::contains)));
-            userPhones.addAll(phonesToUpdate);
-            userPhones.forEach((phone -> phone.setUser(user)));
-        }
+        userPhones.clear();
+        userPhones.addAll(phonesToUpdate);
+        phonesToUpdate.forEach(phone -> phone.setUser(user));
 
+        user.setStatus(UPDATED);
         userRepository.saveAndFlush(user);
         return getMessageSource("changed.user.info");
     }
@@ -224,33 +219,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<ChildDto> addChildren(User parent, List<ChildDto> childrenDtoToAdd) {
-        final List<Child> childrenToSave = new ArrayList<>(convertAllTo(
-                childrenDtoToAdd, Child.class, ArrayList::new));
-        addNewChildren(parent, childrenToSave);
-        userRepository.save(parent);
-        List<Child> children = parent.getChildren();
-        children.retainAll(childrenToSave);
-        return convertToDto(children, ChildDto.class);
-    }
-
-    @Override
     public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
-        List<Child> updatedChildren = new ArrayList<>();
-        parent.getChildren().forEach(pChild -> childrenDtoToUpdate.forEach(uChild -> {
-            if (pChild.getId() == uChild.getId()) {
-                BeanUtils.copyProperties(uChild, pChild);
-                updatedChildren.add(pChild);
-            }
-        }));
-        userRepository.saveAndFlush(parent);
-        return convertToDto(updatedChildren, ChildDto.class);
-    }
+        final var childrenToSave = UtilMapper.convertAllTo(childrenDtoToUpdate, Child.class);
+        final var existedChildren = parent.getChildren();
+        existedChildren.clear();
+        existedChildren.addAll(childrenToSave);
+        childrenToSave.forEach(child -> child.setUser(parent));
 
-    @Override
-    public void removeChildren(User parent, List<Long> childrenIdToRemove) {
-        parent.getChildren().removeIf(child -> childrenIdToRemove.contains(child.getId()));
         userRepository.saveAndFlush(parent);
+        return convertToDto(childrenDtoToUpdate, ChildDto.class);
     }
 
     @Override
@@ -271,14 +248,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 });
     }
 
-    private void addNewChildren(User user, Collection<Child> children) {
-        children.forEach(child -> child.setUser(user));
-        user.getChildren().addAll(children);
-    }
-
     private Set<Phone> convertPhone(Set<PhoneDto> phones) {
         Converter<String, Long> stringLongConverter = context ->
-                Long.parseLong(context.getSource().replaceAll("[^\\d]", ""));
+                Long.parseLong(context.getSource().replaceAll("\\D", ""));
 
         modelMapper.typeMap(PhoneDto.class, Phone.class)
                 .addMappings(mapper -> mapper.using(stringLongConverter)
