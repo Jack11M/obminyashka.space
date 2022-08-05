@@ -20,8 +20,9 @@ export const putUserThunk = (dataFormik, checkbox) => async (dispatch) => {
     }
     dispatch(putToken(data));
     dispatch(setAuthed(true));
+    return Promise.resolve();
   } catch (err) {
-    console.log(err);
+    return Promise.reject(err);
   }
 };
 

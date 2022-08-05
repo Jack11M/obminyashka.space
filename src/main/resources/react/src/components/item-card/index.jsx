@@ -29,7 +29,9 @@ const ProductCard = ({
             <Avatar width="40px" height="40px" avatar={avatarValue} />
           </Styles.StylizedAvatar>
         ) : (
-          <Styles.FavoriteStar isFavorite={isFavorite} />
+          <Styles.FavoriteStarWrapper isFavorite={isFavorite}>
+            <Styles.FavoriteStar />
+          </Styles.FavoriteStarWrapper>
         )}
       </Styles.FavoriteMarker>
 
