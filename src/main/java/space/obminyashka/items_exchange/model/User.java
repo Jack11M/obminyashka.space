@@ -14,7 +14,6 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = {"username", "email", "firstName", "lastName"})
 public class User extends BaseEntity implements UserDetails {
 
@@ -98,6 +97,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.getStatus() == Status.ACTIVE;
+        return this.getStatus() != Status.DELETED;
     }
 }

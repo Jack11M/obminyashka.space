@@ -1,9 +1,14 @@
 package space.obminyashka.items_exchange.model;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -14,8 +19,9 @@ import java.util.List;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue
+    @Type(type = "uuid-char")
+    private UUID id;
     private String name;
 
     @OneToMany(mappedBy = "role")

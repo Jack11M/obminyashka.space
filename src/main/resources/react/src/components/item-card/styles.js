@@ -145,7 +145,9 @@ export const FavoriteStar = styled(Icon.FavoriteSarSvg)`
   display: inline-block;
   width: 100%;
   margin: 11px auto;
+`;
 
+export const FavoriteStarWrapper = styled.div`
   path {
     fill: ${({ isFavorite }) => (isFavorite ? '#12b6ed' : '#fff')};
   }

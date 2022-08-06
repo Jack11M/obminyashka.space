@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import api from 'REST/Resources';
+import { showMessage } from 'hooks';
 import { DropDownInput } from 'pages/AddGoods/drop-down-input';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -100,14 +101,14 @@ const InputLocation = ({
         const modifiedLocation = locationToLang.map((item) =>
           item.area
             ? item
-            : { ...item, area: getTranslatedText('addAdv.districtKyiv', lang) }
+            : { ...item, area: getTranslatedText('addAdv.districtKyiv') }
         );
         setLocation({
           ...location,
           [modifiedLocation[0].i18N]: modifiedLocation,
         });
       } catch (e) {
-        console.log(e.response?.data?.error);
+        showMessage(e.response?.data?.error);
       }
     }
   };

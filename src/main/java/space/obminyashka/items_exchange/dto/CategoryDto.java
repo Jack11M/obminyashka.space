@@ -1,18 +1,14 @@
 package space.obminyashka.items_exchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.List;
-
-import space.obminyashka.items_exchange.annotation.Zero;
-import space.obminyashka.items_exchange.mapper.transfer.Exist;
-import space.obminyashka.items_exchange.mapper.transfer.New;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +17,7 @@ import space.obminyashka.items_exchange.mapper.transfer.New;
 @ToString
 public class CategoryDto {
 
-    @Positive(groups = Exist.class, message = "{invalid.exist.id}")
-    @Zero(groups = New.class, message = "{invalid.new.entity.id}")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
     @ApiModelProperty(

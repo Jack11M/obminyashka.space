@@ -9,6 +9,7 @@ import space.obminyashka.items_exchange.model.Image;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public interface ImageService {
     /**
@@ -16,14 +17,14 @@ public interface ImageService {
      * @param advertisementId Advertisement ID
      * @return all images that are linked to the Advertisement
      */
-    List<byte[]> getImagesResourceByAdvertisementId(long advertisementId);
+    List<byte[]> getImagesResourceByAdvertisementId(UUID advertisementId);
 
     /**
      * Return all Image DTO for received Advertisement ID
      * @param advertisementId Advertisement ID
      * @return list of ImageDTO that are linked
      */
-    List<ImageDto> getByAdvertisementId(long advertisementId);
+    List<ImageDto> getByAdvertisementId(UUID advertisementId);
 
     /**
      * Make in-memory compressing (20% of basic quality) only for supported types of images
@@ -68,19 +69,19 @@ public interface ImageService {
      * @param advertisementId ID of the advertisement
      * @return {@literal true} if all image IDs exist into the advertisement
      */
-    boolean existAllById(List<Long> ids, long advertisementId);
+    boolean existAllById(List<UUID> ids, UUID advertisementId);
 
     /**
      * Remove received images from the DB using their ID
      * @param imageIdList ID images for removing
      */
-    void removeById(List<Long> imageIdList);
+    void removeById(List<UUID> imageIdList);
 
     /**
      * Remove image from the DB by its ID
      * @param imageId ID image to remove
      */
-    void removeById(long imageId);
+    void removeById(UUID imageId);
 
     /**
      * Makes scaled image (thumbnail) from given image bytes
@@ -94,5 +95,5 @@ public interface ImageService {
      * @param id advertisement ID
      * @return total quantity of images already stored for selected advertisement
      */
-    int countImagesForAdvertisement(long id);
+    int countImagesForAdvertisement(UUID id);
 }

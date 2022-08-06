@@ -5,10 +5,11 @@ import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.Location;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface LocationRepository extends JpaRepository<Location, Long> {
-    List<Location> findByIdIn(List<Long> ids);
+public interface LocationRepository extends JpaRepository<Location, UUID> {
+    List<Location> findByIdIn(List<UUID> ids);
 
     List<Location> findByI18nIgnoreCase(String i18n);
 }

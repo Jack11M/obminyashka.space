@@ -41,7 +41,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             InvalidDtoException.class,
-            InvalidLocationInitFileCreatingDataException.class,
             IllegalIdentifierException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleBadRequestExceptions(Exception e, ServletWebRequest request) {
@@ -53,7 +52,7 @@ public class GlobalExceptionHandler {
     public ErrorMessage handleValidationExceptions(MethodArgumentNotValidException e, ServletWebRequest request) {
         final var validationErrors = e.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining("\n", "Validation error(s): ", ""));
+                .collect(Collectors.joining(System.lineSeparator(), "Validation error(s): ", ""));
 
         final var errorMessage = new ErrorMessage(validationErrors, request.getRequest().getRequestURI(), request.getHttpMethod());
         log.log(Level.WARN, errorMessage);

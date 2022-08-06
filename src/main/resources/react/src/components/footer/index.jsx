@@ -1,10 +1,8 @@
 /* eslint-disable max-len */
-import { useSelector } from 'react-redux';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import logoFooter from 'assets/img/Logo-footer.png';
-import { BtnGoodBusiness } from 'components/common/buttons';
+import { BtnGoodBusiness } from 'components/common';
 import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as PhoneSvg } from 'assets/icons/phone.svg';
@@ -13,7 +11,6 @@ import { ReactComponent as QuestionSvg } from 'assets/icons/question-mark.svg';
 import * as Styles from './styles';
 
 const Footer = () => {
-  const lang = useSelector(getLang);
   const timeDate = new Date();
   const yearNow = timeDate.getFullYear();
 
@@ -45,19 +42,19 @@ const Footer = () => {
 
             <Styles.FootLinkWrapper rules>
               <Styles.FootLink to={route.home}>
-                {getTranslatedText('footer.rules', lang)}
+                {getTranslatedText('footer.rules')}
               </Styles.FootLink>
             </Styles.FootLinkWrapper>
 
             <Styles.FootLinkWrapper rules>
               <Styles.FootLink to={route.home}>
-                {getTranslatedText('footer.charity', lang)}
+                {getTranslatedText('footer.charity')}
               </Styles.FootLink>
             </Styles.FootLinkWrapper>
 
             <Styles.FootLinkWrapper rules>
               <Styles.FootLink to={route.home}>
-                {getTranslatedText('footer.questions', lang)}
+                {getTranslatedText('footer.questions')}
               </Styles.FootLink>
             </Styles.FootLinkWrapper>
           </Styles.Lists>
@@ -71,12 +68,12 @@ const Footer = () => {
               <Styles.Img src={logoFooter} alt="Logo" />
             </Styles.FootLink>
 
-            <Styles.BlockButon>
+            <Styles.BlockButton>
               <BtnGoodBusiness
                 href="#"
-                text={getTranslatedText('header.goodness', lang)}
+                text={getTranslatedText('header.goodness')}
               />
-            </Styles.BlockButon>
+            </Styles.BlockButton>
           </Styles.Lists>
         </Styles.Blocks>
       </Styles.Wrapper>
@@ -84,7 +81,7 @@ const Footer = () => {
       <Styles.CopyContainer>
         <Styles.SpanCopy>
           &copy;
-          {getTranslatedText('footer.protect', lang)}
+          {getTranslatedText('footer.protect')}
         </Styles.SpanCopy>
         <Styles.SpanCopy>{`${yearNow} / Обміняшка`}</Styles.SpanCopy>
       </Styles.CopyContainer>

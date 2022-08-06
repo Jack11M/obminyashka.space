@@ -1,13 +1,13 @@
 import * as fetchAddGood from './fetchAddGood';
-import * as fetchAuth from './fetchAuth';
+import * as auth from './auth';
 import * as fetchHome from './fetchHome';
 import * as fetchProduct from './fetchProduct';
-import * as fetchProfile from './fetchProfile';
+import * as profile from './profile';
 
 export default {
-  fetchAuth,
+  auth,
+  profile,
   fetchHome,
   fetchProduct,
   fetchAddGood,
-  fetchProfile,
 };

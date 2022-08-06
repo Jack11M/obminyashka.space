@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
 import { Avatar } from 'components/common/avatar';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -19,8 +16,6 @@ import {
 } from './styles';
 
 const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
-  const lang = useSelector(getLang);
-
   return (
     <Container>
       <ProductOwner>
@@ -38,19 +33,19 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
           <PostReqDataUl>
             <PostReqDataUlItem>
               <PostReqDataSpan>
-                {`${getTranslatedText('product.dateOfAdv', lang)}:`}
+                {`${getTranslatedText('product.dateOfAdv')}:`}
               </PostReqDataSpan>
             </PostReqDataUlItem>
 
             <PostReqDataUlItem>
               <PostReqDataSpan>
-                {`${getTranslatedText('product.cityOfAdv', lang)}:`}
+                {`${getTranslatedText('product.cityOfAdv')}:`}
               </PostReqDataSpan>
             </PostReqDataUlItem>
 
             <PostReqDataUlItem>
               <PostReqDataSpan>
-                {`${getTranslatedText('product.phoneOfAdv', lang)}:`}
+                {`${getTranslatedText('product.phoneOfAdv')}:`}
               </PostReqDataSpan>
             </PostReqDataUlItem>
           </PostReqDataUl>
@@ -69,4 +64,4 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
     </Container>
   );
 };
-export default ProductOwnerData;
+export { ProductOwnerData };

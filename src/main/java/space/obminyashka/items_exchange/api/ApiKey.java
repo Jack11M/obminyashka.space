@@ -7,7 +7,8 @@ public class ApiKey {
     public static final String API = "/api/v1";
     // Advertisement API
     public static final String ADV = API + "/adv";
-    public static final String ADV_SEARCH_PAGINATED = ADV + "/search/{keyword}?page={page}&size={size}";
+    public static final String ADV_SEARCH_PAGINATED = ADV + "/search/{keyword}";
+    public static final String ADV_SEARCH_PAGINATED_REQUEST_PARAMS = ADV_SEARCH_PAGINATED + "?page={page}&size={size}";
     public static final String ADV_DEFAULT_IMAGE = ADV + "/default-image/{advertisementId}/{imageId}";
     public static final String ADV_ID = ADV + "/{advertisement_id}";
     public static final String ADV_FILTER = ADV + "/filter";
@@ -21,6 +22,7 @@ public class ApiKey {
     public static final String AUTH_LOGIN = AUTH + "/login";
     public static final String AUTH_LOGOUT = AUTH + "/logout";
     public static final String AUTH_REFRESH_TOKEN = AUTH + "/refresh/token";
+    public static final String AUTH_OAUTH2_SUCCESS = AUTH + "/oauth2/success";
     // Category API
     public static final String CATEGORY = API + "/category";
     public static final String CATEGORY_NAMES = CATEGORY + "/names";
@@ -31,7 +33,7 @@ public class ApiKey {
     public static final String IMAGE = API + "/image";
     public static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";
     public static final String IMAGE_RESOURCE = IMAGE_BY_ADV_ID + "/resource";
-    public static final String IMAGE_COUNT = IMAGE_BY_ADV_ID + "/total";
+    public static final String IMAGE_IN_ADV_COUNT = IMAGE_BY_ADV_ID + "/total";
     // Location API
     public static final String LOCATION = API + "/location";
     public static final String LOCATION_ID = LOCATION + "/{location_id}";

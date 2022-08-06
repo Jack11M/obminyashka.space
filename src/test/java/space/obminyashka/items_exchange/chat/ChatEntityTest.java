@@ -2,20 +2,20 @@ package space.obminyashka.items_exchange.chat;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import space.obminyashka.items_exchange.dao.ChatRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Chat;
 import space.obminyashka.items_exchange.model.User;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DBRider
 @SpringBootTest
 @Transactional
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class ChatEntityTest {
 
     private static final String TEST_CHAT_HASH = "TestChatHash";
@@ -40,7 +39,7 @@ class ChatEntityTest {
         User admin = userRepository.findByUsername("admin").orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findByUsername("user").orElseThrow(EntityNotFoundException::new);
         admin.getAdvertisements().stream()
-                .filter(adv -> adv.getId() == 3L)
+                .filter(adv -> adv.getId().equals(UUID.fromString("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd")))
                 .map(adv -> createChat(adv, Set.of(admin, user)))
                 .findAny()
                 .ifPresent(chatRepository::save);
@@ -50,6 +49,6 @@ class ChatEntityTest {
     }
 
     private Chat createChat(Advertisement advertisement, Set<User> users) {
-        return new Chat(0L, TEST_CHAT_HASH, advertisement, users, Collections.emptyList());
+        return new Chat(TEST_CHAT_HASH, advertisement, users, Collections.emptyList());
     }
 }

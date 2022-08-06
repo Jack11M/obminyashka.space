@@ -1,13 +1,16 @@
 package space.obminyashka.items_exchange.util;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
+import lombok.NoArgsConstructor;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.dto.SubcategoryDto;
 import space.obminyashka.items_exchange.model.Category;
 import space.obminyashka.items_exchange.model.Subcategory;
-import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @NoArgsConstructor
 public class CategoryTestUtil {
@@ -32,7 +35,6 @@ public class CategoryTestUtil {
     public static final String CATEGORY_NAME_BOOKS = "books";
     public static final String SUBCATEGORY_NAME_FAIRY_TALES = "fairy tales";
     public static final String SUBCATEGORY_NAME_EDUCATIONAL_BOOKS = "educational books";
-    public static final String UPDATED_CATEGORY_NAME = "footwear";
 
     protected static CategoryDto createExistCategoryDto() {
         final SubcategoryDto lightShoes = new SubcategoryDto(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
@@ -55,8 +57,10 @@ public class CategoryTestUtil {
         return new CategoryDto(NEW_ENTITY_ID, INVALID_CATEGORY_NAME, Arrays.asList(fairyTales, educationalBooks));
     }
 
-    public static CategoryDto createNonExistCategoryDtoWithInvalidSubcategoryId() {
-        return createNewInvalidCategoryDto(NEW_ENTITY_ID, EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
+    public static CategoryDto createNonExistCategoryDtoWithInvalidSubcategory() {
+        final var categoryDto = createNewInvalidCategoryDto(NEW_ENTITY_ID, EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
+        categoryDto.getSubcategories().add(new SubcategoryDto(0, RandomStringUtils.randomAlphabetic(60)));
+        return categoryDto;
     }
 
     public static CategoryDto createCategoryDtoWithDuplicateName() {
@@ -84,7 +88,7 @@ public class CategoryTestUtil {
 
         final SubcategoryDto newValidSubcategory = new SubcategoryDto(NEW_ENTITY_ID, NEW_SUBCATEGORY_NAME);
         final SubcategoryDto otherNewSubcategory = new SubcategoryDto(subcategoryId, OTHER_NEW_SUBCATEGORY_NAME);
-        return new CategoryDto(categoryId, categoryName, Arrays.asList(newValidSubcategory, otherNewSubcategory));
+        return new CategoryDto(categoryId, categoryName, new ArrayList<>(Arrays.asList(newValidSubcategory, otherNewSubcategory)));
     }
 
     public static List<String> createCategoryNamesList() {

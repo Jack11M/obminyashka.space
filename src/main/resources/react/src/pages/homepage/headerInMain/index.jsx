@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
 import toys from 'assets/img/clouds/STEPthree.png';
 import monitor from 'assets/img/clouds/STEPtwo.png';
 import furniture from 'assets/img/clouds/STEP-one.png';
@@ -10,8 +7,6 @@ import * as Styles from './styles';
 import MoveCloud from './moveCloud';
 
 const HeaderInMain = () => {
-  const lang = useSelector(getLang);
-
   return (
     <Styles.PresentSection>
       <Styles.Wrapper>
@@ -21,9 +16,9 @@ const HeaderInMain = () => {
 
             <Styles.TextWrapper>
               <Styles.FirstText>
-                {getTranslatedText('mainPage.question', lang)}
+                {getTranslatedText('mainPage.question')}
 
-                <b>{getTranslatedText('mainPage.questionBold', lang)}</b>
+                <b>{getTranslatedText('mainPage.questionBold')}</b>
               </Styles.FirstText>
             </Styles.TextWrapper>
           </Styles.PresentSliderElement>
@@ -33,13 +28,13 @@ const HeaderInMain = () => {
 
             <Styles.TextWrapper>
               <Styles.SecondText>
-                {getTranslatedText('mainPage.answerFirstPart', lang)}
+                {getTranslatedText('mainPage.answerFirstPart')}
                 &nbsp;
-                <b>{getTranslatedText('mainPage.answerBold', lang)}</b>
+                <b>{getTranslatedText('mainPage.answerBold')}</b>
                 <br />
-                {getTranslatedText('mainPage.answerSecondPart', lang)}
+                {getTranslatedText('mainPage.answerSecondPart')}
                 <br />
-                {getTranslatedText('mainPage.answerThirdPart', lang)}
+                {getTranslatedText('mainPage.answerThirdPart')}
               </Styles.SecondText>
             </Styles.TextWrapper>
           </Styles.PresentSliderElement>
@@ -49,13 +44,13 @@ const HeaderInMain = () => {
 
             <Styles.TextWrapper>
               <Styles.ThirdText>
-                <b>{getTranslatedText('mainPage.changeBold', lang)}</b>
+                <b>{getTranslatedText('mainPage.changeBold')}</b>
                 &nbsp;
-                {getTranslatedText('mainPage.changeFirstPart', lang)}
+                {getTranslatedText('mainPage.changeFirstPart')}
                 <br />
-                {getTranslatedText('mainPage.changeSecondPart', lang)}
+                {getTranslatedText('mainPage.changeSecondPart')}
                 <br />
-                {getTranslatedText('mainPage.changeThirdPart', lang)}
+                {getTranslatedText('mainPage.changeThirdPart')}
               </Styles.ThirdText>
             </Styles.TextWrapper>
           </Styles.PresentSliderElement>

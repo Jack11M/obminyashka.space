@@ -110,27 +110,12 @@ public interface UserService {
     List<ChildDto> getChildren(User parent);
 
     /**
-     * Add new children to existed user
-     * @param parent the user which is required for adding new children
-     * @param childrenDtoToAdd list which contains new children's data
-     * @return children which were added to the user
-     */
-    List<ChildDto> addChildren(User parent, List<ChildDto> childrenDtoToAdd);
-
-    /**
      * Update existed children of gained user
      * @param parent user for children update
      * @param childrenDtoToUpdate updated children data
      * @return children which were updated
      */
     List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate);
-
-    /**
-     * Remove received children from gained user
-     * @param parent user for removing children
-     * @param childrenIdToRemove list which contains children which have to be removed
-     */
-    void removeChildren(User parent, List<Long> childrenIdToRemove);
 
     /**
      * Set received image to existed user as the avatar image

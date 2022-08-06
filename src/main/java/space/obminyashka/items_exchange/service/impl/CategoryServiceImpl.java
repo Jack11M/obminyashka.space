@@ -29,8 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> findAllCategoryDtos() {
-        return new ArrayList<>(convertAllTo(categoryRepository.findAll(),
-                CategoryDto.class, ArrayList::new));
+        return convertAllTo(categoryRepository.findAll(), CategoryDto.class);
     }
 
     @Override

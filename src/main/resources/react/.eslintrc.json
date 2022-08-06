@@ -41,8 +41,8 @@
       }
     ],
     "linebreak-style": "off",
-    "jsx-a11y/no-noninteractive-element-interactions": "off",
     "object-curly-newline": "off",
+    "arrow-body-style": "off",
     "no-confusing-arrow": "off",
     "function-paren-newline": "off",
     "react/jsx-props-no-spreading": "off",
@@ -57,6 +57,7 @@
     "react/prop-types": "off",
     "implicit-arrow-linebreak": "off",
     "operator-linebreak": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
     "jsx-a11y/label-has-associated-control": [
       "error",
       {

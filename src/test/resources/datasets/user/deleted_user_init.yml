@@ -1,24 +1,5 @@
-advertisement:
-  - id: 6
-    topic: 'topic'
-    description: 'description'
-    deal_type: 'EXCHANGE'
-    ready_for_offers: 'true'
-    wishes_to_exchange: 'shoes'
-    created: '2019-01-01 00:00:01'
-    updated: '2019-01-01 00:00:01'
-    status: 'ACTIVE'
-    user_id: 5
-    location_id: 1
-    age: 'OLDER_THAN_14'
-    gender: 'MALE'
-    size: '40'
-    season: 'SUMMER'
-    subcategory_id: 1
-    default_photo: null
-
 user:
-  - id: 5
+  - id: 66fdc23a-9945-49d0-bb8f-f695fc737a3e
     username: 'deletedUser'
     # Password encoded from string "@kuIOIY*h986"
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
@@ -29,13 +10,7 @@ user:
     # Encoded to byte array with Base64.encodeString("test image png")
     avatar_image: "dGVzdCBpbWFnZSBwbmc="
     last_online_time: '2019-01-01 00:00:01'
-    created: '2019-01-01 00:00:01'
+    created: '2019-03-03 00:00:01'
     updated: '2019-01-01 00:00:01'
     status: 'DELETED'
-    role_id: 2
-
-child:
-  - id: 3
-    sex: MALE
-    birth_date: '2019-01-01'
-    user_id: 5
+    role_id: c0bb0913-f772-49e9-a9ac-e87246fa3505
