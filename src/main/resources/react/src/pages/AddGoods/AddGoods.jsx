@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
-import ru from 'components/local/ru';
+import ua from 'components/local/ua';
 import { enumAge } from 'config/ENUM';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
@@ -28,10 +28,9 @@ import './AddGoods.scss';
 const AddGoods = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const lang = useSelector(getAuthLang);
   const adv = useSelector(getAdv);
-
-  const { genderEnum, seasonEnum } = ru;
+  const lang = useSelector(getAuthLang);
+  const { genderEnum, seasonEnum } = ua;
 
   const regexp = /data:image\/(jpg|jpeg|png|gif);base64,/;
 

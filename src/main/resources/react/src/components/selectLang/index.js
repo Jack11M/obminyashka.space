@@ -11,7 +11,6 @@ const CustomSelect = () => {
   const navigate = useNavigate();
   const { lang, isChangeLang } = useSelector(getAuth);
   const [languageArray, setLanguageArray] = useState([
-    { value: 'ru', checked: false },
     { value: 'ua', checked: false },
     { value: 'en', checked: false },
   ]);

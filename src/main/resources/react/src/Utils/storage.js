@@ -16,7 +16,7 @@ export const setStorageUser = (data) => {
   }
 };
 
-export const getStorageLang = () => localStorage.getItem('lang') || 'ru';
+export const getStorageLang = () => localStorage.getItem('lang') || 'ua';
 
 export const removeTokenFromStorage = () => {
   localStorage.removeItem('user');
