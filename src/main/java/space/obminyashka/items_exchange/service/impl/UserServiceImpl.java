@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 user.getEmail(),
                 user.getPassword(),
                 List.of(new SimpleGrantedAuthority(user.getRole().getName())),
-                user.getStatus().equals(Status.ACTIVE),
+                !user.getStatus().equals(DELETED),
                 user.getUpdated()
         );
     }
