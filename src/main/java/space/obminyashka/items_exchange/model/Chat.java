@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.UUID;
 public class Chat {
     @Id
     @GeneratedValue
-    @Type(type = "uuid-char")
     private UUID id;
     @Column(name = "hash", nullable = false, unique = true)
     private String hash;
