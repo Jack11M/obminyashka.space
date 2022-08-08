@@ -17,10 +17,6 @@ const UserInfo = () => {
   const [prevLocation, setPrevLocation] = useState('');
   const { firstName, lastName, avatarImage } = useSelector(getProfile);
 
-  const open = () => {
-    setIsModalOpen(true);
-  };
-
   const close = () => {
     setIsModalOpen(false);
     navigate(prevLocation);
@@ -31,10 +27,11 @@ const UserInfo = () => {
       <Styles.Aside>
         <ActiveProfile
           lastName={lastName}
-          avatar={avatarImage}
+          source={avatarImage}
           firstName={firstName}
         />
-        <Tabs toggle={open} />
+
+        <Tabs toggle={() => setIsModalOpen(true)} />
       </Styles.Aside>
 
       <Styles.Main>

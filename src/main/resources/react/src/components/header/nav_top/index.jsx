@@ -30,7 +30,7 @@ const NavTop = () => {
 
           <Styles.WrapPersonal>
             <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-              <Avatar whatIsClass="user-photo" width={30} height={28} />
+              <Avatar />
 
               <Styles.ProfileSpan>
                 {profile?.username || getTranslatedText('header.myOffice')}

@@ -1,22 +1,17 @@
-import './active_profile.scss';
 import { Avatar } from 'components/common/avatar';
 
-const ActiveProfile = ({ firstName, lastName, avatar }) => (
-  <div className="active__profile">
-    <div className="active__profile__box">
-      <Avatar
-        width={135}
-        height={135}
-        avatar={avatar}
-        whatIsClass="active__profile__box-photo"
-      />
-      <div className="active__profile__box-data">
-        <p className="active__profile__box-data-name">
-          {`${firstName} ${lastName}`}
-        </p>
-      </div>
-    </div>
-  </div>
+import * as Styles from './styles';
+
+const ActiveProfile = ({ firstName, lastName, source }) => (
+  <Styles.ProfileBlock>
+    <Styles.ProfileBox>
+      <Avatar width={135} height={135} source={source} />
+
+      <Styles.BoxData>
+        <Styles.DataName>{`${firstName} ${lastName}`}</Styles.DataName>
+      </Styles.BoxData>
+    </Styles.ProfileBox>
+  </Styles.ProfileBlock>
 );
 
 export { ActiveProfile };

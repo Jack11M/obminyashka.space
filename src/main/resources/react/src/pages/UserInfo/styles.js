@@ -2,19 +2,20 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  margin: 156px 0 auto 0;
+  margin-top: 156px;
+  /* margin: 156px 0 auto 0; */
   width: 100%;
-  font-family: Roboto;
+  min-height: calc(100vh - 376px - 157px);
 `;
 
 export const Aside = styled.aside`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-top: -20px;
   width: 25%;
-  height: auto;
+  min-height: 100%;
   background-color: #ffffff;
-  color: darken(rgba(173, 173, 173, 0.78), 5%);
   margin-bottom: -300px;
 `;
 
