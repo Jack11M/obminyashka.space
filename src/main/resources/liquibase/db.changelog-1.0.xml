@@ -5,11 +5,11 @@
 
     <changeSet id="1.0.0: Create table 'user'" author="jack.petrov">
         <createTable tableName="user">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="role_id" type="BIGINT">
+            <column name="role_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
@@ -60,7 +60,7 @@
 
     <changeSet id="1.0.1: Create table 'role'" author="jack.petrov">
         <createTable tableName="role">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
@@ -80,25 +80,28 @@
 
     <changeSet id="1.0.3: INSERT INTO role (name) VALUES(ROLE_USER, ROLE_ADMIN, ROLE_MODERATOR)" author="jack.petrov">
         <insert tableName="role">
+            <column name="id" valueComputed="${uuid_function}"/>
             <column name="name" value="ROLE_USER"/>
         </insert>
 
         <insert tableName="role">
+            <column name="id" valueComputed="${uuid_function}"/>
             <column name="name" value="ROLE_ADMIN"/>
         </insert>
 
         <insert tableName="role">
+            <column name="id" valueComputed="${uuid_function}"/>
             <column name="name" value="ROLE_MODERATOR"/>
         </insert>
     </changeSet>
 
     <changeSet id="1.0.4: Create table 'phone'" author="jack.petrov">
         <createTable tableName="phone">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="true"/>
             </column>
 
@@ -124,11 +127,11 @@
 
     <changeSet id="1.0.6: Create table 'child'" author="jack.petrov">
         <createTable tableName="child">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
@@ -154,7 +157,7 @@
 
     <changeSet id="1.0.8: Create table 'deal'" author="jack.petrov">
         <createTable tableName="deal">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
@@ -174,15 +177,15 @@
 
     <changeSet id="1.0.9: Create an intermediate table 'user_deal' (many-to-many relationship)" author="jack.petrov">
         <createTable tableName="user_deal">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="deal_id" type="BIGINT">
+            <column name="deal_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -208,15 +211,15 @@
 
     <changeSet id="1.0.12: Create table 'advertisement'" author="jack.petrov">
         <createTable tableName="advertisement">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="location_id" type="BIGINT">
+            <column name="location_id" type="${type.uuid}">
                 <constraints nullable="true"/>
             </column>
 
@@ -290,7 +293,7 @@
 
     <changeSet id="1.0.14: Create table 'location'" author="jack.petrov">
         <createTable tableName="location">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
@@ -372,11 +375,11 @@
 
     <changeSet id="1.0.20: Create table 'image'" author="jack.petrov">
         <createTable tableName="image">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="advertisement_id" type="BIGINT">
+            <column name="advertisement_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
@@ -411,7 +414,7 @@
     <changeSet id="1.0.23: NotNull constraint set in table phone" author="lubchik">
         <addNotNullConstraint tableName="phone"
                               columnName="user_id"
-                              columnDataType="BIGINT"/>
+                              columnDataType="${type.uuid}"/>
     </changeSet>
 
     <changeSet id="1.0.24: SET NULL constraint update onDelete in advertisement table" author="lubchik">
@@ -439,11 +442,11 @@
 
     <changeSet id="1.0.27: Create table 'refresh_token' and a foreign key between 'refresh_token' and 'user' tables (one-to-one relationship)" author="jack.petrov">
         <createTable tableName="refresh_token">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 

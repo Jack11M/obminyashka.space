@@ -2,7 +2,14 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <property name="type.uuid" value="BINARY(16)" dbms="mysql"/>
+    <property name="type.uuid" value="UUID" dbms="h2, postgresql"/>
+
+    <property name="uuid_function" value="UUID_TO_BIN(UUID())" dbms="mysql"/>
+    <property name="uuid_function" value="gen_random_uuid()" dbms="postgresql"/>
+    <property name="uuid_function" value="RANDOM_UUID()" dbms="h2"/>
+
     <include file="classpath:liquibase/db.changelog-1.0.xml"/>
     <include file="classpath:liquibase/db.changelog-1.1.xml"/>
-    <include file="classpath:liquibase/db.changelog-1.2.xml"/>
 </databaseChangeLog>

@@ -18,7 +18,6 @@ public class Image {
 
     @Id
     @GeneratedValue
-    @Type(type = "uuid-char")
     private UUID id;
 
     @Lob
