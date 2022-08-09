@@ -30,10 +30,14 @@ Our aim is to give our users opportunity to share or exchange any children's clo
 
 #### Completely automated Docker container build
 
-Install [docker](https://www.docker.com/get-started) to run the project and enter one by one into the command line app following:
+Install [docker](https://www.docker.com/get-started) to run the project. 
+For running the project use Docker Compose v2 and enter following:
 ```bash
-docker-compose build
-docker-compose up
+docker compose up --build
+```
+and once you finished:
+```bash
+docker compose down
 ```
 
 #### Manual build with custom parameters
@@ -80,7 +84,7 @@ Localhost URL: https://localhost/swagger-ui/
 
 - [@Wolshebnik](https://github.com/Wolshebnik)
 - [@rpkyrych](https://gi@thub.com/rpkyrych)
-- [@SergeyCheremisin](https://github.com/SergeyCheremisin)
-- [@vss1502](https://github.com/vss1502) 
 - [@Jack11M](https://github.com/Jack11M)
+- [@cloudmenson](https://github.com/cloudmenson)
+- [@smilaya](https://github.com/smilaya)
 
