@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const Container = styled.div`
   display: flex;
   margin-top: 156px;
-  /* margin: 156px 0 auto 0; */
   width: 100%;
   min-height: calc(100vh - 376px - 157px);
 `;
@@ -15,12 +14,12 @@ export const Aside = styled.aside`
   margin-top: -20px;
   width: 25%;
   min-height: 100%;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.white};
   margin-bottom: -300px;
 `;
 
 export const Main = styled.main`
-  background-color: #e5e5e5;
+  background-color: ${({ theme }) => theme.colors.bgContent};
   width: calc(100% - 25%);
 
   ::-webkit-scrollbar {

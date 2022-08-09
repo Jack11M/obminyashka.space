@@ -15,15 +15,18 @@ export const ProfileBox = styled.div`
 `;
 
 export const BoxData = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
   width: 162px;
 `;
 
-export const DataName = styled.p`
+export const DataName = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
   font-size: 14px;
   line-height: 16px;
-  color: #ffffff;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  color: ${({ theme }) => theme.colors.white};
 `;

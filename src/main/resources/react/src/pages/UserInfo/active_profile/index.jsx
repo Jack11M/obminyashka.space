@@ -1,4 +1,4 @@
-import { Avatar } from 'components/common/avatar';
+import { EllipsisText, Avatar } from 'components/common';
 
 import * as Styles from './styles';
 import { getName } from './helpers';
@@ -9,7 +9,9 @@ const ActiveProfile = ({ firstName, lastName, source }) => (
       <Avatar width={135} height={135} source={source} />
 
       <Styles.BoxData>
-        <Styles.DataName>{getName(firstName, lastName)}</Styles.DataName>
+        <Styles.DataName>
+          <EllipsisText>{getName(firstName, lastName)}</EllipsisText>
+        </Styles.DataName>
       </Styles.BoxData>
     </Styles.ProfileBox>
   </Styles.ProfileBlock>
