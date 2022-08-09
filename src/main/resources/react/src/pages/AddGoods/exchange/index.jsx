@@ -55,16 +55,18 @@ const Exchange = ({ exchangeList, setExchange }) => {
   };
   return (
     <div className="change">
-      <h3 className="change_title">{getTranslatedText('addAdv.exchange')}</h3>
+      <h3 className="change_title">
+        {getTranslatedText('addAdv.exchange')}{' '}
+        <span className="span_star">*</span>
+      </h3>
 
       <p className="change-description">
-        <span className="span_star">*</span>
         &nbsp;
         {getTranslatedText('addAdv.whatChange')}
       </p>
 
       <p className="change-description_title">
-        {getTranslatedText('addAdv.enterPhrase')}
+        ({getTranslatedText('addAdv.enterPhrase')})
       </p>
 
       <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
