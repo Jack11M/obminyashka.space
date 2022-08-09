@@ -1,5 +1,5 @@
 user:
-  - id: 1
+  - id: a72c537b-30ef-4077-b8e2-ac3eb7c80b97
     username: 'test'
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
     email: 'test@test.com'
