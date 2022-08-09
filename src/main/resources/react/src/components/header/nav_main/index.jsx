@@ -1,8 +1,5 @@
-import { useSelector } from 'react-redux';
-
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
-import { ButtonAdv } from 'components/common/buttons';
+import { ButtonAdv } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 
@@ -10,7 +7,6 @@ import * as Styles from './styles';
 import NavCategory from '../nav_category/index';
 
 const NavMain = () => {
-  const lang = useSelector(getLang);
   return (
     <Styles.DivWrap>
       <Styles.Wrapper>
@@ -19,18 +15,20 @@ const NavMain = () => {
 
           <Styles.WrapCategories>
             <Styles.WrapCategoriesTop>
-              {getTranslatedText('header.categories', lang)}
+              {getTranslatedText('header.categories')}
             </Styles.WrapCategoriesTop>
+
             <Styles.WrapCategoriesBottom>
-              {getTranslatedText('header.categories', lang)}
+              {getTranslatedText('header.categories')}
             </Styles.WrapCategoriesBottom>
+
             <NavCategory />
           </Styles.WrapCategories>
 
           <Styles.WrapSearch>
             <Styles.InputSearch
               type="text"
-              placeholder={`${getTranslatedText('header.iSearch', lang)} ...`}
+              placeholder={`${getTranslatedText('header.iSearch')} ...`}
             />
 
             <Styles.Label htmlFor="search">

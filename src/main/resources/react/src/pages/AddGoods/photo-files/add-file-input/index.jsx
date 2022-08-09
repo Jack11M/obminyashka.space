@@ -1,24 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useField } from 'formik';
-import { useSelector } from 'react-redux';
 
-import { getLang } from 'store/auth/slice';
 import dropsPng from 'assets/img/drag-n-drop.png';
 
 import { ErrorDisplay } from '../../error-display';
-
 import { FilesLabel, Input, SpanAdd, Image, WrapError } from './styles';
 
 const AddFileInput = ({ onChange }) => {
-  const lang = useSelector(getLang);
   const [drag, setDrag] = useState(false);
 
-  const [, meta, helpers] = useField({ name: 'images' });
+  const [, meta] = useField({ name: 'images' });
   const { error } = meta;
-
-  useEffect(() => {
-    helpers.setError(undefined);
-  }, [lang]);
 
   function dragStartHandler(e) {
     e.preventDefault();

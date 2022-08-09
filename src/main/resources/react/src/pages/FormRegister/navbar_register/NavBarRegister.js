@@ -1,27 +1,22 @@
-import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
 import { CustomLink } from './custom-link';
 import cls from './registerTabs.module.scss';
 
-const NavBarRegister = () => {
-  const lang = useSelector(getLang);
+const NavBarRegister = () => (
+  <>
+    <div className={cls.tabs}>
+      <CustomLink to="">{getTranslatedText('auth.login')}</CustomLink>
+      <CustomLink to={route.signUp}>
+        {getTranslatedText('auth.signUp')}
+      </CustomLink>
+    </div>
 
-  return (
-    <>
-      <div className={cls.tabs}>
-        <CustomLink to="">{getTranslatedText('auth.login', lang)}</CustomLink>
-        <CustomLink to={route.signUp}>
-          {getTranslatedText('auth.signUp', lang)}
-        </CustomLink>
-      </div>
+    <Outlet />
+  </>
+);
 
-      <Outlet />
-    </>
-  );
-};
 export default NavBarRegister;

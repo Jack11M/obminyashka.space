@@ -6,6 +6,7 @@ import space.obminyashka.items_exchange.model.enums.Season;
 import lombok.*;
 
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,5 +21,5 @@ public class AdvertisementFilterDto {
     private String size;
     private Long subcategoryId;
     private Long categoryId;
-    private Long locationId;
+    private UUID locationId;
 }

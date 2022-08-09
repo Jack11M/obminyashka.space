@@ -6,7 +6,7 @@ category:
 
 subcategory:
   - id: 1
-    name: 'men shoes'
+    name: 'light_shoes'
     category_id: 1
   - id: 2
     name: 'dolls'
@@ -15,5 +15,8 @@ subcategory:
     name: 'puzzles'
     category_id: 2
   - id: 4
+    name: 'men shoes'
+    category_id: 1
+  - id: 5
     name: 'winter shoes'
     category_id: 1

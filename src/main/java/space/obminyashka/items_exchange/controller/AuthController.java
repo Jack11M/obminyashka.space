@@ -42,7 +42,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 
 @Slf4j
 @RestController
-@RequestMapping(ApiKey.AUTH)
 @Api(tags = "Authorization")
 @RequiredArgsConstructor
 @Validated
@@ -53,7 +52,7 @@ public class AuthController {
     private final AuthService authService;
     private final MailService mailService;
 
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = ApiKey.AUTH_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Login in a registered user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -71,7 +70,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/logout")
+    @PostMapping(ApiKey.AUTH_LOGOUT)
     @ApiOperation(value = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req,
@@ -86,7 +85,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/register")
+    @PostMapping(ApiKey.AUTH_REGISTER)
     @ApiOperation(value = "Register new user")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "CREATED"),
@@ -115,7 +114,7 @@ public class AuthController {
         throw new BadRequestException(getMessageSource("user.not-registered"));
     }
 
-    @PostMapping(value = "/refresh/token")
+    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN)
     @ApiOperation(value = "Renew access token with refresh token")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -123,14 +122,15 @@ public class AuthController {
             @ApiResponse(code = 401, message = "Refresh token is expired or not exist")
     })
     @ResponseStatus(HttpStatus.OK)
-    public RefreshTokenResponseDto refreshToken(@ApiParam(required = true)
-                                                @RequestHeader(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken) throws RefreshTokenException {
+    public RefreshTokenResponseDto refreshToken(
+            @ApiParam(required = true)
+            @RequestHeader(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken) throws RefreshTokenException {
         final var resolvedToken = JwtTokenProvider.resolveToken(refreshToken);
         userService.updatePreferableLanguage(resolvedToken);
         return authService.renewAccessTokenByRefresh(resolvedToken);
     }
 
-    @PostMapping(value = "/oauth2/success", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value =ApiKey.AUTH_OAUTH2_SUCCESS, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Finish login via OAuth2")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),

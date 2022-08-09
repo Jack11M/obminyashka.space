@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
 import { useClickAway } from 'react-use';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { getLang } from 'store/auth/slice';
+import { Button } from 'components/common';
 import { route } from 'routes/routeConstants';
 import logout2 from 'assets/img/log-out-2.png';
 import { logoutUserThunk } from 'store/auth/thunk';
-import { Button } from 'components/common/buttons';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -16,7 +15,6 @@ const Exit = ({ toggle, setIsModalOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const ref = React.useRef(null);
-  const lang = useSelector(getLang);
 
   const setLogOut = useCallback(async () => {
     await dispatch(logoutUserThunk());
@@ -32,18 +30,16 @@ const Exit = ({ toggle, setIsModalOpen }) => {
         <Styles.ModalCross onClick={toggle} />
 
         <Styles.ModalTitle>
-          {getTranslatedText('exit.question', lang)}
+          {getTranslatedText('exit.question')}
         </Styles.ModalTitle>
 
-        <Styles.ModalText>
-          {getTranslatedText('exit.text', lang)}
-        </Styles.ModalText>
+        <Styles.ModalText>{getTranslatedText('exit.text')}</Styles.ModalText>
 
         <Styles.ButtonStyles>
           <Button
             width="179px"
             click={setLogOut}
-            text={getTranslatedText('exit.exit', lang)}
+            text={getTranslatedText('exit.exit')}
           />
         </Styles.ButtonStyles>
 

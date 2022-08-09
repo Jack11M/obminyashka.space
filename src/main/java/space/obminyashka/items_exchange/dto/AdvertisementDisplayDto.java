@@ -1,19 +1,12 @@
 package space.obminyashka.items_exchange.dto;
 
-import java.util.List;
-
-import javax.validation.constraints.Positive;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import space.obminyashka.items_exchange.mapper.transfer.Exist;
+import lombok.*;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
+
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -22,8 +15,7 @@ import space.obminyashka.items_exchange.model.enums.Season;
 @Builder
 public class AdvertisementDisplayDto {
 
-    @Positive(groups = Exist.class, message = "{invalid.exist.id}")
-    private long advertisementId;
+    private UUID advertisementId;
     private String age;
     private String size;
     private String topic;

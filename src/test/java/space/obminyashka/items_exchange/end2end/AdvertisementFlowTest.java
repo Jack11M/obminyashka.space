@@ -10,14 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -35,6 +33,7 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,15 +44,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
+import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
 class AdvertisementFlowTest extends BasicControllerTest {
 
-    private static final long VALID_ID = 1L;
-    private static final long INVALID_ID = 999L;
+    private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
+    private static final String VALID_IMAGE_ID = "ebad2511-97c6-4221-a39f-a1b24a7d3251";
+    private static final UUID INVALID_ID = UUID.randomUUID();
     private final AdvertisementRepository advertisementRepository;
     private final MockMultipartFile jpeg;
 
@@ -72,7 +72,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         int page = 0;
         int size = 12;
 
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED, keyword, page, size), status().isOk());
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_REQUEST_PARAMS, keyword, page, size), status().isOk());
         final var totalElements = Stream.of(mvcResult.getResponse().getContentAsString().split(","))
                 .filter(s -> s.startsWith("\"totalElements"))
                 .map(s -> s.substring(s.length() - 1))
@@ -99,18 +99,26 @@ class AdvertisementFlowTest extends BasicControllerTest {
         int page = 2;
         int size = 1;
         sendUriAndGetResultAction(get(ADV_THUMBNAIL_PARAMS, page, size), status().isOk())
-                .andExpect(jsonPath("$[0].advertisementId").value("3"))
-                .andExpect(jsonPath("$[0].title").value("Dresses"))
-                .andExpect(jsonPath("$[0].ownerName").value("admin"));
+                .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
+                .andExpect(jsonPath("$.content[0].title").value("Dresses"))
+                .andExpect(jsonPath("$.content[0].ownerName").value("admin"));
     }
 
-    @ParameterizedTest
-    @DisplayName("Should return all advertisements from DB (12 if there is more)")
-    @ValueSource(strings = {ADV_THUMBNAIL, ADV_THUMBNAIL_RANDOM})
+    @Test
+    @DisplayName("Should return all advertisements from DB as Page response")
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails(String api) throws Exception {
-        sendUriAndGetResultAction(get(api), status().isOk())
+    void findPaginatedAsThumbnails_shouldReturnPageThumbnailsResponse() throws Exception {
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
+                .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
+    }
+
+    @Test
+    @DisplayName("Should return all advertisements from DB (12 if there is more)")
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM), status().isOk())
                 .andExpect(jsonPath("$.length()").value(advertisementRepository.count()));
     }
 
@@ -126,8 +134,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementIfExists() throws Exception {
-        sendUriAndGetResultAction(get(ADV_ID, VALID_ID), status().isOk())
-                .andExpect(jsonPath("$.advertisementId").value(VALID_ID))
+        sendUriAndGetResultAction(get(ADV_ID, VALID_ADV_ID), status().isOk())
+                .andExpect(jsonPath("$.advertisementId").value(VALID_ADV_ID))
                 .andExpect(jsonPath("$.topic").value("topic"))
                 .andExpect(jsonPath("$.ownerName").value("super admin"))
                 .andExpect(jsonPath("$.age").value("14+"))
@@ -152,31 +160,34 @@ class AdvertisementFlowTest extends BasicControllerTest {
 
         Assertions.assertAll(
                 () -> assertEquals(1, advertisementDtos.length),
-                () -> assertEquals(4, advertisementDtos[0].getAdvertisementId()),
-                () -> assertEquals("admin" , advertisementDtos[0].getOwnerName())
+                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId()),
+                () -> assertEquals("admin", advertisementDtos[0].getOwnerName())
         );
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/create.yml", ignoreCols = {"default_photo", "created", "updated", "resource"})
+    @ExpectedDataSet(value = "advertisement/create.yml", orderBy = {"created", "name"},
+            ignoreCols = {"id", "default_photo", "created", "updated", "advertisement_id", "resource"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
-        AdvertisementModificationDto nonExistDto =
-                AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        var nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(nonExistDto).getBytes());
-        sendUriAndGetResultAction(multipart(ADV).file(jpeg).file(dtoJson), status().isCreated())
-                .andExpect(jsonPath("$.id").exists());
+        final var contentJson = sendUriAndGetResultAction(multipart(ADV).file(jpeg).file(dtoJson), status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andReturn().getResponse().getContentAsString();
+        assertEquals(nonExistDto, jsonToObject(contentJson, AdvertisementModificationDto.class));
+        assertEquals(6, advertisementRepository.count());
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/update.yml", ignoreCols = "updated")
+    @ExpectedDataSet(value = "advertisement/update.yml", orderBy = {"created", "name", "resource"}, ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         AdvertisementModificationDto existDtoForUpdate =
                 AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDtoForUpdate();
-        sendDtoAndGetResultAction(put(ADV), existDtoForUpdate, status().isAccepted())
+        sendDtoAndGetResultAction(put(ADV_ID, existDtoForUpdate.getId()), existDtoForUpdate, status().isAccepted())
                 .andExpect(jsonPath("$.description").value("new description"))
                 .andExpect(jsonPath("$.topic").value("new topic"))
                 .andExpect(jsonPath("$.wishesToExchange").value("BMW"));
@@ -189,7 +200,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
 
         dto.setLocationId(INVALID_ID);
-        dto.setSubcategoryId(INVALID_ID);
+        dto.setSubcategoryId(99L);
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
 
@@ -204,17 +215,18 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/delete.yml")
+    @ExpectedDataSet(value = "advertisement/delete.yml", orderBy = {"created", "name"})
     void deleteAdvertisement_shouldDeleteExistedAdvertisement() throws Exception {
-        sendUriAndGetMvcResult(delete(ADV_ID, VALID_ID), status().isOk());
+        sendUriAndGetMvcResult(delete(ADV_ID, VALID_ADV_ID), status().isOk());
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "advertisement/setDefaultImage.yml", ignoreCols = {"created", "updated"})
+    @ExpectedDataSet(value = "advertisement/setDefaultImage.yml", orderBy = {"created", "name", "resource"},
+            ignoreCols = {"created", "updated"})
     void setDefaultImage_success() throws Exception {
-        sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, VALID_ID, VALID_ID), status().isOk());
+        sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, VALID_ADV_ID, VALID_IMAGE_ID), status().isOk());
     }
 
 
@@ -222,15 +234,14 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     @MethodSource("provideTestIds")
-    void setDefaultImage_shouldReturn400WhenNotValidAdvertisementId(long firstId, long secondId) throws Exception {
+    void setDefaultImage_shouldReturn400WhenNotValidAdvertisementId(UUID firstId, UUID secondId) throws Exception {
         sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, firstId, secondId), status().isBadRequest());
     }
 
     private static Stream<Arguments> provideTestIds() {
         return Stream.of(
-                Arguments.of(VALID_ID, INVALID_ID),
-                Arguments.of(INVALID_ID, VALID_ID),
-                Arguments.of(-1L, -2L)
+                Arguments.of(VALID_ADV_ID, INVALID_ID),
+                Arguments.of(INVALID_ID, VALID_ADV_ID)
         );
     }
 }

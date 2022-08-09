@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getLang } from 'store/auth/slice';
+import { getAuthLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { WrapContainer } from './styles';
 import { InputLocation } from './input-location';
 
 const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
-  const lang = useSelector(getLang);
+  const lang = useSelector(getAuthLang);
 
   const [location, setLocation] = useState({
     RU: [],
@@ -25,7 +25,7 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         setLocation={setLocation}
         inputLocation={onInputLocation.showLocation}
         setInputLocation={onInputLocation.setShowLocation}
-        title={getTranslatedText('addAdv.district', lang)}
+        title={getTranslatedText('addAdv.district')}
       />
 
       <InputLocation
@@ -37,7 +37,7 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         setLocationCurrent={setLocationCurrent}
         inputLocation={onInputLocation.showLocation}
         setInputLocation={onInputLocation.setShowLocation}
-        title={getTranslatedText('addAdv.city', lang)}
+        title={getTranslatedText('addAdv.city')}
       />
     </WrapContainer>
   );

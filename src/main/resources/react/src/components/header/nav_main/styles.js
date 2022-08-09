@@ -134,6 +134,7 @@ export const WrapSearch = styled.div`
   position: relative;
   margin-left: 60px;
   margin-right: 30px;
+
   @media (min-width: 540px) {
     margin-right: 8px;
   }

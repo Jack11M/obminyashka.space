@@ -6,15 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class ImageDto {
-    @PositiveOrZero(message = "{invalid.id}")
-    private long id;
+    private UUID id;
     @NotNull(message = "{invalid.not-null}")
     private byte[] resource;
 }

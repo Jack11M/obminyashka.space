@@ -47,9 +47,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     @Cacheable(key = "#pageable.pageNumber")
-    public List<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
-        List<Advertisement> content = advertisementRepository.findAll(pageable).getContent();
-        return mapAdvertisementsToTitleDto(content);
+    public Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
+        return advertisementRepository.findAll(pageable).map(this::buildAdvertisementTitle);
     }
 
     @Override
@@ -59,14 +58,15 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         final var resultsQuantity = 12;
         final var bound = (int) (totalRecordsSize / resultsQuantity);
         final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
-        return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity));
+        return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity)).getContent();
     }
 
     @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
-        final var allForUser = advertisementRepository.findAllByUserUsername(username);
-        return mapAdvertisementsToTitleDto(allForUser);
+        return advertisementRepository.findAllByUserUsername(username).stream()
+                .map(this::buildAdvertisementTitle)
+                .toList();
     }
 
     @Cacheable(key = "#keyword")
@@ -77,37 +77,38 @@ public class AdvertisementServiceImpl implements AdvertisementService {
             return wholeStringSearchResult.map(this::buildAdvertisementTitle);
         }
         final var keywords = Set.of(keyword.split(" "));
-        if (!keywords.isEmpty()){
+        if (!keywords.isEmpty()) {
             return advertisementRepository.search(keywords, pageable).map(this::buildAdvertisementTitle);
         }
         return Page.empty();
     }
 
     @Override
-    public Optional<Advertisement> findByIdAndOwnerUsername(long advertisementId, String ownerName) {
+    public Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName) {
         return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
     }
 
     @Override
-    public Optional<AdvertisementDisplayDto> findDtoById(long id) {
+    public Optional<AdvertisementDisplayDto> findDtoById(UUID id) {
         return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }
 
     @Override
     public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
-        return mapAdvertisementsToTitleDto(
-                (Collection<Advertisement>) advertisementRepository.findFirst10ByParams(
+        return advertisementRepository.findFirst10ByParams(
                         dto.getAge(),
                         dto.getGender(),
                         dto.getSize(),
                         dto.getSeason(),
                         dto.getSubcategoryId(),
                         dto.getCategoryId(),
-                        dto.getLocationId()));
+                        dto.getLocationId()).stream()
+                .map(this::buildAdvertisementTitle)
+                .toList();
     }
 
     @Override
-    public boolean isUserHasAdvertisementWithId(long id, User user) {
+    public boolean isUserHasAdvertisementWithId(UUID id, User user) {
         return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
     }
 
@@ -116,7 +117,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         Advertisement adv = UtilMapper.convertTo(dto, Advertisement.class);
         adv.setUser(owner);
         adv.setStatus(Status.NEW);
-        adv.setImages(compressedImages.stream().map(image -> new Image(0L, image, adv)).toList());
+        adv.setImages(compressedImages.stream().map(image -> new Image(image, adv)).toList());
         adv.setDefaultPhoto(imageService.scale(compressedImages.get(0)));
         updateSubcategory(adv, dto.getSubcategoryId());
         updateLocation(adv, dto.getLocationId());
@@ -138,7 +139,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean existById(Long id) {
+    public boolean existById(UUID id) {
         return advertisementRepository.existsById(id);
     }
 
@@ -153,22 +154,22 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .orElseThrow(EntityNotFoundException::new));
     }
 
-    private void updateLocation(Advertisement fromDBAdvertisement, long id) {
+    private void updateLocation(Advertisement fromDBAdvertisement, UUID id) {
         fromDBAdvertisement.setLocation(locationService.findById(id)
                 .orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
     @CacheEvict(key = "#id")
-    public void remove(long id) {
+    public void remove(UUID id) {
         advertisementRepository.deleteById(id);
         advertisementRepository.flush();
     }
 
     @Override
-    public void setDefaultImage(Advertisement advertisement, Long imageId) {
+    public void setDefaultImage(Advertisement advertisement, UUID imageId) {
         advertisement.getImages().stream()
-                .filter(img -> img.getId() == imageId)
+                .filter(img -> img.getId().equals(imageId))
                 .findFirst()
                 .map(Image::getResource)
                 .map(imageService::scale)
@@ -177,17 +178,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         advertisementRepository.saveAndFlush(advertisement);
     }
 
-    private List<AdvertisementTitleDto> mapAdvertisementsToTitleDto(Collection<Advertisement> advertisements) {
-        return advertisements.stream().map(this::buildAdvertisementTitle).toList();
-    }
-
     @Override
-    public boolean isUserHasAdvertisementAndItHasImageWithId(Long advertisementId, Long imageId, User owner) {
+    public boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, User owner) {
         return owner.getAdvertisements().stream()
-                .filter(adv -> adv.getId() == advertisementId)
+                .filter(adv -> adv.getId().equals(advertisementId))
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)
-                .anyMatch(image -> image.getId() == imageId);
+                .anyMatch(image -> image.getId().equals(imageId));
     }
 
     @Override

@@ -1,89 +1,91 @@
 /* eslint-disable max-len */
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import logoFooter from 'assets/img/Logo-footer.png';
-import { BtnGoodBusiness } from 'components/common/buttons';
+import { BtnGoodBusiness } from 'components/common';
 import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as PhoneSvg } from 'assets/icons/phone.svg';
 import { ReactComponent as QuestionSvg } from 'assets/icons/question-mark.svg';
 
-import './Footer.scss';
+import * as Styles from './styles';
 
 const Footer = () => {
-  const lang = useSelector(getLang);
   const timeDate = new Date();
   const yearNow = timeDate.getFullYear();
 
   return (
-    <footer className="HomePageFooter">
-      <div className="wrapper">
-        <ul className="footer-blocks">
-          <li className="footer-list">
-            <span className="footer-list__icon">
+    <Styles.Container>
+      <Styles.Wrapper>
+        <Styles.Blocks>
+          <Styles.Lists>
+            <Styles.Span>
               <PhoneSvg />
-            </span>
-
-            <a href="mailto:&#111;&#098;&#109;&#105;&#110;&#121;&#097;&#115;&#104;&#107;&#097;&#046;&#115;&#112;&#097;&#099;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">
+            </Styles.Span>
+            <Styles.Contact href="mailto:&#111;&#098;&#109;&#105;&#110;&#121;&#097;&#115;&#104;&#107;&#097;&#046;&#115;&#112;&#097;&#099;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">
               &#111;&#098;&#109;&#105;&#110;&#121;&#097;&#115;&#104;&#107;&#097;&#046;&#115;&#112;&#097;&#099;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;
-            </a>
-            <div className="footer-list-tel">
-              <a href="tel:&#43;&#51;&#56;&#48;&#57;&#51;&#49;&#50;&#51;&#52;&#53;&#54;&#55;">
+            </Styles.Contact>
+            <Styles.WrapContacts>
+              <Styles.Contact href="tel:&#43;&#51;&#56;&#48;&#57;&#51;&#49;&#50;&#51;&#52;&#53;&#54;&#55;">
                 +3 80 (93) 123 45 67
-              </a>
-              <a href="tel:&#43;&#51;&#56;&#48;&#57;&#51;&#49;&#50;&#51;&#52;&#53;&#54;&#55;">
+              </Styles.Contact>
+              <Styles.Contact href="tel:&#43;&#51;&#56;&#48;&#57;&#51;&#49;&#50;&#51;&#52;&#53;&#54;&#55;">
                 +3 80 (93) 123 45 67
-              </a>
-            </div>
-          </li>
+              </Styles.Contact>
+            </Styles.WrapContacts>
+          </Styles.Lists>
 
-          <li className="footer-list">
-            <span className="footer-list__icon">
+          <Styles.Lists>
+            <Styles.Span>
               <QuestionSvg />
-            </span>
+            </Styles.Span>
 
-            <Link to={route.home} className="footer-list_rules">
-              {getTranslatedText('footer.rules', lang)}
-            </Link>
+            <Styles.FootLinkWrapper rules>
+              <Styles.FootLink to={route.home}>
+                {getTranslatedText('footer.rules')}
+              </Styles.FootLink>
+            </Styles.FootLinkWrapper>
 
-            <Link to={route.home} className="footer-list_rules">
-              {getTranslatedText('footer.charity', lang)}
-            </Link>
+            <Styles.FootLinkWrapper rules>
+              <Styles.FootLink to={route.home}>
+                {getTranslatedText('footer.charity')}
+              </Styles.FootLink>
+            </Styles.FootLinkWrapper>
 
-            <Link to={route.home} className="footer-list_rules">
-              {getTranslatedText('footer.questions', lang)}
-            </Link>
-          </li>
+            <Styles.FootLinkWrapper rules>
+              <Styles.FootLink to={route.home}>
+                {getTranslatedText('footer.questions')}
+              </Styles.FootLink>
+            </Styles.FootLinkWrapper>
+          </Styles.Lists>
 
-          <li className="footer-list">
-            <span className="footer-list__icon">
+          <Styles.Lists>
+            <Styles.Span>
               <HomeSvg />
-            </span>
+            </Styles.Span>
 
-            <Link to={route.home}>
-              <img src={logoFooter} alt="Logo" />
-            </Link>
+            <Styles.FootLink to={route.home}>
+              <Styles.Img src={logoFooter} alt="Logo" />
+            </Styles.FootLink>
 
-            <BtnGoodBusiness
-              href="#"
-              whatClass="btn-Help-Children"
-              text={getTranslatedText('header.goodness', lang)}
-            />
-          </li>
-        </ul>
-      </div>
+            <Styles.BlockButton>
+              <BtnGoodBusiness
+                href="#"
+                text={getTranslatedText('header.goodness')}
+              />
+            </Styles.BlockButton>
+          </Styles.Lists>
+        </Styles.Blocks>
+      </Styles.Wrapper>
 
-      <div className="copyright">
-        <span>
+      <Styles.CopyContainer>
+        <Styles.SpanCopy>
           &copy;
-          {getTranslatedText('footer.protect', lang)}
-        </span>
-        <span id="dataYear">{`${yearNow} / Обменяшка`}</span>
-      </div>
-    </footer>
+          {getTranslatedText('footer.protect')}
+        </Styles.SpanCopy>
+        <Styles.SpanCopy>{`${yearNow} / Обміняшка`}</Styles.SpanCopy>
+      </Styles.CopyContainer>
+    </Styles.Container>
   );
 };
 

@@ -1,127 +1,93 @@
 import { memo, useContext, useState } from 'react';
-import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
+import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
-import { Button } from 'components/common/buttons';
-import { ModalContext } from 'components/common/pop-up';
-import { putEmail, getLang, getProfile } from 'store/auth/slice';
+import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import TitleBigBlue from 'components/common/title_Big_Blue/title_Big_Blue';
-import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
+import { TitleBigBlue, ModalContext, Button } from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
+import { validationEmailSchema, validationPasswordSchema } from './config';
 
 import * as Styles from './styles';
 
 const MySettings = () => {
-  const { openModal } = useContext(ModalContext);
   const dispatch = useDispatch();
+  const { openModal } = useContext(ModalContext);
 
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
-  const lang = useSelector(getLang);
-  const { email: currentEmail } = useSelector(getProfile);
+  const { email: currentEmail } = useSelector(getAuthProfile);
 
-  const validationPasswordSchema = yup.object().shape({
-    oldPassword: yup
-      .string()
-      .min(8, getTranslatedText('errors.min8', lang))
-      .max(30, getTranslatedText('errors.max30', lang))
-      .matches(
-        PASSWORD_REG_EXP,
-        getTranslatedText('errors.passwordMatch', lang)
-      )
-      .matches(
-        PASSWORD_ALT_CODE_EXP,
-        getTranslatedText('errors.altCodeMatch', lang)
-      )
-      .required(getTranslatedText('errors.requireField', lang))
-      .default(() => ''),
-    newPassword: yup
-      .string()
-      .min(8, getTranslatedText('errors.min8', lang))
-      .max(30, getTranslatedText('errors.max30', lang))
-      .matches(
-        PASSWORD_REG_EXP,
-        getTranslatedText('errors.passwordMatch', lang)
-      )
-      .matches(
-        PASSWORD_ALT_CODE_EXP,
-        getTranslatedText('errors.altCodeMatch', lang)
-      )
-      .notOneOf(
-        [yup.ref('oldPassword'), false],
-        getTranslatedText('errors.passwordIdentical', lang)
-      )
-      .required(getTranslatedText('errors.requireField', lang))
-      .default(() => ''),
-    confirmNewPassword: yup
-      .string()
-      .oneOf(
-        [yup.ref('newPassword')],
-        getTranslatedText('errors.passwordMismatch', lang)
-      )
-      .required(getTranslatedText('errors.requireField', lang))
-      .default(() => ''),
-  });
+  const validationPassword = validationPasswordSchema;
 
-  const validationEmailSchema = yup.object().shape({
-    newEmail: yup
-      .string()
-      .notOneOf(
-        [currentEmail],
-        getTranslatedText('errors.emailIdentical', lang)
-      )
-      .matches(EMAIL_REG_EXP, getTranslatedText('errors.max129', lang))
-      .email(getTranslatedText('errors.invalidEmailFormat', lang))
-      .required(getTranslatedText('errors.requireField', lang))
-      .default(() => ''),
-    newEmailConfirmation: yup
-      .string()
-      .oneOf(
-        [yup.ref('newEmail')],
-        getTranslatedText('errors.emailNotIdentical', lang)
-      )
-      .email(getTranslatedText('errors.invalidEmailFormat', lang))
-      .required(getTranslatedText('errors.requireField', lang))
-      .default(() => ''),
-  });
+  const validationEmail = validationEmailSchema(currentEmail);
 
-  const initialEmailValues = validationEmailSchema.cast({});
-  const initialPasswordValues = validationPasswordSchema.cast({});
+  const initialEmailValues = validationEmail.cast({});
+  const initialPasswordValues = validationPassword.cast({});
+
+  const handlePassword = async (values, onSubmitProps) => {
+    setIsFetchPass(true);
+    try {
+      const { data } = await api.fetchProfile.putPasswordFetch(values);
+      openModal({
+        title: getTranslatedText('popup.serverResponse'),
+        children: <p>{data}</p>,
+      });
+      onSubmitProps.resetForm();
+      setIsFetchPass(false);
+    } catch (e) {
+      setIsFetchPass(false);
+      if (e.response.status === 400) {
+        onSubmitProps.setErrors({ oldPassword: e.response.data.error });
+      }
+    }
+  };
+
+  const handleEmail = async (values, onSubmitProps) => {
+    const { newEmail, newEmailConfirmation } = values;
+    setIsFetchEmail(true);
+    try {
+      const { data } = await api.fetchProfile.putEmailFetch({
+        newEmail,
+        newEmailConfirmation,
+      });
+      openModal({
+        title: getTranslatedText('popup.serverResponse'),
+        children: <p>{data}</p>,
+      });
+      dispatch(putEmail(newEmail));
+      onSubmitProps.resetForm();
+      setIsFetchEmail(false);
+    } catch (e) {
+      setIsFetchEmail(false);
+      if (e.response.status === 409) {
+        onSubmitProps.setErrors({
+          newEmailConfirmation: e.response.data.error,
+        });
+      }
+      if (e.response.status === 400) {
+        showMessage(e.response.data.error);
+        onSubmitProps.setErrors({ newEmail: e.response.data.error });
+      }
+    }
+  };
 
   return (
     <>
       <TitleBigBlue
         style={{ margin: '65px 0 40px' }}
-        text={getTranslatedText('settings.changePassword', lang)}
+        text={getTranslatedText('settings.changePassword')}
       />
 
       <Formik
+        onSubmit={handlePassword}
         initialValues={initialPasswordValues}
-        validateOnBlur
-        validationSchema={validationPasswordSchema}
-        onSubmit={async (values, onSubmitProps) => {
-          setIsFetchPass(true);
-          try {
-            const { data } = await api.fetchProfile.putPasswordFetch(values);
-            openModal({
-              title: getTranslatedText('popup.serverResponse', lang),
-              children: <p>{data}</p>,
-            });
-            onSubmitProps.resetForm();
-            setIsFetchPass(false);
-          } catch (e) {
-            setIsFetchPass(false);
-            if (e.response.status === 400) {
-              onSubmitProps.setErrors({ oldPassword: e.response.data.error });
-            }
-          }
-        }}
+        validationSchema={validationPassword}
       >
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
@@ -129,19 +95,19 @@ const MySettings = () => {
               <InputProfile
                 type="password"
                 name="oldPassword"
-                label={getTranslatedText('settings.currentPassword', lang)}
+                label={getTranslatedText('settings.currentPassword')}
               />
 
               <InputProfile
                 type="password"
                 name="newPassword"
-                label={getTranslatedText('settings.newPassword', lang)}
+                label={getTranslatedText('settings.newPassword')}
               />
 
               <InputProfile
                 type="password"
                 name="confirmNewPassword"
-                label={getTranslatedText('settings.confirmPassword', lang)}
+                label={getTranslatedText('settings.confirmPassword')}
               />
             </Styles.InputContainer>
 
@@ -152,7 +118,7 @@ const MySettings = () => {
                 height="49px"
                 isLoading={isFetchPass}
                 disabling={!dirty && !isValid}
-                text={getTranslatedText('button.save', lang)}
+                text={getTranslatedText('button.save')}
                 click={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
@@ -162,42 +128,13 @@ const MySettings = () => {
 
       <TitleBigBlue
         style={{ margin: '65px 0 40px' }}
-        text={getTranslatedText('settings.changeEmail', lang)}
+        text={getTranslatedText('settings.changeEmail')}
       />
 
       <Formik
-        validateOnBlur
+        onSubmit={handleEmail}
         initialValues={initialEmailValues}
-        validationSchema={validationEmailSchema}
-        onSubmit={async (values, onSubmitProps) => {
-          const { newEmail, newEmailConfirmation } = values;
-          setIsFetchEmail(true);
-          try {
-            const { data } = await api.fetchProfile.putEmailFetch({
-              newEmail,
-              newEmailConfirmation,
-            });
-            openModal({
-              title: getTranslatedText('popup.serverResponse', lang),
-              children: <p>{data}</p>,
-            });
-            dispatch(putEmail(newEmail));
-            onSubmitProps.resetForm();
-            setIsFetchEmail(false);
-          } catch (e) {
-            setIsFetchEmail(false);
-
-            if (e.response.status === 409) {
-              onSubmitProps.setErrors({
-                newEmailConfirmation: e.response.data.error,
-              });
-            }
-            if (e.response.status === 400) {
-              console.log(e.response.data.error);
-              onSubmitProps.setErrors({ newEmail: e.response.data.error });
-            }
-          }
-        }}
+        validationSchema={validationEmail}
       >
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
@@ -207,19 +144,19 @@ const MySettings = () => {
                 type="email"
                 name="oldEmail"
                 value={currentEmail}
-                label={getTranslatedText('settings.oldEmail', lang)}
+                label={getTranslatedText('settings.oldEmail')}
               />
 
               <InputProfile
                 type="email"
                 name="newEmail"
-                label={getTranslatedText('settings.newEmail', lang)}
+                label={getTranslatedText('settings.newEmail')}
               />
 
               <InputProfile
                 type="email"
                 name="newEmailConfirmation"
-                label={getTranslatedText('settings.confirmEmail', lang)}
+                label={getTranslatedText('settings.confirmEmail')}
               />
             </Styles.InputContainer>
 
@@ -232,7 +169,7 @@ const MySettings = () => {
                 style={{ margin: '50px 0' }}
                 disabling={!isValid && !dirty}
                 click={!errors.newEmail ? handleSubmit : null}
-                text={getTranslatedText('button.saveEmail', lang)}
+                text={getTranslatedText('button.saveEmail')}
               />
             </Styles.ButtonContainer>
           </>
@@ -241,13 +178,13 @@ const MySettings = () => {
 
       <TitleBigBlue
         style={{ margin: '65px 0 40px' }}
-        text={getTranslatedText('settings.remove', lang)}
+        text={getTranslatedText('settings.remove')}
       />
 
       <Styles.WarningText>
-        {getTranslatedText('settings.describe', lang)}{' '}
+        {getTranslatedText('settings.describe')}{' '}
         <Styles.StylizedLink to={`${route.userInfo}${route.myProfile}`}>
-          &nbsp;{getTranslatedText('settings.profile', lang)}
+          &nbsp;{getTranslatedText('settings.profile')}
         </Styles.StylizedLink>
       </Styles.WarningText>
 
@@ -255,7 +192,7 @@ const MySettings = () => {
         <Button
           width="248px"
           style={{ marginBottom: '65px' }}
-          text={getTranslatedText('button.remove', lang)}
+          text={getTranslatedText('button.remove')}
         />
       </Styles.ButtonContainer>
     </>

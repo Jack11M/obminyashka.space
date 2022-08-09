@@ -3,22 +3,24 @@ import styled, { css } from 'styled-components';
 export const WrapIcon = styled.span`
   line-height: 0;
   margin-left: 8px;
+  order: 0;
 `;
 
 export const ButtonBlue = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 25px;
-  border: 0;
-  outline: none;
   height: 49px;
+  color: #fdf9ff;
   font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-size: 16px;
   text-transform: uppercase;
+  border: 0;
+  border-radius: 25px;
   transition: background-color 0.3s ease;
   cursor: pointer;
+  outline: none;
 
   ${({ width, bold, mb, theme, lHeight }) => css`
     width: ${width};
@@ -32,6 +34,7 @@ export const ButtonBlue = styled.button`
     `}
 
     &:hover {
+      cursor: pointer;
       background-color: ${theme.colors.btnBlueHover};
       > span > svg {
         path {
@@ -49,5 +52,4 @@ export const ButtonBlue = styled.button`
       background-color: ${theme.colors.btnGbDisabled};
     }
   `}
-  color: #fdf9ff;
 `;

@@ -1,7 +1,5 @@
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import {
   loop,
@@ -13,7 +11,6 @@ import { goTo } from './helpers';
 import * as Styles from './styles';
 
 const SomethingBad = ({ deactivateError }) => {
-  const lang = useSelector(getLang);
   const navigate = useNavigate();
 
   return (
@@ -32,20 +29,20 @@ const SomethingBad = ({ deactivateError }) => {
 
       <Styles.WrapTittleBad>
         <Styles.TittleBad>
-          {getTranslatedText('somethingBad.error', lang)}
+          {getTranslatedText('somethingBad.error')}
         </Styles.TittleBad>
 
         <Styles.WrapperButton>
           <Styles.MainButton
             onClick={() => goTo('home', navigate, deactivateError)}
           >
-            {getTranslatedText('fourOhFour.mainPage', lang)}
+            {getTranslatedText('fourOhFour.mainPage')}
           </Styles.MainButton>
 
           <Styles.BackButton
             onClick={() => goTo('', navigate, deactivateError)}
           >
-            {getTranslatedText('fourOhFour.backPage', lang)}
+            {getTranslatedText('fourOhFour.backPage')}
           </Styles.BackButton>
         </Styles.WrapperButton>
       </Styles.WrapTittleBad>
