@@ -141,8 +141,9 @@ class LocationFlowTest extends BasicControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-        String[] parsedLocationsQuantity = response.getResponse().getContentAsString().split("\\), \\(");
-        int locationsInThreeLanguages = (response.getResponse().getContentAsString().substring(88).split("\\),").length) / 3;
+        String[] parsedLocationsQuantity = response.getResponse().getContentAsString()
+                .replace("(UUID_TO_BIN", "").split("\\), \\(");
+        int locationsInThreeLanguages = (response.getResponse().getContentAsString().substring(60).split("UUID_TO_BIN").length) / 3;
         assertEquals(locationsInThreeLanguages * 3, parsedLocationsQuantity.length);
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }

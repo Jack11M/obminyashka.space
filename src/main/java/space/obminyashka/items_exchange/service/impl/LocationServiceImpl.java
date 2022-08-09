@@ -95,12 +95,12 @@ public class LocationServiceImpl implements LocationService {
     public String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException {
 
         List<Location> locations = mapCreatingDataToLocations(creatingData);
-        String initString = "INSERT INTO `evo_exchange`.`location` (`id`, `city`, `district`, `area`, `i18n`) VALUES";
+        String initString = "INSERT INTO location (id, city, district, area, i18n) VALUES";
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locationInitFilePath), StandardCharsets.UTF_8)) {
             writer.append(initString);
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
-                writer.append(String.format(" ('%s','%s','%s','%s','%s')",
+                writer.append(String.format(" (UUID_TO_BIN('%s'),'%s','%s','%s','%s')",
                         UUID.randomUUID(),
                         location.getCity().replace("'", "\\'"),
                         location.getDistrict().replace("'", "\\'"),

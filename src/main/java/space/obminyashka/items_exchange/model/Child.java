@@ -1,7 +1,6 @@
 package space.obminyashka.items_exchange.model;
 
 import lombok.*;
-import org.hibernate.annotations.Type;
 import space.obminyashka.items_exchange.model.enums.Gender;
 
 import javax.persistence.*;
@@ -18,7 +17,6 @@ public class Child {
 
     @Id
     @GeneratedValue
-    @Type(type = "uuid-char")
     private UUID id;
     @Enumerated(EnumType.STRING)
     private Gender sex;

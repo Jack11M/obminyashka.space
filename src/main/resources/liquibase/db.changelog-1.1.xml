@@ -5,7 +5,7 @@
 
     <changeSet id="1.1.0: Create table 'chat'" author="jack.petrov">
         <createTable tableName="chat">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
@@ -13,7 +13,7 @@
                 <constraints unique="true" nullable="false"/>
             </column>
 
-            <column name="advertisement_id" type="BIGINT">
+            <column name="advertisement_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -29,15 +29,15 @@
 
     <changeSet id="1.1.2: Create an intermediate table 'user_chat' (many-to-many relationship)" author="jack.petrov">
         <createTable tableName="user_chat">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="chat_id" type="BIGINT">
+            <column name="chat_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -63,15 +63,15 @@
 
     <changeSet id="1.1.5: Create table 'message'" author="jack.petrov">
         <createTable tableName="message">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="chat_id" type="BIGINT">
+            <column name="chat_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="user_id" type="BIGINT">
+            <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
@@ -113,11 +113,11 @@
 
     <changeSet id="1.1.8: Create a table 'attachment'" author="jack.petrov">
         <createTable tableName="attachment">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="message_id" type="BIGINT">
+            <column name="message_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
@@ -143,15 +143,15 @@
 
     <changeSet id="1.1.10: Create a table 'black_list'" author="jack.petrov">
         <createTable tableName="black_list">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
                 <constraints primaryKey="true" unique="true" nullable="false"/>
             </column>
 
-            <column name="blocker_id" type="BIGINT">
+            <column name="blocker_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="blocked_id" type="BIGINT">
+            <column name="blocked_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
         </createTable>
