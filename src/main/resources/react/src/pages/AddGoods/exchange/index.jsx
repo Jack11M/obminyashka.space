@@ -29,6 +29,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
       if (event.key === 'Enter') event.preventDefault();
       return;
     }
+
     if (event.key === 'Enter') {
       event.preventDefault();
       setExchange((prev) => [...prev, exchangeInput]);
@@ -48,11 +49,13 @@ const Exchange = ({ exchangeList, setExchange }) => {
   const onBlur = () => {
     setBorder(false);
   };
+
   const getBorderClassName = (borderValue, errorValue) => {
     if (borderValue) return 'border_focus';
     if (errorValue) return 'border_error';
     return '';
   };
+
   return (
     <div className="change">
       <h3 className="change_title">{getTranslatedText('addAdv.exchange')}</h3>
@@ -86,6 +89,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
             value={exchangeInput}
             onKeyPress={keyEnter}
             onChange={handleInput}
+            maxLength="40"
             className="change_input"
             placeholder={getTranslatedText('addAdv.placeholderChange')}
           />
