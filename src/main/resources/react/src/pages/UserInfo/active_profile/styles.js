@@ -18,6 +18,7 @@ export const BoxData = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 16px;
+  margin-right: -10px;
   width: 162px;
 `;
 

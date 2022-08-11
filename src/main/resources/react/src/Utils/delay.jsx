@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react';
 
 export const useDelay = (delay) => {
-  const [open, setOpen] = useState(false);
-  const [a, setA] = useState(false);
   const [timer, setTimer] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setTimer(
         setTimeout(() => {
-          setA(false);
+          setPreviewOpen(false);
         }, delay)
       );
     }
 
     if (open) {
       setTimer(null);
-      setA(true);
+      setPreviewOpen(true);
       clearTimeout(timer);
     }
   }, [open]);
 
-  return [a, setOpen];
+  return [previewOpen, setOpen];
 };
