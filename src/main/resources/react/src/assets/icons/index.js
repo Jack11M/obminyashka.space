@@ -20,3 +20,4 @@ export { ReactComponent as QuestionMarkSvg } from './question-mark.svg';
 export { ReactComponent as SearchSvg } from './search.svg';
 export { ReactComponent as SettingsSvg } from './settings.svg';
 export { ReactComponent as StarSvg } from './star.svg';
+export { ReactComponent as Rotate } from './rotate.svg';

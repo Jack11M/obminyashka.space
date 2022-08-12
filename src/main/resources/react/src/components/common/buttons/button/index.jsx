@@ -4,7 +4,6 @@ import { ButtonBlue, WrapIcon } from './styles';
 
 const Button = ({
   mb,
-  type,
   bold,
   icon,
   text,
@@ -14,6 +13,7 @@ const Button = ({
   isLoading,
   disabling,
   click = null,
+  type = 'button',
   whatClass = null,
   ...props
 }) => (

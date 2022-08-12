@@ -24,3 +24,10 @@ export const StyledLink = styled(Link)`
     color: #00c0ff;
   }
 `;
+
+export const Tabs = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 44px;
+`;
