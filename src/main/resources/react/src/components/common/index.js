@@ -5,6 +5,7 @@ export { Button } from './buttons/button';
 export { ButtonAdv } from './buttons/buttonAdv';
 export { ButtonLinkBlue } from './buttons/button-link-blue';
 export { CheckBox } from './checkbox';
+export { CropImage } from './crop-image';
 export { EllipsisText } from './ellipsis-text';
 export { InputForAuth } from './input';
 export { Loader } from './loader';
