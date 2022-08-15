@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { route } from 'routes/routeConstants';
 import { ButtonAdv } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
@@ -7,13 +9,15 @@ import * as Styles from './styles';
 import NavCategory from '../nav_category/index';
 
 const NavMain = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Styles.DivWrap>
       <Styles.Wrapper>
         <Styles.WrapMain>
           <Styles.LogoLink to={route.home} />
 
-          <Styles.WrapCategories>
+          <Styles.WrapCategories open={open} onClick={() => setOpen(!open)}>
             <Styles.WrapCategoriesTop>
               {getTranslatedText('header.categories')}
             </Styles.WrapCategoriesTop>
@@ -22,7 +26,7 @@ const NavMain = () => {
               {getTranslatedText('header.categories')}
             </Styles.WrapCategoriesBottom>
 
-            <NavCategory />
+            {open && <NavCategory />}
           </Styles.WrapCategories>
 
           <Styles.WrapSearch>
