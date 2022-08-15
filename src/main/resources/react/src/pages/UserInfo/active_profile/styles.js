@@ -18,6 +18,7 @@ export const BoxData = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 16px;
+  margin-right: -10px;
   width: 162px;
 `;
 
@@ -29,4 +30,19 @@ export const DataName = styled.div`
   font-size: 14px;
   line-height: 16px;
   color: ${({ theme }) => theme.colors.white};
+`;
+
+export const ImageCrop = styled.img`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  object-fit: scale-down;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
 `;

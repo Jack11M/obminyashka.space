@@ -69,6 +69,7 @@ const ua = {
     girl: 'Дівчинка',
     unselected: 'Не вибрано',
     chooseData: 'Спочатку треба вибрати дату народження',
+    choosePhone: 'Спочатку треба ввести телефон',
   },
   settings: {
     changePassword: 'Змінити пароль',
