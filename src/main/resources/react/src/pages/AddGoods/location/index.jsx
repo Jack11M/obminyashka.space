@@ -11,9 +11,8 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
   const lang = useSelector(getAuthLang);
 
   const [location, setLocation] = useState({
-    RU: [],
-    UA: [],
-    EN: [],
+    ua: [],
+    en: [],
   });
 
   return (

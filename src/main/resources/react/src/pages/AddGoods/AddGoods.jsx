@@ -95,7 +95,7 @@ const AddGoods = () => {
     description: Yup.string()
       .max(255, getTranslatedText('errors.max255'))
       .default(() => description),
-    locationId: Yup.number()
+    locationId: Yup.string()
       .nullable()
       .required(getTranslatedText('errors.requireField'))
       .default(() => locationId),
