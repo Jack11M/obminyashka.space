@@ -44,5 +44,7 @@ jobs:
       uses: github/codeql-action/autobuild@v2
       env:
         CI: false
+    - name: Code Coverage Summary
+      uses: irongut/CodeCoverageSummary@v1.3.0
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

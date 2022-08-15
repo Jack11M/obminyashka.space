@@ -4,7 +4,7 @@ This is the source code of the IT School Hillel's EVO project "Obminyashka".
 
 Our aim is to give our users opportunity to share or exchange any children's clothes.  
 
-##The technologies used:
+## The technologies used:
 
 #### Front-End
 - React (Router, Redux, Saga)
@@ -83,7 +83,7 @@ Localhost URL: https://localhost/swagger-ui/
 ##### Thanks to the following people, and many other who have contributed to this project:
 
 - [@Wolshebnik](https://github.com/Wolshebnik)
-- [@rpkyrych](https://gi@thub.com/rpkyrych)
+- [@rpkyrych](https://github.com/rpkyrych)
 - [@Jack11M](https://github.com/Jack11M)
 - [@cloudmenson](https://github.com/cloudmenson)
 - [@smilaya](https://github.com/smilaya)

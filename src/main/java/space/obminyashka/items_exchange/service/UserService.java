@@ -125,6 +125,12 @@ public interface UserService {
     void setUserAvatar(byte[] newAvatarImage, User user);
 
     /**
+     * Remove avatar of selected user
+     * @param username login of existing user
+     */
+    void removeUserAvatarFor(String username);
+
+    /**
      * Get {@link org.springframework.http.HttpHeaders#ACCEPT_LANGUAGE} and compare with stored language setting
      * and update if they aren't equals
      * @param refreshToken token linked with stored user in the DB
