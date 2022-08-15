@@ -27,8 +27,8 @@ export const Wrap = styled.div`
   border-radius: 16px;
   overflow: hidden;
 
-  background-color: grey;
-  box-shadow: 10px 10px 10px #12b6ed;
+  background-color: rgba(9, 89, 114);
+  box-shadow: 10px 10px 10px rgba(9, 89, 114, 0.4);
 `;
 
 export const Title = styled.p`
@@ -45,5 +45,34 @@ export const BlockCrop = styled.div`
 
   .reactEasyCrop_Container {
     border-radius: 8px;
+  }
+`;
+
+export const RotationBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  cursor: pointer;
+  user-select: none;
+
+  :hover {
+    transform: scale(1.05);
+  }
+`;
+
+export const Text = styled.p`
+  font-size: 16px;
+  color: #12b6ed;
+`;
+
+export const BlockButtons = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+
+  > button {
+    flex-grow: 1;
   }
 `;

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
 
 import { Tabs } from './tabs';
@@ -17,7 +16,6 @@ const UserInfo = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prevLocation, setPrevLocation] = useState('');
-  const { firstName, lastName, avatarImage } = useSelector(getProfile);
 
   const close = () => {
     setIsModalOpen(false);
@@ -31,11 +29,7 @@ const UserInfo = () => {
   return (
     <Styles.Container>
       <Styles.Aside>
-        <ActiveProfile
-          lastName={lastName}
-          source={avatarImage}
-          firstName={firstName}
-        />
+        <ActiveProfile />
 
         <Tabs toggle={() => setIsModalOpen(true)} />
       </Styles.Aside>
