@@ -33,11 +33,7 @@ const DropDownInput = ({
 
   return (
     <Wrap>
-      {!size && (
-        <Label>
-          <span className="span_star">*</span> {title}:
-        </Label>
-      )}
+      {!size && <Label>{title}:</Label>}
       <Input
         name={name}
         focus={focus}

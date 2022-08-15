@@ -140,7 +140,10 @@ const PhotoFiles = ({
   };
   return (
     <div className="files">
-      <h3>{getTranslatedText('addAdv.uploadDescription')}</h3>
+      <h3>
+        {getTranslatedText('addAdv.uploadDescription')}{' '}
+        <span className="span_star">*</span>
+      </h3>
       <p>{getTranslatedText('addAdv.firstUploadDescription')}</p>
 
       <p>
