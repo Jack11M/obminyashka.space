@@ -5,4 +5,5 @@ export const Page = styled.div`
   flex-direction: column;
   min-height: 100vh;
   overflow: hidden;
+  background-color: ${({ theme }) => theme.colors.bgContent};
 `;
