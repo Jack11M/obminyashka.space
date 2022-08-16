@@ -7,7 +7,8 @@ import { showMessage } from 'hooks';
 import * as Icon from 'assets/icons';
 import { Button } from 'components/common';
 import { getErrorMessage } from 'Utils/error';
-import { postAvatarThunk } from 'store/profile/thunk';
+import { getTranslatedText } from 'components/local';
+import { deleteAvatarThunk, putAvatarThunk } from 'store/profile/thunk';
 
 import * as Styles from './styles';
 import getCroppedImg from './helpers';
@@ -19,6 +20,8 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const onCropComplete = useCallback((_, croppedPixels) => {
     setCroppedAreaPixels(croppedPixels);
@@ -26,23 +29,44 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
 
   const showCroppedImage = useCallback(async () => {
     try {
+      setLoading(true);
       const croppedPicture = await getCroppedImg(
         image,
         croppedAreaPixels,
         rotation
       );
-      await dispatch(postAvatarThunk({ file: croppedPicture }));
-      setImage(croppedPicture);
-      setCroppedImage(croppedPicture);
-      onClose();
+
+      if (typeof croppedPicture?.src === 'string') {
+        const file = new File([croppedPicture.blob], 'avatar', {
+          type: croppedPicture.blob.type,
+        });
+
+        const dataForm = new FormData();
+        dataForm.append('image', file);
+
+        await dispatch(putAvatarThunk(dataForm, croppedPicture.src));
+        setImage(croppedPicture.src);
+        setCroppedImage(croppedPicture.src);
+        onClose();
+      }
     } catch (e) {
       showMessage(getErrorMessage(e));
+    } finally {
+      setLoading(false);
     }
   }, [image, croppedAreaPixels, rotation]);
 
-  const handleDelete = () => {
-    setImage(null);
-    onClose();
+  const handleDelete = async () => {
+    try {
+      setLoadingDelete(true);
+      await dispatch(deleteAvatarThunk());
+      setImage(null);
+      onClose();
+    } catch (e) {
+      showMessage(getErrorMessage(e));
+    } finally {
+      setLoadingDelete(false);
+    }
   };
 
   useClickAway(ref, () => {
@@ -74,17 +98,24 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
             onClick={() => setRotation((prev) => prev + 45)}
           >
             <Icon.Rotate />
-            <Styles.Text>Rotate</Styles.Text>
+            <Styles.Text>{getTranslatedText('button.rotate')}</Styles.Text>
           </Styles.RotationBlock>
 
           <Styles.BlockButtons>
             <Button
-              text="Delete"
               click={handleDelete}
+              isLoading={loadingDelete}
               style={{ width: '100%' }}
+              text={getTranslatedText('button.delete')}
             />
-            <Button text="Cancel" click={onClose} />
-            <Button text="Save" click={showCroppedImage} />
+
+            <Button text={getTranslatedText('button.cancel')} click={onClose} />
+
+            <Button
+              isLoading={loading}
+              click={showCroppedImage}
+              text={getTranslatedText('button.save')}
+            />
           </Styles.BlockButtons>
         </Styles.Wrap>
       </Styles.Container>

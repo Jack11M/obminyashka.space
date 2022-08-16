@@ -12,7 +12,6 @@ export const List = styled.ul`
   left: 0;
   top: 138px;
   position: fixed;
-  transform: translateY(-100vh);
 `;
 
 export const Wrapper = styled.div`

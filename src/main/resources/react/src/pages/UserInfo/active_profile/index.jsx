@@ -13,7 +13,7 @@ const ActiveProfile = () => {
   return (
     <Styles.ProfileBlock>
       <Styles.ProfileBox>
-        <CropImage image={avatarImage} />
+        <CropImage avatarImage={avatarImage} />
 
         <Styles.BoxData>
           <Styles.DataName>

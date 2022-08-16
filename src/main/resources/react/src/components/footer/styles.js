@@ -13,7 +13,6 @@ export const Container = styled.div`
   z-index: 2;
 
   ${({ theme }) => css`
-    background-color: ${theme.colors.bgContent};
     color: ${theme.colors.white};
   `}
 
