@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import * as Icon from 'assets/icons';
 import { convertToMB, useDelay } from 'Utils';
@@ -15,10 +15,16 @@ const CropImage = ({ avatarImage }) => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [showIcon, setShowIcon] = useDelay(300);
 
+  useEffect(() => {
+    if (avatarImage) {
+      setImage(`data:image/jpeg;base64,${avatarImage}`);
+    }
+  }, [avatarImage]);
+
   const changeFile = (event) => {
     const file = event.target.files[0];
-
     const { value, valueString } = convertToMB(file.size);
+
     if (value >= 10 && valueString.includes('MB')) {
       openModal({
         title: getTranslatedText('popup.errorTitle'),

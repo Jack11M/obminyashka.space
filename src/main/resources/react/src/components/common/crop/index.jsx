@@ -31,10 +31,20 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
         croppedAreaPixels,
         rotation
       );
-      await dispatch(postAvatarThunk({ file: croppedPicture }));
-      setImage(croppedPicture);
-      setCroppedImage(croppedPicture);
-      onClose();
+
+      if (typeof croppedPicture?.src === 'string') {
+        const file = new File([croppedPicture.blob], 'avatar', {
+          type: croppedPicture.blob.type,
+        });
+
+        const dataForm = new FormData();
+        dataForm.append('image', file);
+
+        await dispatch(postAvatarThunk(dataForm));
+        setImage(croppedPicture.src);
+        setCroppedImage(croppedPicture.src);
+        onClose();
+      }
     } catch (e) {
       showMessage(getErrorMessage(e));
     }
