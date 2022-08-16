@@ -72,6 +72,7 @@ const AddGoods = () => {
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
       .required(getTranslatedText('errors.requireField'))
+      .max(200, getTranslatedText('errors.max200'))
       .default(() => exchangeList.join(',')),
     age: Yup.string()
       .required(getTranslatedText('errors.requireField'))
