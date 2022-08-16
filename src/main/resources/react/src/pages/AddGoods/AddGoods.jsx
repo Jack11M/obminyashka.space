@@ -67,11 +67,12 @@ const AddGoods = () => {
     topic: Yup.string()
       .required(getTranslatedText('errors.requireField'))
       .min(3, getTranslatedText('errors.min3'))
-      .max(30, getTranslatedText('errors.max5'))
+      .max(30, getTranslatedText('errors.max30'))
       .default(() => announcementTitle),
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
       .required(getTranslatedText('errors.requireField'))
+      .max(200, getTranslatedText('errors.max200'))
       .default(() => exchangeList.join(',')),
     age: Yup.string()
       .required(getTranslatedText('errors.requireField'))

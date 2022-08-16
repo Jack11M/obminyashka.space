@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import { enumSex } from 'config/ENUM';
+import { getTranslatedText } from 'components/local/localization';
 
 export const getInitialValues = (children) => {
   const response = children?.length > 0 ? children : undefined;
@@ -18,7 +19,9 @@ export const getInitialValues = (children) => {
 export const validationSchema = Yup.object().shape({
   children: Yup.array().of(
     Yup.object().shape({
-      birthDate: Yup.string().nullable().required('Выберите дату рождения'),
+      birthDate: Yup.string()
+        .nullable()
+        .required(getTranslatedText('ownInfo.chooseData')),
       sex: Yup.string(),
     })
   ),
