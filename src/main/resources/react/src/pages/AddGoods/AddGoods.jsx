@@ -95,7 +95,7 @@ const AddGoods = () => {
     description: Yup.string()
       .max(255, getTranslatedText('errors.max255'))
       .default(() => description),
-    locationId: Yup.number()
+    locationId: Yup.string()
       .nullable()
       .required(getTranslatedText('errors.requireField'))
       .default(() => locationId),
@@ -229,7 +229,10 @@ const AddGoods = () => {
               />
 
               <div className="characteristics">
-                <h3>{getTranslatedText('addAdv.options')}</h3>
+                <h3>
+                  {getTranslatedText('addAdv.options')}{' '}
+                  <span className="span_star">*</span>
+                </h3>
 
                 <div className="characteristics_items">
                   <div className="characteristics_item">
@@ -305,7 +308,6 @@ const AddGoods = () => {
                 </h3>
 
                 <p className="description_subtitle">
-                  <span className="span_star">*</span>
                   {getTranslatedText('addAdv.describeText')}
                 </p>
 

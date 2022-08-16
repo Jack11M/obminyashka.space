@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
@@ -16,9 +16,7 @@ const InputLocation = ({
   setInputLocation,
   setLocationCurrent,
 }) => {
-  const langToUpperCase = useMemo(() => lang.toUpperCase(), [lang]);
-
-  const [currLang, setCurrLang] = useState(langToUpperCase);
+  const [currLang, setCurrLang] = useState(lang);
   const [showDrop, setShowDrop] = useState(false);
   const [filteredLocation, setFilteredLocation] = useState([]);
   const [uniqueLocation, setUniqueLocation] = useState([]);
@@ -34,7 +32,7 @@ const InputLocation = ({
         ? ''
         : elem.substring(elem.indexOf('(') + 1, elem.indexOf(')'));
 
-    const finalLocation = location[langToUpperCase].find((item) => {
+    const finalLocation = location[lang].find((item) => {
       if (district) return item.district === district && item.city === city;
       return item.city === city;
     });
@@ -44,18 +42,18 @@ const InputLocation = ({
   };
 
   useEffect(() => {
-    if (!location[langToUpperCase].length) return;
+    if (!location[lang].length) return;
 
     const uniqueField = () => {
       if (name === 'area') {
-        return location[langToUpperCase]
+        return location[lang]
           .map((item) => item[name])
           .filter((item, index, arr) => arr.indexOf(item) === index);
       }
 
       if (name === 'city') {
         const { area } = inputLocation;
-        return location[langToUpperCase]
+        return location[lang]
           .filter((curr) => curr.area === area)
           .map((item) =>
             item.district ? `${item[name]} (${item.district})` : item[name]
@@ -65,10 +63,10 @@ const InputLocation = ({
     };
 
     setUniqueLocation(uniqueField());
-  }, [location, inputLocation, langToUpperCase, name]);
+  }, [location, inputLocation, lang, name]);
 
   useEffect(() => {
-    if (currLang !== langToUpperCase) {
+    if (currLang !== lang) {
       if (name === 'city') {
         setLocationId(null);
         setLocationCurrent(null);
@@ -81,9 +79,9 @@ const InputLocation = ({
 
       setFilteredLocation([]);
       setShowDrop(false);
-      setCurrLang(langToUpperCase);
+      setCurrLang(lang);
     }
-  }, [langToUpperCase]);
+  }, [lang]);
 
   useEffect(() => {
     if (inputLocation.area === '') setShowDrop(false);
@@ -95,7 +93,7 @@ const InputLocation = ({
     );
 
   const focus = async () => {
-    if (!location[langToUpperCase].length) {
+    if (!location[lang].length) {
       try {
         const locationToLang = await api.fetchAddGood.getLocationLanguageAll();
         const modifiedLocation = locationToLang.map((item) =>

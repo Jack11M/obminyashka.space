@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import logo from 'assets/img/logo.png';
-import { List } from '../nav_category/styles';
 
 export const DivWrap = styled.div`
   padding: 20px 0 22px;
@@ -87,31 +86,37 @@ export const WrapCategories = styled.div`
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;
-  color: ${({ theme }) => theme.colors.blackColorText};
   margin: 25px 0 0 179px;
   padding-bottom: 95px;
   cursor: pointer;
 
-  &:hover {
-    ${WrapCategoriesTop} {
-      opacity: 1;
-      transform: translateY(10px);
-    }
-  }
+  ${({ theme, open }) => css`
+    color: ${theme.colors.blackColorText};
 
-  &:hover {
-    ${WrapCategoriesBottom} {
-      opacity: 0;
-      transform: translateY(50%);
-    }
-  }
+    ${open &&
+    css`
+      ${WrapCategoriesTop} {
+        opacity: 1;
+        transform: translateY(10px);
+      }
 
-  &:hover {
-    ${List} {
-      left: 0;
-      transform: translateY(0);
-    }
-  }
+      ${WrapCategoriesBottom} {
+        opacity: 0;
+        transform: translateY(50%);
+      }
+    `}
+
+    ${!open &&
+    css`
+      ${WrapCategoriesBottom} {
+        opacity: 1;
+      }
+
+      ${WrapCategoriesTop} {
+        opacity: 0;
+      }
+    `}
+  `}
 
   @media (min-width: 320px) {
     display: none;

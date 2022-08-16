@@ -80,13 +80,13 @@ const SelectionSection = ({
   return (
     <AddChoose>
       <TitleH3 className="add-title">
-        {getTranslatedText('addAdv.chooseSection')}
+        {getTranslatedText('addAdv.chooseSection')}{' '}
+        <span className="span_star">*</span>
       </TitleH3>
 
       <Sections>
         <SectionsItem>
           <ItemDescription>
-            <span className="span_star">*</span>{' '}
             {getTranslatedText('addAdv.category')}
           </ItemDescription>
 
@@ -102,7 +102,6 @@ const SelectionSection = ({
 
         <SectionsItem>
           <ItemDescription>
-            <span className="span_star">*</span>{' '}
             {getTranslatedText('addAdv.subcategory')}
           </ItemDescription>
 
@@ -117,7 +116,6 @@ const SelectionSection = ({
 
         <SectionsItem>
           <ItemDescription>
-            <span className="span_star">*</span>{' '}
             {getTranslatedText('addAdv.headline')}
           </ItemDescription>
 
