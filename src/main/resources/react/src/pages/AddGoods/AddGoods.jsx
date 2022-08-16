@@ -67,11 +67,12 @@ const AddGoods = () => {
     topic: Yup.string()
       .required(getTranslatedText('errors.requireField'))
       .min(3, getTranslatedText('errors.min3'))
-      .max(30, getTranslatedText('errors.max5'))
+      .max(30, getTranslatedText('errors.max30'))
       .default(() => announcementTitle),
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
       .required(getTranslatedText('errors.requireField'))
+      .max(200, getTranslatedText('errors.max200'))
       .default(() => exchangeList.join(',')),
     age: Yup.string()
       .required(getTranslatedText('errors.requireField'))
@@ -95,7 +96,7 @@ const AddGoods = () => {
     description: Yup.string()
       .max(255, getTranslatedText('errors.max255'))
       .default(() => description),
-    locationId: Yup.number()
+    locationId: Yup.string()
       .nullable()
       .required(getTranslatedText('errors.requireField'))
       .default(() => locationId),
@@ -229,7 +230,10 @@ const AddGoods = () => {
               />
 
               <div className="characteristics">
-                <h3>{getTranslatedText('addAdv.options')}</h3>
+                <h3>
+                  {getTranslatedText('addAdv.options')}{' '}
+                  <span className="span_star">*</span>
+                </h3>
 
                 <div className="characteristics_items">
                   <div className="characteristics_item">
@@ -305,7 +309,6 @@ const AddGoods = () => {
                 </h3>
 
                 <p className="description_subtitle">
-                  <span className="span_star">*</span>
                   {getTranslatedText('addAdv.describeText')}
                 </p>
 

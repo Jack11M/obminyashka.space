@@ -10,7 +10,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
-  const [, meta] = useField({ name: 'wishesToExchange' });
+  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
   const { error } = meta;
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
@@ -21,6 +21,10 @@ const Exchange = ({ exchangeList, setExchange }) => {
   });
 
   const handleInput = (event) => {
+    if (event.target.value.length >= 40) {
+      helpers.setError(getTranslatedText('errors.max40'));
+      return;
+    }
     setExchangeInput(event.target.value);
   };
 
@@ -29,6 +33,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
       if (event.key === 'Enter') event.preventDefault();
       return;
     }
+
     if (event.key === 'Enter') {
       event.preventDefault();
       setExchange((prev) => [...prev, exchangeInput]);
@@ -48,23 +53,27 @@ const Exchange = ({ exchangeList, setExchange }) => {
   const onBlur = () => {
     setBorder(false);
   };
+
   const getBorderClassName = (borderValue, errorValue) => {
     if (borderValue) return 'border_focus';
     if (errorValue) return 'border_error';
     return '';
   };
+
   return (
     <div className="change">
-      <h3 className="change_title">{getTranslatedText('addAdv.exchange')}</h3>
+      <h3 className="change_title">
+        {getTranslatedText('addAdv.exchange')}{' '}
+        <span className="span_star">*</span>
+      </h3>
 
       <p className="change-description">
-        <span className="span_star">*</span>
         &nbsp;
         {getTranslatedText('addAdv.whatChange')}
       </p>
 
       <p className="change-description_title">
-        {getTranslatedText('addAdv.enterPhrase')}
+        ({getTranslatedText('addAdv.enterPhrase')})
       </p>
 
       <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
