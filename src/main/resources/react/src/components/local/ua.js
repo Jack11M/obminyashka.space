@@ -103,6 +103,9 @@ const ua = {
     saveEmail: 'ЗБЕРЕГТИ EMAIL',
     remove: 'ВИДАЛИТИ АКАУНТ',
     back: 'Назад',
+    delete: 'Вилучити',
+    cancel: 'Cкасувати',
+    rotate: 'Обертати',
   },
   header: {
     about: 'Про проект',

@@ -42,7 +42,7 @@ const profileMeSlice = createSlice({
       state.username = payload?.username;
     },
     setAvatar: (state, { payload }) => {
-      state.avatarImage = payload.avatarImage;
+      state.avatarImage = payload;
     },
   },
 });

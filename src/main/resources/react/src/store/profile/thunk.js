@@ -22,10 +22,10 @@ export const putChildrenThunk = (children) => async (dispatch) => {
   }
 };
 
-export const postAvatarThunk = (avatar) => async (dispatch) => {
+export const postAvatarThunk = (avatar, base64) => async (dispatch) => {
   try {
-    const data = await api.profile.postAvatar(avatar);
-    dispatch(setAvatar(data));
+    await api.profile.postAvatar(avatar);
+    dispatch(setAvatar(base64));
     return Promise.resolve();
   } catch (e) {
     return Promise.reject(e);

@@ -7,6 +7,7 @@ import { showMessage } from 'hooks';
 import * as Icon from 'assets/icons';
 import { Button } from 'components/common';
 import { getErrorMessage } from 'Utils/error';
+import { getTranslatedText } from 'components/local';
 import { postAvatarThunk } from 'store/profile/thunk';
 
 import * as Styles from './styles';
@@ -40,7 +41,7 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
         const dataForm = new FormData();
         dataForm.append('image', file);
 
-        await dispatch(postAvatarThunk(dataForm));
+        await dispatch(postAvatarThunk(dataForm, croppedPicture.src));
         setImage(croppedPicture.src);
         setCroppedImage(croppedPicture.src);
         onClose();
@@ -84,17 +85,20 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
             onClick={() => setRotation((prev) => prev + 45)}
           >
             <Icon.Rotate />
-            <Styles.Text>Rotate</Styles.Text>
+            <Styles.Text>{getTranslatedText('button.rotate')}</Styles.Text>
           </Styles.RotationBlock>
 
           <Styles.BlockButtons>
             <Button
-              text="Delete"
               click={handleDelete}
               style={{ width: '100%' }}
+              text={getTranslatedText('button.delete')}
             />
-            <Button text="Cancel" click={onClose} />
-            <Button text="Save" click={showCroppedImage} />
+            <Button text={getTranslatedText('button.cancel')} click={onClose} />
+            <Button
+              click={showCroppedImage}
+              text={getTranslatedText('button.save')}
+            />
           </Styles.BlockButtons>
         </Styles.Wrap>
       </Styles.Container>

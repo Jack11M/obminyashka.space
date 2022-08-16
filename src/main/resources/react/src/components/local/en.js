@@ -104,6 +104,9 @@ const en = {
     saveEmail: 'SAVE EMAIL',
     remove: 'REMOVE ACCOUNT',
     back: 'Back',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    rotate: 'Rotate',
   },
   header: {
     about: 'About the project',
