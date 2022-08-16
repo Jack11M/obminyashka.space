@@ -29,7 +29,7 @@ const profileMeSlice = createSlice({
       state.children = payload;
     },
     putProfile: (state, { payload }) => {
-      state.avatarImage = payload?.avatarImage;
+      state.avatarImage = payload?.avatarImage || '';
       state.children = payload?.children;
       state.email = payload?.email;
       state.firstName = payload?.firstName;

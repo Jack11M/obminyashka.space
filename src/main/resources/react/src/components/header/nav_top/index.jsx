@@ -25,13 +25,15 @@ const NavTop = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!avatarImage.includes('blob:http:')) {
+    if (!avatarImage?.includes('blob:http:') && avatarImage !== '') {
       setImage(`data:image/jpeg;base64,${avatarImage}`);
     }
 
-    if (avatarImage.includes('blob:http:')) {
+    if (avatarImage?.includes('blob:http:')) {
       setImage(avatarImage);
     }
+
+    if (avatarImage === '') setImage('');
   }, [avatarImage, dispatch]);
 
   return (
