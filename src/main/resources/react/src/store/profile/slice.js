@@ -29,7 +29,7 @@ const profileMeSlice = createSlice({
       state.children = payload;
     },
     putProfile: (state, { payload }) => {
-      state.avatarImage = payload?.avatarImage;
+      state.avatarImage = payload?.avatarImage || '';
       state.children = payload?.children;
       state.email = payload?.email;
       state.firstName = payload?.firstName;
@@ -41,6 +41,9 @@ const profileMeSlice = createSlice({
       state.updated = payload?.updated;
       state.username = payload?.username;
     },
+    setAvatar: (state, { payload }) => {
+      state.avatarImage = payload;
+    },
   },
 });
 
@@ -48,10 +51,11 @@ export const getProfile = (state) => state.profileMe;
 
 const {
   reducer: profileMeReducer,
-  actions: { putUserToStore, putProfile, putChildrenToStore },
+  actions: { putUserToStore, putProfile, putChildrenToStore, setAvatar },
 } = profileMeSlice;
 
 export {
+  setAvatar,
   putProfile,
   putUserToStore,
   profileMeReducer,

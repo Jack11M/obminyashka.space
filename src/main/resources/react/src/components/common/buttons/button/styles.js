@@ -12,7 +12,6 @@ export const ButtonBlue = styled.button`
   align-items: center;
   height: 49px;
   color: #fdf9ff;
-  font-family: 'Roboto', sans-serif;
   font-style: normal;
   font-size: 16px;
   text-transform: uppercase;
