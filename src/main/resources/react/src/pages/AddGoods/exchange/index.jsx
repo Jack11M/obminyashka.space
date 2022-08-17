@@ -6,6 +6,8 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 
+import * as Styles from '../styles';
+
 const Exchange = ({ exchangeList, setExchange }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
@@ -54,29 +56,33 @@ const Exchange = ({ exchangeList, setExchange }) => {
     return '';
   };
   return (
-    <div className="change">
-      <h3 className="change_title">
+    <Styles.Wrap>
+      <Styles.TitleH3>
         {getTranslatedText('addAdv.exchange')}{' '}
         <span className="span_star">*</span>
-      </h3>
+      </Styles.TitleH3>
 
-      <p className="change-description">
+      <Styles.Description>
         &nbsp;
         {getTranslatedText('addAdv.whatChange')}
-      </p>
+      </Styles.Description>
 
-      <p className="change-description_title">
+      <Styles.Explanation>
         ({getTranslatedText('addAdv.enterPhrase')})
-      </p>
+      </Styles.Explanation>
 
-      <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
+      <Styles.ChangeWrapp
+        styles={getBorderClassName}
+        borderValue={border}
+        errorValue={error}
+      >
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
-            <div className="change_item">
+            <Styles.ChangeItem>
               {item}
 
-              <span onClick={() => removeExchangeItem(item)} />
-            </div>
+              <Styles.Span onClick={() => removeExchangeItem(item)} />
+            </Styles.ChangeItem>
           </animated.div>
         ))}
 
@@ -92,9 +98,9 @@ const Exchange = ({ exchangeList, setExchange }) => {
             placeholder={getTranslatedText('addAdv.placeholderChange')}
           />
         </div>
-      </div>
+      </Styles.ChangeWrapp>
       <ErrorDisplay error={!!error && error} />
-    </div>
+    </Styles.Wrap>
   );
 };
 

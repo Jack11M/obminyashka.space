@@ -1,89 +1,89 @@
-.add {
-  padding-top: 200px;
-  padding-bottom: 50px;
+// .add {
+//   padding-top: 200px;
+//   padding-bottom: 50px;
 
-  .add_container {
-    max-width: 1200px;
-    margin: auto;
+//   .add_container {
+//     max-width: 1200px;
+//     margin: auto;
 
-    .add_inner {
-      min-height: 600px;
-      width: 100%;
-      background: #ffffff;
-      padding: 40px;
+//     .add_inner {
+//       min-height: 600px;
+//       width: 100%;
+//       background: #ffffff;
+//       padding: 40px;
 
-      h3 {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 26px;
-        font-weight: 600;
-        margin-bottom: 10px;
-        line-height: 40px;
-      }
+//       h3 {
+//         font-family: 'Open Sans', sans-serif;
+//         font-size: 26px;
+//         font-weight: 600;
+//         margin-bottom: 10px;
+//         line-height: 40px;
+//       }
 
-      .add_choose {
-        margin-bottom: 50px;
-      }
+//       .add_choose {
+//         margin-bottom: 50px;
+//       }
 
-      .change {
-        margin-bottom: 50px;
-        & > p:nth-child(2) {
-          margin-bottom: 0;
-        }
+//       .change {
+//         margin-bottom: 50px;
+//         & > p:nth-child(2) {
+//           margin-bottom: 0;
+//         }
 
-        .change_wrapper {
-          display: inline-flex;
-          flex-wrap: wrap;
-          align-items: center;
-          min-width: 362px;
-          border: 1px solid #bcbcbc;
-          border-radius: 2px;
+//         .change_wrapper {
+//           display: inline-flex;
+//           flex-wrap: wrap;
+//           align-items: center;
+//           min-width: 362px;
+//           border: 1px solid #bcbcbc;
+//           border-radius: 2px;
 
-          .change_item {
-            position: relative;
-            margin: 6px 7px;
-            padding: 6px 34px 6px 14px;
-            background: #12b6ed;
-            border-radius: 5px;
-            color: #ffffff;
-            text-transform: uppercase;
-            font-size: 12px;
-            line-height: 24px;
+//           .change_item {
+//             position: relative;
+//             margin: 6px 7px;
+//             padding: 6px 34px 6px 14px;
+//             background: #12b6ed;
+//             border-radius: 5px;
+//             color: #ffffff;
+//             text-transform: uppercase;
+//             font-size: 12px;
+//             line-height: 24px;
 
-            span {
-              position: absolute;
-              display: inline-flex;
-              justify-content: center;
-              align-items: center;
-              top: calc(50% - 8px);
-              width: 16px;
-              height: 16px;
-              right: 8px;
-              cursor: pointer;
+//             span {
+//               position: absolute;
+//               display: inline-flex;
+//               justify-content: center;
+//               align-items: center;
+//               top: calc(50% - 8px);
+//               width: 16px;
+//               height: 16px;
+//               right: 8px;
+//               cursor: pointer;
 
-              transition: 0.3s ease-in-out;
+//               transition: 0.3s ease-in-out;
 
-              &::after {
-                position: absolute;
-                content: '';
-                width: 1px;
-                height: 11px;
-                background: #fff;
-                transform: rotate(45deg);
-              }
+//               &::after {
+//                 position: absolute;
+//                 content: '';
+//                 width: 1px;
+//                 height: 11px;
+//                 background: #fff;
+//                 transform: rotate(45deg);
+//               }
 
-              &::before {
-                position: absolute;
-                content: '';
-                width: 1px;
-                height: 11px;
-                background: #fff;
-                transform: rotate(-45deg);
-              }
-              &:hover {
-                transform: rotate(90deg);
-              }
-            }
-          }
+//               &::before {
+//                 position: absolute;
+//                 content: '';
+//                 width: 1px;
+//                 height: 11px;
+//                 background: #fff;
+//                 transform: rotate(-45deg);
+//               }
+//               &:hover {
+//                 transform: rotate(90deg);
+//               }
+//             }
+//           }
 
           .change_input-wrapper {
             .change_input {

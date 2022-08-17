@@ -23,6 +23,7 @@ import { PhotoFiles } from './photo-files';
 import { SelectionSection } from './selection-section';
 import { WrapCharacteristic } from './wrap-characteristic';
 
+import * as Styles from './styles';
 import './AddGoods.scss';
 
 const AddGoods = () => {
@@ -95,7 +96,7 @@ const AddGoods = () => {
     description: Yup.string()
       .max(255, getTranslatedText('errors.max255'))
       .default(() => description),
-    locationId: Yup.string()
+    locationId: Yup.number()
       .nullable()
       .required(getTranslatedText('errors.requireField'))
       .default(() => locationId),
@@ -207,9 +208,9 @@ const AddGoods = () => {
       validationSchema={validationAdv}
     >
       <Form>
-        <main className="add">
-          <div className="add_container">
-            <div className="add_inner">
+        <Styles.MainContainer>
+          <Styles.Container>
+            <Styles.AddContainer>
               <BackButton
                 type="button"
                 style={{ marginBottom: 16 }}
@@ -229,10 +230,7 @@ const AddGoods = () => {
               />
 
               <div className="characteristics">
-                <h3>
-                  {getTranslatedText('addAdv.options')}{' '}
-                  <span className="span_star">*</span>
-                </h3>
+                <h3>{getTranslatedText('addAdv.options')}</h3>
 
                 <div className="characteristics_items">
                   <div className="characteristics_item">
@@ -308,6 +306,7 @@ const AddGoods = () => {
                 </h3>
 
                 <p className="description_subtitle">
+                  <span className="span_star">*</span>
                   {getTranslatedText('addAdv.describeText')}
                 </p>
 
@@ -351,9 +350,9 @@ const AddGoods = () => {
                   <p>{getTranslatedText('addAdv.cancel')}</p>
                 </div>
               </div>
-            </div>
-          </div>
-        </main>
+            </Styles.AddContainer>
+          </Styles.Container>
+        </Styles.MainContainer>
       </Form>
     </FormHandler>
   );
