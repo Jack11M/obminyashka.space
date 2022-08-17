@@ -21,6 +21,13 @@ const CropImage = ({ avatarImage }) => {
     }
   }, [avatarImage]);
 
+  const handleOpenCrop = () => {
+    if (image) {
+      setCroppedImage(image);
+      setOpenCrop(true);
+    }
+  };
+
   const changeFile = (event) => {
     const file = event.target.files[0];
     const { value, valueString } = convertToMB(file.size);
@@ -57,6 +64,7 @@ const CropImage = ({ avatarImage }) => {
       <Styles.WrapAvatar
         hasImage={!!image}
         showIcon={showIcon}
+        onClick={handleOpenCrop}
         onMouseEnter={() => setShowIcon(true)}
         onMouseLeave={() => setShowIcon(false)}
       >
@@ -68,7 +76,7 @@ const CropImage = ({ avatarImage }) => {
           </Styles.WrapCropSvg>
         )}
 
-        {!openCrop && (
+        {!openCrop && !image && (
           <Styles.InputFile
             type="file"
             name="file"
