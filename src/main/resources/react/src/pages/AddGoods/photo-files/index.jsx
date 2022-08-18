@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 
+import { convertToMB } from 'Utils';
 import { ModalContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
-import { convertToMB } from './helper';
 import { ImagePhoto } from './image-photo';
 import { AddFileInput } from './add-file-input';
 

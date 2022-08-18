@@ -1,26 +1,23 @@
-import { NavLink } from 'react-router-dom';
-
 import { getTranslatedText } from 'components/local/localization';
 
 import { links } from './config';
-
-import './tabs.scss';
+import * as Styles from './styles';
 
 const Tabs = ({ toggle }) => (
-  <div className="tabs">
-    {links.map(({ url, onClick, end, classname, textKey }) => (
-      <NavLink
+  <Styles.TabsBlock>
+    {links.map(({ url, onClick, end, icon, textKey }) => (
+      <Styles.NavLink
         to={url}
         end={end}
         key={url}
         onClick={onClick ? toggle : undefined}
       >
-        <i className={classname} />
-        {getTranslatedText(textKey)}
-        <i className="active__cycle" />
-      </NavLink>
+        {icon}
+        <span>{getTranslatedText(textKey)}</span>
+        <Styles.Circle />
+      </Styles.NavLink>
     ))}
-  </div>
+  </Styles.TabsBlock>
 );
 
 export { Tabs };

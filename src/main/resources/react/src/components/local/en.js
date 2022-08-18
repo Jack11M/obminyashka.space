@@ -71,6 +71,7 @@ const en = {
     girl: 'Girl',
     unselected: 'Unselected',
     chooseData: 'First you need to choose a date of birth',
+    choosePhone: 'First you need to enter the phone',
   },
   settings: {
     changePassword: 'Change password',
@@ -103,6 +104,9 @@ const en = {
     saveEmail: 'SAVE EMAIL',
     remove: 'REMOVE ACCOUNT',
     back: 'Back',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    rotate: 'Rotate',
   },
   header: {
     about: 'About the project',

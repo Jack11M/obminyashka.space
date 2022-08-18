@@ -1,22 +1,28 @@
-import './active_profile.scss';
-import { Avatar } from 'components/common/avatar';
+import { useSelector } from 'react-redux';
 
-const ActiveProfile = ({ firstName, lastName, avatar }) => (
-  <div className="active__profile">
-    <div className="active__profile__box">
-      <Avatar
-        width={135}
-        height={135}
-        avatar={avatar}
-        whatIsClass="active__profile__box-photo"
-      />
-      <div className="active__profile__box-data">
-        <p className="active__profile__box-data-name">
-          {`${firstName} ${lastName}`}
-        </p>
-      </div>
-    </div>
-  </div>
-);
+import { getProfile } from 'store/profile/slice';
+import { EllipsisText } from 'components/common';
+
+import * as Styles from './styles';
+import { getName } from './helpers';
+import { CropImage } from './crop-image';
+
+const ActiveProfile = () => {
+  const { firstName, lastName, avatarImage } = useSelector(getProfile);
+
+  return (
+    <Styles.ProfileBlock>
+      <Styles.ProfileBox>
+        <CropImage avatarImage={avatarImage} />
+
+        <Styles.BoxData>
+          <Styles.DataName>
+            <EllipsisText>{getName(firstName, lastName)}</EllipsisText>
+          </Styles.DataName>
+        </Styles.BoxData>
+      </Styles.ProfileBox>
+    </Styles.ProfileBlock>
+  );
+};
 
 export { ActiveProfile };

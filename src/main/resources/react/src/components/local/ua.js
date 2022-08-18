@@ -70,6 +70,7 @@ const ua = {
     girl: 'Дівчинка',
     unselected: 'Не вибрано',
     chooseData: 'Спочатку треба вибрати дату народження',
+    choosePhone: 'Спочатку треба ввести телефон',
   },
   settings: {
     changePassword: 'Змінити пароль',
@@ -102,6 +103,9 @@ const ua = {
     saveEmail: 'ЗБЕРЕГТИ EMAIL',
     remove: 'ВИДАЛИТИ АКАУНТ',
     back: 'Назад',
+    delete: 'Вилучити',
+    cancel: 'Cкасувати',
+    rotate: 'Обертати',
   },
   header: {
     about: 'Про проект',
