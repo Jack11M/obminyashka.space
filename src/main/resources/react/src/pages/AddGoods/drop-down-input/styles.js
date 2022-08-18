@@ -12,7 +12,7 @@ const Label = styled.label`
   font-family: Roboto, sans-serif;
   font-size: 16px;
   line-height: 24px;
-  color: #8e8e8e;
+  color: ${({ theme }) => theme.colors.colorGrey};
 `;
 
 const Input = styled.input`
@@ -46,7 +46,8 @@ const WrapDropItems = styled.div`
   position: absolute;
   width: 100%;
   max-height: 470px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
+
   border: 1px solid hsl(0, 0%, 44%);
   border-top: none;
   overflow-y: auto;

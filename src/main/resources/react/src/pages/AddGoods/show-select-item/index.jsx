@@ -8,16 +8,7 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { categoryImages } from './config';
 import { ErrorDisplay } from '../error-display';
-import {
-  Image,
-  DropItems,
-  SelectItem,
-  WrapSelect,
-  PlaceHolder,
-  SelectLabel,
-  SelectTitle,
-  AnimatedLabel,
-} from './styles';
+import * as Styles from './styles';
 
 const ShowSelectItem = ({
   name,
@@ -84,59 +75,61 @@ const ShowSelectItem = ({
 
   return (
     <>
-      <WrapSelect ref={refClickAway}>
-        <SelectLabel
+      <Styles.WrapSelect ref={refClickAway}>
+        <Styles.SelectLabel
           error={!!error}
           showImg={showImg}
           onClick={() => setOpened((prev) => !prev)}
         >
           {value ? (
-            <AnimatedLabel style={spring}>
-              {showImg && <Image src={categoryImages[value]} alt={value} />}
-              <SelectTitle>{text}</SelectTitle>
-            </AnimatedLabel>
+            <Styles.AnimatedLabel style={spring}>
+              {showImg && (
+                <Styles.Image src={categoryImages[value]} alt={value} />
+              )}
+              <Styles.SelectTitle>{text}</Styles.SelectTitle>
+            </Styles.AnimatedLabel>
           ) : (
-            <PlaceHolder>{placeholder}</PlaceHolder>
+            <Styles.PlaceHolder>{placeholder}</Styles.PlaceHolder>
           )}
-        </SelectLabel>
+        </Styles.SelectLabel>
 
         {dropDown(
           (styles, items) =>
             items && (
               <animated.div style={{ ...styles }}>
-                <DropItems
+                <Styles.DropItems
                   overflows={overflows}
                   ref={refHeightCategory}
                   notOpen={opened && !data}
                 >
                   {transition((style, item) => (
                     <animated.div key={item} style={{ ...style }}>
-                      <SelectItem
+                      <Styles.SelectItem
                         showImg={showImg}
                         onClick={() => handleClick(item)}
                         selectedItem={value === item?.name ?? item}
                       >
                         {showImg && (
-                          <Image
+                          <Styles.Image
                             src={categoryImages[item.name]}
                             alt={item.name}
                           />
                         )}
 
-                        <SelectTitle>
+                        <Styles.SelectTitle>
                           {categories &&
                             getTranslatedText(`categories.${item?.name}`)}
 
                           {!categories && item}
-                        </SelectTitle>
-                      </SelectItem>
+                        </Styles.SelectTitle>
+                      </Styles.SelectItem>
                     </animated.div>
                   ))}
-                </DropItems>
+                </Styles.DropItems>
               </animated.div>
             )
         )}
-      </WrapSelect>
+      </Styles.WrapSelect>
 
       <ErrorDisplay error={!!error && error} />
     </>

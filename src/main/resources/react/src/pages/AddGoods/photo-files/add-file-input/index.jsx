@@ -4,7 +4,7 @@ import { useField } from 'formik';
 import dropsPng from 'assets/img/drag-n-drop.png';
 
 import { ErrorDisplay } from '../../error-display';
-import { FilesLabel, Input, SpanAdd, Image, WrapError } from './styles';
+import * as Styles from './styles';
 
 const AddFileInput = ({ onChange }) => {
   const [drag, setDrag] = useState(false);
@@ -29,27 +29,27 @@ const AddFileInput = ({ onChange }) => {
   };
 
   return (
-    <FilesLabel
+    <Styles.FilesLabel
       error={error}
       onDrop={(e) => dropHandler(e)}
       onDragOver={(e) => dragStartHandler(e)}
       onDragStart={(e) => dragStartHandler(e)}
       onDragLeave={(e) => dragLeaveHandler(e)}
     >
-      <Input
+      <Styles.Input
         multiple
         type="file"
         name="file"
         accept=".png, .jpg, .jpeg, .gif"
         onChange={onChange}
       />
-      {drag ? <Image src={dropsPng} alt="drop" /> : <SpanAdd />}
+      {drag ? <Styles.Image src={dropsPng} alt="drop" /> : <Styles.SpanAdd />}
       {error && (
-        <WrapError>
+        <Styles.WrapError>
           <ErrorDisplay error={!!error && error} />
-        </WrapError>
+        </Styles.WrapError>
       )}
-    </FilesLabel>
+    </Styles.FilesLabel>
   );
 };
 

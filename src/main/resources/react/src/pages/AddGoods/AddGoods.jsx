@@ -24,7 +24,6 @@ import { SelectionSection } from './selection-section';
 import { WrapCharacteristic } from './wrap-characteristic';
 
 import * as Styles from './styles';
-import './AddGoods.scss';
 
 const AddGoods = () => {
   const navigate = useNavigate();
@@ -230,11 +229,11 @@ const AddGoods = () => {
                 setExchange={setExchangeList}
               />
 
-              <div className="characteristics">
+              <>
                 <h3>{getTranslatedText('addAdv.options')}</h3>
 
-                <div className="characteristics_items">
-                  <div className="characteristics_item">
+                <Styles.WrapItems>
+                  <Styles.WrapItem>
                     <WrapCharacteristic
                       name="age"
                       title={getTranslatedText('addAdv.age')}
@@ -252,9 +251,9 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </div>
+                  </Styles.WrapItem>
 
-                  <div className="characteristics_item">
+                  <Styles.WrapItem>
                     <WrapCharacteristic
                       name="gender"
                       title={getTranslatedText('addAdv.sex')}
@@ -272,9 +271,9 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </div>
+                  </Styles.WrapItem>
 
-                  <div className="characteristics_item">
+                  <Styles.WrapItem>
                     <WrapCharacteristic
                       name="season"
                       title={getTranslatedText('addAdv.season')}
@@ -292,31 +291,30 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </div>
+                  </Styles.WrapItem>
 
                   <Sizes
                     categories={categoryItems}
                     dimension={{ size, setSize }}
                   />
-                </div>
-              </div>
+                </Styles.WrapItems>
+              </>
 
-              <div className="description">
+              <Styles.WrapDescription>
                 <h3 className="description_title">
                   {getTranslatedText('addAdv.describeTitle')}
                 </h3>
 
-                <p className="description_subtitle">
-                  <span className="span_star">*</span>
+                <Styles.DescriptionText>
+                  <Styles.Star>*</Styles.Star>
                   {getTranslatedText('addAdv.describeText')}
-                </p>
+                </Styles.DescriptionText>
 
-                <textarea
+                <Styles.TextArea
                   value={description}
-                  className="description_textarea"
                   onChange={(e) => setDescription(e.target.value)}
                 />
-              </div>
+              </Styles.WrapDescription>
 
               <Location
                 setLocationId={setLocationId}
@@ -333,24 +331,24 @@ const AddGoods = () => {
                 setCurrentIndexImage={setCurrentIndexImage}
               />
 
-              <div className="bottom_block">
-                <div className="buttons_block">
+              <Styles.WrapButtons>
+                <Styles.BlockButtons>
                   <ButtonAdv type="submit" />
 
                   <Button
                     type="submit"
-                    whatClass="preview"
+                    style={{ marginLeft: 30 }}
                     width={lang === 'ua' ? '270px' : '222px'}
                     click={() => setButtonPreview(true)}
                     text={getTranslatedText('addAdv.preview')}
                   />
-                </div>
+                </Styles.BlockButtons>
 
-                <div className="cancel" onClick={resetAll}>
-                  <div className="cross" />
+                <Styles.BackButtons onClick={resetAll}>
+                  <Styles.Cross />
                   <p>{getTranslatedText('addAdv.cancel')}</p>
-                </div>
-              </div>
+                </Styles.BackButtons>
+              </Styles.WrapButtons>
             </Styles.AddContainer>
           </Styles.Container>
         </Styles.MainContainer>

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Button } from 'components/common';
 
 export const MainContainer = styled.main`
   padding-top: 200px;
@@ -13,7 +14,7 @@ export const Container = styled.div`
 export const AddContainer = styled.div`
   min-height: 600px;
   width: 100%;
-  background: #ffffff;
+  background-color: ${({ theme }) => theme.colors.white};
   padding: 40px;
 `;
 
@@ -29,69 +30,130 @@ export const TitleH3 = styled.h3`
   line-height: 40px;
 `;
 
-export const Description = styled.p`
-  color: #8e8e8e;
-  margin-bottom: 0;
+export const WrapItems = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  & :last-child {
+    color: #383838;
+    width: 350px;
+  }
 `;
 
-export const Explanation = styled.p`
-  color: #8e8e8e;
-  font-size: 14px;
+export const WrapItem = styled.div``;
+
+export const ItemTittle = styled.h4`
+  font-size: 22px;
+  margin-bottom: 13px;
+`;
+
+export const WrapDescription = styled.div`
+  padding-bottom: 40px;
+`;
+
+export const DescriptionText = styled.p`
+  color: ${({ theme }) => theme.colors.colorGrey};
   margin-bottom: 10px;
 `;
 
-export const ChangeWrapp = styled.div`
-  align-items: center;
+export const Star = styled.span`
+  color: red;
+`;
+
+export const TextArea = styled.textarea`
+  margin-top: 16px;
+  padding: 10px;
+  width: 100%;
+  min-height: 150px;
+  font-size: 16px;
+  line-height: 24px;
+  outline: none;
+  resize: none;
   border: 1px solid #bcbcbc;
   border-radius: 2px;
-  display: inline-flex;
-  flex-wrap: wrap;
-  min-width: 350px;
+  caret-color: ${({ theme: { colors } }) => colors.activeColor};
+  &:focus {
+    border-color: hsl(0, 0%, 44%);
+  }
 `;
 
-export const ChangeItem = styled.div`
-  position: relative;
-  margin: 6px 7px;
-  padding: 6px 34px 6px 14px;
-  background: #12b6ed;
-  border-radius: 5px;
-  color: #ffffff;
-  text-transform: uppercase;
-  font-size: 12px;
-  line-height: 24px;
+export const WrapFiles = styled.div`
+  margin-bottom: 100px;
 `;
 
-export const Span = styled.span`
-  position: absolute;
-  display: inline-flex;
-  justify-content: center;
+export const FileTittle = styled.h3`
+  font-weight: 600;
+  color: #11171f;
+  font-size: 26px;
+  line-height: 40px;
+`;
+
+export const FileDescription = styled.p`
+  font-size: 16px;
+  line-height: 26px;
+  color: #8f8f8f;
+  font-weight: 400;
+`;
+
+export const WrapperFile = styled.div`
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+`;
+
+export const WrapButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  top: calc(50% - 8px);
-  width: 16px;
-  height: 16px;
-  right: 8px;
-  cursor: pointer;
+`;
 
-  transition: 0.3s ease-in-out;
+export const BlockButtons = styled.div`
+  display: flex;
+  ${Button} {
+    margin-left: 30px;
+  }
+`;
 
+export const Cross = styled.div`
+  position: relative;
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  transition: all 0.4s ease-in-out;
+
+  &:before,
   &:after {
     position: absolute;
     content: '';
     width: 1px;
-    height: 11px;
-    background: #fff;
-    transform: rotate(45deg);
+    height: 16px;
+    background-color: black;
   }
+  &::before {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  &:after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+`;
 
-  &:before {
-    position: absolute;
-    content: '';
-    width: 1px;
-    height: 11px;
-    background: #fff;
-    transform: rotate(-45deg);
-  }
+export const BackButtons = styled.div`
+  display: flex;
+  padding: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
   &:hover {
-    transform: rotate(90deg);
+    ${Cross} {
+      transform: rotate(180deg);
+    }
+  }
+  &:active {
+    transform: scale(1.15);
   }
 `;

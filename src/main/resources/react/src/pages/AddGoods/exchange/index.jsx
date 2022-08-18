@@ -6,7 +6,7 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
 
-import * as Styles from '../styles';
+import * as Styles from './styles';
 
 const Exchange = ({ exchangeList, setExchange }) => {
   const [exchangeInput, setExchangeInput] = useState('');
@@ -65,8 +65,8 @@ const Exchange = ({ exchangeList, setExchange }) => {
   return (
     <Styles.Wrap>
       <Styles.TitleH3>
-        {getTranslatedText('addAdv.exchange')}{' '}
-        <span className="span_star">*</span>
+        {getTranslatedText('addAdv.exchange')}
+        <Styles.Star>*</Styles.Star>
       </Styles.TitleH3>
 
       <Styles.Description>
@@ -87,24 +87,21 @@ const Exchange = ({ exchangeList, setExchange }) => {
           <animated.div key={item} style={{ ...styles }}>
             <Styles.ChangeItem>
               {item}
-
               <Styles.Span onClick={() => removeExchangeItem(item)} />
             </Styles.ChangeItem>
           </animated.div>
         ))}
-
-        <div className="change_input-wrapper">
-          <input
+        <Styles.WrapInput>
+          <Styles.ChangeInput
             type="text"
             onBlur={onBlur}
             onFocus={onFocus}
             value={exchangeInput}
             onKeyPress={keyEnter}
             onChange={handleInput}
-            className="change_input"
             placeholder={getTranslatedText('addAdv.placeholderChange')}
           />
-        </div>
+        </Styles.WrapInput>
       </Styles.ChangeWrapp>
       <ErrorDisplay error={!!error && error} />
     </Styles.Wrap>
