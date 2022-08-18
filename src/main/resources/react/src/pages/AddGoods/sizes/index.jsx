@@ -49,7 +49,7 @@ const Sizes = ({ categories, dimension }) => {
   }, [categories]);
 
   return (
-    <Styles.WrapItem>
+    <Styles.SectionsItem>
       <Styles.ItemTittle>
         {getTranslatedText('addAdv.size')}
         {lang === 'en' ? ' cm' : ' см'}
@@ -68,7 +68,7 @@ const Sizes = ({ categories, dimension }) => {
         titleError="popup.errorTitleSize"
         placeholder={getTranslatedText('addAdv.chooseSize')}
       />
-    </Styles.WrapItem>
+    </Styles.SectionsItem>
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
@@ -96,7 +97,7 @@ const AddGoods = () => {
     description: Yup.string()
       .max(255, getTranslatedText('errors.max255'))
       .default(() => description),
-    locationId: Yup.number()
+    locationId: Yup.string()
       .nullable()
       .required(getTranslatedText('errors.requireField'))
       .default(() => locationId),
@@ -236,7 +237,7 @@ const AddGoods = () => {
                 </Styles.TitleH3>
 
                 <Styles.WrapItems>
-                  <Styles.WrapItem>
+                  <Styles.SectionsItem>
                     <WrapCharacteristic
                       name="age"
                       title={getTranslatedText('addAdv.age')}
@@ -254,9 +255,9 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </Styles.WrapItem>
+                  </Styles.SectionsItem>
 
-                  <Styles.WrapItem>
+                  <Styles.SectionsItem>
                     <WrapCharacteristic
                       name="gender"
                       title={getTranslatedText('addAdv.sex')}
@@ -274,9 +275,9 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </Styles.WrapItem>
+                  </Styles.SectionsItem>
 
-                  <Styles.WrapItem>
+                  <Styles.SectionsItem>
                     <WrapCharacteristic
                       name="season"
                       title={getTranslatedText('addAdv.season')}
@@ -294,7 +295,7 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </Styles.WrapItem>
+                  </Styles.SectionsItem>
 
                   <Sizes
                     categories={categoryItems}

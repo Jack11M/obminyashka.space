@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
@@ -78,9 +79,9 @@ const Exchange = ({ exchangeList, setExchange }) => {
       </Styles.Explanation>
 
       <Styles.ChangeWrapp
-        styles={getBorderClassName}
-        borderValue={border}
         errorValue={error}
+        borderValue={border}
+        styles={getBorderClassName}
       >
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
@@ -90,7 +91,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
             </Styles.ChangeItem>
           </animated.div>
         ))}
-        <Styles.WrapInput>
+        <>
           <Styles.ChangeInput
             type="text"
             onBlur={onBlur}
@@ -100,7 +101,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
             onChange={handleInput}
             placeholder={getTranslatedText('addAdv.placeholderChange')}
           />
-        </Styles.WrapInput>
+        </>
       </Styles.ChangeWrapp>
       <ErrorDisplay error={!!error && error} />
     </Styles.Wrap>

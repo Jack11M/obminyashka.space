@@ -54,7 +54,6 @@ export const Span = styled.span`
   height: 16px;
   right: 8px;
   cursor: pointer;
-
   transition: 0.3s ease-in-out;
 
   &:after {
@@ -74,11 +73,11 @@ export const Span = styled.span`
     background: #fff;
     transform: rotate(-45deg);
   }
+
   &:hover {
     transform: rotate(90deg);
   }
 `;
-export const WrapInput = styled.div``;
 
 export const ChangeInput = styled.input`
   position: relative;
@@ -91,6 +90,7 @@ export const ChangeInput = styled.input`
   border: none;
   outline: none;
   caret-color: #00c0ff;
+
   &:focus {
     border-color: hsl(0, 0%, 44%);
   }

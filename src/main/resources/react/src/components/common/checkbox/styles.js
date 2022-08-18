@@ -31,7 +31,6 @@ const Label = styled.label`
   margin-left: ${(props) => (props.distanceBetween ? '9px' : '22px')};
   font-size: ${({ fontSize }) => fontSize || '14px'};
   line-height: 17px;
-  /* vertical-align: middle; */
   cursor: pointer;
   max-width: 679px;
   width: 100%;

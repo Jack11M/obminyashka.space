@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { Button } from 'components/common';
 
 export const MainContainer = styled.main`
@@ -35,13 +36,17 @@ export const WrapItems = styled.div`
   justify-content: space-between;
   margin-bottom: 50px;
   flex-wrap: wrap;
+
   & :last-child {
     color: #383838;
     width: 350px;
   }
 `;
 
-export const WrapItem = styled.div``;
+export const SectionsItem = styled.div`
+  max-width: 350px;
+  width: 100%;
+`;
 
 export const ItemTittle = styled.h4`
   font-size: 22px;
@@ -72,7 +77,7 @@ export const TextArea = styled.textarea`
   resize: none;
   border: 1px solid #bcbcbc;
   border-radius: 2px;
-  caret-color: ${({ theme: { colors } }) => colors.activeColor};
+  caret-color: ${({ theme }) => theme.colors.activeColor};
   &:focus {
     border-color: hsl(0, 0%, 44%);
   }
@@ -130,11 +135,13 @@ export const Cross = styled.div`
     height: 16px;
     background-color: black;
   }
+
   &::before {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
   }
+
   &:after {
     top: 50%;
     left: 50%;
@@ -148,11 +155,13 @@ export const BackButtons = styled.div`
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+
   &:hover {
     ${Cross} {
       transform: rotate(180deg);
     }
   }
+
   &:active {
     transform: scale(1.15);
   }

@@ -3,8 +3,8 @@ import { useField } from 'formik';
 
 import dropsPng from 'assets/img/drag-n-drop.png';
 
-import { ErrorDisplay } from '../../error-display';
 import * as Styles from './styles';
+import { ErrorDisplay } from '../../error-display';
 
 const AddFileInput = ({ onChange }) => {
   const [drag, setDrag] = useState(false);
@@ -40,8 +40,8 @@ const AddFileInput = ({ onChange }) => {
         multiple
         type="file"
         name="file"
-        accept=".png, .jpg, .jpeg, .gif"
         onChange={onChange}
+        accept=".png, .jpg, .jpeg, .gif"
       />
       {drag ? <Styles.Image src={dropsPng} alt="drop" /> : <Styles.SpanAdd />}
       {error && (

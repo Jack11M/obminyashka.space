@@ -6,9 +6,9 @@ import { ModalContext } from 'components/common';
 import { useOutsideClick } from 'hooks/useOutsideClick';
 import { getTranslatedText } from 'components/local/localization';
 
+import * as Styles from './styles';
 import { categoryImages } from './config';
 import { ErrorDisplay } from '../error-display';
-import * as Styles from './styles';
 
 const ShowSelectItem = ({
   name,

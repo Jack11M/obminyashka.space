@@ -9,8 +9,8 @@ import { getAuthLang } from 'store/auth/slice';
 import { FormikCheckBox } from 'components/common/formik';
 import { getTranslatedText } from 'components/local/localization';
 
-import { SelectItem } from './select-item';
 import * as Styles from './styles';
+import { SelectItem } from './select-item';
 
 const SelectionSection = ({
   category,
