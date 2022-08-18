@@ -11,7 +11,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { SelectItem } from './select-item';
 import * as Styles from './styles';
-import { Star } from '../styles';
 
 const SelectionSection = ({
   category,
@@ -73,7 +72,8 @@ const SelectionSection = ({
   return (
     <Styles.AddChoose>
       <Styles.TitleH3>
-        {getTranslatedText('addAdv.chooseSection')} <Star />
+        {getTranslatedText('addAdv.chooseSection')}
+        <Styles.Star>*</Styles.Star>
       </Styles.TitleH3>
 
       <Styles.Sections>

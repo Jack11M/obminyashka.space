@@ -5,7 +5,6 @@ import { useTransition, animated } from 'react-spring';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ErrorDisplay } from '../error-display';
-
 import * as Styles from './styles';
 
 const Exchange = ({ exchangeList, setExchange }) => {
@@ -66,7 +65,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
     <Styles.Wrap>
       <Styles.TitleH3>
         {getTranslatedText('addAdv.exchange')}
-        <Styles.Star>*</Styles.Star>
+        {/* <Styles.Star>*</Styles.Star> */}
       </Styles.TitleH3>
 
       <Styles.Description>

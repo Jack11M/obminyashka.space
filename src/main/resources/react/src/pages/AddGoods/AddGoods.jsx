@@ -230,7 +230,10 @@ const AddGoods = () => {
               />
 
               <>
-                <h3>{getTranslatedText('addAdv.options')}</h3>
+                <Styles.TitleH3>
+                  {getTranslatedText('addAdv.options')}
+                  <Styles.Star>*</Styles.Star>
+                </Styles.TitleH3>
 
                 <Styles.WrapItems>
                   <Styles.WrapItem>

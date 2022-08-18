@@ -48,7 +48,12 @@ const InputText = styled.input`
   }
 `;
 
+const Star = styled.span`
+  color: red;
+`;
+
 export {
+  Star,
   TitleH3,
   Sections,
   AddChoose,

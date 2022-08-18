@@ -86,20 +86,17 @@ export const ChangeInput = styled.input`
   box-sizing: border-box;
   height: 32px;
   margin: 7px;
-  border: none;
   font-family: 'Roboto', sans-serif;
   line-height: 24px;
+  border: none;
   outline: none;
   caret-color: #00c0ff;
-  ${({ theme, error }) => css`
-    border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 74%)'};
-
-    &:focus {
-      border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 44%)'};
-    }
-  `}
-`;
-
-export const Star = styled.span`
-  color: red;
+  &:focus {
+    border-color: hsl(0, 0%, 44%);
+  }
+  ${(p) =>
+    p.focus &&
+    css`
+      border-color: hsl(0, 0%, 44%);
+    `};
 `;
