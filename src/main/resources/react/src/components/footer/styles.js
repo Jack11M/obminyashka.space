@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import footerBg from 'assets/img/footerBg.png';
@@ -11,7 +11,10 @@ export const Container = styled.div`
   background-position: top;
   background-repeat: no-repeat;
   z-index: 2;
-  color: ${({ theme }) => theme.colors.white};
+
+  ${({ theme }) => css`
+    color: ${theme.colors.white};
+  `}
 
   @media screen and (min-width: 800px) {
     padding-top: 100px;

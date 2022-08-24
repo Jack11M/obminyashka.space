@@ -2,24 +2,24 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
-  margin: 156px 0 auto 0;
+  margin-top: 156px;
   width: 100%;
-  font-family: Roboto;
+  min-height: calc(100vh - 376px - 157px);
 `;
 
 export const Aside = styled.aside`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-top: -20px;
   width: 25%;
-  height: auto;
-  background-color: #ffffff;
-  color: darken(rgba(173, 173, 173, 0.78), 5%);
+  min-height: 100%;
+  background-color: ${({ theme }) => theme.colors.white};
   margin-bottom: -300px;
 `;
 
 export const Main = styled.main`
-  background-color: #e5e5e5;
+  background-color: ${({ theme }) => theme.colors.bgContent};
   width: calc(100% - 25%);
 
   ::-webkit-scrollbar {

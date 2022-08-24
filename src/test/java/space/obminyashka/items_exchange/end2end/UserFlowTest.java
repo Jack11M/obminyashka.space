@@ -208,4 +208,13 @@ class UserFlowTest extends BasicControllerTest {
         final var userInfo = new OidcUserInfo(Map.of(emailKey, NEW_USER_EMAIL, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "user/remove_avatar.yml", orderBy = {"created", "name"},
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
+    void removeUserAvatar_whenAuthorized_shouldRemoveAvatar() throws Exception {
+        sendUriAndGetMvcResult(delete(USER_SERVICE_CHANGE_AVATAR), status().isOk());
+    }
 }

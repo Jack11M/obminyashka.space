@@ -114,7 +114,15 @@ const AboutMyself = () => {
                         <ButtonsAddRemoveChild
                           add
                           text={getTranslatedText('button.addField')}
-                          onClick={() => !!phone && !errorField && push('')}
+                          onClick={() => {
+                            if (!!phone && !errorField) {
+                              push('');
+                            } else {
+                              toast.error(
+                                getTranslatedText('ownInfo.choosePhone')
+                              );
+                            }
+                          }}
                         />
                       )}
 

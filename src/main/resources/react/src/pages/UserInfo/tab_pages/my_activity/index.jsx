@@ -28,7 +28,7 @@ const MyActivity = () => {
         <ProductCard
           city="Львов"
           picture={lot3}
-          avatar={mommy}
+          avatar="https://t4.ftcdn.net/jpg/02/43/87/41/360_F_243874126_YLSIGaDgoNzS91Xdbg1IVpiwXeeZSXdr.jpg"
           inboxMessage={222}
           text="Велосипед для девочки 5 лет"
         />

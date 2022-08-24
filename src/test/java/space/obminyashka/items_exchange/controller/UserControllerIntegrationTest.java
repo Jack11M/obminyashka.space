@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,7 @@ import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -186,8 +188,8 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void setUserAvatar_whenReceivedBMPImage_shouldThrowUnsupportedMediaTypeException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        MockMultipartFile bmp = new MockMultipartFile("file", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
-        sendUriAndGetMvcResult(multipart(USER_SERVICE_CHANGE_AVATAR).file(bmp), status().isUnsupportedMediaType());
+        MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
+        sendUriAndGetMvcResult(multipart(HttpMethod.PUT, new URI(USER_SERVICE_CHANGE_AVATAR)).file(bmp), status().isUnsupportedMediaType());
     }
 
     @Test
