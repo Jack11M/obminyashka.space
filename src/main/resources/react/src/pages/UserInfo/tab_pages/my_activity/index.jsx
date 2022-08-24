@@ -3,6 +3,8 @@ import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import mommy from 'assets/img/mama_1_04232631 1.png';
 
+import { getTranslatedText } from 'components/local/localization';
+
 import { CardBlock, Container, StyledCardBlock } from './styles';
 
 const MyActivity = () => {
@@ -10,7 +12,10 @@ const MyActivity = () => {
 
   return (
     <Container>
-      <TitleBigBlue whatClass="incoming__replies-text" text="Входящие ответы" />
+      <TitleBigBlue
+        whatClass="incoming__replies-text"
+        text={getTranslatedText('ownActivity.incomingReplies')}
+      />
 
       <CardBlock>
         <ProductCard
@@ -60,8 +65,8 @@ const MyActivity = () => {
       </CardBlock>
 
       <TitleBigBlue
-        text="Исходящие ответы"
         whatClass="outgoing__replies-text"
+        text={getTranslatedText('ownActivity.outgoingReplies')}
       />
 
       <StyledCardBlock>

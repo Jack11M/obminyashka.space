@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 
+import { password, confirmPassword } from 'Utils/validation';
 import { getTranslatedText } from 'components/local/localization';
 import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
 
@@ -53,3 +54,13 @@ export const validationEmailSchema = (currentEmail) =>
       .required(getTranslatedText('errors.requireField'))
       .default(() => ''),
   });
+
+export const validationDeleteSchema = yup.object().shape({
+  password,
+  confirmPassword,
+});
+
+export const initialValuesDelete = {
+  password: '',
+  confirmPassword: '',
+};

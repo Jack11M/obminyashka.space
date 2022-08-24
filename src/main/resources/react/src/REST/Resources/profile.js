@@ -20,3 +20,9 @@ export const putPasswordFetch = (password) =>
 
 export const putEmailFetch = (email) =>
   obminyashkaApi.put('/user/service/email/', email).then(({ data }) => data);
+
+export const deleteUserAccount = (userData) => {
+  return obminyashkaApi
+    .delete('/user/service/delete', { data: userData })
+    .then(({ data }) => data);
+};

@@ -59,6 +59,10 @@ const en = {
     mySettings: 'Settings',
     myExit: 'Exit',
   },
+  ownActivity: {
+    incomingReplies: 'Incoming replies',
+    outgoingReplies: 'Outgoing replies',
+  },
   ownInfo: {
     aboutMe: 'About me',
     firstName: 'Name:',
@@ -72,6 +76,9 @@ const en = {
     unselected: 'Unselected',
     chooseData: 'First you need to choose a date of birth',
   },
+  favorites: {
+    FeaturedAds: 'Featured Ads',
+  },
   settings: {
     changePassword: 'Change password',
     currentPassword: 'Current password:',
@@ -82,8 +89,11 @@ const en = {
     newEmail: 'New E-Mail:',
     confirmEmail: 'Repeat E-Mail:',
     remove: 'Remove account',
+    removeConfirm:
+      'To delete your account, you need to enter a password and confirm it.',
+    removed: 'Removed account!',
     describe:
-      'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section',
+      'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section.',
     profile: 'Profile',
   },
   exit: {

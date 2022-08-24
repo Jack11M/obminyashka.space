@@ -6,15 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
+import { password, confirmPassword } from 'Utils/validation';
 import { getTranslatedText } from 'components/local/localization';
 import { CheckBox, Button, InputForAuth } from 'components/common';
-import {
-  NO_SPACE,
-  EMAIL_REG_EXP,
-  PASSWORD_REG_EXP,
-  PASSWORD_ALT_CODE_EXP,
-  USERNAME_ALT_CODE_EXP,
-} from 'config';
+import { NO_SPACE, EMAIL_REG_EXP, USERNAME_ALT_CODE_EXP } from 'config';
 
 import { Extra, WrapperButton, Form } from '../sign-in/styles';
 
@@ -43,23 +38,8 @@ const SignUp = () => {
       .matches(USERNAME_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
       .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
       .default(() => ''),
-    password: yup
-      .string()
-      .required(getTranslatedText('errors.requireField'))
-      .min(8, getTranslatedText('errors.min8'))
-      .max(30, getTranslatedText('errors.max30'))
-      .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
-      .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.passwordMatch'))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .default(() => ''),
-    confirmPassword: yup
-      .string()
-      .oneOf(
-        [yup.ref('password')],
-        getTranslatedText('errors.passwordMismatch')
-      )
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => ''),
+    password: password.default(() => ''),
+    confirmPassword: confirmPassword.default(() => ''),
   });
   const initialRegisterValues = validationRegisterSchema.cast({});
 
