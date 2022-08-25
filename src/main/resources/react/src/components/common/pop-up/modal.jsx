@@ -26,7 +26,7 @@ const Modal = ({ title, children }) => {
   return (
     <WrapDiv delay={DELAY} closing={closing}>
       <ContentModal ref={ref} delay={DELAY} closing={closing}>
-        <Title>{title}</Title>
+        {typeof title === 'string' ? <Title>{title}</Title> : title}
         <Content>{children}</Content>
         <DivClose onClick={handleClose} />
       </ContentModal>

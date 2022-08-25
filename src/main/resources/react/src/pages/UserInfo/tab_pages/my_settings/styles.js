@@ -21,6 +21,22 @@ export const WarningText = styled.p`
 `;
 
 export const StylizedLink = styled(Link)`
-  text-decoration: none;
   color: #12b6ed;
+  text-decoration: none;
+`;
+
+export const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 24px 0;
+`;
+
+export const ModalTitle = styled.p`
+  font-size: 20px;
+  line-height: 16px;
+  font-weight: 600;
+  font-style: normal;
+  margin-bottom: 25px;
+  color: ${({ theme }) => theme.colors.colorError};
 `;
