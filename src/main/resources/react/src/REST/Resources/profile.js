@@ -27,8 +27,7 @@ export const putAvatar = (avatar) =>
 export const deleteAvatar = () =>
   obminyashkaApi.delete('/user/service/avatar').then(({ data }) => data);
 
-export const deleteUserAccount = (userData) => {
-  return obminyashkaApi
+export const deleteUserAccount = (userData) =>
+  obminyashkaApi
     .delete('/user/service/delete', { data: userData })
     .then(({ data }) => data);
-};

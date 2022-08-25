@@ -2,7 +2,6 @@ import lot3 from 'assets/img/cards/lot3.jpg';
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import mommy from 'assets/img/mama_1_04232631 1.png';
-
 import { getTranslatedText } from 'components/local/localization';
 
 import { CardBlock, Container, StyledCardBlock } from './styles';
@@ -13,7 +12,7 @@ const MyActivity = () => {
   return (
     <Container>
       <TitleBigBlue
-        whatClass="incoming__replies-text"
+        style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('ownActivity.incomingReplies')}
       />
 
@@ -65,7 +64,7 @@ const MyActivity = () => {
       </CardBlock>
 
       <TitleBigBlue
-        whatClass="outgoing__replies-text"
+        style={{ margin: '83px 0 40px' }}
         text={getTranslatedText('ownActivity.outgoingReplies')}
       />
 

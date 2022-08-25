@@ -1,7 +1,6 @@
 import * as yup from 'yup';
 
 import { getTranslatedText } from 'components/local/localization';
-
 import { NO_SPACE, PASSWORD_REG_EXP, PASSWORD_ALT_CODE_EXP } from 'config';
 
 export const password = yup

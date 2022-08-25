@@ -30,7 +30,6 @@ const MySettings = () => {
   const { openModal } = useContext(ModalContext);
 
   const [loading, setLoading] = useState(false);
-
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
