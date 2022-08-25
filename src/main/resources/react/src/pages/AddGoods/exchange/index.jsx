@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
 
+import { FormikCheckBox } from 'components/common/formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
-import { ErrorDisplay } from '../error-display';
-
-const Exchange = ({ exchangeList, setExchange }) => {
+const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
@@ -101,6 +101,16 @@ const Exchange = ({ exchangeList, setExchange }) => {
         </div>
       </div>
       <ErrorDisplay error={!!error && error} />
+
+      <FormikCheckBox
+        type="checkbox"
+        margin="22px 0 0 0"
+        name="readyForOffers"
+        value="readyForOffers"
+        onChange={readyOffers.setReadyOffer}
+        selectedValues={readyOffers.readyOffer}
+        text={getTranslatedText('addAdv.readyForOffers')}
+      />
     </div>
   );
 };

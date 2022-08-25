@@ -218,7 +218,6 @@ const AddGoods = () => {
               />
 
               <SelectionSection
-                readyOffers={{ readyOffer, setReadyOffer }}
                 category={{ categoryItems, setCategoryItems }}
                 subcategory={{ subCategoryItems, setSubCategoryItems }}
                 announcement={{ announcementTitle, setAnnouncementTitle }}
@@ -226,6 +225,7 @@ const AddGoods = () => {
 
               <Exchange
                 exchangeList={exchangeList}
+                readyOffers={{ readyOffer, setReadyOffer }}
                 setExchange={setExchangeList}
               />
 

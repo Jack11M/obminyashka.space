@@ -1,12 +1,11 @@
 import { useField } from 'formik';
-import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import { getAuthLang } from 'store/auth/slice';
-import { FormikCheckBox } from 'components/common/formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
 import { SelectItem } from './select-item';
@@ -20,12 +19,7 @@ import {
   ItemDescription,
 } from './styles';
 
-const SelectionSection = ({
-  category,
-  subcategory,
-  readyOffers,
-  announcement,
-}) => {
+const SelectionSection = ({ category, subcategory, announcement }) => {
   const lang = useSelector(getAuthLang);
 
   const [currLang, setCurrLang] = useState(lang);
@@ -129,16 +123,6 @@ const SelectionSection = ({
           <ErrorDisplay error={touched && error} />
         </SectionsItem>
       </Sections>
-
-      <FormikCheckBox
-        type="checkbox"
-        margin="22px 0 0 0"
-        name="readyForOffers"
-        value="readyForOffers"
-        onChange={readyOffers.setReadyOffer}
-        selectedValues={readyOffers.readyOffer}
-        text={getTranslatedText('addAdv.readyForOffers')}
-      />
     </AddChoose>
   );
 };
