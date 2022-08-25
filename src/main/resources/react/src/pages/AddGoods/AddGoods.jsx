@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { Form } from 'formik';
@@ -23,7 +24,7 @@ import { PhotoFiles } from './photo-files';
 import { SelectionSection } from './selection-section';
 import { WrapCharacteristic } from './wrap-characteristic';
 
-import './AddGoods.scss';
+import * as Styles from './styles';
 
 const AddGoods = () => {
   const navigate = useNavigate();
@@ -208,9 +209,9 @@ const AddGoods = () => {
       validationSchema={validationAdv}
     >
       <Form>
-        <main className="add">
-          <div className="add_container">
-            <div className="add_inner">
+        <Styles.MainContainer>
+          <Styles.Container>
+            <Styles.AddContainer>
               <BackButton
                 type="button"
                 style={{ marginBottom: 16 }}
@@ -229,14 +230,14 @@ const AddGoods = () => {
                 setExchange={setExchangeList}
               />
 
-              <div className="characteristics">
-                <h3>
-                  {getTranslatedText('addAdv.options')}{' '}
-                  <span className="span_star">*</span>
-                </h3>
+              <>
+                <Styles.TitleH3>
+                  {getTranslatedText('addAdv.options')}
+                  <Styles.Star>*</Styles.Star>
+                </Styles.TitleH3>
 
-                <div className="characteristics_items">
-                  <div className="characteristics_item">
+                <Styles.WrapItems>
+                  <Styles.SectionsItem>
                     <WrapCharacteristic
                       name="age"
                       title={getTranslatedText('addAdv.age')}
@@ -254,9 +255,9 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </div>
+                  </Styles.SectionsItem>
 
-                  <div className="characteristics_item">
+                  <Styles.SectionsItem>
                     <WrapCharacteristic
                       name="gender"
                       title={getTranslatedText('addAdv.sex')}
@@ -274,9 +275,9 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </div>
+                  </Styles.SectionsItem>
 
-                  <div className="characteristics_item">
+                  <Styles.SectionsItem>
                     <WrapCharacteristic
                       name="season"
                       title={getTranslatedText('addAdv.season')}
@@ -294,30 +295,30 @@ const AddGoods = () => {
                         />
                       ))}
                     </WrapCharacteristic>
-                  </div>
+                  </Styles.SectionsItem>
 
                   <Sizes
                     categories={categoryItems}
                     dimension={{ size, setSize }}
                   />
-                </div>
-              </div>
+                </Styles.WrapItems>
+              </>
 
-              <div className="description">
+              <Styles.WrapDescription>
                 <h3 className="description_title">
                   {getTranslatedText('addAdv.describeTitle')}
                 </h3>
 
-                <p className="description_subtitle">
+                <Styles.DescriptionText>
+                  <Styles.Star>*</Styles.Star>
                   {getTranslatedText('addAdv.describeText')}
-                </p>
+                </Styles.DescriptionText>
 
-                <textarea
+                <Styles.TextArea
                   value={description}
-                  className="description_textarea"
                   onChange={(e) => setDescription(e.target.value)}
                 />
-              </div>
+              </Styles.WrapDescription>
 
               <Location
                 setLocationId={setLocationId}
@@ -334,27 +335,27 @@ const AddGoods = () => {
                 setCurrentIndexImage={setCurrentIndexImage}
               />
 
-              <div className="bottom_block">
-                <div className="buttons_block">
+              <Styles.WrapButtons>
+                <Styles.BlockButtons>
                   <ButtonAdv type="submit" />
 
                   <Button
                     type="submit"
-                    whatClass="preview"
+                    style={{ marginLeft: 30 }}
                     width={lang === 'ua' ? '270px' : '222px'}
                     click={() => setButtonPreview(true)}
                     text={getTranslatedText('addAdv.preview')}
                   />
-                </div>
+                </Styles.BlockButtons>
 
-                <div className="cancel" onClick={resetAll}>
-                  <div className="cross" />
+                <Styles.BackButtons onClick={resetAll}>
+                  <Styles.Cross />
                   <p>{getTranslatedText('addAdv.cancel')}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
+                </Styles.BackButtons>
+              </Styles.WrapButtons>
+            </Styles.AddContainer>
+          </Styles.Container>
+        </Styles.MainContainer>
       </Form>
     </FormHandler>
   );

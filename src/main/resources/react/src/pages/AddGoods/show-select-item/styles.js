@@ -6,6 +6,7 @@ const WrapSelect = styled.div`
   max-width: 350px;
   height: 50px;
 `;
+
 const SelectLabel = styled.label`
   display: flex;
   align-items: center;
@@ -14,15 +15,18 @@ const SelectLabel = styled.label`
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '6px' : 0)};
 `;
+
 const AnimatedLabel = styled(animated.div)`
   display: flex;
   align-items: center;
 `;
+
 const PlaceHolder = styled.p`
   padding: 10px;
   line-height: 26px;
   color: #8e8e8e;
 `;
+
 const DropItems = styled.div`
   position: absolute;
   max-width: 350px;
@@ -43,6 +47,7 @@ const DropItems = styled.div`
     border-bottom: none;
   }
 `;
+
 const SelectItem = styled.div`
   display: flex;
   align-items: center;
@@ -50,6 +55,7 @@ const SelectItem = styled.div`
   transition: ease-in-out 0.3s;
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '8px' : 0)};
+
   ${(p) =>
     p.selectedItem &&
     css`

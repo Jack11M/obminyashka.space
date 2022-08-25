@@ -7,6 +7,8 @@ import { getTranslatedText } from 'components/local/localization';
 import { ImagePhoto } from './image-photo';
 import { AddFileInput } from './add-file-input';
 
+import * as Styles from '../styles';
+
 const PhotoFiles = ({
   imageFiles,
   preViewImage,
@@ -139,23 +141,22 @@ const PhotoFiles = ({
     changeStateForImagesWhenDrop(index, imageFiles, setImageFiles);
   };
   return (
-    <div className="files">
-      <h3>
-        {getTranslatedText('addAdv.uploadDescription')}{' '}
-        <span className="span_star">*</span>
-      </h3>
+    <Styles.WrapFiles>
+      <Styles.FileTittle>
+        {getTranslatedText('addAdv.uploadDescription')} <Styles.Star />
+      </Styles.FileTittle>
       <p>{getTranslatedText('addAdv.firstUploadDescription')}</p>
 
-      <p>
+      <Styles.FileDescription>
         {getTranslatedText('addAdv.photosUploaded')}
         &nbsp;
         {imageFiles.length}
         &nbsp;
         {getTranslatedText('addAdv.from')}
         &nbsp;10
-      </p>
+      </Styles.FileDescription>
 
-      <div className="files_wrapper">
+      <Styles.WrapperFile>
         {preViewImage.map((url, index) => (
           <ImagePhoto
             url={url}
@@ -171,8 +172,8 @@ const PhotoFiles = ({
         ))}
 
         {imageFiles.length < 10 && <AddFileInput onChange={filesAddHandler} />}
-      </div>
-    </div>
+      </Styles.WrapperFile>
+    </Styles.WrapFiles>
   );
 };
 export { PhotoFiles };

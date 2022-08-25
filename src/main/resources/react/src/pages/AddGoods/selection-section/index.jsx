@@ -8,6 +8,7 @@ import { getAuthLang } from 'store/auth/slice';
 import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
+import * as Styles from './styles';
 import { SelectItem } from './select-item';
 
 import {
@@ -72,17 +73,17 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   };
 
   return (
-    <AddChoose>
-      <TitleH3 className="add-title">
-        {getTranslatedText('addAdv.chooseSection')}{' '}
-        <span className="span_star">*</span>
-      </TitleH3>
+    <Styles.AddChoose>
+      <Styles.TitleH3>
+        {getTranslatedText('addAdv.chooseSection')}
+        <Styles.Star>*</Styles.Star>
+      </Styles.TitleH3>
 
-      <Sections>
-        <SectionsItem>
-          <ItemDescription>
+      <Styles.Sections>
+        <Styles.SectionsItem>
+          <Styles.ItemDescription>
             {getTranslatedText('addAdv.category')}
-          </ItemDescription>
+          </Styles.ItemDescription>
 
           <SelectItem
             showImg
@@ -92,12 +93,12 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             valueCategory={category.categoryItems}
             placeholder={getTranslatedText('addAdv.selectCategory')}
           />
-        </SectionsItem>
+        </Styles.SectionsItem>
 
-        <SectionsItem>
-          <ItemDescription>
+        <Styles.SectionsItem>
+          <Styles.ItemDescription>
             {getTranslatedText('addAdv.subcategory')}
-          </ItemDescription>
+          </Styles.ItemDescription>
 
           <SelectItem
             name="subcategoryId"
@@ -106,14 +107,14 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             valueCategory={subcategory.subCategoryItems}
             placeholder={getTranslatedText('addAdv.selectSubcategory')}
           />
-        </SectionsItem>
+        </Styles.SectionsItem>
 
-        <SectionsItem>
-          <ItemDescription>
+        <Styles.SectionsItem>
+          <Styles.ItemDescription>
             {getTranslatedText('addAdv.headline')}
-          </ItemDescription>
+          </Styles.ItemDescription>
 
-          <InputText
+          <Styles.InputText
             type="text"
             error={touched && !!error}
             value={announcement.announcementTitle}
