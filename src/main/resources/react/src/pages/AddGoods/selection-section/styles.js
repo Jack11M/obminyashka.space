@@ -43,6 +43,7 @@ const InputText = styled.input`
   font-size: 16px;
   font-family: 'Roboto', sans-serif;
   caret-color: ${({ theme }) => theme.colors.activeColor};
+
   &:focus {
     border-color: hsl(0, 0%, 44%);
   }
