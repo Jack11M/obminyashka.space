@@ -11,15 +11,6 @@ import { getTranslatedText } from 'components/local/localization';
 import * as Styles from './styles';
 import { SelectItem } from './select-item';
 
-import {
-  TitleH3,
-  Sections,
-  AddChoose,
-  InputText,
-  SectionsItem,
-  ItemDescription,
-} from './styles';
-
 const SelectionSection = ({ category, subcategory, announcement }) => {
   const lang = useSelector(getAuthLang);
 
@@ -122,9 +113,9 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
           />
 
           <ErrorDisplay error={touched && error} />
-        </SectionsItem>
-      </Sections>
-    </AddChoose>
+        </Styles.SectionsItem>
+      </Styles.Sections>
+    </Styles.AddChoose>
   );
 };
 

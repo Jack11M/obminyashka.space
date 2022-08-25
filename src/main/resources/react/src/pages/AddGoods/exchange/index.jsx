@@ -7,10 +7,9 @@ import { FormikCheckBox } from 'components/common/formik';
 import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
-import { ErrorDisplay } from '../error-display';
 import * as Styles from './styles';
 
-const Exchange = ({ exchangeList, setExchange }) => {
+const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
