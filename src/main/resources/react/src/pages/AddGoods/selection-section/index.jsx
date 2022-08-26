@@ -1,31 +1,17 @@
 import { useField } from 'formik';
-import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import { getAuthLang } from 'store/auth/slice';
-import { FormikCheckBox } from 'components/common/formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
+import * as Styles from './styles';
 import { SelectItem } from './select-item';
 
-import {
-  TitleH3,
-  Sections,
-  AddChoose,
-  InputText,
-  SectionsItem,
-  ItemDescription,
-} from './styles';
-
-const SelectionSection = ({
-  category,
-  subcategory,
-  readyOffers,
-  announcement,
-}) => {
+const SelectionSection = ({ category, subcategory, announcement }) => {
   const lang = useSelector(getAuthLang);
 
   const [currLang, setCurrLang] = useState(lang);
@@ -78,17 +64,17 @@ const SelectionSection = ({
   };
 
   return (
-    <AddChoose>
-      <TitleH3 className="add-title">
-        {getTranslatedText('addAdv.chooseSection')}{' '}
-        <span className="span_star">*</span>
-      </TitleH3>
+    <Styles.AddChoose>
+      <Styles.TitleH3>
+        {getTranslatedText('addAdv.chooseSection')}
+        <Styles.Star>*</Styles.Star>
+      </Styles.TitleH3>
 
-      <Sections>
-        <SectionsItem>
-          <ItemDescription>
+      <Styles.Sections>
+        <Styles.SectionsItem>
+          <Styles.ItemDescription>
             {getTranslatedText('addAdv.category')}
-          </ItemDescription>
+          </Styles.ItemDescription>
 
           <SelectItem
             showImg
@@ -98,12 +84,12 @@ const SelectionSection = ({
             valueCategory={category.categoryItems}
             placeholder={getTranslatedText('addAdv.selectCategory')}
           />
-        </SectionsItem>
+        </Styles.SectionsItem>
 
-        <SectionsItem>
-          <ItemDescription>
+        <Styles.SectionsItem>
+          <Styles.ItemDescription>
             {getTranslatedText('addAdv.subcategory')}
-          </ItemDescription>
+          </Styles.ItemDescription>
 
           <SelectItem
             name="subcategoryId"
@@ -112,14 +98,14 @@ const SelectionSection = ({
             valueCategory={subcategory.subCategoryItems}
             placeholder={getTranslatedText('addAdv.selectSubcategory')}
           />
-        </SectionsItem>
+        </Styles.SectionsItem>
 
-        <SectionsItem>
-          <ItemDescription>
+        <Styles.SectionsItem>
+          <Styles.ItemDescription>
             {getTranslatedText('addAdv.headline')}
-          </ItemDescription>
+          </Styles.ItemDescription>
 
-          <InputText
+          <Styles.InputText
             type="text"
             error={touched && !!error}
             value={announcement.announcementTitle}
@@ -127,19 +113,9 @@ const SelectionSection = ({
           />
 
           <ErrorDisplay error={touched && error} />
-        </SectionsItem>
-      </Sections>
-
-      <FormikCheckBox
-        type="checkbox"
-        margin="22px 0 0 0"
-        name="readyForOffers"
-        value="readyForOffers"
-        onChange={readyOffers.setReadyOffer}
-        selectedValues={readyOffers.readyOffer}
-        text={getTranslatedText('addAdv.readyForOffers')}
-      />
-    </AddChoose>
+        </Styles.SectionsItem>
+      </Styles.Sections>
+    </Styles.AddChoose>
   );
 };
 
