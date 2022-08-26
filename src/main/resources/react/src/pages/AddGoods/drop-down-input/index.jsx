@@ -1,9 +1,9 @@
 import { useField } from 'formik';
 
 import { CloseSvg } from 'assets/icons';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 
 import * as Styles from './styles';
-import { ErrorDisplay } from '../error-display';
 
 const DropDownInput = ({
   name,

@@ -4,7 +4,7 @@ import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
 
 import { FormikCheckBox } from 'components/common/formik';
-import { ErrorDisplay } from 'pages/AddGoods/error-display';
+// import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -13,8 +13,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
-  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
-  const { error } = meta;
+  const [, helpers] = useField({ name: 'wishesToExchange' });
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
     from: { opacity: 0, scale: 0 },
@@ -65,10 +64,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
   return (
     <Styles.Wrap>
-      <Styles.TitleH3>
-        {getTranslatedText('addAdv.exchange')}
-        {/* <Styles.Star>*</Styles.Star> */}
-      </Styles.TitleH3>
+      <Styles.TitleH3>{getTranslatedText('addAdv.exchange')}</Styles.TitleH3>
 
       <Styles.Description>
         &nbsp;
@@ -79,11 +75,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
         ({getTranslatedText('addAdv.enterPhrase')})
       </Styles.Explanation>
 
-      <Styles.ChangeWrapp
-        errorValue={error}
-        borderValue={border}
-        styles={getBorderClassName}
-      >
+      <Styles.ChangeWrapp borderValue={border} styles={getBorderClassName}>
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
             <Styles.ChangeItem>
@@ -104,7 +96,6 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
           />
         </>
       </Styles.ChangeWrapp>
-      <ErrorDisplay error={!!error && error} />
 
       <FormikCheckBox
         type="checkbox"

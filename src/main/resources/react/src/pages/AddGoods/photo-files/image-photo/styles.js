@@ -12,7 +12,7 @@ const WrapImage = styled.div`
   border: 2px dotted #c4c4c4;
   border-radius: 19px;
   cursor: move;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   ${({ isRemove }) =>
     isRemove &&
     css`
@@ -58,7 +58,7 @@ const SpanClose = styled.span`
   right: -7px;
   width: 30px;
   height: 30px;
-  background: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 50%;
   border: 1px solid #bababa;
   transition: 0.3s ease-in-out;

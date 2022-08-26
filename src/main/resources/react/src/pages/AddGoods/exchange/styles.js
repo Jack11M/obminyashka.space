@@ -13,12 +13,12 @@ export const TitleH3 = styled.h3`
 `;
 
 export const Description = styled.p`
-  color: #8e8e8e;
+  color: ${({ theme }) => theme.colors.colorGrey};
   margin-bottom: 0;
 `;
 
 export const Explanation = styled.p`
-  color: #8e8e8e;
+  color: ${({ theme }) => theme.colors.colorGrey};
   font-size: 14px;
   margin-bottom: 10px;
 `;
@@ -36,7 +36,7 @@ export const ChangeItem = styled.div`
   position: relative;
   margin: 6px 7px;
   padding: 6px 34px 6px 14px;
-  background: #12b6ed;
+  background-color: ${({ theme }) => theme.colors.btnBlue};
   border-radius: 5px;
   color: ${({ theme }) => theme.colors.white};
   text-transform: uppercase;
@@ -89,7 +89,7 @@ export const ChangeInput = styled.input`
   line-height: 24px;
   border: none;
   outline: none;
-  caret-color: #00c0ff;
+  caret-color: ${({ theme }) => theme.colors.activeColor};
 
   &:focus {
     border-color: hsl(0, 0%, 44%);

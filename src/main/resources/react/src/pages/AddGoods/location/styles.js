@@ -5,7 +5,7 @@ const WrapContainer = styled.div`
   flex-wrap: wrap;
   margin-bottom: 70px;
 
-  & > div + div {
+  & > div + span {
     margin-left: 37px;
   }
 `;
