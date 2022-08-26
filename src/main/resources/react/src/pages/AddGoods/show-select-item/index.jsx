@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useContext } from 'react';
 import { useField } from 'formik';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { animated, useSpring, useTransition } from 'react-spring';
 
 import { ModalContext } from 'components/common';
