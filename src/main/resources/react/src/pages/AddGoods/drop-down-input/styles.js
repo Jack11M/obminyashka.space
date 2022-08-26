@@ -47,7 +47,6 @@ const WrapDropItems = styled.div`
   width: 100%;
   max-height: 470px;
   background-color: ${({ theme }) => theme.colors.white};
-
   border: 1px solid hsl(0, 0%, 44%);
   border-top: none;
   overflow-y: auto;
@@ -60,9 +59,11 @@ const SelectedItem = styled.div`
   border-bottom: 1px solid hsl(0, 0%, 44%);
   cursor: pointer;
   transition: ease-in-out 0.3s;
+
   &:last-child {
     border-bottom: none;
   }
+
   & > p {
     padding: 10px;
     line-height: 26px;
