@@ -14,8 +14,8 @@ import { getErrorMessage } from 'Utils/error';
 import { getAuthLang } from 'store/auth/slice';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { FormHandler, FormikCheckBox } from 'components/common/formik';
 import { Button, ButtonAdv, BackButton } from 'components/common';
+import { FormHandler, FormikCheckBox } from 'components/common/formik';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -342,8 +342,8 @@ const AddGoods = () => {
                   <Button
                     type="submit"
                     style={{ marginLeft: 30 }}
-                    width={lang === 'ua' ? '270px' : '222px'}
                     click={() => setButtonPreview(true)}
+                    width={lang === 'ua' ? '270px' : '222px'}
                     text={getTranslatedText('addAdv.preview')}
                   />
                 </Styles.BlockButtons>
