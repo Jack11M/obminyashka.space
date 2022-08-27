@@ -7,7 +7,7 @@ const Wrap = styled.div`
 `;
 
 const Label = styled.label`
-  display: block;
+  display: inline-block;
   margin-bottom: 10px;
   font-family: Roboto, sans-serif;
   font-size: 16px;
@@ -23,7 +23,7 @@ const Input = styled.input`
   font-size: 16px;
   border: 1px solid ${(p) => (p.error ? p.theme.colors.colorError : '#bcbcbc')};
   border-radius: 2px;
-  caret-color: #00c0ff;
+  caret-color: ${({ theme }) => theme.colors.activeColor};
 
   &:focus {
     border-color: hsl(0, 0%, 44%);

@@ -66,7 +66,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   return (
     <Styles.AddChoose>
       <Styles.TitleH3>
-        {getTranslatedText('addAdv.chooseSection')}
+        {getTranslatedText('addAdv.chooseSection')}&nbsp;
         <Styles.Star>*</Styles.Star>
       </Styles.TitleH3>
 

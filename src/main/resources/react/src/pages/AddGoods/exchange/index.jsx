@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
@@ -65,10 +64,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
   return (
     <Styles.Wrap>
-      <Styles.TitleH3>
-        {getTranslatedText('addAdv.exchange')}
-        {/* <Styles.Star>*</Styles.Star> */}
-      </Styles.TitleH3>
+      <Styles.TitleH3>{getTranslatedText('addAdv.exchange')}</Styles.TitleH3>
 
       <Styles.Description>
         &nbsp;
@@ -79,11 +75,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
         ({getTranslatedText('addAdv.enterPhrase')})
       </Styles.Explanation>
 
-      <Styles.ChangeWrapp
-        errorValue={error}
-        borderValue={border}
-        styles={getBorderClassName}
-      >
+      <Styles.ChangeWrap borderValue={border} styles={getBorderClassName}>
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
             <Styles.ChangeItem>
@@ -92,18 +84,18 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
             </Styles.ChangeItem>
           </animated.div>
         ))}
-        <>
-          <Styles.ChangeInput
-            type="text"
-            onBlur={onBlur}
-            onFocus={onFocus}
-            value={exchangeInput}
-            onKeyPress={keyEnter}
-            onChange={handleInput}
-            placeholder={getTranslatedText('addAdv.placeholderChange')}
-          />
-        </>
-      </Styles.ChangeWrapp>
+
+        <Styles.ChangeInput
+          type="text"
+          onBlur={onBlur}
+          onFocus={onFocus}
+          value={exchangeInput}
+          onKeyPress={keyEnter}
+          onChange={handleInput}
+          placeholder={getTranslatedText('addAdv.placeholderChange')}
+        />
+      </Styles.ChangeWrap>
+
       <ErrorDisplay error={!!error && error} />
 
       <FormikCheckBox

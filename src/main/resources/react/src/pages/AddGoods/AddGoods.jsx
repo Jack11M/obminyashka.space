@@ -232,7 +232,7 @@ const AddGoods = () => {
 
               <>
                 <Styles.TitleH3>
-                  {getTranslatedText('addAdv.options')}
+                  {getTranslatedText('addAdv.options')}&nbsp;
                   <Styles.Star>*</Styles.Star>
                 </Styles.TitleH3>
 
@@ -297,20 +297,21 @@ const AddGoods = () => {
                     </WrapCharacteristic>
                   </Styles.SectionsItem>
 
-                  <Sizes
-                    categories={categoryItems}
-                    dimension={{ size, setSize }}
-                  />
+                  <Styles.SectionsItem>
+                    <Sizes
+                      categories={categoryItems}
+                      dimension={{ size, setSize }}
+                    />
+                  </Styles.SectionsItem>
                 </Styles.WrapItems>
               </>
 
               <Styles.WrapDescription>
-                <h3 className="description_title">
+                <Styles.TitleH3>
                   {getTranslatedText('addAdv.describeTitle')}
-                </h3>
+                </Styles.TitleH3>
 
                 <Styles.DescriptionText>
-                  <Styles.Star>*</Styles.Star>
                   {getTranslatedText('addAdv.describeText')}
                 </Styles.DescriptionText>
 

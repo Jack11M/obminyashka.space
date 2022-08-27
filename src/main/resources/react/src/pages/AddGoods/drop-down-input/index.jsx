@@ -1,9 +1,10 @@
 import { useField } from 'formik';
 
 import { CloseSvg } from 'assets/icons';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 
 import * as Styles from './styles';
-import { ErrorDisplay } from '../error-display';
+import * as StylesAdd from '../styles';
 
 const DropDownInput = ({
   name,
@@ -25,7 +26,8 @@ const DropDownInput = ({
 
   return (
     <Styles.Wrap>
-      {!size && <Styles.Label>{title}:</Styles.Label>}
+      {!size && <Styles.Label>{title}:</Styles.Label>}&nbsp;
+      <StylesAdd.Star>*</StylesAdd.Star>
       <Styles.Input
         name={name}
         focus={focus}
@@ -42,7 +44,6 @@ const DropDownInput = ({
         </Styles.WrapSvg>
       )}
       <ErrorDisplay error={!!error && error} />
-
       {showDrop && (
         <Styles.WrapDropItems showDrop={showDrop}>
           {data.map((item, index) => (

@@ -33,24 +33,22 @@ export const TitleH3 = styled.h3`
 
 export const WrapItems = styled.div`
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   margin-bottom: 50px;
-  flex-wrap: wrap;
-
-  & :last-child {
-    color: #383838;
-    width: 350px;
-  }
 `;
 
 export const SectionsItem = styled.div`
-  max-width: 350px;
-  width: 100%;
+  font-size: inherit;
 `;
 
 export const ItemTittle = styled.h4`
+  font-style: normal;
+  font-weight: 400;
   font-size: 22px;
   margin-bottom: 13px;
+  line-height: 27px;
+  color: ${(p) => (p.error ? p.theme.colors.colorError : '#383838')};
 `;
 
 export const WrapDescription = styled.div`
@@ -63,7 +61,7 @@ export const DescriptionText = styled.p`
 `;
 
 export const Star = styled.span`
-  color: red;
+  color: ${({ theme }) => theme.colors.colorRed};
 `;
 
 export const TextArea = styled.textarea`
@@ -78,6 +76,7 @@ export const TextArea = styled.textarea`
   border: 1px solid #bcbcbc;
   border-radius: 2px;
   caret-color: ${({ theme }) => theme.colors.activeColor};
+
   &:focus {
     border-color: hsl(0, 0%, 44%);
   }
