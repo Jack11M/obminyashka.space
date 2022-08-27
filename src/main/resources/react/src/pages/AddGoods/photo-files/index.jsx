@@ -143,9 +143,10 @@ const PhotoFiles = ({
   return (
     <Styles.WrapFiles>
       <Styles.FileTittle>
-        {getTranslatedText('addAdv.uploadDescription')}
+        {getTranslatedText('addAdv.uploadDescription')}&nbsp;
         <Styles.Star>*</Styles.Star>
       </Styles.FileTittle>
+
       <p>{getTranslatedText('addAdv.firstUploadDescription')}</p>
 
       <Styles.FileDescription>

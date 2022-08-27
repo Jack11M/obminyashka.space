@@ -7,8 +7,6 @@ import { getTranslatedText } from 'components/local/localization';
 import { WrapContainer } from './styles';
 import { InputLocation } from './input-location';
 
-import * as Styles from '../styles';
-
 const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
   const lang = useSelector(getAuthLang);
 
@@ -19,7 +17,6 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
 
   return (
     <WrapContainer>
-      <Styles.Star>*</Styles.Star>
       <InputLocation
         lang={lang}
         name="area"
@@ -29,8 +26,6 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         setInputLocation={onInputLocation.setShowLocation}
         title={getTranslatedText('addAdv.district')}
       />
-
-      <Styles.Star>*</Styles.Star>
       <InputLocation
         lang={lang}
         name="city"

@@ -232,7 +232,7 @@ const AddGoods = () => {
 
               <>
                 <Styles.TitleH3>
-                  {getTranslatedText('addAdv.options')}
+                  {getTranslatedText('addAdv.options')}&nbsp;
                   <Styles.Star>*</Styles.Star>
                 </Styles.TitleH3>
 
@@ -312,7 +312,6 @@ const AddGoods = () => {
                 </Styles.TitleH3>
 
                 <Styles.DescriptionText>
-                  <Styles.Star>*</Styles.Star>
                   {getTranslatedText('addAdv.describeText')}
                 </Styles.DescriptionText>
 

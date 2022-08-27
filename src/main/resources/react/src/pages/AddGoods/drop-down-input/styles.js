@@ -7,7 +7,7 @@ const Wrap = styled.div`
 `;
 
 const Label = styled.label`
-  display: block;
+  display: inline-block;
   margin-bottom: 10px;
   font-family: Roboto, sans-serif;
   font-size: 16px;
