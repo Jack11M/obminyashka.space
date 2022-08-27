@@ -23,7 +23,7 @@ export const Explanation = styled.p`
   margin-bottom: 10px;
 `;
 
-export const ChangeWrapp = styled.div`
+export const ChangeWrap = styled.div`
   align-items: center;
   border: 1px solid #bcbcbc;
   border-radius: 2px;

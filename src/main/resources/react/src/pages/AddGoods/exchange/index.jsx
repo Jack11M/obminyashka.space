@@ -1,10 +1,9 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
 
 import { FormikCheckBox } from 'components/common/formik';
-// import { ErrorDisplay } from 'pages/AddGoods/error-display';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -13,7 +12,8 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
-  const [, helpers] = useField({ name: 'wishesToExchange' });
+  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
+  const { error } = meta;
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
     from: { opacity: 0, scale: 0 },
@@ -75,7 +75,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
         ({getTranslatedText('addAdv.enterPhrase')})
       </Styles.Explanation>
 
-      <Styles.ChangeWrapp borderValue={border} styles={getBorderClassName}>
+      <Styles.ChangeWrap borderValue={border} styles={getBorderClassName}>
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
             <Styles.ChangeItem>
@@ -84,18 +84,19 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
             </Styles.ChangeItem>
           </animated.div>
         ))}
-        <>
-          <Styles.ChangeInput
-            type="text"
-            onBlur={onBlur}
-            onFocus={onFocus}
-            value={exchangeInput}
-            onKeyPress={keyEnter}
-            onChange={handleInput}
-            placeholder={getTranslatedText('addAdv.placeholderChange')}
-          />
-        </>
-      </Styles.ChangeWrapp>
+
+        <Styles.ChangeInput
+          type="text"
+          onBlur={onBlur}
+          onFocus={onFocus}
+          value={exchangeInput}
+          onKeyPress={keyEnter}
+          onChange={handleInput}
+          placeholder={getTranslatedText('addAdv.placeholderChange')}
+        />
+      </Styles.ChangeWrap>
+
+      <ErrorDisplay error={!!error && error} />
 
       <FormikCheckBox
         type="checkbox"
