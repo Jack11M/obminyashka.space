@@ -38,7 +38,7 @@ const Input = styled.input`
 const WrapSvg = styled.div`
   position: absolute;
   right: 5px;
-  bottom: 10px;
+  top: 45px;
   cursor: pointer;
 `;
 

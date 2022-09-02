@@ -56,8 +56,7 @@ export const getValidationAdv = ({
       .default(() => size),
     description: Yup.string().default(() => description),
     locationId: Yup.string()
-      .nullable()
-      .required(getTranslatedText('errors.requireField'))
+      .test('', getTranslatedText('errors.requireField'), (id) => !!id?.length)
       .default(() => locationId),
     images: Yup.array()
       .test('', getTranslatedText('errors.minPhoto'), (photo) => !!photo.length)

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useField } from 'formik';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
@@ -20,6 +21,8 @@ const InputLocation = ({
   const [showDrop, setShowDrop] = useState(false);
   const [filteredLocation, setFilteredLocation] = useState([]);
   const [uniqueLocation, setUniqueLocation] = useState([]);
+
+  const [, , helpers] = useField('locationId');
 
   const getLocationId = (elem) => {
     const city =
@@ -112,6 +115,8 @@ const InputLocation = ({
   };
 
   const handleInput = ({ target }) => {
+    helpers.setError(undefined);
+
     if (!target.value) setFilteredLocation([]);
 
     if (target.name === 'area') {

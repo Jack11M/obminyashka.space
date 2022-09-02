@@ -11,7 +11,7 @@ const initialState = {
   seasonStore: [],
   sizeStore: [],
   descriptionStore: '',
-  idLocation: 0,
+  idLocation: '',
   fileImage: [],
   currLocation: null,
   locationShow: { city: '', area: '' },
@@ -52,7 +52,7 @@ const advSlice = createSlice({
       state.seasonStore = [];
       state.sizeStore = [];
       state.descriptionStore = '';
-      state.idLocation = 0;
+      state.idLocation = '';
       state.fileImage = [];
       state.currLocation = null;
       state.locationShow = { city: '', area: '' };

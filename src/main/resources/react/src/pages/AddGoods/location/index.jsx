@@ -22,9 +22,9 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         name="area"
         location={location}
         setLocation={setLocation}
+        title={getTranslatedText('addAdv.district')}
         inputLocation={onInputLocation.showLocation}
         setInputLocation={onInputLocation.setShowLocation}
-        title={getTranslatedText('addAdv.district')}
       />
       <InputLocation
         lang={lang}
@@ -33,9 +33,9 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         setLocation={setLocation}
         setLocationId={setLocationId}
         setLocationCurrent={setLocationCurrent}
+        title={getTranslatedText('addAdv.city')}
         inputLocation={onInputLocation.showLocation}
         setInputLocation={onInputLocation.setShowLocation}
-        title={getTranslatedText('addAdv.city')}
       />
     </WrapContainer>
   );
