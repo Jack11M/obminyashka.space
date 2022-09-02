@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 
-const FormHandler = ({
+const FormikHandler = ({
   onSubmit,
   children,
   initialValues,
@@ -20,4 +20,4 @@ const FormHandler = ({
   </Formik>
 );
 
-export { FormHandler };
+export { FormikHandler };

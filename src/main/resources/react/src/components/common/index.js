@@ -7,6 +7,7 @@ export { ButtonLinkBlue } from './buttons/button-link-blue';
 export { CheckBox } from './checkbox';
 export { Crop } from './crop';
 export { EllipsisText } from './ellipsis-text';
+export { FormikHandler, FormikCheckBox } from './formik';
 export { InputForAuth } from './input';
 export { Loader } from './loader';
 export { Modal } from './pop-up/modal';

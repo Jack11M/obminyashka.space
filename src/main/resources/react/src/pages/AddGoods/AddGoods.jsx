@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
-import * as Yup from 'yup';
 import { Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -14,17 +13,24 @@ import { getErrorMessage } from 'Utils/error';
 import { getAuthLang } from 'store/auth/slice';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { Button, ButtonAdv, BackButton } from 'components/common';
-import { FormHandler, FormikCheckBox } from 'components/common/formik';
+import {
+  Button,
+  ButtonAdv,
+  BackButton,
+  FormikHandler,
+  FormikCheckBox,
+} from 'components/common';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
 import { Exchange } from './exchange';
 import { PhotoFiles } from './photo-files';
+import { Description } from './description';
 import { SelectionSection } from './selection-section';
 import { WrapCharacteristic } from './wrap-characteristic';
 
 import * as Styles from './styles';
+import { getValidationAdv } from './config';
 
 const AddGoods = () => {
   const navigate = useNavigate();
@@ -56,54 +62,19 @@ const AddGoods = () => {
   const [preViewImage, setPreViewImage] = useState(adv.viewImage);
   const [currentIndexImage, setCurrentIndexImage] = useState(adv.indexImage);
 
-  const validationAdv = Yup.object().shape({
-    id: Yup.number().default(() => 0),
-    dealType: Yup.string().default(() => 'EXCHANGE'),
-    categoryId: Yup.number()
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => categoryItems?.id),
-    subcategoryId: Yup.number()
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => subCategoryItems?.id),
-    topic: Yup.string()
-      .required(getTranslatedText('errors.requireField'))
-      .min(3, getTranslatedText('errors.min3'))
-      .max(30, getTranslatedText('errors.max30'))
-      .default(() => announcementTitle),
-    readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
-    wishesToExchange: Yup.string()
-      .required(getTranslatedText('errors.requireField'))
-      .max(200, getTranslatedText('errors.max200'))
-      .default(() => exchangeList.join(',')),
-    age: Yup.string()
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => age.join('')),
-    gender: Yup.string()
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => gender.join('')),
-    season: Yup.string()
-      .required()
-      .default(() => season.join('')),
-    size: Yup.string()
-      .when('categoryId', {
-        is: (value) => value === 1,
-        then: Yup.string().required(getTranslatedText('errors.requireField')),
-      })
-      .when('categoryId', {
-        is: (value) => value === 2,
-        then: Yup.string().required(getTranslatedText('errors.requireField')),
-      })
-      .default(() => size),
-    description: Yup.string()
-      .max(255, getTranslatedText('errors.max255'))
-      .default(() => description),
-    locationId: Yup.string()
-      .nullable()
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => locationId),
-    images: Yup.array()
-      .test('', getTranslatedText('errors.minPhoto'), (photo) => !!photo.length)
-      .default(() => imageFiles),
+  const validationAdv = getValidationAdv({
+    age,
+    size,
+    gender,
+    season,
+    readyOffer,
+    locationId,
+    imageFiles,
+    description,
+    exchangeList,
+    categoryItems,
+    subCategoryItems,
+    announcementTitle,
   });
 
   const createAdvertisement = async (values) => {
@@ -203,162 +174,155 @@ const AddGoods = () => {
   };
 
   return (
-    <FormHandler
-      onSubmit={handleSubmit}
-      initialValues={initialValues}
-      validationSchema={validationAdv}
-    >
-      <Form>
-        <Styles.MainContainer>
-          <Styles.Container>
-            <Styles.AddContainer>
-              <BackButton
-                type="button"
-                style={{ marginBottom: 16 }}
-                text={getTranslatedText('button.back')}
-              />
-
-              <SelectionSection
-                category={{ categoryItems, setCategoryItems }}
-                subcategory={{ subCategoryItems, setSubCategoryItems }}
-                announcement={{ announcementTitle, setAnnouncementTitle }}
-              />
-
-              <Exchange
-                exchangeList={exchangeList}
-                readyOffers={{ readyOffer, setReadyOffer }}
-                setExchange={setExchangeList}
-              />
-
-              <>
-                <Styles.TitleH3>
-                  {getTranslatedText('addAdv.options')}&nbsp;
-                  <Styles.Star>*</Styles.Star>
-                </Styles.TitleH3>
-
-                <Styles.WrapItems>
-                  <Styles.SectionsItem>
-                    <WrapCharacteristic
-                      name="age"
-                      title={getTranslatedText('addAdv.age')}
-                    >
-                      {agesShow.map((item, idx) => (
-                        <FormikCheckBox
-                          name="age"
-                          value={item}
-                          type="radio"
-                          onChange={setAge}
-                          text={enumAge[item]}
-                          selectedValues={age}
-                          margin="0 0 15px 0"
-                          key={String(item + idx)}
-                        />
-                      ))}
-                    </WrapCharacteristic>
-                  </Styles.SectionsItem>
-
-                  <Styles.SectionsItem>
-                    <WrapCharacteristic
-                      name="gender"
-                      title={getTranslatedText('addAdv.sex')}
-                    >
-                      {sexShow.map((item, idx) => (
-                        <FormikCheckBox
-                          value={item}
-                          type="radio"
-                          name="gender"
-                          onChange={setGender}
-                          margin="0 0 15px 0"
-                          key={String(item + idx)}
-                          selectedValues={gender}
-                          text={getTranslatedText(`genderEnum.${item}`)}
-                        />
-                      ))}
-                    </WrapCharacteristic>
-                  </Styles.SectionsItem>
-
-                  <Styles.SectionsItem>
-                    <WrapCharacteristic
-                      name="season"
-                      title={getTranslatedText('addAdv.season')}
-                    >
-                      {seasonShow.map((item, idx) => (
-                        <FormikCheckBox
-                          value={item}
-                          name="season"
-                          type="radio"
-                          onChange={setSeason}
-                          margin="0 0 15px 0"
-                          key={String(item + idx)}
-                          selectedValues={season}
-                          text={getTranslatedText(`seasonEnum.${item}`)}
-                        />
-                      ))}
-                    </WrapCharacteristic>
-                  </Styles.SectionsItem>
-
-                  <Styles.SectionsItem>
-                    <Sizes
-                      categories={categoryItems}
-                      dimension={{ size, setSize }}
-                    />
-                  </Styles.SectionsItem>
-                </Styles.WrapItems>
-              </>
-
-              <Styles.WrapDescription>
-                <Styles.TitleH3>
-                  {getTranslatedText('addAdv.describeTitle')}
-                </Styles.TitleH3>
-
-                <Styles.DescriptionText>
-                  {getTranslatedText('addAdv.describeText')}
-                </Styles.DescriptionText>
-
-                <Styles.TextArea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </Styles.WrapDescription>
-
-              <Location
-                setLocationId={setLocationId}
-                setLocationCurrent={setLocationCurrent}
-                onInputLocation={{ showLocation, setShowLocation }}
-              />
-
-              <PhotoFiles
-                imageFiles={imageFiles}
-                preViewImage={preViewImage}
-                setImageFiles={setImageFiles}
-                setPreViewImage={setPreViewImage}
-                currentIndexImage={currentIndexImage}
-                setCurrentIndexImage={setCurrentIndexImage}
-              />
-
-              <Styles.WrapButtons>
-                <Styles.BlockButtons>
-                  <ButtonAdv type="submit" />
-
-                  <Button
-                    type="submit"
-                    style={{ marginLeft: 30 }}
-                    click={() => setButtonPreview(true)}
-                    width={lang === 'ua' ? '270px' : '222px'}
-                    text={getTranslatedText('addAdv.preview')}
+    <>
+      <FormikHandler
+        onSubmit={handleSubmit}
+        initialValues={initialValues}
+        validationSchema={validationAdv}
+      >
+        {() => (
+          <Form>
+            <Styles.MainContainer>
+              <Styles.Container>
+                <Styles.AddContainer>
+                  <BackButton
+                    type="button"
+                    style={{ marginBottom: 16 }}
+                    text={getTranslatedText('button.back')}
                   />
-                </Styles.BlockButtons>
 
-                <Styles.BackButtons onClick={resetAll}>
-                  <Styles.Cross />
-                  <p>{getTranslatedText('addAdv.cancel')}</p>
-                </Styles.BackButtons>
-              </Styles.WrapButtons>
-            </Styles.AddContainer>
-          </Styles.Container>
-        </Styles.MainContainer>
-      </Form>
-    </FormHandler>
+                  <SelectionSection
+                    category={{ categoryItems, setCategoryItems }}
+                    subcategory={{ subCategoryItems, setSubCategoryItems }}
+                    announcement={{ announcementTitle, setAnnouncementTitle }}
+                  />
+
+                  <Exchange
+                    exchangeList={exchangeList}
+                    readyOffers={{ readyOffer, setReadyOffer }}
+                    setExchange={setExchangeList}
+                  />
+
+                  <>
+                    <Styles.TitleH3>
+                      {getTranslatedText('addAdv.options')}&nbsp;
+                      <Styles.Star>*</Styles.Star>
+                    </Styles.TitleH3>
+
+                    <Styles.WrapItems>
+                      <Styles.SectionsItem>
+                        <WrapCharacteristic
+                          name="age"
+                          title={getTranslatedText('addAdv.age')}
+                        >
+                          {agesShow.map((item, idx) => (
+                            <FormikCheckBox
+                              name="age"
+                              value={item}
+                              type="radio"
+                              onChange={setAge}
+                              text={enumAge[item]}
+                              selectedValues={age}
+                              margin="0 0 15px 0"
+                              key={String(item + idx)}
+                            />
+                          ))}
+                        </WrapCharacteristic>
+                      </Styles.SectionsItem>
+
+                      <Styles.SectionsItem>
+                        <WrapCharacteristic
+                          name="gender"
+                          title={getTranslatedText('addAdv.sex')}
+                        >
+                          {sexShow.map((item, idx) => (
+                            <FormikCheckBox
+                              value={item}
+                              type="radio"
+                              name="gender"
+                              margin="0 0 15px 0"
+                              onChange={setGender}
+                              selectedValues={gender}
+                              key={String(item + idx)}
+                              text={getTranslatedText(`genderEnum.${item}`)}
+                            />
+                          ))}
+                        </WrapCharacteristic>
+                      </Styles.SectionsItem>
+
+                      <Styles.SectionsItem>
+                        <WrapCharacteristic
+                          name="season"
+                          title={getTranslatedText('addAdv.season')}
+                        >
+                          {seasonShow.map((item, idx) => (
+                            <FormikCheckBox
+                              value={item}
+                              type="radio"
+                              name="season"
+                              margin="0 0 15px 0"
+                              onChange={setSeason}
+                              selectedValues={season}
+                              key={String(item + idx)}
+                              text={getTranslatedText(`seasonEnum.${item}`)}
+                            />
+                          ))}
+                        </WrapCharacteristic>
+                      </Styles.SectionsItem>
+
+                      <Styles.SectionsItem>
+                        <Sizes
+                          categories={categoryItems}
+                          dimension={{ size, setSize }}
+                        />
+                      </Styles.SectionsItem>
+                    </Styles.WrapItems>
+                  </>
+
+                  <Description
+                    value={description}
+                    setDescription={setDescription}
+                  />
+
+                  <Location
+                    setLocationId={setLocationId}
+                    setLocationCurrent={setLocationCurrent}
+                    onInputLocation={{ showLocation, setShowLocation }}
+                  />
+
+                  <PhotoFiles
+                    imageFiles={imageFiles}
+                    preViewImage={preViewImage}
+                    setImageFiles={setImageFiles}
+                    setPreViewImage={setPreViewImage}
+                    currentIndexImage={currentIndexImage}
+                    setCurrentIndexImage={setCurrentIndexImage}
+                  />
+
+                  <Styles.WrapButtons>
+                    <Styles.BlockButtons>
+                      <ButtonAdv type="submit" />
+
+                      <Button
+                        type="submit"
+                        click={() => setButtonPreview(true)}
+                        width={lang === 'ua' ? '270px' : '222px'}
+                        text={getTranslatedText('addAdv.preview')}
+                      />
+                    </Styles.BlockButtons>
+
+                    <Styles.BackButtons onClick={resetAll}>
+                      <Styles.Cross />
+                      <p>{getTranslatedText('addAdv.cancel')}</p>
+                    </Styles.BackButtons>
+                  </Styles.WrapButtons>
+                </Styles.AddContainer>
+              </Styles.Container>
+            </Styles.MainContainer>
+          </Form>
+        )}
+      </FormikHandler>
+    </>
   );
 };
 

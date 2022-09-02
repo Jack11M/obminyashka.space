@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import { Button } from 'components/common';
-
 export const MainContainer = styled.main`
   padding-top: 200px;
   padding-bottom: 50px;
@@ -114,9 +112,7 @@ export const WrapButtons = styled.div`
 
 export const BlockButtons = styled.div`
   display: flex;
-  ${Button} {
-    margin-left: 30px;
-  }
+  gap: 30px;
 `;
 
 export const Cross = styled.div`
