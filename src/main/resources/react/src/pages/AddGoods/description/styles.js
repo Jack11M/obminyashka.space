@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const WrapDescription = styled.div`
   position: relative;
@@ -19,13 +19,16 @@ export const TextArea = styled.textarea`
   line-height: 24px;
   outline: none;
   resize: none;
-  border: 1px solid #bcbcbc;
   border-radius: 2px;
-  caret-color: ${({ theme }) => theme.colors.activeColor};
 
-  &:focus {
-    border-color: hsl(0, 0%, 44%);
-  }
+  ${({ theme, error }) => css`
+    caret-color: ${theme.colors.activeColor};
+    border: 1px solid ${error ? theme.colors.colorError : '#bcbcbc'};
+
+    &:focus {
+      border-color: ${error ? theme.colors.colorError : 'hsl(0, 0%, 44%)'};
+    }
+  `}
 `;
 
 export const TitleH3 = styled.h3`
@@ -34,4 +37,13 @@ export const TitleH3 = styled.h3`
   font-weight: 600;
   margin-bottom: 10px;
   line-height: 40px;
+`;
+
+export const ErrorCount = styled.span`
+  position: absolute;
+  right: 4px;
+  bottom: 47px;
+  ${({ theme, error }) => css`
+    color: ${error ? theme.colors.colorError : theme.colors.colorTextDisabled};
+  `}
 `;

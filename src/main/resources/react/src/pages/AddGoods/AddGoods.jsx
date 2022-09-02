@@ -184,13 +184,13 @@ const AddGoods = () => {
           <Form>
             <Styles.MainContainer>
               <Styles.Container>
-                <BackButton
-                  type="button"
-                  style={{ marginBottom: 16 }}
-                  text={getTranslatedText('button.back')}
-                />
-
                 <Styles.AddContainer>
+                  <BackButton
+                    type="button"
+                    style={{ marginBottom: 16 }}
+                    text={getTranslatedText('button.back')}
+                  />
+
                   <SelectionSection
                     category={{ categoryItems, setCategoryItems }}
                     subcategory={{ subCategoryItems, setSubCategoryItems }}
@@ -242,8 +242,8 @@ const AddGoods = () => {
                               name="gender"
                               margin="0 0 15px 0"
                               onChange={setGender}
-                              key={String(item + idx)}
                               selectedValues={gender}
+                              key={String(item + idx)}
                               text={getTranslatedText(`genderEnum.${item}`)}
                             />
                           ))}
@@ -258,12 +258,12 @@ const AddGoods = () => {
                           {seasonShow.map((item, idx) => (
                             <FormikCheckBox
                               value={item}
-                              name="season"
                               type="radio"
-                              onChange={setSeason}
+                              name="season"
                               margin="0 0 15px 0"
-                              key={String(item + idx)}
+                              onChange={setSeason}
                               selectedValues={season}
+                              key={String(item + idx)}
                               text={getTranslatedText(`seasonEnum.${item}`)}
                             />
                           ))}
@@ -305,7 +305,6 @@ const AddGoods = () => {
 
                       <Button
                         type="submit"
-                        style={{ marginLeft: 30 }}
                         click={() => setButtonPreview(true)}
                         width={lang === 'ua' ? '270px' : '222px'}
                         text={getTranslatedText('addAdv.preview')}

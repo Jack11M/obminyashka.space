@@ -54,9 +54,7 @@ export const getValidationAdv = ({
         then: Yup.string().required(getTranslatedText('errors.requireField')),
       })
       .default(() => size),
-    description: Yup.string()
-      .max(10, getTranslatedText('errors.max255'))
-      .default(() => description),
+    description: Yup.string().default(() => description),
     locationId: Yup.string()
       .nullable()
       .required(getTranslatedText('errors.requireField'))
