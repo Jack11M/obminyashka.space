@@ -48,8 +48,8 @@ class InternationalizationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"ru", "ru-RU"})
-    void testRussianLocalizationWithAccept_LanguageHeaderIsRu(String locale) throws Exception {
+    @ValueSource(strings = {"ua", "ua-UA"})
+    void testUkrainianLocalizationWithAccept_LanguageHeaderIsRu(String locale) throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(ApiKey.USER_MY_INFO)
                 .header("Accept-Language", locale)
                 .accept(MediaType.APPLICATION_JSON))
@@ -57,6 +57,6 @@ class InternationalizationTest {
                 .andReturn();
 
         assertTrue(mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8)
-                .contains("Вы должны быть аутентифицированы"));
+                .contains("Для доступа до поточного ресурса ви маєте авторизуватися"));
     }
 }

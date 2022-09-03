@@ -25,7 +25,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
@@ -50,31 +49,21 @@ class LocationFlowTest extends BasicControllerTest {
     @Test
     @DataSet("database_init.yml")
     void getAllLocations_shouldReturnAllLocations() throws Exception {
-        sendUriAndGetResultAction(get(LOCATION), status().isOk())
+        sendUriAndGetResultAction(get(LOCATION_ALL), status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(existedLocationId))
-                .andExpect(jsonPath("$[0].city").value("Kharkiv"))
-                .andExpect(jsonPath("$[0].district").value("Kharkivska district"));
+                .andExpect(jsonPath("$[0].cityEN").value("Kharkiv"))
+                .andExpect(jsonPath("$[0].districtEN").value("Kharkivska district"));
     }
 
     @Test
     @DataSet("database_init.yml")
     void getLocationsForCurrentLanguage_shouldReturnLocations() throws Exception {
-        sendUriAndGetResultAction(get(LOCATION_ALL)
-                        .header("accept-language", "en"),
-                status().isOk())
+        sendUriAndGetResultAction(get(LOCATION_ALL), status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(existedLocationId))
-                .andExpect(jsonPath("$[0].city").value("Kharkiv"))
-                .andExpect(jsonPath("$[0].district").value("Kharkivska district"));
-    }
-
-    @Test
-    @DataSet("database_init.yml")
-    void getLocationsForCurrentLanguage_shouldReturn400WhenLocationsForLangDoNotExist() throws Exception {
-        sendUriAndGetMvcResult(get(LOCATION_ALL)
-                        .header("accept-language", "fr"),
-                status().isBadRequest());
+                .andExpect(jsonPath("$[0].cityEN").value("Kharkiv"))
+                .andExpect(jsonPath("$[0].districtEN").value("Kharkivska district"));
     }
 
     @Test
@@ -82,8 +71,8 @@ class LocationFlowTest extends BasicControllerTest {
     void getLocation_shouldReturnLocationWithGivenId() throws Exception {
         sendUriAndGetResultAction(get(LOCATION_ID, existedLocationId), status().isOk())
                 .andExpect(jsonPath("$.id").value(existedLocationId))
-                .andExpect(jsonPath("$.city").value("Kharkiv"))
-                .andExpect(jsonPath("$.district").value("Kharkivska district"));
+                .andExpect(jsonPath("$.cityEN").value("Kharkiv"))
+                .andExpect(jsonPath("$.districtEN").value("Kharkivska district"));
     }
 
     @Test
@@ -94,23 +83,27 @@ class LocationFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "location/create.yml", orderBy = "city", ignoreCols = "id")
+    @ExpectedDataSet(value = "location/create.yml", orderBy = "city_en", ignoreCols = "id")
     void createLocation_shouldCreateNewLocation() throws Exception {
         sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
     }
 
     private void sendAndCompareLocationResponse(MockHttpServletRequestBuilder request, ResultMatcher created) throws Exception {
-        sendDtoAndGetResultAction(request, createLocationDto(), created)
+        sendDtoAndGetResultAction(request, createValidLocationDto(), created)
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.city").value(NEW_VALID_CITY))
-                .andExpect(jsonPath("$.district").value(NEW_VALID_DISTRICT))
+                .andExpect(jsonPath("$.cityEN").value(CITY_EN))
+                .andExpect(jsonPath("$.districtEN").value(DISTRICT_EN))
+                .andExpect(jsonPath("$.areaEN").value(AREA_EN))
+                .andExpect(jsonPath("$.cityUA").value(CITY_UA))
+                .andExpect(jsonPath("$.districtUA").value(DISTRICT_UA))
+                .andExpect(jsonPath("$.areaUA").value(AREA_UA))
                 .andReturn();
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     void updateLocation_shouldReturn404WhenLocationIsNotExisted() throws Exception {
-        sendDtoAndGetMvcResult(put(LOCATION_ID, UUID.randomUUID()), createLocationDto(), status().isNotFound());
+        sendDtoAndGetMvcResult(put(LOCATION_ID, UUID.randomUUID()), createValidLocationDto(), status().isNotFound());
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -138,13 +131,11 @@ class LocationFlowTest extends BasicControllerTest {
         MvcResult response = mockMvc.perform(post(LOCATIONS_INIT)
                 .content(Files.readString(Path.of(pathToFileParseLocationsFrom), StandardCharsets.UTF_8))
                 .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-        String[] parsedLocationsQuantity = response.getResponse().getContentAsString()
-                .replace("(UUID_TO_BIN", "").split("\\), \\(");
-        int locationsInThreeLanguages = (response.getResponse().getContentAsString().substring(60).split("UUID_TO_BIN").length) / 3;
-        assertEquals(locationsInThreeLanguages * 3, parsedLocationsQuantity.length);
+        final var responseContent = response.getResponse().getContentAsString();
+        int parsedLocationsQuantity = responseContent.substring(95).split("UUID_TO_BIN").length;
+        assertEquals(984, parsedLocationsQuantity);
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
@@ -156,6 +147,6 @@ class LocationFlowTest extends BasicControllerTest {
                 "NOT VALID DATA",
                 status().isBadRequest());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot deserialize value of type"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot construct"));
     }
 }
