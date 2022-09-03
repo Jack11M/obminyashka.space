@@ -158,11 +158,12 @@ public class LocationServiceImpl implements LocationService {
      * @return capital part of the string without prefix. Example: 'Kyivska'
      */
     private String extractLocationPart(String unparsedLocation) {
-        return unparsedLocation.chars().skip(1)
+        final var pgtPrefixLength = "PGT".length();
+        return unparsedLocation.chars().skip(pgtPrefixLength)
                 .filter(Character::isUpperCase)
                 .findFirst()
                 .stream()
-                .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter)))
+                .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter, pgtPrefixLength)))
                 .findFirst()
                 .orElse("");
     }
