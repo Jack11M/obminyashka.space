@@ -49,7 +49,7 @@ class InternationalizationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"ua", "ua-UA"})
-    void testUkrainianLocalizationWithAccept_LanguageHeaderIsRu(String locale) throws Exception {
+    void testUkrainianLocalizationWithAccept_LanguageHeaderIsUA(String locale) throws Exception {
         MvcResult mvcResult = mockMvc.perform(get(ApiKey.USER_MY_INFO)
                 .header("Accept-Language", locale)
                 .accept(MediaType.APPLICATION_JSON))

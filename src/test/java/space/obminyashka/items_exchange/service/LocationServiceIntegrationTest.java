@@ -1,27 +1,34 @@
 package space.obminyashka.items_exchange.service;
 
+import liquibase.repackaged.org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.util.ReflectionTestUtils;
 import space.obminyashka.items_exchange.dao.LocationRepository;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.model.Location;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-class LocationServiceTest {
+class LocationServiceIntegrationTest {
     @MockBean
     private LocationRepository locationRepository;
     @Autowired
@@ -125,19 +132,13 @@ class LocationServiceTest {
         assertTrue(existsById);
     }
 
-//    @Test
-//    void update_shouldUpdateLocation() {
-//        location.setCity(NEW_VALID_CITY);
-//        location.setDistrict(NEW_VALID_DISTRICT);
-//        locationDto.setCity(NEW_VALID_CITY);
-//        locationDto.setDistrict(NEW_VALID_DISTRICT);
-//        when(locationRepository.saveAndFlush(any())).thenReturn(location);
-//
-//        LocationDto updatedLocationDto = locationService.update(locationDto);
-//        verify(locationRepository, times(1)).saveAndFlush(locationCaptor.capture());
-//        assertAll("Checking objects' data equal",
-//                () -> assertEquals(locationCaptor.getValue().getId(), updatedLocationDto.getId()),
-//                () -> assertEquals(locationCaptor.getValue().getCity(), updatedLocationDto.getCity()),
-//                () -> assertEquals(locationCaptor.getValue().getDistrict(), updatedLocationDto.getDistrict()));
-//    }
+    @Test
+    void update_shouldUpdateLocation() {
+        locationDto.setDistrictUA("Sumska");
+        when(locationRepository.saveAndFlush(any())).thenAnswer(i -> i.getArguments()[0]);
+
+        LocationDto updatedLocationDto = locationService.update(locationDto);
+        verify(locationRepository).saveAndFlush(any());
+        assertEquals(locationDto, updatedLocationDto);
+    }
 }
