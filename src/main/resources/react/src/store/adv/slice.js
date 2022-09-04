@@ -14,7 +14,7 @@ const initialState = {
   idLocation: '',
   fileImage: [],
   currLocation: null,
-  locationShow: { city: '', area: '' },
+  locationShow: null,
   viewImage: [],
   indexImage: null,
 };
@@ -55,7 +55,7 @@ const advSlice = createSlice({
       state.idLocation = '';
       state.fileImage = [];
       state.currLocation = null;
-      state.locationShow = { city: '', area: '' };
+      state.locationShow = null;
       state.viewImage = [];
       state.indexImage = null;
     },

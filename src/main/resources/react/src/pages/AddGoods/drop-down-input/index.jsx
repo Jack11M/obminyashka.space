@@ -13,6 +13,7 @@ const DropDownInput = ({
   title,
   value,
   focus,
+  dropRef,
   onFocus,
   disabled,
   showDrop,
@@ -25,7 +26,7 @@ const DropDownInput = ({
   const { error } = meta;
 
   return (
-    <Styles.Wrap>
+    <Styles.Wrap ref={dropRef}>
       {!size && <Styles.Label>{title}:</Styles.Label>}&nbsp;
       <StylesAdd.Star>*</StylesAdd.Star>
       <Styles.Input
