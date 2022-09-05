@@ -135,7 +135,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .andReturn();
         final var responseContent = response.getResponse().getContentAsString();
         int parsedLocationsQuantity = responseContent.substring(95).split("UUID_TO_BIN").length;
-        assertEquals(912, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertEquals(905, parsedLocationsQuantity, "Comparing unique locations number with result");
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 

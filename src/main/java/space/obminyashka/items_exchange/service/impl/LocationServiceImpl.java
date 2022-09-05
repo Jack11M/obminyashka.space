@@ -29,6 +29,8 @@ public class LocationServiceImpl implements LocationService {
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
 
+    private static final String INVALID_LOCATION = "Україна,область Київська,місто Ірпінь,Селище міського типу Ворзель,вулиця Курортна,будинок 60";
+
     @Override
     public List<LocationDto> findAll() {
         return convertAllTo(locationRepository.findAll(), LocationDto.class);
@@ -96,12 +98,12 @@ public class LocationServiceImpl implements LocationService {
                 Location location = locations.get(i);
                 writer.append(String.format(" (UUID_TO_BIN('%s'),'%s','%s','%s','%s','%s','%s')",
                         location.getId(),
-                        location.getCityUA().replace("'", "\\'"),
-                        location.getDistrictUA().replace("'", "\\'"),
-                        location.getAreaUA().replace("'", "\\'"),
-                        location.getCityEN().replace("'", "\\'"),
-                        location.getDistrictEN().replace("'", "\\'"),
-                        location.getAreaEN().replace("'", "\\'")));
+                        location.getCityUA(),
+                        location.getDistrictUA(),
+                        location.getAreaUA(),
+                        location.getCityEN(),
+                        location.getDistrictEN(),
+                        location.getAreaEN()));
                 if (i < locations.size() - 1) writer.append(",");
             }
         }
@@ -111,6 +113,7 @@ public class LocationServiceImpl implements LocationService {
     private List<Location> mapCreatingDataToLocations(List<RawLocation> creatingData) {
         return creatingData.stream()
                 .filter(Predicate.not(rawLocation -> rawLocation.getFullAddressEn().isBlank()))
+                .filter(Predicate.not(rawLocation -> rawLocation.getFullAddressUa().equals(INVALID_LOCATION)))
                 .map(this::parseRawLocation)
                 .distinct()
                 .toList();
@@ -164,7 +167,12 @@ public class LocationServiceImpl implements LocationService {
                 .findFirst()
                 .stream()
                 .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter, pgtPrefixLength)))
+                .map(this::decoratePossibleApostropheChars)
                 .findFirst()
                 .orElse("");
+    }
+
+    private String decoratePossibleApostropheChars(String stringToDecorate) {
+        return stringToDecorate.replace("’", "'").replace("'", "\\'");
     }
 }
