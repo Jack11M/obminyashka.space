@@ -109,12 +109,20 @@ const InputLocation = ({
   };
 
   const handleClick = (elem) => {
-    if (name === city) getLocationId(elem);
-
-    setInputLocation((prevLocation) => ({
-      ...prevLocation,
-      [name]: elem,
-    }));
+    if (name === city) {
+      getLocationId(elem);
+      setInputLocation((prevLocation) => ({
+        ...prevLocation,
+        [name]: elem,
+      }));
+    }
+    if (name === area) {
+      setInputLocation((prevLocation) => ({
+        ...prevLocation,
+        [name]: elem,
+        [city]: '',
+      }));
+    }
 
     setShowDrop(false);
   };
