@@ -110,6 +110,13 @@ const InputLocation = ({
 
   const handleClick = (elem) => {
     if (name === city) getLocationId(elem);
+    if (name === area) {
+      setInputLocation((prevLocation) => ({
+        ...prevLocation,
+        [name]: elem,
+        [city]: '',
+      }));
+    }
 
     setInputLocation((prevLocation) => ({
       ...prevLocation,
