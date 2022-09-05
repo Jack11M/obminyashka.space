@@ -10,6 +10,4 @@ import java.util.UUID;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, UUID> {
     List<Location> findByIdIn(List<UUID> ids);
-
-    List<Location> findByI18nIgnoreCase(String i18n);
 }

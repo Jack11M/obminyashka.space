@@ -157,7 +157,7 @@ const AddGoods = () => {
     setAnnouncementTitle('');
     setExchangeList([]);
     setDescription('');
-    setLocationId(null);
+    setLocationId('');
     setImageFiles([]);
     setCategoryItems('');
     setSubCategoryItems('');
