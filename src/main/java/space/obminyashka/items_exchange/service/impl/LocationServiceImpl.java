@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -25,9 +26,17 @@ import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
+    private static final Set<String> INVALID_LOCATIONS_UA = Set.of(
+            "Україна,область Київська,місто Ірпінь,Селище міського типу Ворзель",
+            "Україна,область Київська,місто Буча");
+    private static final Set<String> INVALID_LOCATIONS_EN = Set.of(
+            "Ukraine,area Odeska,district Ovidiopolskyi,village Limanka",
+            "Ukraine,area Zakarpatska,district Mukachivskyi,city Mukacheve"
+    );
     private final LocationRepository locationRepository;
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
+
 
     @Override
     public List<LocationDto> findAll() {
@@ -94,14 +103,7 @@ public class LocationServiceImpl implements LocationService {
             writer.append(initString);
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
-                writer.append(String.format(" (UUID_TO_BIN('%s'),'%s','%s','%s','%s','%s','%s')",
-                        location.getId(),
-                        location.getCityUA().replace("'", "\\'"),
-                        location.getDistrictUA().replace("'", "\\'"),
-                        location.getAreaUA().replace("'", "\\'"),
-                        location.getCityEN().replace("'", "\\'"),
-                        location.getDistrictEN().replace("'", "\\'"),
-                        location.getAreaEN().replace("'", "\\'")));
+                writer.append(locationToFormatterString(location));
                 if (i < locations.size() - 1) writer.append(",");
             }
         }
@@ -110,10 +112,19 @@ public class LocationServiceImpl implements LocationService {
 
     private List<Location> mapCreatingDataToLocations(List<RawLocation> creatingData) {
         return creatingData.stream()
-                .filter(Predicate.not(rawLocation -> rawLocation.getFullAddressEn().isBlank()))
+                .filter(Predicate.not(LocationServiceImpl::isLocationInvalid))
                 .map(this::parseRawLocation)
                 .distinct()
                 .toList();
+    }
+
+    private static boolean isLocationInvalid(RawLocation rawLocation) {
+        if (rawLocation.getFullAddressEn().isBlank()) {
+            return true;
+        }
+        final var isInvalidEnglish = INVALID_LOCATIONS_EN.stream().anyMatch(it -> rawLocation.getFullAddressEn().startsWith(it));
+        final var isInvalidUkrainian = INVALID_LOCATIONS_UA.stream().anyMatch(it -> rawLocation.getFullAddressUa().startsWith(it));
+        return isInvalidEnglish || isInvalidUkrainian;
     }
 
     /**
@@ -154,6 +165,7 @@ public class LocationServiceImpl implements LocationService {
 
     /**
      * Extracts a string part that starts from capital letter
+     *
      * @param unparsedLocation string with a prefix object type and its name. Example: 'region Kyivska'
      * @return capital part of the string without prefix. Example: 'Kyivska'
      */
@@ -164,7 +176,23 @@ public class LocationServiceImpl implements LocationService {
                 .findFirst()
                 .stream()
                 .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter, pgtPrefixLength)))
+                .map(this::decoratePossibleApostropheChars)
                 .findFirst()
                 .orElse("");
+    }
+
+    private String decoratePossibleApostropheChars(String stringToDecorate) {
+        return stringToDecorate.replace("’", "'").replace("'", "\\'");
+    }
+
+    private static String locationToFormatterString(Location location) {
+        return String.format(" (UUID_TO_BIN('%s'),'%s','%s','%s','%s','%s','%s')",
+                location.getId(),
+                location.getCityUA(),
+                location.getDistrictUA(),
+                location.getAreaUA(),
+                location.getCityEN(),
+                location.getDistrictEN(),
+                location.getAreaEN());
     }
 }
