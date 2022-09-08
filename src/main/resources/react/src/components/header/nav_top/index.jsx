@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
 import { Avatar } from 'components/common/avatar';
-import { getUserThunk } from 'store/profile/thunk';
+// import { getUserThunk } from 'store/profile/thunk';
 import { CustomSelect } from 'components/selectLang';
 import { getAuth, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
@@ -13,16 +13,11 @@ import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 import * as Styles from './styles';
 
 const NavTop = () => {
-  const dispatch = useDispatch();
   const isAuthed = useSelector(getAuth);
   const profile = useSelector(getAuthProfile);
   const { avatarImage } = useSelector(getProfile);
 
   const [image, setImage] = useState('');
-
-  useEffect(() => {
-    dispatch(getUserThunk());
-  }, [dispatch]);
 
   useEffect(() => {
     if (!avatarImage?.includes('blob') && avatarImage !== '') {
@@ -34,7 +29,7 @@ const NavTop = () => {
     }
 
     if (avatarImage === '') setImage('');
-  }, [avatarImage, dispatch]);
+  }, [avatarImage]);
 
   return (
     <Styles.Div>
