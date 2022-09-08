@@ -44,6 +44,9 @@ const profileMeSlice = createSlice({
     setAvatar: (state, { payload }) => {
       state.avatarImage = payload;
     },
+    setProfileEmail: (state, { payload }) => {
+      state.email = payload;
+    },
     clearProfile: (state) => {
       state.userLoading = false;
       state.childrenLoading = false;
@@ -71,6 +74,7 @@ const {
     putProfile,
     clearProfile,
     putUserToStore,
+    setProfileEmail,
     putChildrenToStore,
   },
 } = profileMeSlice;
@@ -80,6 +84,7 @@ export {
   putProfile,
   clearProfile,
   putUserToStore,
+  setProfileEmail,
   profileMeReducer,
   putChildrenToStore,
   profileMeInitialState,

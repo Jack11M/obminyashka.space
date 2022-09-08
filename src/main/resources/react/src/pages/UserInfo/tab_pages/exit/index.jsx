@@ -25,6 +25,7 @@ const Exit = ({ toggle, setIsModalOpen }) => {
 
   useClickAway(ref, () => {
     setIsModalOpen(false);
+    toggle();
   });
 
   return (
