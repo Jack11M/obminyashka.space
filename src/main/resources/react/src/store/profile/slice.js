@@ -44,6 +44,24 @@ const profileMeSlice = createSlice({
     setAvatar: (state, { payload }) => {
       state.avatarImage = payload;
     },
+    setProfileEmail: (state, { payload }) => {
+      state.email = payload;
+    },
+    clearProfile: (state) => {
+      state.userLoading = false;
+      state.childrenLoading = false;
+      state.avatarImage = '';
+      state.children = [];
+      state.email = '';
+      state.firstName = '';
+      state.lastName = '';
+      state.lastOnlineTime = '';
+      state.online = false;
+      state.phones = [];
+      state.status = '';
+      state.updated = '';
+      state.username = '';
+    },
   },
 });
 
@@ -51,13 +69,22 @@ export const getProfile = (state) => state.profileMe;
 
 const {
   reducer: profileMeReducer,
-  actions: { putUserToStore, putProfile, putChildrenToStore, setAvatar },
+  actions: {
+    setAvatar,
+    putProfile,
+    clearProfile,
+    putUserToStore,
+    setProfileEmail,
+    putChildrenToStore,
+  },
 } = profileMeSlice;
 
 export {
   setAvatar,
   putProfile,
+  clearProfile,
   putUserToStore,
+  setProfileEmail,
   profileMeReducer,
   putChildrenToStore,
   profileMeInitialState,

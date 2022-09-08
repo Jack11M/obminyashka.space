@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from 'components/common';
 import { route } from 'routes/routeConstants';
 import logout2 from 'assets/img/log-out-2.png';
+import { clearProfile } from 'store/profile/slice';
 import { logoutUserThunk } from 'store/auth/thunk';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -18,12 +19,15 @@ const Exit = ({ toggle, setIsModalOpen }) => {
 
   const setLogOut = useCallback(async () => {
     await dispatch(logoutUserThunk());
+    dispatch(clearProfile());
     navigate(route.home);
   }, [dispatch, navigate]);
 
   useClickAway(ref, () => {
     setIsModalOpen(false);
+    toggle();
   });
+
   return (
     <Styles.ModalOverlay>
       <Styles.Modal ref={ref}>
