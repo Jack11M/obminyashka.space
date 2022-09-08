@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
 import { Avatar } from 'components/common/avatar';
-// import { getUserThunk } from 'store/profile/thunk';
 import { CustomSelect } from 'components/selectLang';
 import { getAuth, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
