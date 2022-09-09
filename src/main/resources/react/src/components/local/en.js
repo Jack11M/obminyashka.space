@@ -136,7 +136,7 @@ const en = {
   footer: {
     rules: 'Safe deal rules',
     charity: 'Charity organisations',
-    questions: 'Frequently asked Questions',
+    questions: 'Frequently asked questions',
     protect: 'All rights reserved',
   },
   fourOhFour: {
@@ -163,7 +163,7 @@ const en = {
     checkInUl: 'your offers',
   },
   mainPage: {
-    question: 'Have a lot accumulated of',
+    question: 'Have a lot accumulated of ',
     questionBold: "children's things?",
     answerFirstPart: 'Just',
     answerBold: 'register',
