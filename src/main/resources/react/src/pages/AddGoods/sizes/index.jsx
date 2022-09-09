@@ -7,6 +7,8 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { ShowSelectItem } from '../show-select-item';
 
+import * as Styles from '../styles';
+
 const Sizes = ({ categories, dimension }) => {
   const lang = useSelector(getAuthLang);
 
@@ -47,13 +49,13 @@ const Sizes = ({ categories, dimension }) => {
   }, [categories]);
 
   return (
-    <div className="characteristics_item">
-      <h4>
+    <Styles.SectionsItem>
+      <Styles.ItemTittle>
         {getTranslatedText('addAdv.size')}
         {lang === 'en' ? ' cm' : ' см'}
         {translatedText &&
           ` (${getTranslatedText(`categories.${translatedText}`)})`}
-      </h4>
+      </Styles.ItemTittle>
 
       <ShowSelectItem
         name="size"
@@ -66,7 +68,7 @@ const Sizes = ({ categories, dimension }) => {
         titleError="popup.errorTitleSize"
         placeholder={getTranslatedText('addAdv.chooseSize')}
       />
-    </div>
+    </Styles.SectionsItem>
   );
 };
 

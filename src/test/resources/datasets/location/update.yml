@@ -1,4 +1,8 @@
 location:
   - id: 2c5467f3-b7ee-48b1-9451-7028255b757b
-    city: 'Kyiv'
-    district: 'Podolsky'
+    area_ua: 'Київська область'
+    district_ua: 'Подільський район'
+    city_ua: 'Київ'
+    area_en: 'Kyivska area'
+    district_en: 'Podolsky district'
+    city_en: 'Kyiv'

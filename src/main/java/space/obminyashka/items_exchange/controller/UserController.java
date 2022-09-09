@@ -76,11 +76,9 @@ public class UserController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementTitleDto>> getCreatedAdvertisements(@ApiIgnore Authentication authentication) {
-        final var allByUsername = advService.findAllByUsername(authentication.getName());
-        return allByUsername.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(allByUsername, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public List<AdvertisementTitleDto> getCreatedAdvertisements(@ApiIgnore Authentication authentication) {
+        return advService.findAllByUsername(authentication.getName());
     }
 
     @PutMapping(ApiKey.USER_SERVICE_CHANGE_PASSWORD)

@@ -134,10 +134,12 @@ child:
 
 location:
   - id: 2c5467f3-b7ee-48b1-9451-7028255b757b
-    area: 'Kharkivska'
-    city: 'Kharkiv'
-    district: 'Kharkivska district'
-    i18n: "EN"
+    area_ua: 'Харківська область'
+    city_ua: 'Харків'
+    district_ua: 'Харківський район'
+    area_en: 'Kharkivska area'
+    city_en: 'Kharkiv'
+    district_en: 'Kharkivska district'
 
 image:
   - id: ebad2511-97c6-4221-a39f-a1b24a7d3251

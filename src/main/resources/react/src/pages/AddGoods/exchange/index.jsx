@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
 
+import { FormikCheckBox } from 'components/common/formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
-import { ErrorDisplay } from '../error-display';
+import * as Styles from './styles';
 
-const Exchange = ({ exchangeList, setExchange }) => {
+const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
@@ -61,47 +63,51 @@ const Exchange = ({ exchangeList, setExchange }) => {
   };
 
   return (
-    <div className="change">
-      <h3 className="change_title">
-        {getTranslatedText('addAdv.exchange')}{' '}
-        <span className="span_star">*</span>
-      </h3>
+    <Styles.Wrap>
+      <Styles.TitleH3>{getTranslatedText('addAdv.exchange')}</Styles.TitleH3>
 
-      <p className="change-description">
+      <Styles.Description>
         &nbsp;
         {getTranslatedText('addAdv.whatChange')}
-      </p>
+      </Styles.Description>
 
-      <p className="change-description_title">
+      <Styles.Explanation>
         ({getTranslatedText('addAdv.enterPhrase')})
-      </p>
+      </Styles.Explanation>
 
-      <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
+      <Styles.ChangeWrap borderValue={border} styles={getBorderClassName}>
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
-            <div className="change_item">
+            <Styles.ChangeItem>
               {item}
-
-              <span onClick={() => removeExchangeItem(item)} />
-            </div>
+              <Styles.Span onClick={() => removeExchangeItem(item)} />
+            </Styles.ChangeItem>
           </animated.div>
         ))}
 
-        <div className="change_input-wrapper">
-          <input
-            type="text"
-            onBlur={onBlur}
-            onFocus={onFocus}
-            value={exchangeInput}
-            onKeyPress={keyEnter}
-            onChange={handleInput}
-            className="change_input"
-            placeholder={getTranslatedText('addAdv.placeholderChange')}
-          />
-        </div>
-      </div>
+        <Styles.ChangeInput
+          type="text"
+          onBlur={onBlur}
+          onFocus={onFocus}
+          value={exchangeInput}
+          onKeyPress={keyEnter}
+          onChange={handleInput}
+          placeholder={getTranslatedText('addAdv.placeholderChange')}
+        />
+      </Styles.ChangeWrap>
+
       <ErrorDisplay error={!!error && error} />
-    </div>
+
+      <FormikCheckBox
+        type="checkbox"
+        margin="22px 0 0 0"
+        name="readyForOffers"
+        value="readyForOffers"
+        onChange={readyOffers.setReadyOffer}
+        selectedValues={readyOffers.readyOffer}
+        text={getTranslatedText('addAdv.readyForOffers')}
+      />
+    </Styles.Wrap>
   );
 };
 

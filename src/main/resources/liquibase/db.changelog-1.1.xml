@@ -182,4 +182,22 @@
             <column name="language" type="varchar(10)" defaultValue="ua"/>
         </addColumn>
     </changeSet>
+    
+    <changeSet id="1.1.14: Combine 'Location' entity for EN an UA locales" author="rpkyrych">
+        <renameColumn oldColumnName="city" newColumnName="city_ua" columnDataType="VARCHAR(50)" tableName="location"/>
+        <renameColumn oldColumnName="district" newColumnName="district_ua" columnDataType="VARCHAR(50)" tableName="location"/>
+        <renameColumn oldColumnName="area" newColumnName="area_ua" columnDataType="VARCHAR(50)" tableName="location"/>
+        <dropColumn columnName="i18n" tableName="location"/>
+        <addColumn tableName="location">
+            <column name="city_en" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="district_en" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="area_en" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

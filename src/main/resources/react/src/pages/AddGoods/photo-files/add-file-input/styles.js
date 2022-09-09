@@ -58,7 +58,7 @@ const SpanClose = styled.span`
   right: -7px;
   width: 30px;
   height: 30px;
-  background: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 50%;
   border: 1px solid #bababa;
   transition: 0.3s ease-in-out;
