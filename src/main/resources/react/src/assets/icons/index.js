@@ -22,3 +22,4 @@ export { ReactComponent as Rotate } from './rotate.svg';
 export { ReactComponent as SearchSvg } from './search.svg';
 export { ReactComponent as SettingsSvg } from './settings.svg';
 export { ReactComponent as StarSvg } from './star.svg';
+export { ReactComponent as Rectangle } from './rectangle.svg';

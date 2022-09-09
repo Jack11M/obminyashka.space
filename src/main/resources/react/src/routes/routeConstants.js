@@ -12,4 +12,5 @@ export const route = {
   prevProductPage: '/product-page',
   oauthSuccess: '/oauth-success',
   noMatch: '*',
+  SearchResultsPage: 'search-results-page',
 };

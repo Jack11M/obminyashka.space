@@ -9,6 +9,7 @@ import Login from 'pages/FormRegister/sign-in';
 import SignUp from 'pages/FormRegister/sign-up';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
+import SearchResultsPage from 'pages/SearchResultsPage';
 
 import { route } from './routeConstants';
 import { AuthorizedRoute, UnauthorizedRoute } from './protectedRoute';
@@ -54,6 +55,8 @@ const Routes = () => (
       <Route path={route.prevProductPage} element={<ProductPage />} />
 
       <Route path={route.noMatch} element={<FourOhFourPage />} />
+
+      <Route path={route.SearchResultsPage} element={<SearchResultsPage />} />
     </Switch>
   </div>
 );

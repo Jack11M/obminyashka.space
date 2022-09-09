@@ -14,9 +14,10 @@ const ProductCard = ({
   avatar = '',
   inboxMessage,
   clickOnButton,
+  style,
 }) => {
   return (
-    <Styles.Card margin={margin}>
+    <Styles.Card style={style} margin={margin}>
       <Styles.FavoriteMarker isFavorite={isFavorite}>
         {avatar ? (
           <Styles.StylizedAvatar>
@@ -29,7 +30,7 @@ const ProductCard = ({
         )}
       </Styles.FavoriteMarker>
 
-      <Styles.DivPicture>
+      <Styles.DivPicture style={style}>
         <Styles.Picture src={picture} alt="lot" />
       </Styles.DivPicture>
 
