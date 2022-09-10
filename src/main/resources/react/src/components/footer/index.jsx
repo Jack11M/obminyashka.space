@@ -83,7 +83,9 @@ const Footer = () => {
           &copy;
           {getTranslatedText('footer.protect')}
         </Styles.SpanCopy>
-        <Styles.SpanCopy>{`${yearNow} / Обміняшка`}</Styles.SpanCopy>
+        <Styles.SpanCopy>
+          {`${yearNow} / ${getTranslatedText('mainPage.helpName')}`}
+        </Styles.SpanCopy>
       </Styles.CopyContainer>
     </Styles.Container>
   );
