@@ -246,7 +246,7 @@ const MySettings = () => {
             <Styles.ButtonContainer>
               <Button
                 type="submit"
-                width="363px"
+                width="248px"
                 height="49px"
                 isLoading={isFetchEmail}
                 style={{ margin: '50px 0' }}
