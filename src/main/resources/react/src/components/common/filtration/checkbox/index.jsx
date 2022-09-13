@@ -1,50 +1,48 @@
 import { useState } from 'react';
 
+// import ua from 'components/local/ua';
+// import { enumAge } from 'config/ENUM';
+import { getTranslatedText } from 'components/local/localization';
+
+import { CheckBox } from 'components/common';
+
 import * as Icon from 'assets/icons';
 
 import * as Styles from './styles';
 
-const CheckBoxes = ({ categoryTitle, subCategory }) => {
+const CheckBoxes = ({ title, data, dataText }) => {
   const [openSelect, setOpenSelect] = useState(false);
+  const [checkbox, setCheckbox] = useState(false);
 
-  const [options, setOptions] = useState(subCategory);
-
-  const handleSelected = (id) => {
-    const data = options.map((option) => {
-      if (option.id === id) {
-        return {
-          ...option,
-          isSelected: !option.isSelected,
-        };
-      }
-      return option;
-    });
-    setOptions(data);
+  const changeCheckBox = () => {
+    setCheckbox((prev) => !prev);
   };
 
   return (
-    <>
+    <div>
       <Styles.TitleBlock onClick={() => setOpenSelect(!openSelect)}>
-        <Styles.Title>{categoryTitle}</Styles.Title>
+        <Styles.Title>{title}</Styles.Title>
+
         <Styles.RotateRectangle openSelect={openSelect}>
           <Icon.Rectangle />
         </Styles.RotateRectangle>
       </Styles.TitleBlock>
 
-      {openSelect && (
-        <Styles.OptionWrapper>
-          {options.map((option) => (
-            <Styles.SubTitleBlock
-              key={option.id}
-              isSelected={option.isSelected}
-              onClick={() => handleSelected(option.id)}
-            >
-              <span>{option.subTitle}</span>
+      <Styles.OptionWrapper hideSelect={openSelect}>
+        {openSelect &&
+          data.map((item, idx) => (
+            <Styles.SubTitleBlock key={String(item + idx)}>
+              <CheckBox
+                fontSize="16px"
+                checked={checkbox}
+                click={changeCheckBox}
+                margin="4px 8px 4px 58px"
+                text={getTranslatedText(`${dataText}.${item}`)}
+              />
             </Styles.SubTitleBlock>
           ))}
-        </Styles.OptionWrapper>
-      )}
-    </>
+      </Styles.OptionWrapper>
+    </div>
   );
 };
 

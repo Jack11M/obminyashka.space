@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import dayjs from 'dayjs';
 import { subYears } from 'date-fns';
 import { useSelector } from 'react-redux';
-import { ru, enUS, uk } from 'date-fns/locale';
+import { enUS, uk } from 'date-fns/locale';
 import DatePicker, { registerLocale } from 'react-datepicker';
 
 import { getAuth } from 'store/auth/slice';
@@ -28,8 +28,6 @@ const Calendar = ({ name }) => {
     switch (lang) {
       case 'en':
         return enUS;
-      case 'ru':
-        return ru;
       default:
         return uk;
     }

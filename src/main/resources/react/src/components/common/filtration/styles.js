@@ -7,8 +7,28 @@ export const styleSet = css`
   border-radius: 20px;
 `;
 
+export const BlockStyleSet = css`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+`;
+
 export const CategoryFilter = styled.div`
   ${styleSet}
+`;
+
+export const Filter = styled.div`
+  ${styleSet}
+  margin-top: 20px;
+`;
+
+export const SelectBlock = styled.div`
+  ${BlockStyleSet};
+`;
+
+export const CheckBoxBlock = styled.div`
+  ${BlockStyleSet};
 `;
 
 export const Title = styled.div`
@@ -17,32 +37,4 @@ export const Title = styled.div`
   line-height: 24px;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.btnBlue};
-`;
-
-export const BlockStyleSet = css`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
-`;
-
-export const SelectBlock = styled.div`
-  ${BlockStyleSet}
-`;
-
-export const CheckBoxBlock = styled.div`
-  ${BlockStyleSet}
-`;
-
-export const Filter = styled.div`
-  ${styleSet}
-  margin-top: 20px;
-`;
-
-export const Input = styled.input`
-  width: 100%;
-  padding: 7px 30px;
-  background: #dedede;
-  border-radius: 5px;
-  border: none;
 `;

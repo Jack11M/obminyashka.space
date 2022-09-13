@@ -2,9 +2,13 @@ import styled, { css } from 'styled-components';
 
 export const TitleBlock = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   cursor: pointer;
+`;
+
+export const DisplayFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 export const Title = styled.span`
@@ -16,7 +20,7 @@ export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 24px 0;
+  margin: 10px 0;
 `;
 
 export const SubTitleBlock = styled.div`
