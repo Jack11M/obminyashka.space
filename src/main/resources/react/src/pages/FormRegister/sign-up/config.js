@@ -13,6 +13,7 @@ import {
 export const validationRegisterSchema = yup.object().shape({
   email: yup
     .string()
+    .trim()
     .required(getTranslatedText('errors.requireField'))
     .matches(EMAIL_REG_EXP, getTranslatedText('errors.invalidEmailFormat'))
     .matches(NUMBER_OF_CHARACTERS, getTranslatedText('errors.max129'))
@@ -20,6 +21,7 @@ export const validationRegisterSchema = yup.object().shape({
     .default(() => ''),
   username: yup
     .string()
+    .trim()
     .required(getTranslatedText('errors.requireField'))
     .min(2, getTranslatedText('errors.min2'))
     .max(50, getTranslatedText('errors.max50'))

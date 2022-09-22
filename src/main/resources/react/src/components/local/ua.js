@@ -84,10 +84,10 @@ const ua = {
     currentPassword: 'Поточний пароль:',
     newPassword: 'Новий пароль:',
     confirmPassword: 'Повторіть пароль:',
-    changeEmail: 'Змінити E-MaiL',
-    oldEmail: 'Старий E-Mail:',
-    newEmail: 'Новий E-Mail:',
-    confirmEmail: 'Повторіть E-Mail:',
+    changeEmail: 'Змінити EmaiL',
+    oldEmail: 'Поточний Email:',
+    newEmail: 'Новий Email:',
+    confirmEmail: 'Повторіть Email:',
     remove: 'Видалити акаунт',
     removeConfirm:
       'Увага! Щоб видалити аккаунт, потрібно ввести пароль та підтвердити його.',
@@ -95,6 +95,7 @@ const ua = {
     describe:
       'Увага! Після видалення облікового запису, ваш профіль буде повністю видалений з каталогу сайту та багато функцій перестануть бути доступними. Ви можете поміняти контактні дані та номери телефонів в розділі меню.',
     profile: 'Профіль',
+    save: 'Зберегти зміни',
   },
   exit: {
     question: 'Вийти?',

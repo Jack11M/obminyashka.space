@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import { password, confirmPassword } from 'Utils/validation';
 import { getTranslatedText } from 'components/local/localization';
 import {
+  NO_SPACE,
   EMAIL_REG_EXP,
   PASSWORD_REG_EXP,
   NUMBER_OF_CHARACTERS,
@@ -12,23 +13,25 @@ import {
 export const validationPasswordSchema = yup.object().shape({
   oldPassword: yup
     .string()
+    .required(getTranslatedText('errors.requireField'))
     .min(8, getTranslatedText('errors.min8'))
     .max(30, getTranslatedText('errors.max30'))
     .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
     .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
-    .required(getTranslatedText('errors.requireField'))
+    .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
     .default(() => ''),
   newPassword: yup
     .string()
+    .required(getTranslatedText('errors.requireField'))
     .min(8, getTranslatedText('errors.min8'))
     .max(30, getTranslatedText('errors.max30'))
     .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
     .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
+    .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
     .notOneOf(
       [yup.ref('oldPassword'), false],
       getTranslatedText('errors.passwordIdentical')
     )
-    .required(getTranslatedText('errors.requireField'))
     .default(() => ''),
   confirmNewPassword: yup
     .string()
@@ -44,20 +47,19 @@ export const validationEmailSchema = (currentEmail) =>
   yup.object().shape({
     newEmail: yup
       .string()
-      .notOneOf([currentEmail], getTranslatedText('errors.emailIdentical'))
-      .matches(NUMBER_OF_CHARACTERS, getTranslatedText('errors.max129'))
-      .matches(EMAIL_REG_EXP, getTranslatedText('errors.invalidEmailFormat'))
-      .email(getTranslatedText('errors.invalidEmailFormat'))
       .required(getTranslatedText('errors.requireField'))
+      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
+      .notOneOf([currentEmail], getTranslatedText('errors.emailIdentical'))
+      .matches(EMAIL_REG_EXP, getTranslatedText('errors.invalidEmailFormat'))
+      .matches(NUMBER_OF_CHARACTERS, getTranslatedText('errors.max129'))
       .default(() => ''),
     newEmailConfirmation: yup
       .string()
+      .required(getTranslatedText('errors.requireField'))
       .oneOf(
         [yup.ref('newEmail')],
         getTranslatedText('errors.emailNotIdentical')
       )
-      .email(getTranslatedText('errors.invalidEmailFormat'))
-      .required(getTranslatedText('errors.requireField'))
       .default(() => ''),
   });
 

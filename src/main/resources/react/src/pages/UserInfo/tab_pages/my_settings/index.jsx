@@ -200,8 +200,8 @@ const MySettings = () => {
                 width="248px"
                 height="49px"
                 isLoading={isFetchPass}
-                disabling={!dirty && !isValid}
-                text={getTranslatedText('button.save')}
+                disabling={!isValid && !dirty}
+                text={getTranslatedText('settings.save')}
                 click={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
@@ -224,20 +224,20 @@ const MySettings = () => {
             <Styles.InputContainer>
               <InputProfile
                 readOnly
-                type="email"
+                type="text"
                 name="oldEmail"
                 value={currentEmail}
                 label={getTranslatedText('settings.oldEmail')}
               />
 
               <InputProfile
-                type="email"
+                type="text"
                 name="newEmail"
                 label={getTranslatedText('settings.newEmail')}
               />
 
               <InputProfile
-                type="email"
+                type="text"
                 name="newEmailConfirmation"
                 label={getTranslatedText('settings.confirmEmail')}
               />
@@ -251,7 +251,7 @@ const MySettings = () => {
                 isLoading={isFetchEmail}
                 style={{ margin: '50px 0' }}
                 disabling={!isValid && !dirty}
-                text={getTranslatedText('button.saveEmail')}
+                text={getTranslatedText('settings.save')}
                 click={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>

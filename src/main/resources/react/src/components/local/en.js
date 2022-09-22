@@ -85,10 +85,10 @@ const en = {
     currentPassword: 'Current password:',
     newPassword: 'New password:',
     confirmPassword: 'Repeat password:',
-    changeEmail: 'Change E-MaiL',
-    oldEmail: 'Old E-Mail:',
-    newEmail: 'New E-Mail:',
-    confirmEmail: 'Repeat E-Mail:',
+    changeEmail: 'Change EmaiL',
+    oldEmail: 'Current Email:',
+    newEmail: 'New Email:',
+    confirmEmail: 'Repeat Email:',
     remove: 'Remove account',
     removeConfirm:
       'To delete your account, you need to enter a password and confirm it.',
@@ -96,6 +96,7 @@ const en = {
     describe:
       'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section.',
     profile: 'Profile',
+    save: 'Save changes',
   },
   exit: {
     question: 'Leave?',
