@@ -82,12 +82,11 @@ export const WrapCategoriesBottom = styled.div`
 
 export const WrapCategories = styled.div`
   position: absolute;
-  height: 56px;
+  height: 48px;
   font-size: 16px;
   font-weight: bold;
   line-height: 24px;
-  margin: 25px 0 0 179px;
-  padding-bottom: 95px;
+  margin: 25px 0 48px 179px;
   cursor: pointer;
 
   ${({ theme, open }) => css`
