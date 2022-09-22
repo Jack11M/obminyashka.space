@@ -1,5 +1,5 @@
 import { normalize } from 'styled-normalize';
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
   ${normalize};
@@ -31,4 +31,39 @@ export const GlobalStyles = createGlobalStyle`
     line-height: 1px;
     color: inherit;
   }
+
+  a {
+  text-decoration: none;
+  color: inherit;
+  }
+
+  li {
+  list-style-type: none;
+}
+
+ ${({ theme }) => css`
+   /* Track */
+   ::-webkit-scrollbar-track {
+     background: ${theme.colors.scrollbarBg};
+   }
+
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+     background: ${theme.colors.btnBlue};
+     border-radius: 10px;
+   }
+
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+     background: ${theme.colors.btnBlueActive};
+   }
+ `}
+
+  ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  }
+
+
+
 `;

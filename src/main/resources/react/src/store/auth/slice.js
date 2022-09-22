@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { showMessage } from 'hooks';
-import { getStorageLang, getStorageUser } from 'Utils';
+import { getStorageLang, getStorageUser, setStorageUser } from 'Utils';
 
 const authInitialState = {
   profile: getStorageUser('user'),
@@ -27,7 +27,8 @@ const authSlice = createSlice({
       state.isChangeLang = payload;
     },
     putEmail: (state, { payload }) => {
-      state.email = payload;
+      setStorageUser({ email: payload });
+      state.profile.email = payload;
     },
     setAuthed: (state, { payload }) => {
       state.isAuthenticated = payload;

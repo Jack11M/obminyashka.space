@@ -2,6 +2,7 @@ import lot3 from 'assets/img/cards/lot3.jpg';
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import mommy from 'assets/img/mama_1_04232631 1.png';
+import { getTranslatedText } from 'components/local/localization';
 
 import { CardBlock, Container, StyledCardBlock } from './styles';
 
@@ -10,7 +11,10 @@ const MyActivity = () => {
 
   return (
     <Container>
-      <TitleBigBlue whatClass="incoming__replies-text" text="Входящие ответы" />
+      <TitleBigBlue
+        style={{ margin: '65px 0 40px' }}
+        text={getTranslatedText('ownActivity.incomingReplies')}
+      />
 
       <CardBlock>
         <ProductCard
@@ -23,7 +27,7 @@ const MyActivity = () => {
         <ProductCard
           city="Львов"
           picture={lot3}
-          avatar={mommy}
+          avatar="https://t4.ftcdn.net/jpg/02/43/87/41/360_F_243874126_YLSIGaDgoNzS91Xdbg1IVpiwXeeZSXdr.jpg"
           inboxMessage={222}
           text="Велосипед для девочки 5 лет"
         />
@@ -60,8 +64,8 @@ const MyActivity = () => {
       </CardBlock>
 
       <TitleBigBlue
-        text="Исходящие ответы"
-        whatClass="outgoing__replies-text"
+        style={{ margin: '83px 0 40px' }}
+        text={getTranslatedText('ownActivity.outgoingReplies')}
       />
 
       <StyledCardBlock>

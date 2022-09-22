@@ -2,10 +2,7 @@ package space.obminyashka.items_exchange.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +17,18 @@ public class Location {
     @Id
     @GeneratedValue
     private UUID id;
-    private String area;
-    private String district;
-    private String city;
-    private String i18n;
+    @Column(name = "area_ua")
+    private String areaUA;
+    @Column(name = "district_ua")
+    private String districtUA;
+    @Column(name = "city_ua")
+    private String cityUA;
+    @Column(name = "area_en")
+    private String areaEN;
+    @Column(name = "district_en")
+    private String districtEN;
+    @Column(name = "city_en")
+    private String cityEN;
 
     @OneToMany(mappedBy = "location")
     private List<Advertisement> advertisements;

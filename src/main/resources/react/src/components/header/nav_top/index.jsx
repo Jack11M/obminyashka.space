@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
+import { getProfile } from 'store/profile/slice';
 import { Avatar } from 'components/common/avatar';
 import { CustomSelect } from 'components/selectLang';
 import { getAuth, getAuthProfile } from 'store/auth/slice';
@@ -12,6 +14,21 @@ import * as Styles from './styles';
 const NavTop = () => {
   const isAuthed = useSelector(getAuth);
   const profile = useSelector(getAuthProfile);
+  const { avatarImage } = useSelector(getProfile);
+
+  const [image, setImage] = useState('');
+
+  useEffect(() => {
+    if (!avatarImage?.includes('blob') && avatarImage !== '') {
+      setImage(`data:image/jpeg;base64,${avatarImage}`);
+    }
+
+    if (avatarImage?.includes('blob')) {
+      setImage(avatarImage);
+    }
+
+    if (avatarImage === '') setImage('');
+  }, [avatarImage]);
 
   return (
     <Styles.Div>
@@ -30,7 +47,7 @@ const NavTop = () => {
 
           <Styles.WrapPersonal>
             <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-              <Avatar whatIsClass="user-photo" width={30} height={28} />
+              <Avatar source={image} />
 
               <Styles.ProfileSpan>
                 {profile?.username || getTranslatedText('header.myOffice')}

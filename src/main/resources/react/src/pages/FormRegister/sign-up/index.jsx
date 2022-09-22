@@ -1,21 +1,15 @@
 import { useState } from 'react';
-import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
+
 import { getTranslatedText } from 'components/local/localization';
 import { CheckBox, Button, InputForAuth } from 'components/common';
-import {
-  NO_SPACE,
-  EMAIL_REG_EXP,
-  PASSWORD_REG_EXP,
-  PASSWORD_ALT_CODE_EXP,
-  USERNAME_ALT_CODE_EXP,
-} from 'config';
 
+import { validationRegisterSchema } from './config';
 import { Extra, WrapperButton, Form } from '../sign-in/styles';
 
 const SignUp = () => {
@@ -27,40 +21,6 @@ const SignUp = () => {
     setCheckbox((prev) => !prev);
   };
 
-  const validationRegisterSchema = yup.object().shape({
-    email: yup
-      .string()
-      .email(getTranslatedText('errors.invalidEmailFormat'))
-      .required(getTranslatedText('errors.requireField'))
-      .matches(EMAIL_REG_EXP, getTranslatedText('errors.max129'))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .default(() => ''),
-    username: yup
-      .string()
-      .required(getTranslatedText('errors.requireField'))
-      .min(2, getTranslatedText('errors.min2'))
-      .max(50, getTranslatedText('errors.max50'))
-      .matches(USERNAME_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .default(() => ''),
-    password: yup
-      .string()
-      .required(getTranslatedText('errors.requireField'))
-      .min(8, getTranslatedText('errors.min8'))
-      .max(30, getTranslatedText('errors.max30'))
-      .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
-      .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.passwordMatch'))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .default(() => ''),
-    confirmPassword: yup
-      .string()
-      .oneOf(
-        [yup.ref('password')],
-        getTranslatedText('errors.passwordMismatch')
-      )
-      .required(getTranslatedText('errors.requireField'))
-      .default(() => ''),
-  });
   const initialRegisterValues = validationRegisterSchema.cast({});
 
   return (
@@ -89,7 +49,7 @@ const SignUp = () => {
             <div>
               <InputForAuth
                 name="email"
-                type="email"
+                type="text"
                 text={getTranslatedText('auth.regEmail')}
               />
 
@@ -132,7 +92,7 @@ const SignUp = () => {
                 lHeight="24px"
                 isLoading={loading}
                 text={getTranslatedText('auth.signUp')}
-                disabling={!checkbox || isSubmitting || (!dirty && !isValid)}
+                disabling={!checkbox || !dirty || !isValid || isSubmitting}
                 click={!errors.email || !errors.username ? handleSubmit : null}
               />
 

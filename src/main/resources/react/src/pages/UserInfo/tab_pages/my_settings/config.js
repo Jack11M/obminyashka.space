@@ -1,7 +1,13 @@
 import * as yup from 'yup';
 
+import { password, confirmPassword } from 'Utils/validation';
 import { getTranslatedText } from 'components/local/localization';
-import { EMAIL_REG_EXP, PASSWORD_ALT_CODE_EXP, PASSWORD_REG_EXP } from 'config';
+import {
+  EMAIL_REG_EXP,
+  PASSWORD_REG_EXP,
+  NUMBER_OF_CHARACTERS,
+  PASSWORD_ALT_CODE_EXP,
+} from 'config';
 
 export const validationPasswordSchema = yup.object().shape({
   oldPassword: yup
@@ -39,7 +45,8 @@ export const validationEmailSchema = (currentEmail) =>
     newEmail: yup
       .string()
       .notOneOf([currentEmail], getTranslatedText('errors.emailIdentical'))
-      .matches(EMAIL_REG_EXP, getTranslatedText('errors.max129'))
+      .matches(NUMBER_OF_CHARACTERS, getTranslatedText('errors.max129'))
+      .matches(EMAIL_REG_EXP, getTranslatedText('errors.invalidEmailFormat'))
       .email(getTranslatedText('errors.invalidEmailFormat'))
       .required(getTranslatedText('errors.requireField'))
       .default(() => ''),
@@ -53,3 +60,13 @@ export const validationEmailSchema = (currentEmail) =>
       .required(getTranslatedText('errors.requireField'))
       .default(() => ''),
   });
+
+export const validationDeleteSchema = yup.object().shape({
+  password,
+  confirmPassword,
+});
+
+export const initialValuesDelete = {
+  password: '',
+  confirmPassword: '',
+};

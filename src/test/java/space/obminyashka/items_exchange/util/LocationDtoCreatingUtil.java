@@ -2,28 +2,33 @@ package space.obminyashka.items_exchange.util;
 
 import space.obminyashka.items_exchange.dto.LocationDto;
 
-import java.util.Locale;
-
 public class LocationDtoCreatingUtil {
-    public static final String NEW_VALID_CITY = "Kyiv";
-    public static final String NEW_INVALID_CITY = "K";
-    public static final String NEW_VALID_DISTRICT = "Podolsky";
-    public static final String NEW_VALID_AREA = "Kyivska";
+    public static final String CITY_UA = "Київ";
+    public static final String DISTRICT_UA = "Подільський район";
+    public static final String AREA_UA = "Київська область";
+    public static final String CITY_EN = "Kyiv";
+    public static final String DISTRICT_EN = "Podolsky district";
+    public static final String AREA_EN = "Kyivska area";
 
-    public static LocationDto createLocationDto() {
-        return getBuild(NEW_VALID_CITY, NEW_VALID_DISTRICT, NEW_VALID_AREA, Locale.ENGLISH.getLanguage());
+    public static LocationDto createValidLocationDto() {
+        return LocationDto.builder()
+                .cityUA(CITY_UA)
+                .districtUA(DISTRICT_UA)
+                .areaUA(AREA_UA)
+                .cityEN(CITY_EN)
+                .districtEN(DISTRICT_EN)
+                .areaEN(AREA_EN)
+                .build();
     }
 
     public static LocationDto createLocationDtoForCreatingWithInvalidCity() {
-        return getBuild(NEW_INVALID_CITY, NEW_VALID_DISTRICT, NEW_VALID_AREA, Locale.ENGLISH.getLanguage());
-    }
-
-    public static LocationDto getBuild(String city, String district, String area, String i18N) {
         return LocationDto.builder()
-                .city(city)
-                .district(district)
-                .area(area)
-                .i18N(i18N)
+                .cityUA(CITY_UA)
+                .districtUA(DISTRICT_UA)
+                .areaUA(AREA_UA)
+                .cityEN(null)
+                .districtEN(DISTRICT_EN)
+                .areaEN(AREA_EN)
                 .build();
     }
 }

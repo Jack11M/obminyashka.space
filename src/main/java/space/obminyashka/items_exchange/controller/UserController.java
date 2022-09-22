@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -75,11 +76,9 @@ public class UserController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<AdvertisementTitleDto>> getCreatedAdvertisements(@ApiIgnore Authentication authentication) {
-        final var allByUsername = advService.findAllByUsername(authentication.getName());
-        return allByUsername.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(allByUsername, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public List<AdvertisementTitleDto> getCreatedAdvertisements(@ApiIgnore Authentication authentication) {
+        return advService.findAllByUsername(authentication.getName());
     }
 
     @PutMapping(ApiKey.USER_SERVICE_CHANGE_PASSWORD)
@@ -176,18 +175,28 @@ public class UserController {
         return userService.updateChildren(user, childrenDto);
     }
 
-    @PostMapping(ApiKey.USER_SERVICE_CHANGE_AVATAR)
+    @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Update a user avatar image")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
-    @ResponseStatus(HttpStatus.OK)
-    public void updateUserAvatar(@RequestParam(value = "file") MultipartFile image, @ApiIgnore Authentication authentication) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateUserAvatar(@RequestParam MultipartFile image, @ApiIgnore Authentication authentication) {
         User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
+    }
+
+    @DeleteMapping(ApiKey.USER_SERVICE_CHANGE_AVATAR)
+    @ApiOperation(value = "Remove a user's avatar image")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 403, message = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public void removeAvatar(@ApiIgnore Authentication authentication) {
+        userService.removeUserAvatarFor(authentication.getName());
     }
 
     private User findUserByValidCredentials(Authentication authentication, String password) throws InvalidDtoException {

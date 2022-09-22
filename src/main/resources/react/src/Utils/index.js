@@ -26,4 +26,7 @@ export {
   permissionToSendChildren,
 } from './error';
 
+export { useDelay } from './delay';
+export { convertToMB } from './convertToMB';
+
 export { authError, isErrorArray, translateErrorsAuth } from './errorAuth';

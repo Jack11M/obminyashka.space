@@ -33,15 +33,16 @@ const en = {
     minPhoto: 'Minimum 1 photo',
     requireField: 'Field is required',
     invalidEmailFormat: 'Invalid mail format',
-    max129: 'Must be no more than 129 characters',
-    min2: 'Must be at least 2 characters',
+    min2: 'Minimum of 2 characters',
     min3: 'Minimum of 3 characters',
-    max5: 'Maximum 50 characters',
+    min8: 'Minimum of 8 characters',
+    max30: 'Maximum 30 characters',
+    max40: 'Maximum 40 characters',
+    max50: 'Maximum 50 characters',
+    max129: 'Maximum 129 characters',
+    max200: 'Maximum 200 characters',
     max255: 'Maximum 255 characters',
-    max50: 'Must be no more than 50 characters',
     altCodeMatch: "Shouldn't have Alt code",
-    min8: 'Must be at least 8 characters',
-    max30: 'Must be no more than 30 characters',
     passwordMatch: 'Large and small Latin letters and numbers',
     passwordMismatch: 'Password mismatch',
     noSpace: 'There should be no spaces',
@@ -58,6 +59,10 @@ const en = {
     mySettings: 'Settings',
     myExit: 'Exit',
   },
+  ownActivity: {
+    incomingReplies: 'Incoming replies',
+    outgoingReplies: 'Outgoing replies',
+  },
   ownInfo: {
     aboutMe: 'About me',
     firstName: 'Name:',
@@ -70,6 +75,10 @@ const en = {
     girl: 'Girl',
     unselected: 'Unselected',
     chooseData: 'First you need to choose a date of birth',
+    choosePhone: 'First you need to enter the phone',
+  },
+  favorites: {
+    FeaturedAds: 'Featured Ads',
   },
   settings: {
     changePassword: 'Change password',
@@ -81,8 +90,11 @@ const en = {
     newEmail: 'New E-Mail:',
     confirmEmail: 'Repeat E-Mail:',
     remove: 'Remove account',
+    removeConfirm:
+      'To delete your account, you need to enter a password and confirm it.',
+    removed: 'Removed account!',
     describe:
-      'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section',
+      'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section.',
     profile: 'Profile',
   },
   exit: {
@@ -102,6 +114,9 @@ const en = {
     saveEmail: 'SAVE EMAIL',
     remove: 'REMOVE ACCOUNT',
     back: 'Back',
+    delete: 'Delete',
+    cancel: 'Cancel',
+    rotate: 'Rotate',
   },
   header: {
     about: 'About the project',
@@ -121,7 +136,7 @@ const en = {
   footer: {
     rules: 'Safe deal rules',
     charity: 'Charity organisations',
-    questions: 'Frequently asked Questions',
+    questions: 'Frequently asked questions',
     protect: 'All rights reserved',
   },
   fourOhFour: {
@@ -148,7 +163,7 @@ const en = {
     checkInUl: 'your offers',
   },
   mainPage: {
-    question: 'Have a lot accumulated of',
+    question: 'Have a lot accumulated of ',
     questionBold: "children's things?",
     answerFirstPart: 'Just',
     answerBold: 'register',

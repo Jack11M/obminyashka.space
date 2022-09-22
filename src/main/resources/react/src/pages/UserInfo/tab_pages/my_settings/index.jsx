@@ -1,16 +1,28 @@
 import { memo, useContext, useState } from 'react';
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
+import { setProfileEmail } from 'store/profile/slice';
 import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { TitleBigBlue, ModalContext, Button } from 'components/common';
+import {
+  Button,
+  TitleBigBlue,
+  ModalContext,
+  InputForAuth,
+} from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
-import { validationEmailSchema, validationPasswordSchema } from './config';
+
+import {
+  initialValuesDelete,
+  validationEmailSchema,
+  validationDeleteSchema,
+  validationPasswordSchema,
+} from './config';
 
 import * as Styles from './styles';
 
@@ -18,6 +30,7 @@ const MySettings = () => {
   const dispatch = useDispatch();
   const { openModal } = useContext(ModalContext);
 
+  const [loading, setLoading] = useState(false);
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
@@ -33,7 +46,7 @@ const MySettings = () => {
   const handlePassword = async (values, onSubmitProps) => {
     setIsFetchPass(true);
     try {
-      const { data } = await api.fetchProfile.putPasswordFetch(values);
+      const data = await api.profile.putPasswordFetch(values);
       openModal({
         title: getTranslatedText('popup.serverResponse'),
         children: <p>{data}</p>,
@@ -52,7 +65,7 @@ const MySettings = () => {
     const { newEmail, newEmailConfirmation } = values;
     setIsFetchEmail(true);
     try {
-      const { data } = await api.fetchProfile.putEmailFetch({
+      const data = await api.profile.putEmailFetch({
         newEmail,
         newEmailConfirmation,
       });
@@ -61,6 +74,7 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
       dispatch(putEmail(newEmail));
+      dispatch(setProfileEmail(newEmail));
       onSubmitProps.resetForm();
       setIsFetchEmail(false);
     } catch (e) {
@@ -75,6 +89,75 @@ const MySettings = () => {
         onSubmitProps.setErrors({ newEmail: e.response.data.error });
       }
     }
+  };
+
+  const handleDelete = async (values) => {
+    const { confirmPassword, password } = values;
+    try {
+      setLoading(true);
+      const data = await api.profile.deleteUserAccount({
+        confirmPassword,
+        password,
+      });
+      openModal({
+        title: (
+          <Styles.ModalTitle>
+            {getTranslatedText('settings.removed')}
+          </Styles.ModalTitle>
+        ),
+        children: <p>{data}</p>,
+      });
+    } catch (e) {
+      showMessage(e.response.data.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteAccountModal = () => {
+    openModal({
+      title: (
+        <Styles.ModalTitle>
+          {getTranslatedText('settings.remove')}
+        </Styles.ModalTitle>
+      ),
+      children: (
+        <div>
+          <p>{getTranslatedText('settings.removeConfirm')}</p>
+
+          <Formik
+            onSubmit={handleDelete}
+            initialValues={initialValuesDelete}
+            validationSchema={validationDeleteSchema}
+          >
+            {() => (
+              <Form>
+                <Styles.InputWrapper>
+                  <InputForAuth
+                    type="password"
+                    name="password"
+                    text={getTranslatedText('auth.regPassword')}
+                  />
+
+                  <InputForAuth
+                    type="password"
+                    name="confirmPassword"
+                    text={getTranslatedText('auth.regConfirm')}
+                  />
+                </Styles.InputWrapper>
+
+                <Button
+                  type="submit"
+                  width="248px"
+                  isLoading={loading}
+                  text={getTranslatedText('button.remove')}
+                />
+              </Form>
+            )}
+          </Formik>
+        </div>
+      ),
+    });
   };
 
   return (
@@ -163,13 +246,13 @@ const MySettings = () => {
             <Styles.ButtonContainer>
               <Button
                 type="submit"
-                width="363px"
+                width="248px"
                 height="49px"
                 isLoading={isFetchEmail}
                 style={{ margin: '50px 0' }}
                 disabling={!isValid && !dirty}
-                click={!errors.newEmail ? handleSubmit : null}
                 text={getTranslatedText('button.saveEmail')}
+                click={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
           </>
@@ -182,8 +265,8 @@ const MySettings = () => {
       />
 
       <Styles.WarningText>
-        {getTranslatedText('settings.describe')}{' '}
-        <Styles.StylizedLink to={`${route.userInfo}${route.myProfile}`}>
+        {getTranslatedText('settings.describe')}
+        <Styles.StylizedLink to={`/${route.userInfo}/${route.myProfile}`}>
           &nbsp;{getTranslatedText('settings.profile')}
         </Styles.StylizedLink>
       </Styles.WarningText>
@@ -191,6 +274,7 @@ const MySettings = () => {
       <Styles.ButtonContainer>
         <Button
           width="248px"
+          click={deleteAccountModal}
           style={{ marginBottom: '65px' }}
           text={getTranslatedText('button.remove')}
         />

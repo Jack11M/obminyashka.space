@@ -15,14 +15,12 @@ const ProductCard = ({
   inboxMessage,
   clickOnButton,
 }) => {
-  const avatarValue = avatar === '' || avatar;
-
   return (
     <Styles.Card margin={margin}>
       <Styles.FavoriteMarker isFavorite={isFavorite}>
         {avatar ? (
           <Styles.StylizedAvatar>
-            <Avatar width="40px" height="40px" avatar={avatarValue} />
+            <Avatar width={40} height={40} source={avatar} />
           </Styles.StylizedAvatar>
         ) : (
           <Styles.FavoriteStarWrapper isFavorite={isFavorite}>

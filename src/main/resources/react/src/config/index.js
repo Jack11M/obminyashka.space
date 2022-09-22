@@ -1,4 +1,6 @@
-const EMAIL_REG_EXP = /^.{1,129}@/;
+const NUMBER_OF_CHARACTERS = /^.{1,129}@/;
+const EMAIL_REG_EXP =
+  /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
 
 const PASSWORD_REG_EXP = /(?=.*?[0-9])(?=.*?[a-z])(?=.*?[A-Z])/;
 
@@ -25,6 +27,7 @@ export {
   PHONE_REG_EXP,
   USERNAME_REG_EXP,
   PASSWORD_REG_EXP,
+  NUMBER_OF_CHARACTERS,
   PASSWORD_ALT_CODE_EXP,
   USERNAME_ALT_CODE_EXP,
 };

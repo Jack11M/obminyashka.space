@@ -1,6 +1,6 @@
 import { useField } from 'formik';
 
-import { H4 } from './styles';
+import { ItemTittle } from '../styles';
 
 const WrapCharacteristic = ({ title, name, children }) => {
   const [, meta] = useField({ name });
@@ -8,7 +8,7 @@ const WrapCharacteristic = ({ title, name, children }) => {
 
   return (
     <>
-      <H4 error={error}>{title}:</H4>
+      <ItemTittle error={error}>{title}:</ItemTittle>
       {children}
     </>
   );

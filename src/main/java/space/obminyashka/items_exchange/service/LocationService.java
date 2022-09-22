@@ -1,13 +1,11 @@
 package space.obminyashka.items_exchange.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.RawLocation;
 import space.obminyashka.items_exchange.model.Location;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,13 +15,6 @@ public interface LocationService {
      * @return list of location entities from DB that are represented as {@link LocationDto}
      */
     List<LocationDto> findAll();
-
-    /**
-     * Returns all Location DTOs for given language (i18n).
-     * @param lang represents I18n.
-     * @return list of all location entities for I18n from DB that are represented as {@link LocationDto}
-     */
-    List<LocationDto> findAllForCurrentLanguage(Locale lang);
 
     /**
      * Retrieves a location by its id.
@@ -91,7 +82,6 @@ public interface LocationService {
      * Creates file to initialize locations in database.
      * @param creatingData must match the regular expression for creating of initialization file.
      * @return content of newly created file.
-     * @throws JsonProcessingException (extends IOException) when there is error of mapping data to location entity.
      * @throws IOException when there is error of writing data to newly created locations file.
      */
     String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException;

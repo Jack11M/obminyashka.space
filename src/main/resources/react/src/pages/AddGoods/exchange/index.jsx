@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { useField } from 'formik';
 import { useTransition, animated } from 'react-spring';
 
+import { FormikCheckBox } from 'components/common/formik';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
-import { ErrorDisplay } from '../error-display';
+import * as Styles from './styles';
 
-const Exchange = ({ exchangeList, setExchange }) => {
+const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
 
-  const [, meta] = useField({ name: 'wishesToExchange' });
+  const [, meta, helpers] = useField({ name: 'wishesToExchange' });
   const { error } = meta;
 
   const transitions = useTransition(exchangeList.length ? exchangeList : [], {
@@ -21,6 +23,10 @@ const Exchange = ({ exchangeList, setExchange }) => {
   });
 
   const handleInput = (event) => {
+    if (event.target.value.length >= 40) {
+      helpers.setError(getTranslatedText('errors.max40'));
+      return;
+    }
     setExchangeInput(event.target.value);
   };
 
@@ -29,6 +35,7 @@ const Exchange = ({ exchangeList, setExchange }) => {
       if (event.key === 'Enter') event.preventDefault();
       return;
     }
+
     if (event.key === 'Enter') {
       event.preventDefault();
       setExchange((prev) => [...prev, exchangeInput]);
@@ -48,51 +55,59 @@ const Exchange = ({ exchangeList, setExchange }) => {
   const onBlur = () => {
     setBorder(false);
   };
+
   const getBorderClassName = (borderValue, errorValue) => {
     if (borderValue) return 'border_focus';
     if (errorValue) return 'border_error';
     return '';
   };
-  return (
-    <div className="change">
-      <h3 className="change_title">{getTranslatedText('addAdv.exchange')}</h3>
 
-      <p className="change-description">
-        <span className="span_star">*</span>
+  return (
+    <Styles.Wrap>
+      <Styles.TitleH3>{getTranslatedText('addAdv.exchange')}</Styles.TitleH3>
+
+      <Styles.Description>
         &nbsp;
         {getTranslatedText('addAdv.whatChange')}
-      </p>
+      </Styles.Description>
 
-      <p className="change-description_title">
-        {getTranslatedText('addAdv.enterPhrase')}
-      </p>
+      <Styles.Explanation>
+        ({getTranslatedText('addAdv.enterPhrase')})
+      </Styles.Explanation>
 
-      <div className={`change_wrapper ${getBorderClassName(border, error)}`}>
+      <Styles.ChangeWrap borderValue={border} styles={getBorderClassName}>
         {transitions((styles, item) => (
           <animated.div key={item} style={{ ...styles }}>
-            <div className="change_item">
+            <Styles.ChangeItem>
               {item}
-
-              <span onClick={() => removeExchangeItem(item)} />
-            </div>
+              <Styles.Span onClick={() => removeExchangeItem(item)} />
+            </Styles.ChangeItem>
           </animated.div>
         ))}
 
-        <div className="change_input-wrapper">
-          <input
-            type="text"
-            onBlur={onBlur}
-            onFocus={onFocus}
-            value={exchangeInput}
-            onKeyPress={keyEnter}
-            onChange={handleInput}
-            className="change_input"
-            placeholder={getTranslatedText('addAdv.placeholderChange')}
-          />
-        </div>
-      </div>
+        <Styles.ChangeInput
+          type="text"
+          onBlur={onBlur}
+          onFocus={onFocus}
+          value={exchangeInput}
+          onKeyPress={keyEnter}
+          onChange={handleInput}
+          placeholder={getTranslatedText('addAdv.placeholderChange')}
+        />
+      </Styles.ChangeWrap>
+
       <ErrorDisplay error={!!error && error} />
-    </div>
+
+      <FormikCheckBox
+        type="checkbox"
+        margin="22px 0 0 0"
+        name="readyForOffers"
+        value="readyForOffers"
+        onChange={readyOffers.setReadyOffer}
+        selectedValues={readyOffers.readyOffer}
+        text={getTranslatedText('addAdv.readyForOffers')}
+      />
+    </Styles.Wrap>
   );
 };
 

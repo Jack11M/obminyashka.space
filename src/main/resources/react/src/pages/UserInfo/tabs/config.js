@@ -1,30 +1,32 @@
 import { route } from 'routes/routeConstants';
 
+import * as Icon from 'assets/icons';
+
 export const links = [
   {
     url: '',
-    classname: 'icon-activity',
+    icon: <Icon.ActivitySvg />,
     textKey: 'panel.myActivity',
     end: true,
   },
   {
     url: route.myProfile,
-    classname: 'icon-profile',
+    icon: <Icon.ProfileSvg />,
     textKey: 'panel.myProfile',
   },
   {
     url: route.myFavorite,
-    classname: 'icon-star',
+    icon: <Icon.StarSvg />,
     textKey: 'panel.myFavorite',
   },
   {
     url: route.mySettings,
-    classname: 'icon-settings',
+    icon: <Icon.SettingsSvg />,
     textKey: 'panel.mySettings',
   },
   {
     url: route.exit,
-    classname: 'icon-logout',
+    icon: <Icon.LogoutSvg />,
     textKey: 'panel.myExit',
     onClick: true,
   },

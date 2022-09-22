@@ -1,4 +1,4 @@
-import { FormHandler } from './formik-handler';
+import { FormikHandler } from './formik-handler';
 import { FormikCheckBox } from './formik-checkbox';
 
-export { FormHandler, FormikCheckBox };
+export { FormikHandler, FormikCheckBox };

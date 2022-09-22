@@ -237,6 +237,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void removeUserAvatarFor(String username) {
+        userRepository.cleanAvatarForUserByName(username);
+    }
+
+    @Override
     public void updatePreferableLanguage(String refreshToken) {
         final var locale = LocaleContextHolder.getLocale();
         userRepository.findByRefreshToken_Token(refreshToken)
