@@ -201,7 +201,7 @@ const MySettings = () => {
                 height="49px"
                 isLoading={isFetchPass}
                 disabling={!isValid && !dirty}
-                text={getTranslatedText('settings.save')}
+                text={getTranslatedText('button.saveChanges')}
                 click={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
@@ -251,7 +251,7 @@ const MySettings = () => {
                 isLoading={isFetchEmail}
                 style={{ margin: '50px 0' }}
                 disabling={!isValid && !dirty}
-                text={getTranslatedText('settings.save')}
+                text={getTranslatedText('button.saveChanges')}
                 click={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>

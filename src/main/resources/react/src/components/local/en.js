@@ -96,7 +96,6 @@ const en = {
     describe:
       'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section.',
     profile: 'Profile',
-    save: 'Save changes',
   },
   exit: {
     question: 'Leave?',
