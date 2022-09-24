@@ -37,23 +37,27 @@ export const GlobalStyles = createGlobalStyle`
   color: inherit;
   }
 
-  ${({ theme }) => css`
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: ${theme.colors.scrollbarBg};
-    }
+  li {
+  list-style-type: none;
+}
 
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: ${theme.colors.btnBlue};
-      border-radius: 10px;
-    }
+ ${({ theme }) => css`
+   /* Track */
+   ::-webkit-scrollbar-track {
+     background: ${theme.colors.scrollbarBg};
+   }
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: ${theme.colors.btnBlueActive};
-    }
-  `}
+   /* Handle */
+   ::-webkit-scrollbar-thumb {
+     background: ${theme.colors.btnBlue};
+     border-radius: 10px;
+   }
+
+   /* Handle on hover */
+   ::-webkit-scrollbar-thumb:hover {
+     background: ${theme.colors.btnBlueActive};
+   }
+ `}
 
   ::-webkit-scrollbar {
   width: 10px;

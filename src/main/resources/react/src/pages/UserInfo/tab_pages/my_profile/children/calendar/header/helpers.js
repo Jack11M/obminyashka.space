@@ -1,3 +1,3 @@
 export const range = (start, end) => {
-  return new Array(end - start).fill().map((d, i) => i + start);
+  return new Array(end - start).fill().map((_, i) => i + start);
 };

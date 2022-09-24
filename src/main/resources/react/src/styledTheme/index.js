@@ -10,6 +10,7 @@ export const theme = {
     btnGreenActive: '#008a20',
     colorError: '#ff4c4c',
     colorGrey: '#8E8E8E',
+    colorRed: '#ff0000',
     colorTextDisabled: '#A3A3A3',
     btnGbDisabled: '#DADADA',
     rightColorText: '#333333',

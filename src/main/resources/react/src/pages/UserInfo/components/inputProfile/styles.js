@@ -10,6 +10,7 @@ export const ProfileInput = styled.div`
 `;
 
 export const Label = styled.label`
+  min-width: 110px;
   font-size: 14px;
   line-height: 16px;
   display: inline-flex;

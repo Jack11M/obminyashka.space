@@ -6,7 +6,7 @@ const StyledError = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: #ff4c4c;
+  color: ${({ theme }) => theme.colors.colorError};
 `;
 
 export { StyledError };

@@ -7,6 +7,8 @@ export { ReactComponent as ChevronLeft } from './chevron-left.svg';
 export { ReactComponent as ChevronRight } from './chevron-right.svg';
 export { ReactComponent as CloseSvg } from './Close.svg';
 export { ReactComponent as CropSvg } from './crop.svg';
+export { ReactComponent as Eye } from './eye.svg';
+export { ReactComponent as EyeOff } from './eye-off.svg';
 export { ReactComponent as FavoriteSarSvg } from './favorite-star.svg';
 export { ReactComponent as GoogleSvg } from './google.svg';
 export { ReactComponent as HeartSvg } from './heart.svg';

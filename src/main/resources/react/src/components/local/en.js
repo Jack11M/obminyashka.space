@@ -85,10 +85,10 @@ const en = {
     currentPassword: 'Current password:',
     newPassword: 'New password:',
     confirmPassword: 'Repeat password:',
-    changeEmail: 'Change E-MaiL',
-    oldEmail: 'Old E-Mail:',
-    newEmail: 'New E-Mail:',
-    confirmEmail: 'Repeat E-Mail:',
+    changeEmail: 'Change EmaiL',
+    oldEmail: 'Current Email:',
+    newEmail: 'New Email:',
+    confirmEmail: 'Repeat Email:',
     remove: 'Remove account',
     removeConfirm:
       'To delete your account, you need to enter a password and confirm it.',
@@ -136,7 +136,7 @@ const en = {
   footer: {
     rules: 'Safe deal rules',
     charity: 'Charity organisations',
-    questions: 'Frequently asked Questions',
+    questions: 'Frequently asked questions',
     protect: 'All rights reserved',
   },
   fourOhFour: {
@@ -165,7 +165,7 @@ const en = {
     checkInUl: 'your offers',
   },
   mainPage: {
-    question: 'Have a lot accumulated of',
+    question: 'Have a lot accumulated of ',
     questionBold: "children's things?",
     answerFirstPart: 'Just',
     answerBold: 'register',

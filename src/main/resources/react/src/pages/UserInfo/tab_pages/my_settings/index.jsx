@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
+import { setProfileEmail } from 'store/profile/slice';
 import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import {
@@ -45,7 +46,7 @@ const MySettings = () => {
   const handlePassword = async (values, onSubmitProps) => {
     setIsFetchPass(true);
     try {
-      const { data } = await api.fetchProfile.putPasswordFetch(values);
+      const data = await api.profile.putPasswordFetch(values);
       openModal({
         title: getTranslatedText('popup.serverResponse'),
         children: <p>{data}</p>,
@@ -64,7 +65,7 @@ const MySettings = () => {
     const { newEmail, newEmailConfirmation } = values;
     setIsFetchEmail(true);
     try {
-      const { data } = await api.fetchProfile.putEmailFetch({
+      const data = await api.profile.putEmailFetch({
         newEmail,
         newEmailConfirmation,
       });
@@ -73,6 +74,7 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
       dispatch(putEmail(newEmail));
+      dispatch(setProfileEmail(newEmail));
       onSubmitProps.resetForm();
       setIsFetchEmail(false);
     } catch (e) {
@@ -198,8 +200,8 @@ const MySettings = () => {
                 width="248px"
                 height="49px"
                 isLoading={isFetchPass}
-                disabling={!dirty && !isValid}
-                text={getTranslatedText('button.save')}
+                disabling={!isValid && !dirty}
+                text={getTranslatedText('button.saveChanges')}
                 click={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
@@ -222,20 +224,20 @@ const MySettings = () => {
             <Styles.InputContainer>
               <InputProfile
                 readOnly
-                type="email"
+                type="text"
                 name="oldEmail"
                 value={currentEmail}
                 label={getTranslatedText('settings.oldEmail')}
               />
 
               <InputProfile
-                type="email"
+                type="text"
                 name="newEmail"
                 label={getTranslatedText('settings.newEmail')}
               />
 
               <InputProfile
-                type="email"
+                type="text"
                 name="newEmailConfirmation"
                 label={getTranslatedText('settings.confirmEmail')}
               />
@@ -244,12 +246,12 @@ const MySettings = () => {
             <Styles.ButtonContainer>
               <Button
                 type="submit"
-                width="363px"
+                width="248px"
                 height="49px"
                 isLoading={isFetchEmail}
                 style={{ margin: '50px 0' }}
                 disabling={!isValid && !dirty}
-                text={getTranslatedText('button.saveEmail')}
+                text={getTranslatedText('button.saveChanges')}
                 click={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>

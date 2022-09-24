@@ -1,17 +1,10 @@
 import { useField } from 'formik';
 
 import { CloseSvg } from 'assets/icons';
+import { ErrorDisplay } from 'pages/AddGoods/error-display';
 
-import { ErrorDisplay } from '../error-display';
-
-import {
-  Wrap,
-  Input,
-  Label,
-  WrapSvg,
-  SelectedItem,
-  WrapDropItems,
-} from './styles';
+import * as Styles from './styles';
+import * as StylesAdd from '../styles';
 
 const DropDownInput = ({
   name,
@@ -20,6 +13,7 @@ const DropDownInput = ({
   title,
   value,
   focus,
+  dropRef,
   onFocus,
   disabled,
   showDrop,
@@ -32,9 +26,10 @@ const DropDownInput = ({
   const { error } = meta;
 
   return (
-    <Wrap>
-      {!size && <Label>{title}:</Label>}
-      <Input
+    <Styles.Wrap ref={dropRef}>
+      {!size && <Styles.Label>{title}:</Styles.Label>}&nbsp;
+      <StylesAdd.Star>*</StylesAdd.Star>
+      <Styles.Input
         name={name}
         focus={focus}
         error={error}
@@ -45,25 +40,24 @@ const DropDownInput = ({
         onChange={onChangeInput}
       />
       {checkInputValue && (
-        <WrapSvg onClick={clearInput}>
+        <Styles.WrapSvg onClick={clearInput}>
           <CloseSvg />
-        </WrapSvg>
+        </Styles.WrapSvg>
       )}
       <ErrorDisplay error={!!error && error} />
-
       {showDrop && (
-        <WrapDropItems showDrop={showDrop}>
+        <Styles.WrapDropItems showDrop={showDrop}>
           {data.map((item, index) => (
-            <SelectedItem
+            <Styles.SelectedItem
               key={String(`${item}_${index}`)}
               onClick={() => choiceItem(item)}
             >
               <p>{item}</p>
-            </SelectedItem>
+            </Styles.SelectedItem>
           ))}
-        </WrapDropItems>
+        </Styles.WrapDropItems>
       )}
-    </Wrap>
+    </Styles.Wrap>
   );
 };
 export { DropDownInput };

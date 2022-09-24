@@ -5,44 +5,55 @@ const WrapSelect = styled.div`
   position: relative;
   max-width: 350px;
   height: 50px;
+
+  & :last-child {
+    color: #383838;
+    width: 350px;
+  }
 `;
+
 const SelectLabel = styled.label`
   display: flex;
   align-items: center;
-  border: 1px solid ${(p) => (p.error ? '#ff4c4c' : '#bcbcbc')};
+  border: 1px solid ${(p) => (p.error ? p.theme.colors.colorError : '#bcbcbc')};
   border-radius: 2px;
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '6px' : 0)};
 `;
+
 const AnimatedLabel = styled(animated.div)`
   display: flex;
   align-items: center;
 `;
+
 const PlaceHolder = styled.p`
   padding: 10px;
   line-height: 26px;
   color: #8e8e8e;
 `;
+
 const DropItems = styled.div`
   position: absolute;
   max-width: 350px;
   width: 100%;
   border: ${(p) => (p.notOpen ? 'none' : '1px solid #bcbcbc')};
   border-top-width: 0;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   overflow: hidden;
+
   ${(p) =>
     p.overflows &&
     css`
       height: 282px;
       overflow-y: scroll;
     `}
-
   z-index: 2;
+
   & > div:last-child > div {
     border-bottom: none;
   }
 `;
+
 const SelectItem = styled.div`
   display: flex;
   align-items: center;
@@ -50,11 +61,13 @@ const SelectItem = styled.div`
   transition: ease-in-out 0.3s;
   cursor: pointer;
   padding-left: ${(p) => (!p.showImg ? '8px' : 0)};
+
   ${(p) =>
     p.selectedItem &&
     css`
       background-color: hsl(195, 100%, 80%);
     `}
+
   &:hover {
     background-color: hsl(195, 100%, 90%);
   }

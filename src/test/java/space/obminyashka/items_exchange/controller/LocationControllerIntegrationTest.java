@@ -19,28 +19,28 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.LOCATION;
-import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDto;
+import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createValidLocationDto;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.createLocationDtoForCreatingWithInvalidCity;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LocationControllerTest extends BasicControllerTest {
+class LocationControllerIntegrationTest extends BasicControllerTest {
 
     @Autowired
-    public LocationControllerTest(MockMvc mockMvc) {
+    public LocationControllerIntegrationTest(MockMvc mockMvc) {
         super(mockMvc);
     }
 
-    @WithMockUser(username = "admin")
+    @WithMockUser(username = "admin", roles = "ADMIN")
     @ParameterizedTest
     @MethodSource("locationPostTestData")
-    void createLocation_shouldNotReturnOkWhenNotValid(LocationDto dto, ResultMatcher expectedStatus) throws Exception {
+    void createLocation_shouldNotReturnOkWhenValid(LocationDto dto, ResultMatcher expectedStatus) throws Exception {
         sendDtoAndGetMvcResult(post(LOCATION), dto, expectedStatus);
     }
 
     private static Stream<Arguments> locationPostTestData() {
         return Stream.of(
-                Arguments.of(createLocationDto(), status().isForbidden()),
+                Arguments.of(createValidLocationDto(), status().isCreated()),
                 Arguments.of(createLocationDtoForCreatingWithInvalidCity(), status().isBadRequest())
         );
     }

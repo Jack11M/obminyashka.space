@@ -1,11 +1,12 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,15 +14,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.dto.RawLocation;
-import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.dto.LocationsRequest;
 import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.service.LocationService;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,27 +35,11 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 public class LocationController {
     private final LocationService locationService;
 
-    @GetMapping(ApiKey.LOCATION)
+    @GetMapping(ApiKey.LOCATION_ALL)
     @ApiOperation(value = "Get all of existed locations.")
     @ResponseStatus(HttpStatus.OK)
     public List<LocationDto> getAllLocations() {
         return locationService.findAll();
-    }
-
-    @GetMapping(ApiKey.LOCATION_ALL)
-    @ApiOperation(value = "Get all locations for current locale (I18n).")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST")})
-    @ApiImplicitParam(name = HttpHeaders.ACCEPT_LANGUAGE, value = "Localization header", paramType = "header",
-            required = true, dataTypeClass = String.class, allowableValues = "ua, ru, en", defaultValue = "ua")
-    public List<LocationDto> getAllLocationsForCurrentLanguage() throws BadRequestException {
-        final var locale = LocaleContextHolder.getLocale();
-        final var language = locale.getLanguage();
-        if (!Set.of("ua", "ru", "en").contains(language)) {
-            throw new BadRequestException("Received locale is not supported");
-        }
-        return locationService.findAllForCurrentLanguage(locale);
     }
 
     @GetMapping(ApiKey.LOCATION_ID)
@@ -126,9 +109,9 @@ public class LocationController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestBody List<RawLocation> rawLocationList) {
+    public ResponseEntity<String> createLocationsInitFile(@RequestBody LocationsRequest locationsRequest) {
         try {
-            return new ResponseEntity<>(locationService.createParsedLocationsFile(rawLocationList), HttpStatus.OK);
+            return new ResponseEntity<>(locationService.createParsedLocationsFile(locationsRequest.rawLocations), HttpStatus.OK);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

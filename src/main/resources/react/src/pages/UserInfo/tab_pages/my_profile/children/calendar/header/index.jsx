@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { range } from './helpers';
 import * as Styles from './styles';
 import { Select } from '../select';
-import { uaMonths, ruMonths, enMonths } from './config';
+import { uaMonths, enMonths } from './config';
 
 const Header = ({
   lang,
@@ -27,8 +27,6 @@ const Header = ({
     switch (lang) {
       case 'en':
         return enMonths;
-      case 'ru':
-        return ruMonths;
       default:
         return uaMonths;
     }
