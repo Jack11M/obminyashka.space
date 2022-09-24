@@ -3,6 +3,8 @@ import { ProductCard } from 'components/item-card';
 import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
 
+import { data } from './config';
+
 import * as Styles from './styles';
 
 const SearchResultsPage = () => {
@@ -24,95 +26,14 @@ const SearchResultsPage = () => {
           <TitleBigBlue text={getTranslatedText('filterPage.searchResults')} />
 
           <Styles.CardsContainer>
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Днепр"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
+            {data.map((item) => (
+              <ProductCard
+                key={item.id}
+                city={item.city}
+                text={item.text}
+                picture={item.picture}
+              />
+            ))}
           </Styles.CardsContainer>
         </div>
       </Styles.SearchingContent>

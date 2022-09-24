@@ -21,6 +21,13 @@ export const SubTitleBlock = styled.div`
 `;
 
 export const RotateRectangle = styled.div`
+  padding-left: 10px;
+
+  svg {
+    transition: all 0.2s linear;
+    -webkit-transition: all 0.2s linear;
+  }
+
   ${({ openSelect }) => css`
     ${openSelect &&
     css`

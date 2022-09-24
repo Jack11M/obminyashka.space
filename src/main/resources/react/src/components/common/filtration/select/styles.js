@@ -32,6 +32,7 @@ export const OptionWrapper = styled.div`
 export const Close = styled.div`
   display: flex;
   flex-shrink: 0;
+
   transition: transform 0.3s linear;
   -webkit-transition: transform 0.3s linear;
 
@@ -48,6 +49,11 @@ export const Close = styled.div`
 
 export const RotateRectangle = styled.div`
   padding-left: 10px;
+
+  svg {
+    transition: all 0.2s linear;
+    -webkit-transition: all 0.2s linear;
+  }
 
   ${({ openSelect }) => css`
     ${openSelect &&
