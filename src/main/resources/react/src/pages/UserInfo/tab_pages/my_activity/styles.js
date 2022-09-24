@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const CardsContainer = styled.div`
+export const CardsContainerStyles = css`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -8,6 +8,11 @@ export const CardsContainer = styled.div`
   width: 960px;
 `;
 
-export const StylizedCardBlock = styled(CardsContainer)`
+export const InputResponseContainer = styled.div`
+  ${CardsContainerStyles};
+`;
+
+export const OutputResponseContainer = styled.div`
+  ${CardsContainerStyles};
   margin-bottom: 100px;
 `;

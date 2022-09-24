@@ -16,7 +16,7 @@ const MyActivity = () => {
         text={getTranslatedText('ownActivity.incomingReplies')}
       />
 
-      <Styles.CardsContainer>
+      <Styles.InputResponseContainer>
         <ProductCard
           city="Харьков"
           picture={lot3}
@@ -61,14 +61,14 @@ const MyActivity = () => {
           inboxMessage={33}
           text="Велосипед для девочки 5 лет"
         />
-      </Styles.CardsContainer>
+      </Styles.InputResponseContainer>
 
       <TitleBigBlue
         style={{ margin: '83px 0 40px' }}
         text={getTranslatedText('ownActivity.outgoingReplies')}
       />
 
-      <Styles.StylizedCardBlock>
+      <Styles.OutputResponseContainer>
         <ProductCard
           picture={lot3}
           city="Харьков"
@@ -136,7 +136,7 @@ const MyActivity = () => {
           isFavorite={isFavorite}
           text="Велосипед для девочки 5 лет"
         />
-      </Styles.StylizedCardBlock>
+      </Styles.OutputResponseContainer>
     </>
   );
 };

@@ -3,9 +3,8 @@ import styled, { css } from 'styled-components';
 export const TitleBlock = styled.div`
   display: flex;
   flex-direction: column;
-  cursor: pointer;
-  display: flex;
   justify-content: space-between;
+  cursor: pointer;
 `;
 
 export const TitleBlockWrapper = styled.div`

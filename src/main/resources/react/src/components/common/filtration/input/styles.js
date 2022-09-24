@@ -13,12 +13,12 @@ export const Title = styled.span`
 `;
 
 export const OptionWrapper = styled.div`
+  flex-direction: column;
   gap: 15px;
   margin: 15px 0;
 
   ${({ hideSelect }) => css`
     display: ${hideSelect ? 'flex' : 'none'};
-    flex-direction: column;
   `}
 `;
 
