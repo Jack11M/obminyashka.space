@@ -28,11 +28,11 @@ const PhotoFiles = ({
       const notAbilityToDownload =
         10 - imageFiles.length - iterableArray.length < 0;
 
-      const foundSameFile = imageFiles.filter(
-        (image) => image.name === file.name
+      const foundSameFile = imageFiles.some(
+        (image) => image.size === file.size || image.name === file.name
       );
 
-      if (foundSameFile.length) {
+      if (foundSameFile) {
         openModal({
           title: getTranslatedText('popup.errorTitle'),
           children: (
@@ -92,6 +92,7 @@ const PhotoFiles = ({
         if (target.readyState === 2) {
           setPreViewImage((prev) => [...prev, target.result]);
           setImageFiles((prev) => [...prev, file]);
+          event.target.value = null;
         }
       };
     });
