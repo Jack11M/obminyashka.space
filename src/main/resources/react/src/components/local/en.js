@@ -358,16 +358,6 @@ const en = {
     locationArea: 'Region:',
     locationCity: 'City:',
   },
-  products: {
-    clothes: 'Clothes',
-    shoes: 'Shoes',
-    toys: 'Toys',
-    children_furniture: 'Children furniture',
-    transport_for_children: 'Baby transport',
-    books: 'Books',
-    carnival_costumes: 'Carnival costumes',
-    other: 'Other',
-  },
 };
 
 export default en;

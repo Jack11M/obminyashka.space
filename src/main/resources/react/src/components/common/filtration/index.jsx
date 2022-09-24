@@ -4,7 +4,7 @@ import { Form } from 'formik';
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import { getTranslatedText, ua } from 'components/local';
-import { FormHandler, FormikCheckBox } from 'components/common/formik';
+import { FormikHandler, FormikCheckBox } from 'components/common/formik';
 
 import * as Styles from './styles';
 
@@ -42,7 +42,7 @@ const Filtration = () => {
   }, []);
 
   return (
-    <FormHandler>
+    <FormikHandler>
       <Form>
         <Styles.CategoryFilter>
           <Styles.Title>
@@ -143,7 +143,7 @@ const Filtration = () => {
           </Styles.CheckBoxBlock>
         </Styles.Filter>
       </Form>
-    </FormHandler>
+    </FormikHandler>
   );
 };
 
