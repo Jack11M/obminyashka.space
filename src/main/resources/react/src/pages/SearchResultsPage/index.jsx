@@ -1,6 +1,5 @@
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
-// import Paginator from 'components/common/pagination';
 import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -22,119 +21,99 @@ const SearchResultsPage = () => {
         </Styles.FilterContainer>
 
         <div>
-          <TitleBigBlue
-            style={{ marginBottom: '50px' }}
-            text={getTranslatedText('filterPage.searchResults')}
-          />
+          <TitleBigBlue text={getTranslatedText('filterPage.searchResults')} />
 
           <Styles.CardsContainer>
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
+              picture="https://static.toiimg.com/photo/72975551.cms"
+              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
+            />
+
+            <ProductCard
+              city="Днепр"
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
 
             <ProductCard
               city="Харьков"
-              style={{ width: '262px' }}
-              picture="https://static.toiimg.com/photo/72975551.cms"
-              text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-            />
-
-            <ProductCard
-              city="Харьков"
-              style={{ width: '262px' }}
               picture="https://static.toiimg.com/photo/72975551.cms"
               text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
             />
           </Styles.CardsContainer>
-
-          {/* <Paginator /> */}
         </div>
       </Styles.SearchingContent>
     </Styles.SearchingResults>

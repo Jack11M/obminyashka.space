@@ -10,7 +10,7 @@ const MyFavorites = () => {
   const isFavorite = true;
 
   return (
-    <section>
+    <>
       <TitleBigBlue
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('favorites.FeaturedAds')}
@@ -59,7 +59,7 @@ const MyFavorites = () => {
           text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
         />
       </Styles.CardsContainer>
-    </section>
+    </>
   );
 };
 

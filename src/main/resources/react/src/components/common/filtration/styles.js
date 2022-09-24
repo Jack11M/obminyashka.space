@@ -38,3 +38,23 @@ export const Title = styled.div`
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.btnBlue};
 `;
+
+export const TitleOfEachCategory = styled.div`
+  font-size: 18px;
+  line-height: 24px;
+`;
+
+export const Close = styled.div`
+  display: flex;
+  flex-shrink: 0;
+
+  ${({ theme, isSelected }) => css`
+    opacity: ${isSelected ? 1 : 0};
+
+    svg {
+      path {
+        fill: ${theme.colors.white};
+      }
+    }
+  `}
+`;

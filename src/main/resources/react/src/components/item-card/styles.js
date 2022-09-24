@@ -10,7 +10,7 @@ export const Card = styled.div`
   border-radius: 20px;
   border: 2px dotted #c4c4c4;
   background-color: #fff;
-  margin: ${({ margin }) => margin || '10px 14px'};
+  margin: ${({ margin }) => margin || 0};
   -webkit-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   -moz-box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);
   box-shadow: 0 7px 10px 0 rgba(48, 50, 50, 0.5);

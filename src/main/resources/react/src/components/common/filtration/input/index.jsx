@@ -6,7 +6,7 @@ import * as Icon from 'assets/icons';
 
 import * as Styles from './styles';
 
-const LocationInputs = () => {
+const InputsWithLocation = () => {
   const [openSelect, setOpenSelect] = useState(false);
 
   return (
@@ -40,4 +40,4 @@ const LocationInputs = () => {
   );
 };
 
-export { LocationInputs };
+export { InputsWithLocation };

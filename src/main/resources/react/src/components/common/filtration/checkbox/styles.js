@@ -12,20 +12,11 @@ export const Title = styled.span`
   line-height: 24px;
 `;
 
-export const OptionWrapper = styled.div`
-  flex-direction: column;
-  gap: 15px;
-  margin: 10px 0;
-
-  ${({ hideSelect }) => css`
-    display: ${hideSelect ? 'flex' : 'none'};
-  `}
-`;
-
 export const SubTitleBlock = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  margin: 20px 0 10px;
   line-height: 17px;
 `;
 

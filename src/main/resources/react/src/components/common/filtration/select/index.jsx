@@ -1,36 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import api from 'REST/Resources';
-import { showMessage } from 'hooks';
+import { getTranslatedText } from 'components/local';
 
 import * as Icon from 'assets/icons';
 
 import * as Styles from './styles';
 
-const Select = () => {
+const Select = ({ title, data }) => {
+  const [select, setSelect] = useState(
+    data.map((item) => ({ ...item, isSelected: false }))
+  );
+
   const [openSelect, setOpenSelect] = useState(false);
 
-  const [receivedCategories, setReceivedCategories] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const categories = await api.fetchAddGood.getCategoryAll();
-        if (Array.isArray(categories)) {
-          setReceivedCategories(categories);
-          console.log(...categories);
-        } else {
-          // eslint-disable-next-line no-throw-literal
-          throw { message: 'OOps, I didn’t get the category' };
-        }
-      } catch (err) {
-        showMessage(err.response?.data ?? err.message);
-      }
-    })();
-  }, []);
-
   const handleSelected = (id) => {
-    const data = receivedCategories.map((item) => {
+    const arrData = select.map((item) => {
       if (item.id === id) {
         return {
           ...item,
@@ -39,43 +23,38 @@ const Select = () => {
       }
       return item;
     });
-    setReceivedCategories(data);
+    setSelect(arrData);
   };
 
   return (
-    <>
-      {receivedCategories.map((item) => (
-        <Styles.TitleBlock
-          key={item.id}
-          onClick={() => setOpenSelect(!openSelect)}
-        >
-          <Styles.DisplayFlex>
-            <Styles.Title>{item.name}</Styles.Title>
+    <div>
+      <Styles.TitleBlock onClick={() => setOpenSelect(!openSelect)}>
+        <Styles.TitleBlockWrapper>
+          <Styles.Title>{title}</Styles.Title>
 
-            <Styles.RotateRectangle openSelect={openSelect}>
-              <Icon.Rectangle />
-            </Styles.RotateRectangle>
-          </Styles.DisplayFlex>
-        </Styles.TitleBlock>
-      ))}
+          <Styles.RotateRectangle openSelect={openSelect}>
+            <Icon.Rectangle />
+          </Styles.RotateRectangle>
+        </Styles.TitleBlockWrapper>
+      </Styles.TitleBlock>
 
       <Styles.OptionWrapper hideSelect={openSelect}>
         {openSelect &&
-          receivedCategories.map((item) => (
+          select?.map((subcategory) => (
             <Styles.SubTitleBlock
-              key={item.id}
-              isSelected={item.isSelected}
-              onClick={() => handleSelected(item.id)}
+              key={subcategory.id}
+              isSelected={subcategory.isSelected}
+              onClick={() => handleSelected(subcategory.id)}
             >
-              <span>{item.name}</span>
+              <span>{getTranslatedText(`categories.${subcategory.name}`)}</span>
 
-              <Styles.Close isSelected={item.isSelected}>
+              <Styles.Close isSelected={subcategory.isSelected}>
                 <Icon.CloseSvg />
               </Styles.Close>
             </Styles.SubTitleBlock>
           ))}
       </Styles.OptionWrapper>
-    </>
+    </div>
   );
 };
 

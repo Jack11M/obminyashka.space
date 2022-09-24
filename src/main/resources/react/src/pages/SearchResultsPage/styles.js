@@ -2,12 +2,9 @@ import styled from 'styled-components';
 
 export const SearchingResults = styled.div`
   padding: 0 15px;
-  margin: 0 auto;
-  margin-top: 200px;
-  width: 100%;
+  margin: 200px auto 255px;
   max-width: 1251px;
   overflow: hidden;
-  margin-bottom: 150px;
 `;
 
 export const SearchingContent = styled.div`
@@ -17,14 +14,17 @@ export const SearchingContent = styled.div`
 `;
 
 export const CardsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  row-gap: 8px;
-  column-gap: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px 13px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+  width: 910px;
 `;
 
 export const FilterContainer = styled.div`
-  margin-right: 60px;
+  margin-right: 20px;
 `;
 
 export const BreadCrumbs = styled.div`

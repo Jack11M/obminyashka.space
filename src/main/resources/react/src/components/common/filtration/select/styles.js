@@ -4,9 +4,11 @@ export const TitleBlock = styled.div`
   display: flex;
   flex-direction: column;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 `;
 
-export const DisplayFlex = styled.div`
+export const TitleBlockWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `;
@@ -19,36 +21,19 @@ export const Title = styled.span`
 export const OptionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin: 10px 0;
-`;
+  gap: 5px;
+  margin: 20px 0 10px;
 
-export const SubTitleBlock = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 8px 4px 58px;
-  line-height: 18px;
-  cursor: pointer;
-
-  ${({ theme, isSelected }) => css`
-    color: ${isSelected ? theme.colors.white : '#777777'};
-    background-color: ${isSelected ? theme.colors.activeColor : 'transparent'};
-    border-radius: 5px;
-
-    ${!isSelected &&
-    css`
-      :hover {
-        color: #2f2f2f;
-        background-color: #b8e9fa;
-      }
-    `}
+  ${({ hideSelect }) => css`
+    display: ${hideSelect ? 'flex' : 'none'};
   `}
 `;
 
 export const Close = styled.div`
   display: flex;
   flex-shrink: 0;
+  transition: transform 0.3s linear;
+  -webkit-transition: transform 0.3s linear;
 
   ${({ theme, isSelected }) => css`
     opacity: ${isSelected ? 1 : 0};
@@ -62,13 +47,44 @@ export const Close = styled.div`
 `;
 
 export const RotateRectangle = styled.div`
+  padding-left: 10px;
+
   ${({ openSelect }) => css`
     ${openSelect &&
     css`
       svg {
-        webkit-transform: rotate(180deg);
         transform: rotate(180deg);
+        webkit-transform: rotate(180deg);
       }
+    `}
+  `}
+`;
+
+export const SubTitleBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px 4px 58px;
+  line-height: 17px;
+  cursor: pointer;
+
+  ${({ theme, isSelected }) => css`
+    color: ${isSelected ? theme.colors.white : '#777777'};
+    background-color: ${isSelected ? theme.colors.activeColor : 'transparent'};
+    border-radius: 5px;
+
+    :hover {
+      ${Close} {
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+      }
+    }
+
+    ${!isSelected &&
+    css`
+      :hover {
+        color: #2f2f2f;
+        background-color: #b8e9fa;
     `}
   `}
 `;
