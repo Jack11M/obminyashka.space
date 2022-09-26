@@ -42,6 +42,7 @@ const AddGoods = () => {
   const regexp = /data:image\/(jpg|jpeg|png|gif);base64,/;
 
   const [buttonPreview, setButtonPreview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [announcementTitle, setAnnouncementTitle] = useState(adv.topic);
   const [exchangeList, setExchangeList] = useState(adv.wishesToExchange);
@@ -79,6 +80,7 @@ const AddGoods = () => {
 
   const createAdvertisement = async (values) => {
     setButtonPreview(false);
+    setIsLoading(true);
     const { images, size: sizeValue, ...rest } = values;
     const data = new FormData();
     if (sizeValue) {
@@ -92,6 +94,7 @@ const AddGoods = () => {
       dispatch(clearAdv());
       navigate(route.home);
     } catch (err) {
+      setIsLoading(false);
       toast.error(getErrorMessage(err));
     }
   };
@@ -301,7 +304,7 @@ const AddGoods = () => {
 
                   <Styles.WrapButtons>
                     <Styles.BlockButtons>
-                      <ButtonAdv type="submit" />
+                      <ButtonAdv isLoading={isLoading} />
 
                       <Button
                         type="submit"

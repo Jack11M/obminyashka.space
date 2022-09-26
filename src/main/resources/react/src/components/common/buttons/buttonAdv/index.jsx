@@ -1,9 +1,10 @@
+import { Loader } from 'components/common';
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
 
-const ButtonAdv = ({ type = 'submit' }) => {
+const ButtonAdv = ({ type = 'submit', isLoading }) => {
   return (
     <>
       {type === 'link' && (
@@ -13,8 +14,12 @@ const ButtonAdv = ({ type = 'submit' }) => {
       )}
 
       {type === 'submit' && (
-        <Styles.SubmitButton type="submit">
-          <Styles.Span>{getTranslatedText('button.addAdv')}</Styles.Span>
+        <Styles.SubmitButton type="submit" isLoading={isLoading}>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <Styles.Span>{getTranslatedText('button.addAdv')}</Styles.Span>
+          )}
         </Styles.SubmitButton>
       )}
     </>

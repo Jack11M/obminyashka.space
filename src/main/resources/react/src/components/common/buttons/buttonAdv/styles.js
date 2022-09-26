@@ -13,29 +13,41 @@ const styleSet = css`
   border: 0;
   cursor: pointer;
 
-  ${({ theme }) => css`
+  ${({ theme, isLoading }) => css`
     color: ${theme.colors.white};
     background-color: ${theme.colors.btnGreen};
 
-    &:before {
-      position: absolute;
-      content: '';
-      top: 23px;
-      left: 33px;
-      width: 14px;
-      height: 2px;
-      background-color: ${theme.colors.white};
-    }
+    ${isLoading &&
+    css`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 49px;
+      padding: 0;
+    `}
 
-    &:after {
-      position: absolute;
-      content: '';
-      top: 17px;
-      left: 39px;
-      width: 2px;
-      height: 14px;
-      background-color: ${theme.colors.white};
-    }
+    ${!isLoading &&
+    css`
+      &:before {
+        position: absolute;
+        content: '';
+        top: 23px;
+        left: 33px;
+        width: 14px;
+        height: 2px;
+        background-color: ${theme.colors.white};
+      }
+
+      &:after {
+        position: absolute;
+        content: '';
+        top: 17px;
+        left: 39px;
+        width: 2px;
+        height: 14px;
+        background-color: ${theme.colors.white};
+      }
+    `}
 
     &:hover,
     &:active {

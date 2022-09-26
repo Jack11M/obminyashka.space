@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import imageCompression from 'browser-image-compression';
 
 import { convertToMB } from 'Utils';
 import { ModalContext } from 'components/common';
@@ -8,6 +9,13 @@ import { ImagePhoto } from './image-photo';
 import { AddFileInput } from './add-file-input';
 
 import * as Styles from '../styles';
+
+const options = {
+  maxSizeMB: 10,
+  maxWidthOrHeight: 1920,
+  useWebWorker: true,
+  maxIteration: 10,
+};
 
 const PhotoFiles = ({
   imageFiles,
@@ -19,7 +27,7 @@ const PhotoFiles = ({
 }) => {
   const { openModal } = useContext(ModalContext);
 
-  const filesAddHandler = (event, dropFiles = null) => {
+  const filesAddHandler = async (event, dropFiles = null) => {
     event.preventDefault();
 
     const files = Array.from(dropFiles || event.target.files);
@@ -28,11 +36,11 @@ const PhotoFiles = ({
       const notAbilityToDownload =
         10 - imageFiles.length - iterableArray.length < 0;
 
-      const foundSameFile = imageFiles.filter(
+      const foundSameFile = imageFiles.some(
         (image) => image.name === file.name
       );
 
-      if (foundSameFile.length) {
+      if (foundSameFile) {
         openModal({
           title: getTranslatedText('popup.errorTitle'),
           children: (
@@ -74,6 +82,7 @@ const PhotoFiles = ({
         });
         return;
       }
+
       if (notAbilityToDownload) {
         openModal({
           title: getTranslatedText('popup.errorTitle'),
@@ -88,10 +97,12 @@ const PhotoFiles = ({
 
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = ({ target }) => {
+      reader.onload = async ({ target }) => {
         if (target.readyState === 2) {
+          const compressedFile = await imageCompression(file, options);
           setPreViewImage((prev) => [...prev, target.result]);
-          setImageFiles((prev) => [...prev, file]);
+          setImageFiles((prev) => [...prev, compressedFile]);
+          event.target.value = null;
         }
       };
     });
