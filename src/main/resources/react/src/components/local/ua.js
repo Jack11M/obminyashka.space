@@ -43,7 +43,7 @@ const ua = {
     max255: 'Повинно бути не більше 255 символів',
     altCodeMatch: 'Не повинно бути Alt code',
     passwordMatch: 'Великі та малі латинські букви та цифри',
-    passwordMiSIZEatch: 'Паролі не співпадають',
+    passwordMismatch: 'Паролі не співпадають',
     noSpace: 'Не повинно бути пробілів',
     nameMatch: 'Будь-які літери',
     phoneMatch: 'Невірний формат телефону',

@@ -15,11 +15,11 @@ export const BlockStyleSet = css`
 `;
 
 export const CategoryFilter = styled.div`
-  ${styleSet}
+  ${styleSet};
 `;
 
 export const Filter = styled.div`
-  ${styleSet}
+  ${styleSet};
   margin-top: 20px;
 `;
 

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { getTranslatedText } from 'components/local/localization';
-
 import * as Icon from 'assets/icons';
+import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
 

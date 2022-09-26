@@ -8,8 +8,8 @@ import AddGoods from 'pages/AddGoods/AddGoods';
 import Login from 'pages/FormRegister/sign-in';
 import SignUp from 'pages/FormRegister/sign-up';
 import ProductPage from 'pages/ProductPage/ProductPage';
-import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 import SearchResultsPage from 'pages/SearchResultsPage';
+import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';
 import { AuthorizedRoute, UnauthorizedRoute } from './protectedRoute';
