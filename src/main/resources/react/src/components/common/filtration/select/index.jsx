@@ -9,7 +9,6 @@ const Select = ({ title, data }) => {
   const [select, setSelect] = useState(
     data.map((item) => ({ ...item, isSelected: false }))
   );
-
   const [openSelect, setOpenSelect] = useState(false);
 
   const handleSelected = (id) => {

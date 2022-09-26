@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Form } from 'formik';
+import { useSelector } from 'react-redux';
 
-import {
-  enumAge,
-  enumSex,
-  seasonEnum,
-  shoesSizeEnum,
-  clothingSizeEnum,
-} from 'config/ENUM';
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
+import ua from 'components/local/ua';
+import { getAuthLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local';
+import { enumAge, shoesSizeEnum, clothingSizeEnum } from 'config/ENUM';
 import { FormikHandler, FormikCheckBox } from 'components/common/formik';
 
 import * as Styles from './styles';
@@ -20,6 +17,8 @@ import { CheckBoxes } from './checkbox';
 import { InputsWithLocation } from './input';
 
 const Filtration = () => {
+  const lang = useSelector(getAuthLang);
+
   const [receivedCategories, setReceivedCategories] = useState([]);
 
   const [age, setAge] = useState([]);
@@ -28,8 +27,10 @@ const Filtration = () => {
   const [shoesSize, setShoesSize] = useState([]);
   const [clothesSize, setClothesSize] = useState([]);
 
-  const sexShow = Object.keys(enumSex);
+  const { seasonEnum, genderEnum } = ua;
+
   const agesShow = Object.keys(enumAge);
+  const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
   const shoesSizeShow = Object.keys(shoesSizeEnum);
   const clothingSizeShow = Object.keys(clothingSizeEnum);
@@ -80,7 +81,7 @@ const Filtration = () => {
                   selectedValues={gender}
                   key={String(item + idx)}
                   margin="4px 8px 4px 58px"
-                  text={sexShow[item]}
+                  text={getTranslatedText(`genderEnum.${item}`)}
                 />
               ))}
             </CheckBoxes>
@@ -95,7 +96,7 @@ const Filtration = () => {
                   selectedValues={age}
                   key={String(item + idx)}
                   margin="4px 8px 4px 58px"
-                  text={agesShow[item]}
+                  text={enumAge[item]}
                 />
               ))}
             </CheckBoxes>
@@ -110,7 +111,11 @@ const Filtration = () => {
                   onChange={setClothesSize}
                   margin="4px 8px 4px 58px"
                   selectedValues={clothesSize}
-                  text={clothingSizeShow[item]}
+                  text={
+                    lang === 'en'
+                      ? clothingSizeEnum[item]
+                      : clothingSizeEnum[item].replace('cm', 'см')
+                  }
                 />
               ))}
             </CheckBoxes>
@@ -125,7 +130,11 @@ const Filtration = () => {
                   key={String(item + idx)}
                   margin="4px 8px 4px 58px"
                   selectedValues={shoesSize}
-                  text={shoesSizeShow[item]}
+                  text={
+                    lang === 'en'
+                      ? shoesSizeEnum[item]
+                      : shoesSizeEnum[item].replace('cm', 'см')
+                  }
                 />
               ))}
             </CheckBoxes>
@@ -140,7 +149,7 @@ const Filtration = () => {
                   selectedValues={season}
                   key={String(item + idx)}
                   margin="4px 8px 4px 58px"
-                  text={seasonShow[item]}
+                  text={getTranslatedText(`seasonEnum.${item}`)}
                 />
               ))}
             </CheckBoxes>
