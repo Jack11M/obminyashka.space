@@ -60,7 +60,7 @@ const Filtration = () => {
   }, []);
 
   const currentType = useMemo(() => {
-    return lang === 'en' ? ' cm' : ' см';
+    return lang === 'en' ? 'cm' : 'см';
   }, [lang]);
 
   return (
@@ -89,14 +89,14 @@ const Filtration = () => {
             <InputsWithLocation />
 
             <CheckBoxes title={getTranslatedText('product.sex')}>
-              {sexShow.map((item, idx) => (
+              {sexShow.map((item) => (
                 <FormikCheckBox
+                  key={item}
                   value={item}
                   type="checkbox"
                   fontSize="16px"
                   onChange={setGender}
                   selectedValues={gender}
-                  key={String(item + idx)}
                   margin="4px 8px 4px 58px"
                   text={getTranslatedText(`genderEnum.${item}`)}
                 />
@@ -104,15 +104,15 @@ const Filtration = () => {
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.age')}>
-              {agesShow.map((item, idx) => (
+              {agesShow.map((item) => (
                 <FormikCheckBox
+                  key={item}
                   value={item}
                   type="checkbox"
                   fontSize="16px"
                   onChange={setAge}
                   selectedValues={age}
                   text={enumAge[item]}
-                  key={String(item + idx)}
                   margin="4px 8px 4px 58px"
                 />
               ))}
@@ -120,16 +120,16 @@ const Filtration = () => {
 
             <CheckBoxes title={getTranslatedText('product.clothingSizes')}>
               <Styles.ScrollBar>
-                {receivedClothingSizes.map((item, idx) => (
+                {receivedClothingSizes.map((item) => (
                   <FormikCheckBox
+                    key={item}
                     value={item}
                     type="checkbox"
                     fontSize="16px"
-                    key={String(item + idx)}
                     margin="4px 8px 4px 58px"
-                    text={item + currentType}
                     onChange={setClothesSizes}
                     selectedValues={clothesSizes}
+                    text={`${item} ${currentType}`}
                   />
                 ))}
               </Styles.ScrollBar>
@@ -137,30 +137,30 @@ const Filtration = () => {
 
             <CheckBoxes title={getTranslatedText('product.shoeSizes')}>
               <Styles.ScrollBar>
-                {receivedShoeSizes.map((item, idx) => (
+                {receivedShoeSizes.map((item) => (
                   <FormikCheckBox
+                    key={item}
                     value={item}
                     fontSize="16px"
                     type="checkbox"
-                    key={String(item + idx)}
                     onChange={setShoesSizes}
                     margin="4px 8px 4px 58px"
-                    text={item + currentType}
                     selectedValues={shoesSizes}
+                    text={`${item} ${currentType}`}
                   />
                 ))}
               </Styles.ScrollBar>
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.season')}>
-              {seasonShow.map((item, idx) => (
+              {seasonShow.map((item) => (
                 <FormikCheckBox
+                  key={item}
                   value={item}
                   fontSize="16px"
                   type="checkbox"
                   onChange={setSeason}
                   selectedValues={season}
-                  key={String(item + idx)}
                   margin="4px 8px 4px 58px"
                   text={getTranslatedText(`seasonEnum.${item}`)}
                 />

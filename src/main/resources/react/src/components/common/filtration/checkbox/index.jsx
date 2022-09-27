@@ -17,9 +17,7 @@ const CheckBoxes = ({ title, children }) => {
         </Styles.RotateRectangle>
       </Styles.TitleBlock>
 
-      <div>
-        {openSelect && <Styles.SubTitleBlock>{children}</Styles.SubTitleBlock>}
-      </div>
+      {openSelect && <Styles.SubTitleBlock>{children}</Styles.SubTitleBlock>}
     </div>
   );
 };
