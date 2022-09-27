@@ -58,3 +58,16 @@ export const Close = styled.div`
     }
   `}
 `;
+
+export const ScrollBar = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 425px;
+  overflow: auto;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 10px;
+  }
+`;

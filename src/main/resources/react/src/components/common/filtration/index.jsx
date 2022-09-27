@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { Form } from 'formik';
 import { useSelector } from 'react-redux';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import ua from 'components/local/ua';
+import { enumAge } from 'config/ENUM';
 import { getAuthLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local';
-import { enumAge, shoesSizeEnum, clothingSizeEnum } from 'config/ENUM';
 import { FormikHandler, FormikCheckBox } from 'components/common/formik';
 
 import * as Styles from './styles';
@@ -19,21 +19,21 @@ import { InputsWithLocation } from './input';
 const Filtration = () => {
   const lang = useSelector(getAuthLang);
 
+  const [receivedShoeSizes, setReceivedShoeSize] = useState([]);
   const [receivedCategories, setReceivedCategories] = useState([]);
+  const [receivedClothingSizes, setReceivedClothingSize] = useState([]);
 
   const [age, setAge] = useState([]);
   const [gender, setGender] = useState([]);
   const [season, setSeason] = useState([]);
-  const [shoesSize, setShoesSize] = useState([]);
-  const [clothesSize, setClothesSize] = useState([]);
+  const [shoesSizes, setShoesSizes] = useState([]);
+  const [clothesSizes, setClothesSizes] = useState([]);
 
   const { seasonEnum, genderEnum } = ua;
 
   const agesShow = Object.keys(enumAge);
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
-  const shoesSizeShow = Object.keys(shoesSizeEnum);
-  const clothingSizeShow = Object.keys(clothingSizeEnum);
 
   useEffect(() => {
     (async () => {
@@ -46,9 +46,22 @@ const Filtration = () => {
     })();
   }, []);
 
-  function useTranslateCm(nameOfEnum) {
-    return lang === 'en' ? nameOfEnum : nameOfEnum.replace('cm', 'см');
-  }
+  useEffect(() => {
+    (async () => {
+      try {
+        const clothingSizes = await api.fetchAddGood.getSize(1);
+        const shoeSizes = await api.fetchAddGood.getSize(2);
+        setReceivedClothingSize(clothingSizes);
+        setReceivedShoeSize(shoeSizes);
+      } catch (err) {
+        showMessage(err.response?.data ?? err.message);
+      }
+    })();
+  }, []);
+
+  const currentType = useMemo(() => {
+    return lang === 'en' ? ' cm' : ' см';
+  }, [lang]);
 
   return (
     <FormikHandler>
@@ -105,34 +118,38 @@ const Filtration = () => {
               ))}
             </CheckBoxes>
 
-            <CheckBoxes title={getTranslatedText('product.clothingSize')}>
-              {clothingSizeShow.map((item, idx) => (
-                <FormikCheckBox
-                  value={item}
-                  type="checkbox"
-                  fontSize="16px"
-                  key={String(item + idx)}
-                  onChange={setClothesSize}
-                  margin="4px 8px 4px 58px"
-                  selectedValues={clothesSize}
-                  text={useTranslateCm(clothingSizeEnum[item])}
-                />
-              ))}
+            <CheckBoxes title={getTranslatedText('product.clothingSizes')}>
+              <Styles.ScrollBar>
+                {receivedClothingSizes.map((item, idx) => (
+                  <FormikCheckBox
+                    value={item}
+                    type="checkbox"
+                    fontSize="16px"
+                    key={String(item + idx)}
+                    margin="4px 8px 4px 58px"
+                    text={item + currentType}
+                    onChange={setClothesSizes}
+                    selectedValues={clothesSizes}
+                  />
+                ))}
+              </Styles.ScrollBar>
             </CheckBoxes>
 
-            <CheckBoxes title={getTranslatedText('product.shoeSize')}>
-              {shoesSizeShow.map((item, idx) => (
-                <FormikCheckBox
-                  value={item}
-                  fontSize="16px"
-                  type="checkbox"
-                  onChange={setShoesSize}
-                  key={String(item + idx)}
-                  margin="4px 8px 4px 58px"
-                  selectedValues={shoesSize}
-                  text={useTranslateCm(shoesSizeEnum[item])}
-                />
-              ))}
+            <CheckBoxes title={getTranslatedText('product.shoeSizes')}>
+              <Styles.ScrollBar>
+                {receivedShoeSizes.map((item, idx) => (
+                  <FormikCheckBox
+                    value={item}
+                    fontSize="16px"
+                    type="checkbox"
+                    key={String(item + idx)}
+                    onChange={setShoesSizes}
+                    margin="4px 8px 4px 58px"
+                    text={item + currentType}
+                    selectedValues={shoesSizes}
+                  />
+                ))}
+              </Styles.ScrollBar>
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.season')}>
