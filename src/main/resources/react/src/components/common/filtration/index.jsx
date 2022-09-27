@@ -46,6 +46,10 @@ const Filtration = () => {
     })();
   }, []);
 
+  function useTranslateCm(nameOfEnum) {
+    return lang === 'en' ? nameOfEnum : nameOfEnum.replace('cm', 'см');
+  }
+
   return (
     <FormikHandler>
       <Form>
@@ -94,9 +98,9 @@ const Filtration = () => {
                   fontSize="16px"
                   onChange={setAge}
                   selectedValues={age}
+                  text={enumAge[item]}
                   key={String(item + idx)}
                   margin="4px 8px 4px 58px"
-                  text={enumAge[item]}
                 />
               ))}
             </CheckBoxes>
@@ -111,11 +115,7 @@ const Filtration = () => {
                   onChange={setClothesSize}
                   margin="4px 8px 4px 58px"
                   selectedValues={clothesSize}
-                  text={
-                    lang === 'en'
-                      ? clothingSizeEnum[item]
-                      : clothingSizeEnum[item].replace('cm', 'см')
-                  }
+                  text={useTranslateCm(clothingSizeEnum[item])}
                 />
               ))}
             </CheckBoxes>
@@ -130,11 +130,7 @@ const Filtration = () => {
                   key={String(item + idx)}
                   margin="4px 8px 4px 58px"
                   selectedValues={shoesSize}
-                  text={
-                    lang === 'en'
-                      ? shoesSizeEnum[item]
-                      : shoesSizeEnum[item].replace('cm', 'см')
-                  }
+                  text={useTranslateCm(shoesSizeEnum[item])}
                 />
               ))}
             </CheckBoxes>
