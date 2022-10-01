@@ -8,10 +8,10 @@ const LabelSquare = styled.div`
   cursor: pointer;
   transition: all ease-in-out 0.3s;
 
-  ${({ theme: { colors }, type }) => css`
+  ${({ theme, type }) => css`
     width: ${type === 'checkbox' ? '17px' : '20px'};
     height: ${type === 'checkbox' ? '17px' : '20px'};
-    border: 3px solid ${colors.colorGrey};
+    border: 3px solid ${theme.colors.colorGrey};
     border-radius: ${type === 'checkbox' ? '1px' : '50%'};
   `}
 
