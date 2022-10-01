@@ -1,21 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Container = styled.div`
-  > .incoming__replies-text {
-    margin: 65px 0 40px;
-  }
-  > .outgoing__replies-text {
-    margin: 83px 0 40px;
-  }
+export const CardsContainerStyles = css`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 960px;
 `;
 
-export const CardBlock = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  row-gap: 28px;
-  column-gap: 20px;
+export const InputResponseContainer = styled.div`
+  ${CardsContainerStyles};
 `;
 
-export const StyledCardBlock = styled(CardBlock)`
+export const OutputResponseContainer = styled.div`
+  ${CardsContainerStyles};
   margin-bottom: 100px;
 `;

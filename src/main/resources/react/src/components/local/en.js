@@ -94,7 +94,7 @@ const en = {
       'To delete your account, you need to enter a password and confirm it.',
     removed: 'Removed account!',
     describe:
-      'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section.',
+      'Attention! After deleting your account, your profile will be completely removed from the site directory and many functions will no longer be available. You can change contact details and phone numbers in the menu section',
     profile: 'Profile',
   },
   exit: {
@@ -120,14 +120,14 @@ const en = {
   },
   header: {
     about: 'About the project',
-    goodness: 'Good deals',
+    goodness: 'Good deal',
     myOffice: 'Personal area',
     categories: 'Categories',
     iSearch: 'Search',
     clothes: 'clothes',
     shoes: 'shoes',
     toys: 'toys',
-    vehicles: 'Transport for children',
+    vehicles: 'transport for children',
     furniture: "children's furniture",
     babies: 'babies to 1 year',
     books: 'books',
@@ -159,6 +159,8 @@ const en = {
     age: 'Age',
     season: 'Season',
     sex: 'Sex',
+    clothingSizes: 'Size (Shoes)',
+    shoeSizes: 'Size (Clothes)',
     button: 'Offers for exchange',
     checkInUl: 'your offers',
   },
@@ -316,6 +318,16 @@ const en = {
     SUMMER: 'Summer',
     ALL_SEASONS: 'All seasons',
     DEMI_SEASON: 'Demi-season',
+  },
+  filterPage: {
+    home: 'Home',
+    search: 'Search',
+    searchResults: 'Search results',
+    categories: 'Categories',
+    filter: 'Filter',
+    location: 'Location',
+    locationArea: 'Region:',
+    locationCity: 'City:',
   },
 };
 

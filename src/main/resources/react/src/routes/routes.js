@@ -8,6 +8,7 @@ import AddGoods from 'pages/AddGoods/AddGoods';
 import Login from 'pages/FormRegister/sign-in';
 import SignUp from 'pages/FormRegister/sign-up';
 import ProductPage from 'pages/ProductPage/ProductPage';
+import SearchResultsPage from 'pages/SearchResultsPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';
@@ -54,6 +55,8 @@ const Routes = () => (
       <Route path={route.prevProductPage} element={<ProductPage />} />
 
       <Route path={route.noMatch} element={<FourOhFourPage />} />
+
+      <Route path={route.SearchResultsPage} element={<SearchResultsPage />} />
     </Switch>
   </div>
 );

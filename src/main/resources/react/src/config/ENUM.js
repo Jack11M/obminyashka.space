@@ -5,7 +5,7 @@ export const enumAge = {
   FROM_6_TO_9: '6 - 9',
   FROM_10_TO_12: '10 - 12',
   FROM_12_TO_14: '12 - 14',
-  OLDER_THAN_14: '14 +',
+  OLDER_THAN_14: '14+',
 };
 
 export const enumSex = {

@@ -4,19 +4,19 @@ import { ProductCard } from 'components/item-card';
 import mommy from 'assets/img/mama_1_04232631 1.png';
 import { getTranslatedText } from 'components/local/localization';
 
-import { CardBlock, Container, StyledCardBlock } from './styles';
+import * as Styles from './styles';
 
 const MyActivity = () => {
   const isFavorite = true;
 
   return (
-    <Container>
+    <>
       <TitleBigBlue
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('ownActivity.incomingReplies')}
       />
 
-      <CardBlock>
+      <Styles.InputResponseContainer>
         <ProductCard
           city="Харьков"
           picture={lot3}
@@ -61,14 +61,14 @@ const MyActivity = () => {
           inboxMessage={33}
           text="Велосипед для девочки 5 лет"
         />
-      </CardBlock>
+      </Styles.InputResponseContainer>
 
       <TitleBigBlue
         style={{ margin: '83px 0 40px' }}
         text={getTranslatedText('ownActivity.outgoingReplies')}
       />
 
-      <StyledCardBlock>
+      <Styles.OutputResponseContainer>
         <ProductCard
           picture={lot3}
           city="Харьков"
@@ -136,8 +136,8 @@ const MyActivity = () => {
           isFavorite={isFavorite}
           text="Велосипед для девочки 5 лет"
         />
-      </StyledCardBlock>
-    </Container>
+      </Styles.OutputResponseContainer>
+    </>
   );
 };
 

@@ -7,10 +7,11 @@ const LabelSquare = styled.div`
   vertical-align: bottom;
   cursor: pointer;
   transition: all ease-in-out 0.3s;
-  ${({ theme: { colors }, type }) => css`
+
+  ${({ theme, type }) => css`
     width: ${type === 'checkbox' ? '17px' : '20px'};
     height: ${type === 'checkbox' ? '17px' : '20px'};
-    border: 3px solid ${colors.colorGrey};
+    border: 3px solid ${theme.colors.colorGrey};
     border-radius: ${type === 'checkbox' ? '1px' : '50%'};
   `}
 
@@ -19,6 +20,7 @@ const LabelSquare = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    opacity: 0;
   }
 `;
 
@@ -26,10 +28,15 @@ const Input = styled.input`
   visibility: hidden;
   width: 0;
   height: 0;
+
   ${({ theme: { colors } }) => css`
     &:checked ~ ${LabelSquare} {
       border: 3px solid ${colors.btnBlue};
       background-color: ${colors.btnBlue};
+
+      svg {
+        opacity: 1;
+      }
     }
 
     &:checked ~ span {
@@ -62,6 +69,7 @@ const Label = styled.label`
 
   ${(p) => css`
     color: ${p.theme.colors.colorTextDisabled}};
+
     &:hover {
      ${Input}:not(input:checked) ~ ${LabelSquare} {
         & > svg {

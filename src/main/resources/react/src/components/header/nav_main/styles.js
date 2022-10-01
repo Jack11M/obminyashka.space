@@ -172,7 +172,7 @@ export const InputSearch = styled.input`
   outline: none;
 `;
 
-export const Label = styled.div`
+export const LabelLink = styled(Link)`
   position: absolute;
   display: flex;
   justify-content: center;
