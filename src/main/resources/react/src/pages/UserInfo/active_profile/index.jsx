@@ -8,7 +8,7 @@ import { getName } from './helpers';
 import { CropImage } from './crop-image';
 
 const ActiveProfile = () => {
-  const { firstName, lastName, avatarImage } = useSelector(getProfile);
+  const { firstName, lastName, avatarImage, email } = useSelector(getProfile);
 
   return (
     <Styles.ProfileBlock>
@@ -17,7 +17,7 @@ const ActiveProfile = () => {
 
         <Styles.BoxData>
           <Styles.DataName>
-            <EllipsisText>{getName(firstName, lastName)}</EllipsisText>
+            <EllipsisText>{getName(firstName, lastName) || email}</EllipsisText>
           </Styles.DataName>
         </Styles.BoxData>
       </Styles.ProfileBox>

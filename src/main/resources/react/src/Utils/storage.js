@@ -4,15 +4,16 @@ export const getStorageUser = (option) => {
   return local || session || '';
 };
 
-export const setStorageUser = (data) => {
-  const local = JSON.parse(localStorage.getItem('user'));
-  const session = JSON.parse(sessionStorage.getItem('user'));
+export const setStorageUser = (data, type = 'user') => {
+  const local = JSON.parse(localStorage.getItem(type));
+  const session = JSON.parse(sessionStorage.getItem(type));
+  let newData;
   if (local) {
-    const newData = { ...local, ...data };
-    localStorage.setItem('user', JSON.stringify(newData));
+    newData = { ...local, ...data };
+    localStorage.setItem(type, JSON.stringify(newData));
   } else {
-    const newData = { ...session, ...data };
-    sessionStorage.setItem('user', JSON.stringify(newData));
+    newData = { ...session, ...data };
+    sessionStorage.setItem(type, JSON.stringify(newData));
   }
 };
 

@@ -12,7 +12,8 @@ export const ToolTip = styled.p`
   max-width: 500px;
   border-radius: 8px;
   overflow-x: auto;
-  z-index: 1;
+  z-index: 10;
+  cursor: context-menu;
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3),
     0px 31px 32px -24px rgba(0, 0, 0, 1);
 

@@ -26,7 +26,7 @@ export const DataName = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  width: 100%;
+  width: 162px;
   font-size: 14px;
   line-height: 16px;
   color: ${({ theme }) => theme.colors.white};

@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const profileMeInitialState = {
   userLoading: false,
   childrenLoading: false,
-  avatarImage: '',
+  avatarImage: null,
   children: [],
   email: '',
   firstName: '',
@@ -29,7 +29,7 @@ const profileMeSlice = createSlice({
       state.children = payload;
     },
     putProfile: (state, { payload }) => {
-      state.avatarImage = payload?.avatarImage || '';
+      state.avatarImage = payload?.avatarImage;
       state.children = payload?.children;
       state.email = payload?.email;
       state.firstName = payload?.firstName;
@@ -50,7 +50,7 @@ const profileMeSlice = createSlice({
     clearProfile: (state) => {
       state.userLoading = false;
       state.childrenLoading = false;
-      state.avatarImage = '';
+      state.avatarImage = null;
       state.children = [];
       state.email = '';
       state.firstName = '';

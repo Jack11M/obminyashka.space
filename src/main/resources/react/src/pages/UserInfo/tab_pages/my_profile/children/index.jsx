@@ -27,7 +27,7 @@ const Children = () => {
     setIsLoading(true);
     try {
       await dispatch(putChildrenThunk(values.children));
-      toast.success(getTranslatedText('popup.addChildren'));
+      toast.success(getTranslatedText('toastText.changedData'));
     } catch (e) {
       toast.error(e);
     } finally {

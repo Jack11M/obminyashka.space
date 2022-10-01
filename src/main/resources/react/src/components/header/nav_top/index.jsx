@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
+import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { Avatar } from 'components/common/avatar';
 import { CustomSelect } from 'components/selectLang';
@@ -19,15 +20,15 @@ const NavTop = () => {
   const [image, setImage] = useState('');
 
   useEffect(() => {
-    if (!avatarImage?.includes('blob') && avatarImage !== '') {
+    if (!avatarImage?.includes('blob') && avatarImage) {
       setImage(`data:image/jpeg;base64,${avatarImage}`);
     }
 
-    if (avatarImage?.includes('blob')) {
+    if (avatarImage?.includes('blob') && avatarImage) {
       setImage(avatarImage);
     }
 
-    if (avatarImage === '') setImage('');
+    if (!avatarImage) setImage(null);
   }, [avatarImage]);
 
   return (
@@ -50,7 +51,9 @@ const NavTop = () => {
               <Avatar source={image} />
 
               <Styles.ProfileSpan>
-                {profile?.username || getTranslatedText('header.myOffice')}
+                <EllipsisText>
+                  {profile?.username || getTranslatedText('header.myOffice')}
+                </EllipsisText>
               </Styles.ProfileSpan>
             </Styles.LoginLink>
             <CustomSelect />

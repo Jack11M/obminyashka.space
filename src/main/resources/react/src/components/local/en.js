@@ -28,6 +28,10 @@ const en = {
       'The maximum capacity of photos to be stored can be up to 10 pcs',
     selectSize: 'Dimensions are only available for Clothing and Shoes',
     addChildren: 'Children added successfully',
+    addPhoto: 'Add photo',
+  },
+  toastText: {
+    changedData: 'Data changed successfully',
   },
   errors: {
     minPhoto: 'Minimum 1 photo',
@@ -84,11 +88,11 @@ const en = {
     changePassword: 'Change password',
     currentPassword: 'Current password:',
     newPassword: 'New password:',
-    confirmPassword: 'Repeat password:',
+    confirmPassword: 'Confirm password:',
     changeEmail: 'Change EmaiL',
     oldEmail: 'Current Email:',
     newEmail: 'New Email:',
-    confirmEmail: 'Repeat Email:',
+    confirmEmail: 'Confirm Email:',
     remove: 'Remove account',
     removeConfirm:
       'To delete your account, you need to enter a password and confirm it.',
