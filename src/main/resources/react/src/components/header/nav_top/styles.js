@@ -11,7 +11,6 @@ export const Wrapper = styled.div`
   max-width: 1251px;
   padding: 0 15px;
   margin: 0 auto;
-  overflow: hidden;
 `;
 
 export const DivTop = styled.div`
@@ -61,16 +60,10 @@ export const LoginLink = styled(Link)`
 `;
 
 export const ProfileSpan = styled.span`
-  margin-left: 10px;
-  line-height: 16px;
-  color: #444444;
+  position: relative;
   display: block;
+  margin-left: 10px;
   width: 150px;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-
-  &:active {
-    transform: scale(1.03);
-  }
+  line-height: 19px;
+  color: #444444;
 `;

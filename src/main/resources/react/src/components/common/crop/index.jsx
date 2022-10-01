@@ -13,9 +13,10 @@ import { deleteAvatarThunk, putAvatarThunk } from 'store/profile/thunk';
 import * as Styles from './styles';
 import getCroppedImg from './helpers';
 
-const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
-  const dispatch = useDispatch();
+const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
   const ref = useRef(null);
+  const dispatch = useDispatch();
+
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
@@ -77,7 +78,7 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
     <Styles.Overlay>
       <Styles.Container ref={ref}>
         <Styles.Wrap>
-          <Styles.Title>Add photo</Styles.Title>
+          <Styles.Title>{getTranslatedText('popup.addPhoto')}</Styles.Title>
 
           <Styles.BlockCrop>
             <Cropper
@@ -102,12 +103,14 @@ const Crop = ({ image, onClose, setImage, setCroppedImage }) => {
           </Styles.RotationBlock>
 
           <Styles.BlockButtons>
-            <Button
-              click={handleDelete}
-              isLoading={loadingDelete}
-              style={{ width: '100%' }}
-              text={getTranslatedText('button.delete')}
-            />
+            {!disabled && (
+              <Button
+                click={handleDelete}
+                isLoading={loadingDelete}
+                style={{ width: '100%' }}
+                text={getTranslatedText('button.delete')}
+              />
+            )}
 
             <Button text={getTranslatedText('button.cancel')} click={onClose} />
 

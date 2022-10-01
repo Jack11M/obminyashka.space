@@ -54,9 +54,9 @@ const AboutMyself = () => {
         toast.success(getTranslatedText('popup.notEmptyInput'));
         return;
       }
-      const data = await api.profile.putUserInfo(newUserData);
+      await api.profile.putUserInfo(newUserData);
       dispatch(putUserToStore(newUserData));
-      toast.success(data);
+      toast.success(getTranslatedText('toastText.changedData'));
     } catch (err) {
       if (err.response?.status === 400) {
         const indexStart =

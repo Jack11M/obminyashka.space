@@ -88,6 +88,7 @@ const CropImage = ({ avatarImage }) => {
 
       {openCrop && (
         <Crop
+          disabled={!image}
           setImage={setImage}
           image={croppedImage}
           setCroppedImage={setCroppedImage}

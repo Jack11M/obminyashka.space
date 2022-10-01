@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { showMessage } from 'hooks';
-import { getStorageLang, getStorageUser, setStorageUser } from 'Utils';
+import { getStorageUser, setStorageUser } from 'Utils';
 
 const authInitialState = {
   profile: getStorageUser('user'),
   isFetchingAuth: false,
-  lang: getStorageLang(),
+  lang: getStorageUser('user')?.['Accept-Language'] || 'ua',
   isChangeLang: false,
   isAuthed: !!getStorageUser('user'),
 };
@@ -17,7 +17,7 @@ const authSlice = createSlice({
   reducers: {
     setLanguage: (state, { payload }) => {
       try {
-        localStorage.setItem('lang', payload);
+        setStorageUser({ 'Accept-Language': payload });
         state.lang = payload;
       } catch (e) {
         showMessage('You need to enable a localStorage');

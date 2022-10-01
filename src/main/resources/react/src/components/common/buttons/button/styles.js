@@ -49,6 +49,7 @@ export const ButtonBlue = styled.button`
 
     &:disabled {
       background-color: ${theme.colors.btnGbDisabled};
+      cursor: default;
     }
   `}
 `;

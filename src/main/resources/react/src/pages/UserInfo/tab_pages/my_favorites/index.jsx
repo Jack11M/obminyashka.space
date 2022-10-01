@@ -5,10 +5,9 @@ import { ProductCard } from 'components/item-card';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
+import { productData } from './config';
 
 const MyFavorites = () => {
-  const isFavorite = true;
-
   return (
     <>
       <TitleBigBlue
@@ -17,47 +16,15 @@ const MyFavorites = () => {
       />
 
       <Styles.CardsContainer>
-        <ProductCard
-          city="Харьков"
-          isFavorite={isFavorite}
-          picture="https://static.toiimg.com/photo/72975551.cms"
-          text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-        />
-
-        <ProductCard
-          city="Харьков"
-          isFavorite={isFavorite}
-          picture="https://static.toiimg.com/photo/72975551.cms"
-          text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-        />
-
-        <ProductCard
-          city="Харьков"
-          isFavorite={isFavorite}
-          picture="https://static.toiimg.com/photo/72975551.cms"
-          text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-        />
-
-        <ProductCard
-          city="Харьков"
-          isFavorite={isFavorite}
-          picture="https://static.toiimg.com/photo/72975551.cms"
-          text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-        />
-
-        <ProductCard
-          city="Харьков"
-          isFavorite={isFavorite}
-          picture="https://static.toiimg.com/photo/72975551.cms"
-          text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-        />
-
-        <ProductCard
-          city="Харьков"
-          isFavorite={isFavorite}
-          picture="https://static.toiimg.com/photo/72975551.cms"
-          text="Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет"
-        />
+        {productData.map((card, idx) => (
+          <ProductCard
+            city={card.city}
+            text={card.text}
+            picture={card.picture}
+            isFavorite={card.isFavorite}
+            key={String(card.city + idx)}
+          />
+        ))}
       </Styles.CardsContainer>
     </>
   );

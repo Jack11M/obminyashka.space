@@ -29,15 +29,13 @@ import * as Styles from './styles';
 const MySettings = () => {
   const dispatch = useDispatch();
   const { openModal } = useContext(ModalContext);
+  const { email: currentEmail } = useSelector(getAuthProfile);
 
   const [loading, setLoading] = useState(false);
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
-  const { email: currentEmail } = useSelector(getAuthProfile);
-
   const validationPassword = validationPasswordSchema;
-
   const validationEmail = validationEmailSchema(currentEmail);
 
   const initialEmailValues = validationEmail.cast({});

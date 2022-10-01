@@ -56,6 +56,7 @@ const EllipsisText = ({ children }) => {
       >
         {children}
       </Styles.EllipsisDiv>
+
       {open && (
         <Styles.ToolTip
           height={heightEl}
