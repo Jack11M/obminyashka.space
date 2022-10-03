@@ -1,19 +1,23 @@
-package space.obminyashka.items_exchange.authorization.jwt;
+package space.obminyashka.items_exchange.service;
 
-import io.jsonwebtoken.*;
-import liquibase.util.StringUtil;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.authorization.jwt.InvalidatedTokensHolder;
 import space.obminyashka.items_exchange.model.Role;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,12 +30,11 @@ import java.util.concurrent.TimeUnit;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
-public class JwtTokenProvider {
+public class JwtTokenService {
 
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String EMPTY_TOKEN = "";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     private final UserDetailsService userDetailsService;
@@ -50,51 +53,42 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(String username, Role role) {
-        Claims claims = Jwts.claims().setSubject(username);
-        claims.put("role", role.getName());
-
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + jwtAccessTokenExpirationMillis);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secret)
-                .compact();
+        return JWT.create()
+                .withSubject(username)
+                .withClaim("role", role.getName())
+                .withExpiresAt(Instant.now().plusMillis(jwtAccessTokenExpirationMillis))
+                .sign(Algorithm.HMAC512(secret));
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getVerify(token).getSubject());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    private String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    private DecodedJWT getVerify(String token) {
+        return JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
     }
 
-    public boolean validateAccessToken(String token, HttpServletRequest req) {
+    public boolean validateAccessToken(String token) throws AccessDeniedException {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date())
+            return Instant.now().isBefore(getVerify(token).getExpiresAtAsInstant())
                     && !invalidatedTokensHolder.isInvalidated(token);
-        } catch (JwtException e) {
+        } catch (JWTVerificationException e) {
             log.error("Unauthorized: {}", e.getMessage());
-            req.setAttribute("detailedError", e.getMessage());
             return false;
         }
     }
 
     public void invalidateAccessToken(String token) {
         final Date expirationDate = getAccessTokenExpirationDate(token)
-                .orElseThrow(() -> new JwtException(getMessageSource("invalid.token")));
+                .orElseThrow(() -> new JWTVerificationException(getMessageSource("invalid.token")));
         invalidatedTokensHolder.invalidate(token, expirationDate);
     }
 
     public Optional<Date> getAccessTokenExpirationDate(String token) {
         try {
-            return Optional.ofNullable(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration());
-        } catch (JwtException exception) {
+            return Optional.ofNullable(getVerify(token).getExpiresAt());
+        } catch (JWTVerificationException exception) {
             log.error("Token parsing error {}", exception.getMessage());
             return Optional.empty();
         }
@@ -118,24 +112,10 @@ public class JwtTokenProvider {
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
     }
 
-    public String getTokenFromHeader(HttpServletRequest request, String headerKey) {
-        String bearerToken = request.getHeader(headerKey);
-        final var resolvedToken = resolveToken(bearerToken);
-        if (resolvedToken.isBlank()) {
-            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource("invalid.token");
-            log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
-            request.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
-        }
-        return resolvedToken;
-    }
-
     public static String resolveToken(String token) {
-        if (!StringUtil.isEmpty(token)) {
-            if (token.startsWith(BEARER_PREFIX)) {
-                return token.substring(BEARER_PREFIX.length());
-            }
-            return token;
-        }
-        return EMPTY_TOKEN;
+        return Optional.ofNullable(token)
+                .filter(it -> it.startsWith(BEARER_PREFIX))
+                .map(it -> it.substring(BEARER_PREFIX.length()))
+                .orElse(token);
     }
 }

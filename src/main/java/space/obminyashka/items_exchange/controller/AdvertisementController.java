@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
@@ -116,6 +117,7 @@ public class AdvertisementController {
         return advertisementService.findFirst10ByFilter(filterDto);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PostMapping(value = ApiKey.ADV,
             consumes = {
                     MediaType.APPLICATION_JSON_VALUE,
@@ -140,6 +142,7 @@ public class AdvertisementController {
         return advertisementService.createAdvertisement(dto, owner, compressedImages);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.ADV_ID)
     @ApiOperation(value = "Update an existed advertisement")
     @ApiResponses(value = {
@@ -159,6 +162,7 @@ public class AdvertisementController {
         return advertisementService.updateAdvertisement(dto);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.ADV_ID)
     @ApiOperation(value = "Delete an existed advertisement")
     @ApiResponses(value = {
@@ -173,6 +177,7 @@ public class AdvertisementController {
         advertisementService.remove(id);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PostMapping(ApiKey.ADV_DEFAULT_IMAGE)
     @ApiOperation(value = "Set a default image to an existed advertisement")
     @ApiResponses(value = {

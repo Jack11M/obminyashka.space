@@ -70,21 +70,19 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        sendUriAndGetMvcResult(get(USER_MY_INFO), status().isUnauthorized());
+        sendUriAndGetMvcResult(get(USER_MY_INFO), status().is3xxRedirection());
     }
 
     @Test
-    @WithMockUser(username = "deletedUser")
+    @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
     void updateUserInfo_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
-        user.setStatus(Status.DELETED);
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isForbidden());
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = new StringJoiner(". ")
                 .add(getMessageSource("exception.illegal.operation"))
-                .add(getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user)))
+                .add(getParametrizedMessageSource("account.self.delete.request", 7L))
                 .toString();
 
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
@@ -227,7 +225,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @ParameterizedTest
-    @WithMockUser(username = "deletedUser")
+    @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
     @MethodSource("selfDeleteTestData")
     void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), testDto, status().isBadRequest());
@@ -239,12 +237,11 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser("admin")
-    void makeAccountActiveAgain_WhenUserHasNotStatusDeletedShouldThrowIllegalOperationException() throws Exception {
+    void makeAccountActiveAgain_WhenUserHasNotStatusDeletedShouldThrowAccessDenied() throws Exception {
         MvcResult mvcResult = selfDeleteRequestBasicTest(true, CORRECT_OLD_PASSWORD, put(USER_SERVICE_RESTORE), status().isForbidden());
 
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource("exception.illegal.operation")));
+        String message = mvcResult.getResponse().getContentAsString().trim();
+        assertEquals(getMessageSource("invalid.token"), message);
     }
 
     private String getResponseContentAsString(MvcResult mvcResult) throws UnsupportedEncodingException {

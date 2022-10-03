@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.DataConflictException;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
@@ -30,7 +30,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
@@ -59,6 +58,7 @@ public class UserController {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_MY_INFO)
     @ApiOperation(value = "Update a registered requested user's data")
     @ApiResponses(value = {
@@ -81,6 +81,7 @@ public class UserController {
         return advService.findAllByUsername(authentication.getName());
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_SERVICE_CHANGE_PASSWORD)
     @ApiOperation(value = "Update a user password")
     @ApiResponses(value = {
@@ -95,6 +96,7 @@ public class UserController {
         return userService.updateUserPassword(userChangePasswordDto, user);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_SERVICE_CHANGE_EMAIL)
     @ApiOperation(value = "Update a user email")
     @ApiResponses(value = {
@@ -116,6 +118,7 @@ public class UserController {
         return userService.updateUserEmail(userChangeEmailDto, user);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.USER_SERVICE_DELETE)
     @ApiOperation(value = "Delete user")
     @ApiResponses(value = {
@@ -128,9 +131,10 @@ public class UserController {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         userService.selfDeleteRequest(user);
 
-        return getParametrizedMessageSource("account.self.delete.request", userService.getDaysBeforeDeletion(user));
+        return getParametrizedMessageSource("account.self.delete.request", userService.calculateDaysBeforeCompleteRemove(user.getUpdated()));
     }
 
+    @PreAuthorize("hasRole('SELF_REMOVING')")
     @PutMapping(ApiKey.USER_SERVICE_RESTORE)
     @ApiOperation(value = "Restore user")
     @ApiResponses(value = {
@@ -139,11 +143,8 @@ public class UserController {
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @ApiIgnore Authentication authentication)
-            throws InvalidDtoException, IllegalOperationException {
+            throws InvalidDtoException {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
-        if (!user.getStatus().equals(DELETED)) {
-            throw new IllegalOperationException(getMessageSource("exception.illegal.operation"));
-        }
         userService.makeAccountActiveAgain(user);
 
         return getMessageSource("account.made.active.again");
@@ -154,13 +155,12 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<ChildDto>> getChildren(@ApiIgnore Authentication authentication) {
-        List<ChildDto> children = userService.getChildren(getUser(authentication.getName()));
-        return children.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(children, HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public List<ChildDto> getChildren(@ApiIgnore Authentication authentication) {
+        return userService.getChildren(getUser(authentication.getName()));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_CHILD)
     @ApiOperation(value = "Update child data for a registered requested user")
     @ApiResponses(value = {
@@ -175,6 +175,7 @@ public class UserController {
         return userService.updateChildren(user, childrenDto);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Update a user avatar image")
     @ApiResponses(value = {
@@ -189,6 +190,7 @@ public class UserController {
         userService.setUserAvatar(newAvatarImage, user);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.USER_SERVICE_CHANGE_AVATAR)
     @ApiOperation(value = "Remove a user's avatar image")
     @ApiResponses(value = {

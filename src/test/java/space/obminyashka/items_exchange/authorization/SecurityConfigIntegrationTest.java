@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.jayway.jsonpath.JsonPath;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @DBRider
 @AutoConfigureMockMvc
 class SecurityConfigIntegrationTest extends BasicControllerTest {
-
     private static final String VALID_USERNAME = "admin";
     private static final String VALID_PASSWORD = "@kuIOIY*h986";
     private static final String NOT_VALID_USERNAME = "nimda";
@@ -67,9 +67,11 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    void createAdvertisementWithoutTokenIsUnauthorized() throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(post(ADV), status().isUnauthorized());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("invalid.token")));
+    void createAdvertisementWithoutTokenIsRedirectedToLoginPage() throws Exception {
+        final var mvcResult = sendUriAndGetMvcResult(post(ADV), status().is3xxRedirection());
+        final var redirectedUrl = mvcResult.getResponse().getRedirectedUrl();
+        assertNotNull(redirectedUrl);
+        assertTrue(redirectedUrl.endsWith(FRONT_LOGIN));
     }
 
     @Test
@@ -90,20 +92,22 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestWithNotValidJWTTokenIsUnauthorizedAndBadTokenSignature() throws Exception {
+    void postRequestWithNotValidJWTTokenIsUnauthorizedAndRedirectedToLoginPage() throws Exception {
         final var invalidToken = BEARER_PREFIX + obtainToken(createValidUserLoginDto()).replaceAll(".$", "");
-        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().isUnauthorized(),
+        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().is3xxRedirection(),
                 getAuthorizationHeader(invalidToken));
-        assertEquals(getMessageSource("token.signature.not.valid"), mvcResult.getResponse().getContentAsString().trim());
+        final var redirectedUrl = mvcResult.getResponse().getRedirectedUrl();
+        assertNotNull(redirectedUrl);
+        assertTrue(redirectedUrl.endsWith(FRONT_LOGIN));
     }
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestWithExpiredAccessJwtIsUnauthorizedAndAccessJwtIsExpired() throws Exception {
+    void postRequestWithAccessTokenAndEmptyBodyShouldReturnBadRequest() throws Exception {
         final var headers = getAuthorizationHeaderWithValidToken();
-        TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
-        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().isUnauthorized(), headers);
-        assertTrue(mvcResult.getResponse().getContentAsString().startsWith(getMessageSource("access.token.expired")));
+        final var mvcResult = sendUriWithHeadersAndGetMvcResult(multipart(ADV), status().isBadRequest(), headers);
+        final var errorMessage = new JSONObject(mvcResult.getResponse().getContentAsString()).get("error");
+        assertEquals("Required request part 'dto' is not present", errorMessage);
     }
 
     @Test

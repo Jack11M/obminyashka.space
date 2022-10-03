@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.controller.error;
 
-import io.jsonwebtoken.JwtException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -59,21 +59,30 @@ public class GlobalExceptionHandler {
         return errorMessage;
     }
 
-    @ExceptionHandler({IllegalOperationException.class, AccessDeniedException.class})
+    @ExceptionHandler(IllegalOperationException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorMessage handleIllegalOperation(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
-    @ExceptionHandler({JwtException.class, RefreshTokenException.class})
+    @ExceptionHandler({JWTVerificationException.class, RefreshTokenException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorMessage handleUnauthorizedExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
     }
 
-    @ExceptionHandler({RuntimeException.class, ServletException.class})
+    @ExceptionHandler(ServletException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleRuntimeExceptions(Exception e, ServletWebRequest request) {
+    public ErrorMessage handleServletException(ServletException e, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, e, Level.ERROR);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
+        if (e instanceof AccessDeniedException accessDeniedException) {
+            throw accessDeniedException;
+        }
         return logAndGetErrorMessage(request, e, Level.ERROR);
     }
 

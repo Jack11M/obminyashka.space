@@ -34,7 +34,8 @@ import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
-import static space.obminyashka.items_exchange.model.enums.Status.*;
+import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
+import static space.obminyashka.items_exchange.model.enums.Status.UPDATED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
@@ -159,13 +160,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void selfDeleteRequest(User user) {
-        user.setStatus(DELETED);
+        roleService.getRole("ROLE_SELF_REMOVING").ifPresent(user::setRole);
         userRepository.saveAndFlush(user);
     }
 
     @Override
-    public long getDaysBeforeDeletion(User user) {
-        return numberOfDaysToKeepDeletedUsers - (DAYS.between(user.getUpdated(), LocalDateTime.now()));
+    public long getDaysBeforeDeletion(String username) {
+        final var userLastUpdateTime = userRepository.selectLastUpdatedTimeFromUserByUsername(username);
+        return calculateDaysBeforeCompleteRemove(userLastUpdateTime);
+    }
+
+    @Override
+    public long calculateDaysBeforeCompleteRemove(LocalDateTime userLastUpdateTime) {
+        return numberOfDaysToKeepDeletedUsers - (DAYS.between(userLastUpdateTime, LocalDateTime.now()));
     }
 
     @Override
