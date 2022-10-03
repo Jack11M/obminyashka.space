@@ -7,7 +7,7 @@ import { data } from './config';
 
 import * as Styles from './styles';
 
-const SearchResultsPage = () => {
+const SearchResults = () => {
   return (
     <Styles.SearchingResults>
       <Styles.SearchingContent>
@@ -41,4 +41,4 @@ const SearchResultsPage = () => {
   );
 };
 
-export default SearchResultsPage;
+export default SearchResults;

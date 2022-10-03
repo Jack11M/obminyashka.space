@@ -34,7 +34,7 @@ const NavMain = () => {
               type="text"
               placeholder={`${getTranslatedText('header.iSearch')} ...`}
             />
-            <Styles.LabelLink to={route.SearchResultsPage} htmlFor="search">
+            <Styles.LabelLink to={route.SearchResults} htmlFor="search">
               <SearchSvg />
             </Styles.LabelLink>
           </Styles.WrapSearch>

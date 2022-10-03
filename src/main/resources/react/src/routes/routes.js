@@ -7,8 +7,8 @@ import UserInfo from 'pages/UserInfo/UserInfo';
 import AddGoods from 'pages/AddGoods/AddGoods';
 import Login from 'pages/FormRegister/sign-in';
 import SignUp from 'pages/FormRegister/sign-up';
+import SearchResults from 'pages/SearchResults';
 import ProductPage from 'pages/ProductPage/ProductPage';
-import SearchResultsPage from 'pages/SearchResultsPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';
@@ -56,7 +56,7 @@ const Routes = () => (
 
       <Route path={route.noMatch} element={<FourOhFourPage />} />
 
-      <Route path={route.SearchResultsPage} element={<SearchResultsPage />} />
+      <Route path={route.SearchResults} element={<SearchResults />} />
     </Switch>
   </div>
 );
