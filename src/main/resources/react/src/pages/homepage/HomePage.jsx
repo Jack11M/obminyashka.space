@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { getUserThunk } from 'store/profile/thunk';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { getAuthed } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 
 import Sliders from './slider';
@@ -13,10 +14,11 @@ import * as Styles from './styles';
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const isAuthed = useSelector(getAuthed);
   const { avatarImage } = useSelector(getProfile);
 
   useEffect(() => {
-    if (!avatarImage) {
+    if (!avatarImage && isAuthed) {
       dispatch(getUserThunk());
     }
   }, [dispatch]);
