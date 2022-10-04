@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
@@ -17,6 +18,7 @@ public class AdvertisementDisplayDto {
 
     private UUID advertisementId;
     private String age;
+    @JsonProperty("sizeValue")
     private String size;
     private String topic;
     private String phone;
