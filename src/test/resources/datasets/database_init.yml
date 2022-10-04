@@ -121,6 +121,8 @@ role:
     name: 'ROLE_ADMIN'
   - id: c0bb0913-f772-49e9-a9ac-e87246fa3505
     name: 'ROLE_USER'
+  - id: 53c59620-37bb-4a8c-9b90-2965619496ec
+    name: 'ROLE_SELF_REMOVING'
 
 child:
   - id: 63406eb3-309e-4191-88ad-f5958d3c8451

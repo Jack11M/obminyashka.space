@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
@@ -27,6 +26,7 @@ import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.service.AuthService;
+import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
@@ -125,7 +125,7 @@ public class AuthController {
     public RefreshTokenResponseDto refreshToken(
             @ApiParam(required = true)
             @RequestHeader(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken) throws RefreshTokenException {
-        final var resolvedToken = JwtTokenProvider.resolveToken(refreshToken);
+        final var resolvedToken = JwtTokenService.resolveToken(refreshToken);
         userService.updatePreferableLanguage(resolvedToken);
         return authService.renewAccessTokenByRefresh(resolvedToken);
     }

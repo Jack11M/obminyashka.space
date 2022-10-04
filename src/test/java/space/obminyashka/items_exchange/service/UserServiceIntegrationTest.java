@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
+import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,7 +33,7 @@ import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
-class UserServiceTest {
+class UserServiceIntegrationTest {
 
     public static final String CORRECT_OLD_PASSWORD = "123456xX";
     public static final String NEW_PASSWORD = "123456wW";
@@ -39,6 +41,8 @@ class UserServiceTest {
 
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private RoleService roleService;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
     @Autowired
@@ -77,9 +81,11 @@ class UserServiceTest {
 
     @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
+        when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
+
         userService.selfDeleteRequest(userWithOldPassword);
 
-        assertEquals(DELETED, userWithOldPassword.getStatus());
+        assertEquals("ROLE_SELF_REMOVING", userWithOldPassword.getRole().getName());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
 

@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.authorization.jwt.JwtTokenProvider;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.service.AuthService;
+import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.UserService;
 
@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private static final String TIMEZONE_KIEV = "Europe/Kiev";
 
     private final RefreshTokenService refreshTokenService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenService jwtTokenService;
     private final UserService userService;
     private final ModelMapper modelMapper;
 
@@ -36,10 +36,10 @@ public class AuthServiceImpl implements AuthService {
         final var user = userService.findByUsernameOrEmail(username);
         if (user.isPresent()) {
             final var userLoginResponseDto = modelMapper.map(user.get(), UserLoginResponseDto.class);
-            userLoginResponseDto.setAccessToken(jwtTokenProvider.createAccessToken(username, user.get().getRole()));
-            userLoginResponseDto.setRefreshToken(refreshTokenService.createRefreshToken(username).getToken());
-            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenProvider.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
-            userLoginResponseDto.setRefreshTokenExpirationDate(jwtTokenProvider.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
+            userLoginResponseDto.setAccessToken(jwtTokenService.createAccessToken(username, user.get().getRole()));
+            userLoginResponseDto.setRefreshToken(refreshTokenService.createRefreshToken(user.get()).getToken());
+            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
+            userLoginResponseDto.setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
             log.info("User {} is successfully logged in", username);
             return Optional.of(userLoginResponseDto);
         }
@@ -48,9 +48,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean logout(String accessToken, String username) {
-        final String token = JwtTokenProvider.resolveToken(accessToken);
+        final String token = JwtTokenService.resolveToken(accessToken);
         if (!token.isEmpty()) {
-            jwtTokenProvider.invalidateAccessToken(token);
+            jwtTokenService.invalidateAccessToken(token);
             refreshTokenService.deleteByUsername(username);
             return true;
         }
@@ -62,8 +62,8 @@ public class AuthServiceImpl implements AuthService {
         return refreshTokenService.renewAccessTokenByRefresh(refreshToken)
                 .filter(Predicate.not(String::isEmpty))
                 .map(accessToken -> new RefreshTokenResponseDto(accessToken, refreshToken,
-                        jwtTokenProvider.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))),
-                        jwtTokenProvider.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV)))))
+                        jwtTokenService.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))),
+                        jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV)))))
                 .orElseThrow(() -> new RefreshTokenException(getParametrizedMessageSource("refresh.token.invalid", refreshToken)));
     }
 }

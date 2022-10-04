@@ -160,7 +160,7 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "deletedUser")
+    @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = "user/deleted_user_restore_expected.yml", orderBy = {"created", "name"},
             ignoreCols = {"password", "lastOnlineTime", "updated"})

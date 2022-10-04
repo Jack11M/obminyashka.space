@@ -119,6 +119,8 @@ role:
     name: 'ROLE_ADMIN'
   - id: c0bb0913-f772-49e9-a9ac-e87246fa3505
     name: 'ROLE_USER'
+  - id: 53c59620-37bb-4a8c-9b90-2965619496ec
+    name: 'ROLE_SELF_REMOVING'
 
 location:
   - id: 2c5467f3-b7ee-48b1-9451-7028255b757b

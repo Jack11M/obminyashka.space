@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,10 +64,17 @@ public interface UserService {
 
     /**
      * Getting days which is/are left for the user before removing from DB
-     * @param user the requested user
+     * @param username the requested user login
      * @return quantity of days that is/are left
      */
-    long getDaysBeforeDeletion(User user);
+    long getDaysBeforeDeletion(String username);
+
+    /**
+     * Getting days which is/are left for the user before removing from DB
+     * @param lastUpdateTime the user last update time
+     * @return quantity of days that is/are left
+     */
+    long calculateDaysBeforeCompleteRemove(LocalDateTime lastUpdateTime);
 
     /**
      * Scheduled job which checks users that needs to be removed from DB after exhaustion of the grace period

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -82,6 +83,7 @@ public class ImageController {
         return ResponseEntity.ok(imageService.countImagesForAdvertisement(id));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PostMapping(value = ApiKey.IMAGE_BY_ADV_ID, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(value = "Compress up to 10 images and add to an existed advertisement by its ID")
     @ApiResponses(value = {
@@ -115,6 +117,7 @@ public class ImageController {
         return ResponseEntity.ok("Images added successfully");
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.IMAGE_BY_ADV_ID)
     @ApiOperation(value = "Delete images from an advertisement by its ID and images ID")
     @ApiResponses(value = {

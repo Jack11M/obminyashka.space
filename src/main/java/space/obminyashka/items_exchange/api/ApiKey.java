@@ -65,4 +65,5 @@ public class ApiKey {
     public static final String FRONT_SIGN = FRONT_LOGIN + "/sign";
     public static final String FRONT_USER = "/user/**";
     public static final String FRONT_PRODUCT = "/product-page/**";
+    public static final String FRONT_FILTER = "/filter/**";
 }

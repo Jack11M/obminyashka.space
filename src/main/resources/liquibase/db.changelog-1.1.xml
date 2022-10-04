@@ -200,4 +200,11 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="1.1.15: Adding ROLE(SELF_REMOVING)" author="rpkyrych">
+        <insert tableName="role">
+            <column name="id" valueComputed="${uuid_function}"/>
+            <column name="name" value="ROLE_SELF_REMOVING"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
