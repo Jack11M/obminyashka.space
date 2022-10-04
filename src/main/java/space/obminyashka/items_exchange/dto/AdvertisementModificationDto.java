@@ -53,6 +53,7 @@ public class AdvertisementModificationDto {
     private Season season;
 
     @Size(min = 1, max = 50, message = "{invalid.size}")
+    @JsonProperty("sizeValue")
     private String size;
 
     @ApiModelProperty(required = true)
