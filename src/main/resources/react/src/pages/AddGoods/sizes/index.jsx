@@ -34,7 +34,7 @@ const Sizes = ({ categories, dimension }) => {
         setTempId(categories.id);
       }
 
-      api.fetchAddGood
+      api.addGood
         .getSize(categories.id)
         .then((data) => {
           setReceivedSizes(data);

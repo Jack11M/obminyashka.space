@@ -23,7 +23,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
   useEffect(() => {
     (async () => {
       try {
-        const categories = await api.fetchAddGood.getCategoryAll();
+        const categories = await api.addGood.getCategoryAll();
         if (Array.isArray(categories)) {
           setReceivedCategories(categories);
         } else {

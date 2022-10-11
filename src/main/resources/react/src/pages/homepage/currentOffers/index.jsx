@@ -18,7 +18,7 @@ const CurrentOffers = () => {
   const [offers, setOffers] = useState([]);
 
   useEffect(() => {
-    api.fetchHome
+    api.home
       .getCurrentOffers()
       .then(({ data }) => {
         if (Array.isArray(data)) setOffers(data);

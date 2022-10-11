@@ -1,13 +1,13 @@
-import * as fetchAddGood from './fetchAddGood';
+import * as addGood from './add-good';
 import * as auth from './auth';
-import * as fetchHome from './fetchHome';
-import * as fetchProduct from './fetchProduct';
+import * as home from './home';
+import * as product from './product';
 import * as profile from './profile';
 
 export default {
   auth,
+  home,
   profile,
-  fetchHome,
-  fetchProduct,
-  fetchAddGood,
+  addGood,
+  product,
 };

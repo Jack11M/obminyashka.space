@@ -21,8 +21,7 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
     const getLocations = async () => {
       if (!location) {
         try {
-          const locationToLang =
-            await api.fetchAddGood.getLocationLanguageAll();
+          const locationToLang = await api.addGood.getLocationLanguageAll();
           const modifiedLocation = locationToLang
             .map((item) => getDependWithLang(item, lang))
             .map((item) =>

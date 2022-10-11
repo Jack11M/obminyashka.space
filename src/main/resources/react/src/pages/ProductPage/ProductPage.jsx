@@ -45,7 +45,7 @@ const ProductPage = () => {
   const setPreviewData = useCallback(async () => {
     const { state } = location;
     try {
-      const locationValue = await api.fetchProduct.getLocation(
+      const locationValue = await api.product.getLocation(
         state.currentLocation.id
       );
 
@@ -69,7 +69,7 @@ const ProductPage = () => {
         location: locationValue,
         subcategory: subcategoryValue,
         ...rest
-      } = await api.fetchProduct.getProduct(id);
+      } = await api.product.getProduct(id);
 
       setProduct(rest);
       setPhotos(images);

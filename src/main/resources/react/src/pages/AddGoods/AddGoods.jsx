@@ -90,7 +90,7 @@ const AddGoods = () => {
     images.forEach((item) => data.append('image', item));
 
     try {
-      await api.fetchAddGood.sendNewAdv(data);
+      await api.addGood.sendNewAdv(data);
       dispatch(clearAdv());
       navigate(route.home);
     } catch (err) {
