@@ -29,11 +29,10 @@ export const ProductOwnerTitleH2 = styled.h2`
 
 export const PostData = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
 `;
 
 export const PostReqData = styled.div`
+  width: 170px;
   padding: 5px 20px 15px 30px;
 `;
 
@@ -49,8 +48,11 @@ export const PostReqDataUl = styled.ul`
   line-height: 26px;
 `;
 
-export const PostReqDataUlItem = styled.li``;
+export const PostReqDataUlItem = styled.li`
+  position: relative;
+`;
 
 export const PostReqDataSpan = styled.span`
   color: #8f8f8f;
+  white-space: nowrap;
 `;

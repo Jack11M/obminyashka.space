@@ -10,7 +10,7 @@ import { BackButton, TitleBigBlue } from 'components/common';
 import { getAuthLang, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
-import { getDate } from './helpers';
+import { getCity } from './helpers';
 import ProductOffers from './ProductOffers';
 import { ProductPostData } from './ProductPostData';
 import { ProductOwnerData } from './ProductOwnerData';
@@ -42,14 +42,22 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState({});
   const [currentLocation, setCurrentLocation] = useState({});
 
-  const setPreviewData = useCallback(() => {
+  const setPreviewData = useCallback(async () => {
     const { state } = location;
-    setWishes(state.wishes);
-    setPhotos(state.photos);
-    setProduct(state.product);
-    setCategory(state.category);
-    setSubcategory(state.subcategory);
-    setCurrentLocation(state.currentLocation);
+    try {
+      const locationValue = await api.fetchProduct.getLocation(
+        state.currentLocation.id
+      );
+
+      setWishes(state.wishes);
+      setPhotos(state.photos);
+      setProduct(state.product);
+      setCategory(state.category);
+      setSubcategory(state.subcategory);
+      setCurrentLocation(locationValue);
+    } catch (e) {
+      toast.error(getErrorMessage(e));
+    }
   }, [location]);
 
   const getProduct = async () => {
@@ -91,9 +99,9 @@ const ProductPage = () => {
           />
 
           <BreadCrumbs>
-            {getTranslatedText('product.categories', lang)}/
-            {getTranslatedText(`categories.${category?.name}`, lang)}/
-            {getTranslatedText(`categories.${subcategory?.name}`, lang)}/
+            {getTranslatedText('product.categories')}/
+            {getTranslatedText(`categories.${category?.name}`)}/
+            {getTranslatedText(`categories.${subcategory?.name}`)}/
             <Span>{product.topic}</Span>
           </BreadCrumbs>
 
@@ -109,17 +117,17 @@ const ProductPage = () => {
             <OwnerAndPost>
               <ProductOwnerData
                 phone={product.phone}
-                city={currentLocation?.city}
-                date={product.createdDate || getDate(lang)}
+                date={product.createdDate}
+                city={getCity(currentLocation)}
                 name={product.ownerName || profile.username}
                 ava={product.ownerAvatar || profile.avatarImage}
               />
 
               <ProductPostData
                 wishes={wishes}
-                size={product.size}
                 title={product.topic}
                 readyForOffers={product.readyForOffers}
+                size={product.size || product.sizeValue}
                 age={enumAge[product.age] || product.age}
                 gender={getTranslatedText(`genderEnum.${product.gender}`)}
                 season={getTranslatedText(`seasonEnum.${product.season}`)}

@@ -64,10 +64,11 @@ export const PostDataBoxContainer = styled.div`
   flex-direction: row;
 `;
 
-export const PostDataDescriptionUl = styled.ul``;
+export const PostDataDescriptionUl = styled.ul`
+  width: 150px;
+`;
 
 export const PostDataDescriptionUlItem = styled.li`
-  font-family: Proxima Nova, sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;

@@ -6,7 +6,8 @@ export const MainContainer = styled.main`
 `;
 
 export const Container = styled.div`
-  max-width: 1200px;
+  max-width: 1251px;
+  padding: 0 15px;
   margin: auto;
 `;
 

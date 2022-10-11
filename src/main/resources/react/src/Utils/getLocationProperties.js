@@ -1,6 +1,6 @@
-import { store } from 'store';
+import { getStorageLang } from './storage';
 
-const { lang } = store.getState().auth;
+const lang = getStorageLang();
 
 export const area = `area${lang.toUpperCase()}`;
 export const city = `city${lang.toUpperCase()}`;

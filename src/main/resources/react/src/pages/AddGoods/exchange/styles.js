@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import styled, { css } from 'styled-components';
 
 export const Wrap = styled.div`
@@ -25,7 +26,12 @@ export const Explanation = styled.p`
 
 export const ChangeWrap = styled.div`
   align-items: center;
-  border: 1px solid #bcbcbc;
+  border: 1px solid
+    ${({ theme, borderValue, error }) => {
+      if (borderValue && !error) return 'hsl(0,0%,44%)';
+      if (error) return theme.colors.colorError;
+      return '#bcbcbc';
+    }};
   border-radius: 2px;
   display: inline-flex;
   flex-wrap: wrap;

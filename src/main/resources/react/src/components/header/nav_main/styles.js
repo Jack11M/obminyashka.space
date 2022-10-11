@@ -11,11 +11,11 @@ export const DivWrap = styled.div`
 `;
 
 export const Wrapper = styled.div`
-  margin: 0 auto;
-  max-width: 1251px;
-  overflow: hidden;
   padding: 0 15px;
+  margin: 0 auto;
+  max-width: 1250px;
   width: 100%;
+  overflow: hidden;
 `;
 
 export const WrapMain = styled.div`

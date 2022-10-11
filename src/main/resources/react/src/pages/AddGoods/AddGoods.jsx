@@ -202,8 +202,8 @@ const AddGoods = () => {
 
                   <Exchange
                     exchangeList={exchangeList}
-                    readyOffers={{ readyOffer, setReadyOffer }}
                     setExchange={setExchangeList}
+                    readyOffers={{ readyOffer, setReadyOffer }}
                   />
 
                   <>

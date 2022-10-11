@@ -22,11 +22,28 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
     config: { mass: 1, tension: 120, friction: 14, duration: 200 },
   });
 
-  const handleInput = (event) => {
-    if (event.target.value.length >= 40) {
+  const validate = (inputValue) => {
+    const totalLength = exchangeList.join('').length;
+    const inputLength = inputValue?.length;
+
+    if (inputLength > 40) {
       helpers.setError(getTranslatedText('errors.max40'));
+      return true;
+    }
+
+    if (totalLength + inputLength > 200) {
+      helpers.setError(getTranslatedText('errors.max200'));
+      return true;
+    }
+    return false;
+  };
+
+  const handleInput = (event) => {
+    helpers.setError('');
+    if (validate(event.target.value)) {
       return;
     }
+
     setExchangeInput(event.target.value);
   };
 
@@ -53,13 +70,12 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   };
 
   const onBlur = () => {
-    setBorder(false);
-  };
+    if (exchangeInput && !error) {
+      setExchange((prev) => [...prev, exchangeInput]);
+      setExchangeInput('');
+    }
 
-  const getBorderClassName = (borderValue, errorValue) => {
-    if (borderValue) return 'border_focus';
-    if (errorValue) return 'border_error';
-    return '';
+    setBorder(false);
   };
 
   return (
@@ -75,15 +91,17 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
         ({getTranslatedText('addAdv.enterPhrase')})
       </Styles.Explanation>
 
-      <Styles.ChangeWrap borderValue={border} styles={getBorderClassName}>
-        {transitions((styles, item) => (
-          <animated.div key={item} style={{ ...styles }}>
-            <Styles.ChangeItem>
-              {item}
-              <Styles.Span onClick={() => removeExchangeItem(item)} />
-            </Styles.ChangeItem>
-          </animated.div>
-        ))}
+      <Styles.ChangeWrap borderValue={border} error={error}>
+        {transitions((styles, item, idx) => {
+          return (
+            <animated.div key={idx.ctrl.id} style={{ ...styles }}>
+              <Styles.ChangeItem>
+                {item}
+                <Styles.Span onClick={() => removeExchangeItem(item)} />
+              </Styles.ChangeItem>
+            </animated.div>
+          );
+        })}
 
         <Styles.ChangeInput
           type="text"

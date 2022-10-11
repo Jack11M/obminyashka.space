@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+
+import { getStorageLang } from 'Utils';
 import { Button } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -12,9 +15,12 @@ const ProductPostData = ({
   season,
   readyForOffers,
 }) => {
+  const lang = getStorageLang();
   const transformWishes = readyForOffers
     ? [wishes, getTranslatedText('product.checkInUl')]
     : wishes;
+
+  const sm = useMemo(() => (lang === 'en' ? 'sm' : 'см'), [lang]);
 
   return (
     <Styles.Container>
@@ -53,9 +59,9 @@ const ProductPostData = ({
           <Styles.PostDataDescriptionUl>
             <Styles.PostDataDescriptionUlItem>
               <Styles.PostDataDescriptionSpan>
-                {`${getTranslatedText('product.size')} / ${getTranslatedText(
-                  'product.age'
-                )}:`}
+                {`${
+                  size ? `${getTranslatedText('product.size')} /` : ''
+                } ${getTranslatedText('product.age')}:`}
               </Styles.PostDataDescriptionSpan>
             </Styles.PostDataDescriptionUlItem>
 
@@ -76,7 +82,7 @@ const ProductPostData = ({
         <Styles.PostDataDescription>
           <Styles.PostDataDescriptionUl>
             <Styles.PostDataDescriptionUlItem>
-              {`${size} / ${age}`}
+              {`${size ? `${size} ${sm} /` : ''} ${age ?? ''}`}
             </Styles.PostDataDescriptionUlItem>
 
             <Styles.PostDataDescriptionUlItem>
