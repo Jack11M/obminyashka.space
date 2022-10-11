@@ -48,6 +48,7 @@ export const OwnerAndPost = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 25px;
   width: 420px;
   height: 935px;
 `;
