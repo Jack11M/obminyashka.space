@@ -121,13 +121,7 @@ const ProductPage = () => {
                 date={product.createdDate}
                 city={getCity(currentLocation)}
                 name={product.ownerName || profile.username}
-                avatar={
-                  product.ownerAvatar || profile.avatarImage
-                    ? `data:image/jpeg;base64,
-                  ${product.ownerAvatar || profile.avatarImage}
-                  `
-                    : null
-                }
+                avatar={product.ownerAvatar || profile.avatarImage}
               />
 
               <ProductPostData
