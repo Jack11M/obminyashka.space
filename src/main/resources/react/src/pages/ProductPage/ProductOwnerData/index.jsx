@@ -20,7 +20,7 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
     <Container>
       <ProductOwner>
         <ProductOwnerAvatar>
-          <Avatar height={32} width={32} avatar={avatar} />
+          <Avatar height={32} width={32} source={avatar} />
         </ProductOwnerAvatar>
 
         <ProductOwnerName>

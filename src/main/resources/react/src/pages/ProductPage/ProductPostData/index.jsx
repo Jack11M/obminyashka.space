@@ -17,7 +17,7 @@ const ProductPostData = ({
 }) => {
   const lang = getStorageLang();
   const transformWishes = readyForOffers
-    ? [wishes, getTranslatedText('product.checkInUl')]
+    ? [...wishes, getTranslatedText('product.checkInUl')]
     : wishes;
 
   const sm = useMemo(() => (lang === 'en' ? 'sm' : 'см'), [lang]);

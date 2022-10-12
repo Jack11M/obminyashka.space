@@ -5,9 +5,10 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
+import { getAuthLang } from 'store/auth/slice';
 import { getErrorMessage } from 'Utils/error';
+import { getProfile } from 'store/profile/slice';
 import { BackButton, TitleBigBlue } from 'components/common';
-import { getAuthLang, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getCity } from './helpers';
@@ -33,7 +34,7 @@ const ProductPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const lang = useSelector(getAuthLang);
-  const profile = useSelector(getAuthProfile);
+  const profile = useSelector(getProfile);
 
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
@@ -99,9 +100,9 @@ const ProductPage = () => {
           />
 
           <BreadCrumbs>
-            {getTranslatedText('product.categories')}/
-            {getTranslatedText(`categories.${category?.name}`)}/
-            {getTranslatedText(`categories.${subcategory?.name}`)}/
+            {getTranslatedText('product.categories')} /&nbsp;
+            {getTranslatedText(`categories.${category?.name}`)} /&nbsp;
+            {getTranslatedText(`categories.${subcategory?.name}`)} /&nbsp;
             <Span>{product.topic}</Span>
           </BreadCrumbs>
 
@@ -120,7 +121,13 @@ const ProductPage = () => {
                 date={product.createdDate}
                 city={getCity(currentLocation)}
                 name={product.ownerName || profile.username}
-                ava={product.ownerAvatar || profile.avatarImage}
+                avatar={
+                  product.ownerAvatar || profile.avatarImage
+                    ? `data:image/jpeg;base64,
+                  ${product.ownerAvatar || profile.avatarImage}
+                  `
+                    : null
+                }
               />
 
               <ProductPostData
