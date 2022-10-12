@@ -70,7 +70,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        sendUriAndGetMvcResult(get(USER_MY_INFO), status().is3xxRedirection());
+        sendUriAndGetMvcResult(get(USER_MY_INFO), status().isForbidden());
     }
 
     @Test
@@ -187,7 +187,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
-        sendUriAndGetMvcResult(multipart(HttpMethod.PUT, new URI(USER_SERVICE_CHANGE_AVATAR)).file(bmp), status().isUnsupportedMediaType());
+        sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(bmp), status().isUnsupportedMediaType());
     }
 
     @Test

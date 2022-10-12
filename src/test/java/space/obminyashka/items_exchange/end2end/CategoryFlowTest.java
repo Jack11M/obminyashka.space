@@ -88,9 +88,9 @@ class CategoryFlowTest extends BasicControllerTest {
     }
 
     @Test
-    void createCategory_whenUserDoesNotHaveRoleAdmin_shouldReturnUnauthorized() throws Exception {
+    void createCategory_whenUserDoesNotHaveRoleAdmin_shouldReturnForbidden() throws Exception {
         CategoryDto nonExistCategoryDto = createNonExistValidCategoryDto();
-        sendDtoAndGetMvcResult(post(CATEGORY), nonExistCategoryDto, status().is3xxRedirection());
+        sendDtoAndGetMvcResult(post(CATEGORY), nonExistCategoryDto, status().isForbidden());
     }
 
     @Test
