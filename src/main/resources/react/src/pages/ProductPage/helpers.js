@@ -10,8 +10,8 @@ export const getDate = (lang) => {
 };
 
 export const getCity = (location) => {
-  const districtValue = location[district];
-  const cityValue = location[city] ?? '';
+  const districtValue = location?.[district];
+  const cityValue = location?.[city] ?? '';
   const value = `${cityValue} ${districtValue ? `(${districtValue})` : ''}`;
   return cityValue ? value : '';
 };

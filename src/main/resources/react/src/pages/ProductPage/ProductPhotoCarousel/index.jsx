@@ -17,10 +17,12 @@ const ProductPhotoCarousel = ({ photos = [] }) => {
   });
 
   useEffect(() => {
-    setState({
-      photos,
-      bigPhoto: photos[0],
-    });
+    if (photos.length > 0) {
+      setState({
+        photos,
+        bigPhoto: photos[0],
+      });
+    }
   }, [photos]);
 
   const showBigImg = (id) => {

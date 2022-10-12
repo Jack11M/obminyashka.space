@@ -8,7 +8,7 @@ import * as Icon from 'assets/icons';
 import { Button } from 'components/common';
 import { getErrorMessage } from 'Utils/error';
 import { getTranslatedText } from 'components/local';
-import { deleteAvatarThunk, putAvatarThunk } from 'store/profile/thunk';
+import { deleteAvatarThunk, postAvatarThunk } from 'store/profile/thunk';
 
 import * as Styles from './styles';
 import getCroppedImg from './helpers';
@@ -46,7 +46,7 @@ const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
         dataForm.append('image', file);
 
         const receivedImage = await dispatch(
-          putAvatarThunk(dataForm, croppedPicture.src)
+          postAvatarThunk(dataForm, croppedPicture.src)
         );
 
         setImage(receivedImage);
