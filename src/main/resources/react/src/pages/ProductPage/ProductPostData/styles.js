@@ -6,9 +6,10 @@ export const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  padding-bottom: 40px;
+  height: 100%;
   background-color: #fdfcff;
   box-shadow: 0 0 40px rgba(89, 102, 116, 0.1);
-  height: 710px;
   word-break: break-all;
 `;
 
@@ -64,10 +65,11 @@ export const PostDataBoxContainer = styled.div`
   flex-direction: row;
 `;
 
-export const PostDataDescriptionUl = styled.ul``;
+export const PostDataDescriptionUl = styled.ul`
+  width: 150px;
+`;
 
 export const PostDataDescriptionUlItem = styled.li`
-  font-family: Proxima Nova, sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 16px;

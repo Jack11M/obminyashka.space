@@ -29,6 +29,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Map;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
@@ -176,18 +177,19 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "Update a user avatar image")
+    @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "Set a new user's avatar image")
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 403, message = "FORBIDDEN"),
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateUserAvatar(@RequestParam MultipartFile image, @ApiIgnore Authentication authentication) {
+    public Map<String, byte[]> updateUserAvatar(@RequestParam MultipartFile image, @ApiIgnore Authentication authentication) {
         User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
+        return Map.of("avatarImage", newAvatarImage);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

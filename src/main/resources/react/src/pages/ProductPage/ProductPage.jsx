@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
+import { getAuthLang } from 'store/auth/slice';
 import { getErrorMessage } from 'Utils/error';
+import { getProfile } from 'store/profile/slice';
 import { BackButton, TitleBigBlue } from 'components/common';
-import { getAuthLang, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
-import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
+import { getCity, getDate } from './helpers';
 import { ProductPostData } from './ProductPostData';
 import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
@@ -33,7 +34,7 @@ const ProductPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const lang = useSelector(getAuthLang);
-  const profile = useSelector(getAuthProfile);
+  const profile = useSelector(getProfile);
 
   const [photos, setPhotos] = useState([]);
   const [wishes, setWishes] = useState([]);
@@ -42,14 +43,41 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState({});
   const [currentLocation, setCurrentLocation] = useState({});
 
-  const setPreviewData = useCallback(() => {
-    const { state } = location;
-    setWishes(state.wishes);
-    setPhotos(state.photos);
-    setProduct(state.product);
-    setCategory(state.category);
-    setSubcategory(state.subcategory);
-    setCurrentLocation(state.currentLocation);
+  const { state } = location;
+
+  const avatar = useMemo(() => {
+    if (product.ownerAvatar) return product.ownerAvatar;
+    if (state) return profile.avatarImage;
+    return null;
+  }, [state, product.ownerAvatar]);
+
+  const phone = useMemo(() => {
+    if (product.phone) return product.phone;
+    if (state) return profile.phones[0]?.phoneNumber;
+    return '';
+  }, [state, profile.phones, product.phone]);
+
+  const name = useMemo(() => {
+    if (product.ownerName) return product.ownerName;
+    if (state) return profile.username;
+    return '';
+  }, [state, profile.username, product.ownerName]);
+
+  const setPreviewData = useCallback(async () => {
+    try {
+      const locationValue = await api.product.getLocation(
+        state.currentLocation.id
+      );
+
+      setWishes(state.wishes);
+      setPhotos(state.photos);
+      setProduct(state.product);
+      setCategory(state.category);
+      setSubcategory(state.subcategory);
+      setCurrentLocation(locationValue);
+    } catch (e) {
+      toast.error(getErrorMessage(e));
+    }
   }, [location]);
 
   const getProduct = async () => {
@@ -61,7 +89,7 @@ const ProductPage = () => {
         location: locationValue,
         subcategory: subcategoryValue,
         ...rest
-      } = await api.fetchProduct.getProduct(id);
+      } = await api.product.getProduct(id);
 
       setProduct(rest);
       setPhotos(images);
@@ -91,9 +119,9 @@ const ProductPage = () => {
           />
 
           <BreadCrumbs>
-            {getTranslatedText('product.categories', lang)}/
-            {getTranslatedText(`categories.${category?.name}`, lang)}/
-            {getTranslatedText(`categories.${subcategory?.name}`, lang)}/
+            {getTranslatedText('product.categories')} /&nbsp;
+            {getTranslatedText(`categories.${category?.name}`)} /&nbsp;
+            {getTranslatedText(`categories.${subcategory?.name}`)} /&nbsp;
             <Span>{product.topic}</Span>
           </BreadCrumbs>
 
@@ -108,18 +136,18 @@ const ProductPage = () => {
 
             <OwnerAndPost>
               <ProductOwnerData
-                phone={product.phone}
-                city={currentLocation?.city}
+                name={name}
+                phone={phone}
+                avatar={avatar}
+                city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
-                name={product.ownerName || profile.username}
-                ava={product.ownerAvatar || profile.avatarImage}
               />
 
               <ProductPostData
                 wishes={wishes}
-                size={product.size}
                 title={product.topic}
                 readyForOffers={product.readyForOffers}
+                size={product.size || product.sizeValue}
                 age={enumAge[product.age] || product.age}
                 gender={getTranslatedText(`genderEnum.${product.gender}`)}
                 season={getTranslatedText(`seasonEnum.${product.season}`)}

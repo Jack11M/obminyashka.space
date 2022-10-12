@@ -1,4 +1,4 @@
-import { Avatar } from 'components/common/avatar';
+import { Avatar, EllipsisText } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import {
@@ -20,7 +20,7 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
     <Container>
       <ProductOwner>
         <ProductOwnerAvatar>
-          <Avatar height={32} width={32} avatar={avatar} />
+          <Avatar height={32} width={32} source={avatar} />
         </ProductOwnerAvatar>
 
         <ProductOwnerName>
@@ -31,11 +31,13 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
       <PostData>
         <PostReqData>
           <PostReqDataUl>
-            <PostReqDataUlItem>
-              <PostReqDataSpan>
-                {`${getTranslatedText('product.dateOfAdv')}:`}
-              </PostReqDataSpan>
-            </PostReqDataUlItem>
+            {date && (
+              <PostReqDataUlItem>
+                <PostReqDataSpan>
+                  {`${getTranslatedText('product.dateOfAdv')}:`}
+                </PostReqDataSpan>
+              </PostReqDataUlItem>
+            )}
 
             <PostReqDataUlItem>
               <PostReqDataSpan>
@@ -43,21 +45,25 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
               </PostReqDataSpan>
             </PostReqDataUlItem>
 
-            <PostReqDataUlItem>
-              <PostReqDataSpan>
-                {`${getTranslatedText('product.phoneOfAdv')}:`}
-              </PostReqDataSpan>
-            </PostReqDataUlItem>
+            {phone && (
+              <PostReqDataUlItem>
+                <PostReqDataSpan>
+                  {`${getTranslatedText('product.phoneOfAdv')}:`}
+                </PostReqDataSpan>
+              </PostReqDataUlItem>
+            )}
           </PostReqDataUl>
         </PostReqData>
 
         <PostResData>
           <PostReqDataUl>
-            <PostReqDataUlItem>{date}</PostReqDataUlItem>
+            {date && <PostReqDataUlItem>{date}</PostReqDataUlItem>}
 
-            <PostReqDataUlItem>{city}</PostReqDataUlItem>
+            <PostReqDataUlItem style={{ width: '200px' }}>
+              <EllipsisText>{city}</EllipsisText>
+            </PostReqDataUlItem>
 
-            <PostReqDataUlItem>{phone}</PostReqDataUlItem>
+            {phone && <PostReqDataUlItem>{phone}</PostReqDataUlItem>}
           </PostReqDataUl>
         </PostResData>
       </PostData>

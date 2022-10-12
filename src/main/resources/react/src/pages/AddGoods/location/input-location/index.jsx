@@ -2,10 +2,10 @@ import { useEffect, useState, useRef } from 'react';
 import { useField } from 'formik';
 import { useClickAway } from 'react-use';
 
+import { area, city, district } from 'Utils';
 import { DropDownInput } from 'pages/AddGoods/drop-down-input';
 
 import { sortAlphabet } from './helpers';
-import { area, city, district } from './config';
 
 const InputLocation = ({
   name,

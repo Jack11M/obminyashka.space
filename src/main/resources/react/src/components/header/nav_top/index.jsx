@@ -1,35 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
 import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { Avatar } from 'components/common/avatar';
+import { getUserThunk } from 'store/profile/thunk';
 import { CustomSelect } from 'components/selectLang';
-import { getAuth, getAuthProfile } from 'store/auth/slice';
+import { getAuthed, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import * as Styles from './styles';
 
 const NavTop = () => {
-  const isAuthed = useSelector(getAuth);
+  const dispatch = useDispatch();
+  const isAuthed = useSelector(getAuthed);
   const profile = useSelector(getAuthProfile);
   const { avatarImage } = useSelector(getProfile);
 
-  const [image, setImage] = useState('');
-
   useEffect(() => {
-    if (!avatarImage?.includes('blob') && avatarImage) {
-      setImage(`data:image/jpeg;base64,${avatarImage}`);
+    if (!avatarImage && isAuthed) {
+      dispatch(getUserThunk());
     }
-
-    if (avatarImage?.includes('blob') && avatarImage) {
-      setImage(avatarImage);
-    }
-
-    if (!avatarImage) setImage(null);
-  }, [avatarImage]);
+  }, [dispatch, isAuthed, avatarImage]);
 
   return (
     <Styles.Div>
@@ -48,7 +42,7 @@ const NavTop = () => {
 
           <Styles.WrapPersonal>
             <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-              <Avatar source={image} />
+              <Avatar source={avatarImage} />
 
               <Styles.ProfileSpan>
                 <EllipsisText>

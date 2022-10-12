@@ -1,7 +1,6 @@
 import lot3 from 'assets/img/cards/lot3.jpg';
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
-import mommy from 'assets/img/mama_1_04232631 1.png';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -27,7 +26,6 @@ const MyActivity = () => {
         <ProductCard
           city="Львов"
           picture={lot3}
-          avatar="https://t4.ftcdn.net/jpg/02/43/87/41/360_F_243874126_YLSIGaDgoNzS91Xdbg1IVpiwXeeZSXdr.jpg"
           inboxMessage={222}
           text="Велосипед для девочки 5 лет"
         />
@@ -42,7 +40,6 @@ const MyActivity = () => {
         <ProductCard
           city="Ужгород"
           picture={lot3}
-          avatar={mommy}
           inboxMessage={12}
           text="Велосипед для девочки 5 лет"
         />
@@ -57,7 +54,6 @@ const MyActivity = () => {
         <ProductCard
           city="Киев"
           picture={lot3}
-          avatar={mommy}
           inboxMessage={33}
           text="Велосипед для девочки 5 лет"
         />

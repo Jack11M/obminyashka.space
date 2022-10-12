@@ -26,6 +26,8 @@ export {
   permissionToSendChildren,
 } from './error';
 
+export { city, district, area } from './getLocationProperties';
+
 export { useDelay } from './delay';
 export { convertToMB } from './convertToMB';
 

@@ -67,11 +67,8 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    void createAdvertisementWithoutTokenIsRedirectedToLoginPage() throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(post(ADV), status().is3xxRedirection());
-        final var redirectedUrl = mvcResult.getResponse().getRedirectedUrl();
-        assertNotNull(redirectedUrl);
-        assertTrue(redirectedUrl.endsWith(FRONT_LOGIN));
+    void createAdvertisementWithoutTokenIsForbiddenResponse() throws Exception {
+        sendUriAndGetMvcResult(post(ADV), status().isForbidden());
     }
 
     @Test
@@ -92,13 +89,9 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestWithNotValidJWTTokenIsUnauthorizedAndRedirectedToLoginPage() throws Exception {
+    void postRequestWithNotValidJWTTokenIsForbiddenResponse() throws Exception {
         final var invalidToken = BEARER_PREFIX + obtainToken(createValidUserLoginDto()).replaceAll(".$", "");
-        final var mvcResult = sendUriWithHeadersAndGetMvcResult(post(ADV), status().is3xxRedirection(),
-                getAuthorizationHeader(invalidToken));
-        final var redirectedUrl = mvcResult.getResponse().getRedirectedUrl();
-        assertNotNull(redirectedUrl);
-        assertTrue(redirectedUrl.endsWith(FRONT_LOGIN));
+        sendUriWithHeadersAndGetMvcResult(post(ADV), status().isForbidden(), getAuthorizationHeader(invalidToken));
     }
 
     @Test

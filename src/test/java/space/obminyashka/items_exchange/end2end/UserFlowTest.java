@@ -3,11 +3,14 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -24,14 +27,16 @@ import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
@@ -207,6 +212,23 @@ class UserFlowTest extends BasicControllerTest {
 
         final var userInfo = new OidcUserInfo(Map.of(emailKey, NEW_USER_EMAIL, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
+    }
+
+    @WithMockUser
+    @DataSet("database_init.yml")
+    @Test
+    void updateUserAvatar_shouldSetNewImage_whenFormatAndContentValid() throws Exception {
+        var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
+                Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
+
+        final var mvcResult = mockMvc.perform(multipart(USER_SERVICE_CHANGE_AVATAR)
+                        .file(jpeg)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                .andExpect(status().isAccepted())
+                .andReturn();
+
+        final var avatarImage = new JSONObject(mvcResult.getResponse().getContentAsString()).getString("avatarImage");
+        assertFalse(avatarImage.isBlank());
     }
 
     @Test

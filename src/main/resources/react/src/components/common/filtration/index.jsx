@@ -38,7 +38,7 @@ const Filtration = () => {
   useEffect(() => {
     (async () => {
       try {
-        const categories = await api.fetchAddGood.getCategoryAll();
+        const categories = await api.addGood.getCategoryAll();
         setReceivedCategories(categories);
       } catch (err) {
         showMessage(err.response?.data ?? err.message);
@@ -49,8 +49,8 @@ const Filtration = () => {
   useEffect(() => {
     (async () => {
       try {
-        const clothingSizes = await api.fetchAddGood.getSize(1);
-        const shoeSizes = await api.fetchAddGood.getSize(2);
+        const clothingSizes = await api.addGood.getSize(1);
+        const shoeSizes = await api.addGood.getSize(2);
         setReceivedClothingSize(clothingSizes);
         setReceivedShoeSize(shoeSizes);
       } catch (err) {
