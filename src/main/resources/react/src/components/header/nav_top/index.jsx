@@ -13,6 +13,8 @@ import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import * as Styles from './styles';
 
+const string = 'data:image/jpeg;base64,';
+
 const NavTop = () => {
   const dispatch = useDispatch();
   const isAuthed = useSelector(getAuthed);
@@ -28,11 +30,11 @@ const NavTop = () => {
   }, [dispatch, isAuthed, avatarImage]);
 
   useEffect(() => {
-    if (!avatarImage?.includes('blob') && avatarImage) {
-      setImage(`data:image/jpeg;base64,${avatarImage}`);
+    if (!avatarImage?.includes(string) && avatarImage) {
+      setImage(`${string}${avatarImage}`);
     }
 
-    if (avatarImage?.includes('blob') && avatarImage) {
+    if (avatarImage?.includes(string) && avatarImage) {
       setImage(avatarImage);
     }
 

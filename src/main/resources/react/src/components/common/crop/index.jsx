@@ -45,9 +45,12 @@ const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
         const dataForm = new FormData();
         dataForm.append('image', file);
 
-        await dispatch(putAvatarThunk(dataForm, croppedPicture.src));
-        setImage(croppedPicture.src);
-        setCroppedImage(croppedPicture.src);
+        const receivedImage = await dispatch(
+          putAvatarThunk(dataForm, croppedPicture.src)
+        );
+
+        setImage(receivedImage);
+        setCroppedImage(receivedImage);
         onClose();
       }
     } catch (e) {

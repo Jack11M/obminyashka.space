@@ -22,11 +22,12 @@ export const putChildrenThunk = (children) => async (dispatch) => {
   }
 };
 
-export const putAvatarThunk = (avatar, base64) => async (dispatch) => {
+export const putAvatarThunk = (avatar) => async (dispatch) => {
   try {
-    await api.profile.putAvatar(avatar);
-    dispatch(setAvatar(base64));
-    return Promise.resolve();
+    const received = await api.profile.putAvatar(avatar);
+    const convertToBase64 = `data:image/jpeg;base64,${received.avatarImage}`;
+    dispatch(setAvatar(convertToBase64));
+    return Promise.resolve(convertToBase64);
   } catch (e) {
     return Promise.reject(e);
   }
