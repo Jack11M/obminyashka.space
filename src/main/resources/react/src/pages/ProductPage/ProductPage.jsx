@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
@@ -11,8 +11,8 @@ import { getProfile } from 'store/profile/slice';
 import { BackButton, TitleBigBlue } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
-import { getCity } from './helpers';
 import ProductOffers from './ProductOffers';
+import { getCity, getDate } from './helpers';
 import { ProductPostData } from './ProductPostData';
 import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
@@ -43,8 +43,27 @@ const ProductPage = () => {
   const [subcategory, setSubcategory] = useState({});
   const [currentLocation, setCurrentLocation] = useState({});
 
+  const { state } = location;
+
+  const avatar = useMemo(() => {
+    if (product.ownerAvatar) return product.ownerAvatar;
+    if (state) return profile.avatarImage;
+    return null;
+  }, [state, product.ownerAvatar]);
+
+  const phone = useMemo(() => {
+    if (product.phone) return product.phone;
+    if (state) return profile.phones[0]?.phoneNumber;
+    return '';
+  }, [state, profile.phones, product.phone]);
+
+  const name = useMemo(() => {
+    if (product.ownerName) return product.ownerName;
+    if (state) return profile.username;
+    return '';
+  }, [state, profile.username, product.ownerName]);
+
   const setPreviewData = useCallback(async () => {
-    const { state } = location;
     try {
       const locationValue = await api.product.getLocation(
         state.currentLocation.id
@@ -117,11 +136,11 @@ const ProductPage = () => {
 
             <OwnerAndPost>
               <ProductOwnerData
-                phone={product.phone}
-                date={product.createdDate}
+                name={name}
+                phone={phone}
+                avatar={avatar}
                 city={getCity(currentLocation)}
-                name={product.ownerName || profile.username}
-                avatar={product.ownerAvatar || profile.avatarImage}
+                date={product.createdDate || getDate(lang)}
               />
 
               <ProductPostData

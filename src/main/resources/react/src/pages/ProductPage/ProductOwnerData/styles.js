@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   background-color: #fdfcff;
-  height: 200px;
+  padding-bottom: 15px;
 `;
 
 export const ProductOwner = styled.div`
