@@ -1,4 +1,4 @@
-import { TitleBigBlue } from 'components/common';
+import { TitleBigBlue, Paginate } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
@@ -35,6 +35,8 @@ const SearchResults = () => {
               />
             ))}
           </Styles.CardsContainer>
+
+          <Paginate />
         </div>
       </Styles.SearchingContent>
     </Styles.SearchingResults>

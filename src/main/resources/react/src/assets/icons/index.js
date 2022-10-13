@@ -19,6 +19,7 @@ export { ReactComponent as LocationSvg } from './location.svg';
 export { ReactComponent as LogoutSvg } from './logout.svg';
 export { ReactComponent as PhoneSvg } from './phone.svg';
 export { ReactComponent as ProfileSvg } from './profile.svg';
+export { ReactComponent as PaginationArrowSvg } from './pagination-arrow.svg';
 export { ReactComponent as QuestionMarkSvg } from './question-mark.svg';
 export { ReactComponent as Rotate } from './rotate.svg';
 export { ReactComponent as SearchSvg } from './search.svg';
