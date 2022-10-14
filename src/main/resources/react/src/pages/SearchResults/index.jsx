@@ -1,9 +1,10 @@
-import { TitleBigBlue, Paginate } from 'components/common';
+import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
+import { Paginate } from 'components/common/Paginate';
 import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
 
-import { data } from './config';
+import { allData } from './config';
 
 import * as Styles from './styles';
 
@@ -25,8 +26,8 @@ const SearchResults = () => {
         <div>
           <TitleBigBlue text={getTranslatedText('filterPage.searchResults')} />
 
-          <Styles.CardsContainer>
-            {data.map((item) => (
+          <Paginate>
+            {allData.map((item) => (
               <ProductCard
                 key={item.id}
                 city={item.city}
@@ -34,9 +35,7 @@ const SearchResults = () => {
                 picture={item.picture}
               />
             ))}
-          </Styles.CardsContainer>
-
-          <Paginate />
+          </Paginate>
         </div>
       </Styles.SearchingContent>
     </Styles.SearchingResults>

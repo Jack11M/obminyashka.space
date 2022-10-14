@@ -13,7 +13,7 @@ export { Loader } from './loader';
 export { Modal } from './pop-up/modal';
 export { ModalContext } from './pop-up/modal-context';
 export { ModalProvider } from './pop-up/modal-context-provider';
-export { Paginate } from './pagination';
+export { Paginate } from './Paginate';
 export { showPassword } from './show-password';
 export { TitleBigBlue } from './title_Big_Blue';
 export { Toast } from './toast';

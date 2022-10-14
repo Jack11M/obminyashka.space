@@ -1,4 +1,4 @@
-export const data = [
+export const allData = [
   {
     id: 1,
     city: 'Харьков',
@@ -85,6 +85,84 @@ export const data = [
   },
   {
     id: 15,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 16,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 17,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 18,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 19,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 20,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 21,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 22,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 23,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 24,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 25,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 26,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 27,
+    city: 'Харьков',
+    picture: 'https://static.toiimg.com/photo/72975551.cms',
+    text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',
+  },
+  {
+    id: 28,
     city: 'Харьков',
     picture: 'https://static.toiimg.com/photo/72975551.cms',
     text: 'Велосипед ну очень куртой. просто не реально крутой для девочки 5 лет',

@@ -13,16 +13,6 @@ export const SearchingContent = styled.div`
   margin-top: 10px;
 `;
 
-export const CardsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px 13px;
-  margin-top: 50px;
-  margin-bottom: 20px;
-  width: 910px;
-`;
-
 export const FilterContainer = styled.div`
   margin-right: 20px;
 `;
