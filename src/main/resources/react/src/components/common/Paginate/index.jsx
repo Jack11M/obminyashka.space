@@ -6,7 +6,7 @@ import * as Icon from 'assets/icons';
 import * as Styles from './styles';
 
 const Paginate = ({ children, showLessItems = true }) => {
-  const countPerPage = 2;
+  const countPerPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
   const [collection, setCollection] = useState(
     Object.assign(children.slice(0, countPerPage))

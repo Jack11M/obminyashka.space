@@ -1,6 +1,6 @@
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
-import { Paginate } from 'components/common/Paginate';
+import { Paginate } from 'components/common/paginate';
 import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
 
