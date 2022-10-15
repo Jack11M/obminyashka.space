@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+
+import api from 'REST/Resources';
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { Paginate } from 'components/common/Paginate';
@@ -9,6 +12,15 @@ import { allData } from './config';
 import * as Styles from './styles';
 
 const SearchResults = () => {
+  useEffect(() => {
+    const get = async () => {
+      const response = await api.search.getSearch('');
+
+      console.log(response);
+    };
+    get();
+  }, []);
+
   return (
     <Styles.SearchingResults>
       <Styles.SearchingContent>
