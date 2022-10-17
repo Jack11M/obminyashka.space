@@ -1,21 +1,14 @@
 import { useContext } from 'react';
 import imageCompression from 'browser-image-compression';
 
-import { convertToMB } from 'Utils';
 import { ModalContext } from 'components/common';
+import { constants, convertToMB, options } from 'Utils';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ImagePhoto } from './image-photo';
 import { AddFileInput } from './add-file-input';
 
 import * as Styles from '../styles';
-
-const options = {
-  maxSizeMB: 10,
-  maxWidthOrHeight: 1920,
-  useWebWorker: true,
-  maxIteration: 10,
-};
 
 const PhotoFiles = ({
   imageFiles,
@@ -57,8 +50,8 @@ const PhotoFiles = ({
           title: getTranslatedText('popup.errorTitle'),
           children: (
             <p style={{ textAlign: 'center' }}>
-              {getTranslatedText('popup.pictureSelection')}
-              &nbsp;( jpg, jpeg, png, gif ).
+              {getTranslatedText('popup.pictureSelection')} <br />( jpg, jpeg,
+              png, gif ).
             </p>
           ),
         });
@@ -66,7 +59,7 @@ const PhotoFiles = ({
       }
 
       const { value, valueString } = convertToMB(file.size);
-      if (value >= 10 && valueString.includes('MB')) {
+      if (value >= constants.MAX_SIZE_PHOTO && valueString.includes('MB')) {
         openModal({
           title: getTranslatedText('popup.errorTitle'),
           children: (
@@ -151,6 +144,7 @@ const PhotoFiles = ({
     changeStateForImagesWhenDrop(index, preViewImage, setPreViewImage);
     changeStateForImagesWhenDrop(index, imageFiles, setImageFiles);
   };
+
   return (
     <Styles.WrapFiles>
       <Styles.FileTittle>
