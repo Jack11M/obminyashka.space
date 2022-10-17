@@ -7,3 +7,10 @@ export const convertToMB = (bytes) => {
     valueString: `${(bytes / 1024 ** i).toFixed(2)} ${sizes[i]}`,
   };
 };
+
+export const options = {
+  maxSizeMB: 10,
+  maxWidthOrHeight: 1920,
+  useWebWorker: true,
+  maxIteration: 10,
+};
