@@ -3,8 +3,8 @@ import imageCompression from 'browser-image-compression';
 
 import * as Icon from 'assets/icons';
 import { getTranslatedText } from 'components/local';
-import { convertToMB, options, useDelay } from 'Utils';
 import { Avatar, Crop, ModalContext } from 'components/common';
+import { constants, convertToMB, options, useDelay } from 'Utils';
 
 import * as Styles from './styles';
 
@@ -32,7 +32,7 @@ const CropImage = ({ avatarImage }) => {
     const file = event.target.files[0];
     const { value, valueString } = convertToMB(file.size);
 
-    if (value >= 10 && valueString.includes('MB')) {
+    if (value >= constants.MAX_SIZE_PHOTO && valueString.includes('MB')) {
       openModal({
         title: getTranslatedText('popup.errorTitle'),
         children: (

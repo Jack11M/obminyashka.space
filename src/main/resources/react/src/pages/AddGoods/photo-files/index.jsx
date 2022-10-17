@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import imageCompression from 'browser-image-compression';
 
-import { convertToMB, options } from 'Utils';
 import { ModalContext } from 'components/common';
+import { constants, convertToMB, options } from 'Utils';
 import { getTranslatedText } from 'components/local/localization';
 
 import { ImagePhoto } from './image-photo';
@@ -59,7 +59,7 @@ const PhotoFiles = ({
       }
 
       const { value, valueString } = convertToMB(file.size);
-      if (value >= 10 && valueString.includes('MB')) {
+      if (value >= constants.MAX_SIZE_PHOTO && valueString.includes('MB')) {
         openModal({
           title: getTranslatedText('popup.errorTitle'),
           children: (
