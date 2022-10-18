@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import imageCompression from 'browser-image-compression';
 
 import { ModalContext } from 'components/common';
-import { constants, convertToMB, options } from 'Utils';
 import { getTranslatedText } from 'components/local/localization';
+import { constants, convertToMB, isRightExtension, options } from 'Utils';
 
 import { ImagePhoto } from './image-photo';
 import { AddFileInput } from './add-file-input';
@@ -45,7 +45,7 @@ const PhotoFiles = ({
         return;
       }
 
-      if (!file.type.match('image') || file.type.match('image/svg')) {
+      if (isRightExtension(file.type)) {
         openModal({
           title: getTranslatedText('popup.errorTitle'),
           children: (

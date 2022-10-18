@@ -4,7 +4,13 @@ import imageCompression from 'browser-image-compression';
 import * as Icon from 'assets/icons';
 import { getTranslatedText } from 'components/local';
 import { Avatar, Crop, ModalContext } from 'components/common';
-import { constants, convertToMB, options, useDelay } from 'Utils';
+import {
+  options,
+  useDelay,
+  constants,
+  convertToMB,
+  isRightExtension,
+} from 'Utils';
 
 import * as Styles from './styles';
 
@@ -50,7 +56,7 @@ const CropImage = ({ avatarImage }) => {
       return;
     }
 
-    if (!file?.type.match('image') || file.type.match('image/svg')) {
+    if (isRightExtension(file?.type)) {
       openModal({
         title: getTranslatedText('popup.errorTitle'),
         children: (
