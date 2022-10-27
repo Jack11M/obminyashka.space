@@ -18,7 +18,7 @@
     "react-easy-crop": "^4.4.2",
     "react-input-mask": "^2.0.4",
     "react-redux": "^8.0.1",
-    "react-router-dom": "^6.3.0",
+    "react-router-dom": "^6.4.2",
     "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
     "react-spring": "^9.4.4",
