@@ -47,21 +47,21 @@ const ProductPage = () => {
 
   const avatar = useMemo(() => {
     if (product.ownerAvatar) return product.ownerAvatar;
-    if (state) return profile.avatarImage;
+    if (state) return profile?.avatarImage;
     return null;
   }, [state, product.ownerAvatar]);
 
   const phone = useMemo(() => {
     if (product.phone) return product.phone;
-    if (state) return profile.phones[0]?.phoneNumber;
+    if (state) return profile?.phones[0]?.phoneNumber;
     return '';
-  }, [state, profile.phones, product.phone]);
+  }, [state, profile?.phones, product?.phone]);
 
   const name = useMemo(() => {
     if (product.ownerName) return product.ownerName;
-    if (state) return profile.username;
+    if (state) return profile?.username;
     return '';
-  }, [state, profile.username, product.ownerName]);
+  }, [state, profile?.username, product.ownerName]);
 
   const setPreviewData = useCallback(async () => {
     try {
