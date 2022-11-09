@@ -50,6 +50,7 @@ const NavTop = () => {
                 </EllipsisText>
               </Styles.ProfileSpan>
             </Styles.LoginLink>
+
             <CustomSelect />
           </Styles.WrapPersonal>
         </Styles.DivTop>
