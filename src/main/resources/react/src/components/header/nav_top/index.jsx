@@ -20,7 +20,7 @@ const NavTop = () => {
   const profile = useSelector(getProfile);
 
   useEffect(() => {
-    if (!profile && isAuthed) {
+    if (!profile?.avatarImage && isAuthed) {
       dispatch(getUserThunk());
     }
   }, [dispatch, isAuthed, profile]);
