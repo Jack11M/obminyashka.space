@@ -1,40 +1,49 @@
-import { useState } from 'react';
-import Pagination from 'rc-pagination';
+// import { useState } from 'react';
+// import Pagination from 'rc-pagination';
 
-import * as Icon from 'assets/icons';
+// import * as Icon from 'assets/icons';
 
-import * as Styles from './styles';
+// import * as Styles from './styles';
 
-const Paginate = ({ children, showLessItems = true }) => {
-  const countPerPage = 12;
-  const [currentPage, setCurrentPage] = useState(1);
-  const [collection, setCollection] = useState(
-    Object.assign(children.slice(0, countPerPage))
-  );
+// const Paginate = ({ children, pageSize, showLessItems = true }) => {
+//   const [currentPage, setCurrentPage] = useState(0);
+//   const [collection, setCollection] = useState(children.slice(0, pageSize));
+//   console.log(collection);
 
-  const updatePage = (p) => {
-    setCurrentPage(p);
-    const to = countPerPage * p;
-    const from = to - countPerPage;
-    setCollection(Object.assign(children.slice(from, to)));
-  };
+//   const updatePage = (p) => {
+//     setCurrentPage(p);
+//     const to = pageSize * p;
+//     const from = to - pageSize;
+//     setCollection(children.slice(from, to));
+//   };
 
-  return (
-    <Styles.StylesForPagination>
-      <Styles.Container>{collection}</Styles.Container>
+//   return (
+//     <Styles.StylesForPagination>
+//       <Pagination
+//         showTitle={false}
+//         pageSize={pageSize}
+//         current={currentPage}
+//         onChange={updatePage}
+//         total={children.length}
+//         nextIcon={<Icon.Next />}
+//         prevIcon={<Icon.Prev />}
+//         showLessItems={showLessItems}
+//       />
 
-      <Pagination
-        showTitle={false}
-        current={currentPage}
-        onChange={updatePage}
-        total={children.length}
-        pageSize={countPerPage}
-        nextIcon={<Icon.Next />}
-        prevIcon={<Icon.Prev />}
-        showLessItems={showLessItems}
-      />
-    </Styles.StylesForPagination>
-  );
-};
+//       <Styles.Container>{collection}</Styles.Container>
 
-export { Paginate };
+//       <Pagination
+//         showTitle={false}
+//         pageSize={pageSize}
+//         current={currentPage}
+//         onChange={updatePage}
+//         total={children.length}
+//         nextIcon={<Icon.Next />}
+//         prevIcon={<Icon.Prev />}
+//         showLessItems={showLessItems}
+//       />
+//     </Styles.StylesForPagination>
+//   );
+// };
+
+// export { Paginate };
