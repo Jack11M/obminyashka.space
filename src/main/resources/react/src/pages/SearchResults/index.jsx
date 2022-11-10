@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import Pagination from 'rc-pagination';
+import { useEffect, useState, useMemo } from 'react';
 import { showMessage } from 'hooks';
+import Pagination from 'rc-pagination';
+import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
-import { TitleBigBlue } from 'components/common';
 import * as Icon from 'assets/icons';
+import { route } from 'routes/routeConstants';
+import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 // import { Paginate } from 'components/common/paginate';
 import { getCity } from 'Utils/getLocationProperties';
@@ -14,48 +16,32 @@ import { getTranslatedText } from 'components/local/localization';
 import * as Styles from './styles';
 
 const SearchResults = () => {
-  const [adv, setAdv] = useState([]);
-  const [pageSize, setPageSize] = useState('');
-  const [totalSize, setTotalSize] = useState('');
-  const [currentPage, setCurrentPage] = useState('');
+  const navigate = useNavigate();
+  const [adv, setAdv] = useState({});
 
-  useEffect(() => {
-    const getAdv = async () => {
-      const response = await api.search.getSearch('Штаны', 0, 6);
-      setAdv(response.content);
-      setPageSize(response.size);
-      setCurrentPage(response.number + 1);
-      setTotalSize(response.totalElements);
-      console.log(response);
-    };
-    getAdv();
-  }, []);
-
-  // const fetchPageNumber = async (page) => {
-  //   try {
-  //     await api.search.getSearch('Штаны', page, 6);
-  //     console.log(page);
-  //   } catch (err) {
-  //     showMessage(err.response?.data ?? err.message);
-  //   }
-  // };
-
-  const updatePage = async (page) => {
+  const getData = async (page) => {
     try {
-      const newPageData = await api.search.getSearch('Штаны', page, 6);
-      setAdv(newPageData.content);
-      setCurrentPage(page);
-      setPageSize(newPageData.size);
-      setTotalSize(newPageData.totalElements);
-      console.log(newPageData);
-    } catch (err) {
-      showMessage(err.response?.data ?? err.message);
+      const response = await api.search.getSearch('стол большой', page - 1, 2);
+      setAdv(response);
+    } catch (error) {
+      showMessage(error.response?.data ?? error.message);
     }
   };
 
-  // const indexOfLastPage = currentPage + pageSize;
-  // const indexOfFirstPage = indexOfLastPage + pageSize;
-  // const currentPosts = adv.slice(indexOfFirstPage, indexOfLastPage);
+  useEffect(() => {
+    getData(1);
+  }, []);
+
+  const pageNumber = useMemo(() => {
+    if (adv.pageable) {
+      return adv.pageable.pageNumber + 1;
+    }
+    return 1;
+  }, [adv.pageable]);
+
+  const moveToProductPage = (id) => {
+    navigate(route.productPage.replace(':id', id));
+  };
 
   return (
     <Styles.SearchingResults>
@@ -76,25 +62,26 @@ const SearchResults = () => {
 
           <Styles.StylesForPagination>
             <Styles.Container>
-              {adv.map((item) => (
+              {adv.content?.map((item) => (
                 <ProductCard
                   text={item.title}
                   key={item.advertisementId}
                   city={getCity(item.location)}
                   picture={`data:image/jpeg;base64, ${item.image}`}
+                  clickOnButton={() => moveToProductPage(item.advertisementId)}
                 />
               ))}
             </Styles.Container>
 
             <Pagination
+              showLessItems
               showTitle={false}
-              total={totalSize}
-              pageSize={pageSize}
-              current={currentPage}
-              onChange={updatePage}
+              onChange={getData}
+              current={pageNumber}
               nextIcon={<Icon.Next />}
               prevIcon={<Icon.Prev />}
-              showLessItems
+              total={adv.totalElements}
+              pageSize={adv.pageable?.pageSize ?? 1}
             />
           </Styles.StylesForPagination>
         </div>
