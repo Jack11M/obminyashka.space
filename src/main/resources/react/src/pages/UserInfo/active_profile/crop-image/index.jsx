@@ -1,9 +1,16 @@
 import { useContext, useState, useEffect } from 'react';
+import imageCompression from 'browser-image-compression';
 
 import * as Icon from 'assets/icons';
-import { convertToMB, useDelay } from 'Utils';
 import { getTranslatedText } from 'components/local';
 import { Avatar, Crop, ModalContext } from 'components/common';
+import {
+  options,
+  useDelay,
+  constants,
+  convertToMB,
+  isRightExtension,
+} from 'Utils';
 
 import * as Styles from './styles';
 
@@ -27,12 +34,11 @@ const CropImage = ({ avatarImage }) => {
       setOpenCrop(true);
     }
   };
-
-  const changeFile = (event) => {
+  const changeFile = async (event) => {
     const file = event.target.files[0];
     const { value, valueString } = convertToMB(file.size);
 
-    if (value >= 10 && valueString.includes('MB')) {
+    if (value >= constants.MAX_SIZE_PHOTO && valueString.includes('MB')) {
       openModal({
         title: getTranslatedText('popup.errorTitle'),
         children: (
@@ -46,12 +52,29 @@ const CropImage = ({ avatarImage }) => {
           </p>
         ),
       });
+      event.target.value = null;
       return;
     }
 
+    if (isRightExtension(file?.type)) {
+      openModal({
+        title: getTranslatedText('popup.errorTitle'),
+        children: (
+          <p style={{ textAlign: 'center' }}>
+            {getTranslatedText('popup.pictureSelection')} <br />( jpg, jpeg,
+            png, gif ).
+          </p>
+        ),
+      });
+      event.target.value = null;
+      return;
+    }
+
+    const compressedFile = await imageCompression(file, options);
+
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = ({ target }) => {
+    reader.readAsDataURL(compressedFile);
+    reader.onload = async ({ target }) => {
       if (target.readyState === 2) {
         setCroppedImage(target.result);
         setOpenCrop(true);
@@ -80,8 +103,8 @@ const CropImage = ({ avatarImage }) => {
           <Styles.InputFile
             type="file"
             name="file"
-            accept=".png, .jpg, .jpeg, .gif"
             onChange={changeFile}
+            accept=".png, .jpg, .jpeg, .gif"
           />
         )}
       </Styles.WrapAvatar>
