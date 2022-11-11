@@ -40,10 +40,13 @@ export const StylesForPagination = styled.div`
       outline: 0;
       cursor: pointer;
 
-      :focus,
       :hover {
-        background-color: ${theme.colors.btnBlue};
+        transform: scale(1.1, 1.1);
+      }
+
+      :focus {
         color: ${theme.colors.white};
+        background-color: ${theme.colors.btnBlue};
       }
 
       &-active {
@@ -69,8 +72,7 @@ export const StylesForPagination = styled.div`
         cursor: pointer;
 
         :hover {
-          background-color: ${theme.colors.btnBlue};
-          color: ${theme.colors.white};
+          transform: scale(1.1, 1.1);
         }
       }
 
@@ -91,6 +93,12 @@ export const StylesForPagination = styled.div`
   .rc-pagination-next {
     display: flex;
     cursor: pointer;
+
+    :hover {
+      svg {
+        transform: scale(1.1, 1.1);
+      }
+    }
   }
 
   .rc-pagination-disabled {
