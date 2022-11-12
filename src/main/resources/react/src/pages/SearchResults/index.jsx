@@ -4,12 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
-import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
-import { Paginate } from 'components/common/page-pagination';
-import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
+import { TitleBigBlue, PagePagination, Filtration } from 'components/common';
 
 import * as Styles from './styles';
 
@@ -52,7 +50,7 @@ const SearchResults = () => {
         <div>
           <TitleBigBlue text={getTranslatedText('filterPage.searchResults')} />
 
-          <Paginate
+          <PagePagination
             onChange={getAdv}
             current={adv.number + 1}
             pageSize={adv?.size || 1}
@@ -63,15 +61,15 @@ const SearchResults = () => {
                 text={item.title}
                 key={item.advertisementId}
                 city={getCity(item.location)}
-                picture={`data:image/jpeg;base64, ${item.image}`}
+                picture={`data:image/jpeg;base64,${item.image}`}
                 clickOnButton={() => moveToProductPage(item.advertisementId)}
               />
             ))}
-          </Paginate>
+          </PagePagination>
         </div>
       </Styles.SearchingContent>
     </Styles.SearchingResults>
   );
 };
 
-export default SearchResults;
+export { SearchResults };

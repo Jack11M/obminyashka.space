@@ -4,7 +4,7 @@ import * as Icon from 'assets/icons';
 
 import * as Styles from './styles';
 
-const Paginate = ({ children, onChange, current, pageSize, total }) => {
+const PagePagination = ({ children, onChange, current, pageSize, total }) => {
   return (
     <Styles.StylesForPagination>
       <Styles.Container>{children}</Styles.Container>
@@ -23,4 +23,4 @@ const Paginate = ({ children, onChange, current, pageSize, total }) => {
   );
 };
 
-export { Paginate };
+export { PagePagination };
