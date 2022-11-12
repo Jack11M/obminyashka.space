@@ -1,5 +1,4 @@
-import { Button } from 'components/common';
-import { Avatar } from 'components/common/avatar';
+import { Avatar, Button, EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';
@@ -39,7 +38,9 @@ const ProductCard = ({
         <Styles.LocationIcon inbox={inboxMessage}>
           <span className="icon-location" />
 
-          <Styles.CitySpan>{city}</Styles.CitySpan>
+          <Styles.CitySpan>
+            <EllipsisText>{city}</EllipsisText>
+          </Styles.CitySpan>
         </Styles.LocationIcon>
 
         <Styles.ButtonBlock>

@@ -83,11 +83,14 @@ export const TextContent = styled.h6`
 
 export const LocationIcon = styled.div`
   margin-bottom: ${({ inbox }) => (inbox ? '36px' : '23px')};
+  width: 200px;
+  text-align: center;
 `;
+
 export const CitySpan = styled.span`
-  color: ${({ theme: { colors } }) => colors.btnBlueHover};
-  font-size: 14px;
   margin-left: 9px;
+  font-size: 14px;
+  color: ${({ theme: { colors } }) => colors.btnBlueHover};
 `;
 
 export const ButtonBlock = styled.div`

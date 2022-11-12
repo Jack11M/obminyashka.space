@@ -5,14 +5,15 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
-import { getAuthLang } from 'store/auth/slice';
 import { getErrorMessage } from 'Utils/error';
+import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
+import { getCity } from 'Utils/getLocationProperties';
 import { BackButton, TitleBigBlue } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
+import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import { getCity, getDate } from './helpers';
 import { ProductPostData } from './ProductPostData';
 import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';

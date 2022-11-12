@@ -45,7 +45,7 @@ const CurrentOffers = () => {
               margin="10px 8px"
               isFavorite={false}
               text={offer.title}
-              city={offer.location.city || ''}
+              city={offer.location?.city || ''}
               clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
                 offer.image ? `data:image/jpeg;base64,${offer.image}` : noPhotos
