@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const SearchingResults = styled.div`
   padding: 0 15px;
-  margin: 200px auto 255px;
+  margin: 200px auto 210px;
   max-width: 1251px;
   overflow: hidden;
 `;

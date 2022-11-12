@@ -22,7 +22,7 @@ export const StylesForPagination = styled.div`
       justify-content: center;
       align-items: center;
       margin: 0;
-      padding: 0;
+      padding: 5px 0;
       list-style: none;
     }
 
