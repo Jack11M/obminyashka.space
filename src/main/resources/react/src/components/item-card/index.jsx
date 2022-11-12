@@ -1,5 +1,4 @@
-import { Avatar } from 'components/common/avatar';
-import { Button, EllipsisText } from 'components/common';
+import { Avatar, Button, EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';
