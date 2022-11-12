@@ -20,15 +20,8 @@ export const setStorageUser = (data, type = 'user') => {
 export const getDefaultLang = () => {
   let lang = navigator.language || navigator.userLanguage;
   lang = lang?.substring(0, 2);
-  switch (lang) {
-    case 'ua':
-      return 'ua';
-    case 'en':
-      return 'en';
 
-    default:
-      return 'ua';
-  }
+  return lang === 'en' ? 'en' : 'ua';
 };
 
 export const getStorageLang = () =>
