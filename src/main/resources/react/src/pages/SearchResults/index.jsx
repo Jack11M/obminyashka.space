@@ -7,7 +7,7 @@ import { route } from 'routes/routeConstants';
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
-import { Paginate } from 'components/common/paginate';
+import { Paginate } from 'components/common/page-pagination';
 import { Filtration } from 'components/common/filtration';
 import { getTranslatedText } from 'components/local/localization';
 
