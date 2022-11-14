@@ -16,7 +16,8 @@ const amount = 3;
 
 const AboutMyself = () => {
   const dispatch = useDispatch();
-  const { firstName, lastName, phones } = useSelector(getProfile);
+  const profile = useSelector(getProfile);
+  const { firstName, lastName, phones } = profile || {};
 
   const [aboutLoading, setAboutLoading] = useState(false);
 

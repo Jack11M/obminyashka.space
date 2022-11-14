@@ -18,8 +18,10 @@ const amount = 10;
 
 const Children = () => {
   const dispatch = useDispatch();
-  const { children } = useSelector(getProfile);
+  const profile = useSelector(getProfile);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { children } = profile || {};
 
   const initialValues = useMemo(() => getInitialValues(children), [children]);
 

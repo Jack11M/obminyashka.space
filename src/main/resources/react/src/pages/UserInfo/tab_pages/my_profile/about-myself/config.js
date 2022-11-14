@@ -22,7 +22,7 @@ export const validationUserSchema = ({
       .matches(NAME_REG_EXP, (obj) =>
         errorMessage(obj, getTranslatedText('errors.nameMatch'))
       )
-      .default(() => firstName),
+      .default(() => firstName || ''),
     lastName: yup
       .string()
       .min(2, (obj) => errorMessage(obj, getTranslatedText('errors.min2')))
@@ -33,7 +33,7 @@ export const validationUserSchema = ({
       .matches(NAME_REG_EXP, (obj) =>
         errorMessage(obj, getTranslatedText('errors.nameMatch'))
       )
-      .default(() => lastName),
+      .default(() => lastName || ''),
     phones: yup
       .array()
       .of(

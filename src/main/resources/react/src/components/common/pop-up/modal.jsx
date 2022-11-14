@@ -11,10 +11,10 @@ const Modal = ({ title, children }) => {
 
   const handleClose = () => {
     setClosing(true);
-    const closeTimout = setTimeout(() => {
+    const closeTimeout = setTimeout(() => {
       setClosing(false);
       closeModal();
-      clearTimeout(closeTimout);
+      clearTimeout(closeTimeout);
     }, DELAY);
   };
 

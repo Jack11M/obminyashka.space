@@ -14,6 +14,8 @@ const uiSlice = createSlice({
   },
 });
 
+export const getFetching = (state) => state.ui.isFetching;
+
 const {
   reducer: uiReducer,
   actions: { setFetching },
