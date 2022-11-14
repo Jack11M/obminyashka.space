@@ -97,7 +97,7 @@ const ProductPage = () => {
       setCategory(categoryValue);
       setSubcategory(subcategoryValue);
       setCurrentLocation(locationValue);
-      setWishes(wishesToExchange?.split(', '));
+      setWishes(wishesToExchange?.split(','));
     } catch (e) {
       toast.error(getErrorMessage(e));
     }
