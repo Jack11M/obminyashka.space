@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { showMessage } from 'hooks';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,26 +7,44 @@ import { route } from 'routes/routeConstants';
 import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
 import { getTranslatedText } from 'components/local/localization';
-import { TitleBigBlue, PagePagination, Filtration } from 'components/common';
+import {
+  Filtration,
+  TitleBigBlue,
+  SearchContext,
+  PagePagination,
+} from 'components/common';
 
 import * as Styles from './styles';
 
 const SearchResults = () => {
   const navigate = useNavigate();
+  const { search, setSearch, isFetch, setIsFetch } = useContext(SearchContext);
 
   const [adv, setAdv] = useState({});
 
   const getAdv = async (page) => {
     try {
-      const response = await api.search.getSearch('Штаны', page - 1);
+      const response = await api.search.getSearch(search, page - 1);
       setAdv(response);
     } catch (err) {
       showMessage(err.response?.data ?? err.message);
+    } finally {
+      setIsFetch(false);
     }
   };
 
   useEffect(() => {
+    if (isFetch) {
+      getAdv(1);
+    }
+  }, [isFetch]);
+
+  useEffect(() => {
     getAdv(1);
+
+    return () => {
+      setSearch('');
+    };
   }, []);
 
   const moveToProductPage = (id) => {
