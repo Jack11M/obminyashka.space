@@ -16,21 +16,21 @@ import * as Styles from './styles';
 const NavTop = () => {
   const dispatch = useDispatch();
   const isAuthed = useSelector(getAuthed);
-  const profile = useSelector(getAuthProfile);
-  const { avatarImage } = useSelector(getProfile);
+  const authProfile = useSelector(getAuthProfile);
+  const profile = useSelector(getProfile);
 
   useEffect(() => {
-    if (!avatarImage && isAuthed) {
+    if (!profile?.avatarImage && isAuthed) {
       dispatch(getUserThunk());
     }
-  }, [dispatch, isAuthed, avatarImage]);
+  }, [dispatch, isAuthed, profile]);
 
   return (
     <Styles.Div>
       <Styles.Wrapper>
         <Styles.DivTop>
           <Styles.WrapLinks>
-            <Styles.NavTopLink to="/">
+            <Styles.NavTopLink to={route.home}>
               {getTranslatedText('header.about')}
             </Styles.NavTopLink>
 
@@ -42,14 +42,16 @@ const NavTop = () => {
 
           <Styles.WrapPersonal>
             <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-              <Avatar source={avatarImage} />
+              <Avatar source={profile?.avatarImage} />
 
               <Styles.ProfileSpan>
                 <EllipsisText>
-                  {profile?.username || getTranslatedText('header.myOffice')}
+                  {authProfile?.username ||
+                    getTranslatedText('header.myOffice')}
                 </EllipsisText>
               </Styles.ProfileSpan>
             </Styles.LoginLink>
+
             <CustomSelect />
           </Styles.WrapPersonal>
         </Styles.DivTop>

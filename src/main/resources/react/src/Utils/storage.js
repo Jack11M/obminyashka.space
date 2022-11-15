@@ -17,8 +17,15 @@ export const setStorageUser = (data, type = 'user') => {
   }
 };
 
+export const getDefaultLang = () => {
+  let lang = navigator.language || navigator.userLanguage;
+  lang = lang?.substring(0, 2);
+
+  return lang === 'en' ? 'en' : 'ua';
+};
+
 export const getStorageLang = () =>
-  getStorageUser('user')?.['Accept-Language'] || 'ua';
+  getStorageUser('user')?.['Accept-Language'] || getDefaultLang();
 
 export const removeTokenFromStorage = () => {
   localStorage.removeItem('user');

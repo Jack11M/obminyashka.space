@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { showMessage } from 'hooks';
-import { getStorageUser, setStorageUser } from 'Utils';
+import { getStorageLang, getStorageUser, setStorageUser } from 'Utils';
 
 const authInitialState = {
   profile: getStorageUser('user'),
   isFetchingAuth: false,
-  lang: getStorageUser('user')?.['Accept-Language'] || 'ua',
+  lang: getStorageLang(),
   isChangeLang: false,
   isAuthed: !!getStorageUser('user'),
 };

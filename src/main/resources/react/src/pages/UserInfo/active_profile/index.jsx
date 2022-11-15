@@ -8,7 +8,8 @@ import { getName } from './helpers';
 import { CropImage } from './crop-image';
 
 const ActiveProfile = () => {
-  const { firstName, lastName, avatarImage, email } = useSelector(getProfile);
+  const profile = useSelector(getProfile);
+  const { firstName, lastName, avatarImage, email } = profile || {};
 
   return (
     <Styles.ProfileBlock>
