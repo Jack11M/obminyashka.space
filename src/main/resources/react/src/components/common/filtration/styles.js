@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components';
 
 export const styleSet = css`
-  padding: 30px 20px;
-  width: 310px;
+  padding: 38px 22px 38px 25px;
+  width: 290px;
   border: 2px dashed ${({ theme }) => theme.colors.btnBlue};
   border-radius: 20px;
 `;

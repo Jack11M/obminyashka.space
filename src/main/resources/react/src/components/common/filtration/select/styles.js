@@ -69,7 +69,7 @@ export const SubTitleBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 8px 4px 58px;
+  padding: 5px 15px;
   line-height: 17px;
   cursor: pointer;
 

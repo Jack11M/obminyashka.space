@@ -15,7 +15,7 @@ export const Title = styled.span`
 export const SubTitleBlock = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 13px;
   margin: 20px 0 10px;
   line-height: 17px;
 `;
