@@ -5,7 +5,7 @@ export const Container = styled.div`
   flex-direction: row;
   align-content: flex-start;
   flex-wrap: wrap;
-  gap: 20px 13px;
+  gap: 55px 20px;
   margin: 50px 0 65px;
   width: 910px;
 `;
@@ -52,6 +52,10 @@ export const StylesForPagination = styled.div`
       &-active {
         color: ${theme.colors.white};
         background-color: ${theme.colors.btnBlue};
+
+        :hover {
+          transform: none;
+        }
       }
     }
   `}

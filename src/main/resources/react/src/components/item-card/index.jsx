@@ -1,3 +1,4 @@
+import * as Icon from 'assets/icons';
 import { Avatar, Button, EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
@@ -35,8 +36,8 @@ const ProductCard = ({
       <Styles.CardContent>
         <Styles.TextContent>{text}</Styles.TextContent>
 
-        <Styles.LocationIcon inbox={inboxMessage}>
-          <span className="icon-location" />
+        <Styles.LocationIcon>
+          <Icon.LocationSvg />
 
           <Styles.CitySpan>
             <EllipsisText>{city}</EllipsisText>

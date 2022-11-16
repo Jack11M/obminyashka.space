@@ -97,7 +97,7 @@ const Filtration = () => {
                   fontSize="16px"
                   onChange={setGender}
                   selectedValues={gender}
-                  margin="4px 8px 4px 58px"
+                  margin="4px 8px 4px 25px"
                   text={getTranslatedText(`genderEnum.${item}`)}
                 />
               ))}
@@ -113,7 +113,7 @@ const Filtration = () => {
                   onChange={setAge}
                   selectedValues={age}
                   text={enumAge[item]}
-                  margin="4px 8px 4px 58px"
+                  margin="4px 8px 4px 25px"
                 />
               ))}
             </CheckBoxes>
@@ -126,7 +126,7 @@ const Filtration = () => {
                     value={item}
                     type="checkbox"
                     fontSize="16px"
-                    margin="4px 8px 4px 58px"
+                    margin="4px 8px 4px 25px"
                     onChange={setClothesSizes}
                     selectedValues={clothesSizes}
                     text={`${item} ${currentType}`}
@@ -144,7 +144,7 @@ const Filtration = () => {
                     fontSize="16px"
                     type="checkbox"
                     onChange={setShoesSizes}
-                    margin="4px 8px 4px 58px"
+                    margin="4px 8px 4px 25px"
                     selectedValues={shoesSizes}
                     text={`${item} ${currentType}`}
                   />
@@ -161,7 +161,7 @@ const Filtration = () => {
                   type="checkbox"
                   onChange={setSeason}
                   selectedValues={season}
-                  margin="4px 8px 4px 58px"
+                  margin="4px 8px 4px 25px"
                   text={getTranslatedText(`seasonEnum.${item}`)}
                 />
               ))}

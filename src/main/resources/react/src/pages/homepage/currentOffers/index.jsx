@@ -7,6 +7,7 @@ import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
 import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
+import { getCity } from 'Utils/getLocationProperties';
 import noPhotos from 'assets/img/showAdv/noPhoto.svg';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -45,7 +46,7 @@ const CurrentOffers = () => {
               margin="10px 8px"
               isFavorite={false}
               text={offer.title}
-              city={offer.location?.city || ''}
+              city={getCity(offer.location)}
               clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
                 offer.image ? `data:image/jpeg;base64,${offer.image}` : noPhotos
