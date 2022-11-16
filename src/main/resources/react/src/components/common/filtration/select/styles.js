@@ -31,7 +31,6 @@ export const OptionWrapper = styled.div`
 export const Close = styled.div`
   display: flex;
   flex-shrink: 0;
-
   transition: transform 0.3s linear;
   -webkit-transition: transform 0.3s linear;
 
@@ -69,6 +68,7 @@ export const SubTitleBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-right: 15px;
   padding: 5px 15px;
   line-height: 17px;
   cursor: pointer;

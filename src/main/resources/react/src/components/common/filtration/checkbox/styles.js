@@ -17,6 +17,7 @@ export const SubTitleBlock = styled.div`
   flex-direction: column;
   gap: 13px;
   margin: 20px 0 10px;
+  padding-right: 3px;
   line-height: 17px;
 `;
 
