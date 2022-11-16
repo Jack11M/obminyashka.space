@@ -68,22 +68,27 @@ const SearchResults = () => {
         <div>
           <TitleBigBlue text={getTranslatedText('filterPage.searchResults')} />
 
-          <PagePagination
-            onChange={getAdv}
-            current={adv.number + 1}
-            pageSize={adv?.size || 1}
-            total={adv.totalElements}
-          >
-            {adv.content?.map((item) => (
-              <ProductCard
-                text={item.title}
-                key={item.advertisementId}
-                city={getCity(item.location)}
-                picture={`data:image/jpeg;base64,${item.image}`}
-                clickOnButton={() => moveToProductPage(item.advertisementId)}
-              />
-            ))}
-          </PagePagination>
+          {adv.content && (
+            <PagePagination
+              onChange={getAdv}
+              current={adv.number + 1}
+              pageSize={adv?.size || 1}
+              total={adv.totalElements}
+            >
+              {adv.content?.length > 0 &&
+                adv.content.map((item) => (
+                  <ProductCard
+                    text={item.title}
+                    key={item.advertisementId}
+                    city={getCity(item.location)}
+                    picture={`data:image/jpeg;base64,${item.image}`}
+                    clickOnButton={() =>
+                      moveToProductPage(item.advertisementId)
+                    }
+                  />
+                ))}
+            </PagePagination>
+          )}
         </div>
       </Styles.SearchingContent>
     </Styles.SearchingResults>
