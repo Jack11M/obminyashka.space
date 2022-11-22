@@ -26,10 +26,16 @@ export const SubTitleBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-right: 15px;
   line-height: 17px;
 `;
 
 export const RotateRectangle = styled.div`
+  svg {
+    transition: all 0.2s linear;
+    -webkit-transition: all 0.2s linear;
+  }
+
   ${({ openSelect }) => css`
     ${openSelect &&
     css`
@@ -43,7 +49,7 @@ export const RotateRectangle = styled.div`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 7px 30px;
+  padding: 6px 15px;
   background: #dedede;
   border-radius: 5px;
   border: none;
