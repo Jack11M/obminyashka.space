@@ -22,10 +22,14 @@ function initObminyashka({ onAuthError }) {
       getStorageUser('user').access_token ||
       sessionStorage.getItem('code') ||
       '';
+
     const newConfig = { ...config };
+
     if (token) newConfig.headers.Authorization = `Bearer ${token}`;
     else delete newConfig.headers.Authorization;
+
     newConfig.headers['accept-language'] = getStorageLang();
+
     return newConfig;
   });
 
@@ -39,19 +43,21 @@ function initObminyashka({ onAuthError }) {
       if (!refreshToken && error?.response?.status === 401) {
         return handleAuthError(error, onAuthError);
       }
-      if (
-        error?.response?.status === 401 &&
-        error?.response.data.startsWith('JWT')
-      ) {
-        if (!refreshToken) return handleAuthError(error, onAuthError);
 
+      if (error?.response?.status === 401) {
         delete originalRequest.headers.Authorization;
+
+        axios.defaults.baseURL = `https://localhost:8443${process.env.REACT_APP_API_URL}`;
+
         return axios
           .post(
             refreshUrl,
             {},
             {
-              headers: { refresh_token: `Bearer ${refreshToken}` },
+              headers: {
+                refresh_token: `Bearer ${refreshToken}`,
+                grant_type: 'client_credentials',
+              },
             }
           )
           .then((res) => {
@@ -59,15 +65,18 @@ function initObminyashka({ onAuthError }) {
               setStorageUser(res.data);
               return axios(originalRequest);
             }
+
             return handleAuthError(error, onAuthError);
           })
           .catch(() => handleAuthError(error, onAuthError));
       }
+
       return Promise.reject(error);
     }
   );
   return axios;
 }
+
 const obminyashkaApi = initObminyashka({
   onAuthError: () => store.dispatch(logOutUser()),
 });
