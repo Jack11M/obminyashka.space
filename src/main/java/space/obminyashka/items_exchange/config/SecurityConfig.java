@@ -12,11 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.authorization.jwt.JwtTokenFilter;
 import space.obminyashka.items_exchange.authorization.oauth2.OAuthLoginSuccessHandler;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -52,6 +53,8 @@ public class SecurityConfig {
                 .antMatchers(
                         "/",
                         "/favicon.ico",
+                        "/static/css/**",
+                        "/static/js/**",
                         "/**/*.png",
                         "/**/*.gif",
                         "/**/*.svg",
@@ -59,8 +62,7 @@ public class SecurityConfig {
                         "/**/*.html",
                         "/**/*.css",
                         "/**/*.js",
-                        "/**/*.ttf",
-                        "/**/*.chunk.*").permitAll()
+                        "/**/*.ttf").permitAll()
                 .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs", "/webjars/**", "/actuator/health", "/error").permitAll()
                 .antMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
                 .antMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
@@ -84,9 +86,11 @@ public class SecurityConfig {
                 .oauth2Login().successHandler(oauthLoginSuccessHandler)
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                    .accessDeniedHandler(accessDeniedHandler)
-                    .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint((request, response, ex) -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getOutputStream().println("JWT is expired and needs to be recreated");
+                })
                 .and()
                 .build();
     }

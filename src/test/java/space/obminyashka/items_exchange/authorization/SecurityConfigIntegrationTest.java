@@ -67,8 +67,8 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    void createAdvertisementWithoutTokenIsForbiddenResponse() throws Exception {
-        sendUriAndGetMvcResult(post(ADV), status().isForbidden());
+    void createAdvertisementWithoutTokenIsUnauthorizedResponse() throws Exception {
+        sendUriAndGetMvcResult(post(ADV), status().isUnauthorized());
     }
 
     @Test
@@ -89,9 +89,9 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    void postRequestWithNotValidJWTTokenIsForbiddenResponse() throws Exception {
+    void postRequestWithNotValidJWTTokenIsUnauthorizedResponse() throws Exception {
         final var invalidToken = BEARER_PREFIX + obtainToken(createValidUserLoginDto()).replaceAll(".$", "");
-        sendUriWithHeadersAndGetMvcResult(post(ADV), status().isForbidden(), getAuthorizationHeader(invalidToken));
+        sendUriWithHeadersAndGetMvcResult(post(ADV), status().isUnauthorized(), getAuthorizationHeader(invalidToken));
     }
 
     @Test

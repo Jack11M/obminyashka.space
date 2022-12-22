@@ -70,7 +70,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     void negativeTestReceivingInformationAboutAnotherUser() throws Exception {
-        sendUriAndGetMvcResult(get(USER_MY_INFO), status().isForbidden());
+        sendUriAndGetMvcResult(get(USER_MY_INFO), status().isUnauthorized());
     }
 
     @Test
