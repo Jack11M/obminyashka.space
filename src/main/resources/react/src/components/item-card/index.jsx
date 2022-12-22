@@ -1,5 +1,5 @@
-import { Button } from 'components/common';
-import { Avatar } from 'components/common/avatar';
+import * as Icon from 'assets/icons';
+import { Avatar, Button, EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';
@@ -36,10 +36,12 @@ const ProductCard = ({
       <Styles.CardContent>
         <Styles.TextContent>{text}</Styles.TextContent>
 
-        <Styles.LocationIcon inbox={inboxMessage}>
-          <span className="icon-location" />
+        <Styles.LocationIcon>
+          <Icon.LocationSvg />
 
-          <Styles.CitySpan>{city}</Styles.CitySpan>
+          <Styles.CitySpan>
+            <EllipsisText>{city}</EllipsisText>
+          </Styles.CitySpan>
         </Styles.LocationIcon>
 
         <Styles.ButtonBlock>

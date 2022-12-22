@@ -29,6 +29,7 @@ export {
 export { city, district, area } from './getLocationProperties';
 
 export { useDelay } from './delay';
-export { convertToMB } from './convertToMB';
+export * as constants from './constants';
+export { convertToMB, options, isRightExtension } from './convertToMB';
 
 export { authError, isErrorArray, translateErrorsAuth } from './errorAuth';

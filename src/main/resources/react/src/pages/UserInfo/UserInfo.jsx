@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
 
 import { Tabs } from './tabs';
@@ -14,6 +15,8 @@ import * as Styles from './styles';
 const UserInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const profile = useSelector(getProfile);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [prevLocation, setPrevLocation] = useState('');
 
@@ -23,8 +26,10 @@ const UserInfo = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserThunk());
-  }, [dispatch]);
+    if (!profile) {
+      dispatch(getUserThunk());
+    }
+  }, [dispatch, profile]);
 
   return (
     <Styles.Container>

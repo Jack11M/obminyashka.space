@@ -46,7 +46,6 @@ export const FavoriteMarker = styled.span`
 `;
 
 export const DivPicture = styled.div`
-  margin-bottom: 10px;
   width: 286px;
   height: 242px;
 `;
@@ -64,6 +63,7 @@ export const CardContent = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 15px 44px 0;
 `;
 
 export const TextContent = styled.h6`
@@ -71,9 +71,7 @@ export const TextContent = styled.h6`
   font-size: 16px;
   line-height: 19px;
   color: ${({ theme }) => theme.colors.blackColorText};
-  margin: -5px 44px 10px;
   text-align: center;
-
   -webkit-line-clamp: 2;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -82,12 +80,20 @@ export const TextContent = styled.h6`
 `;
 
 export const LocationIcon = styled.div`
-  margin-bottom: ${({ inbox }) => (inbox ? '36px' : '23px')};
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0 20px;
+  text-align: center;
 `;
+
 export const CitySpan = styled.span`
-  color: ${({ theme: { colors } }) => colors.btnBlueHover};
+  position: relative;
+  max-width: 120px;
+  margin-left: 8px;
   font-size: 14px;
-  margin-left: 9px;
+  color: ${({ theme: { colors } }) => colors.btnBlueHover};
 `;
 
 export const ButtonBlock = styled.div`
@@ -126,7 +132,6 @@ export const InboxSpan = styled.span`
   left: 50%;
   transform: translate(-50%, -62%);
   font-family: 'Open Sans', sans-serif;
-
   font-size: 16px;
   font-style: normal;
   font-weight: 800;

@@ -1,19 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const profileMeInitialState = {
-  userLoading: false,
-  childrenLoading: false,
-  avatarImage: null,
-  children: [],
-  email: '',
-  firstName: '',
-  lastName: '',
-  lastOnlineTime: '',
-  online: false,
-  phones: [],
-  status: '',
-  updated: '',
-  username: '',
+  profile: null,
 };
 
 const profileMeSlice = createSlice({
@@ -21,51 +9,29 @@ const profileMeSlice = createSlice({
   initialState: profileMeInitialState,
   reducers: {
     putUserToStore: (state, { payload }) => {
-      state.firstName = payload.firstName;
-      state.lastName = payload.lastName;
-      state.phones = payload.phones;
+      state.profile.firstName = payload.firstName;
+      state.profile.lastName = payload.lastName;
+      state.profile.phones = payload.phones;
     },
     putChildrenToStore: (state, { payload }) => {
-      state.children = payload;
+      state.profile.children = payload;
     },
     putProfile: (state, { payload }) => {
-      state.avatarImage = payload?.avatarImage;
-      state.children = payload?.children;
-      state.email = payload?.email;
-      state.firstName = payload?.firstName;
-      state.lastName = payload?.lastName;
-      state.lastOnlineTime = payload?.lastOnlineTime;
-      state.online = payload?.online;
-      state.phones = payload?.phones;
-      state.status = payload?.status;
-      state.updated = payload?.updated;
-      state.username = payload?.username;
+      state.profile = payload;
     },
     setAvatar: (state, { payload }) => {
-      state.avatarImage = payload;
+      state.profile.avatarImage = payload;
     },
     setProfileEmail: (state, { payload }) => {
-      state.email = payload;
+      state.profile.email = payload;
     },
     clearProfile: (state) => {
-      state.userLoading = false;
-      state.childrenLoading = false;
-      state.avatarImage = null;
-      state.children = [];
-      state.email = '';
-      state.firstName = '';
-      state.lastName = '';
-      state.lastOnlineTime = '';
-      state.online = false;
-      state.phones = [];
-      state.status = '';
-      state.updated = '';
-      state.username = '';
+      state.profile = null;
     },
   },
 });
 
-export const getProfile = (state) => state.profileMe;
+export const getProfile = (state) => state.profileMe.profile;
 
 const {
   reducer: profileMeReducer,

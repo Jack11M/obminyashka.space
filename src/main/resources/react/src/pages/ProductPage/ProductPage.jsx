@@ -5,14 +5,15 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
-import { getAuthLang } from 'store/auth/slice';
 import { getErrorMessage } from 'Utils/error';
+import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
+import { getCity } from 'Utils/getLocationProperties';
 import { BackButton, TitleBigBlue } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
+import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import { getCity, getDate } from './helpers';
 import { ProductPostData } from './ProductPostData';
 import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
@@ -47,21 +48,21 @@ const ProductPage = () => {
 
   const avatar = useMemo(() => {
     if (product.ownerAvatar) return product.ownerAvatar;
-    if (state) return profile.avatarImage;
+    if (state) return profile?.avatarImage;
     return null;
   }, [state, product.ownerAvatar]);
 
   const phone = useMemo(() => {
     if (product.phone) return product.phone;
-    if (state) return profile.phones[0]?.phoneNumber;
+    if (state) return profile?.phones[0]?.phoneNumber;
     return '';
-  }, [state, profile.phones, product.phone]);
+  }, [state, profile?.phones, product?.phone]);
 
   const name = useMemo(() => {
     if (product.ownerName) return product.ownerName;
-    if (state) return profile.username;
+    if (state) return profile?.username;
     return '';
-  }, [state, profile.username, product.ownerName]);
+  }, [state, profile?.username, product.ownerName]);
 
   const setPreviewData = useCallback(async () => {
     try {
@@ -96,7 +97,7 @@ const ProductPage = () => {
       setCategory(categoryValue);
       setSubcategory(subcategoryValue);
       setCurrentLocation(locationValue);
-      setWishes(wishesToExchange?.split(', '));
+      setWishes(wishesToExchange?.split(','));
     } catch (e) {
       toast.error(getErrorMessage(e));
     }

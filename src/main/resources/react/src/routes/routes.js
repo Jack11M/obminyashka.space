@@ -7,7 +7,7 @@ import UserInfo from 'pages/UserInfo/UserInfo';
 import AddGoods from 'pages/AddGoods/AddGoods';
 import Login from 'pages/FormRegister/sign-in';
 import SignUp from 'pages/FormRegister/sign-up';
-import SearchResults from 'pages/SearchResults';
+import { SearchResults } from 'pages/SearchResults';
 import ProductPage from 'pages/ProductPage/ProductPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 

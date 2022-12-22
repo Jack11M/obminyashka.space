@@ -158,7 +158,7 @@ export const WrapSearch = styled.div`
 `;
 
 export const InputSearch = styled.input`
-  padding: 10px 10px 10px 60px;
+  padding: 10px 38px 10px 60px;
   width: 100%;
   max-width: 541px;
   height: 50px;
@@ -172,7 +172,17 @@ export const InputSearch = styled.input`
   outline: none;
 `;
 
-export const LabelLink = styled(Link)`
+export const IconBlock = styled.div`
+  position: absolute;
+  display: flex;
+  flex-shrink: 0;
+  top: 50%;
+  right: 15px;
+  cursor: pointer;
+  transform: translateY(-50%);
+`;
+
+export const LabelLink = styled.div`
   position: absolute;
   display: flex;
   justify-content: center;
