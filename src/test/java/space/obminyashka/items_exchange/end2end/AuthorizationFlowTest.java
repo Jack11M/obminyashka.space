@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -22,6 +23,7 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
+import space.obminyashka.items_exchange.service.MailService;
 
 import java.util.stream.Stream;
 
@@ -39,6 +41,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @DBRider
 @DataSet("database_init.yml")
 @AutoConfigureMockMvc
+@MockBean(classes = MailService.class)
 class AuthorizationFlowTest extends BasicControllerTest {
 
     protected static final String VALID_USERNAME = "test";
@@ -118,7 +121,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     @DataSet(value = "auth/login.yml")
     void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder_And_DeletedRefreshToken() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + "refreshToken"), status().isUnauthorized());
+                .header("refresh", BEARER_PREFIX + "refreshToken"), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.invalid").substring(0, 24)));
     }
 
