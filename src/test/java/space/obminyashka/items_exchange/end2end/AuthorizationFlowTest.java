@@ -121,7 +121,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     @DataSet(value = "auth/login.yml")
     void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder_And_DeletedRefreshToken() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + "refreshToken"), status().isUnauthorized());
+                .header("refresh", BEARER_PREFIX + "refreshToken"), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.invalid").substring(0, 24)));
     }
 

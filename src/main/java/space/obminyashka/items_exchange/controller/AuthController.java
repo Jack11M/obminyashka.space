@@ -124,7 +124,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public RefreshTokenResponseDto refreshToken(
             @ApiParam(required = true)
-            @RequestHeader(OAuth2ParameterNames.REFRESH_TOKEN) String refreshToken) throws RefreshTokenException {
+            @RequestHeader("refresh") String refreshToken) throws RefreshTokenException {
         final var resolvedToken = JwtTokenService.resolveToken(refreshToken);
         userService.updatePreferableLanguage(resolvedToken);
         return authService.renewAccessTokenByRefresh(resolvedToken);

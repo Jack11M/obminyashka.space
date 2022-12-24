@@ -109,7 +109,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
         final var refreshToken = getRefreshTokenValue();
         TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isOk());
+                .header("refresh", BEARER_PREFIX + refreshToken), status().isOk());
         final var newAccessToken = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
                 .get(OAuth2ParameterNames.REFRESH_TOKEN).textValue();
         assertNotNull(newAccessToken);
@@ -123,7 +123,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
         final var refreshToken = objectMapper.readTree(content).get(OAuth2ParameterNames.REFRESH_TOKEN).textValue();
         TimeUnit.SECONDS.sleep(refreshTokenExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + refreshToken), status().isUnauthorized());
+                .header("refresh", BEARER_PREFIX + refreshToken), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
@@ -131,7 +131,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void postRequestWithInvalidRefreshTokenIsUnauthorized() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
-                .header(OAuth2ParameterNames.REFRESH_TOKEN, BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
+                .header("refresh", BEARER_PREFIX + INVALID_TOKEN), status().isUnauthorized());
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 

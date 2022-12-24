@@ -46,17 +46,14 @@ function initObminyashka({ onAuthError }) {
 
       if (error?.response?.status === 401) {
         delete originalRequest.headers.Authorization;
-
-        axios.defaults.baseURL = `https://localhost:8443${process.env.REACT_APP_API_URL}`;
-
         return axios
           .post(
             refreshUrl,
             {},
             {
               headers: {
-                refresh_token: `Bearer ${refreshToken}`,
-                grant_type: 'client_credentials',
+                refresh: `Bearer ${refreshToken}`,
+                grant_type: 'refresh_token',
               },
             }
           )

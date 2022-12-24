@@ -21,7 +21,6 @@ const NavTop = () => {
 
   useEffect(() => {
     if (!profile && isAuthed) {
-      console.log({ profile, isAuthed });
       dispatch(getUserThunk());
     }
   }, [dispatch, isAuthed, profile]);
