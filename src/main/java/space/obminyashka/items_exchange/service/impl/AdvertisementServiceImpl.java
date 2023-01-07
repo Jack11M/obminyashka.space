@@ -69,7 +69,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .toList();
     }
 
-    @Cacheable(key = "#keyword")
+    // @Cacheable(key = "#keyword")
     @Override
     public Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable) {
         final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);

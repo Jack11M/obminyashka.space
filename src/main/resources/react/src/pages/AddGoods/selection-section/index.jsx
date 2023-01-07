@@ -107,6 +107,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
 
           <Styles.InputText
             type="text"
+            name="topic"
             error={touched && !!error}
             value={announcement.announcementTitle}
             onChange={(e) => announcement.setAnnouncementTitle(e.target.value)}

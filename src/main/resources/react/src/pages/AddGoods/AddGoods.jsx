@@ -11,6 +11,7 @@ import { enumAge } from 'config/ENUM';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
 import { getAuthLang } from 'store/auth/slice';
+import { FormikFocus } from 'components/common/formik';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
 import {
@@ -273,7 +274,7 @@ const AddGoods = () => {
                         </WrapCharacteristic>
                       </Styles.SectionsItem>
 
-                      <Styles.SectionsItem>
+                      <Styles.SectionsItem name="size">
                         <Sizes
                           categories={categoryItems}
                           dimension={{ size, setSize }}
@@ -288,12 +289,14 @@ const AddGoods = () => {
                   />
 
                   <Location
+                    name="locationId"
                     setLocationId={setLocationId}
                     setLocationCurrent={setLocationCurrent}
                     onInputLocation={{ showLocation, setShowLocation }}
                   />
 
                   <PhotoFiles
+                    name="images"
                     imageFiles={imageFiles}
                     preViewImage={preViewImage}
                     setImageFiles={setImageFiles}
@@ -322,6 +325,8 @@ const AddGoods = () => {
                 </Styles.AddContainer>
               </Styles.Container>
             </Styles.MainContainer>
+
+            <FormikFocus />
           </Form>
         )}
       </FormikHandler>

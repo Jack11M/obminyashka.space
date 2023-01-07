@@ -8,7 +8,9 @@ const WrapCharacteristic = ({ title, name, children }) => {
 
   return (
     <>
-      <ItemTittle error={error}>{title}:</ItemTittle>
+      <ItemTittle error={error} name={name}>
+        {title}:
+      </ItemTittle>
       {children}
     </>
   );

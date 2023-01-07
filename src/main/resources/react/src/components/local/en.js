@@ -107,7 +107,7 @@ const en = {
     exit: 'exit',
   },
   button: {
-    addAdv: 'Add new advertisement',
+    addAdv: 'Add advertisement',
     addField: 'Add field',
     removeField: 'Remove field',
     saveChanges: 'Save changes',
