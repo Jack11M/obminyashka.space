@@ -9,11 +9,9 @@ const FormikFocus = () => {
       const keys = Object.keys(errors);
       const imageIndex = keys.indexOf('images');
 
-      if (keys.includes('images')) {
-        if (imageIndex !== -1) {
-          keys.splice(imageIndex, 1);
-          keys.push('images');
-        }
+      if (keys.includes('images') && imageIndex !== -1) {
+        keys.splice(imageIndex, 1);
+        keys.push('images');
       }
 
       if (keys.length > 0) {
