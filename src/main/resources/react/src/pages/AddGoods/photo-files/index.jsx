@@ -11,6 +11,7 @@ import { AddFileInput } from './add-file-input';
 import * as Styles from '../styles';
 
 const PhotoFiles = ({
+  name,
   imageFiles,
   preViewImage,
   setImageFiles,
@@ -146,7 +147,7 @@ const PhotoFiles = ({
   };
 
   return (
-    <Styles.WrapFiles>
+    <Styles.WrapFiles name={name}>
       <Styles.FileTittle>
         {getTranslatedText('addAdv.uploadDescription')}&nbsp;
         <Styles.Star>*</Styles.Star>

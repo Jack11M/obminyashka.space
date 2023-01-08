@@ -75,7 +75,7 @@ const ShowSelectItem = ({
 
   return (
     <>
-      <Styles.WrapSelect ref={refClickAway}>
+      <Styles.WrapSelect ref={refClickAway} name={name}>
         <Styles.SelectLabel
           error={!!error}
           showImg={showImg}

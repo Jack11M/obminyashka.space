@@ -58,8 +58,8 @@ const Sizes = ({ categories, dimension }) => {
       </Styles.ItemTittle>
 
       <ShowSelectItem
-        name="size"
         overflows
+        name="size"
         data={receivedSizes}
         text={dimension.size}
         value={dimension.size}

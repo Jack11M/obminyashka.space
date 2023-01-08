@@ -12,7 +12,12 @@ import { WrapContainer } from './styles';
 import { InputLocation } from './input-location';
 import { getDependWithLang } from './input-location/helpers';
 
-const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
+const Location = ({
+  name,
+  setLocationId,
+  onInputLocation,
+  setLocationCurrent,
+}) => {
   const lang = useSelector(getAuthLang);
 
   const [location, setLocation] = useState(null);
@@ -42,7 +47,7 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
   }, []);
 
   return (
-    <WrapContainer>
+    <WrapContainer name={name}>
       <InputLocation
         name={area}
         location={location}
@@ -51,6 +56,7 @@ const Location = ({ setLocationId, setLocationCurrent, onInputLocation }) => {
         inputLocation={onInputLocation.showLocation}
         setInputLocation={onInputLocation.setShowLocation}
       />
+
       <InputLocation
         name={city}
         location={location}

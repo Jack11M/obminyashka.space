@@ -79,7 +79,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   };
 
   return (
-    <Styles.Wrap>
+    <Styles.Wrap name="wishesToExchange">
       <Styles.TitleH3>{getTranslatedText('addAdv.exchange')}</Styles.TitleH3>
 
       <Styles.Description>
