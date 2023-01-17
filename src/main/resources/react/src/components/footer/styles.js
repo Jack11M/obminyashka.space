@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
+import * as Icon from 'assets/icons';
 import footerBg from 'assets/img/footerBg.png';
 
 export const Container = styled.div`
@@ -68,20 +69,40 @@ export const Contact = styled.a`
   text-decoration: none;
 `;
 
+export const FootLinkWrapper = styled.div`
+  margin-bottom: ${({ rules }) => (rules ? '10px' : '0')};
+`;
+
 export const FootLink = styled(Link)`
   display: block;
   line-height: 24px;
   text-decoration: none;
 `;
 
-export const FootLinkWrapper = styled.div`
-  margin-bottom: ${({ rules }) => (rules ? '10px' : '0')};
-`;
+export const LogoWrapper = styled(Link)`
+  display: flex;
+  align-items: center;
 
-export const Img = styled.img`
-  :active {
+  &:active {
     transform: scale(1.03);
   }
+`;
+
+export const Logo = styled(Icon.LogoFooterSvg)`
+  display: block;
+  min-width: 44px;
+  width: 44px;
+  height: 44px;
+  margin-right: 10px;
+`;
+
+export const LogoTitle = styled.h1`
+  margin: 0;
+  font-family: Expletus Sans, cursive;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28px;
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 export const BlockButton = styled.div`

@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 const styleSet = css`
   position: relative;
   display: block;
-  min-width: 295px;
+  min-width: 289px;
   border-radius: 25px;
   padding: 13px 35px 13px 61px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
   border: 0;
   cursor: pointer;
 

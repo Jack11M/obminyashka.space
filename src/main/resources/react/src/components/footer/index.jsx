@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 
 import { route } from 'routes/routeConstants';
-import logoFooter from 'assets/img/Logo-footer.png';
 import { BtnGoodBusiness } from 'components/common';
 import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
 import { getTranslatedText } from 'components/local/localization';
@@ -64,9 +63,10 @@ const Footer = () => {
               <HomeSvg />
             </Styles.Span>
 
-            <Styles.FootLink to={route.home}>
-              <Styles.Img src={logoFooter} alt="Logo" />
-            </Styles.FootLink>
+            <Styles.LogoWrapper to={route.home}>
+              <Styles.Logo />
+              <Styles.LogoTitle>Obminyashka</Styles.LogoTitle>
+            </Styles.LogoWrapper>
 
             <Styles.BlockButton>
               <BtnGoodBusiness

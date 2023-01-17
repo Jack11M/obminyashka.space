@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import logo from 'assets/img/logo.png';
+import * as Icon from 'assets/icons';
 
 export const DivWrap = styled.div`
   padding: 20px 0 22px;
@@ -24,25 +24,31 @@ export const WrapMain = styled.div`
   align-items: center;
 `;
 
-export const LogoLink = styled(Link)`
-  display: block;
-  min-width: 148px;
-  width: 148px;
-  height: 56px;
-  background: url(${logo});
+export const LogoWrapper = styled(Link)`
+  display: flex;
+  align-items: center;
   margin-right: 40px;
 
   &:active {
     transform: scale(1.03);
   }
+`;
 
-  @media (min-width: 320px) {
-    display: none;
-  }
+export const Logo = styled(Icon.LogoSvg)`
+  display: block;
+  min-width: 58px;
+  width: 58px;
+  height: 58px;
+  margin-right: 13px;
+`;
 
-  @media (min-width: 540px) {
-    display: block;
-  }
+export const LogoTitle = styled.h1`
+  margin: 0;
+  font-family: Expletus Sans, cursive;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 35px;
+  color: ${({ theme }) => theme.colors.btnBlue};
 `;
 
 export const WrapCategoriesTop = styled.div`
@@ -69,6 +75,7 @@ export const WrapCategoriesTop = styled.div`
 export const WrapCategoriesBottom = styled.div`
   transition: all 0.3s ease;
   position: relative;
+  padding-right: 4px;
 
   &:after {
     position: absolute;
@@ -122,47 +129,38 @@ export const WrapCategories = styled.div`
   }
   @media (min-width: 540px) {
     display: block;
-    margin-left: 149px;
-  }
-  @media (min-width: 840px) {
-    margin-left: 164px;
+    margin-left: 265px;
   }
   @media (min-width: 1200px) {
-    margin-left: 179px;
+    margin-left: 269px;
   }
 `;
 
 export const WrapSearch = styled.div`
-  max-width: 541px;
   width: 100%;
   position: relative;
-  margin-left: 60px;
-  margin-right: 30px;
 
   @media (min-width: 540px) {
-    margin-right: 8px;
-  }
-  @media (min-width: 750px) {
-    margin-right: 30px;
-    margin-left: 80px;
+    max-width: 250px;
+    margin-left: 120px;
+    margin-right: 22px;
   }
   @media (min-width: 950px) {
-    width: 30%;
+    max-width: 300px;
+  }
+  @media (min-width: 1024px) {
+    max-width: 400px;
   }
   @media (min-width: 1200px) {
-    width: 100%;
-  }
-  @media (min-width: 1300px) {
-    margin-left: 60px;
+    max-width: 523px;
   }
 `;
 
 export const InputSearch = styled.input`
   padding: 10px 38px 10px 60px;
   width: 100%;
-  max-width: 541px;
+  max-width: 523px;
   height: 50px;
-
   font-style: italic;
   font-size: 16px;
   line-height: 24px;

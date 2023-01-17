@@ -41,7 +41,10 @@ const NavMain = () => {
     <Styles.DivWrap>
       <Styles.Wrapper>
         <Styles.WrapMain>
-          <Styles.LogoLink to={route.home} />
+          <Styles.LogoWrapper to={route.home}>
+            <Styles.Logo />
+            <Styles.LogoTitle>Obminyashka</Styles.LogoTitle>
+          </Styles.LogoWrapper>
 
           <Styles.WrapCategories open={open} onClick={() => setOpen(!open)}>
             <Styles.WrapCategoriesTop>

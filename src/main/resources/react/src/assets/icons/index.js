@@ -17,6 +17,8 @@ export { ReactComponent as InboxMessageSvg } from './inbox-message.svg';
 export { ReactComponent as LoaderSvg } from './loader.svg';
 export { ReactComponent as LocationSvg } from './location.svg';
 export { ReactComponent as LogoutSvg } from './logout.svg';
+export { ReactComponent as LogoSvg } from './logo.svg';
+export { ReactComponent as LogoFooterSvg } from './logo-footer.svg';
 export { ReactComponent as Next } from './next.svg';
 export { ReactComponent as PhoneSvg } from './phone.svg';
 export { ReactComponent as ProfileSvg } from './profile.svg';
