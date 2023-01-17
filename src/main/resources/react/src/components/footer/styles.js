@@ -125,7 +125,7 @@ export const BlockButton = styled.div`
   }
 
   @media screen and (min-width: 800px) {
-    margin-top: 20px;
+    margin-top: 25px;
   }
 `;
 
