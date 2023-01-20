@@ -28,7 +28,7 @@
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^5.3.5",
+    "styled-components": "^5.3.6",
     "styled-normalize": "^8.0.7",
     "yup": "^0.32.11"
   },
