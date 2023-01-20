@@ -22,7 +22,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
-    "react-spring": "^9.4.4",
+    "react-spring": "^9.6.1",
     "react-toastify": "^9.0.8",
     "react-use": "^17.3.2",
     "redux": "^4.2.0",
