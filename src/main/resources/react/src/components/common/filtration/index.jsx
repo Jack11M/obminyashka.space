@@ -38,23 +38,23 @@ const Filtration = () => {
   useEffect(() => {
     (async () => {
       try {
-        const categories = await api.addGood.getCategoryAll();
-        setReceivedCategories(categories);
-      } catch (err) {
-        showMessage(err.response?.data ?? err.message);
-      }
-    })();
-  }, []);
+        const [categories, clothingSizes, shoeSizes] = await Promise.all([
+          api.addGood.getCategoryAll(),
+          api.addGood.getSize(1),
+          api.addGood.getSize(2),
+        ]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const clothingSizes = await api.addGood.getSize(1);
-        const shoeSizes = await api.addGood.getSize(2);
-        setReceivedClothingSize(clothingSizes);
-        setReceivedShoeSize(shoeSizes);
+        if (
+          Array.isArray(categories) &&
+          Array.isArray(clothingSizes) &&
+          Array.isArray(shoeSizes)
+        ) {
+          setReceivedClothingSize(clothingSizes);
+          setReceivedShoeSize(shoeSizes);
+          setReceivedCategories(categories);
+        }
       } catch (err) {
-        showMessage(err.response?.data ?? err.message);
+        showMessage(err.response?.data ?? err?.message);
       }
     })();
   }, []);
@@ -89,7 +89,7 @@ const Filtration = () => {
             <InputsWithLocation />
 
             <CheckBoxes title={getTranslatedText('product.sex')}>
-              {sexShow.map((item) => (
+              {sexShow?.map((item) => (
                 <FormikCheckBox
                   key={item}
                   value={item}
@@ -104,7 +104,7 @@ const Filtration = () => {
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.age')}>
-              {agesShow.map((item) => (
+              {agesShow?.map((item) => (
                 <FormikCheckBox
                   key={item}
                   value={item}
@@ -120,7 +120,7 @@ const Filtration = () => {
 
             <CheckBoxes title={getTranslatedText('product.clothingSizes')}>
               <Styles.ScrollBar>
-                {receivedClothingSizes.map((item) => (
+                {receivedClothingSizes?.map((item) => (
                   <FormikCheckBox
                     key={item}
                     value={item}
@@ -137,7 +137,7 @@ const Filtration = () => {
 
             <CheckBoxes title={getTranslatedText('product.shoeSizes')}>
               <Styles.ScrollBar>
-                {receivedShoeSizes.map((item) => (
+                {receivedShoeSizes?.map((item) => (
                   <FormikCheckBox
                     key={item}
                     value={item}
@@ -153,7 +153,7 @@ const Filtration = () => {
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.season')}>
-              {seasonShow.map((item) => (
+              {seasonShow?.map((item) => (
                 <FormikCheckBox
                   key={item}
                   value={item}
