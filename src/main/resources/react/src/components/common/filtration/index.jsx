@@ -89,7 +89,7 @@ const Filtration = () => {
             <InputsWithLocation />
 
             <CheckBoxes title={getTranslatedText('product.sex')}>
-              {sexShow?.map((item) => (
+              {sexShow.map((item) => (
                 <FormikCheckBox
                   key={item}
                   value={item}
@@ -104,7 +104,7 @@ const Filtration = () => {
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.age')}>
-              {agesShow?.map((item) => (
+              {agesShow.map((item) => (
                 <FormikCheckBox
                   key={item}
                   value={item}
@@ -120,7 +120,7 @@ const Filtration = () => {
 
             <CheckBoxes title={getTranslatedText('product.clothingSizes')}>
               <Styles.ScrollBar>
-                {receivedClothingSizes?.map((item) => (
+                {receivedClothingSizes.map((item) => (
                   <FormikCheckBox
                     key={item}
                     value={item}
@@ -137,7 +137,7 @@ const Filtration = () => {
 
             <CheckBoxes title={getTranslatedText('product.shoeSizes')}>
               <Styles.ScrollBar>
-                {receivedShoeSizes?.map((item) => (
+                {receivedShoeSizes.map((item) => (
                   <FormikCheckBox
                     key={item}
                     value={item}
@@ -153,7 +153,7 @@ const Filtration = () => {
             </CheckBoxes>
 
             <CheckBoxes title={getTranslatedText('product.season')}>
-              {seasonShow?.map((item) => (
+              {seasonShow.map((item) => (
                 <FormikCheckBox
                   key={item}
                   value={item}
