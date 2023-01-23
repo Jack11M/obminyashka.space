@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { showMessage } from 'hooks';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
@@ -18,29 +18,43 @@ import * as Styles from './styles';
 
 const SearchResults = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { search, setSearch, isFetch, setIsFetch } = useContext(SearchContext);
-
   const [adv, setAdv] = useState({});
 
+  const searchResults = search || searchParams.get('search');
+
   const getAdv = async (page) => {
+    const currentPage = page ?? 1;
+
     try {
-      const response = await api.search.getSearch(search, page - 1);
+      const response = await api.search.getSearch(
+        searchResults,
+        currentPage - 1
+      );
       setAdv(response);
+      setSearchParams({ search: searchResults });
     } catch (err) {
-      showMessage(err.response?.data ?? err.message);
+      if (err?.response?.status !== 404) {
+        showMessage(err.response?.data ?? err.message);
+      }
     } finally {
       setIsFetch(false);
     }
   };
 
   useEffect(() => {
-    if (isFetch) {
-      getAdv(1);
+    if (isFetch && searchResults) {
+      getAdv();
     }
-  }, [isFetch]);
+  }, [isFetch, searchResults]);
 
   useEffect(() => {
-    getAdv(1);
+    if (searchResults || search) {
+      getAdv();
+    } else {
+      setSearch(searchResults);
+    }
 
     return () => {
       setSearch('');
