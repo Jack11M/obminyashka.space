@@ -1,8 +1,10 @@
-import { createContext, useState, useMemo } from 'react';
+import { createContext, useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const SearchContext = createContext();
 
 const SearchProvider = ({ children }) => {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [isFetch, setIsFetch] = useState(false);
 
@@ -15,6 +17,11 @@ const SearchProvider = ({ children }) => {
     }),
     [search, isFetch]
   );
+
+  useEffect(() => {
+    const searchResults = searchParams.get('search') || '';
+    setSearch(searchResults);
+  }, []);
 
   return (
     <SearchContext.Provider value={searchProvider}>

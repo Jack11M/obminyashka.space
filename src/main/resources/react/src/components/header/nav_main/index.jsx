@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import * as Icon from 'assets/icons';
 import { route } from 'routes/routeConstants';
@@ -12,8 +12,9 @@ import NavCategory from '../nav_category/index';
 
 const NavMain = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
   const { search, setSearch, setIsFetch } = useContext(SearchContext);
+  const [open, setOpen] = useState(false);
 
   const change = (e) => {
     setIsFetch(false);
@@ -21,8 +22,11 @@ const NavMain = () => {
   };
 
   const move = () => {
-    navigate(route.SearchResults);
     setIsFetch(true);
+
+    if (pathname?.replace('/', '') !== route.SearchResults) {
+      navigate(route.SearchResults);
+    }
   };
 
   const keyEnter = (event) => {

@@ -38,23 +38,23 @@ const Filtration = () => {
   useEffect(() => {
     (async () => {
       try {
-        const categories = await api.addGood.getCategoryAll();
-        setReceivedCategories(categories);
-      } catch (err) {
-        showMessage(err.response?.data ?? err.message);
-      }
-    })();
-  }, []);
+        const [categories, clothingSizes, shoeSizes] = await Promise.all([
+          api.addGood.getCategoryAll(),
+          api.addGood.getSize(1),
+          api.addGood.getSize(2),
+        ]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const clothingSizes = await api.addGood.getSize(1);
-        const shoeSizes = await api.addGood.getSize(2);
-        setReceivedClothingSize(clothingSizes);
-        setReceivedShoeSize(shoeSizes);
+        if (
+          Array.isArray(categories) &&
+          Array.isArray(clothingSizes) &&
+          Array.isArray(shoeSizes)
+        ) {
+          setReceivedClothingSize(clothingSizes);
+          setReceivedShoeSize(shoeSizes);
+          setReceivedCategories(categories);
+        }
       } catch (err) {
-        showMessage(err.response?.data ?? err.message);
+        showMessage(err.response?.data ?? err?.message);
       }
     })();
   }, []);
