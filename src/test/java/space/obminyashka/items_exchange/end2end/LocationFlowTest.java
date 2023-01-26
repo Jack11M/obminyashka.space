@@ -87,7 +87,28 @@ class LocationFlowTest extends BasicControllerTest {
     void createLocation_shouldCreateNewLocation() throws Exception {
         sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
     }
+    @WithMockUser(username = "admin", roles = { "ADMIN" })
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "location/create.yml", orderBy = "city_en", ignoreCols = "id")
+    void createTwoSameLocation_shouldGetMessageBadRequest() throws Exception
+    {
+        sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
+        sendDtoAndGetResultAction(post(LOCATION), createValidLocationDto(), status().isBadRequest());
+    }
 
+    @WithMockUser(username = "admin", roles = { "ADMIN" })
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocations.yml" }, orderBy = "area_en", ignoreCols = "id")
+    void createTwoDifferentLocation_shouldCreateNewLocation() throws Exception
+    {
+        sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
+        var secondLocation = createValidLocationDto();
+        secondLocation.setAreaUA("Харківська область");
+        secondLocation.setAreaEN("Kharkiv area");
+        sendDtoAndGetResultAction(post(LOCATION), secondLocation, status().isCreated());
+    }
     private void sendAndCompareLocationResponse(MockHttpServletRequestBuilder request, ResultMatcher created) throws Exception {
         sendDtoAndGetResultAction(request, createValidLocationDto(), created)
                 .andExpect(jsonPath("$.id").exists())
