@@ -26,6 +26,7 @@ const SearchResults = () => {
 
   const getAdv = async (page) => {
     const currentPage = page ?? 1;
+    setSearchParams({ search: searchResults });
 
     try {
       const response = await api.search.getSearch(
@@ -33,7 +34,6 @@ const SearchResults = () => {
         currentPage - 1
       );
       setAdv(response);
-      setSearchParams({ search: searchResults });
     } catch (err) {
       if (err?.response?.status !== 404) {
         showMessage(err.response?.data ?? err.message);
