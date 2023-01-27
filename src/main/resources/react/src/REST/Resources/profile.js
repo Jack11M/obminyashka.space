@@ -22,7 +22,13 @@ export const putEmailFetch = (email) =>
   obminyashkaApi.put('/user/service/email/', email).then(({ data }) => data);
 
 export const postAvatar = (avatar) =>
-  obminyashkaApi.post('/user/service/avatar', avatar).then(({ data }) => data);
+  obminyashkaApi
+    .post('/user/service/avatar', avatar, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then(({ data }) => data);
 
 export const deleteAvatar = () =>
   obminyashkaApi.delete('/user/service/avatar').then(({ data }) => data);
