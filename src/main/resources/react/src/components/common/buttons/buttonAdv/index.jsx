@@ -1,8 +1,8 @@
-import { Loader } from 'components/common';
 import { route } from 'routes/routeConstants';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
+import { Loader } from '../../loader';
 
 const ButtonAdv = ({ type = 'submit', isLoading }) => {
   return (

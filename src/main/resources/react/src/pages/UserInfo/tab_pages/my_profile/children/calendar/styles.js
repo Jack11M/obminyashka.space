@@ -32,7 +32,10 @@ export const Container = styled.div`
         font-weight: 600;
         user-select: none;
 
-        :hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected):not(.react-datepicker__day--keyboard-selected) {
+        :hover
+          :not(.react-datepicker__day--disabled)
+          :not(.react-datepicker__day--selected)
+          :not(.react-datepicker__day--keyboard-selected) {
           background-color: #12b6ed1a;
         }
       }
