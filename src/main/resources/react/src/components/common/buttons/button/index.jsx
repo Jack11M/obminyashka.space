@@ -1,5 +1,4 @@
-import { Loader } from 'components/common';
-
+import { Loader } from '../../loader';
 import { ButtonBlue, WrapIcon } from './styles';
 
 const Button = ({

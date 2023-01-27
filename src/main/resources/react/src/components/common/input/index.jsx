@@ -2,9 +2,9 @@ import { useField } from 'formik';
 import { useLocation } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
-import { showPassword } from 'components/common';
 
 import * as Styles from './styles';
+import { showPassword } from '../show-password';
 
 const InputForAuth = ({ text, type, ...props }) => {
   const location = useLocation();
