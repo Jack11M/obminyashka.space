@@ -99,7 +99,51 @@ class LocationFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.areaUA").value(AREA_UA))
                 .andReturn();
     }
-
+    @WithMockUser(username = "admin", roles = { "ADMIN" })
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "location/create.yml", orderBy = "city_en", ignoreCols = "id")
+    void createTwoSameLocation_shouldGetMessageBadRequest() throws Exception
+    {
+        sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
+        sendDtoAndGetResultAction(post(LOCATION), createValidLocationDto(), status().isBadRequest());
+    }
+    @WithMockUser(username = "admin", roles = { "ADMIN" })
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocationWithDifferentArea.yml" }, orderBy = "area_en", ignoreCols = "id")
+    void createTwoDifferentAreaLocation_shouldCreateNewLocation() throws Exception
+    {
+        sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
+        var secondLocation = createValidLocationDto();
+        secondLocation.setAreaUA("Харківська область");
+        secondLocation.setAreaEN("Kharkiv area");
+        sendDtoAndGetResultAction(post(LOCATION), secondLocation, status().isCreated());
+    }
+    @WithMockUser(username = "admin", roles = { "ADMIN" })
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocationWithDifferentCity.yml" }, orderBy = "city_en", ignoreCols = "id")
+    void createTwoDifferentCityLocation_shouldCreateNewLocation() throws Exception
+    {
+        sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
+        var secondLocation = createValidLocationDto();
+        secondLocation.setCityUA("Ірпінь");
+        secondLocation.setCityEN("Irpin");
+        sendDtoAndGetResultAction(post(LOCATION), secondLocation, status().isCreated());
+    }
+    @WithMockUser(username = "admin", roles = { "ADMIN" })
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocationWithDifferentDistrict.yml" }, orderBy = "district_en", ignoreCols = "id")
+    void createTwoDifferentDistrictLocation_shouldCreateNewLocation() throws Exception
+    {
+        sendAndCompareLocationResponse(post(LOCATION), status().isCreated());
+        var secondLocation = createValidLocationDto();
+        secondLocation.setDistrictUA("Шевченконвський");
+        secondLocation.setDistrictEN("Shevchenkovskiy");
+        sendDtoAndGetResultAction(post(LOCATION), secondLocation, status().isCreated());
+    }
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
     void updateLocation_shouldReturn404WhenLocationIsNotExisted() throws Exception {

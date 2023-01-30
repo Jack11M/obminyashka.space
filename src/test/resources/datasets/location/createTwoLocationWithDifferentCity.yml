@@ -1,0 +1,22 @@
+location:
+  - id: [ignored]
+    area_ua: 'Київська область'
+    city_ua: 'Київ'
+    district_ua: 'Подільський район'
+    area_en: 'Kyivska area'
+    city_en: 'Kyiv'
+    district_en: 'Podolsky district'
+  - id: 2c5467f3-b7ee-48b1-9451-7028255b757b
+    area_ua: 'Харківська область'
+    city_ua: 'Харків'
+    district_ua: 'Харківський район'
+    area_en: 'Kharkivska area'
+    city_en: 'Kharkiv'
+    district_en: 'Kharkivska district'
+  - id: [ ignored ]
+    area_ua: 'Київська область'
+    city_ua: 'Ірпінь'
+    district_ua: 'Подільський район'
+    area_en: 'Kyivska area'
+    city_en: 'Irpin'
+    district_en: 'Podolsky district'
