@@ -31,4 +31,10 @@ public class UserChangePasswordDto {
     private boolean isPasswordsEquals() {
         return newPassword.equals(confirmNewPassword);
     }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "{same.passwords}")
+    private boolean isNewPasswordDifferent() {
+        return !newPassword.equals(oldPassword);
+    }
 }

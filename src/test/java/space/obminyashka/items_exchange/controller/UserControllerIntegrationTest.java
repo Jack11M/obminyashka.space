@@ -141,6 +141,16 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user")
+    void updateUserPassword_WhenUserEnteredOldPassword_ShouldThrowIllegalArgumentException() throws Exception {
+        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource("same.passwords")));
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
