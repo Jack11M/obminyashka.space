@@ -9,7 +9,9 @@ export const getUserThunk = () => async (dispatch) => {
     const data = await api.profile.getUserInfo();
     dispatch(putProfile(data));
   } catch (e) {
-    showMessage(getErrorMessage(e));
+    if (e?.response?.status !== 401) {
+      showMessage(getErrorMessage(e));
+    }
   }
 };
 

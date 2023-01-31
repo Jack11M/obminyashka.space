@@ -5,13 +5,13 @@ import { useDispatch } from 'react-redux';
 
 import { showMessage } from 'hooks';
 import * as Icon from 'assets/icons';
-import { Button } from 'components/common';
 import { getErrorMessage } from 'Utils/error';
 import { getTranslatedText } from 'components/local';
 import { deleteAvatarThunk, postAvatarThunk } from 'store/profile/thunk';
 
 import * as Styles from './styles';
 import getCroppedImg from './helpers';
+import { Button } from '../buttons/button';
 
 const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
   const ref = useRef(null);
