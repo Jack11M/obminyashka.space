@@ -6,10 +6,3 @@ location:
     area_en: 'Kharkivska area'
     city_en: 'Kharkiv'
     district_en: 'Kharkivska district'
-  - id: [ ignored ]
-    area_ua: 'Харківська область'
-    city_ua: 'Харків'
-    district_ua: 'Шевченконвський район'
-    area_en: 'Kharkivska area'
-    city_en: 'Kharkiv'
-    district_en: 'Shevchenkovskiy district'

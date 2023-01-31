@@ -12,11 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"id", "advertisements"})
-@Table(name = "location",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"area_ua","district_ua","city_ua",
-                        "area_en","district_en","city_en"})
-        })
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "area_ua", "district_ua", "city_ua", "area_en", "district_en", "city_en" }) })
 public class Location {
 
     @Id
