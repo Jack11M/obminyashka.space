@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.dto.LocationDto;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -98,6 +99,74 @@ class LocationFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.districtUA").value(DISTRICT_UA))
                 .andExpect(jsonPath("$.areaUA").value(AREA_UA))
                 .andReturn();
+    }
+
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "location/createSameLocation.yml", orderBy = "city_en", ignoreCols = "id")
+    void createLocation_shouldGetStatusBadRequest_whenCreateSameLocation() throws Exception
+    {
+        var sameLocation = LocationDto.builder()
+                .cityUA("Харків")
+                .districtUA("Харківський район")
+                .areaUA("Харківська область")
+                .cityEN("Kharkiv")
+                .districtEN("Kharkivska district")
+                .areaEN("Kharkivska area")
+                .build();
+        sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isBadRequest());
+    }
+
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocationWithDifferentArea.yml" }, orderBy = "area_en", ignoreCols = "id")
+    void createLocation_shouldCreateNewLocationWithDifferentArea() throws Exception
+    {
+        var locationWithDifferentArea = LocationDto.builder()
+                .cityUA("Харків")
+                .districtUA("Харківський район")
+                .areaUA("Київська область")
+                .cityEN("Kharkiv")
+                .districtEN("Kharkivska district")
+                .areaEN("Kyivska area")
+                .build();
+        sendDtoAndGetResultAction(post(LOCATION), locationWithDifferentArea, status().isCreated());
+    }
+
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocationWithDifferentCity.yml" }, orderBy = "city_en", ignoreCols = "id")
+    void createLocation_shouldCreateNewLocationWithDifferentCity() throws Exception
+    {
+        var locationWithDifferentCity = LocationDto.builder()
+                .cityUA("Дергачі")
+                .districtUA("Харківський район")
+                .areaUA("Харківська область")
+                .cityEN("Dergachi")
+                .districtEN("Kharkivska district")
+                .areaEN("Kharkivska area")
+                .build();
+        sendDtoAndGetResultAction(post(LOCATION), locationWithDifferentCity, status().isCreated());
+    }
+
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @Test
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = { "location/createTwoLocationWithDifferentDistrict.yml" }, orderBy = "district_en", ignoreCols = "id")
+    void createLocation_shouldCreateNewLocationWithDifferentDistrict() throws Exception
+    {
+        var locationWithDifferentDistrict = LocationDto.builder()
+                .cityUA("Харків")
+                .districtUA("Шевченконвський район")
+                .areaUA("Харківська область")
+                .cityEN("Kharkiv")
+                .districtEN("Shevchenkovskiy district")
+                .areaEN("Kharkivska area")
+                .build();
+        sendDtoAndGetResultAction(post(LOCATION), locationWithDifferentDistrict, status().isCreated());
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
