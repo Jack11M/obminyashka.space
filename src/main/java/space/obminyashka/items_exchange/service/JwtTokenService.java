@@ -1,94 +1,76 @@
 package space.obminyashka.items_exchange.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.authorization.jwt.InvalidatedTokensHolder;
 import space.obminyashka.items_exchange.model.Role;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JwtTokenService {
+public class JwtTokenService implements OAuth2TokenValidator<Jwt> {
 
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    private final UserDetailsService userDetailsService;
     private final InvalidatedTokensHolder invalidatedTokensHolder;
+    private final JwtEncoder tokenEncoder;
+    private final JwtDecoder tokenDecoder;
 
-    @Value("${app.jwt.secret}")
-    private String secret;
     @Value("${app.access.jwt.expiration.time.ms}")
     private long jwtAccessTokenExpirationMillis;
     @Value("${app.refresh.jwt.expiration.time.seconds}")
     private long jwtRefreshTokenExpirationSeconds;
 
-    @PostConstruct
-    protected void init() {
-        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+    @Override
+    public OAuth2TokenValidatorResult validate(Jwt token) {
+        final var isTokenValid = Instant.now().isBefore(token.getExpiresAt())
+                && !invalidatedTokensHolder.isInvalidated(token.getTokenValue());
+        return isTokenValid
+                ? OAuth2TokenValidatorResult.success()
+                : OAuth2TokenValidatorResult.failure(new OAuth2Error("Token is expired"));
     }
 
     public String createAccessToken(String username, Role role) {
-        return JWT.create()
-                .withSubject(username)
-                .withClaim("role", role.getName())
-                .withExpiresAt(Instant.now().plusMillis(jwtAccessTokenExpirationMillis))
-                .sign(Algorithm.HMAC512(secret));
-    }
-
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getVerify(token).getSubject());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    private DecodedJWT getVerify(String token) {
-        return JWT.require(Algorithm.HMAC512(secret)).build().verify(token);
-    }
-
-    public boolean validateAccessToken(String token) throws AccessDeniedException {
-        try {
-            return Instant.now().isBefore(getVerify(token).getExpiresAtAsInstant())
-                    && !invalidatedTokensHolder.isInvalidated(token);
-        } catch (JWTVerificationException e) {
-            log.error("Unauthorized: {}", e.getMessage());
-            return false;
-        }
+        final var now = Instant.now();
+        final var expiresAt = now.plusMillis(jwtAccessTokenExpirationMillis);
+        final var claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .subject(username)
+                .claim("role", role.getName())
+                .issuedAt(now)
+                .expiresAt(expiresAt)
+                .build();
+        return this.tokenEncoder.encode(JwtEncoderParameters.from(JwsHeader.with(() -> "HS256").build(), claims))
+                .getTokenValue();
     }
 
     public void invalidateAccessToken(String token) {
-        final Date expirationDate = getAccessTokenExpirationDate(token)
-                .orElseThrow(() -> new JWTVerificationException(getMessageSource("invalid.token")));
-        invalidatedTokensHolder.invalidate(token, expirationDate);
+        final Instant expirationDate = getAccessTokenExpirationDate(token)
+                .orElseThrow(() -> new JwtException(getMessageSource("invalid.token")));
+        invalidatedTokensHolder.invalidate(token, Date.from(expirationDate));
     }
 
-    public Optional<Date> getAccessTokenExpirationDate(String token) {
+    public Optional<Instant> getAccessTokenExpirationDate(String token) {
         try {
-            return Optional.ofNullable(getVerify(token).getExpiresAt());
-        } catch (JWTVerificationException exception) {
+            return Optional.ofNullable(tokenDecoder.decode(token).getExpiresAt());
+        } catch (JwtException exception) {
             log.error("Token parsing error {}", exception.getMessage());
             return Optional.empty();
         }
@@ -102,9 +84,8 @@ public class JwtTokenService {
         return LocalDateTime.now().plusSeconds(jwtRefreshTokenExpirationSeconds);
     }
 
-    public String getAccessTokenExpiration(ZonedDateTime zonedDateTime) {
-        return zonedDateTime.plusSeconds(TimeUnit.MILLISECONDS.toSeconds(jwtAccessTokenExpirationMillis))
-                .format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+    public LocalDateTime getAccessTokenExpiration(String accessToken) {
+        return tokenDecoder.decode(accessToken).getExpiresAt().atZone(ZoneId.of("Europe/Kiev")).toLocalDateTime();
     }
 
     public String getRefreshTokenExpiration(ZonedDateTime zonedDateTime) {

@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setAvatarImage(new byte[0]);
         var now = LocalDateTime.now();
         user.setLastOnlineTime(now);
+        user.setLanguage(LocaleContextHolder.getLocale());
         user.setStatus(Status.ACTIVE);
         return user;
     }

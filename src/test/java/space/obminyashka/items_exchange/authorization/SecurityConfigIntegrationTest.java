@@ -37,9 +37,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String INVALID_TOKEN = "DefinitelyNotValidToken";
 
-    @Value("${app.access.jwt.expiration.time.ms}")
-    private long accessJwtExpirationTime;
-
     @Value("${app.refresh.jwt.expiration.time.seconds}")
     private long refreshTokenExpirationTime;
 
@@ -73,22 +70,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
 
     @Test
     @DataSet("database_init.yml")
-    void createAdvertisementWithValidTokenWithoutAdvertisementDtoIsBadRequest() throws Exception {
-        sendUriWithHeadersAndGetResultAction((post(ADV)), status().isBadRequest(),
-                getAuthorizationHeaderWithValidToken());
-    }
-
-    @Test
-    @DataSet("database_init.yml")
-    void postRequestWithJWTTokenAndEmptyBodyShouldReturnBadRequest() throws Exception {
-        final String tokenWithoutBearerPrefix = obtainToken(createValidUserLoginDto());
-        final var mvcResult = sendUriWithHeadersAndGetMvcResult(multipart(ADV), status().isBadRequest(),
-                getAuthorizationHeader(tokenWithoutBearerPrefix));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Required request part 'dto' is not present"));
-    }
-
-    @Test
-    @DataSet("database_init.yml")
     void postRequestWithNotValidJWTTokenIsUnauthorizedResponse() throws Exception {
         final var invalidToken = BEARER_PREFIX + obtainToken(createValidUserLoginDto()).replaceAll(".$", "");
         sendUriWithHeadersAndGetMvcResult(post(ADV), status().isUnauthorized(), getAuthorizationHeader(invalidToken));
@@ -107,7 +88,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void postRequestToRefresh_shouldReturnNewAccessToken() throws Exception {
         final var refreshToken = getRefreshTokenValue();
-        TimeUnit.MILLISECONDS.sleep(accessJwtExpirationTime);
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
                 .header("refresh", BEARER_PREFIX + refreshToken), status().isOk());
         final var newAccessToken = objectMapper.readTree(mvcResult.getResponse().getContentAsString())

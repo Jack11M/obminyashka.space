@@ -36,9 +36,10 @@ public class AuthServiceImpl implements AuthService {
         final var user = userService.findByUsernameOrEmail(username);
         if (user.isPresent()) {
             final var userLoginResponseDto = modelMapper.map(user.get(), UserLoginResponseDto.class);
-            userLoginResponseDto.setAccessToken(jwtTokenService.createAccessToken(username, user.get().getRole()));
+            final var accessToken = jwtTokenService.createAccessToken(username, user.get().getRole());
+            userLoginResponseDto.setAccessToken(accessToken);
+            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken));
             userLoginResponseDto.setRefreshToken(refreshTokenService.createRefreshToken(user.get()).getToken());
-            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
             userLoginResponseDto.setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
             log.info("User {} is successfully logged in", username);
             return Optional.of(userLoginResponseDto);
@@ -62,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
         return refreshTokenService.renewAccessTokenByRefresh(refreshToken)
                 .filter(Predicate.not(String::isEmpty))
                 .map(accessToken -> new RefreshTokenResponseDto(accessToken, refreshToken,
-                        jwtTokenService.getAccessTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))),
+                        jwtTokenService.getAccessTokenExpiration(accessToken),
                         jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV)))))
                 .orElseThrow(() -> new RefreshTokenException(getParametrizedMessageSource("refresh.token.invalid", refreshToken)));
     }

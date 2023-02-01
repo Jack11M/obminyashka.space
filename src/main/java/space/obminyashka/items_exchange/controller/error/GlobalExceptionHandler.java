@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.controller.error;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
@@ -9,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
-    @ExceptionHandler({JWTVerificationException.class, RefreshTokenException.class})
+    @ExceptionHandler({JwtException.class, RefreshTokenException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorMessage handleUnauthorizedExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.ERROR);
