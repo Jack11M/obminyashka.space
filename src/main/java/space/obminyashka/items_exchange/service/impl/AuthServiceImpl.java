@@ -12,6 +12,7 @@ import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -65,6 +66,7 @@ public class AuthServiceImpl implements AuthService {
                 .map(accessToken -> new RefreshTokenResponseDto(accessToken, refreshToken,
                         jwtTokenService.getAccessTokenExpiration(accessToken),
                         jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV)))))
-                .orElseThrow(() -> new RefreshTokenException(getParametrizedMessageSource("refresh.token.invalid", refreshToken)));
+                .orElseThrow(() -> new RefreshTokenException(getParametrizedMessageSource(
+                        ResponseMessagesHandler.ValidationMessage.INVALID_REFRESH_TOKEN, refreshToken)));
     }
 }

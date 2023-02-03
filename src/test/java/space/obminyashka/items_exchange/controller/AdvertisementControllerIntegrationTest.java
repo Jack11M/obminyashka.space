@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,14 +61,14 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
     }
 
     public static String createInvalidSizeMessage(String dtoFieldValue, String minValidValue, String maxValidValue) {
-        return MessageSourceUtil.getMessageSource("invalid.size")
+        return MessageSourceUtil.getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_SIZE)
                 .replace("${validatedValue}", dtoFieldValue)
                 .replace("{min}", minValidValue)
                 .replace("{max}", maxValidValue);
     }
 
     public static String createInvalidMaxSizeMessage(String dtoFieldValue, String maxValidValue) {
-        return MessageSourceUtil.getMessageSource("invalid.max-size")
+        return MessageSourceUtil.getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE)
                 .replace("${validatedValue}", dtoFieldValue)
                 .replace("{max}", maxValidValue);
     }

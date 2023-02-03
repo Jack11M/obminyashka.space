@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.dto;
 
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,25 +13,27 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class UserRegistrationDto {
 
-    @NotEmpty(message = "{empty.username}")
-    @Size(min = 2, max = 50, message = "{invalid.username.size}")
-    @Pattern(regexp = PatternHandler.USERNAME, message = "{invalid.username}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_USERNAME)
+    @Size(min = 2, max = 50, message = ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_SIZE)
+    @Pattern(regexp = PatternHandler.USERNAME,
+            message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME + "}")
     private String username;
 
-    @NotEmpty(message = "{empty.email}")
-    @Email(message = "{invalid.email}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_EMAIL)
+    @Email(message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
     private String email;
 
-    @NotEmpty(message = "{empty.password}")
-    @Size(min = 8, max = 30, message = "{invalid.password.size}")
-    @Pattern(regexp = PatternHandler.PASSWORD, message = "{invalid.password}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
+    @Size(min = 8, max = 30, message = ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD_SIZE)
+    @Pattern(regexp = PatternHandler.PASSWORD,
+            message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD + "}")
     private String password;
 
-    @NotEmpty(message = "{empty.confirm.password}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_CONFIRM_PASS)
     private String confirmPassword;
 
     @SuppressWarnings("unused")                         // Used in validation process by Spring Validator
-    @AssertTrue(message = "{different.passwords}")
+    @AssertTrue(message = "{" + ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS + "}")
     private boolean isPasswordsEquals() {
         return password.equals(confirmPassword);
     }

@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.authorization.jwt.InvalidatedTokensHolder;
 import space.obminyashka.items_exchange.model.Role;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -63,7 +64,8 @@ public class JwtTokenService implements OAuth2TokenValidator<Jwt> {
 
     public void invalidateAccessToken(String token) {
         final Instant expirationDate = getAccessTokenExpirationDate(token)
-                .orElseThrow(() -> new JwtException(getMessageSource("invalid.token")));
+                .orElseThrow(() -> new JwtException(getMessageSource(
+                        ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN)));
         invalidatedTokensHolder.invalidate(token, Date.from(expirationDate));
     }
 

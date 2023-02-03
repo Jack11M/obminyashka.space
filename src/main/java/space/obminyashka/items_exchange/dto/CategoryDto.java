@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -25,9 +26,9 @@ public class CategoryDto {
             dataType = "String",
             example = "shoes",
             required = true)
-    @NotEmpty(message = "{invalid.not-empty}")
-    @Size(min = 3, max = 50, message = "{invalid.size}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
+    @Size(min = 3, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     private String name;
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     private List<@Valid SubcategoryDto> subcategories;
 }

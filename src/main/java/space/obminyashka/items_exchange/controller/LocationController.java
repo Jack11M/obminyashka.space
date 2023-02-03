@@ -17,6 +17,7 @@ import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.LocationsRequest;
 import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.service.LocationService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -96,7 +97,7 @@ public class LocationController {
                     .collect(Collectors.joining(", ", ": ", ""));
             log.warn("Received nonexistent IDs {}", strIds);
             throw new IllegalIdentifierException(
-                    getExceptionMessageSourceWithAdditionalInfo("exception.illegal.id", strIds));
+                    getExceptionMessageSourceWithAdditionalInfo(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_ID, strIds));
         }
         locationService.removeById(locationIds);
     }

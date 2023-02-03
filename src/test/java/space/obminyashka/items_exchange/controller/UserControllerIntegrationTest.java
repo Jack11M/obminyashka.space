@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +25,7 @@ import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -81,8 +81,8 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isForbidden());
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = new StringJoiner(". ")
-                .add(getMessageSource("exception.illegal.operation"))
-                .add(getParametrizedMessageSource("account.self.delete.request", 7L))
+                .add(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_OPERATION))
+                .add(getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, 7L))
                 .toString();
 
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
@@ -94,7 +94,8 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest());
         var responseContentAsString = getResponseContentAsString(mvcResult);
-        var expectedErrorMessage = getErrorMessageForInvalidField("invalid.phones-amount", "{max}", maxPhonesAmount);
+        var expectedErrorMessage = getErrorMessageForInvalidField(
+                ResponseMessagesHandler.ValidationMessage.INVALID_PHONES_AMOUNT, "{max}", maxPhonesAmount);
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
     }
 
@@ -103,10 +104,10 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void updateUserInfo_invalidFirstAndLastName_shouldReturnHttpStatusBadRequest() throws Exception {
         UserUpdateDto dto = createUserUpdateDtoWithInvalidFirstAndLastName();
 
-        final var errorMessageForInvalidFirstName =
-                getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getFirstName());
-        final var errorMessageForInvalidLastName =
-                getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getLastName());
+        final var errorMessageForInvalidFirstName = getErrorMessageForInvalidField(
+                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME, "${validatedValue}", dto.getFirstName());
+        final var errorMessageForInvalidLastName = getErrorMessageForInvalidField(
+                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME, "${validatedValue}", dto.getLastName());
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), dto, status().isBadRequest());
         String responseContentAsString = getResponseContentAsString(mvcResult);
@@ -123,7 +124,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), badTotalAmountChildDto, status().isBadRequest());
-        final var expectedErrorMessage = getParametrizedMessageSource("exception.children-amount")
+        final var expectedErrorMessage = getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT)
                 .replace("{max}", String.valueOf(MAX_CHILDREN_AMOUNT));
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().contains(expectedErrorMessage));
     }
@@ -137,7 +138,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(WRONG_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)));
     }
 
     @Test
@@ -147,7 +148,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource("same.passwords")));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS)));
     }
 
     @Test
@@ -157,7 +158,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource("different.passwords")));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
     @Test
@@ -179,7 +180,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL, status().isConflict(), "exception.email.old");
+        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD);
     }
 
     @Test
@@ -188,7 +189,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.existsByEmail(any())).thenReturn(true);
 
-        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL, status().isConflict(), "email.duplicate");
+        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL);
     }
 
     @Test
@@ -205,7 +206,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void selfDeleteRequest_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
         MvcResult mvcResult = selfDeleteRequestBasicTest(false, WRONG_OLD_PASSWORD, delete(USER_SERVICE_DELETE), status().isBadRequest());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)));
     }
 
     private MvcResult selfDeleteRequestBasicTest(boolean isUsernameExists, String oldPassword, MockHttpServletRequestBuilder request, ResultMatcher expectedResult) throws Exception {
@@ -224,7 +225,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource("different.passwords")));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
     private static Stream<Arguments> selfDeleteTestData() {
@@ -242,7 +243,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource("different.passwords")));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
     @Test
@@ -251,7 +252,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = selfDeleteRequestBasicTest(true, CORRECT_OLD_PASSWORD, put(USER_SERVICE_RESTORE), status().isForbidden());
 
         String message = mvcResult.getResponse().getContentAsString().trim();
-        assertEquals(getMessageSource("invalid.token"), message);
+        assertEquals(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN), message);
     }
 
     private String getResponseContentAsString(MvcResult mvcResult) throws UnsupportedEncodingException {
@@ -286,6 +287,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
                 () -> assertNotNull(resolvedException),
                 () -> assertNotNull(resolvedException.getMessage()),
                 () -> assertTrue(resolvedException.getMessage()
-                        .contains(getParametrizedMessageSource("invalid.child.age"))));
+                        .contains(getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CHILD_AGE))));
     }
 }

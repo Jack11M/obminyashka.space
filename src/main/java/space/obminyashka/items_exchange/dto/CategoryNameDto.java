@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -20,7 +21,7 @@ public class CategoryNameDto {
     private long id;
 
     @ApiModelProperty(required = true)
-    @NotEmpty(message = "{invalid.not-empty}")
-    @Size(min = 3, max = 50, message = "{invalid.size}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
+    @Size(min = 3, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     private String name;
 }

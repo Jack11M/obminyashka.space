@@ -7,6 +7,7 @@ import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -25,34 +26,34 @@ public class AdvertisementModificationDto {
     private UUID id;
 
     @ApiModelProperty(required = true)
-    @NotEmpty(message = "{invalid.not-empty}")
-    @Size(min = 3, max = 70, message = "{invalid.size}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
+    @Size(min = 3, max = 70, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     private String topic;
 
     @ApiModelProperty(value = "can't be null, but can be empty")
-    @NotNull(message = "{invalid.not-null}")
-    @Size(max = 255, message = "{invalid.max-size}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
+    @Size(max = 255, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String description;
 
-    @NotNull(message = "{invalid.not-null}")
-    @Size(max = 210, message = "{invalid.max-size}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
+    @Size(max = 210, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String wishesToExchange;
 
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     private DealType dealType;
 
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     private AgeRange age;
 
     private boolean readyForOffers;
 
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     private Gender gender;
 
-    @NotNull(message = "{invalid.not-null}")
+    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     private Season season;
 
-    @Size(min = 1, max = 50, message = "{invalid.size}")
+    @Size(min = 1, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     @JsonProperty("sizeValue")
     private String size;
 

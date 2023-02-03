@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +23,7 @@ import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.service.MailService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.stream.Stream;
 
@@ -71,7 +71,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void register_whenDtoIsValid_shouldReturnSpecificSuccessMessage() throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
 
-        String seekingResponse = getMessageSource("user.created");
+        String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
     }
 
@@ -93,17 +93,17 @@ class AuthorizationFlowTest extends BasicControllerTest {
     private static Stream<Arguments> userRegistrationData() {
         return Stream.of(
                 Arguments.of(new UserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
-                        status().isConflict(), "username-email.duplicate", DataConflictException.class),
+                        status().isConflict(), ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE, DataConflictException.class),
                 Arguments.of(new UserRegistrationDto(INVALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
-                        status().isBadRequest(), "invalid.username", MethodArgumentNotValidException.class),
+                        status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME, MethodArgumentNotValidException.class),
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
-                        status().isConflict(), "username-email.duplicate", DataConflictException.class),
+                        status().isConflict(), ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE, DataConflictException.class),
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
-                        status().isBadRequest(), "invalid.email", MethodArgumentNotValidException.class),
+                        status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL, MethodArgumentNotValidException.class),
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, INVALID_PASSWORD),
-                        status().isBadRequest(), "different.passwords", MethodArgumentNotValidException.class),
+                        status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS, MethodArgumentNotValidException.class),
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, INVALID_PASSWORD, INVALID_PASSWORD),
-                        status().isBadRequest(), "invalid.password", MethodArgumentNotValidException.class)
+                        status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD, MethodArgumentNotValidException.class)
         );
     }
 
@@ -122,7 +122,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void logout_Success_ShouldBeInvalidatedInInvalidatedTokensHolder_And_DeletedRefreshToken() throws Exception {
         final var mvcResult = sendUriAndGetMvcResult(post(AUTH_REFRESH_TOKEN)
                 .header("refresh", BEARER_PREFIX + "refreshToken"), status().isUnauthorized());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("refresh.token.invalid").substring(0, 24)));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_REFRESH_TOKEN).substring(0, 24)));
     }
 
     @Test

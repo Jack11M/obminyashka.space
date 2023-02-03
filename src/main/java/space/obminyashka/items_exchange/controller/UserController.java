@@ -24,6 +24,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -41,7 +42,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParamet
 @Slf4j
 public class UserController {
 
-    @Value("incorrect.password")
+    @Value(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)
     public String incorrectPassword;
     private static final int MAX_CHILDREN_AMOUNT = 10;
 
@@ -110,10 +111,11 @@ public class UserController {
             throws DataConflictException {
         User user = getUser(authentication.getName());
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
-            throw new DataConflictException(getMessageSource("exception.email.old"));
+            throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
         }
         if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
-            throw new DataConflictException(getMessageSource("email.duplicate"));
+            throw new DataConflictException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
         }
 
         return userService.updateUserEmail(userChangeEmailDto, user);
@@ -132,7 +134,8 @@ public class UserController {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         userService.selfDeleteRequest(user);
 
-        return getParametrizedMessageSource("account.self.delete.request", userService.calculateDaysBeforeCompleteRemove(user.getUpdated()));
+        return getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT,
+                userService.calculateDaysBeforeCompleteRemove(user.getUpdated()));
     }
 
     @PreAuthorize("hasRole('SELF_REMOVING')")
@@ -148,7 +151,7 @@ public class UserController {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         userService.makeAccountActiveAgain(user);
 
-        return getMessageSource("account.made.active.again");
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN);
     }
 
     @GetMapping(ApiKey.USER_CHILD)
@@ -169,7 +172,7 @@ public class UserController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{exception.children-amount}")
+    public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
                                              @RequestBody List<@Valid ChildDto> childrenDto,
                                          @ApiIgnore Authentication authentication) {
         final User user = getUser(authentication.getName());
@@ -213,6 +216,6 @@ public class UserController {
 
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
-                getMessageSource("exception.user.not-found")));
+                getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
     }
 }

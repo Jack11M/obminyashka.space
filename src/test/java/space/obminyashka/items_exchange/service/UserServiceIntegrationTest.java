@@ -18,6 +18,7 @@ import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,7 +65,7 @@ class UserServiceIntegrationTest {
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
         String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
 
-        assertEquals(getMessageSource("changed.user.password"), message);
+        assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), message);
         assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
@@ -74,7 +75,7 @@ class UserServiceIntegrationTest {
         UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL, NEW_USER_EMAIL);
         String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
 
-        assertEquals(getMessageSource("changed.user.email"), message);
+        assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), message);
         assertEquals(NEW_USER_EMAIL, userWithOldPassword.getEmail());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
