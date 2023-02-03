@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,6 +30,8 @@ import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -198,6 +201,18 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
         MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
         sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(bmp), status().isUnsupportedMediaType());
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void setUserAvatar_whenReceivedSeveralImages_shouldThrowBadRequestException() throws Exception {
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+
+        MockMultipartFile jpegOne = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
+                Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
+        MockMultipartFile jpegTwo = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
+                Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
+        sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(jpegOne).file(jpegTwo), status().isBadRequest());
     }
 
     @Test
