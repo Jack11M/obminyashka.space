@@ -24,11 +24,15 @@ function initObminyashka({ onAuthError }) {
       '';
 
     const newConfig = { ...config };
-
-    if (token) newConfig.headers.Authorization = `Bearer ${token}`;
-    else delete newConfig.headers.Authorization;
-
     newConfig.headers['accept-language'] = getStorageLang();
+
+    if (token) {
+      newConfig.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (newConfig.headers.is_access) {
+      delete newConfig.headers.Authorization;
+    }
 
     return newConfig;
   });
@@ -54,6 +58,7 @@ function initObminyashka({ onAuthError }) {
               headers: {
                 refresh: `Bearer ${refreshToken}`,
                 grant_type: 'refresh_token',
+                is_access: 'true',
               },
             }
           )

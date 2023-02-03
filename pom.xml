@@ -18,7 +18,6 @@
 
     <properties>
         <java.version>18</java.version>
-        <jsonwebtoken.version>4.2.2</jsonwebtoken.version>
         <swagger.version>3.0.0</swagger.version>
         <liquibase.version>[4.6.2]</liquibase.version>
         <mapper.version>3.1.1</mapper.version>
@@ -54,6 +53,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
 
         <!--  Databases -->
 
@@ -78,11 +81,6 @@
 
         <!--   Model    -->
 
-        <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${jsonwebtoken.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -123,11 +121,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

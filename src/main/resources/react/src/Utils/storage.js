@@ -18,7 +18,7 @@ export const setStorageUser = (data, type = 'user') => {
 };
 
 export const getDefaultLang = () => {
-  let lang = navigator.language || navigator.userLanguage;
+  let lang = navigator.language;
   lang = lang?.substring(0, 2);
 
   return lang === 'en' ? 'en' : 'ua';
