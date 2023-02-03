@@ -26,6 +26,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -139,7 +140,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         user.setStatus(UPDATED);
         userRepository.saveAndFlush(user);
-        return getMessageSource("changed.user.info");
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_INFO);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("changed.user.password");
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
     }
 
     @Override
@@ -155,7 +156,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setEmail(userChangeEmailDto.getNewEmail());
         userRepository.saveAndFlush(user);
 
-        return getMessageSource("changed.user.email");
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);
     }
 
     @Override

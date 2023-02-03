@@ -13,7 +13,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +29,7 @@ import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +66,8 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             return ResponseEntity.of(authService.createUserLoginResponseDto(username));
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getMessageSource("invalid.username-or-password"));
+            throw new BadCredentialsException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_PASSWORD));
         }
     }
 
@@ -79,7 +80,7 @@ public class AuthController {
                        @ApiIgnore @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         new SecurityContextLogoutHandler().logout(req, resp, authentication);
         if (!authService.logout(token, authentication.getName())) {
-            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource("invalid.token");
+            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN);
             log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
             req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
         }
@@ -96,22 +97,25 @@ public class AuthController {
             throws BadRequestException, DataConflictException {
 
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
-            throw new DataConflictException(getMessageSource("username-email.duplicate"));
+            throw new DataConflictException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE));
         }
 
         try {
             mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
-            return new ResponseEntity<>(getMessageSource("exception.emailing.registration"), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(getMessageSource(
+                    ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
         if (userService.registerNewUser(userRegistrationDto)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
-            return new ResponseEntity<>(getMessageSource("user.created"), HttpStatus.CREATED);
+            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED), HttpStatus.CREATED);
         }
 
-        throw new BadRequestException(getMessageSource("user.not-registered"));
+        throw new BadRequestException(getMessageSource(
+                ResponseMessagesHandler.ValidationMessage.USER_NOT_REGISTERED));
     }
 
     @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN)
@@ -141,7 +145,8 @@ public class AuthController {
         try {
             return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getMessageSource("invalid.oauth2.login"));
+            throw new BadCredentialsException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.INVALID_OAUTH2_LOGIN));
         }
     }
 }

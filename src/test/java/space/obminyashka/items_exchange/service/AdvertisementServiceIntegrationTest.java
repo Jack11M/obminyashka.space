@@ -26,7 +26,7 @@ class AdvertisementServiceIntegrationTest {
 
         final var firstTitlesGetAttempt = advertisementService.findRandom12Thumbnails();
 
-        assertAll("Validation of all parameters and mocks",
+        assertAll("ValidationMessage of all parameters and mocks",
                 () -> assertFalse(firstTitlesGetAttempt.isEmpty()),
                 () -> assertEquals(repository.count(), firstTitlesGetAttempt.size())
         );

@@ -21,6 +21,7 @@ import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.Size;
@@ -105,10 +106,10 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND);
         }
         final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
-                .orElseThrow(() -> new IllegalOperationException(getMessageSource("user.not-owner")));
+                .orElseThrow(() -> new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER)));
         if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
             throw new ElementsNumberExceedException(
-                    getParametrizedMessageSource("exception.exceed.images.number", maxImagesAmount));
+                    getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.EXCEED_IMAGES_NUMBER, maxImagesAmount));
         }
         List<byte[]> compressedImages = images.parallelStream()
                 .map(imageService::compress)
@@ -133,7 +134,7 @@ public class ImageController {
             throws IllegalOperationException, IllegalIdentifierException {
 
         final var existedAdvertisement = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
-                .orElseThrow(() -> new IllegalOperationException(getMessageSource("user.not-owner")));
+                .orElseThrow(() -> new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER)));
 
         final var isAllImageExistInAdvertisement = imageService.existAllById(imageIdList, advertisementId);
         if (isAllImageExistInAdvertisement) {
@@ -143,7 +144,8 @@ public class ImageController {
                     .map(Image::getId)
                     .toList();
             imageIdList.removeAll(existedImageIds);
-            throw new IllegalIdentifierException(getParametrizedMessageSource("exception.image.not-existed-id", imageIdList));
+            throw new IllegalIdentifierException(getParametrizedMessageSource(
+                    ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID, imageIdList));
         }
     }
 }

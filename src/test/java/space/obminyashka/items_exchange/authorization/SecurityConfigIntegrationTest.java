@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -63,7 +64,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void loginWithNotValidUserGetsBadRequest() throws Exception {
         final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_LOGIN), createNotValidUserLoginDto(), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("invalid.username-or-password")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_PASSWORD)));
     }
 
     @Test
@@ -165,6 +166,6 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     }
 
     private String getRefreshTokenStartExceptionMessage() {
-        return getMessageSource("refresh.token.invalid").substring(0, 24);
+        return getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_REFRESH_TOKEN).substring(0, 24);
     }
 }

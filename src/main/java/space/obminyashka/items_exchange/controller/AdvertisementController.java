@@ -25,6 +25,7 @@ import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -191,7 +192,8 @@ public class AdvertisementController {
             @ApiIgnore Authentication authentication) throws BadRequestException {
         User owner = getUser(authentication.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
-            throw new BadRequestException(getMessageSource("exception.advertisement-image.id.not-found"));
+            throw new BadRequestException(getMessageSource(
+                    ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_IMAGE_ID_NOT_FOUND));
         }
         owner.getAdvertisements().parallelStream()
                 .filter(advertisement -> advertisement.getId().equals(advertisementId))
@@ -201,17 +203,18 @@ public class AdvertisementController {
 
     private void validateAdvertisementOwner(UUID advertisementId, User owner) throws IllegalOperationException {
         if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, owner)) {
-            throw new IllegalOperationException(getMessageSource("user.not-owner"));
+            throw new IllegalOperationException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
         }
     }
 
     private void validateInternalEntityIds(long subcategoryId, UUID locationId) throws IllegalIdentifierException {
         var exceptionMessage = "";
         if (!subcategoryService.isSubcategoryExistsById(subcategoryId)) {
-            exceptionMessage = getExceptionMessageSourceWithId(subcategoryId, "invalid.subcategory.id") + "\n";
+            exceptionMessage = getExceptionMessageSourceWithId(subcategoryId, ResponseMessagesHandler.ValidationMessage.INVALID_SUBCATEGORY_ID) + "\n";
         }
         if (!locationService.existsById(locationId)) {
-            exceptionMessage = exceptionMessage.concat(getExceptionMessageSourceWithId(subcategoryId, "invalid.location.id"));
+            exceptionMessage = exceptionMessage.concat(getExceptionMessageSourceWithId(subcategoryId, ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID));
         }
         if (!exceptionMessage.isEmpty()) {
             throw new IllegalIdentifierException(exceptionMessage);
@@ -220,6 +223,7 @@ public class AdvertisementController {
 
     private User getUser(String userNameOrEmail) {
         return userService.findByUsernameOrEmail(userNameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException(getMessageSource("exception.user.not-found")));
+                .orElseThrow(() -> new UsernameNotFoundException(getMessageSource(
+                        ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
     }
 }

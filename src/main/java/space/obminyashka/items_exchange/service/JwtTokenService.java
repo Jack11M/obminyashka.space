@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.authorization.jwt.InvalidatedTokensHolder;
 import space.obminyashka.items_exchange.model.Role;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
@@ -81,7 +82,8 @@ public class JwtTokenService {
 
     public void invalidateAccessToken(String token) {
         final Date expirationDate = getAccessTokenExpirationDate(token)
-                .orElseThrow(() -> new JWTVerificationException(getMessageSource("invalid.token")));
+                .orElseThrow(() -> new JWTVerificationException(getMessageSource(
+                        ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN)));
         invalidatedTokensHolder.invalidate(token, expirationDate);
     }
 

@@ -25,6 +25,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +145,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 status().isBadRequest());
 
         verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("admin"));
-        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource("exception.image.not-existed-id", "[%s]".formatted(randomID)));
+        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID, "[%s]".formatted(randomID)));
     }
 
     @WithMockUser
@@ -155,6 +156,6 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 status().isForbidden());
 
         verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("user"));
-        verifyResultException(mvcResult, IllegalOperationException.class, getMessageSource("user.not-owner"));
+        verifyResultException(mvcResult, IllegalOperationException.class, getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
     }
 }
