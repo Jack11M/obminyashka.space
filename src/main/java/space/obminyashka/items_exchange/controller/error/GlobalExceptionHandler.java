@@ -41,7 +41,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             InvalidDtoException.class,
-            IllegalIdentifierException.class})
+            IllegalIdentifierException.class,
+            AvatarShouldBeOnlyOneException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleBadRequestExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.exception.AvatarShouldBeOnlyOneException;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
@@ -190,9 +191,9 @@ public class UserController {
             @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
             @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Map<String, byte[]> updateUserAvatar(@RequestParam(name = "image") MultipartFile[] images, @ApiIgnore Authentication authentication) throws BadRequestException {
+    public Map<String, byte[]> updateUserAvatar(@RequestParam(name = "image") MultipartFile[] images, @ApiIgnore Authentication authentication) throws AvatarShouldBeOnlyOneException {
         if(images.length != 1){
-            throw new BadRequestException(getMessageSource(shouldHaveOnlyOneAvatar));
+            throw new AvatarShouldBeOnlyOneException(getMessageSource(shouldHaveOnlyOneAvatar));
         }
         User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.compress(images[0]);
