@@ -44,6 +44,9 @@ public class UserController {
 
     @Value("incorrect.password")
     public String incorrectPassword;
+
+    @Value("should.have.only.one.avatar")
+    public String shouldHaveOnlyOneAvatar;
     private static final int MAX_CHILDREN_AMOUNT = 10;
 
     private final UserService userService;
@@ -189,7 +192,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Map<String, byte[]> updateUserAvatar(@RequestParam(name = "image") MultipartFile[] images, @ApiIgnore Authentication authentication) throws BadRequestException {
         if(images.length != 1){
-            throw new BadRequestException("Image should be only one");
+            throw new BadRequestException(getMessageSource(shouldHaveOnlyOneAvatar));
         }
         User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.compress(images[0]);
