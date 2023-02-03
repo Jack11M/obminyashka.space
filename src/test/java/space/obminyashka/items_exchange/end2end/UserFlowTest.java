@@ -26,6 +26,7 @@ import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,7 +86,7 @@ class UserFlowTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isAccepted());
 
         var responseContentAsString = mvcResult.getResponse().getContentAsString();
-        assertTrue(responseContentAsString.contains(getMessageSource("changed.user.info")));
+        assertTrue(responseContentAsString.contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_INFO)));
     }
 
     @Test
@@ -135,7 +136,7 @@ class UserFlowTest extends BasicControllerTest {
         String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
         assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(), pwd));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.password")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD)));
     }
 
     @Test
@@ -148,7 +149,7 @@ class UserFlowTest extends BasicControllerTest {
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isAccepted());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.email")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }
 
     @Test
@@ -161,7 +162,7 @@ class UserFlowTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getParametrizedMessageSource("account.self.delete.request", numberOfDaysToKeepDeletedUsers)));
+                getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, numberOfDaysToKeepDeletedUsers)));
     }
 
     @Test
@@ -174,7 +175,7 @@ class UserFlowTest extends BasicControllerTest {
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isAccepted());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("account.made.active.again")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
 
     @Test

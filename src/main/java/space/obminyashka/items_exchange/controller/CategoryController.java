@@ -15,6 +15,7 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.service.CategoryService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -62,7 +63,7 @@ public class CategoryController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = "{invalid.not-positive.id}")
+    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
                                                        @PathVariable("category_id") long id) {
 
         return ResponseEntity.of(categoryService.findCategoryDtoById(id));
@@ -74,7 +75,7 @@ public class CategoryController {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = "{invalid.not-positive.id}")
+    public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
                                                              @PathVariable("category_id") int id) {
         var sizes = categoryService.findSizesForCategory(id);
         return sizes.isEmpty()
@@ -96,7 +97,8 @@ public class CategoryController {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
-        throw new InvalidDtoException(getMessageSource("invalid.new-category-dto"));
+        throw new InvalidDtoException(getMessageSource(
+                ResponseMessagesHandler.ValidationMessage.INVALID_NEW_CATEGORY_DTO));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -107,14 +109,15 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public CategoryDto updateCategory(@Positive(message = "{invalid.not-positive.id}") @PathVariable("category_id") long id,
+    public CategoryDto updateCategory(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID) @PathVariable("category_id") long id,
                                       @Valid @RequestBody CategoryDto categoryDto) {
         categoryDto.setId(id);
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
             return categoryService.saveCategoryWithSubcategories(categoryDto);
         }
 
-        throw new IllegalIdentifierException(getMessageSource("invalid.updated-category.dto"));
+        throw new IllegalIdentifierException(getMessageSource(
+                ResponseMessagesHandler.ValidationMessage.INVALID_UPDATED_CATEGORY_DTO));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
@@ -125,11 +128,12 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 403, message = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = "{invalid.not-positive.id}") long id)
+    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID) long id)
             throws InvalidDtoException {
 
         if (!categoryService.isCategoryDtoDeletable(id)) {
-            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "category.not-deletable"));
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(
+                    id, ResponseMessagesHandler.ValidationMessage.CATEGORY_NOT_DELETABLE));
         }
         categoryService.removeById(id);
     }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.service.SubcategoryService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -37,7 +38,7 @@ public class SubcategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id")
-                                                                        @Positive(message = "{invalid.not-positive.id}") long id) {
+                                                                        @Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID) long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
         return subcategoriesNames.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -55,7 +56,7 @@ public class SubcategoryController {
     public void deleteSubcategoryById(@PathVariable("subcategory_id") @PositiveOrZero(message = "{validation.null.id}") long id)
             throws InvalidDtoException {
         if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, "subcategory.not-deletable"));
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
         }
         subcategoryService.removeSubcategoryById(id);
     }

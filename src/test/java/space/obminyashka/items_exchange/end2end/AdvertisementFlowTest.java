@@ -28,6 +28,7 @@ import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.JsonConverter;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
@@ -204,8 +205,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
 
-        var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
-        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");
+        var validationLocationIdMessage = MessageSourceUtil.getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID);
+        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_SUBCATEGORY_ID);
         Assertions.assertAll(
                 () -> assertTrue(isResponseContainsExpectedResponse(validationLocationIdMessage, mvcResult)),
                 () -> assertTrue(isResponseContainsExpectedResponse(validationSubcategoryIdMessage, mvcResult))

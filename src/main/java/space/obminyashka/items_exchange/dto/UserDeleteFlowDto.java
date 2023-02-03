@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
@@ -12,14 +13,14 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class UserDeleteFlowDto {
 
-    @NotEmpty(message = "{empty.password}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
     private String password;
 
-    @NotEmpty(message = "{empty.password}")
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
     private String confirmPassword;
 
     @SuppressWarnings("unused")                         // Used in validation process by Spring Validator
-    @AssertTrue(message = "{different.passwords}")
+    @AssertTrue(message = "{" + ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS + "}")
     private boolean isPasswordsEquals() {
         return password.equals(confirmPassword);
     }
