@@ -54,7 +54,7 @@ public class JwtTokenService implements OAuth2TokenValidator<Jwt> {
         final var claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .subject(username)
-                .claim("role", role.getName())
+                .claim("scope", role.getName())
                 .issuedAt(now)
                 .expiresAt(expiresAt)
                 .build();
