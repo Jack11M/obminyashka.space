@@ -12,4 +12,4 @@ target/
 
 build_tools
 *.log
-/src/test/resources/temp/fill-table-location.sql
+/src/test/resources/fill-table-location.sql
