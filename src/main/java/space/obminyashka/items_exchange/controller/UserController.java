@@ -24,6 +24,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.EmailFormat;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -88,11 +89,16 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "ACCEPTED"),
             @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(code = 403, message = "FORBIDDEN"),
+            @ApiResponse(code = 409, message = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     @ApiIgnore Authentication authentication) throws InvalidDtoException {
+                                     @ApiIgnore Authentication authentication)
+            throws InvalidDtoException, DataConflictException {
         User user = findUserByValidCredentials(authentication, userChangePasswordDto.getOldPassword());
+        if (!EmailFormat.isEmailValidFormat(user.getEmail())) {
+            throw new DataConflictException(getMessageSource("invalid.email"));
+        }
 
         return userService.updateUserPassword(userChangePasswordDto, user);
     }
