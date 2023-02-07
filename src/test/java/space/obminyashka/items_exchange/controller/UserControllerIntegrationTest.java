@@ -5,17 +5,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
@@ -24,6 +30,7 @@ import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
@@ -35,6 +42,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +60,13 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @MockBean
     private UserServiceImpl userService;
 
+    @SpyBean
+    private ImageServiceImpl imageService;
+
     private User user;
+
+    @Captor
+    ArgumentCaptor<MultipartFile> captor;
 
     private static final int MAX_CHILDREN_AMOUNT = 10;
     @Value("${max.phones.amount}")
@@ -199,6 +213,24 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
         MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
         sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(bmp), status().isUnsupportedMediaType());
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    void setUserAvatar_whenReceivedSeveralImages_shouldSaveFirstImage() throws Exception {
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+
+        MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
+        MockMultipartFile jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpg".getBytes());
+
+        sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(jpeg).file(bmp), status().is2xxSuccessful());
+
+        Mockito.verify(imageService, times(1)).compress(captor.capture());
+        Mockito.verify(userService, times(1)).findByUsernameOrEmail(any());
+
+        MultipartFile actualImage = captor.getValue();
+
+        assertEquals(jpeg.getName(), actualImage.getName());
     }
 
     @Test
