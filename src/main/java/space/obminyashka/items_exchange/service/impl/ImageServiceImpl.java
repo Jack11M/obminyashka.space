@@ -3,8 +3,6 @@ package space.obminyashka.items_exchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.dao.ImageRepository;
 import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.mapper.ImageMapper;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
@@ -41,7 +40,7 @@ import static java.awt.Image.SCALE_SMOOTH;
 @Transactional
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
-    private final ModelMapper modelMapper;
+    private final ImageMapper imageMapper;
     private final ImageRepository imageRepository;
     private final Set<String> supportedTypes = Arrays.stream(SupportedMediaTypes.values())
             .map(SupportedMediaTypes::getMediaType)
@@ -58,11 +57,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
-        return mapImagesToDto(imageRepository.findByAdvertisementId(advertisementId));
-    }
-
-    private List<ImageDto> mapImagesToDto(Iterable<Image> images) {
-        return modelMapper.map(images, new TypeToken<List<ImageDto>>() {}.getType());
+        return imageMapper.toDTOList(imageRepository.findByAdvertisementId(advertisementId));
     }
 
     @Override
