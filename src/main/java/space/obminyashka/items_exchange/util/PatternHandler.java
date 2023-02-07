@@ -11,4 +11,6 @@ public final class PatternHandler {
             "^\\s*(?<country>\\+?\\d{2})[-. (]*(?<area>\\d{3})[-. )]*(?<number>\\d{3}[-. ]*\\d{2}[-. ]*\\d{2})\\s*$";
     public static final String USERNAME = "(?=\\S+$)[\\wА-Яа-яЁёҐЄІЇієїґ\\p{Punct}&&[^@]]+";
     public static final String WORD_EMPTY_OR_MIN_2_MAX_50 = "^$|^[\\wА-Яа-я-'`ЁёҐЄІЇієїґ]{2,50}$";
+    public static final String EMAIL = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*"
+            + "@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 }

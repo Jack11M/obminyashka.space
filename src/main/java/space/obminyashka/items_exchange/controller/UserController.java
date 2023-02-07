@@ -24,7 +24,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.EmailFormat;
+import space.obminyashka.items_exchange.util.PatternHandler;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -32,6 +32,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 
+import static space.obminyashka.items_exchange.util.EmailFormat.patternMatches;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
@@ -96,7 +97,7 @@ public class UserController {
                                      @ApiIgnore Authentication authentication)
             throws InvalidDtoException, DataConflictException {
         User user = findUserByValidCredentials(authentication, userChangePasswordDto.getOldPassword());
-        if (!EmailFormat.isEmailValidFormat(user.getEmail())) {
+        if (!patternMatches(user.getEmail(), PatternHandler.EMAIL)) {
             throw new DataConflictException(getMessageSource("invalid.email"));
         }
 
