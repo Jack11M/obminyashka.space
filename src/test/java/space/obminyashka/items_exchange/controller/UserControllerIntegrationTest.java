@@ -66,7 +66,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     private User user;
 
     @Captor
-    ArgumentCaptor<MultipartFile> captor;
+    private ArgumentCaptor<MultipartFile> captor;
 
     private static final int MAX_CHILDREN_AMOUNT = 10;
     @Value("${max.phones.amount}")
@@ -216,21 +216,21 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user")
+    @WithMockUser
     void setUserAvatar_whenReceivedSeveralImages_shouldSaveFirstImage() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
         MockMultipartFile jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpg".getBytes());
 
-        sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(jpeg).file(bmp), status().is2xxSuccessful());
+        sendUriAndGetMvcResult(multipart(USER_SERVICE_CHANGE_AVATAR).file(jpeg).file(bmp), status().is2xxSuccessful());
 
-        Mockito.verify(imageService, times(1)).compress(captor.capture());
-        Mockito.verify(userService, times(1)).findByUsernameOrEmail(any());
+        Mockito.verify(imageService).compress(captor.capture());
+        Mockito.verify(userService).findByUsernameOrEmail(any());
 
         MultipartFile actualImage = captor.getValue();
 
-        assertEquals(jpeg.getName(), actualImage.getName());
+        assertEquals(jpeg, actualImage);
     }
 
     @Test
