@@ -14,6 +14,6 @@ public interface ImageMapper {
     //java: Unmapped target property: "advertisement".
     Image toModel(ImageDto dto);
 
-    List<ImageDto> toDTOList(List<Image> modelList);
+    List<ImageDto> toDtoList(List<Image> modelList);
     List<Image> toModelList(List<ImageDto> dtoList);
 }

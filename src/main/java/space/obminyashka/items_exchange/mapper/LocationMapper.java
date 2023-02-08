@@ -12,6 +12,6 @@ public interface LocationMapper {
     LocationDto toDto(Location model);
     Location toModel(LocationDto dto);
 
-    List<LocationDto> toDTOList(List<Location> modelList);
+    List<LocationDto> toDtoList(List<Location> modelList);
     List<Location> toModelList(List<LocationDto> dtoList);
 }

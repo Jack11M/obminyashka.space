@@ -13,6 +13,6 @@ public interface ChildMapper {
     //Unmapped target properties: "id, user".
     Child toModel(ChildDto dto);
 
-    List<ChildDto> toDTOList(List<Child> modelList);
+    List<ChildDto> toDtoList(List<Child> modelList);
     List<Child> toModelList(List<ChildDto> dtoList);
 }

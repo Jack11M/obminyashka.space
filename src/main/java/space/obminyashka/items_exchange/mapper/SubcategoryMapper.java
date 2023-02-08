@@ -14,6 +14,6 @@ public interface SubcategoryMapper {
     //Unmapped target properties: "category, advertisements".
     Subcategory toModel(SubcategoryDto dto);
 
-    List<SubcategoryDto> toDTOList(List<Subcategory> modelList);
+    List<SubcategoryDto> toDtoList(List<Subcategory> modelList);
     List<Subcategory> toModelList(List<SubcategoryDto> dtoList);
 }

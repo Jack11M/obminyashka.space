@@ -14,9 +14,9 @@ public interface PhoneMapper {
     //Unmapped target properties: "id, user".
     Phone toModel(PhoneDto dto);
 
-    List<PhoneDto> toDTOList(List<Phone> modelList);
+    List<PhoneDto> toDtoList(List<Phone> modelList);
     List<Phone> toModelList(List<PhoneDto> dtoList);
 
-    Set<PhoneDto> toDTOSet(Set<Phone> modelSet);
+    Set<PhoneDto> toDtoSet(Set<Phone> modelSet);
     Set<Phone> toModelSet(Set<PhoneDto> dtoSet);
 }

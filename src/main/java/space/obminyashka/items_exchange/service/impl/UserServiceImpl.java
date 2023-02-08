@@ -222,7 +222,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<ChildDto> getChildren(User parent) {
-        return childMapper.toDTOList(parent.getChildren());
+        return childMapper.toDtoList(parent.getChildren());
     }
 
     @Override

@@ -39,7 +39,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationDto> findAll() {
-        return locationMapper.toDTOList(locationRepository.findAll());
+        return locationMapper.toDtoList(locationRepository.findAll());
     }
 
     @Override
@@ -50,7 +50,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationDto> findByIds(List<UUID> ids) {
         List<Location> locations = locationRepository.findByIdIn(ids);
-        return locationMapper.toDTOList(locations);
+        return locationMapper.toDtoList(locations);
     }
 
     @Override

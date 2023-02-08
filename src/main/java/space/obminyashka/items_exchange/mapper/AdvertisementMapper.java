@@ -31,6 +31,6 @@ public interface AdvertisementMapper {
     @Mapping(source = "locationId", target = "location.id")
     Advertisement toModel(AdvertisementModificationDto dto);
 
-    List<AdvertisementDisplayDto> toDTOList(List<Advertisement> modelList);
+    List<AdvertisementDisplayDto> toDtoList(List<Advertisement> modelList);
     List<Advertisement> toModelList(List<AdvertisementDisplayDto> dtoList);
 }

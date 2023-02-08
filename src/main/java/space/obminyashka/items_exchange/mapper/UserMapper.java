@@ -29,6 +29,6 @@ public interface UserMapper {
     @Mapping(source = "refreshToken.token", target = "refreshToken")
     UserLoginResponseDto toLoginResponseDto(User model);
 
-    List<UserLoginResponseDto> toDTOList(List<User> modelList);
+    List<UserLoginResponseDto> toDtoList(List<User> modelList);
     List<User> toModelList(List<UserLoginResponseDto> dtoList);
 }

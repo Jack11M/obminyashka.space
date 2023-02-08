@@ -57,7 +57,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
-        return imageMapper.toDTOList(imageRepository.findByAdvertisementId(advertisementId));
+        return imageMapper.toDtoList(imageRepository.findByAdvertisementId(advertisementId));
     }
 
     @Override

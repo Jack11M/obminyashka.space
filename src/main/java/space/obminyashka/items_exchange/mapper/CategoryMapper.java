@@ -13,6 +13,6 @@ public interface CategoryMapper {
     CategoryDto toDto(Category model);
     CategoryNameDto toNameDto(Category model);
 
-    List<CategoryDto> toDTOList(List<Category> modelList);
+    List<CategoryDto> toDtoList(List<Category> modelList);
     List<Category> toModelList(List<CategoryDto> dtoList);
 }
