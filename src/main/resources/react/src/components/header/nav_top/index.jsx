@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Avatar } from '@wolshebnik/obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
-import { Avatar } from 'components/common/avatar';
 import { getUserThunk } from 'store/profile/thunk';
 import { CustomSelect } from 'components/selectLang';
 import { getAuthed, getAuthProfile } from 'store/auth/slice';

@@ -1,5 +1,7 @@
+import { Avatar } from '@wolshebnik/obminyashka-components';
+
 import * as Icon from 'assets/icons';
-import { Avatar, Button, EllipsisText } from 'components/common';
+import { Button, EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';

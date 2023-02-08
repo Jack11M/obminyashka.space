@@ -1,4 +1,3 @@
-export { Avatar } from './avatar';
 export { BackButton } from './buttons/back-button';
 export { BtnGoodBusiness } from './buttons/btnGoodBusiness';
 export { Button } from './buttons/button';
