@@ -9,11 +9,14 @@ import space.obminyashka.items_exchange.model.User;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring", uses = {PhoneMapper.class, ChildMapper.class})
 public interface UserMapper {
     default String localeToString(Locale locale) {
-        return locale.toString();
+        return Optional.ofNullable(locale)
+                .map(Locale::toString)
+                .orElseGet(() -> new Locale("ua").toString());
     }
 
     default Locale stringToLocale(String string) {
