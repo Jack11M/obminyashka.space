@@ -20,7 +20,7 @@ public class UserRegistrationDto {
     private String username;
 
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_EMAIL)
-    @Email(message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
+    @Email(regexp = PatternHandler.EMAIL, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
     private String email;
 
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
