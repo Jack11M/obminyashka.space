@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import space.obminyashka.items_exchange.dao.LocationRepository;
 import space.obminyashka.items_exchange.dto.LocationDto;
+import space.obminyashka.items_exchange.mapper.LocationMapper;
 import space.obminyashka.items_exchange.model.Location;
 
 import java.util.Collections;
@@ -20,7 +21,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -29,6 +29,8 @@ class LocationServiceIntegrationTest {
     private LocationRepository locationRepository;
     @Autowired
     private LocationService locationService;
+    @Autowired
+    private LocationMapper locationMapper;
     private Location location;
     private LocationDto locationDto;
 
@@ -38,7 +40,7 @@ class LocationServiceIntegrationTest {
     @BeforeEach
     void setUp() {
         location = new Location(UUID.randomUUID(), "Харківська", "Харківська область", "Харків", "Kharkivska", "Kharkivska district", "Kharkiv", Collections.emptyList());
-        locationDto = convertTo(location, LocationDto.class);
+        locationDto = locationMapper.toDto(location);
     }
 
     @Test

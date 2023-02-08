@@ -2,9 +2,6 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -19,9 +16,9 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.authorization.jwt.JwtUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.mapper.UtilMapper;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.Phone;
+import space.obminyashka.items_exchange.mapper.ChildMapper;
+import space.obminyashka.items_exchange.mapper.PhoneMapper;
+import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -34,7 +31,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
 import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.UPDATED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -48,8 +44,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
+    private final ChildMapper childMapper;
+    private final PhoneMapper phoneMapper;
     private final RoleService roleService;
+    private final UserMapper userMapper;
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -133,7 +131,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public String update(UserUpdateDto newUserUpdateDto, User user) {
         BeanUtils.copyProperties(newUserUpdateDto, user, "phones");
-        final var phonesToUpdate = convertPhone(newUserUpdateDto.getPhones());
+        final var phonesToUpdate = phoneMapper.toModelSet(newUserUpdateDto.getPhones());
         final var userPhones = user.getPhones();
         userPhones.clear();
         userPhones.addAll(phonesToUpdate);
@@ -219,24 +217,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private UserDto mapUserToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
+        return userMapper.toDto(user);
     }
 
     @Override
     public List<ChildDto> getChildren(User parent) {
-        return convertToDto(parent.getChildren(), ChildDto.class);
+        return childMapper.toDtoList(parent.getChildren());
     }
 
     @Override
     public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
-        final var childrenToSave = UtilMapper.convertAllTo(childrenDtoToUpdate, Child.class);
+        final var childrenToSave = childMapper.toModelList(childrenDtoToUpdate);
         final var existedChildren = parent.getChildren();
         existedChildren.clear();
         existedChildren.addAll(childrenToSave);
         childrenToSave.forEach(child -> child.setUser(parent));
 
         userRepository.saveAndFlush(parent);
-        return convertToDto(childrenDtoToUpdate, ChildDto.class);
+        return childrenDtoToUpdate;
     }
 
     @Override
@@ -260,16 +258,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     userRepository.saveAndFlush(user);
                     log.info("Preferable language was successfully updated for User: {}", user.getUsername());
                 });
-    }
-
-    private Set<Phone> convertPhone(Set<PhoneDto> phones) {
-        Converter<String, Long> stringLongConverter = context ->
-                Long.parseLong(context.getSource().replaceAll("\\D", ""));
-
-        modelMapper.typeMap(PhoneDto.class, Phone.class)
-                .addMappings(mapper -> mapper.using(stringLongConverter)
-                        .map(PhoneDto::getPhoneNumber, Phone::setPhoneNumber));
-        return modelMapper.map(phones, new TypeToken<Set<Phone>>() {
-        }.getType());
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.LocationRepository;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.RawLocation;
+import space.obminyashka.items_exchange.mapper.LocationMapper;
 import space.obminyashka.items_exchange.model.Location;
 import space.obminyashka.items_exchange.service.LocationService;
 
@@ -20,9 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertAllTo;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertTo;
-
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
@@ -34,13 +32,14 @@ public class LocationServiceImpl implements LocationService {
             "Ukraine,area Zakarpatska,district Mukachivskyi,city Mukacheve"
     );
     private final LocationRepository locationRepository;
+    private final LocationMapper locationMapper;
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
 
 
     @Override
     public List<LocationDto> findAll() {
-        return convertAllTo(locationRepository.findAll(), LocationDto.class);
+        return locationMapper.toDtoList(locationRepository.findAll());
     }
 
     @Override
@@ -51,13 +50,13 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationDto> findByIds(List<UUID> ids) {
         List<Location> locations = locationRepository.findByIdIn(ids);
-        return convertAllTo(locations, LocationDto.class);
+        return locationMapper.toDtoList(locations);
     }
 
     @Override
     public Optional<LocationDto> getById(UUID id) {
         return findById(id)
-                .map(location -> convertTo(location, LocationDto.class));
+                .map(locationMapper::toDto);
     }
 
     @Override
@@ -67,9 +66,9 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public LocationDto save(LocationDto locationDto) {
-        Location location = convertTo(locationDto, Location.class);
+        Location location = locationMapper.toModel(locationDto);
         Location savedLocation = locationRepository.saveAndFlush(location);
-        return convertTo(savedLocation, LocationDto.class);
+        return locationMapper.toDto(savedLocation);
     }
 
     @Override
@@ -89,9 +88,9 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public LocationDto update(LocationDto locationDto) {
-        Location location = convertTo(locationDto, Location.class);
+        Location location = locationMapper.toModel(locationDto);
         Location updatedLocation = locationRepository.saveAndFlush(location);
-        return convertTo(updatedLocation, LocationDto.class);
+        return locationMapper.toDto(updatedLocation);
     }
 
     @Override

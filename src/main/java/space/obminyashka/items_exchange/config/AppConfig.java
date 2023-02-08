@@ -2,7 +2,6 @@ package space.obminyashka.items_exchange.config;
 
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.objects.Email;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -22,11 +21,6 @@ import java.util.List;
 @EnableCaching
 @EnableScheduling
 public class AppConfig {
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
 
     @Bean
     public LocaleResolver localeResolver() {
