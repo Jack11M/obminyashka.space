@@ -43,6 +43,7 @@ jobs:
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
       env:
+        NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
         CI: false
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
