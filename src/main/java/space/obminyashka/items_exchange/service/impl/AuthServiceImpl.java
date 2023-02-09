@@ -2,12 +2,12 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
+import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
@@ -31,12 +31,12 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenService jwtTokenService;
     private final UserService userService;
-    private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
 
     public Optional<UserLoginResponseDto> createUserLoginResponseDto(String username) throws UsernameNotFoundException {
         final var user = userService.findByUsernameOrEmail(username);
         if (user.isPresent()) {
-            final var userLoginResponseDto = modelMapper.map(user.get(), UserLoginResponseDto.class);
+            final var userLoginResponseDto = userMapper.toLoginResponseDto(user.get());
             final var accessToken = jwtTokenService.createAccessToken(username, user.get().getRole());
             userLoginResponseDto.setAccessToken(accessToken);
             userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken));

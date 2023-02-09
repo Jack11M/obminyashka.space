@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import space.obminyashka.items_exchange.dao.CategoryRepository;
 import space.obminyashka.items_exchange.dto.CategoryDto;
+import space.obminyashka.items_exchange.mapper.SubcategoryMapper;
 import space.obminyashka.items_exchange.model.Category;
-import space.obminyashka.items_exchange.model.Subcategory;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,6 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.mapper.UtilMapper.convertToDto;
 import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
 
 @SpringBootTest
@@ -33,6 +32,8 @@ class CategoryServiceTest {
     private SubcategoryService subcategoryService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private SubcategoryMapper subcategoryMapper;
     private Category categoryShoes;
 
     @BeforeEach
@@ -117,7 +118,7 @@ class CategoryServiceTest {
                 () -> assertEquals(newCategory.getName(), newCategoryDto.getName()),
                 () -> assertEquals(2, newCategoryDto.getSubcategories().size()),
                 () -> assertEquals(newCategory.getSubcategories(),
-                        convertToDto(newCategoryDto.getSubcategories(), Subcategory.class)));
+                       subcategoryMapper.toModelList(newCategoryDto.getSubcategories())));
         verify(categoryRepository, times(1)).saveAndFlush(newCategory);
     }
 

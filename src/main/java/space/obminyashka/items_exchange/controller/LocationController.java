@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.LocationsRequest;
-import space.obminyashka.items_exchange.mapper.UtilMapper;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
@@ -23,6 +22,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
@@ -91,15 +91,24 @@ public class LocationController {
     public void deleteLocations(@RequestParam("ids") List<UUID> locationIds) {
         List<LocationDto> locations = locationService.findByIds(locationIds);
         if (locationIds.size() != locations.size()) {
-            locationIds.removeAll(UtilMapper.mapBy(locations, LocationDto::getId));
-            String strIds = locationIds.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(", ", ": ", ""));
+            final String strIds = getNonExistingLocationsIds(locationIds, locations);
+
             log.warn("Received nonexistent IDs {}", strIds);
             throw new IllegalIdentifierException(
                     getExceptionMessageSourceWithAdditionalInfo(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_ID, strIds));
         }
         locationService.removeById(locationIds);
+    }
+
+    private static String getNonExistingLocationsIds(List<UUID> locationIds, List<LocationDto> locations) {
+        final var foundLocationsIdsToBeRemoved = locations.stream()
+                .map(LocationDto::getId)
+                .toList();
+
+        return locationIds.stream()
+                .filter(Predicate.not(foundLocationsIdsToBeRemoved::contains))
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ", ": ", ""));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
