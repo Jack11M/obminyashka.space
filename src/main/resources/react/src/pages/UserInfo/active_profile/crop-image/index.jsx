@@ -1,9 +1,10 @@
 import { useContext, useState, useEffect } from 'react';
 import imageCompression from 'browser-image-compression';
+import { Avatar } from '@wolshebnik/obminyashka-components';
 
 import * as Icon from 'assets/icons';
 import { getTranslatedText } from 'components/local';
-import { Avatar, Crop, ModalContext } from 'components/common';
+import { Crop, ModalContext } from 'components/common';
 import {
   options,
   useDelay,
