@@ -24,6 +24,18 @@ class PatternHandlerTest {
     }
 
     @ParameterizedTest
+    @MethodSource("createCorrectEmails")
+    void testEmailRegexp_whenEmailsCorrect(String correctEmail) {
+        assertTrue(correctEmail.matches(EMAIL));
+    }
+
+    @ParameterizedTest
+    @MethodSource("createWrongEmails")
+    void testEmailRegexp_whenEmailsWrong(String wrongEmail) {
+        assertFalse(wrongEmail.matches(EMAIL));
+    }
+
+    @ParameterizedTest
     @MethodSource("createCorrectPhoneNumbers")
     void testPhoneNumberRegexp_whenPhoneNumberIsCorrect(String correctPhoneNumber) {
         assertTrue(correctPhoneNumber.matches(PHONE_NUMBER));
@@ -83,6 +95,26 @@ class PatternHandlerTest {
                 "5W~~##@@",
                 "5WwФЁёЪ",
                 "5wW~!@#$Ъ"
+        );
+    }
+
+    private static List<String> createCorrectEmails() {
+        return List.of(
+                "username@domain.com",
+                "user.name@domain.com",
+                "user-name@domain.com",
+                "username@domain.co.in",
+                "user_name@domain.com"
+        );
+    }
+
+    private static List<String> createWrongEmails() {
+        return List.of(
+                "username@domain",
+                "username.@domain.com",
+                ".user.name@domain.com",
+                "user-name@domain.com.",
+                "username@.com"
         );
     }
 
