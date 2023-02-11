@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_BY_ADV_ID;
 import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_IN_ADV_COUNT;
@@ -96,7 +95,6 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = mockMvc.perform(multipart(IMAGE_BY_ADV_ID, advertisementId)
                         .file(jpeg)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isNotAcceptable())
                 .andReturn();
 
@@ -132,7 +130,6 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     void saveImages_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, UUID.randomUUID())
                         .file(jpeg))
-                .andDo(print())
                 .andExpect(status().isNotFound());
     }
 

@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import space.obminyashka.items_exchange.service.impl.SendGridService;
 import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
@@ -20,7 +19,7 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import java.io.IOException;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

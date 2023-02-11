@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
@@ -104,7 +103,6 @@ class ImageFlowTest extends BasicControllerTest {
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
                 .file(jpeg)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 }

@@ -14,7 +14,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
@@ -54,7 +53,6 @@ public abstract class BasicControllerTest {
     private ResultActions getResultActionsAndExpectStatus(ResultMatcher expectedStatus,
                                                           MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder)
-                .andDo(print())
                 .andExpect(expectedStatus);
     }
 
@@ -71,7 +69,6 @@ public abstract class BasicControllerTest {
                         .content(asJsonString(dto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(expectedStatus);
     }
 }
