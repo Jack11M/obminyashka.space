@@ -16,11 +16,11 @@ public interface UserMapper {
     default String localeToString(Locale locale) {
         return Optional.ofNullable(locale)
                 .map(Locale::toString)
-                .orElseGet(() -> new Locale("ua").toString());
+                .orElseGet(() -> Locale.of("ua").toString());
     }
 
     default Locale stringToLocale(String string) {
-        return new Locale(string);
+        return Locale.of(string);
     }
 
     //Unmapped target properties: "id, created, updated, status, password, online, lastOnlineTime, role, advertisements, deals, phones, children, chats, messages, blacklistedUsers, authorities".

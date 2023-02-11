@@ -1,4 +1,4 @@
 build
 node_modules
 src/dist
-.npmrc
+/.env
