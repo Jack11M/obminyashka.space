@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.PatternHandler;
@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @EqualsAndHashCode
 public class PhoneDto {
-    @ApiModelProperty(required = true, example = "+38(123)456-78-90, 38 123 456 78 90")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "+38(123)456-78-90, 38 123 456 78 90")
     @Pattern(regexp = PatternHandler.PHONE_NUMBER,
             message = ResponseMessagesHandler.ValidationMessage.INVALID_PHONE_NUMBER)
     private String phoneNumber;
