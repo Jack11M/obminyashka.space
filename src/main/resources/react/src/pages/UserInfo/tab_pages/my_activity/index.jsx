@@ -1,5 +1,6 @@
+import { Title } from '@wolshebnik/obminyashka-components';
+
 import lot3 from 'assets/img/cards/lot3.jpg';
-import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -10,7 +11,7 @@ const MyActivity = () => {
 
   return (
     <>
-      <TitleBigBlue
+      <Title
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('ownActivity.incomingReplies')}
       />
@@ -59,7 +60,7 @@ const MyActivity = () => {
         />
       </Styles.InputResponseContainer>
 
-      <TitleBigBlue
+      <Title
         style={{ margin: '83px 0 40px' }}
         text={getTranslatedText('ownActivity.outgoingReplies')}
       />

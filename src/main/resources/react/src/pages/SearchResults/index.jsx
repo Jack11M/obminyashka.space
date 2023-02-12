@@ -1,18 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 import { showMessage } from 'hooks';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
 import { getTranslatedText } from 'components/local/localization';
-import {
-  Filtration,
-  TitleBigBlue,
-  SearchContext,
-  PagePagination,
-} from 'components/common';
+import { Filtration, SearchContext, PagePagination } from 'components/common';
 
 import * as Styles from './styles';
 
@@ -80,7 +76,7 @@ const SearchResults = () => {
         </Styles.FilterContainer>
 
         <div>
-          <TitleBigBlue text={getTranslatedText('filterPage.searchResults')} />
+          <Title text={getTranslatedText('filterPage.searchResults')} />
 
           {adv.content && (
             <PagePagination
