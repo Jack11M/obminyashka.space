@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.Level;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import space.obminyashka.items_exchange.exception.*;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletException;
@@ -57,6 +60,12 @@ public class GlobalExceptionHandler {
         final var errorMessage = new ErrorMessage(validationErrors, request.getRequest().getRequestURI(), request.getHttpMethod());
         log.log(Level.WARN, errorMessage);
         return errorMessage;
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleConstraintExceptions(DataIntegrityViolationException exception, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, getMessageSource(ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST), exception, Level.ERROR);
     }
 
     @ExceptionHandler(IllegalOperationException.class)
@@ -104,11 +113,15 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
+        return logAndGetErrorMessage(request, e.getLocalizedMessage(), e, level);
+    }
+
+    private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, String message, Exception e, Level level) {
         if (e instanceof UndeclaredThrowableException) {
             e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
         }
-        var errorMessage = new ErrorMessage(e.getLocalizedMessage(), request.getRequest().getRequestURI(), request.getHttpMethod());
-        log.log(level, errorMessage);
+        var errorMessage = new ErrorMessage(message, request.getRequest().getRequestURI(), request.getHttpMethod());
+        log.log(level, errorMessage, e);
         return errorMessage;
     }
 }
