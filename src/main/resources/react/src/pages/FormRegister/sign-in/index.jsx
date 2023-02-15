@@ -3,13 +3,14 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import { NO_SPACE } from 'config';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
 import { getTranslatedText } from 'components/local/localization';
-import { CheckBox, Button, InputForAuth } from 'components/common';
+import { CheckBox, InputForAuth } from 'components/common';
 
 import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 
@@ -98,27 +99,25 @@ const Login = () => {
             <WrapperButton>
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                width={222}
+                lHeight={24}
                 type="submit"
-                width="222px"
-                lHeight="24px"
                 isLoading={loading}
-                disabling={!isValid && !dirty}
+                style={{ marginBottom: 64 }}
+                disabled={!isValid && !dirty}
                 text={getTranslatedText('button.enter')}
-                click={!errors.usernameOrEmail ? handleSubmit : null}
+                onClick={!errors.usernameOrEmail ? handleSubmit : null}
               />
 
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                width={175}
+                lHeight={24}
                 type="button"
-                width="175px"
-                lHeight="24px"
                 icon={<GoogleSvg />}
+                style={{ marginBottom: 64, height: 48 }}
                 text={getTranslatedText('button.googleOAuth')}
-                click={() =>
+                onClick={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }
               />
