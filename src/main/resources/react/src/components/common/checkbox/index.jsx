@@ -1,4 +1,4 @@
-import { ReactComponent as CheckSvg } from 'assets/icons/Check.svg';
+import { ReactComponent as CheckSvg } from 'assets/icons/check.svg';
 
 import { Div, LabelSquare, Label } from './styles';
 
