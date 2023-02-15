@@ -65,10 +65,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleConstraintExceptions(DataIntegrityViolationException exception, ServletWebRequest request) {
-        final var errorMessage = new ErrorMessage(getMessageSource(ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST),
-                request.getRequest().getRequestURI(), request.getHttpMethod());
-        log.log(Level.ERROR, exception.getMessage());
-        return errorMessage;
+        return logAndGetErrorMessage(request, getMessageSource(ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST), exception, Level.ERROR);
     }
 
     @ExceptionHandler(IllegalOperationException.class)
@@ -121,6 +118,15 @@ public class GlobalExceptionHandler {
         }
         var errorMessage = new ErrorMessage(e.getLocalizedMessage(), request.getRequest().getRequestURI(), request.getHttpMethod());
         log.log(level, errorMessage);
+        return errorMessage;
+    }
+
+    private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, String message, Exception e, Level level) {
+        if (e instanceof UndeclaredThrowableException) {
+            e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
+        }
+        var errorMessage = new ErrorMessage(message, request.getRequest().getRequestURI(), request.getHttpMethod());
+        log.log(level, e);
         return errorMessage;
     }
 }
