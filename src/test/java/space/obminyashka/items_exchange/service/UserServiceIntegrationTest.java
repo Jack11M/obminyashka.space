@@ -122,17 +122,20 @@ class UserServiceIntegrationTest {
     }
 
     private List<User> createTestUsers() {
-        User shouldBeDeleted = createUserForDeleting(DELETED, numberOfDaysToKeepDeletedUsers + 1);
-        User shouldNotBeDeleted0 = createUserForDeleting(ACTIVE, 0);
-        User shouldNotBeDeleted1 = createUserForDeleting(DELETED, numberOfDaysToKeepDeletedUsers - 1);
-        User shouldNotBeDeleted2 = createUserForDeleting(ACTIVE, numberOfDaysToKeepDeletedUsers + 1);
+        when(roleService.getRole("ROLE_SELF_REMOVING")).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
+        when(roleService.getRole("ROLE_USER")).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_USER", List.of())));
+
+        User shouldBeDeleted = createUserForDeleting(roleService.getRole("ROLE_SELF_REMOVING").get(), numberOfDaysToKeepDeletedUsers + 1);
+        User shouldNotBeDeleted0 = createUserForDeleting(roleService.getRole("ROLE_USER").get(), 0);
+        User shouldNotBeDeleted1 = createUserForDeleting(roleService.getRole("ROLE_SELF_REMOVING").get(), numberOfDaysToKeepDeletedUsers - 1);
+        User shouldNotBeDeleted2 = createUserForDeleting(roleService.getRole("ROLE_USER").get(), numberOfDaysToKeepDeletedUsers + 1);
 
         return List.of(shouldBeDeleted, shouldNotBeDeleted0, shouldNotBeDeleted1, shouldNotBeDeleted2);
     }
 
-    private User createUserForDeleting(Status status, int delay) {
+    private User createUserForDeleting(Role role, int delay) {
         User user = new User();
-        user.setStatus(status);
+        user.setRole(role);
         user.setUpdated(LocalDateTime.now().minusDays(delay));
 
         return user;
