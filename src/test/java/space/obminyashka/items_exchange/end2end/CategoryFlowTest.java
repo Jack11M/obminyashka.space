@@ -20,7 +20,9 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
 @DBRider
@@ -69,6 +72,15 @@ class CategoryFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void getCategoryById_whenCategoryIdDoesNotExist_shouldReturnNotFound() throws Exception {
         sendUriAndGetMvcResult(get(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    void getCategorySizesById_whenCategoryIdDoesNotExist_shouldReturnBadRequest() throws Exception {
+        var mvcResult = sendUriAndGetMvcResult(get(CATEGORY_SIZES, NONEXISTENT_ENTITY_ID), status().isBadRequest());
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SIZES_ID)));
     }
 
     @ParameterizedTest
