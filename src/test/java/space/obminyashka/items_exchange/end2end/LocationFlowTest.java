@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.LocationDto;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.*;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
 @DBRider
@@ -115,7 +117,10 @@ class LocationFlowTest extends BasicControllerTest {
                 .districtEN("Kharkivska district")
                 .areaEN("Kharkivska area")
                 .build();
-        sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isBadRequest());
+        MvcResult mvcResult = sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isBadRequest()).andReturn();
+        var responseContentAsString = mvcResult.getResponse().getContentAsString();
+        assertTrue(responseContentAsString.contains(getMessageSource(ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST)));
+
     }
 
     @WithMockUser(username = "admin", roles = "ADMIN")
