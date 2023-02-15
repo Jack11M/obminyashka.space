@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.UPDATED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -51,6 +50,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
+
+    private Map<String, String> savedUsersRole = new HashMap<>();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -160,6 +161,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void selfDeleteRequest(User user) {
+        savedUsersRole.put(user.getUsername(), user.getRole().getName());
         roleService.getRole("ROLE_SELF_REMOVING").ifPresent(user::setRole);
         userRepository.saveAndFlush(user);
     }
@@ -192,7 +194,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void makeAccountActiveAgain(User user) {
-        user.setStatus(ACTIVE);
+        roleService.getRole(savedUsersRole.get(user.getUsername())).ifPresent(user::setRole);
         userRepository.saveAndFlush(user);
     }
 
