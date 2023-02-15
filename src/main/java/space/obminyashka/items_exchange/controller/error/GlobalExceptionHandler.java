@@ -113,12 +113,7 @@ public class GlobalExceptionHandler {
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, Exception e, Level level) {
-        if (e instanceof UndeclaredThrowableException) {
-            e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
-        }
-        var errorMessage = new ErrorMessage(e.getLocalizedMessage(), request.getRequest().getRequestURI(), request.getHttpMethod());
-        log.log(level, errorMessage);
-        return errorMessage;
+        return logAndGetErrorMessage(request, e.getLocalizedMessage(), e, level);
     }
 
     private ErrorMessage logAndGetErrorMessage(ServletWebRequest request, String message, Exception e, Level level) {
@@ -126,7 +121,7 @@ public class GlobalExceptionHandler {
             e = (Exception) ((UndeclaredThrowableException) e).getUndeclaredThrowable();
         }
         var errorMessage = new ErrorMessage(message, request.getRequest().getRequestURI(), request.getHttpMethod());
-        log.log(level, e);
+        log.log(level, errorMessage, e);
         return errorMessage;
     }
 }
