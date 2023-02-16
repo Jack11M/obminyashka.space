@@ -10,8 +10,8 @@ import { route } from 'routes/routeConstants';
 import { CheckBox } from '@wolshebnik/obminyashka-components';
 
 import { putUserThunk } from 'store/auth/thunk';
-import { getTranslatedText } from 'components/local/localization';
 import { Button, InputForAuth } from 'components/common';
+import { getTranslatedText } from 'components/local/localization';
 
 import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 

@@ -94,8 +94,8 @@ const Filtration = () => {
                   gap={20}
                   key={item}
                   value={item}
-                  type="checkbox"
                   fontSize={16}
+                  type="checkbox"
                   onChange={setGender}
                   selectedValues={gender}
                   margin="4px 8px 4px 25px"
@@ -110,8 +110,8 @@ const Filtration = () => {
                   gap={20}
                   key={item}
                   value={item}
-                  type="checkbox"
                   fontSize={16}
+                  type="checkbox"
                   onChange={setAge}
                   selectedValues={age}
                   text={enumAge[item]}
@@ -127,8 +127,8 @@ const Filtration = () => {
                     gap={20}
                     key={item}
                     value={item}
-                    type="checkbox"
                     fontSize={16}
+                    type="checkbox"
                     margin="4px 8px 4px 25px"
                     onChange={setClothesSizes}
                     selectedValues={clothesSizes}

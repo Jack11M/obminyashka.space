@@ -18,23 +18,25 @@ const Gender = ({ name }) => {
         <CheckBox
           type="radio"
           fontSize={16}
-          onChange={() => helpers.setValue(enumSex.MALE)}
           checked={value === enumSex.MALE}
           text={getTranslatedText('ownInfo.boy')}
+          onChange={() => helpers.setValue(enumSex.MALE)}
         />
+
         <CheckBox
           type="radio"
           fontSize={16}
-          onChange={() => helpers.setValue(enumSex.FEMALE)}
           checked={value === enumSex.FEMALE}
           text={getTranslatedText('ownInfo.girl')}
+          onChange={() => helpers.setValue(enumSex.FEMALE)}
         />
+
         <CheckBox
           type="radio"
           fontSize={16}
-          onChange={() => helpers.setValue(enumSex.UNSELECTED)}
           checked={value === enumSex.UNSELECTED}
           text={getTranslatedText('ownInfo.unselected')}
+          onChange={() => helpers.setValue(enumSex.UNSELECTED)}
         />
       </Styles.Container>
     </Styles.GenderDiv>

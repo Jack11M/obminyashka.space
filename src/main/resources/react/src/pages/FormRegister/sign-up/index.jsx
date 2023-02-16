@@ -7,8 +7,8 @@ import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { CheckBox } from '@wolshebnik/obminyashka-components';
 
-import { getTranslatedText } from 'components/local/localization';
 import { Button, InputForAuth } from 'components/common';
+import { getTranslatedText } from 'components/local/localization';
 
 import { validationRegisterSchema } from './config';
 import { Extra, WrapperButton, Form } from '../sign-in/styles';
@@ -78,9 +78,9 @@ const SignUp = () => {
                 gap={22}
                 fontSize={14}
                 checked={checkbox}
-                style={{ paddingRight: '10px' }}
                 margin="0 0 44px 0"
                 onChange={changeCheckBox}
+                style={{ paddingRight: '10px' }}
                 text={getTranslatedText('auth.agreement')}
               />
             </Extra>

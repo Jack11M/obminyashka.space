@@ -2,8 +2,6 @@ import { useCallback } from 'react';
 
 import { CheckBox } from '@wolshebnik/obminyashka-components';
 
-import { Div } from './styles';
-
 export const FormikCheckBox = ({
   gap,
   text,
@@ -38,18 +36,16 @@ export const FormikCheckBox = ({
   );
 
   return (
-    <Div>
-      <CheckBox
-        gap={gap}
-        type={type}
-        text={text}
-        name={name}
-        margin={margin}
-        value={value}
-        fontSize={fontSize}
-        checked={isSelected(value)}
-        onChange={() => handleChange(value)}
-      />
-    </Div>
+    <CheckBox
+      gap={gap}
+      type={type}
+      text={text}
+      name={name}
+      value={value}
+      margin={margin}
+      fontSize={fontSize}
+      checked={isSelected(value)}
+      onChange={() => handleChange(value)}
+    />
   );
 };
