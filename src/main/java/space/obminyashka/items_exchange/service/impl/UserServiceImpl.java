@@ -51,8 +51,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
 
-    private Map<String, String> savedUsersRole = new HashMap<>();
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUsernameOrEmail(username)
@@ -161,7 +159,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void selfDeleteRequest(User user) {
-        savedUsersRole.put(user.getUsername(), user.getRole().getName());
         roleService.getRole("ROLE_SELF_REMOVING").ifPresent(user::setRole);
         userRepository.saveAndFlush(user);
     }
@@ -194,7 +191,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void makeAccountActiveAgain(User user) {
-        roleService.getRole(savedUsersRole.get(user.getUsername())).ifPresent(user::setRole);
+        roleService.getRole("ROLE_USER").ifPresent(user::setRole);
         userRepository.saveAndFlush(user);
     }
 

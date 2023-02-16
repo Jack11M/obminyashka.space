@@ -52,9 +52,6 @@ class UserServiceIntegrationTest {
     private int numberOfDaysToKeepDeletedUsers;
     private User userWithOldPassword;
 
-    private Map<String, String> savedUsersRole = new HashMap<>();
-
-
     @BeforeEach
     void setUp() {
         userWithOldPassword = createUserWithOldPassword();
@@ -82,17 +79,14 @@ class UserServiceIntegrationTest {
 
     @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
-        userWithOldPassword.setUsername("Bob");
-        userWithOldPassword.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
 
-        savedUsersRole.put(userWithOldPassword.getUsername(), userWithOldPassword.getRole().getName());
         when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
 
         userService.selfDeleteRequest(userWithOldPassword);
 
         assertEquals("ROLE_SELF_REMOVING", userWithOldPassword.getRole().getName());
         verify(userRepository).saveAndFlush(userWithOldPassword);
-        savedUsersRole.clear();
+
     }
 
     @Test
@@ -112,17 +106,13 @@ class UserServiceIntegrationTest {
 
     @Test
     void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
-        userWithOldPassword.setUsername("Bob");
-        userWithOldPassword.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
 
-        savedUsersRole.put(userWithOldPassword.getUsername(), userWithOldPassword.getRole().getName());
-        when(roleService.getRole(savedUsersRole.get(userWithOldPassword.getUsername()))).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_USER", List.of())));
+        when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_USER", List.of())));
 
         userService.makeAccountActiveAgain(userWithOldPassword);
 
         assertEquals("ROLE_USER", userWithOldPassword.getRole().getName());
         verify(userRepository).saveAndFlush(userWithOldPassword);
-        savedUsersRole.clear();
     }
 
     private User createUserWithOldPassword() {
