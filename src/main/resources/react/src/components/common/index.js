@@ -1,6 +1,5 @@
 export { BackButton } from './buttons/back-button';
 export { BtnGoodBusiness } from './buttons/btnGoodBusiness';
-export { Button } from './buttons/button';
 export { ButtonAdv } from './buttons/buttonAdv';
 export { ButtonLinkBlue } from './buttons/button-link-blue';
 export { CheckBox } from './checkbox';
