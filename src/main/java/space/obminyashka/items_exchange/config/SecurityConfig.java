@@ -113,7 +113,7 @@ public class SecurityConfig {
                         "/**/*.css",
                         "/**/*.js",
                         "/**/*.ttf").permitAll()
-                .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs", "/webjars/**", "/actuator/health", "/error").permitAll()
+                .antMatchers("/swagger-ui**", "/swagger-resources/**", "/v3/api-docs/**", "/error").permitAll()
                 .antMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
                 .antMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
                 .antMatchers(HttpMethod.GET,

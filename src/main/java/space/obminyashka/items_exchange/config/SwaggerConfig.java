@@ -1,59 +1,45 @@
 package space.obminyashka.items_exchange.config;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.ExternalDocumentation;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
-
-import java.util.List;
+import space.obminyashka.items_exchange.api.ApiKey;
 
 @Configuration
-@Import(BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfig {
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.OAS_30)
-                .useDefaultResponseMessages(false)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build()
-                .securitySchemes(List.of(apiKey()))
-                .securityContexts(List.of(securityContext()));
-    }
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
                 .group("springshop-public")
-                .pathsToMatch("/public/**")
+                .pathsToMatch(ApiKey.API + "/**")
                 .build();
     }
-    private Info apiInfo() {
-        return new Info()
-                .title("Obminyashka (Child Goods Exchange) API")
-                .description("API Definitions of the Obminyashka (Child Goods Exchange) project")
-                .version("1.0.0");
-    }
 
-    private ApiKey apiKey() {
-        return new ApiKey("Authorization", HttpHeaders.AUTHORIZATION, "header");
-    }
-
-    private SecurityScheme apiKey() {
-    return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("JWT access token").build();
-    }
-    private SecurityContext securityContext() {
-        return SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .build();
-    }
-    private List<SecurityReference> defaultAuth() {
-        return List.of(new SecurityReference(HttpHeaders.AUTHORIZATION,
-                new AuthorizationScope[]{
-                        new AuthorizationScope("global", "accessEverything")}));
+    @Bean
+    public OpenAPI springShopOpenAPI() {
+        final String securitySchemeName = "bearerAuth";
+        return new OpenAPI()
+                .info(new Info().title("Obminyashka (Child Goods Exchange) API")
+                        .description("API Definitions of the Obminyashka (Child Goods Exchange) project")
+                        .version("v0.7.0")
+                        .license(new License().name("Apache 2.0").url("https://springdoc.org")))
+                .externalDocs(new ExternalDocumentation()
+                        .description("Obminyashka GitHub Docs")
+                        .url("https://github.com/Jack11M/EVO-Exchange-BE-2019"))
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(securitySchemeName))
+                .components(new Components()
+                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+                                .name(securitySchemeName)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")));
     }
 }
