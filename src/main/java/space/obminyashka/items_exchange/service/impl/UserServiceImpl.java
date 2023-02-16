@@ -6,14 +6,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.authorization.jwt.JwtUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
@@ -58,23 +56,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("IN UserDetailsService (loadUserByUsername): " +
                         "user with username: " + username + " not found"));
 
-        JwtUser jwtUser = create(user);
         log.info("IN UserDetailsService (loadUserByUsername): user with username: {} successfully loaded", username);
-        return jwtUser;
-    }
-
-    private static JwtUser create(User user) {
-        return new JwtUser(
-                user.getId(),
-                user.getUsername(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority(user.getRole().getName())),
-                user.isEnabled(),
-                user.getUpdated()
-        );
+        return user;
     }
 
     @Override
