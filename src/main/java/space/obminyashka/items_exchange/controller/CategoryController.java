@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,10 +78,10 @@ public class CategoryController {
             @ApiResponse(code = 400, message = "BAD REQUEST"),
             @ApiResponse(code = 404, message = "NOT FOUND")})
     public List<String> getCategorySizesById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
-                                             @PathVariable("category_id") int id) throws NotFoundException {
+                                             @PathVariable("category_id") int id) throws CategorySizeNotFoundException {
         return Optional.of(categoryService.findSizesForCategory(id))
                 .filter(Predicate.not(List::isEmpty))
-                .orElseThrow(() -> new NotFoundException(
+                .orElseThrow(() -> new CategorySizeNotFoundException(
                         getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SIZES_ID)));
     }
 
