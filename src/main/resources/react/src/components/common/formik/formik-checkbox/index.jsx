@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { ReactComponent as CheckSvg } from 'assets/icons/check.svg';
+
+import { CheckSvg } from 'assets/icons';
 
 import { Div, LabelSquare, Label, Input } from './styles';
 
