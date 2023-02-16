@@ -4,6 +4,7 @@ import { Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
@@ -15,7 +16,6 @@ import { FormikFocus } from 'components/common/formik';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
 import {
-  Button,
   ButtonAdv,
   BackButton,
   FormikHandler,
@@ -311,8 +311,8 @@ const AddGoods = () => {
 
                       <Button
                         type="submit"
-                        click={() => setButtonPreview(true)}
-                        width={lang === 'ua' ? '270px' : '222px'}
+                        onClick={() => setButtonPreview(true)}
+                        width={lang === 'ua' ? 270 : 222}
                         text={getTranslatedText('addAdv.preview')}
                       />
                     </Styles.BlockButtons>
