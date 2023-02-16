@@ -12,7 +12,7 @@ function handleAuthError(error, onAuthError) {
 }
 
 function initObminyashka({ onAuthError }) {
-  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+  axios.defaults.baseURL = '/api/v1';
   axios.defaults.headers = {
     'Content-Type': 'application/json',
   };

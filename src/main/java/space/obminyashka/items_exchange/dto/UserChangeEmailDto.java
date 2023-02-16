@@ -3,7 +3,6 @@ package space.obminyashka.items_exchange.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import space.obminyashka.items_exchange.util.PatternHandler;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 

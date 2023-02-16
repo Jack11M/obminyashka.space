@@ -2,14 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getErrorMessage } from 'Utils/error';
 import { getAuthLang } from 'store/auth/slice';
+import { BackButton } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
-import { BackButton, TitleBigBlue } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
@@ -162,7 +163,7 @@ const ProductPage = () => {
         <ProductPageContainer>
           <ProductPageInner>
             <SectionHeading>
-              <TitleBigBlue text={getTranslatedText('product.blueTitle')} />
+              <Title text={getTranslatedText('product.blueTitle')} />
             </SectionHeading>
 
             <ProductOffers />

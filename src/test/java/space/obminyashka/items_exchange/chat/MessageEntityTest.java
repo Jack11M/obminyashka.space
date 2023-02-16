@@ -58,7 +58,7 @@ class MessageEntityTest {
         assertNotNull(savedMessage.getCreated());
         assertNotNull(savedMessage.getUpdated());
         final Attachment savedAttachment = savedMessage.getAttachments().stream().findFirst().get();
-        assertNotEquals(0L, savedAttachment.getId(), "Saved attachment ID must be greater than 0");
+        assertNotNull(savedAttachment.getId(), "Saved attachment ID must be greater than 0");
     }
 
 

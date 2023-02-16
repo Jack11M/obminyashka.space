@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { ButtonTest } from '@wolshebnik/obminyashka-components';
+import { Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
-import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
 import noPhotos from 'assets/img/showAdv/noPhoto.svg';
@@ -37,9 +36,9 @@ const CurrentOffers = () => {
   return (
     <Styles.ProductSection>
       <Styles.ProductHeader>
-        <TitleBigBlue text={getTranslatedText('mainPage.blueText')} />
+        <Title text={getTranslatedText('mainPage.blueText')} />
       </Styles.ProductHeader>
-      <ButtonTest label="button" />
+
       <Styles.ProductListUl>
         {offers.map((offer) => (
           <li key={offer.advertisementId}>
