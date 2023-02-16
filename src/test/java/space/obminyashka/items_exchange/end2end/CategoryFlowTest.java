@@ -77,7 +77,7 @@ class CategoryFlowTest extends BasicControllerTest {
     @Test
     @DataSet("database_init.yml")
     void getCategorySizesById_whenCategoryIdDoesNotExist_shouldReturnBadRequest() throws Exception {
-        var mvcResult = sendUriAndGetMvcResult(get(CATEGORY_SIZES, NONEXISTENT_ENTITY_ID), status().isBadRequest());
+        var mvcResult = sendUriAndGetMvcResult(get(CATEGORY_SIZES, NONEXISTENT_ENTITY_ID), status().isNotFound());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SIZES_ID)));
