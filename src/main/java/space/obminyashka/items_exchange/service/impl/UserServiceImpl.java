@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
         userRepository.findAll().stream()
-                .filter(Predicate.not(User::isEnabled))
+                .filter(user -> user.getRole().getName().equals("ROLE_SELF_REMOVING"))
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
                 .forEach(userRepository::delete);
     }
