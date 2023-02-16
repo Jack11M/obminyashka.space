@@ -1,6 +1,6 @@
 import React from 'react';
+import { Title } from '@wolshebnik/obminyashka-components';
 
-import { TitleBigBlue } from 'components/common';
 import { ProductCard } from 'components/item-card';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -10,7 +10,7 @@ import { productData } from './config';
 const MyFavorites = () => {
   return (
     <>
-      <TitleBigBlue
+      <Title
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('favorites.FeaturedAds')}
       />

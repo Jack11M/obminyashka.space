@@ -1,6 +1,7 @@
 import { memo, useContext, useState } from 'react';
 import { Formik, Form } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
@@ -8,12 +9,7 @@ import { route } from 'routes/routeConstants';
 import { setProfileEmail } from 'store/profile/slice';
 import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import {
-  Button,
-  TitleBigBlue,
-  ModalContext,
-  InputForAuth,
-} from 'components/common';
+import { Button, ModalContext, InputForAuth } from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
 
@@ -160,7 +156,7 @@ const MySettings = () => {
 
   return (
     <>
-      <TitleBigBlue
+      <Title
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changePassword')}
       />
@@ -207,7 +203,7 @@ const MySettings = () => {
         )}
       </Formik>
 
-      <TitleBigBlue
+      <Title
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.changeEmail')}
       />
@@ -257,7 +253,7 @@ const MySettings = () => {
         )}
       </Formik>
 
-      <TitleBigBlue
+      <Title
         style={{ margin: '65px 0 40px' }}
         text={getTranslatedText('settings.remove')}
       />
