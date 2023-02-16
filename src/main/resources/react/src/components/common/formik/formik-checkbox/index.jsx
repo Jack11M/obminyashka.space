@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+
 import { CheckSvg } from 'assets/icons';
 
 import * as Styles from './styles';
