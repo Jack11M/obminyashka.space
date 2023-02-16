@@ -311,8 +311,8 @@ const AddGoods = () => {
 
                       <Button
                         type="submit"
-                        onClick={() => setButtonPreview(true)}
                         width={lang === 'ua' ? 270 : 222}
+                        onClick={() => setButtonPreview(true)}
                         text={getTranslatedText('addAdv.preview')}
                       />
                     </Styles.BlockButtons>

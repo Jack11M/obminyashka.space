@@ -10,7 +10,6 @@ import { setProfileEmail } from 'store/profile/slice';
 import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { ModalContext, InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
-import { ModalContext, InputForAuth } from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
 
@@ -142,8 +141,8 @@ const MySettings = () => {
                 </Styles.InputWrapper>
 
                 <Button
-                  type="submit"
                   width={248}
+                  type="submit"
                   isLoading={loading}
                   text={getTranslatedText('button.remove')}
                 />
@@ -191,8 +190,8 @@ const MySettings = () => {
 
             <Styles.ButtonContainer>
               <Button
-                type="submit"
                 width={248}
+                type="submit"
                 style={{ height: 49 }}
                 isLoading={isFetchPass}
                 disabling={!isValid && !dirty}
@@ -240,11 +239,11 @@ const MySettings = () => {
 
             <Styles.ButtonContainer>
               <Button
-                type="submit"
                 width={248}
+                type="submit"
                 isLoading={isFetchEmail}
-                style={{ margin: '50px 0', height: 49 }}
                 disabling={!isValid && !dirty}
+                style={{ margin: '50px 0', height: 49 }}
                 text={getTranslatedText('button.saveChanges')}
                 onClick={!errors.newEmail ? handleSubmit : null}
               />
