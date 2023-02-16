@@ -17,7 +17,7 @@ const Label = styled.label`
 
 const Input = styled.input`
   width: 100%;
-  height: 48px;
+  height: 50px;
   padding: 0 30px 0 14px;
   line-height: 24px;
   font-size: 16px;

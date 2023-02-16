@@ -1,11 +1,10 @@
 import { useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Input } from '@wolshebnik/obminyashka-components';
 
-import * as Icon from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { ButtonAdv, SearchContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
-import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 
 import * as Styles from './styles';
 import NavCategory from '../nav_category/index';
@@ -18,7 +17,7 @@ const NavMain = () => {
 
   const change = (e) => {
     setIsFetch(false);
-    setSearch(e.target.value);
+    setSearch(typeof e === 'string' ? e : e.target.value);
   };
 
   const move = () => {
@@ -60,28 +59,15 @@ const NavMain = () => {
           </Styles.WrapCategories>
 
           <Styles.WrapSearch>
-            <Styles.InputSearch
-              type="text"
+            <Input
+              name="search"
+              type="search"
               value={search}
-              onChange={change}
-              onKeyPress={keyEnter}
+              onClick={() => move()}
+              onKeyDown={(e) => keyEnter(e)}
+              onChange={(e) => change(e)}
               placeholder={`${getTranslatedText('header.iSearch')} ...`}
             />
-
-            {search && (
-              <Styles.IconBlock
-                onClick={() => {
-                  setSearch('');
-                  setIsFetch(true);
-                }}
-              >
-                <Icon.CloseSvg />
-              </Styles.IconBlock>
-            )}
-
-            <Styles.LabelLink onClick={move} htmlFor="search">
-              <SearchSvg />
-            </Styles.LabelLink>
           </Styles.WrapSearch>
 
           <ButtonAdv type="link" />

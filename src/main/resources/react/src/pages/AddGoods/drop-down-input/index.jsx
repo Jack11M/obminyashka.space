@@ -35,7 +35,7 @@ const DropDownInput = ({
         error={error}
         value={value}
         onFocus={onFocus}
-        autocomplete="off"
+        autoComplete="off"
         disabled={disabled}
         onChange={onChangeInput}
       />
