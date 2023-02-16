@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { ButtonTest } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
@@ -39,7 +38,6 @@ const CurrentOffers = () => {
       <Styles.ProductHeader>
         <TitleBigBlue text={getTranslatedText('mainPage.blueText')} />
       </Styles.ProductHeader>
-      <ButtonTest label="button" />
       <Styles.ProductListUl>
         {offers.map((offer) => (
           <li key={offer.advertisementId}>

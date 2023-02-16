@@ -7,9 +7,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { NO_SPACE } from 'config';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
+import { CheckBox } from '@wolshebnik/obminyashka-components';
+
 import { putUserThunk } from 'store/auth/thunk';
 import { getTranslatedText } from 'components/local/localization';
-import { CheckBox, Button, InputForAuth } from 'components/common';
+import { Button, InputForAuth } from 'components/common';
 
 import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 
@@ -83,10 +85,11 @@ const Login = () => {
 
             <Extra>
               <CheckBox
-                fontSize="14px"
+                gap={22}
+                fontSize={14}
                 checked={checkbox}
                 margin="0 0 44px 0"
-                click={changeCheckBox}
+                onChange={changeCheckBox}
                 text={getTranslatedText('auth.remember')}
               />
 

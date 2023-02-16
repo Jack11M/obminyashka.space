@@ -2,7 +2,7 @@ export { ReactComponent as ActivitySvg } from './activity.svg';
 export { ReactComponent as AvatarSvg } from './avatar.svg';
 export { ReactComponent as BellSvg } from './bell.svg';
 export { ReactComponent as Camera } from './camera.svg';
-export { ReactComponent as CheckSvg } from './Check.svg';
+export { ReactComponent as CheckSvg } from './check.svg';
 export { ReactComponent as ChevronLeft } from './chevron-left.svg';
 export { ReactComponent as ChevronRight } from './chevron-right.svg';
 export { ReactComponent as CloseSvg } from './Close.svg';

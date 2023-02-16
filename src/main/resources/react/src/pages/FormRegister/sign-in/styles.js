@@ -8,6 +8,7 @@ export const Extra = styled.div`
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  margin-bottom: 44px;
 `;
 
 export const ExtraLink = styled(Link)`
