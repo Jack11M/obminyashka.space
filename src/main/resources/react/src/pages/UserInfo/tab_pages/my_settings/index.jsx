@@ -1,6 +1,7 @@
 import { memo, useContext, useState } from 'react';
 import { Formik, Form } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
@@ -8,12 +9,7 @@ import { route } from 'routes/routeConstants';
 import { setProfileEmail } from 'store/profile/slice';
 import { putEmail, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import {
-  Button,
-  TitleBigBlue,
-  ModalContext,
-  InputForAuth,
-} from 'components/common';
+import { TitleBigBlue, ModalContext, InputForAuth } from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
 
@@ -146,7 +142,7 @@ const MySettings = () => {
 
                 <Button
                   type="submit"
-                  width="248px"
+                  width={248}
                   isLoading={loading}
                   text={getTranslatedText('button.remove')}
                 />
@@ -195,12 +191,12 @@ const MySettings = () => {
             <Styles.ButtonContainer>
               <Button
                 type="submit"
-                width="248px"
-                height="49px"
+                width={248}
+                style={{ height: 49 }}
                 isLoading={isFetchPass}
                 disabling={!isValid && !dirty}
                 text={getTranslatedText('button.saveChanges')}
-                click={!errors.oldPassword ? handleSubmit : null}
+                onClick={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
           </>
@@ -244,13 +240,12 @@ const MySettings = () => {
             <Styles.ButtonContainer>
               <Button
                 type="submit"
-                width="248px"
-                height="49px"
+                width={248}
                 isLoading={isFetchEmail}
-                style={{ margin: '50px 0' }}
+                style={{ margin: '50px 0', height: 49 }}
                 disabling={!isValid && !dirty}
                 text={getTranslatedText('button.saveChanges')}
-                click={!errors.newEmail ? handleSubmit : null}
+                onClick={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
           </>
@@ -271,8 +266,8 @@ const MySettings = () => {
 
       <Styles.ButtonContainer>
         <Button
-          width="248px"
-          click={deleteAccountModal}
+          width={248}
+          onClick={deleteAccountModal}
           style={{ marginBottom: '65px' }}
           text={getTranslatedText('button.remove')}
         />
