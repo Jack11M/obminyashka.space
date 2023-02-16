@@ -6,9 +6,8 @@ import { Button } from '@wolshebnik/obminyashka-components';
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
-
-import { getTranslatedText } from 'components/local/localization';
 import { CheckBox, InputForAuth } from 'components/common';
+import { getTranslatedText } from 'components/local/localization';
 
 import { validationRegisterSchema } from './config';
 import { Extra, WrapperButton, Form } from '../sign-in/styles';

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { CheckSvg } from 'assets/icons';
 
-import { Div, LabelSquare, Label, Input } from './styles';
+import * as Styles from './styles';
 
 const FormikCheckBox = ({
   text,
@@ -36,21 +36,21 @@ const FormikCheckBox = ({
   );
 
   return (
-    <Div margin={margin}>
-      <Label fontSize={fontSize}>
-        <Input
+    <Styles.Div margin={margin}>
+      <Styles.Label fontSize={fontSize}>
+        <Styles.Input
           type={type}
           name={name}
           value={value}
           checked={isSelected(value)}
           onChange={() => handleChange(value)}
         />
-        <LabelSquare type={type}>
+        <Styles.LabelSquare type={type}>
           <CheckSvg />
-        </LabelSquare>
+        </Styles.LabelSquare>
         <span>{text}</span>
-      </Label>
-    </Div>
+      </Styles.Label>
+    </Styles.Div>
   );
 };
 

@@ -9,8 +9,8 @@ import { NO_SPACE } from 'config';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
-import { getTranslatedText } from 'components/local/localization';
 import { CheckBox, InputForAuth } from 'components/common';
+import { getTranslatedText } from 'components/local/localization';
 
 import { Extra, ExtraLink, WrapperButton, Form } from './styles';
 
