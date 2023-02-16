@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 
 import { getTranslatedText } from 'components/local/localization';
-import { CheckBox, Button, InputForAuth } from 'components/common';
+import { CheckBox, InputForAuth } from 'components/common';
 
 import { validationRegisterSchema } from './config';
 import { Extra, WrapperButton, Form } from '../sign-in/styles';
@@ -85,27 +86,29 @@ const SignUp = () => {
             <WrapperButton>
               <Button
                 bold
-                mb="44px"
+                width={222}
+                height={48}
+                lHeight={24}
                 type="submit"
-                width="222px"
-                height="48px"
-                lHeight="24px"
                 isLoading={loading}
+                style={{ marginBottom: 44 }}
                 text={getTranslatedText('auth.signUp')}
                 disabling={!checkbox || !dirty || !isValid || isSubmitting}
-                click={!errors.email || !errors.username ? handleSubmit : null}
+                onClick={
+                  !errors.email || !errors.username ? handleSubmit : null
+                }
               />
 
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                height={48}
+                width={222}
+                lHeight={24}
                 type="button"
-                width="222px"
-                lHeight="24px"
                 icon={<GoogleSvg />}
+                style={{ marginBottom: 64 }}
                 text={getTranslatedText('auth.signUp')}
-                click={() =>
+                onClick={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }
               />
