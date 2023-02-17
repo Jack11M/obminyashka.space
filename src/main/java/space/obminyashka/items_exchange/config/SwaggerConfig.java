@@ -17,13 +17,13 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
-                .group("springshop-public")
+                .group("obminyashka-public")
                 .pathsToMatch(ApiKey.API + "/**")
                 .build();
     }
 
     @Bean
-    public OpenAPI springShopOpenAPI() {
+    public OpenAPI obminyashkaOpenAPI() {
         final String securitySchemeName = "Authorization";
         return new OpenAPI()
                 .info(new Info().title("Obminyashka (Child Goods Exchange) API")
