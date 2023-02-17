@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import space.obminyashka.items_exchange.api.ApiKey;
 
 @Configuration
@@ -24,7 +25,6 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI obminyashkaOpenAPI() {
-        final String securitySchemeName = "Authorization";
         return new OpenAPI()
                 .info(new Info().title("Obminyashka (Child Goods Exchange) API")
                         .description("API Definitions of the Obminyashka (Child Goods Exchange) project")
@@ -34,10 +34,10 @@ public class SwaggerConfig {
                         .description("Obminyashka GitHub Docs")
                         .url("https://github.com/Jack11M/EVO-Exchange-BE-2019"))
                 .addSecurityItem(new SecurityRequirement()
-                        .addList(securitySchemeName))
+                        .addList(HttpHeaders.AUTHORIZATION))
                 .components(new Components()
-                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-                                .name(securitySchemeName)
+                        .addSecuritySchemes(HttpHeaders.AUTHORIZATION, new SecurityScheme()
+                                .name(HttpHeaders.AUTHORIZATION)
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));
