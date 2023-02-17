@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
+import { CheckBox } from '@wolshebnik/obminyashka-components';
 
+import { Button, InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
-import { CheckBox, Button, InputForAuth } from 'components/common';
 
 import { validationRegisterSchema } from './config';
 import { Extra, WrapperButton, Form } from '../sign-in/styles';
@@ -74,10 +75,12 @@ const SignUp = () => {
 
             <Extra>
               <CheckBox
-                fontSize="14px"
+                gap={22}
+                fontSize={14}
                 checked={checkbox}
                 margin="0 0 44px 0"
-                click={changeCheckBox}
+                onChange={changeCheckBox}
+                style={{ paddingRight: '10px' }}
                 text={getTranslatedText('auth.agreement')}
               />
             </Extra>
