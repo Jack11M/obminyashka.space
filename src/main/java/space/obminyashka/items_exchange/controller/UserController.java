@@ -1,9 +1,11 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +27,6 @@ import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -36,7 +37,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
-@Api(tags = "User")
+@Tag(name  = "User")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -51,48 +52,48 @@ public class UserController {
     private final AdvertisementService advService;
 
     @GetMapping(ApiKey.USER_MY_INFO)
-    @ApiOperation(value = "Find a registered requested user's data")
+    @Operation(summary = "Find a registered requested user's data")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
-    public ResponseEntity<UserDto> getPersonalInfo(@ApiIgnore Authentication authentication) {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+    public ResponseEntity<UserDto> getPersonalInfo(@Parameter(hidden = true) Authentication authentication) {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_MY_INFO)
-    @ApiOperation(value = "Update a registered requested user's data")
+    @Operation(summary = "Update a registered requested user's data")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @ApiIgnore Authentication authentication) {
+    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @Parameter(hidden = true) Authentication authentication) {
         return userService.update(userUpdateDto, getUser(authentication.getName()));
     }
 
     @GetMapping(ApiKey.USER_MY_ADV)
-    @ApiOperation(value = "Update a registered requested user's data")
+    @Operation(summary = "Update a registered requested user's data")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
-    public List<AdvertisementTitleDto> getCreatedAdvertisements(@ApiIgnore Authentication authentication) {
+    public List<AdvertisementTitleDto> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
         return advService.findAllByUsername(authentication.getName());
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_SERVICE_CHANGE_PASSWORD)
-    @ApiOperation(value = "Update a user password")
+    @Operation(summary = "Update a user password")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     @ApiIgnore Authentication authentication) throws InvalidDtoException {
+                                     @Parameter(hidden = true) Authentication authentication) throws InvalidDtoException {
         User user = findUserByValidCredentials(authentication, userChangePasswordDto.getOldPassword());
 
         return userService.updateUserPassword(userChangePasswordDto, user);
@@ -100,14 +101,14 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_SERVICE_CHANGE_EMAIL)
-    @ApiOperation(value = "Update a user email")
+    @Operation(summary = "Update a user email")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 409, message = "CONFLICT")})
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, @ApiIgnore Authentication authentication)
+    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, @Parameter(hidden = true) Authentication authentication)
             throws DataConflictException {
         User user = getUser(authentication.getName());
         if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
@@ -123,13 +124,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.USER_SERVICE_DELETE)
-    @ApiOperation(value = "Delete user")
+    @Operation(summary = "Delete user")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @ApiIgnore Authentication authentication)
+    public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @Parameter(hidden = true) Authentication authentication)
             throws InvalidDtoException {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         userService.selfDeleteRequest(user);
@@ -140,13 +141,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('SELF_REMOVING')")
     @PutMapping(ApiKey.USER_SERVICE_RESTORE)
-    @ApiOperation(value = "Restore user")
+    @Operation(summary = "Restore user")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @ApiIgnore Authentication authentication)
+    public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @Parameter(hidden = true) Authentication authentication)
             throws InvalidDtoException {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
         userService.makeAccountActiveAgain(user);
@@ -155,40 +156,40 @@ public class UserController {
     }
 
     @GetMapping(ApiKey.USER_CHILD)
-    @ApiOperation(value = "Find a registered requested user's children data")
+    @Operation(summary = "Find a registered requested user's children data")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> getChildren(@ApiIgnore Authentication authentication) {
+    public List<ChildDto> getChildren(@Parameter(hidden = true) Authentication authentication) {
         return userService.getChildren(getUser(authentication.getName()));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.USER_CHILD)
-    @ApiOperation(value = "Update child data for a registered requested user")
+    @Operation(summary = "Update child data for a registered requested user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
                                              @RequestBody List<@Valid ChildDto> childrenDto,
-                                         @ApiIgnore Authentication authentication) {
+                                         @Parameter(hidden = true) Authentication authentication) {
         final User user = getUser(authentication.getName());
         return userService.updateChildren(user, childrenDto);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ApiOperation(value = "Set a new user's avatar image")
+    @Operation(summary = "Set a new user's avatar image")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 403, message = "FORBIDDEN"),
-            @ApiResponse(code = 406, message = "NOT ACCEPTABLE"),
-            @ApiResponse(code = 415, message = "UNSUPPORTED MEDIA TYPE")})
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "406", description = "NOT ACCEPTABLE"),
+            @ApiResponse(responseCode = "415", description = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Map<String, byte[]> updateUserAvatar(@RequestPart MultipartFile image, @ApiIgnore Authentication authentication) {
+    public Map<String, byte[]> updateUserAvatar(@RequestPart MultipartFile image, @Parameter(hidden = true) Authentication authentication) {
         User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.compress(image);
         userService.setUserAvatar(newAvatarImage, user);
@@ -197,12 +198,12 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.USER_SERVICE_CHANGE_AVATAR)
-    @ApiOperation(value = "Remove a user's avatar image")
+    @Operation(summary = "Remove a user's avatar image")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void removeAvatar(@ApiIgnore Authentication authentication) {
+    public void removeAvatar(@Parameter(hidden = true) Authentication authentication) {
         userService.removeUserAvatarFor(authentication.getName());
     }
 

@@ -1,7 +1,7 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
@@ -19,32 +19,32 @@ public class LocationDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String areaUA;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String districtUA;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String cityUA;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String areaEN;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String districtEN;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String cityEN;

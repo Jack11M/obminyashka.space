@@ -1,7 +1,7 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
@@ -25,12 +25,12 @@ public class AdvertisementModificationDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
     @Size(min = 3, max = 70, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     private String topic;
 
-    @ApiModelProperty(value = "can't be null, but can be empty")
+    @Schema(description = "can't be null, but can be empty")
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Size(max = 255, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
     private String description;
@@ -57,9 +57,9 @@ public class AdvertisementModificationDto {
     @JsonProperty("sizeValue")
     private String size;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private long subcategoryId;
 
-    @ApiModelProperty(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID locationId;
 }
