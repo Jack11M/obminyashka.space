@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI springShopOpenAPI() {
-        final String securitySchemeName = "bearerAuth";
+        final String securitySchemeName = "Authorization";
         return new OpenAPI()
                 .info(new Info().title("Obminyashka (Child Goods Exchange) API")
                         .description("API Definitions of the Obminyashka (Child Goods Exchange) project")
