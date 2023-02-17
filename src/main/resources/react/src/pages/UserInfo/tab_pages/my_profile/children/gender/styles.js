@@ -10,6 +10,7 @@ export const GenderDiv = styled.div`
 
 export const Container = styled.div`
   display: flex;
+  align-items: center;
   width: 415px;
   gap: 40px;
 `;

@@ -26,6 +26,7 @@ export const Explanation = styled.p`
 
 export const ChangeWrap = styled.div`
   align-items: center;
+  margin-bottom: 20px;
   border: 1px solid
     ${({ theme, borderValue, error }) => {
       if (borderValue && !error) return 'hsl(0,0%,44%)';

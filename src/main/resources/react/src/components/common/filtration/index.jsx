@@ -91,10 +91,11 @@ const Filtration = () => {
             <CheckBoxes title={getTranslatedText('product.sex')}>
               {sexShow.map((item) => (
                 <FormikCheckBox
+                  gap={20}
                   key={item}
                   value={item}
+                  fontSize={16}
                   type="checkbox"
-                  fontSize="16px"
                   onChange={setGender}
                   selectedValues={gender}
                   margin="4px 8px 4px 25px"
@@ -106,10 +107,11 @@ const Filtration = () => {
             <CheckBoxes title={getTranslatedText('product.age')}>
               {agesShow.map((item) => (
                 <FormikCheckBox
+                  gap={20}
                   key={item}
                   value={item}
+                  fontSize={16}
                   type="checkbox"
-                  fontSize="16px"
                   onChange={setAge}
                   selectedValues={age}
                   text={enumAge[item]}
@@ -122,10 +124,11 @@ const Filtration = () => {
               <Styles.ScrollBar>
                 {receivedClothingSizes.map((item) => (
                   <FormikCheckBox
+                    gap={20}
                     key={item}
                     value={item}
+                    fontSize={16}
                     type="checkbox"
-                    fontSize="16px"
                     margin="4px 8px 4px 25px"
                     onChange={setClothesSizes}
                     selectedValues={clothesSizes}
@@ -139,9 +142,10 @@ const Filtration = () => {
               <Styles.ScrollBar>
                 {receivedShoeSizes.map((item) => (
                   <FormikCheckBox
+                    gap={20}
                     key={item}
                     value={item}
-                    fontSize="16px"
+                    fontSize={16}
                     type="checkbox"
                     onChange={setShoesSizes}
                     margin="4px 8px 4px 25px"
@@ -155,9 +159,10 @@ const Filtration = () => {
             <CheckBoxes title={getTranslatedText('product.season')}>
               {seasonShow.map((item) => (
                 <FormikCheckBox
+                  gap={20}
                   key={item}
                   value={item}
-                  fontSize="16px"
+                  fontSize={16}
                   type="checkbox"
                   onChange={setSeason}
                   selectedValues={season}

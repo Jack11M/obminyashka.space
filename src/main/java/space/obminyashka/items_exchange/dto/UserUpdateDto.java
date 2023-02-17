@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.dto;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.PatternHandler;
@@ -17,12 +17,12 @@ import java.util.Set;
 @Setter
 public class UserUpdateDto {
 
-    @ApiModelProperty(value = "Empty or 2-50 symbols", example = "Mariana, Мар'яна, Марьяна")
+    @Schema(description = "Empty or 2-50 symbols", example = "Mariana, Мар'яна, Марьяна")
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50,
             message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME + "}")
     private String firstName;
-    @ApiModelProperty(value = "Empty or 2-50 symbols",
+    @Schema(description = "Empty or 2-50 symbols",
             example = "Kvitka-Osnovianenko, Квітка-Основ'яненко, Квитка-Основьяненко")
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50,
