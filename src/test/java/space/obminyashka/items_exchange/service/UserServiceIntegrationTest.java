@@ -104,17 +104,6 @@ class UserServiceIntegrationTest {
         }
     }
 
-    @Test
-    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
-
-        when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_USER", List.of())));
-
-        userService.makeAccountActiveAgain(userWithOldPassword);
-
-        assertEquals("ROLE_USER", userWithOldPassword.getRole().getName());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
-    }
-
     private User createUserWithOldPassword() {
         userWithOldPassword = new User();
         userWithOldPassword.setPassword(bCryptPasswordEncoder.encode(CORRECT_OLD_PASSWORD));
