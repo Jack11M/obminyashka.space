@@ -1,9 +1,10 @@
 import { useState, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import * as Icon from 'assets/icons';
 import { route } from 'routes/routeConstants';
-import { ButtonAdv, SearchContext } from 'components/common';
+import { SearchContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 import { ReactComponent as SearchSvg } from 'assets/icons/search.svg';
 
@@ -84,7 +85,14 @@ const NavMain = () => {
             </Styles.LabelLink>
           </Styles.WrapSearch>
 
-          <ButtonAdv type="link" />
+          <Button
+            width={295}
+            colorType="green"
+            icon={<Icon.Plus />}
+            style={{ height: 50 }}
+            onClick={() => navigate(route.addAdv)}
+            text={getTranslatedText('button.addAdv')}
+          />
         </Styles.WrapMain>
       </Styles.Wrapper>
     </Styles.DivWrap>
