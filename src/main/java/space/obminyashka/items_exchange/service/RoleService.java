@@ -18,4 +18,8 @@ public class RoleService {
     public Optional<Role> getRole(String roleName) {
         return roleRepository.findByName(roleName);
     }
+
+    public void updateUserRole(String username) {
+        roleRepository.updateUserRole(username);
+    }
 }

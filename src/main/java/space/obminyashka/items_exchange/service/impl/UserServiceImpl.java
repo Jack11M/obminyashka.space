@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void makeAccountActiveAgain(User user) {
-        roleService.getRole("ROLE_USER").ifPresent(user::setRole);
+        roleService.updateUserRole(user.getUsername());
         userRepository.saveAndFlush(user);
     }
 
