@@ -91,7 +91,7 @@ export const ChangeInput = styled.input`
   min-width: 262px;
   box-sizing: border-box;
   height: 32px;
-  margin: 7px;
+  margin: 8px 7px;
   font-family: 'Roboto', sans-serif;
   line-height: 24px;
   border: none;
