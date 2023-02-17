@@ -8,6 +8,7 @@ import { Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
+import * as Icon from 'assets/icons';
 import { enumAge } from 'config/ENUM';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
@@ -15,12 +16,7 @@ import { getAuthLang } from 'store/auth/slice';
 import { FormikFocus } from 'components/common/formik';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import {
-  ButtonAdv,
-  BackButton,
-  FormikHandler,
-  FormikCheckBox,
-} from 'components/common';
+import { BackButton, FormikHandler, FormikCheckBox } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -307,7 +303,14 @@ const AddGoods = () => {
 
                   <Styles.WrapButtons>
                     <Styles.BlockButtons>
-                      <ButtonAdv isLoading={isLoading} />
+                      <Button
+                        width={295}
+                        type="submit"
+                        colorType="green"
+                        icon={<Icon.Plus />}
+                        isLoading={isLoading}
+                        text={getTranslatedText('button.addAdv')}
+                      />
 
                       <Button
                         type="submit"
