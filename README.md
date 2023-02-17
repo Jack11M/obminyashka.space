@@ -85,9 +85,9 @@ Localhost: https://localhost
 
 ### API
 
-Server: https://obminyashka.space/swagger-ui/
+Server: https://obminyashka.space/swagger-ui/index.html
 
-Localhost URL: https://localhost/swagger-ui/
+Localhost URL: https://localhost/swagger-ui/index.html
 
 ## Top 5 Contributors
 
