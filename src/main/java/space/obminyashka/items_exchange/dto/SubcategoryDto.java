@@ -22,7 +22,7 @@ public class SubcategoryDto {
             description = "name of subcategory",
             type = "String",
             example = "winter shoes",
-            required = false)
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
     @Size(min = 3, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     private String name;
