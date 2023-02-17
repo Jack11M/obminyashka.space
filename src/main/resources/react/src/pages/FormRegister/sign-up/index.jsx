@@ -1,51 +1,56 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { CheckBox } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
-import { CheckBox } from '@wolshebnik/obminyashka-components';
-
 import { Button, InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
-import { validationRegisterSchema } from './config';
+import { validationSchema } from './config';
 import { Extra, WrapperButton, Form } from '../sign-in/styles';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [checkbox, setCheckbox] = useState(false);
 
-  const changeCheckBox = () => {
-    setCheckbox((prev) => !prev);
+  const initialValues = validationSchema.cast({});
+
+  const onSubmit = async (values, onSubmitProps) => {
+    setLoading(true);
+
+    try {
+      await api.auth.postAuthRegister(values);
+      navigate(route.login);
+    } catch (err) {
+      if (err.response.status === 409) {
+        const { error: message } = err.response.data;
+        onSubmitProps.setErrors({ username: message });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const initialRegisterValues = validationRegisterSchema.cast({});
 
   return (
     <Form>
       <Formik
         validateOnBlur
-        initialValues={initialRegisterValues}
-        validationSchema={validationRegisterSchema}
-        onSubmit={async (dataFormik, onSubmitProps) => {
-          setLoading(true);
-          try {
-            await api.auth.postAuthRegister(dataFormik);
-            setLoading(false);
-            navigate(route.login);
-          } catch (err) {
-            setLoading(false);
-            if (err.response.status === 409) {
-              const { error: message } = err.response.data;
-              onSubmitProps.setErrors({ username: message });
-            }
-          }
-        }}
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
-        {({ errors, isSubmitting, handleSubmit, isValid, dirty }) => (
+        {({
+          dirty,
+          errors,
+          values,
+          isValid,
+          isSubmitting,
+          handleSubmit,
+          setFieldValue,
+        }) => (
           <>
             <div>
               <InputForAuth
@@ -77,10 +82,11 @@ const SignUp = () => {
               <CheckBox
                 gap={22}
                 fontSize={14}
-                checked={checkbox}
+                name="agreement"
                 margin="0 0 44px 0"
-                onChange={changeCheckBox}
+                checked={values.agreement}
                 style={{ paddingRight: '10px' }}
+                onChange={() => setFieldValue('agreement', !values.agreement)}
                 text={getTranslatedText('auth.agreement')}
               />
             </Extra>
@@ -95,7 +101,7 @@ const SignUp = () => {
                 lHeight="24px"
                 isLoading={loading}
                 text={getTranslatedText('auth.signUp')}
-                disabling={!checkbox || !dirty || !isValid || isSubmitting}
+                disabling={!dirty || !isValid || isSubmitting}
                 click={!errors.email || !errors.username ? handleSubmit : null}
               />
 
