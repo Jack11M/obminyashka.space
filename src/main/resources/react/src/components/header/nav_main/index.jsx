@@ -64,8 +64,8 @@ const NavMain = () => {
               type="search"
               value={search}
               onClick={() => move()}
-              onKeyDown={(e) => keyEnter(e)}
               onChange={(e) => change(e)}
+              onKeyDown={(e) => keyEnter(e)}
               placeholder={`${getTranslatedText('header.iSearch')} ...`}
             />
           </Styles.WrapSearch>
