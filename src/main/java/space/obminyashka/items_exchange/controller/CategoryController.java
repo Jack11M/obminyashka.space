@@ -13,13 +13,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
@@ -75,12 +77,12 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public ResponseEntity<List<String>> getCategorySizesById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
-                                                             @PathVariable("category_id") int id) {
-        var sizes = categoryService.findSizesForCategory(id);
-        return sizes.isEmpty()
-                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(sizes, HttpStatus.OK);
+    public List<String> getCategorySizesById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
+                                             @PathVariable("category_id") int id) throws CategorySizeNotFoundException {
+        return Optional.of(categoryService.findSizesForCategory(id))
+                .filter(Predicate.not(List::isEmpty))
+                .orElseThrow(() -> new CategorySizeNotFoundException(
+                        getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SIZES_ID)));
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)

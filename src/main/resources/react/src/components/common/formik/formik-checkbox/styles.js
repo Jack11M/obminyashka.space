@@ -45,16 +45,6 @@ const Input = styled.input`
   `}
 `;
 
-const Div = styled.div`
-  display: flex;
-  transition: all ease-in-out 0.3s;
-  width: fit-content;
-
-  ${(p) => css`
-    margin: ${p.margin || '0 0 22px 0'};
-  `}
-`;
-
 const Label = styled.label`
   display: flex;
   font-size: ${({ fontSize }) => fontSize || '14px'};
@@ -78,8 +68,7 @@ const Label = styled.label`
           }
         }
       }
-
   `}
 `;
 
-export { Div, Label, LabelSquare, Input };
+export { Label, LabelSquare, Input };
