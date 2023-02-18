@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { CheckBox } from '@wolshebnik/obminyashka-components';
 
@@ -10,7 +10,7 @@ import { Button, InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import { validationSchema } from './config';
-import { Extra, WrapperButton, Form } from '../sign-in/styles';
+import * as Styles from '../sign-in/styles';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const SignUp = () => {
 
   const onSubmit = async (values, onSubmitProps) => {
     setLoading(true);
+    delete values.agreement;
 
     try {
       await api.auth.postAuthRegister(values);
@@ -35,23 +36,15 @@ const SignUp = () => {
   };
 
   return (
-    <Form>
+    <Styles.Wrapper>
       <Formik
         validateOnBlur
         onSubmit={onSubmit}
         initialValues={initialValues}
         validationSchema={validationSchema}
       >
-        {({
-          dirty,
-          errors,
-          values,
-          isValid,
-          isSubmitting,
-          handleSubmit,
-          setFieldValue,
-        }) => (
-          <>
+        {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
+          <Form>
             <div>
               <InputForAuth
                 name="email"
@@ -78,7 +71,7 @@ const SignUp = () => {
               />
             </div>
 
-            <Extra>
+            <Styles.Extra>
               <CheckBox
                 gap={22}
                 fontSize={14}
@@ -86,12 +79,12 @@ const SignUp = () => {
                 margin="0 0 44px 0"
                 checked={values.agreement}
                 style={{ paddingRight: '10px' }}
-                onChange={() => setFieldValue('agreement', !values.agreement)}
                 text={getTranslatedText('auth.agreement')}
+                onChange={() => setFieldValue('agreement', !values.agreement)}
               />
-            </Extra>
+            </Styles.Extra>
 
-            <WrapperButton>
+            <Styles.WrapperButton>
               <Button
                 bold
                 mb="44px"
@@ -102,7 +95,6 @@ const SignUp = () => {
                 isLoading={loading}
                 text={getTranslatedText('auth.signUp')}
                 disabling={!dirty || !isValid || isSubmitting}
-                click={!errors.email || !errors.username ? handleSubmit : null}
               />
 
               <Button
@@ -118,12 +110,12 @@ const SignUp = () => {
                   window.location.assign('/oauth2/authorization/google')
                 }
               />
-            </WrapperButton>
-          </>
+            </Styles.WrapperButton>
+          </Form>
         )}
       </Formik>
-    </Form>
+    </Styles.Wrapper>
   );
 };
 
-export default SignUp;
+export { SignUp };
