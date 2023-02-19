@@ -117,7 +117,6 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
       <ErrorDisplay error={!!error && error} />
 
       <FormikCheckBox
-        gap={20}
         type="checkbox"
         margin="22px 0 0 0"
         name="readyForOffers"
