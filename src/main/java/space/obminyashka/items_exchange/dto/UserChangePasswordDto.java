@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class UserChangePasswordDto {
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
     private String oldPassword;
 
+    @Schema(example = "string")
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
     @Size(min = 8, max = 30, message = ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD_SIZE)
     @Pattern(regexp = PatternHandler.PASSWORD, message = ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD)
