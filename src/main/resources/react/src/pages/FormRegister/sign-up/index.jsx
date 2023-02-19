@@ -80,7 +80,6 @@ const SignUp = () => {
                 checked={checkbox}
                 margin="0 0 44px 0"
                 onChange={changeCheckBox}
-                style={{ paddingRight: '10px' }}
                 text={getTranslatedText('auth.agreement')}
               />
             </Extra>
