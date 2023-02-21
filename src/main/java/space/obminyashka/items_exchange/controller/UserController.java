@@ -149,7 +149,7 @@ public class UserController {
     public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @ApiIgnore Authentication authentication)
             throws InvalidDtoException {
         User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
-        userService.makeAccountActiveAgain(user);
+        userService.makeAccountActiveAgain(user.getUsername());
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN);
     }

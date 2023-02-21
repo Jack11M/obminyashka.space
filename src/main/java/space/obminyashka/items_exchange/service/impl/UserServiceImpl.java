@@ -190,9 +190,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void makeAccountActiveAgain(User user) {
-        roleService.updateUserRole(user.getUsername());
-        userRepository.saveAndFlush(user);
+    public void makeAccountActiveAgain(String username) {
+        roleService.setUserRoleToUserByUsername(username);
     }
 
     @Override
