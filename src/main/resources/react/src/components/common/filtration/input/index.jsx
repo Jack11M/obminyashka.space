@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import * as Icon from 'assets/icons';
+import { Icon } from '@wolshebnik/obminyashka-components';
+
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';

@@ -3,8 +3,9 @@ import Cropper from 'react-easy-crop';
 import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
 
+import { Icon } from '@wolshebnik/obminyashka-components';
+
 import { showMessage } from 'hooks';
-import * as Icon from 'assets/icons';
 import { getErrorMessage } from 'Utils/error';
 import { getTranslatedText } from 'components/local';
 import { deleteAvatarThunk, postAvatarThunk } from 'store/profile/thunk';

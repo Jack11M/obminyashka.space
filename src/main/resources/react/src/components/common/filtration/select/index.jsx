@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import * as Icon from 'assets/icons';
+import { Icon } from '@wolshebnik/obminyashka-components';
+
 import { getTranslatedText } from 'components/local';
 
 import * as Styles from './styles';
@@ -47,7 +48,7 @@ const Select = ({ title, data }) => {
               <span>{getTranslatedText(`categories.${subcategory.name}`)}</span>
 
               <Styles.Close isSelected={subcategory.isSelected}>
-                <Icon.CloseSvg />
+                <Icon.Close />
               </Styles.Close>
             </Styles.SubTitleBlock>
           ))}

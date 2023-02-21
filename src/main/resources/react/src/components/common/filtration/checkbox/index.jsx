@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import * as Icon from 'assets/icons';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 import * as Styles from './styles';
 
