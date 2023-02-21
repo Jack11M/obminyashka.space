@@ -19,7 +19,7 @@ public class RoleService {
         return roleRepository.findByName(roleName);
     }
 
-    public void updateUserRole(String username) {
-        roleRepository.updateUserRole(username);
+    public void setUserRoleToUserByUsername(String username) {
+        roleRepository.setUserRoleToUserByUsername(username);
     }
 }
