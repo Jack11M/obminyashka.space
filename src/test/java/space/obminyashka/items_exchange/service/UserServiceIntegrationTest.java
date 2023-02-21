@@ -79,7 +79,6 @@ class UserServiceIntegrationTest {
 
     @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
-
         when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
 
         userService.selfDeleteRequest(userWithOldPassword);
@@ -88,7 +87,15 @@ class UserServiceIntegrationTest {
         verify(userRepository).saveAndFlush(userWithOldPassword);
 
     }
+    @Test
+    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
+        userWithOldPassword.setUsername("Bob");
+        userWithOldPassword.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
 
+        userService.makeAccountActiveAgain(userWithOldPassword.getUsername());
+
+        assertEquals("ROLE_USER", userWithOldPassword.getRole().getName());
+    }
     @Test
     void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
         List<User> users = createTestUsers();

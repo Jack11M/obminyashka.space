@@ -176,7 +176,6 @@ class UserFlowTest extends BasicControllerTest {
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
-
     @Test
     @Commit
     @DataSet("database_init.yml")
