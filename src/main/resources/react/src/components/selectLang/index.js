@@ -6,7 +6,7 @@ import { setLanguage, getAuth, setChangeLang } from 'store/auth/slice';
 
 import * as Styles from './styles';
 
-const CustomSelect = () => {
+const LanguageSelection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { lang, isChangeLang } = useSelector(getAuth);
@@ -50,4 +50,4 @@ const CustomSelect = () => {
   );
 };
 
-export { CustomSelect };
+export { LanguageSelection };
