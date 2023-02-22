@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import { FieldArray, Form, Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
+import { showMessage } from '@wolshebnik/obminyashka-components';
 
 import { enumSex } from 'config/ENUM';
 import { Button } from 'components/common';
@@ -29,9 +29,9 @@ const Children = () => {
     setIsLoading(true);
     try {
       await dispatch(putChildrenThunk(values.children));
-      toast.success(getTranslatedText('toastText.changedData'));
+      showMessage.success(getTranslatedText('toastText.changedData'));
     } catch (e) {
-      toast.error(e);
+      showMessage.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +85,7 @@ const Children = () => {
                               sex: enumSex.UNSELECTED,
                             });
                           } else {
-                            toast.error(
+                            showMessage.error(
                               getTranslatedText('ownInfo.chooseData')
                             );
                           }

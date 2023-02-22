@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Title, showMessage } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
@@ -78,7 +77,7 @@ const ProductPage = () => {
       setSubcategory(state.subcategory);
       setCurrentLocation(locationValue);
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   }, [location]);
 
@@ -100,7 +99,7 @@ const ProductPage = () => {
       setCurrentLocation(locationValue);
       setWishes(wishesToExchange?.split(','));
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   };
 

@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Title, showMessage } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
@@ -26,7 +24,7 @@ const CurrentOffers = () => {
         if (Array.isArray(data)) setOffers(data);
       })
       .catch((e) => {
-        toast.error(getErrorMessage(e));
+        showMessage.error(getErrorMessage(e));
       });
   }, []);
 

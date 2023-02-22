@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { showMessage } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { Button } from 'components/common';
@@ -52,17 +52,17 @@ const AboutMyself = () => {
         !newUserData.firstName &&
         !newUserData.phones.length
       ) {
-        toast.success(getTranslatedText('popup.notEmptyInput'));
+        showMessage.success(getTranslatedText('popup.notEmptyInput'));
         return;
       }
       await api.profile.putUserInfo(newUserData);
       dispatch(putUserToStore(newUserData));
-      toast.success(getTranslatedText('toastText.changedData'));
+      showMessage.success(getTranslatedText('toastText.changedData'));
     } catch (err) {
       if (err.response?.status === 400) {
         const indexStart =
           err.response?.data?.error && err.response.data.error.indexOf(':') + 1;
-        toast.success(err.response?.data?.error?.slice(indexStart));
+        showMessage.success(err.response?.data?.error?.slice(indexStart));
       }
     } finally {
       setAboutLoading(false);
@@ -119,7 +119,7 @@ const AboutMyself = () => {
                             if (!!phone && !errorField) {
                               push('');
                             } else {
-                              toast.error(
+                              showMessage.error(
                                 getTranslatedText('ownInfo.choosePhone')
                               );
                             }
