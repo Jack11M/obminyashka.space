@@ -26,6 +26,7 @@ export const Explanation = styled.p`
 
 export const ChangeWrap = styled.div`
   align-items: center;
+  margin-bottom: 20px;
   border: 1px solid
     ${({ theme, borderValue, error }) => {
       if (borderValue && !error) return 'hsl(0,0%,44%)';
@@ -90,7 +91,7 @@ export const ChangeInput = styled.input`
   min-width: 262px;
   box-sizing: border-box;
   height: 32px;
-  margin: 7px;
+  margin: 8px 7px;
   font-family: 'Roboto', sans-serif;
   line-height: 24px;
   border: none;

@@ -1,6 +1,7 @@
-import { useField } from 'formik';
 import { useEffect, useState } from 'react';
+import { useField } from 'formik';
 import { useSelector } from 'react-redux';
+import { Input } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
@@ -105,10 +106,10 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             {getTranslatedText('addAdv.headline')}
           </Styles.ItemDescription>
 
-          <Styles.InputText
+          <Input
             type="text"
             name="topic"
-            error={touched && !!error}
+            error={touched && !!error && error}
             value={announcement.announcementTitle}
             onChange={(e) => announcement.setAnnouncementTitle(e.target.value)}
           />

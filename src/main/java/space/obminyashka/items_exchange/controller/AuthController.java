@@ -1,6 +1,10 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -30,7 +34,6 @@ import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +45,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 
 @Slf4j
 @RestController
-@Api(tags = "Authorization")
+@Tag(name = "Authorization")
 @RequiredArgsConstructor
 @Validated
 public class AuthController {
@@ -53,11 +56,11 @@ public class AuthController {
     private final MailService mailService;
 
     @PostMapping(value = ApiKey.AUTH_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Login in a registered user")
+    @Operation(summary  = "Login in a registered user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
@@ -72,12 +75,12 @@ public class AuthController {
     }
 
     @PostMapping(ApiKey.AUTH_LOGOUT)
-    @ApiOperation(value = "Log out a registered user")
+    @Operation(summary  = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req,
                        HttpServletResponse resp,
-                       @ApiIgnore Authentication authentication,
-                       @ApiIgnore @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+                       @Parameter(hidden = true) Authentication authentication,
+                       @Parameter(hidden = true) @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         new SecurityContextLogoutHandler().logout(req, resp, authentication);
         if (!authService.logout(token, authentication.getName())) {
             String errorMessageTokenNotStartWithBearerPrefix = getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN);
@@ -87,11 +90,11 @@ public class AuthController {
     }
 
     @PostMapping(ApiKey.AUTH_REGISTER)
-    @ApiOperation(value = "Register new user")
+    @Operation(summary  = "Register new user")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "CREATED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "422", description = "UNPROCESSABLE ENTITY")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto)
             throws BadRequestException, DataConflictException {
@@ -119,15 +122,15 @@ public class AuthController {
     }
 
     @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN)
-    @ApiOperation(value = "Renew access token with refresh token")
+    @Operation(summary  = "Renew access token with refresh token")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Required request header is not present"),
-            @ApiResponse(code = 401, message = "Refresh token is expired or not exist")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "Required request header is not present"),
+            @ApiResponse(responseCode = "401", description = "Refresh token is expired or not exist")
     })
     @ResponseStatus(HttpStatus.OK)
     public RefreshTokenResponseDto refreshToken(
-            @ApiParam(required = true)
+            @Parameter(required = true)
             @RequestHeader("refresh") String refreshToken) throws RefreshTokenException {
         final var resolvedToken = JwtTokenService.resolveToken(refreshToken);
         userService.updatePreferableLanguage(resolvedToken);
@@ -135,13 +138,13 @@ public class AuthController {
     }
 
     @PostMapping(value =ApiKey.AUTH_OAUTH2_SUCCESS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Finish login via OAuth2")
+    @Operation(summary  = "Finish login via OAuth2")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
-    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@ApiIgnore Authentication authentication) {
+    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
         try {
             return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
         } catch (AuthenticationException e) {

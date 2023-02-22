@@ -1,9 +1,10 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 
 @RestController
 @RequestMapping(ApiKey.SUBCATEGORY)
-@Api(tags = "Subcategory")
+@Tag(name = "Subcategory")
 @RequiredArgsConstructor
 @Validated
 public class SubcategoryController {
@@ -32,11 +33,11 @@ public class SubcategoryController {
     private final SubcategoryService subcategoryService;
 
     @GetMapping("/{category_id}/names")
-    @ApiOperation(value = "Find all subcategories names by category ID")
+    @Operation(summary = "Find all subcategories names by category ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public ResponseEntity<List<String>> getSubcategoryNamesByCategoryId(@PathVariable("category_id")
                                                                         @Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID) long id) {
         List<String> subcategoriesNames = subcategoryService.findSubcategoryNamesByCategoryId(id);
@@ -47,11 +48,11 @@ public class SubcategoryController {
 
     @PreAuthorize(HAS_ROLE_ADMIN)
     @DeleteMapping("/{subcategory_id}")
-    @ApiOperation(value = "Delete an existed subcategory by its ID", notes = "ADMIN ONLY")
+    @Operation(summary = "Delete an existed subcategory by its ID", description = "ADMIN ONLY")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteSubcategoryById(@PathVariable("subcategory_id") @PositiveOrZero(message = "{validation.null.id}") long id)
             throws InvalidDtoException {

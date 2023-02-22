@@ -1,6 +1,10 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +30,6 @@ import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -39,7 +42,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
-@Api(tags = "Advertisement")
+@Tag(name = "Advertisement")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -52,56 +55,56 @@ public class AdvertisementController {
     private final LocationService locationService;
 
     @GetMapping(ApiKey.ADV_THUMBNAIL)
-    @ApiOperation(value = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
+    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(
-            @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
+            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @ApiParam(value = "Number of records per page. Default value: 12")
+            @Parameter(name = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         return advertisementService.findAllThumbnails(PageRequest.of(page, size));
     }
 
     @GetMapping(ApiKey.ADV_THUMBNAIL_RANDOM)
-    @ApiOperation(value = "Find 12 random advertisement as thumbnails and return them as a result")
-    @ApiResponse(code = 200, message = "OK")
+    @Operation(summary = "Find 12 random advertisement as thumbnails and return them as a result")
+    @ApiResponse(responseCode = "200", description = "OK")
     public List<AdvertisementTitleDto> findRandom12Thumbnails() {
         return advertisementService.findRandom12Thumbnails();
     }
 
     @GetMapping(ApiKey.ADV_TOTAL)
-    @ApiOperation(value = "Count existed advertisements and return total records amount number")
-    @ApiResponse(code = 200, message = "OK")
+    @Operation(summary = "Count existed advertisements and return total records amount number")
+    @ApiResponse(responseCode = "200", description = "OK")
     public Long countAdvertisements() {
         return advertisementService.count();
     }
 
     @GetMapping(ApiKey.ADV_ID)
-    @ApiOperation(value = "Find an advertisement by its ID")
+    @Operation(summary = "Find an advertisement by its ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public ResponseEntity<AdvertisementDisplayDto> getAdvertisement(
-            @ApiParam(value = "ID of existed advertisement")
+            @Parameter(name = "ID of existed advertisement")
             @PathVariable("advertisement_id") UUID id) {
         return ResponseEntity.of(advertisementService.findDtoById(id));
     }
 
     @GetMapping(ApiKey.ADV_SEARCH_PAGINATED)
-    @ApiOperation(value = "Find advertisements by keyword")
+    @Operation(summary = "Find advertisements by keyword")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public ResponseEntity<Page<AdvertisementTitleDto>> getPageOfAdvertisementsByKeyword(
             @PathVariable @NotEmpty String keyword,
-            @ApiParam(value = "Results page you want to retrieve (0..N). Default value: 0")
+            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @ApiParam(value = "Number of records per page. Default value: 12")
+            @Parameter(name = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         Page<AdvertisementTitleDto> allByKeyword = advertisementService.findByKeyword(keyword, PageRequest.of(page, size, Sort.by("topic")));
         return allByKeyword.isEmpty() ?
@@ -110,9 +113,9 @@ public class AdvertisementController {
     }
 
     @PostMapping(ApiKey.ADV_FILTER)
-    @ApiOperation(value = "Filter advertisements by multiple params and return up to 10 results.\n" +
+    @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
             "Fill only needed parameters.")
-    @ApiResponse(code = 200, message = "OK")
+    @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
     public List<AdvertisementTitleDto> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto filterDto) {
         return advertisementService.findFirst10ByFilter(filterDto);
@@ -124,16 +127,16 @@ public class AdvertisementController {
                     MediaType.APPLICATION_JSON_VALUE,
                     MediaType.MULTIPART_FORM_DATA_VALUE,
                     MediaType.APPLICATION_OCTET_STREAM_VALUE})
-    @ApiOperation(value = "Create a new advertisement")
+    @Operation(summary = "Create a new advertisement")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "CREATED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.CREATED)
     public AdvertisementModificationDto createAdvertisement(
             @Valid @RequestPart AdvertisementModificationDto dto,
             @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
-            @ApiIgnore Authentication authentication) throws IllegalIdentifierException {
+            @Parameter(hidden = true) Authentication authentication) throws IllegalIdentifierException {
 
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         final var owner = getUser(authentication.getName());
@@ -145,16 +148,16 @@ public class AdvertisementController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(ApiKey.ADV_ID)
-    @ApiOperation(value = "Update an existed advertisement")
+    @Operation(summary = "Update an existed advertisement")
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "ACCEPTED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "202", description= "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode= "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AdvertisementModificationDto updateAdvertisement(@PathVariable("advertisement_id") UUID id,
                                                             @Valid @RequestBody AdvertisementModificationDto dto,
-                                                            @ApiIgnore Authentication authentication)
+                                                            @Parameter(hidden = true) Authentication authentication)
             throws IllegalIdentifierException, IllegalOperationException {
 
         validateAdvertisementOwner(id, getUser(authentication.getName()));
@@ -165,14 +168,14 @@ public class AdvertisementController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @DeleteMapping(ApiKey.ADV_ID)
-    @ApiOperation(value = "Delete an existed advertisement")
+    @Operation(summary = "Delete an existed advertisement")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable("advertisement_id") UUID id,
-                                    @ApiIgnore Authentication authentication) throws IllegalOperationException {
+                                    @Parameter(hidden = true) Authentication authentication) throws IllegalOperationException {
         User owner = getUser(authentication.getName());
         validateAdvertisementOwner(id, owner);
         advertisementService.remove(id);
@@ -180,16 +183,16 @@ public class AdvertisementController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PostMapping(ApiKey.ADV_DEFAULT_IMAGE)
-    @ApiOperation(value = "Set a default image to an existed advertisement")
+    @Operation(summary = "Set a default image to an existed advertisement")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 403, message = "FORBIDDEN")})
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void setDefaultImage(
-            @ApiParam(value = "ID of existed advertisement") @PathVariable UUID advertisementId,
-            @ApiParam(value = "ID of existed image") @PathVariable UUID imageId,
-            @ApiIgnore Authentication authentication) throws BadRequestException {
+            @Parameter(name = "ID of existed advertisement") @PathVariable UUID advertisementId,
+            @Parameter(name = "ID of existed image") @PathVariable UUID imageId,
+            @Parameter(hidden = true) Authentication authentication) throws BadRequestException {
         User owner = getUser(authentication.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
             throw new BadRequestException(getMessageSource(

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@wolshebnik/obminyashka-components';
+import { Button, CheckBox } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
-import { CheckBox, InputForAuth } from 'components/common';
+
+import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import { validationRegisterSchema } from './config';
@@ -74,10 +75,11 @@ const SignUp = () => {
 
             <Extra>
               <CheckBox
-                fontSize="14px"
+                gap={22}
+                fontSize={14}
                 checked={checkbox}
                 margin="0 0 44px 0"
-                click={changeCheckBox}
+                onChange={changeCheckBox}
                 text={getTranslatedText('auth.agreement')}
               />
             </Extra>

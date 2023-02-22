@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 
-import { CheckSvg } from 'assets/icons';
+import { CheckBox } from '@wolshebnik/obminyashka-components';
 
-import * as Styles from './styles';
-
-const FormikCheckBox = ({
+export const FormikCheckBox = ({
+  gap,
   text,
   type,
   name,
@@ -37,22 +36,16 @@ const FormikCheckBox = ({
   );
 
   return (
-    <Styles.Div margin={margin}>
-      <Styles.Label fontSize={fontSize}>
-        <Styles.Input
-          type={type}
-          name={name}
-          value={value}
-          checked={isSelected(value)}
-          onChange={() => handleChange(value)}
-        />
-        <Styles.LabelSquare type={type}>
-          <CheckSvg />
-        </Styles.LabelSquare>
-        <span>{text}</span>
-      </Styles.Label>
-    </Styles.Div>
+    <CheckBox
+      gap={gap}
+      type={type}
+      text={text}
+      name={name}
+      value={value}
+      margin={margin}
+      fontSize={fontSize}
+      checked={isSelected(value)}
+      onChange={() => handleChange(value)}
+    />
   );
 };
-
-export { FormikCheckBox };
