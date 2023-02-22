@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+import * as Icon from 'assets/icons';
+
 export const NoPhotoContainer = styled.div`
   margin: 10px 0;
   width: 138px;
@@ -19,7 +21,7 @@ export const NoPhotoContainer = styled.div`
   `}
 `;
 
-export const NoPhotoImg = styled.img`
+export const NoPhotoImg = styled(Icon.NoPhoto)`
   width: 40%;
   height: 40%;
   margin: 30% 30%;

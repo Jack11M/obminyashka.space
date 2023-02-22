@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import arrowUp from 'assets/img/showAdv/ProductCarouselArrowUp.svg';
-import arrowDown from 'assets/img/showAdv/ProductCarouselArrowDown.svg';
+import * as Icon from 'assets/icons';
 
 export const Image = styled.img`
   height: 140px;
@@ -38,11 +37,13 @@ export const ImageSlider = styled.div`
   }
 
   .slick-next:before {
-    content: url(${arrowUp});
+    // TODO: check if this is correct
+    content: url(${Icon.arrowUp});
   }
 
   .slick-prev:before {
-    content: url(${arrowDown});
+    // TODO: check if this is correct
+    content: url(${Icon.arrowDown});
   }
 
   .slick-list {
