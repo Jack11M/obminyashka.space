@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar } from '@wolshebnik/obminyashka-components';
+import { Avatar, EllipsisText } from '@wolshebnik/obminyashka-components';
 
 import { route } from 'routes/routeConstants';
-import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
 import { CustomSelect } from 'components/selectLang';
@@ -45,7 +44,12 @@ const NavTop = () => {
               <Avatar source={profile?.avatarImage} />
 
               <Styles.ProfileSpan>
-                <EllipsisText>
+                <EllipsisText
+                  id="show-tooltip"
+                  width={400}
+                  place="left"
+                  offset={50}
+                >
                   {authProfile?.username ||
                     getTranslatedText('header.myOffice')}
                 </EllipsisText>
