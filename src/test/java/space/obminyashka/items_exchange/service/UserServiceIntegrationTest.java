@@ -43,6 +43,8 @@ class UserServiceIntegrationTest {
     private RoleService roleService;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<String> usernameArgumentCaptor;
     @Autowired
     private UserService userService;
     @Autowired
@@ -87,15 +89,16 @@ class UserServiceIntegrationTest {
         verify(userRepository).saveAndFlush(userWithOldPassword);
 
     }
+
     @Test
     void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
-        userWithOldPassword.setUsername("Bob");
-        userWithOldPassword.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
-
+        userWithOldPassword.setUsername("BoB");
         userService.makeAccountActiveAgain(userWithOldPassword.getUsername());
 
-        assertEquals("ROLE_USER", userWithOldPassword.getRole().getName());
+        verify(roleService).setUserRoleToUserByUsername(usernameArgumentCaptor.capture());
+        assertEquals(userWithOldPassword.getUsername(), usernameArgumentCaptor.getValue());
     }
+
     @Test
     void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
         List<User> users = createTestUsers();
