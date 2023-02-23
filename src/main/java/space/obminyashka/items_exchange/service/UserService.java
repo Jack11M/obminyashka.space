@@ -84,9 +84,9 @@ public interface UserService {
 
     /**
      * Restoration of the user which was tagged as "to be removed"
-     * @param user the requested user which has to be active again
+     * @param username the requested user which has to be active again
      */
-    void makeAccountActiveAgain(User user);
+    void makeAccountActiveAgain(String username);
 
     /**
      * Check whether the user exist into DB by email

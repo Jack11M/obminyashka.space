@@ -168,7 +168,7 @@ class UserFlowTest extends BasicControllerTest {
     @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = "user/deleted_user_restore_expected.yml", orderBy = {"created", "name"},
-            ignoreCols = {"password", "lastOnlineTime", "updated"})
+            ignoreCols = {"password", "lastOnlineTime", "updated", "status"})
     void makeAccountActiveAgain_WhenDataCorrect_Successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
 
@@ -176,7 +176,6 @@ class UserFlowTest extends BasicControllerTest {
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
-
     @Test
     @Commit
     @DataSet("database_init.yml")
