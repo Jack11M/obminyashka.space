@@ -116,6 +116,7 @@ const Login = () => {
                 width={175}
                 lHeight={24}
                 type="button"
+                nativeIcon={false}
                 icon={<GoogleSvg />}
                 style={{ marginBottom: 64, height: 48 }}
                 text={getTranslatedText('button.googleOAuth')}

@@ -106,6 +106,7 @@ const SignUp = () => {
                 width={222}
                 lHeight={24}
                 type="button"
+                nativeIcon={false}
                 icon={<GoogleSvg />}
                 style={{ marginBottom: 64 }}
                 text={getTranslatedText('auth.signUp')}
