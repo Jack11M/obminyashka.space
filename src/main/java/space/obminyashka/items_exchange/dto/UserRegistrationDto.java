@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class UserRegistrationDto {
 
+    @Schema(example = "string")
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_USERNAME)
     @Size(min = 2, max = 50, message = ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_SIZE)
     @Pattern(regexp = PatternHandler.USERNAME,
@@ -23,6 +25,7 @@ public class UserRegistrationDto {
     @Email(regexp = PatternHandler.EMAIL, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
     private String email;
 
+    @Schema(example = "string")
     @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
     @Size(min = 8, max = 30, message = ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD_SIZE)
     @Pattern(regexp = PatternHandler.PASSWORD,

@@ -221,7 +221,6 @@ const AddGoods = () => {
                         >
                           {agesShow.map((item, idx) => (
                             <FormikCheckBox
-                              gap={20}
                               name="age"
                               value={item}
                               type="radio"
@@ -242,7 +241,6 @@ const AddGoods = () => {
                         >
                           {sexShow.map((item, idx) => (
                             <FormikCheckBox
-                              gap={20}
                               value={item}
                               type="radio"
                               name="gender"
@@ -263,7 +261,6 @@ const AddGoods = () => {
                         >
                           {seasonShow.map((item, idx) => (
                             <FormikCheckBox
-                              gap={20}
                               value={item}
                               type="radio"
                               name="season"

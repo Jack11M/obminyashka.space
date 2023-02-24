@@ -21,10 +21,7 @@ import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,6 +43,8 @@ class UserServiceIntegrationTest {
     private RoleService roleService;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<String> usernameArgumentCaptor;
     @Autowired
     private UserService userService;
     @Autowired
@@ -88,6 +87,16 @@ class UserServiceIntegrationTest {
 
         assertEquals("ROLE_SELF_REMOVING", userWithOldPassword.getRole().getName());
         verify(userRepository).saveAndFlush(userWithOldPassword);
+
+    }
+
+    @Test
+    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
+        userWithOldPassword.setUsername("BoB");
+        userService.makeAccountActiveAgain(userWithOldPassword.getUsername());
+
+        verify(roleService).setUserRoleToUserByUsername(usernameArgumentCaptor.capture());
+        assertEquals(userWithOldPassword.getUsername(), usernameArgumentCaptor.getValue());
     }
 
     @Test
@@ -103,14 +112,6 @@ class UserServiceIntegrationTest {
         for (int i = 1; i < users.size(); i++) {
             verify(userRepository, never()).delete(users.get(i));
         }
-    }
-
-    @Test
-    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
-        userService.makeAccountActiveAgain(userWithOldPassword);
-
-        assertEquals(ACTIVE, userWithOldPassword.getStatus());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
     }
 
     private User createUserWithOldPassword() {
