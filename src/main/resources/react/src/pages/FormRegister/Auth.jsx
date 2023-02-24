@@ -8,4 +8,4 @@ const Auth = () => (
   </Container>
 );
 
-export default Auth;
+export { Auth };

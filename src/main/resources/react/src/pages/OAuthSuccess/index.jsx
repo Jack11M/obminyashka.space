@@ -28,4 +28,4 @@ const OAuthSuccess = () => {
   return null;
 };
 
-export default OAuthSuccess;
+export { OAuthSuccess };
