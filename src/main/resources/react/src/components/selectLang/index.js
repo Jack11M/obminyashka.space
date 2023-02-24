@@ -9,6 +9,7 @@ import * as Styles from './styles';
 const LanguageSelection = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const { lang, isChangeLang } = useSelector(getAuth);
   const [languageArray, setLanguageArray] = useState([
     { value: 'ua', checked: false },
