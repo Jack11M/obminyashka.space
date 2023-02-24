@@ -1,4 +1,6 @@
 export { ReactComponent as ActivitySvg } from './activity.svg';
+export { ReactComponent as ArrowDown } from './arrow-down.svg';
+export { ReactComponent as ArrowUp } from './arrow-up.svg';
 export { ReactComponent as AvatarSvg } from './avatar.svg';
 export { ReactComponent as BellSvg } from './bell.svg';
 export { ReactComponent as Camera } from './camera.svg';
@@ -18,9 +20,11 @@ export { ReactComponent as LoaderSvg } from './loader.svg';
 export { ReactComponent as LocationSvg } from './location.svg';
 export { ReactComponent as LogoutSvg } from './logout.svg';
 export { ReactComponent as Next } from './next.svg';
+export { ReactComponent as NoPhotos } from './no-photo.svg';
 export { ReactComponent as PhoneSvg } from './phone.svg';
 export { ReactComponent as Plus } from './plus.svg';
 export { ReactComponent as Prev } from './prev.svg';
+export { ReactComponent as ProductPostCheck } from './product-post-check.svg';
 export { ReactComponent as ProfileSvg } from './profile.svg';
 export { ReactComponent as QuestionMarkSvg } from './question-mark.svg';
 export { ReactComponent as Rectangle } from './rectangle.svg';
