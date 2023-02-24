@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import checkSvg from 'assets/icons/ProductPostCheck.svg';
+import { ProductPostCheck } from 'assets/icons';
 
 export const Container = styled.div`
   display: flex;
@@ -42,7 +42,7 @@ export const PostDataDescriptionSpan = styled.span`
 `;
 
 export const PostDataDescriptionOl = styled.ol`
-  list-style-image: url(${checkSvg}) !important;
+  list-style-image: url(${ProductPostCheck}) !important;
   margin-left: 30px !important;
   padding-right: 20px;
 `;
