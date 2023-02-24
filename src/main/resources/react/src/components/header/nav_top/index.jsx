@@ -6,7 +6,7 @@ import { route } from 'routes/routeConstants';
 import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
-import { CustomSelect } from 'components/selectLang';
+import { LanguageSelection } from 'components/selectLang';
 import { getAuthed, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -51,7 +51,7 @@ const NavTop = () => {
               </Styles.ProfileSpan>
             </Styles.LoginLink>
 
-            <CustomSelect />
+            <LanguageSelection />
           </Styles.WrapPersonal>
         </Styles.DivTop>
       </Styles.Wrapper>

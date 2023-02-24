@@ -18,6 +18,7 @@ const authSlice = createSlice({
     setLanguage: (state, { payload }) => {
       try {
         setStorageUser({ 'Accept-Language': payload });
+        localStorage.setItem('lang', payload);
         state.lang = payload;
       } catch (e) {
         showMessage('You need to enable a localStorage');
