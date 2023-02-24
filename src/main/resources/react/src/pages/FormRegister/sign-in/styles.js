@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+export const Wrapper = styled.div`
+  padding: 0 50px;
+`;
+
 export const Extra = styled.div`
   display: -webkit-box;
   display: -ms-flexbox;
@@ -23,8 +27,4 @@ export const ExtraLink = styled(Link)`
 export const WrapperButton = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-export const Form = styled.form`
-  margin: 0 50px 0 45px;
 `;
