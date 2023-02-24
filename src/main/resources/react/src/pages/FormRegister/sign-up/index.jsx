@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { Icon, CheckBox } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
-import { Icon, CheckBox } from '@wolshebnik/obminyashka-components';
 
 import { Button, InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';

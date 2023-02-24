@@ -3,10 +3,10 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { Icon, CheckBox } from '@wolshebnik/obminyashka-components';
 
 import { NO_SPACE } from 'config';
 import { route } from 'routes/routeConstants';
-import { Icon, CheckBox } from '@wolshebnik/obminyashka-components';
 
 import { putUserThunk } from 'store/auth/thunk';
 import { Button, InputForAuth } from 'components/common';

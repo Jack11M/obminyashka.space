@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { Icon, Avatar } from '@wolshebnik/obminyashka-components';
 
 import { route } from 'routes/routeConstants';

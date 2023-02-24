@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Icon, Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
-import * as Icon from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
 import { ProductCard } from 'components/item-card';

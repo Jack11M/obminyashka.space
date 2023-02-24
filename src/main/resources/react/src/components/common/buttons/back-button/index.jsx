@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-
 import { Icon } from '@wolshebnik/obminyashka-components';
 
 import * as Styles from './styles';

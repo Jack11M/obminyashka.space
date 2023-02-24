@@ -31,12 +31,7 @@ const ProductCard = ({
       </Styles.FavoriteMarker>
 
       <Styles.DivPicture>
-        {typeof picture === 'string' ? (
-          <Styles.Picture src={picture} alt="lot" />
-        ) : (
-          // TODO: check if picture
-          picture
-        )}
+        <Styles.Picture src={picture} alt="lot" />
       </Styles.DivPicture>
 
       <Styles.CardContent>
