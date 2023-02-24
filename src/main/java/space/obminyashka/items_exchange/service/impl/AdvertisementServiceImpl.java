@@ -86,6 +86,15 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
+    public Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable) {
+        final var searchResult = advertisementRepository.findAdvertisementByCategoryId(categoryId, pageable);
+        if (!searchResult.isEmpty()) {
+            return searchResult.map(this::buildAdvertisementTitle);
+        }
+        return Page.empty();
+    }
+
+    @Override
     public Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName) {
         return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
     }

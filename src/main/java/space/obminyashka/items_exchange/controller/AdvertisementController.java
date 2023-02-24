@@ -25,6 +25,7 @@ import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.CategorySizeNotFoundException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.model.User;
@@ -36,7 +37,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -110,6 +113,25 @@ public class AdvertisementController {
         return allByKeyword.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allByKeyword, HttpStatus.OK);
+    }
+
+    @GetMapping(ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID)
+    @Operation(summary = "Find advertisements by category id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+    public Page<AdvertisementTitleDto> getPageOfAdvertisementsByCategoryId(
+            @PathVariable("category_id") Long id,
+            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @Parameter(name = "Number of records per page. Default value: 12")
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategorySizeNotFoundException {
+        return Optional.of(advertisementService.findByCategoryId(id, PageRequest.of(page, size)))
+                .filter(Predicate.not(Page::isEmpty))
+                .orElseThrow(() -> new CategorySizeNotFoundException(
+                        getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID)));
+
     }
 
     @PostMapping(ApiKey.ADV_FILTER)

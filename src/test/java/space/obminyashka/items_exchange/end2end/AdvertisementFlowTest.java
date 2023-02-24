@@ -19,6 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -103,6 +104,17 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
                 .andExpect(jsonPath("$.content[0].title").value("Dresses"))
                 .andExpect(jsonPath("$.content[0].ownerName").value("admin"));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @DataSet("database_init.yml")
+    void findPaginatedByCategoryId_shouldReturnPageResponse() throws Exception {
+        long id = 1;
+        int page = 0;
+        int size = 12;
+        sendUriAndGetResultAction(get(ADV_BY_CATEGORY_ID, id, page, size), status().isOk())
+                .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
     }
 
     @Test
