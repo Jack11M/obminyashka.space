@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import checkSvg from 'assets/icons/ProductPostCheck.svg';
+import checkSvg from 'assets/icons/product-post-check.svg';
 
 export const Container = styled.div`
   display: flex;
