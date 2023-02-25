@@ -1,7 +1,6 @@
 /* eslint-disable indent */
-import { Icon } from '@wolshebnik/obminyashka-components';
-
 import styled, { css } from 'styled-components';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 export const Card = styled.div`
   position: relative;

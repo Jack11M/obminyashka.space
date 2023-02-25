@@ -1,6 +1,6 @@
-import { route } from 'routes/routeConstants';
-
 import { Icon } from '@wolshebnik/obminyashka-components';
+
+import { route } from 'routes/routeConstants';
 
 export const links = [
   {

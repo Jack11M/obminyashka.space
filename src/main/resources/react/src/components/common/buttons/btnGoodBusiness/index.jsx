@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Icon } from '@wolshebnik/obminyashka-components';
-
 import styled from 'styled-components';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 const StyledLink = styled(Link)`
   > span {

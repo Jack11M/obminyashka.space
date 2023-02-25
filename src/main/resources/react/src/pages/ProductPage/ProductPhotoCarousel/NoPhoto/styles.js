@@ -1,6 +1,5 @@
-import { Icon } from '@wolshebnik/obminyashka-components';
-
 import styled, { css } from 'styled-components';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 export const NoPhotoContainer = styled.div`
   margin: 10px 0;
