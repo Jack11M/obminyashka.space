@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 const StyledLink = styled(Link)`
   > span {
@@ -12,7 +11,7 @@ const StyledLink = styled(Link)`
 const BtnGoodBusiness = ({ href, whatClass, text }) => (
   <StyledLink to={href} className={whatClass}>
     <span>
-      <HeartSvg />
+      <Icon.Heart />
     </span>
 
     {text}
