@@ -21,17 +21,18 @@ jobs:
           distribution: 'temurin'
           check-latest: true
 
-      - name: Run mvn clean install
+      - name: Run mvn clean package
         env:
           NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
-        run: mvn clean install
+        run: mvn clean package --quiet
       - name: Build jar file
-        run: java -jar ./target/*.jar --spring.datasource.password='${{secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET}}'
-                                      --server.ssl.key-store-password='${{secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET}}'
-                                      --app.jwt.secret='${{secrets.OBMINYASHKA_TOKEN_SECRET}}'
-                                      --server.ssl.key-store=/home/obmen/CGE-service/keystore.p12
-                                      --spring.security.oauth2.client.registration.google.client-id='${{secrets.OBMINYASHKA_ID_GOOGLE_API_SECRET}}'
-                                      --spring.security.oauth2.client.registration.google.client-secret='${{secrets.OBMINYASHKA_GOOGLE_SECRET}}'
-                                      --logging.file.name=/home/obmen/CGE-service/LogFile.log
-                                      --spring.sendgrid.api-key='${{secrets.OBMINYASHKA_SENDGRID_SECRET}}'
+        env:
+          DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
+          SSL_PASSWORD: ${{ secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET }}
+          JWT_TOKEN_SECRET: ${{ secrets.OBMINYASHKA_TOKEN_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.OBMINYASHKA_ID_GOOGLE_API_SECRET }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.OBMINYASHKA_GOOGLE_SECRET }}
+          SENDGRID_API_KEY: ${{ secrets.OBMINYASHKA_SENDGRID_SECRET }}
+        run: java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12
+                                      --logging.file.name=~/CGE-service/LogFile.log
 
