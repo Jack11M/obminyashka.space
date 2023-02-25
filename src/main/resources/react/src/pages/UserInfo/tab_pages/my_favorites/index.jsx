@@ -1,7 +1,6 @@
 import React from 'react';
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Title, ProductCard } from '@wolshebnik/obminyashka-components';
 
-import { ProductCard } from 'components/item-card';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';

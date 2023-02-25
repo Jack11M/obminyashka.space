@@ -1,7 +1,6 @@
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Title, ProductCard } from '@wolshebnik/obminyashka-components';
 
 import lot3 from 'assets/img/cards/lot3.jpg';
-import { ProductCard } from 'components/item-card';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';

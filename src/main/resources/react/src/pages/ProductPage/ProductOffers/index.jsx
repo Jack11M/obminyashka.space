@@ -1,4 +1,4 @@
-import { ProductCard } from 'components/item-card';
+import { ProductCard } from '@wolshebnik/obminyashka-components';
 
 import { OffersContainer } from './styles';
 
