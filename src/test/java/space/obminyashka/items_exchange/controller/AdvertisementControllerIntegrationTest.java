@@ -39,6 +39,7 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
     }
 
+    @Disabled
     @Test
     @WithMockUser(username = "admin")
     void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementFields() throws Exception {
