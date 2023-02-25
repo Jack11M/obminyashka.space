@@ -21,11 +21,10 @@ jobs:
           distribution: 'temurin'
           check-latest: true
 
-      - name: Run mvn clean package
+      - name: Run mvn clean install
         env:
           NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
-        run: mvn clean package
-
+        run: mvn clean install
       - name: Build jar file
         run: java -jar ./target/*.jar --spring.datasource.password='${{secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET}}'
                                       --server.ssl.key-store-password='${{secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET}}'
