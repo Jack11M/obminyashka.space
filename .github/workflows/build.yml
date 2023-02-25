@@ -21,18 +21,10 @@ jobs:
           distribution: 'temurin'
           check-latest: true
 
-      - name: Connect to server by SSH
-      - uses: ./
-        with:
-          host: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET}}
-          username: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET}}
-          password: ${{ secrets.OBMINYASHKA_SERVER_PASSWORD_SECRET}}
-          port: ${{ secrets.OBMINYASHKA_SERVER_PORT_SECRET}}
-
       - name: Run mvn clean package
         env:
           NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
-        run: mvn clean install
+        run: mvn clean package
 
       - name: Build jar file
         run: java -jar ./target/*.jar --spring.datasource.password='${{secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET}}'
