@@ -5,9 +5,9 @@ on:
     branches: [ github-action ]
 
 jobs:
-  build:
-
+  deployment:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: read
       packages: write
