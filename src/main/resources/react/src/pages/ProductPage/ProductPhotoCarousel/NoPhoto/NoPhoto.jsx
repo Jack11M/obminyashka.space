@@ -1,10 +1,8 @@
-import { NoPhotos } from 'assets/icons';
-
-import { NoPhotoContainer, NoPhotoImg } from './styles';
+import * as Styles from './styles';
 
 const NoPhoto = ({ noPhoto }) => (
-  <NoPhotoContainer noPhoto={noPhoto}>
-    <NoPhotoImg src={NoPhotos} alt="no slide" />
-  </NoPhotoContainer>
+  <Styles.NoPhotoContainer noPhoto={noPhoto}>
+    <Styles.NoPhotoImg />
+  </Styles.NoPhotoContainer>
 );
 export default NoPhoto;
