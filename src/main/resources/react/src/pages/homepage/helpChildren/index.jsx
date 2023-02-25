@@ -1,5 +1,6 @@
-import { BtnGoodBusiness } from 'components/common';
 import { Title } from '@wolshebnik/obminyashka-components';
+
+import { BtnGoodBusiness } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
