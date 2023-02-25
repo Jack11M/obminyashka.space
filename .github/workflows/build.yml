@@ -21,10 +21,5 @@ jobs:
           distribution: 'temurin'
           check-latest: true
 
-      - name: Check variable
-        run: echo "${{ secrets.OBMINYASHKA_COMPONENT_SECRET}}"
-
       - name: Build with Maven
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
         run: mvn clean install
