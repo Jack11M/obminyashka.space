@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +20,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -94,6 +94,16 @@ class AdvertisementFlowTest extends BasicControllerTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = {0, -2, 999})
+    @DataSet("database_init.yml")
+    void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
+        int page = 0;
+        int size = 12;
+
+        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isNotFound());
+    }
+
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
@@ -114,6 +124,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         int page = 0;
         int size = 12;
         sendUriAndGetResultAction(get(ADV_BY_CATEGORY_ID, id, page, size), status().isOk())
+                .andExpect(jsonPath("$.content[0].advertisementId").value(VALID_ADV_ID))
                 .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
     }
 

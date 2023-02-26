@@ -24,10 +24,7 @@ import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.exception.BadRequestException;
-import space.obminyashka.items_exchange.exception.CategorySizeNotFoundException;
-import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -37,9 +34,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -55,6 +50,7 @@ public class AdvertisementController {
     private final ImageService imageService;
     private final UserService userService;
     private final SubcategoryService subcategoryService;
+    private final CategoryService categoryService;
     private final LocationService locationService;
 
     @GetMapping(ApiKey.ADV_THUMBNAIL)
@@ -116,22 +112,22 @@ public class AdvertisementController {
     }
 
     @GetMapping(ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID)
-    @Operation(summary = "Find advertisements by category id")
+    @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> getPageOfAdvertisementsByCategoryId(
-            @PathVariable("category_id") Long id,
+    public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
+            @PathVariable("category_id") Long categoryId,
             @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategorySizeNotFoundException {
-        return Optional.of(advertisementService.findByCategoryId(id, PageRequest.of(page, size)))
-                .filter(Predicate.not(Page::isEmpty))
-                .orElseThrow(() -> new CategorySizeNotFoundException(
-                        getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID)));
-
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
+        if (!categoryService.isCategoryExistsById(categoryId)) {
+            throw new CategoryIdNotFoundException(
+                    getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID));
+        }
+        return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
     @PostMapping(ApiKey.ADV_FILTER)

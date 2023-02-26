@@ -87,11 +87,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable) {
-        final var searchResult = advertisementRepository.findAdvertisementByCategoryId(categoryId, pageable);
-        if (!searchResult.isEmpty()) {
-            return searchResult.map(this::buildAdvertisementTitle);
-        }
-        return Page.empty();
+        return advertisementRepository.findAdvertisementByCategoryId(categoryId, pageable)
+                .map(this::buildAdvertisementTitle);
     }
 
     @Override

@@ -51,6 +51,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public boolean isCategoryExistsById(long id) {
+        return categoryRepository.existsById(id);
+    }
+
+    @Override
     public boolean isCategoryDtoDeletable(long categoryId) {
         return categoryRepository.findById(categoryId)
                 .map(category -> category.getSubcategories().stream()
