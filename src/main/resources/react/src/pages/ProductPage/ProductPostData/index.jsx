@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 import { getStorageLang } from 'Utils';
 import { Button } from 'components/common';
@@ -39,6 +40,7 @@ const ProductPostData = ({
           <Styles.PostDataDescriptionOl>
             {transformWishes?.map((item, idx) => (
               <Styles.PostDataDescriptionOlItem key={String(`li_${idx}`)}>
+                <Icon.ProductPostCheck style={{ marginRight: '4px' }} />
                 {item}
               </Styles.PostDataDescriptionOlItem>
             ))}

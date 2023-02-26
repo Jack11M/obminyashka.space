@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
-
-import * as Icon from 'assets/icons';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 export const Header = styled.div`
   padding: 8px 16px;

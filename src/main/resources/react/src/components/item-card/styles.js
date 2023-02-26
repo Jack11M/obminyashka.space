@@ -1,7 +1,6 @@
 /* eslint-disable indent */
 import styled, { css } from 'styled-components';
-
-import * as Icon from 'assets/icons';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 export const Card = styled.div`
   position: relative;
@@ -146,7 +145,7 @@ export const StylizedAvatar = styled.div`
   transform: translate(-50%);
 `;
 
-export const FavoriteStar = styled(Icon.FavoriteSarSvg)`
+export const FavoriteStar = styled(Icon.FavoriteStar)`
   display: inline-block;
   width: 100%;
   margin: 11px auto;

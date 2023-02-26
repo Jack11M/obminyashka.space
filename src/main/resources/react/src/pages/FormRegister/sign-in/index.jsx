@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { CheckBox } from '@wolshebnik/obminyashka-components';
+import { Icon, CheckBox } from '@wolshebnik/obminyashka-components';
 
-import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
 import { Button, InputForAuth } from 'components/common';
@@ -103,7 +102,7 @@ const Login = () => {
                 type="button"
                 width="175px"
                 lHeight="24px"
-                icon={<GoogleSvg />}
+                icon={<Icon.Google />}
                 text={getTranslatedText('button.googleOAuth')}
                 click={() =>
                   window.location.assign('/oauth2/authorization/google')
