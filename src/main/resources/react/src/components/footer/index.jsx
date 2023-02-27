@@ -1,13 +1,10 @@
 /* eslint-disable max-len */
-import { Button } from '@wolshebnik/obminyashka-components';
+import { Button, Icon } from '@wolshebnik/obminyashka-components';
 
-import * as Icon from 'assets/icons';
 import { route } from 'routes/routeConstants';
+
 import logoFooter from 'assets/img/Logo-footer.png';
-import { ReactComponent as HomeSvg } from 'assets/icons/home.svg';
 import { getTranslatedText } from 'components/local/localization';
-import { ReactComponent as PhoneSvg } from 'assets/icons/phone.svg';
-import { ReactComponent as QuestionSvg } from 'assets/icons/question-mark.svg';
 
 import * as Styles from './styles';
 
@@ -21,7 +18,7 @@ const Footer = () => {
         <Styles.Blocks>
           <Styles.Lists>
             <Styles.Span>
-              <PhoneSvg />
+              <Icon.Phone />
             </Styles.Span>
 
             <Styles.Contact href="mailto:&#111;&#098;&#109;&#105;&#110;&#121;&#097;&#115;&#104;&#107;&#097;&#046;&#115;&#112;&#097;&#099;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">
@@ -41,7 +38,7 @@ const Footer = () => {
 
           <Styles.Lists>
             <Styles.Span>
-              <QuestionSvg />
+              <Icon.QuestionMark />
             </Styles.Span>
 
             <Styles.FootLinkWrapper rules>
@@ -65,7 +62,7 @@ const Footer = () => {
 
           <Styles.Lists>
             <Styles.Span>
-              <HomeSvg />
+              <Icon.Home />
             </Styles.Span>
 
             <Styles.FootLink to={route.home}>
@@ -74,7 +71,7 @@ const Footer = () => {
 
             <Button
               width={155}
-              icon={<Icon.HeartSvg />}
+              icon={<Icon.Heart />}
               text={getTranslatedText('header.goodness')}
               style={{
                 height: 22,

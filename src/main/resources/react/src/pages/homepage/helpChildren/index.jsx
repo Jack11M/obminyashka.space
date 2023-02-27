@@ -1,6 +1,5 @@
-import { Button } from '@wolshebnik/obminyashka-components';
+import { Button, Icon, Title } from '@wolshebnik/obminyashka-components';
 
-import * as Icon from 'assets/icons';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -8,9 +7,9 @@ import * as Styles from './styles';
 const HelpChildren = () => {
   return (
     <Styles.HelpChildren>
-      <Styles.HelpChildrenTitleH3>
-        {getTranslatedText('mainPage.helpTitle')}
-      </Styles.HelpChildrenTitleH3>
+      <Styles.TitleWrapper>
+        <Title hiddenDots text={getTranslatedText('mainPage.helpTitle')} />
+      </Styles.TitleWrapper>
 
       <Styles.HelpChildrenText>
         <Styles.Strong>{getTranslatedText('mainPage.helpName')}</Styles.Strong>
@@ -20,7 +19,7 @@ const HelpChildren = () => {
 
       <Button
         width={357}
-        icon={<Icon.HeartSvg />}
+        icon={<Icon.Heart />}
         text={getTranslatedText('mainPage.helpButton')}
       />
     </Styles.HelpChildren>

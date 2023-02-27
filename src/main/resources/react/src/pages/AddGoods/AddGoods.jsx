@@ -4,11 +4,10 @@ import { Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '@wolshebnik/obminyashka-components';
+import { Button, Icon } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
-import * as Icon from 'assets/icons';
 import { enumAge } from 'config/ENUM';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';

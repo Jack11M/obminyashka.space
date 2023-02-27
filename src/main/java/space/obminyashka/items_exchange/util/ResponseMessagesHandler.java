@@ -34,6 +34,7 @@ public class ResponseMessagesHandler {
         public final String INVALID_NEW_CATEGORY_DTO = "invalid.new-category-dto";
         public final String INVALID_UPDATED_CATEGORY_DTO = "invalid.updated-category.dto";
         public final String SUBCATEGORY_NOT_DELETABLE = "subcategory.not-deletable";
+        public final String INVALID_CATEGORY_ID = "invalid.category.id";
         public final String INVALID_SUBCATEGORY_ID = "invalid.subcategory.id";
         public final String INVALID_CATEGORY_SIZES_ID = "invalid.category.sizes.id";
         public final String INVALID_LOCATION_ID = "invalid.location.id";

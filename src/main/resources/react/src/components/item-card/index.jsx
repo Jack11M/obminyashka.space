@@ -1,6 +1,5 @@
-import { Avatar, Button } from '@wolshebnik/obminyashka-components';
+import { Icon, Avatar, Button } from '@wolshebnik/obminyashka-components';
 
-import * as Icon from 'assets/icons';
 import { EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
@@ -39,7 +38,7 @@ const ProductCard = ({
         <Styles.TextContent>{text}</Styles.TextContent>
 
         <Styles.LocationIcon>
-          <Icon.LocationSvg />
+          <Icon.Location />
 
           <Styles.CitySpan>
             <EllipsisText>{city}</EllipsisText>
