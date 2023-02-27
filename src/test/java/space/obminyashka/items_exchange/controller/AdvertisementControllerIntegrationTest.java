@@ -14,12 +14,14 @@ import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.ADV_ID;
-import static space.obminyashka.items_exchange.api.ApiKey.ADV_SEARCH_PAGINATED_REQUEST_PARAMS;
+import static space.obminyashka.items_exchange.api.ApiKey.*;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 
 @SpringBootTest
@@ -36,6 +38,17 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         int size = -12;
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_REQUEST_PARAMS, "KEYWORD", page, size), status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
+    }
+
+    @Test
+    void findPaginatedByCategoryId_shouldReturnNotFound() throws Exception {
+        long id = 0;
+        int page = 0;
+        int size = 12;
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, id, page, size), status().isNotFound());
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID)));
     }
 
     @Test

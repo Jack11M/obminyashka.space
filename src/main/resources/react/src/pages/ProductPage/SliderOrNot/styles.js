@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { ArrowUp, ArrowDown } from 'assets/icons';
+import * as Icon from 'assets/icons';
 
 export const Image = styled.img`
   height: 140px;
@@ -37,11 +37,11 @@ export const ImageSlider = styled.div`
   }
 
   .slick-next:before {
-    content: url(${ArrowUp});
+    content: url(${Icon.ArrowUp});
   }
 
   .slick-prev:before {
-    content: url(${ArrowDown});
+    content: url(${Icon.ArrowDown});
   }
 
   .slick-list {

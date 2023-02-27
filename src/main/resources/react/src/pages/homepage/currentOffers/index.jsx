@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
-import { Title, ProductCard } from '@wolshebnik/obminyashka-components';
+import { Icon, Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { NoPhotos } from 'assets/icons';
@@ -49,7 +48,11 @@ const CurrentOffers = () => {
               city={getCity(offer.location)}
               clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
-                offer.image ? `data:image/jpeg;base64,${offer.image}` : NoPhotos
+                offer.image ? (
+                  `data:image/jpeg;base64,${offer.image}`
+                ) : (
+                  <Icon.NoPhoto />
+                )
               }
             />
           </li>
