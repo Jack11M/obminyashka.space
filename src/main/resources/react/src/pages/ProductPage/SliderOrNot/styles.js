@@ -37,11 +37,11 @@ export const ImageSlider = styled.div`
   }
 
   .slick-next:before {
-    content: url(${Icon.arrowUp});
+    content: url(${Icon.ArrowUp});
   }
 
   .slick-prev:before {
-    content: url(${Icon.arrowDown});
+    content: url(${Icon.ArrowDown});
   }
 
   .slick-list {
