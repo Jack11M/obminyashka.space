@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Icon, Title } from '@wolshebnik/obminyashka-components';
+import { Icon, Title, ProductCard } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
-import { NoPhotos } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
 import { getCity } from 'Utils/getLocationProperties';
