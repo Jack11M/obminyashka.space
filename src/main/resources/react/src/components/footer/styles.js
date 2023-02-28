@@ -62,7 +62,6 @@ export const WrapContacts = styled.div`
 export const Contact = styled.a`
   font-size: 22px;
   line-height: 30px;
-
   display: block;
   line-height: 24px;
   text-decoration: none;

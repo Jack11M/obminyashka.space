@@ -29,7 +29,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
 import static space.obminyashka.items_exchange.model.enums.Status.UPDATED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -174,9 +173,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void makeAccountActiveAgain(User user) {
-        user.setStatus(ACTIVE);
-        userRepository.saveAndFlush(user);
+    public void makeAccountActiveAgain(String username) {
+        roleService.setUserRoleToUserByUsername(username);
     }
 
     @Override

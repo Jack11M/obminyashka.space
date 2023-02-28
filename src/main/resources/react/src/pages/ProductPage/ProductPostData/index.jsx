@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import { Button, Icon } from '@wolshebnik/obminyashka-components';
 
 import { getStorageLang } from 'Utils';
-import { Button } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -39,6 +39,7 @@ const ProductPostData = ({
           <Styles.PostDataDescriptionOl>
             {transformWishes?.map((item, idx) => (
               <Styles.PostDataDescriptionOlItem key={String(`li_${idx}`)}>
+                <Icon.ProductPostCheck style={{ marginRight: '4px' }} />
                 {item}
               </Styles.PostDataDescriptionOlItem>
             ))}
@@ -46,7 +47,7 @@ const ProductPostData = ({
         </Styles.PostDataDescription>
 
         <Styles.ButtonContainer>
-          <Button text={getTranslatedText('product.button')} width="250px" />
+          <Button text={getTranslatedText('product.button')} width={250} />
         </Styles.ButtonContainer>
       </div>
 

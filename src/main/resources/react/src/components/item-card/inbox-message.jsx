@@ -1,10 +1,10 @@
-import * as Icon from 'assets/icons';
+import { Icon } from '@wolshebnik/obminyashka-components';
 
 import { InboxDiv, InboxSpan } from './styles';
 
 const InboxMessage = ({ inboxMessage }) => (
   <InboxDiv>
-    <Icon.InboxMessageSvg />
+    <Icon.InboxMessage />
     <InboxSpan>{inboxMessage}</InboxSpan>
   </InboxDiv>
 );

@@ -1,7 +1,6 @@
-import { Avatar } from '@wolshebnik/obminyashka-components';
+import { Icon, Avatar, Button } from '@wolshebnik/obminyashka-components';
 
-import * as Icon from 'assets/icons';
-import { Button, EllipsisText } from 'components/common';
+import { EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { InboxMessage } from './inbox-message';
@@ -39,7 +38,7 @@ const ProductCard = ({
         <Styles.TextContent>{text}</Styles.TextContent>
 
         <Styles.LocationIcon>
-          <Icon.LocationSvg />
+          <Icon.Location />
 
           <Styles.CitySpan>
             <EllipsisText>{city}</EllipsisText>
@@ -48,8 +47,8 @@ const ProductCard = ({
 
         <Styles.ButtonBlock>
           <Button
-            click={clickOnButton}
-            width={inboxMessage ? '190px' : '222px'}
+            onClick={clickOnButton}
+            width={inboxMessage ? 190 : 222}
             text={getTranslatedText('button.look')}
           />
 

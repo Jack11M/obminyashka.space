@@ -73,3 +73,7 @@ export const StylizedBtn = styled.div`
     background-color: #0094ff;
   }
 `;
+
+export const TitleWrapper = styled.div`
+  padding-bottom: 36px;
+`;
