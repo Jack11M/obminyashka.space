@@ -113,8 +113,8 @@ const Children = () => {
             </FieldArray>
 
             <Button
-              type="submit"
               width={248}
+              type="submit"
               isLoading={isLoading}
               style={{ marginBottom: 220 }}
               text={getTranslatedText('button.saveChanges')}

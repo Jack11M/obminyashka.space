@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { Icon, CheckBox } from '@wolshebnik/obminyashka-components';
+import { Button, Icon, CheckBox } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
-import { Button, InputForAuth } from 'components/common';
+
+import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import { validationSchema } from './config';
@@ -86,26 +87,27 @@ const SignUp = () => {
             <Styles.WrapperButton>
               <Button
                 bold
-                mb="44px"
+                width={222}
+                height={48}
+                lHeight={24}
                 type="submit"
-                width="222px"
-                height="48px"
-                lHeight="24px"
                 isLoading={loading}
+                style={{ marginBottom: 44 }}
                 text={getTranslatedText('auth.signUp')}
                 disabling={!dirty || !isValid || isSubmitting}
               />
 
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                height={48}
+                width={222}
+                lHeight={24}
                 type="button"
-                width="222px"
-                lHeight="24px"
+                nativeIcon={false}
                 icon={<Icon.Google />}
+                style={{ marginBottom: 64 }}
                 text={getTranslatedText('auth.signUp')}
-                click={() =>
+                onClick={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }
               />

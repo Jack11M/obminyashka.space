@@ -156,8 +156,9 @@ const AboutMyself = () => {
           <Button
             width={248}
             type="submit"
-            click={handleSubmit}
+            onClick={handleSubmit}
             isLoading={aboutLoading}
+            whatClass="btn-form-about-me"
             disabling={Object.keys(errors).length}
             text={getTranslatedText('button.saveChanges')}
           />
