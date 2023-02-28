@@ -1,6 +1,5 @@
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Button, Icon, Title } from '@wolshebnik/obminyashka-components';
 
-import { BtnGoodBusiness } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -18,12 +17,11 @@ const HelpChildren = () => {
         {getTranslatedText('mainPage.helpText')}
       </Styles.HelpChildrenText>
 
-      <Styles.StylizedBtn>
-        <BtnGoodBusiness
-          href="#"
-          text={getTranslatedText('mainPage.helpButton')}
-        />
-      </Styles.StylizedBtn>
+      <Button
+        width={357}
+        icon={<Icon.Heart />}
+        text={getTranslatedText('mainPage.helpButton')}
+      />
     </Styles.HelpChildren>
   );
 };

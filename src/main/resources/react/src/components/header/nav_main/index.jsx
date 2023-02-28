@@ -1,9 +1,9 @@
 import { useState, useContext } from 'react';
-import { Input } from '@wolshebnik/obminyashka-components';
+import { Button, Input, Icon } from '@wolshebnik/obminyashka-components';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { route } from 'routes/routeConstants';
-import { ButtonAdv, SearchContext } from 'components/common';
+import { SearchContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -70,7 +70,14 @@ const NavMain = () => {
             />
           </Styles.WrapSearch>
 
-          <ButtonAdv type="link" />
+          <Button
+            width={295}
+            colorType="green"
+            icon={<Icon.Plus />}
+            style={{ height: 50 }}
+            onClick={() => navigate(route.addAdv)}
+            text={getTranslatedText('button.addAdv')}
+          />
         </Styles.WrapMain>
       </Styles.Wrapper>
     </Styles.DivWrap>
