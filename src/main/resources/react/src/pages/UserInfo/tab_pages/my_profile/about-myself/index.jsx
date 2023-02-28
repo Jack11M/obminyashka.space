@@ -33,8 +33,8 @@ const AboutMyself = () => {
       .filter((phone) => phone.phoneNumber !== '');
 
   const validationSchema = validationUserSchema({
-    firstName,
     lastName,
+    firstName,
     phoneForInitial,
   });
 
