@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
-import { Icon } from '@wolshebnik/obminyashka-components';
+import { Button, Icon } from '@wolshebnik/obminyashka-components';
 
 import { showMessage } from 'hooks';
 import { getErrorMessage } from 'Utils/error';
@@ -11,7 +11,6 @@ import { deleteAvatarThunk, postAvatarThunk } from 'store/profile/thunk';
 
 import * as Styles from './styles';
 import getCroppedImg from './helpers';
-import { Button } from '../buttons/button';
 
 const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
   const ref = useRef(null);
@@ -108,18 +107,21 @@ const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
           <Styles.BlockButtons>
             {!disabled && (
               <Button
-                click={handleDelete}
+                onClick={handleDelete}
                 isLoading={loadingDelete}
                 style={{ width: '100%' }}
                 text={getTranslatedText('button.delete')}
               />
             )}
 
-            <Button text={getTranslatedText('button.cancel')} click={onClose} />
+            <Button
+              onClick={onClose}
+              text={getTranslatedText('button.cancel')}
+            />
 
             <Button
               isLoading={loading}
-              click={showCroppedImage}
+              onClick={showCroppedImage}
               text={getTranslatedText('button.save')}
             />
           </Styles.BlockButtons>

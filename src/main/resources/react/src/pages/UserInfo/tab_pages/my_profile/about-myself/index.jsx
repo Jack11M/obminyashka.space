@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { FieldArray, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
-import { Button } from 'components/common';
 import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -138,9 +138,9 @@ const AboutMyself = () => {
           </FieldArray>
 
           <Button
-            width="248px"
+            width={248}
             type="submit"
-            click={handleSubmit}
+            onClick={handleSubmit}
             isLoading={aboutLoading}
             whatClass="btn-form-about-me"
             disabling={Object.keys(errors).length}

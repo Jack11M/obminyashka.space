@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FieldArray, Form, Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
+import { Button } from '@wolshebnik/obminyashka-components';
 
 import { enumSex } from 'config/ENUM';
-import { Button } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { putChildrenThunk } from 'store/profile/thunk';
 import { getTranslatedText } from 'components/local/localization';
@@ -98,10 +98,10 @@ const Children = () => {
             </FieldArray>
 
             <Button
-              mb="220px"
+              width={248}
               type="submit"
-              width="248px"
               isLoading={isLoading}
+              style={{ marginBottom: 220 }}
               text={getTranslatedText('button.saveChanges')}
             />
           </Form>

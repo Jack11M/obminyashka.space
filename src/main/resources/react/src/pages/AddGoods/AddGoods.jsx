@@ -4,6 +4,7 @@ import { Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Icon } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
@@ -14,13 +15,7 @@ import { getAuthLang } from 'store/auth/slice';
 import { FormikFocus } from 'components/common/formik';
 import { saveAdv, clearAdv, getAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import {
-  Button,
-  ButtonAdv,
-  BackButton,
-  FormikHandler,
-  FormikCheckBox,
-} from 'components/common';
+import { BackButton, FormikHandler, FormikCheckBox } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Location } from './location';
@@ -307,12 +302,19 @@ const AddGoods = () => {
 
                   <Styles.WrapButtons>
                     <Styles.BlockButtons>
-                      <ButtonAdv isLoading={isLoading} />
+                      <Button
+                        width={295}
+                        type="submit"
+                        colorType="green"
+                        icon={<Icon.Plus />}
+                        isLoading={isLoading}
+                        text={getTranslatedText('button.addAdv')}
+                      />
 
                       <Button
                         type="submit"
-                        click={() => setButtonPreview(true)}
-                        width={lang === 'ua' ? '270px' : '222px'}
+                        width={lang === 'ua' ? 270 : 222}
+                        onClick={() => setButtonPreview(true)}
                         text={getTranslatedText('addAdv.preview')}
                       />
                     </Styles.BlockButtons>
