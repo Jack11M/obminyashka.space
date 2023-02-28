@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { Title } from '@wolshebnik/obminyashka-components';
+import { ProductPostData, Title } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
@@ -15,7 +15,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import { ProductPostData } from './ProductPostData';
 import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
@@ -146,13 +145,24 @@ const ProductPage = () => {
               />
 
               <ProductPostData
+                lang={lang}
                 wishes={wishes}
                 title={product.topic}
                 readyForOffers={product.readyForOffers}
                 size={product.size || product.sizeValue}
                 age={enumAge[product.age] || product.age}
+                buttonText={getTranslatedText('product.button')}
+                translatedTextAge={getTranslatedText('product.age')}
+                translatedTextSize={getTranslatedText('product.size')}
+                translatedTextGender={getTranslatedText('product.sex')}
+                translatedTextSeason={getTranslatedText('product.season')}
                 gender={getTranslatedText(`genderEnum.${product.gender}`)}
                 season={getTranslatedText(`seasonEnum.${product.season}`)}
+                translatedTextCheckInUl={getTranslatedText('product.checkInUl')}
+                translatedTextChangesTo={getTranslatedText('product.changesTo')}
+                translatedTextDescription={getTranslatedText(
+                  'product.description'
+                )}
               />
             </OwnerAndPost>
           </ProductPageInner>
