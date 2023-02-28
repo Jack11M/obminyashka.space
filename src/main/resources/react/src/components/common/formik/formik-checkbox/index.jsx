@@ -8,6 +8,7 @@ export const FormikCheckBox = ({
   type,
   name,
   value,
+  style,
   margin,
   fontSize,
   onChange,
@@ -41,6 +42,7 @@ export const FormikCheckBox = ({
       type={type}
       text={text}
       name={name}
+      style={style}
       value={value}
       margin={margin}
       fontSize={fontSize}
