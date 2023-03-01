@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { ProductPostData, Title } from '@wolshebnik/obminyashka-components';
+import {
+  Title,
+  ProductPostData,
+  ProductOwnerData,
+} from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
@@ -15,7 +19,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import { ProductOwnerData } from './ProductOwnerData';
 import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
@@ -142,6 +145,15 @@ const ProductPage = () => {
                 avatar={avatar}
                 city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
+                dateTranslatedText={`${getTranslatedText(
+                  'product.dateOfAdv'
+                )}:`}
+                cityTranslatedText={`${getTranslatedText(
+                  'product.cityOfAdv'
+                )}:`}
+                phoneTranslatedText={`${getTranslatedText(
+                  'product.phoneOfAdv'
+                )}:`}
               />
 
               <ProductPostData
