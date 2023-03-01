@@ -17,6 +17,7 @@ const MyActivity = () => {
 
       <Styles.InputResponseContainer>
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           city="Харьков"
           picture={lot3}
           inboxMessage={12}
@@ -24,6 +25,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           city="Львов"
           picture={lot3}
           inboxMessage={222}
@@ -31,6 +33,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           city="Киев"
           picture={lot3}
           inboxMessage={50}
@@ -38,6 +41,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           city="Ужгород"
           picture={lot3}
           inboxMessage={12}
@@ -45,6 +49,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           city="Киев"
           picture={lot3}
           inboxMessage={5}
@@ -52,6 +57,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           city="Киев"
           picture={lot3}
           inboxMessage={33}
@@ -66,6 +72,7 @@ const MyActivity = () => {
 
       <Styles.OutputResponseContainer>
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           inboxMessage={3}
@@ -74,6 +81,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           text="Велосипед"
@@ -81,6 +89,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
@@ -89,6 +98,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           inboxMessage={3}
@@ -96,6 +106,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           text="Велосипед"
@@ -104,6 +115,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
@@ -111,6 +123,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           inboxMessage={3}
@@ -119,6 +132,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           text="Велосипед"
@@ -126,6 +140,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
+          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           inboxMessage={25}
           city="Ивано-Франковск"

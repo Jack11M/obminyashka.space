@@ -91,6 +91,7 @@ const SearchResults = () => {
               {adv.content?.length > 0 &&
                 adv.content.map((item) => (
                   <ProductCard
+                    buttonText={getTranslatedText('button.look')}
                     text={item.title}
                     key={item.advertisementId}
                     city={getCity(item.location)}

@@ -41,6 +41,7 @@ const CurrentOffers = () => {
         {offers.map((offer) => (
           <li key={offer.advertisementId}>
             <ProductCard
+              buttonText={getTranslatedText('button.look')}
               margin="10px 8px"
               isFavorite={false}
               text={offer.title}

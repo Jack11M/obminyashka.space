@@ -17,6 +17,7 @@ const MyFavorites = () => {
       <Styles.CardsContainer>
         {productData.map((card, idx) => (
           <ProductCard
+            buttonText={getTranslatedText('button.look')}
             city={card.city}
             text={card.text}
             picture={card.picture}
