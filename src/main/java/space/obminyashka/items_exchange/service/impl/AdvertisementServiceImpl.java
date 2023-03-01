@@ -67,21 +67,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     @Cacheable
-    public Page<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId,
+    public List<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId,
                                                                                    Long subcategoryId,
                                                                                    Pageable pageable) {
-        List<AdvertisementTitleDto> advertisements = advertisementRepository
-                .findAllByIdNotAndSubcategoryId(advertisementId, subcategoryId).stream()
+        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(advertisementId, subcategoryId);
+        final var bound = (int) (totalRecordsSize / pageable.getPageSize());
+        final var randomPageNumber = bound > 0 ? random.nextInt(bound) : 0;
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementId, subcategoryId,
+                        PageRequest.of(randomPageNumber, pageable.getPageSize()))
                 .map(this::buildAdvertisementTitle)
-                .collect(Collectors.toList());
-
-        if (advertisements.isEmpty()) {
-            return Page.empty();
-        } else {
-            Collections.shuffle(advertisements);
-
-            return new PageImpl<>(advertisements, pageable, advertisements.size());
-        }
+                .getContent();
     }
 
     @Cacheable

@@ -133,7 +133,7 @@ public class AdvertisementController {
     @GetMapping(ApiKey.ADV_SUBCATEGORY_RANDOM)
     @Operation(summary = "Find 4 random advertisement with same subcategory without request advertisement and return them as a result")
     @ApiResponse(responseCode = "200", description = "OK")
-    public Page<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(
+    public List<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(
             @Parameter(name = "ID of existed advertisement")
             @PathVariable("advertisement_id") UUID id,
             @Parameter(name = "ID of existed subcategory")

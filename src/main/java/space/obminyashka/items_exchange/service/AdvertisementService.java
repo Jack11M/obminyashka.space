@@ -33,7 +33,7 @@ public interface AdvertisementService {
      * Find 4 random advertisements with same subcategory without request advertisement
      * @return random 4 advertisement
      */
-    Page<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId, Long subcategoryId, Pageable pageable);
+    List<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId, Long subcategoryId, Pageable pageable);
 
     /**
      * Find all advertisements as thumbnails for specific user

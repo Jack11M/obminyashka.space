@@ -50,5 +50,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     Collection<Advertisement> findAllByUserUsername(String username);
 
-    List<Advertisement> findAllByIdNotAndSubcategoryId(UUID id, Long subcategoryId);
+    Page<Advertisement> findAllByIdNotAndSubcategoryId(UUID id, Long subcategoryId, Pageable pageable);
+
+    Long countByIdNotAndSubcategoryId(UUID id, Long subcategoryId);
 }

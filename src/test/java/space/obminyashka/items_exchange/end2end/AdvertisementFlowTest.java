@@ -135,7 +135,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         UUID advertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
         Long subcategoryId = 1l;
         sendUriAndGetResultAction(get(ADV_SUBCATEGORY_RANDOM, advertisementId, subcategoryId), status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count() - 1));
+                .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(advertisementId, subcategoryId)));
     }
 
     @Test
@@ -144,7 +144,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         UUID advertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
         Long subcategoryId = 4l;
         sendUriAndGetResultAction(get(ADV_SUBCATEGORY_RANDOM, advertisementId, subcategoryId), status().isOk())
-                .andExpect(jsonPath("$.numberOfElements").value(0));
+                .andExpect(jsonPath("$.size()").value(0));
     }
 
     @Test
