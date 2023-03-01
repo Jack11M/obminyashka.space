@@ -13,7 +13,7 @@ on:
     branches: [ github-action ]
 
 jobs:
-  deployment:
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -35,6 +35,12 @@ jobs:
         run: mvn clean package --quiet
       - shell: bash
         run: |
+          export DB_PASSWORD=${{secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET}}\
+          export SSL_PASSWORD=${{secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET}}\
+          export JWT_TOKEN_SECRET=${{ secrets.OBMINYASHKA_TOKEN_SECRET }}\
+          export GOOGLE_CLIENT_ID=${{ secrets.OBMINYASHKA_ID_GOOGLE_API_SECRET }}\
+          export GOOGLE_CLIENT_SECRET=${{ secrets.OBMINYASHKA_GOOGLE_SECRET }}\
+          export SENDGRID_API_KEY=${{ secrets.OBMINYASHKA_SENDGRID_SECRET }}\
           java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12
           --logging.file.name=~/CGE-service/LogFile.log
 
