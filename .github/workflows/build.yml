@@ -26,7 +26,7 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
         run: mvn clean package --quiet
       - name: Transfer artifact to the server via SSH
-        uses: appleboy/ssh-action@v0.1.8
+        uses: easingthemes/ssh-deploy@main
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
           SSL_PASSWORD: ${{ secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET }}
@@ -35,13 +35,11 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.OBMINYASHKA_GOOGLE_SECRET }}
           SENDGRID_API_KEY: ${{ secrets.OBMINYASHKA_SENDGRID_SECRET }}
         with:
-          host: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-          username: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
-          password: ${{ secrets.OBMINYASHKA_SERVER_PASSWORD_SECRET }}
-          port: ${{ secrets.OBMINYASHKA_SERVER_PORT_SECRET }}
+          REMOTE_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+          REMOTE_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+          SSH_PRIVATE_KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
+          TARGET: "/home/$REMOTE_TARGET/target/"
           envs: NPM_AUTH_TOKEN, DB_PASSWORD, SSL_PASSWORD, JWT_TOKEN_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SENDGRID_API_KEY
-          script: |
-            whoami
-            ls -al
-            java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
+          SCRIPT_BEFORE: ls
+          SCRIPT_AFTER: java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
 
