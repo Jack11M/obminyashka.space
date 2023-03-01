@@ -130,6 +130,22 @@ public class AdvertisementController {
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
+    @GetMapping(ApiKey.ADV_SUBCATEGORY_RANDOM)
+    @Operation(summary = "Find 4 random advertisement with same subcategory without request advertisement and return them as a result")
+    @ApiResponse(responseCode = "200", description = "OK")
+    public Page<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(
+            @Parameter(name = "ID of existed advertisement")
+            @PathVariable("advertisement_id") UUID id,
+            @Parameter(name = "ID of existed subcategory")
+            @PathVariable("subcategory_id") Long subcategoryId,
+            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @Parameter(name = "Number of records per page. Default value: 4")
+            @RequestParam(value = "size", required = false, defaultValue = "4") @PositiveOrZero int size
+    ) {
+        return advertisementService.findRandom4AdvertisementWithSameSubcategory(id, subcategoryId, PageRequest.of(page, size));
+    }
+
     @PostMapping(ApiKey.ADV_FILTER)
     @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
             "Fill only needed parameters.")

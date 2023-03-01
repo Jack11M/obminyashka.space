@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import space.obminyashka.items_exchange.service.SubcategoryService;
 import javax.persistence.EntityNotFoundException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -61,6 +63,25 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         final var bound = (int) (totalRecordsSize / resultsQuantity);
         final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
         return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity)).getContent();
+    }
+
+    @Override
+    @Cacheable
+    public Page<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId,
+                                                                                   Long subcategoryId,
+                                                                                   Pageable pageable) {
+        List<AdvertisementTitleDto> advertisements = advertisementRepository
+                .findAllByIdNotAndSubcategoryId(advertisementId, subcategoryId).stream()
+                .map(this::buildAdvertisementTitle)
+                .collect(Collectors.toList());
+
+        if (advertisements.isEmpty()) {
+            return Page.empty();
+        } else {
+            Collections.shuffle(advertisements);
+
+            return new PageImpl<>(advertisements, pageable, advertisements.size());
+        }
     }
 
     @Cacheable

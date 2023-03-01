@@ -13,10 +13,7 @@ import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 @Transactional
@@ -52,4 +49,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
                                                 @Param("locationId") UUID locationId);
 
     Collection<Advertisement> findAllByUserUsername(String username);
+
+    List<Advertisement> findAllByIdNotAndSubcategoryId(UUID id, Long subcategoryId);
 }
