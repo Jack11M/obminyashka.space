@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, CheckBox, Icon } from '@wolshebnik/obminyashka-components';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, CheckBox, Icon } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';

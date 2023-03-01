@@ -1,4 +1,4 @@
-import { Icon } from '@wolshebnik/obminyashka-components';
+import { Icon } from 'obminyashka-components';
 
 import { InboxDiv, InboxSpan } from './styles';
 
@@ -8,4 +8,5 @@ const InboxMessage = ({ inboxMessage }) => (
     <InboxSpan>{inboxMessage}</InboxSpan>
   </InboxDiv>
 );
+
 export { InboxMessage };

@@ -2,12 +2,14 @@
   "name": "search_react",
   "version": "0.1.0",
   "private": true,
+  "optionalDependencies": {
+    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#a73bd77fd0a07b8cc1210bc6625411e7d0acef00"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
-    "@wolshebnik/obminyashka-components": "0.0.41",
     "axios": "^1.2.5",
     "browser-image-compression": "^2.0.0",
     "date-fns": "^2.29.3",
