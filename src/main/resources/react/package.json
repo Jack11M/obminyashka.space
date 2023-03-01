@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "optionalDependencies": {
-    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#a73bd77fd0a07b8cc1210bc6625411e7d0acef00"
+    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#main"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
@@ -25,7 +25,7 @@
     "react-router-dom": "^6.6.1",
     "react-scripts": "^5.0.1",
     "react-slick": "^0.29.0",
-    "react-spring": "^9.6.1",
+    "react-spring": "^9.7.1",
     "react-toastify": "^9.1.1",
     "react-use": "^17.4.0",
     "redux": "^4.2.0",
