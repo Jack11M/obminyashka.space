@@ -61,7 +61,7 @@ const ProductOwnerData = ({ avatar, name, date, city, phone }) => {
             {date && <PostReqDataUlItem>{date}</PostReqDataUlItem>}
 
             <PostReqDataUlItem style={{ width: '200px' }}>
-              <EllipsisText id="showCity">{city}</EllipsisText>
+              <EllipsisText id="showCityText">{city}</EllipsisText>
             </PostReqDataUlItem>
 
             {phone && <PostReqDataUlItem>{phone}</PostReqDataUlItem>}

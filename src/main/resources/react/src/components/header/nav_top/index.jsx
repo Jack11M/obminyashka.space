@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Avatar, Icon, EllipsisText } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Icon, EllipsisText } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
@@ -44,10 +44,10 @@ const NavTop = () => {
 
               <Styles.ProfileSpan>
                 <EllipsisText
-                  id="show-tooltip"
                   width={400}
-                  place="left"
                   offset={50}
+                  place="left"
+                  id="show-tooltip"
                 >
                   {authProfile?.username ||
                     getTranslatedText('header.myOffice')}
