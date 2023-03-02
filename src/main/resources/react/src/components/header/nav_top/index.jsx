@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
+import { Avatar, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon, Avatar, EllipsisText } from '@wolshebnik/obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';

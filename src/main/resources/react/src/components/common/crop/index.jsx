@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
-import { Button, Icon } from '@wolshebnik/obminyashka-components';
+import { Button, Icon } from 'obminyashka-components';
 
 import { showMessage } from 'hooks';
 import { getErrorMessage } from 'Utils/error';

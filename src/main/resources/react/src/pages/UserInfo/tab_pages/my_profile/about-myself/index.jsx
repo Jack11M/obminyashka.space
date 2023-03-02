@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { FieldArray, Formik } from 'formik';
+import { FieldArray, Form, Formik } from 'formik';
+import { Button, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
+import * as Styled from '../styles';
 import { validationUserSchema } from './config';
 import InputProfile from '../../../components/inputProfile';
-import ButtonsAddRemoveChild from '../../../components/buttonsAddRemoveChild';
 
 const amount = 3;
 
@@ -33,8 +33,8 @@ const AboutMyself = () => {
       .filter((phone) => phone.phoneNumber !== '');
 
   const validationSchema = validationUserSchema({
-    firstName,
     lastName,
+    firstName,
     phoneForInitial,
   });
 
@@ -77,7 +77,7 @@ const AboutMyself = () => {
       validationSchema={validationSchema}
     >
       {({ values, errors, handleSubmit }) => (
-        <>
+        <Form>
           <InputProfile
             type="text"
             name="firstName"
@@ -112,23 +112,39 @@ const AboutMyself = () => {
                       />
 
                       {lastIndex === index && maxArray && (
-                        <ButtonsAddRemoveChild
-                          add
-                          text={getTranslatedText('button.addField')}
-                          onClick={() => {
-                            if (!!phone && !errorField) {
-                              push('');
-                            } else {
-                              toast.error(
-                                getTranslatedText('ownInfo.choosePhone')
-                              );
-                            }
-                          }}
-                        />
+                        <Styled.WrapperAddButton>
+                          <Button
+                            gap={20}
+                            width={34}
+                            height={34}
+                            outsideText
+                            colorType="green"
+                            icon={<Icon.Plus />}
+                            text={getTranslatedText('button.addField')}
+                            onClick={() => {
+                              if (!!phone && !errorField) push('');
+                              else {
+                                toast.error(
+                                  getTranslatedText('ownInfo.choosePhone')
+                                );
+                              }
+                            }}
+                          />
+                        </Styled.WrapperAddButton>
                       )}
 
                       {biggerThanStartIndex && (
-                        <ButtonsAddRemoveChild onClick={() => remove(index)} />
+                        <Styled.WrapperDelButton>
+                          <Button
+                            gap={34}
+                            width={34}
+                            height={34}
+                            outsideText
+                            colorType="grey"
+                            icon={<Icon.Plus />}
+                            onClick={() => remove(index)}
+                          />
+                        </Styled.WrapperDelButton>
                       )}
                     </div>
                   );
@@ -146,7 +162,7 @@ const AboutMyself = () => {
             disabling={Object.keys(errors).length}
             text={getTranslatedText('button.saveChanges')}
           />
-        </>
+        </Form>
       )}
     </Formik>
   );

@@ -2,12 +2,12 @@ import React, { useCallback } from 'react';
 import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@wolshebnik/obminyashka-components';
+import { Button } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import logout2 from 'assets/img/log-out-2.png';
-import { clearProfile } from 'store/profile/slice';
 import { logoutUserThunk } from 'store/auth/thunk';
+import { clearProfile } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
