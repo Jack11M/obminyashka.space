@@ -20,7 +20,6 @@ import { getTranslatedText } from 'components/local/localization';
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
 import ProductDescription from './ProductDescription';
-// import { ProductOwnerData } from './ProductOwnerData';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
