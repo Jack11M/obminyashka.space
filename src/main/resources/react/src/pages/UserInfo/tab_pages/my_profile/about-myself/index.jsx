@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { FieldArray, Form, Formik } from 'formik';
+import { Button, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon, Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { getProfile, putUserToStore } from 'store/profile/slice';

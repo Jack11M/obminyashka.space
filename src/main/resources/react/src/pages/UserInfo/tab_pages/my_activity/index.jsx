@@ -1,4 +1,4 @@
-import { Title, ProductCard } from '@wolshebnik/obminyashka-components';
+import { Title, ProductCard } from 'obminyashka-components';
 
 import lot3 from 'assets/img/cards/lot3.jpg';
 import { getTranslatedText } from 'components/local/localization';

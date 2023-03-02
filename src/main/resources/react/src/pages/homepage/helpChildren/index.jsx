@@ -1,4 +1,4 @@
-import { Button, Icon, Title } from '@wolshebnik/obminyashka-components';
+import { Button, Icon, Title } from 'obminyashka-components';
 
 import { getTranslatedText } from 'components/local/localization';
 
@@ -25,4 +25,5 @@ const HelpChildren = () => {
     </Styles.HelpChildren>
   );
 };
+
 export default HelpChildren;

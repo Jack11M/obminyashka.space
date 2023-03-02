@@ -1,5 +1,5 @@
 import React from 'react';
-import { Title, ProductCard } from '@wolshebnik/obminyashka-components';
+import { Title, ProductCard } from 'obminyashka-components';
 
 import { getTranslatedText } from 'components/local/localization';
 

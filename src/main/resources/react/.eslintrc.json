@@ -24,6 +24,18 @@
   },
   "plugins": ["react"],
   "rules": {
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ["ConditionalExpression"]
+      }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "peerDependencies": false }
+    ],
     "react/jsx-wrap-multilines": [
       "error",
       {

@@ -1,4 +1,4 @@
-import { ProductCard } from '@wolshebnik/obminyashka-components';
+import { ProductCard } from 'obminyashka-components';
 
 import { getTranslatedText } from 'components/local/localization';
 
