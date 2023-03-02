@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import { CheckBox } from '@wolshebnik/obminyashka-components';
+import { CheckBox } from 'obminyashka-components';
 
 import { enumSex } from 'config/ENUM';
 import { getTranslatedText } from 'components/local/localization';

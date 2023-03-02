@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';
-import { Input } from '@wolshebnik/obminyashka-components';
+import { Input } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';

@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
-import { showMessage } from 'hooks';
+import { PagePagination, Title } from 'obminyashka-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Title, PagePagination } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
+import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
 import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';

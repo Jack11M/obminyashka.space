@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { FieldArray, Form, Formik } from 'formik';
-import { useSelector, useDispatch } from 'react-redux';
-import { Icon, Button } from '@wolshebnik/obminyashka-components';
+import { Button, Icon } from 'obminyashka-components';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { enumSex } from 'config/ENUM';
 import { getProfile } from 'store/profile/slice';

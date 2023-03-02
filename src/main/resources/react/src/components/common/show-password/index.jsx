@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Icon } from '@wolshebnik/obminyashka-components';
+import { Icon } from 'obminyashka-components';
 
 import { WrapIcon } from './styles';
 
