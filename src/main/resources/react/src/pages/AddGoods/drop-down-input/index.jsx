@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import { Icon } from '@wolshebnik/obminyashka-components';
+import { Icon } from 'obminyashka-components';
 
 import { ErrorDisplay } from 'pages/AddGoods/error-display';
 

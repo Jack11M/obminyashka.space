@@ -1,14 +1,14 @@
 import { memo, useContext, useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
+import { Button, Title } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Title, Button } from '@wolshebnik/obminyashka-components';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
 import { setProfileEmail } from 'store/profile/slice';
-import { putEmail, getAuthProfile } from 'store/auth/slice';
-import { ModalContext, InputForAuth } from 'components/common';
+import { getAuthProfile, putEmail } from 'store/auth/slice';
+import { InputForAuth, ModalContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import InputProfile from '../../components/inputProfile';
