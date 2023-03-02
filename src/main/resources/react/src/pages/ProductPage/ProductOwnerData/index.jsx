@@ -1,6 +1,5 @@
-import { Avatar } from 'obminyashka-components';
+import { Avatar, EllipsisText } from 'obminyashka-components';
 
-import { EllipsisText } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import {

@@ -23,13 +23,13 @@ export const BoxData = styled.div`
 `;
 
 export const DataName = styled.div`
-  position: relative;
   display: flex;
   justify-content: center;
   width: 162px;
+  color: ${({ theme }) => theme.colors.white};
   font-size: 14px;
   line-height: 16px;
-  color: ${({ theme }) => theme.colors.white};
+  z-index: 1;
 `;
 
 export const ImageCrop = styled.img`

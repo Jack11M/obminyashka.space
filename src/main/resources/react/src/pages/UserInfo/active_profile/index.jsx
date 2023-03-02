@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
-import { EllipsisText } from '@wolshebnik/obminyashka-components';
+import { EllipsisText } from 'obminyashka-components';
 
 import { getProfile } from 'store/profile/slice';
-// import { EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { getName } from './helpers';
