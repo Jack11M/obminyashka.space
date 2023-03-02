@@ -1,6 +1,6 @@
-import { useState, useContext } from 'react';
-import { Button, Input, Icon } from '@wolshebnik/obminyashka-components';
+import { useContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, Icon, Input } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { SearchContext } from 'components/common';

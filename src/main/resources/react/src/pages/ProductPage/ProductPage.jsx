@@ -6,13 +6,13 @@ import {
   Title,
   ProductPostData,
   ProductOwnerData,
-} from '@wolshebnik/obminyashka-components';
+} from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getErrorMessage } from 'Utils/error';
-import { getAuthLang } from 'store/auth/slice';
 import { BackButton } from 'components/common';
+import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
 import { getTranslatedText } from 'components/local/localization';

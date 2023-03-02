@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { Button, Icon, CheckBox } from '@wolshebnik/obminyashka-components';
+import { Button, CheckBox, Icon } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
-
 import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
-import { validationSchema } from './config';
 import * as Styles from '../sign-in/styles';
+import { validationSchema } from './config';
 
 const SignUp = () => {
   const navigate = useNavigate();

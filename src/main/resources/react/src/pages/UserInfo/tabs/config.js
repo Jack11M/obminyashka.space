@@ -1,4 +1,4 @@
-import { Icon } from '@wolshebnik/obminyashka-components';
+import { Icon } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 
