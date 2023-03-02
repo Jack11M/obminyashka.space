@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Icon, Title } from '@wolshebnik/obminyashka-components';
+import { Icon, Title } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';

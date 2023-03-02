@@ -1,4 +1,4 @@
-import { Icon, Avatar, Button } from '@wolshebnik/obminyashka-components';
+import { Avatar, Button, Icon } from 'obminyashka-components';
 
 import { EllipsisText } from 'components/common';
 

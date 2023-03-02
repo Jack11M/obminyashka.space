@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import { Button, Icon } from '@wolshebnik/obminyashka-components';
+import { Button, Icon } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
-
 import logoFooter from 'assets/img/Logo-footer.png';
 import { getTranslatedText } from 'components/local/localization';
 

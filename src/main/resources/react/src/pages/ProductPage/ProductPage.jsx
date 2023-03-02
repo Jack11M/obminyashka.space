@@ -2,17 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import {
-  Title,
-  ProductPostData,
-  ProductOwnerData,
-} from '@wolshebnik/obminyashka-components';
+import { ProductPostData, Title } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getErrorMessage } from 'Utils/error';
-import { getAuthLang } from 'store/auth/slice';
 import { BackButton } from 'components/common';
+import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
 import { getTranslatedText } from 'components/local/localization';
@@ -20,6 +16,7 @@ import { getTranslatedText } from 'components/local/localization';
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
 import ProductDescription from './ProductDescription';
+import { ProductOwnerData } from './ProductOwnerData';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
