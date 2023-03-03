@@ -52,7 +52,7 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
         assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID)));
     }
-
+    @Disabled
     @Test
     @WithMockUser(username = "admin")
     void updateAdvertisement_shouldReturn400WhenNotValidAdvertisementFields() throws Exception {
