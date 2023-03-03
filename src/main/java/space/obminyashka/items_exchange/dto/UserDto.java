@@ -27,6 +27,7 @@ public class UserDto {
     @Email(message = ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL)
     private String email;
     private boolean online;
+    private boolean oauth2login;
     @Schema(description = "Empty or 2-50 symbols", example = "Mariana, Мар'яна, Марьяна")
     @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
     @Pattern(regexp = PatternHandler.WORD_EMPTY_OR_MIN_2_MAX_50,
