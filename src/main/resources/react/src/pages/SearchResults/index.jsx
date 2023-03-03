@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import { PagePagination, Title, ProductCard } from 'obminyashka-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { PagePagination, Title, ProductCard } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { showMessage } from 'hooks';
@@ -87,10 +87,10 @@ const SearchResults = () => {
               {adv.content?.length > 0 &&
                 adv.content.map((item) => (
                   <ProductCard
-                    buttonText={getTranslatedText('button.look')}
                     text={item.title}
                     key={item.advertisementId}
                     city={getCity(item.location)}
+                    buttonText={getTranslatedText('button.look')}
                     picture={`data:image/jpeg;base64,${item.image}`}
                     clickOnButton={() =>
                       moveToProductPage(item.advertisementId)

@@ -41,11 +41,11 @@ const CurrentOffers = () => {
         {offers.map((offer) => (
           <li key={offer.advertisementId}>
             <ProductCard
-              buttonText={getTranslatedText('button.look')}
               margin="10px 8px"
               isFavorite={false}
               text={offer.title}
               city={getCity(offer.location)}
+              buttonText={getTranslatedText('button.look')}
               clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
                 offer.image ? (

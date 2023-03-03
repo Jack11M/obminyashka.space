@@ -17,51 +17,51 @@ const MyActivity = () => {
 
       <Styles.InputResponseContainer>
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           city="Харьков"
           picture={lot3}
           inboxMessage={12}
+          buttonText={getTranslatedText('button.look')}
           text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           city="Львов"
           picture={lot3}
           inboxMessage={222}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           city="Киев"
           picture={lot3}
           inboxMessage={50}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           city="Ужгород"
           picture={lot3}
           inboxMessage={12}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           city="Киев"
           picture={lot3}
           inboxMessage={5}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           city="Киев"
           picture={lot3}
           inboxMessage={33}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
       </Styles.InputResponseContainer>
 
@@ -72,80 +72,80 @@ const MyActivity = () => {
 
       <Styles.OutputResponseContainer>
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           inboxMessage={3}
           isFavorite={isFavorite}
+          buttonText={getTranslatedText('button.look')}
           text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           text="Велосипед"
           inboxMessage={10}
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
           isFavorite={isFavorite}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           inboxMessage={3}
+          buttonText={getTranslatedText('button.look')}
           text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           text="Велосипед"
           inboxMessage={10}
           isFavorite={isFavorite}
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           inboxMessage={3}
           isFavorite={isFavorite}
+          buttonText={getTranslatedText('button.look')}
           text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           city="Харьков"
           text="Велосипед"
           inboxMessage={10}
+          buttonText={getTranslatedText('button.look')}
         />
 
         <ProductCard
-          buttonText={getTranslatedText('button.look')}
           picture={lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
           isFavorite={isFavorite}
           text="Велосипед для девочки 5 лет"
+          buttonText={getTranslatedText('button.look')}
         />
       </Styles.OutputResponseContainer>
     </>
