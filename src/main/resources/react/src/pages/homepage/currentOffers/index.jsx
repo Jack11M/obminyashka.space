@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Icon, Title } from 'obminyashka-components';
+import { Icon, Title, ProductCard } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
-import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -46,6 +45,7 @@ const CurrentOffers = () => {
               isFavorite={false}
               text={offer.title}
               city={getCity(offer.location)}
+              buttonText={getTranslatedText('button.look')}
               clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
                 offer.image ? (
