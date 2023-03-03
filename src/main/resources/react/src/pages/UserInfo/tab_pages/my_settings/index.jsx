@@ -1,15 +1,14 @@
 import { memo, useContext, useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Button, Title, showMessage } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
 import { setProfileEmail } from 'store/profile/slice';
-import { putEmail, getAuthProfile } from 'store/auth/slice';
+import { getAuthProfile, putEmail } from 'store/auth/slice';
+import { InputForAuth, ModalContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
-import { Button, ModalContext, InputForAuth } from 'components/common';
 
 import InputProfile from '../../components/inputProfile';
 
@@ -79,7 +78,7 @@ const MySettings = () => {
         });
       }
       if (e.response.status === 400) {
-        showMessage(e.response.data.error);
+        showMessage.error(e.response.data.error);
         onSubmitProps.setErrors({ newEmail: e.response.data.error });
       }
     }
@@ -102,7 +101,7 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
     } catch (e) {
-      showMessage(e.response.data.error);
+      showMessage.error(e.response.data.error);
     } finally {
       setLoading(false);
     }
@@ -141,8 +140,8 @@ const MySettings = () => {
                 </Styles.InputWrapper>
 
                 <Button
+                  width={248}
                   type="submit"
-                  width="248px"
                   isLoading={loading}
                   text={getTranslatedText('button.remove')}
                 />
@@ -190,13 +189,13 @@ const MySettings = () => {
 
             <Styles.ButtonContainer>
               <Button
+                width={248}
                 type="submit"
-                width="248px"
-                height="49px"
+                style={{ height: 49 }}
                 isLoading={isFetchPass}
                 disabling={!isValid && !dirty}
                 text={getTranslatedText('button.saveChanges')}
-                click={!errors.oldPassword ? handleSubmit : null}
+                onClick={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
           </>
@@ -239,14 +238,13 @@ const MySettings = () => {
 
             <Styles.ButtonContainer>
               <Button
+                width={248}
                 type="submit"
-                width="248px"
-                height="49px"
                 isLoading={isFetchEmail}
-                style={{ margin: '50px 0' }}
                 disabling={!isValid && !dirty}
+                style={{ margin: '50px 0', height: 49 }}
                 text={getTranslatedText('button.saveChanges')}
-                click={!errors.newEmail ? handleSubmit : null}
+                onClick={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
           </>
@@ -267,8 +265,8 @@ const MySettings = () => {
 
       <Styles.ButtonContainer>
         <Button
-          width="248px"
-          click={deleteAccountModal}
+          width={248}
+          onClick={deleteAccountModal}
           style={{ marginBottom: '65px' }}
           text={getTranslatedText('button.remove')}
         />

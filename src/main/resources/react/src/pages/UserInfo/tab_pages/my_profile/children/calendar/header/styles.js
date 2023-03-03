@@ -1,6 +1,5 @@
+import { Icon } from 'obminyashka-components';
 import styled, { css } from 'styled-components';
-
-import * as Icon from 'assets/icons';
 
 export const Header = styled.div`
   padding: 8px 16px;
@@ -46,6 +45,7 @@ const commonChevron = css`
 export const ChevronLeft = styled(Icon.ChevronLeft)`
   ${commonChevron};
 `;
+
 export const ChevronRight = styled(Icon.ChevronRight)`
   ${commonChevron};
 `;

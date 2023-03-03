@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
-
-import { CheckBox } from '@wolshebnik/obminyashka-components';
+import { CheckBox } from 'obminyashka-components';
 
 export const FormikCheckBox = ({
   gap,

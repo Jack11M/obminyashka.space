@@ -1,15 +1,14 @@
 import { useEffect } from 'react';
+import { Avatar, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar } from '@wolshebnik/obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
-import { CustomSelect } from 'components/selectLang';
+import { LanguageSelection } from 'components/selectLang';
 import { getAuthed, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import * as Styles from './styles';
 
@@ -35,7 +34,7 @@ const NavTop = () => {
             </Styles.NavTopLink>
 
             <Styles.NavTopLink to={route.home}>
-              <HeartSvg />
+              <Icon.Heart />
               {getTranslatedText('header.goodness')}
             </Styles.NavTopLink>
           </Styles.WrapLinks>
@@ -52,7 +51,7 @@ const NavTop = () => {
               </Styles.ProfileSpan>
             </Styles.LoginLink>
 
-            <CustomSelect />
+            <LanguageSelection />
           </Styles.WrapPersonal>
         </Styles.DivTop>
       </Styles.Wrapper>

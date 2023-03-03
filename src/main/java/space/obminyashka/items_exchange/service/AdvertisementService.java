@@ -45,6 +45,15 @@ public interface AdvertisementService {
     Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
 
     /**
+     * Find advertisements by category and return them by requested quantity (size) and page
+     *
+     * @param categoryId - searched category id
+     * @param pageable   see {@link Pageable} for more details
+     * @return result of the request
+     */
+    Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable);
+
+    /**
      * Find an advertisement with additional owner check
      * @param advertisementId ID of an advertisement
      * @param ownerName login or email of the advertisement's owner

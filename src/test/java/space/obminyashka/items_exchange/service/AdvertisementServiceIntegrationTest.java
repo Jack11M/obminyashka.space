@@ -34,4 +34,5 @@ class AdvertisementServiceIntegrationTest {
         final var secondTitlesGetAttempt = advertisementService.findRandom12Thumbnails();
         assertEquals(firstTitlesGetAttempt, secondTitlesGetAttempt, "Collections must be equals because of caching response");
     }
+
 }

@@ -1,52 +1,49 @@
 import { useState } from 'react';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import { Button, CheckBox, Icon } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
-import { CheckBox } from '@wolshebnik/obminyashka-components';
-
-import { Button, InputForAuth } from 'components/common';
+import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
-import { validationRegisterSchema } from './config';
-import { Extra, WrapperButton, Form } from '../sign-in/styles';
+import * as Styles from '../sign-in/styles';
+import { validationSchema } from './config';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [checkbox, setCheckbox] = useState(false);
 
-  const changeCheckBox = () => {
-    setCheckbox((prev) => !prev);
+  const initialValues = validationSchema.cast({});
+
+  const onSubmit = async (values, onSubmitProps) => {
+    setLoading(true);
+    delete values.agreement;
+
+    try {
+      await api.auth.postAuthRegister(values);
+      navigate(route.login);
+    } catch (err) {
+      if (err.response.status === 409) {
+        const { error: message } = err.response.data;
+        onSubmitProps.setErrors({ username: message });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const initialRegisterValues = validationRegisterSchema.cast({});
-
   return (
-    <Form>
+    <Styles.Wrapper>
       <Formik
         validateOnBlur
-        initialValues={initialRegisterValues}
-        validationSchema={validationRegisterSchema}
-        onSubmit={async (dataFormik, onSubmitProps) => {
-          setLoading(true);
-          try {
-            await api.auth.postAuthRegister(dataFormik);
-            setLoading(false);
-            navigate(route.login);
-          } catch (err) {
-            setLoading(false);
-            if (err.response.status === 409) {
-              const { error: message } = err.response.data;
-              onSubmitProps.setErrors({ username: message });
-            }
-          }
-        }}
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
-        {({ errors, isSubmitting, handleSubmit, isValid, dirty }) => (
-          <>
+        {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
+          <Form>
             <div>
               <InputForAuth
                 name="email"
@@ -73,50 +70,52 @@ const SignUp = () => {
               />
             </div>
 
-            <Extra>
+            <Styles.Extra>
               <CheckBox
                 gap={22}
                 fontSize={14}
-                checked={checkbox}
+                name="agreement"
                 margin="0 0 44px 0"
-                onChange={changeCheckBox}
+                checked={values.agreement}
+                style={{ paddingRight: '10px' }}
                 text={getTranslatedText('auth.agreement')}
+                onChange={() => setFieldValue('agreement', !values.agreement)}
               />
-            </Extra>
+            </Styles.Extra>
 
-            <WrapperButton>
+            <Styles.WrapperButton>
               <Button
                 bold
-                mb="44px"
+                width={222}
+                height={48}
+                lHeight={24}
                 type="submit"
-                width="222px"
-                height="48px"
-                lHeight="24px"
                 isLoading={loading}
+                style={{ marginBottom: 44 }}
                 text={getTranslatedText('auth.signUp')}
-                disabling={!checkbox || !dirty || !isValid || isSubmitting}
-                click={!errors.email || !errors.username ? handleSubmit : null}
+                disabling={!dirty || !isValid || isSubmitting}
               />
 
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                height={48}
+                width={222}
+                lHeight={24}
                 type="button"
-                width="222px"
-                lHeight="24px"
-                icon={<GoogleSvg />}
+                nativeIcon={false}
+                icon={<Icon.Google />}
+                style={{ marginBottom: 64 }}
                 text={getTranslatedText('auth.signUp')}
-                click={() =>
+                onClick={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }
               />
-            </WrapperButton>
-          </>
+            </Styles.WrapperButton>
+          </Form>
         )}
       </Formik>
-    </Form>
+    </Styles.Wrapper>
   );
 };
 
-export default SignUp;
+export { SignUp };

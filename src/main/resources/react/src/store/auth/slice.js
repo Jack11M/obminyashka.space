@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { showMessage } from 'obminyashka-components';
 
-import { showMessage } from 'hooks';
 import { getStorageLang, getStorageUser, setStorageUser } from 'Utils';
 
 const authInitialState = {
@@ -18,9 +18,10 @@ const authSlice = createSlice({
     setLanguage: (state, { payload }) => {
       try {
         setStorageUser({ 'Accept-Language': payload });
+        localStorage.setItem('lang', payload);
         state.lang = payload;
       } catch (e) {
-        showMessage('You need to enable a localStorage');
+        showMessage.error('You need to enable a localStorage');
       }
     },
     setChangeLang: (state, { payload }) => {
