@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { Form } from 'formik';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Button, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { BackButton, Button, Icon } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
@@ -15,7 +15,7 @@ import { getAuthLang } from 'store/auth/slice';
 import { FormikFocus } from 'components/common/formik';
 import { clearAdv, getAdv, saveAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { BackButton, FormikCheckBox, FormikHandler } from 'components/common';
+import { FormikCheckBox, FormikHandler } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Exchange } from './exchange';

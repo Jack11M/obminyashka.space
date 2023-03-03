@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import {
   Title,
+  BackButton,
   ProductPostData,
   ProductDescription,
 } from 'obminyashka-components';
@@ -11,7 +12,6 @@ import {
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getErrorMessage } from 'Utils/error';
-import { BackButton } from 'components/common';
 import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
