@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
+import { Avatar, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar } from '@wolshebnik/obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { EllipsisText } from 'components/common';
@@ -9,7 +9,6 @@ import { getUserThunk } from 'store/profile/thunk';
 import { LanguageSelection } from 'components/selectLang';
 import { getAuthed, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import * as Styles from './styles';
 
@@ -35,7 +34,7 @@ const NavTop = () => {
             </Styles.NavTopLink>
 
             <Styles.NavTopLink to={route.home}>
-              <HeartSvg />
+              <Icon.Heart />
               {getTranslatedText('header.goodness')}
             </Styles.NavTopLink>
           </Styles.WrapLinks>

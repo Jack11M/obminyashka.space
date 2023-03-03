@@ -1,15 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
-import { Title } from '@wolshebnik/obminyashka-components';
+import { Icon, Title, ProductCard } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
-import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
-import noPhotos from 'assets/img/showAdv/noPhoto.svg';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -48,9 +45,14 @@ const CurrentOffers = () => {
               isFavorite={false}
               text={offer.title}
               city={getCity(offer.location)}
+              buttonText={getTranslatedText('button.look')}
               clickOnButton={() => moveToProductPage(offer.advertisementId)}
               picture={
-                offer.image ? `data:image/jpeg;base64,${offer.image}` : noPhotos
+                offer.image ? (
+                  `data:image/jpeg;base64,${offer.image}`
+                ) : (
+                  <Icon.NoPhoto />
+                )
               }
             />
           </li>

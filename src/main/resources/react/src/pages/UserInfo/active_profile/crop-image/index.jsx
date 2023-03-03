@@ -1,8 +1,7 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { Avatar, Icon } from 'obminyashka-components';
 import imageCompression from 'browser-image-compression';
-import { Avatar } from '@wolshebnik/obminyashka-components';
 
-import * as Icon from 'assets/icons';
 import { getTranslatedText } from 'components/local';
 import { Crop, ModalContext } from 'components/common';
 import {

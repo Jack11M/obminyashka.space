@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { CheckBox } from '@wolshebnik/obminyashka-components';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, CheckBox, Icon } from 'obminyashka-components';
 
-import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
-import { Button, InputForAuth } from 'components/common';
+import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -86,26 +85,25 @@ const Login = () => {
             <Styles.WrapperButton>
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                width={222}
+                lHeight={24}
                 type="submit"
-                width="222px"
-                lHeight="24px"
                 isLoading={loading}
-                disabling={!isValid && !dirty}
+                style={{ marginBottom: 64 }}
+                disabled={!isValid && !dirty}
                 text={getTranslatedText('button.enter')}
               />
 
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                width={175}
+                lHeight={24}
                 type="button"
-                width="175px"
-                lHeight="24px"
-                icon={<GoogleSvg />}
+                nativeIcon={false}
+                icon={<Icon.Google />}
+                style={{ marginBottom: 64, height: 48 }}
                 text={getTranslatedText('button.googleOAuth')}
-                click={() =>
+                onClick={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }
               />
