@@ -6,6 +6,7 @@ import {
   Title,
   ProductPostData,
   ProductOwnerData,
+  ProductDescription,
 } from 'obminyashka-components';
 
 import api from 'REST/Resources';
@@ -19,7 +20,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import ProductDescription from './ProductDescription';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
