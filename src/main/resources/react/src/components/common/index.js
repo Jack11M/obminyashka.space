@@ -1,5 +1,4 @@
 export { Crop } from './crop';
-export { EllipsisText } from './ellipsis-text';
 export { Filtration } from './filtration';
 export { FormikHandler, FormikCheckBox } from './formik';
 export { InputForAuth } from './input';
