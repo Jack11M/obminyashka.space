@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Title,
+  showMessage,
   ProductPostData,
+  ProductOwnerData,
   ProductDescription,
 } from 'obminyashka-components';
 
@@ -19,7 +20,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import { ProductOwnerData } from './ProductOwnerData';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
@@ -80,7 +80,7 @@ const ProductPage = () => {
       setSubcategory(state.subcategory);
       setCurrentLocation(locationValue);
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   }, [location]);
 
@@ -102,7 +102,7 @@ const ProductPage = () => {
       setCurrentLocation(locationValue);
       setWishes(wishesToExchange?.split(','));
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   };
 
@@ -145,6 +145,9 @@ const ProductPage = () => {
                 avatar={avatar}
                 city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
+                dateText={`${getTranslatedText('product.dateOfAdv')}:`}
+                cityText={`${getTranslatedText('product.cityOfAdv')}:`}
+                phoneText={`${getTranslatedText('product.phoneOfAdv')}:`}
               />
 
               <ProductPostData
