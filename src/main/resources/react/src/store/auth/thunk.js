@@ -1,5 +1,6 @@
+import { showMessage } from 'obminyashka-components';
+
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 
 import { logOutUser, putToken, setAuthed } from './slice';
 
@@ -39,9 +40,9 @@ export const putOauthUserThunk = () => async (dispatch) => {
       dispatch(putToken(user));
       sessionStorage.removeItem('code');
     } else {
-      showMessage('User not signed up via OAUTH');
+      showMessage.error('User not signed up via OAUTH');
     }
   } catch (err) {
-    showMessage(err);
+    showMessage.error(err);
   }
 };

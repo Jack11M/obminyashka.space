@@ -1,9 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { PagePagination, Title, ProductCard } from 'obminyashka-components';
+import {
+  Title,
+  showMessage,
+  ProductCard,
+  PagePagination,
+} from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
 import { getCity } from 'Utils/getLocationProperties';
 import { Filtration, SearchContext } from 'components/common';
@@ -31,7 +35,7 @@ const SearchResults = () => {
       setAdv(response);
     } catch (err) {
       if (err?.response?.status !== 404) {
-        showMessage(err.response?.data ?? err.message);
+        showMessage.error(err.response?.data ?? err.message);
       }
     } finally {
       setIsFetch(false);

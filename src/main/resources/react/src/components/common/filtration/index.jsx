@@ -1,9 +1,9 @@
 import { useMemo, useEffect, useState } from 'react';
 import { Form } from 'formik';
 import { useSelector } from 'react-redux';
+import { showMessage } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import ua from 'components/local/ua';
 import { enumAge } from 'config/ENUM';
 import { getAuthLang } from 'store/auth/slice';
@@ -54,7 +54,7 @@ const Filtration = () => {
           setReceivedCategories(categories);
         }
       } catch (err) {
-        showMessage(err.response?.data ?? err?.message);
+        showMessage.error(err.response?.data ?? err?.message);
       }
     })();
   }, []);

@@ -10,4 +10,3 @@ export { ModalContext } from './pop-up/modal-context';
 export { ModalProvider } from './pop-up/modal-context-provider';
 export { SearchContext, SearchProvider } from './search-context';
 export { showPassword } from './show-password';
-export { Toast } from './toast';
