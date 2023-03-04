@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
   Button,
+  BackButton,
   showMessage,
   AddGoodsDescription,
 } from 'obminyashka-components';
@@ -19,7 +20,7 @@ import { getAuthLang } from 'store/auth/slice';
 import { FormikFocus } from 'components/common/formik';
 import { clearAdv, getAdv, saveAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { BackButton, FormikCheckBox, FormikHandler } from 'components/common';
+import { FormikCheckBox, FormikHandler } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Exchange } from './exchange';

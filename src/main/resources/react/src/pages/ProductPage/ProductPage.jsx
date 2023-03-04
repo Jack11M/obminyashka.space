@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Title,
+  BackButton,
   showMessage,
   ProductPostData,
   ProductOwnerData,
@@ -12,7 +13,6 @@ import {
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getErrorMessage } from 'Utils/error';
-import { BackButton } from 'components/common';
 import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
