@@ -1,4 +1,3 @@
-export { BackButton } from './buttons/back-button';
 export { Crop } from './crop';
 export { Filtration } from './filtration';
 export { FormikHandler, FormikCheckBox } from './formik';
