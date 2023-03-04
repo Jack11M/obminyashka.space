@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Title,
   showMessage,
   ProductPostData,
+  ProductOwnerData,
   ProductDescription,
 } from 'obminyashka-components';
 
@@ -19,7 +20,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import { ProductOwnerData } from './ProductOwnerData';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
@@ -145,6 +145,9 @@ const ProductPage = () => {
                 avatar={avatar}
                 city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
+                dateText={`${getTranslatedText('product.dateOfAdv')}:`}
+                cityText={`${getTranslatedText('product.cityOfAdv')}:`}
+                phoneText={`${getTranslatedText('product.phoneOfAdv')}:`}
               />
 
               <ProductPostData
