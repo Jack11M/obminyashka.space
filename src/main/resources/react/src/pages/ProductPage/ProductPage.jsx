@@ -145,15 +145,9 @@ const ProductPage = () => {
                 avatar={avatar}
                 city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
-                dateTranslatedText={`${getTranslatedText(
-                  'product.dateOfAdv'
-                )}:`}
-                cityTranslatedText={`${getTranslatedText(
-                  'product.cityOfAdv'
-                )}:`}
-                phoneTranslatedText={`${getTranslatedText(
-                  'product.phoneOfAdv'
-                )}:`}
+                dateText={`${getTranslatedText('product.dateOfAdv')}:`}
+                cityText={`${getTranslatedText('product.cityOfAdv')}:`}
+                phoneText={`${getTranslatedText('product.phoneOfAdv')}:`}
               />
 
               <ProductPostData
