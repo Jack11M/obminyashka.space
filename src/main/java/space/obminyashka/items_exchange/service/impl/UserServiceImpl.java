@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
-        user.setEmail(userChangeEmailDto.getNewEmail());
+        user.setEmail(userChangeEmailDto.getEmail());
         userRepository.saveAndFlush(user);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);

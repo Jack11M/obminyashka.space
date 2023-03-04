@@ -13,7 +13,6 @@ public class ResponseMessagesHandler {
         public final String INVALID_SIZE = "invalid.size";
         public final String INVALID_MAX_SIZE = "invalid.max-size";
         public final String INVALID_EMAIL = "invalid.email";
-        public final String INVALID_CONFIRM_EMAIL = "invalid.confirm.email";
         public final String DUPLICATE_EMAIL = "email.duplicate";
         public final String USERNAME_EMAIL_DUPLICATE = "username-email.duplicate";
         public final String INVALID_USERNAME = "invalid.username";

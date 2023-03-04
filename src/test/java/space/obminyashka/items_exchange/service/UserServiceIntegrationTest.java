@@ -71,7 +71,7 @@ class UserServiceIntegrationTest {
 
     @Test
     void testUpdateUserEmail_WhenDataCorrect_Successfully() {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL, NEW_USER_EMAIL);
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL);
         String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
 
         assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), message);

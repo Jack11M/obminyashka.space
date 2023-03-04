@@ -174,14 +174,23 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = "user")
-    void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        updateUserEmailBasicTest(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL, status().isBadRequest(), "invalid.confirm.email");
+    @MethodSource("listInvalidEmail")
+    void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException(String email) throws Exception {
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email);
+        sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isBadRequest());
     }
 
-    private void updateUserEmailBasicTest(String email, String confirmationEmail, ResultMatcher expectedStatus, String expectedExceptionKey) throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email, confirmationEmail);
+    private static Stream<Arguments> listInvalidEmail() {
+        return Stream.of(
+                Arguments.of(NEW_INVALID_EMAIL),
+                Arguments.of(INVALID_EMAIL)
+        );
+    }
+
+    private void updateUserEmailBasicTest(String email, ResultMatcher expectedStatus, String expectedExceptionKey) throws Exception {
+        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email);
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, expectedStatus);
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
@@ -193,7 +202,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD);
+        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD);
     }
 
     @Test
@@ -202,7 +211,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.existsByEmail(any())).thenReturn(true);
 
-        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL);
+        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL);
     }
 
     @Test

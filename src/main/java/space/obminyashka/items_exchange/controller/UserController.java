@@ -111,10 +111,10 @@ public class UserController {
     public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, @Parameter(hidden = true) Authentication authentication)
             throws DataConflictException {
         User user = getUser(authentication.getName());
-        if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
+        if (user.getEmail().equals(userChangeEmailDto.getEmail())) {
             throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
         }
-        if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
+        if (userService.existsByEmail(userChangeEmailDto.getEmail())) {
             throw new DataConflictException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
         }
