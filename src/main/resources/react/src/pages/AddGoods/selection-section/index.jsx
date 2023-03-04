@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';
-import { Input } from 'obminyashka-components';
+import { Input, showMessage } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { getAuthLang } from 'store/auth/slice';
 import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
@@ -28,11 +27,10 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         if (Array.isArray(categories)) {
           setReceivedCategories(categories);
         } else {
-          // eslint-disable-next-line no-throw-literal
-          throw { message: 'OOps, I didn’t get the category' };
+          showMessage.error('OOps, I didn’t get the category');
         }
       } catch (err) {
-        showMessage(err.response?.data ?? err.message);
+        showMessage.error(err.response?.data ?? err.message);
       }
     })();
   }, []);

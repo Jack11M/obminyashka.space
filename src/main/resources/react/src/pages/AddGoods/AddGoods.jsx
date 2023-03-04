@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import { Form } from 'formik';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
   Button,
   BackButton,
+  showMessage,
   AddGoodsDescription,
 } from 'obminyashka-components';
 
@@ -95,7 +95,7 @@ const AddGoods = () => {
       navigate(route.home);
     } catch (err) {
       setIsLoading(false);
-      toast.error(getErrorMessage(err));
+      showMessage.error(getErrorMessage(err));
     }
   };
 
