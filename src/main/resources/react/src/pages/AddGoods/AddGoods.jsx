@@ -3,7 +3,12 @@ import { useState } from 'react';
 import { Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon, showMessage } from 'obminyashka-components';
+import {
+  Icon,
+  Button,
+  showMessage,
+  AddGoodsDescription,
+} from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
@@ -20,7 +25,6 @@ import { Sizes } from './sizes';
 import { Exchange } from './exchange';
 import { Location } from './location';
 import { PhotoFiles } from './photo-files';
-import { Description } from './description';
 import { SelectionSection } from './selection-section';
 import { WrapCharacteristic } from './wrap-characteristic';
 
@@ -277,9 +281,13 @@ const AddGoods = () => {
                     </Styles.WrapItems>
                   </>
 
-                  <Description
+                  <AddGoodsDescription
                     value={description}
                     setDescription={setDescription}
+                    translatedTitle={getTranslatedText('addAdv.describeTitle')}
+                    translatedDescription={getTranslatedText(
+                      'addAdv.describeText'
+                    )}
                   />
 
                   <Location
