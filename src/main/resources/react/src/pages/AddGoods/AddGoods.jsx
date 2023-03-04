@@ -4,10 +4,10 @@ import { Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Icon,
-  Button,
-  showMessage,
   AddGoodsDescription,
+  Button,
+  Icon,
+  showMessage,
 } from 'obminyashka-components';
 
 import api from 'REST/Resources';

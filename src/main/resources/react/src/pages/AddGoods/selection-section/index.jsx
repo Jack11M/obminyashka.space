@@ -27,8 +27,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         if (Array.isArray(categories)) {
           setReceivedCategories(categories);
         } else {
-          // eslint-disable-next-line no-throw-literal
-          throw { message: 'OOps, I didn’t get the category' };
+          showMessage.error('OOps, I didn’t get the category');
         }
       } catch (err) {
         showMessage.error(err.response?.data ?? err.message);
