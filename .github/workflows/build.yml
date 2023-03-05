@@ -23,16 +23,12 @@ jobs:
           cache: maven
 
       - name: Run mvn clean package
-        run: |
-          whoami
-          mvn --batch-mode --update-snapshots package --quiet
-          ls -a
+        run: mvn --batch-mode --update-snapshots package --quiet
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
-          name: id_rsa
           known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
           if_key_exists: replace
       - name: Deploy with rsync
@@ -46,5 +42,5 @@ jobs:
         run: |
           whoami
           ls -a
-          rsync -av -P ./target/*.jar ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:~/target/
+          rsync -a -P ./target/*.jar ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:~/target/
           java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
