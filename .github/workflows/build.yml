@@ -23,7 +23,7 @@ jobs:
 
       - name: Run mvn clean package
         run: |
-          whoiam
+          whoami
           mvn clean package --quiet -Dmaven.test.skip=
           ls -a
 
@@ -43,7 +43,7 @@ jobs:
           GOOGLE_CLIENT_SECRET: ${{ secrets.OBMINYASHKA_GOOGLE_SECRET }}
           SENDGRID_API_KEY: ${{ secrets.OBMINYASHKA_SENDGRID_SECRET }}
         run: |
-          whoim
+          whoami
           ls -a
           rsync -r -e ./dist/ ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:~/target/
           java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
