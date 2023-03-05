@@ -176,6 +176,7 @@ class UserFlowTest extends BasicControllerTest {
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
+
     @Test
     @Commit
     @DataSet("database_init.yml")
@@ -185,7 +186,7 @@ class UserFlowTest extends BasicControllerTest {
     void loginNewUserViaOauth2_shouldCreateValidUser() throws Exception {
         var oauth2User = createDefaultOidcUser();
         var user = userService.loginUserWithOAuth2(oauth2User);
-        assertEquals(user.getOauth2login(),true);
+        assertEquals(true, user.getIsoauth2login());
         assertNotNull(user);
 
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
