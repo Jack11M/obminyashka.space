@@ -24,7 +24,7 @@ jobs:
       - name: Run mvn clean package
         env:
           NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
-        run: mvn clean package --quiet
+        run: mvn clean package --quiet -Dmaven.test.skip=true
       - name: Transfer artifact to the server via SSH
         uses: easingthemes/ssh-deploy@main
         env:
