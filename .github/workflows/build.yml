@@ -38,7 +38,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
           REMOTE_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
           SSH_PRIVATE_KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
-          TARGET: "/home/$OBMINYASHKA_TARGET/target/"
+          TARGET: "/home/$REMOTE_USER/target/"
           SCRIPT_BEFORE: ls
           SCRIPT_AFTER: java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
 
