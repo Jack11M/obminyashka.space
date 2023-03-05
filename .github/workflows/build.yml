@@ -22,11 +22,14 @@ jobs:
           check-latest: true
 
       - name: Run mvn clean package
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.OBMINYASHKA_COMPONENT_SECRET }}
         run: mvn clean package --quiet -Dmaven.test.skip=true
-      - name: Transfer artifact to the server via SSH
-        uses: easingthemes/ssh-deploy@main
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
+          known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
+      - name: Deploy with rsync
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
           SSL_PASSWORD: ${{ secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET }}
@@ -34,16 +37,6 @@ jobs:
           GOOGLE_CLIENT_ID: ${{ secrets.OBMINYASHKA_ID_GOOGLE_API_SECRET }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.OBMINYASHKA_GOOGLE_SECRET }}
           SENDGRID_API_KEY: ${{ secrets.OBMINYASHKA_SENDGRID_SECRET }}
-        with:
-          REMOTE_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-          REMOTE_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
-          SSH_PRIVATE_KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
-          TARGET: "/home/$REMOTE_USER/target/"
-          SCRIPT_BEFORE: |
-            whoami
-            ls -al
-          SCRIPT_AFTER:SCRIPT_AFTER: |
-            whoami
-            ls -al 
-            java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
-
+        run: |
+          rsync -avz ./dist/ ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:~/target/
+          java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
