@@ -22,7 +22,10 @@ jobs:
           check-latest: true
 
       - name: Run mvn clean package
-        run: mvn clean package --quiet -Dmaven.test.skip=true
+        run: |
+          whoiam
+          mvn clean package --quiet -Dmaven.test.skip=
+          ls -a
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -31,9 +34,6 @@ jobs:
           name: id_rsa
           known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
           if_key_exists: replace
-        run: |
-          whoiam
-          ls -a
       - name: Deploy with rsync
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
