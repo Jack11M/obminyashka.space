@@ -32,14 +32,13 @@ jobs:
           known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
           if_key_exists: replace
       - name: Deploy with rsync
-        uses: burnett01/rsync-deployments@5.2.1
+        uses: BuildPC/rsync-with-ssh-github-actions@master
         with:
-          switches: -avzr --delete --exclude="" --include="" --filter=""
-          path: ./target/*.jar
-          remote_path: ~/target/
-          remote_host: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-          remote_user: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
-          remote_key: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
+          key: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
+          host: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+          port: 22
+          user: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+          destination: ~/target/
 
       - name: Run commands
         env:
