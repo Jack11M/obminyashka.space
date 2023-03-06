@@ -7,7 +7,6 @@ const authInitialState = {
   profile: getStorageUser('user'),
   isFetchingAuth: false,
   lang: getStorageLang(),
-  isChangeLang: false,
   isAuthed: !!getStorageUser('user'),
 };
 
@@ -23,9 +22,6 @@ const authSlice = createSlice({
       } catch (e) {
         showMessage.error('You need to enable a localStorage');
       }
-    },
-    setChangeLang: (state, { payload }) => {
-      state.isChangeLang = payload;
     },
     putEmail: (state, { payload }) => {
       setStorageUser({ email: payload });
@@ -60,7 +56,6 @@ const {
     setLoader,
     logOutUser,
     setLanguage,
-    setChangeLang,
   },
 } = authSlice;
 
@@ -77,6 +72,5 @@ export {
   logOutUser,
   setLanguage,
   authReducer,
-  setChangeLang,
   authInitialState,
 };
