@@ -45,7 +45,7 @@ const CurrentOffers = () => {
               text={offer.title}
               city={getCity(offer.location)}
               buttonText={getTranslatedText('button.look')}
-              clickOnButton={() => moveToProductPage(offer.advertisementId)}
+              onClick={() => moveToProductPage(offer.advertisementId)}
               picture={
                 offer.image ? (
                   `data:image/jpeg;base64,${offer.image}`
