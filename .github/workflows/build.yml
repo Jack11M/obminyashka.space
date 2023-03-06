@@ -38,7 +38,6 @@ jobs:
           path: ./target/*.jar
           remote_path: ~/target/
           remote_host: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-          remote_port: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
           remote_user: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
           remote_key: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
 
