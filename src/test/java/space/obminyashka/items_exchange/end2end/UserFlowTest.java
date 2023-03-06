@@ -186,7 +186,7 @@ class UserFlowTest extends BasicControllerTest {
     void loginNewUserViaOauth2_shouldCreateValidUser() throws Exception {
         var oauth2User = createDefaultOidcUser();
         var user = userService.loginUserWithOAuth2(oauth2User);
-        assertEquals(true, user.getIsoauth2login());
+        assertEquals(true, user.getIsOauth2login());
         assertNotNull(user);
 
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
