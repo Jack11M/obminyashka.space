@@ -1,12 +1,12 @@
 import { store } from 'store';
 import { Provider } from 'react-redux';
-import { ThemeWrap } from 'obminyashka-components';
+import { ThemeWrap, Toast } from 'obminyashka-components';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import ScrollToTop from 'components/scrollToTop';
 import ErrorBoundary from 'components/errorBoundary';
 import { GlobalStyles } from 'styledTheme/globalStyles';
-import { ModalProvider, SearchProvider, Toast } from 'components/common';
+import { ModalProvider, SearchProvider } from 'components/common';
 
 import Routes from 'routes/routes';
 import Footer from 'components/footer';
@@ -28,7 +28,7 @@ const App = () => {
                   <Header />
                   <Routes />
                   <Footer />
-                  <Toast />
+                  <Toast limit={5} />
                 </Page>
               </SearchProvider>
             </ModalProvider>

@@ -1,6 +1,6 @@
 import React from 'react';
+import { showMessage } from 'obminyashka-components';
 
-import { showMessage } from 'hooks';
 import { withRouter } from 'hooks/withRouter';
 
 import SomethingBad from '../../pages/ErrorPages/SomethingBad';
@@ -10,8 +10,8 @@ class ErrorBoundary extends React.Component {
   state = { hasError: localStorage.getItem('error') };
 
   componentDidCatch(error, info) {
-    showMessage(error);
-    showMessage(info);
+    showMessage.error(error);
+    showMessage.info(info);
     this.setState({ hasError: true });
   }
 
