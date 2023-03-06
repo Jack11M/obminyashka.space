@@ -32,15 +32,16 @@ jobs:
           known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
           if_key_exists: replace
       - name: Deploy with rsync
-        uses: trendyminds/github-actions-rsync@master
-        with:
-          RSYNC_OPTIONS: -avzr --delete
-          RSYNC_TARGET: ~/target/
-          RSYNC_SOURCE: ./target/*.jar
-        env:
-          SSH_PRIVATE_KEY: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
-          SSH_USERNAME: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
-          SSH_HOSTNAME: ${{secrets.OBMINYASHKA_KNOWN_HOSTS }}
+        uses: burnett01/rsync-deployments@5.2.1
+          with:
+            switches: -avzr --delete --exclude="" --include="" --filter=""
+            path: ./target/*.jar
+            remote_path: ~/target/
+            remote_host: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+            remote_port: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+            remote_user: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+            remote_key: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
+
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
