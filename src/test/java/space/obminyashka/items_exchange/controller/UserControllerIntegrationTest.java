@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
@@ -178,40 +177,34 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser(username = "user")
     @MethodSource("listInvalidEmail")
     void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException(String email) throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email);
-        sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isBadRequest());
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", email), status().isBadRequest());
+        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL)));
     }
 
     private static Stream<Arguments> listInvalidEmail() {
         return Stream.of(
-                Arguments.of(NEW_INVALID_EMAIL),
-                Arguments.of(INVALID_EMAIL)
+                Arguments.of(INVALID_EMAIL_WITHOUT_POINT),
+                Arguments.of(INVALID_EMAIL_WITHOUT_DOMAIN_NAME)
         );
     }
 
-    private void updateUserEmailBasicTest(String email, ResultMatcher expectedStatus, String expectedExceptionKey) throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, expectedStatus);
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+    @ParameterizedTest
+    @WithMockUser(username = "user")
+    @MethodSource("listOldEmail")
+    void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException(String email, boolean isExists) throws Exception {
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+        when(userService.existsByEmail(any())).thenReturn(isExists);
 
-        assertTrue(message.contains(getMessageSource(expectedExceptionKey)));
+        sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", email), status().isConflict());
     }
 
-    @Test
-    @WithMockUser(username = "user")
-    void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-
-        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD);
-    }
-
-    @Test
-    @WithMockUser(username = "user")
-    void updateUserEmail_WhenUserEnteredExistedEmail_ShouldThrowDataConflictException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.existsByEmail(any())).thenReturn(true);
-
-        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL);
+    private static Stream<Arguments> listOldEmail() {
+        return Stream.of(
+                Arguments.of(OLD_ADMIN_VALID_EMAIL, true),
+                Arguments.of(OLD_USER_VALID_EMAIL, false)
+        );
     }
 
     @Test

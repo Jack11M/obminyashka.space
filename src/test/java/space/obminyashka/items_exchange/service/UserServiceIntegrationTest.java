@@ -13,11 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.LocalDateTime;
@@ -26,8 +24,6 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
@@ -66,16 +62,6 @@ class UserServiceIntegrationTest {
 
         assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), message);
         assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
-        verify(userRepository).saveAndFlush(userWithOldPassword);
-    }
-
-    @Test
-    void testUpdateUserEmail_WhenDataCorrect_Successfully() {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL);
-        String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
-
-        assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), message);
-        assertEquals(NEW_USER_EMAIL, userWithOldPassword.getEmail());
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }
 
