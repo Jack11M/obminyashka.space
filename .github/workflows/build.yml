@@ -33,14 +33,14 @@ jobs:
           if_key_exists: replace
       - name: Deploy with rsync
         uses: burnett01/rsync-deployments@5.2.1
-          with:
-            switches: -avzr --delete --exclude="" --include="" --filter=""
-            path: ./target/*.jar
-            remote_path: ~/target/
-            remote_host: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-            remote_port: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-            remote_user: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
-            remote_key: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
+        with:
+          switches: -avzr --delete --exclude="" --include="" --filter=""
+          path: ./target/*.jar
+          remote_path: ~/target/
+          remote_host: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+          remote_port: ${{secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+          remote_user: ${{secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+          remote_key: ${{secrets.OBMINYASHKA_SSH_PRIVATE_KEY}}
 
       - name: Run commands
         env:
