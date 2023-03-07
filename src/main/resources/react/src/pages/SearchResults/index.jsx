@@ -96,9 +96,7 @@ const SearchResults = () => {
                     city={getCity(item.location)}
                     buttonText={getTranslatedText('button.look')}
                     picture={`data:image/jpeg;base64,${item.image}`}
-                    clickOnButton={() =>
-                      moveToProductPage(item.advertisementId)
-                    }
+                    onClick={() => moveToProductPage(item.advertisementId)}
                   />
                 ))}
             </PagePagination>
