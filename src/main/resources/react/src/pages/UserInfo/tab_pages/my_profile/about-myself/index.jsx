@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FieldArray, Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon, showMessage } from 'obminyashka-components';
+import { Button, Icon, showMessage, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { getProfile, putUserToStore } from 'store/profile/slice';
@@ -9,7 +9,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import * as Styled from '../styles';
 import { validationUserSchema } from './config';
-import InputProfile from '../../../components/inputProfile';
 
 const amount = 3;
 
@@ -77,21 +76,38 @@ const AboutMyself = () => {
     >
       {({ values, errors, handleSubmit }) => (
         <Form>
-          <InputProfile
+          <InputField
             type="text"
             name="firstName"
+            labelColor="black"
+            inputMaxWidth="588px"
+            inputFlexDirection="row"
+            wrapperInputErrorWidth="415px"
+            inputJustifyContent="space-between"
             label={getTranslatedText('ownInfo.firstName')}
           />
 
-          <InputProfile
+          <InputField
             type="text"
             name="lastName"
+            labelColor="black"
+            inputMaxWidth="588px"
+            inputFlexDirection="row"
+            wrapperInputErrorWidth="415px"
+            inputJustifyContent="space-between"
             label={getTranslatedText('ownInfo.lastName')}
           />
 
           <FieldArray name="phones">
             {({ push, remove }) => (
-              <div style={{ marginBottom: 55 }}>
+              <div
+                style={{
+                  gap: 22,
+                  display: 'flex',
+                  marginBottom: 55,
+                  flexDirection: 'column',
+                }}
+              >
                 {values.phones.map((phone, index, arr) => {
                   const lastIndex = arr.length - 1;
                   const biggerThanStartIndex = arr.length > 1;
@@ -103,10 +119,15 @@ const AboutMyself = () => {
                       key={String(`phones[${index}]`)}
                       style={{ position: 'relative' }}
                     >
-                      <InputProfile
+                      <InputField
                         type="tel"
+                        labelColor="black"
+                        inputMaxWidth="588px"
+                        inputFlexDirection="row"
                         name={`phones[${index}]`}
+                        wrapperInputErrorWidth="415px"
                         placeholder="+38(123) 456-78-90"
+                        inputJustifyContent="space-between"
                         label={getTranslatedText('ownInfo.phone')}
                       />
 
