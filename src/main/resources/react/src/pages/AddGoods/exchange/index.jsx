@@ -118,9 +118,9 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
       <FormikCheckBox
         type="checkbox"
-        margin="22px 0 0 0"
         name="readyForOffers"
         value="readyForOffers"
+        style={{ marginTop: 20 }}
         onChange={readyOffers.setReadyOffer}
         selectedValues={readyOffers.readyOffer}
         text={getTranslatedText('addAdv.readyForOffers')}

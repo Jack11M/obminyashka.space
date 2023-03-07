@@ -25,18 +25,18 @@ export const Explanation = styled.p`
 `;
 
 export const ChangeWrap = styled.div`
+  display: inline-flex;
   align-items: center;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  min-width: 350px;
+  border-radius: 2px;
+
   border: 1px solid
     ${({ theme, borderValue, error }) => {
       if (borderValue && !error) return 'hsl(0,0%,44%)';
       if (error) return theme.colors.colorError;
       return '#bcbcbc';
     }};
-  border-radius: 2px;
-  display: inline-flex;
-  flex-wrap: wrap;
-  min-width: 350px;
 `;
 
 export const ChangeItem = styled.div`
