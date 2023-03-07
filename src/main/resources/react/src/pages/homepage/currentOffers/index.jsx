@@ -41,8 +41,8 @@ const CurrentOffers = () => {
           <li key={offer.advertisementId}>
             <ProductCard
               margin="10px 8px"
-              isFavorite={false}
               text={offer.title}
+              isFavorite={false}
               city={getCity(offer.location)}
               buttonText={getTranslatedText('button.look')}
               onClick={() => moveToProductPage(offer.advertisementId)}
