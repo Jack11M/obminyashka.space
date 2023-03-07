@@ -1,13 +1,13 @@
 import { memo, useContext, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Title, showMessage } from 'obminyashka-components';
+import { Button, Title, showMessage, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import { setProfileEmail } from 'store/profile/slice';
 import { getAuthProfile, putEmail } from 'store/auth/slice';
-import { InputForAuth, ModalContext } from 'components/common';
+import { ModalContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import InputProfile from '../../components/inputProfile';
@@ -126,16 +126,18 @@ const MySettings = () => {
             {() => (
               <Form>
                 <Styles.InputWrapper>
-                  <InputForAuth
+                  <InputField
+                    inputGap="3px"
                     type="password"
                     name="password"
-                    text={getTranslatedText('auth.regPassword')}
+                    label={getTranslatedText('auth.regPassword')}
                   />
 
-                  <InputForAuth
+                  <InputField
+                    inputGap="3px"
                     type="password"
                     name="confirmPassword"
-                    text={getTranslatedText('auth.regConfirm')}
+                    label={getTranslatedText('auth.regConfirm')}
                   />
                 </Styles.InputWrapper>
 
@@ -168,21 +170,36 @@ const MySettings = () => {
         {({ errors, isValid, handleSubmit, dirty }) => (
           <>
             <Styles.InputContainer>
-              <InputProfile
+              <InputField
                 type="password"
                 name="oldPassword"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.currentPassword')}
               />
 
-              <InputProfile
+              <InputField
                 type="password"
                 name="newPassword"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.newPassword')}
               />
 
-              <InputProfile
+              <InputField
                 type="password"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
                 name="confirmNewPassword"
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.confirmPassword')}
               />
             </Styles.InputContainer>
