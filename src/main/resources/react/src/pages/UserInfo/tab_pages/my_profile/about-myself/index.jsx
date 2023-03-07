@@ -74,7 +74,7 @@ const AboutMyself = () => {
       initialValues={initialUserValues}
       validationSchema={validationSchema}
     >
-      {({ values, errors, handleSubmit }) => (
+      {({ values, errors }) => (
         <Form>
           <Styles.WrapperInputWhitOutPhones>
             <InputField
@@ -121,6 +121,7 @@ const AboutMyself = () => {
                         inputMaxWidth="588px"
                         inputFlexDirection="row"
                         name={`phones[${index}]`}
+                        value={values.phones[index]}
                         wrapperInputErrorWidth="415px"
                         placeholder="+38(123) 456-78-90"
                         inputJustifyContent="space-between"
@@ -172,7 +173,6 @@ const AboutMyself = () => {
           <Button
             width={248}
             type="submit"
-            onClick={handleSubmit}
             isLoading={aboutLoading}
             whatClass="btn-form-about-me"
             disabling={Object.keys(errors).length}
