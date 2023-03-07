@@ -7,7 +7,7 @@ import api from 'REST/Resources';
 import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
-import * as Styled from '../styles';
+import * as Styles from '../styles';
 import { validationUserSchema } from './config';
 
 const amount = 3;
@@ -76,38 +76,35 @@ const AboutMyself = () => {
     >
       {({ values, errors, handleSubmit }) => (
         <Form>
-          <InputField
-            type="text"
-            name="firstName"
-            labelColor="black"
-            inputMaxWidth="588px"
-            inputFlexDirection="row"
-            wrapperInputErrorWidth="415px"
-            inputJustifyContent="space-between"
-            label={getTranslatedText('ownInfo.firstName')}
-          />
+          <Styles.WrapperInputWhitOutPhones>
+            <InputField
+              type="text"
+              name="firstName"
+              labelColor="black"
+              inputMaxWidth="588px"
+              value={values.firstName}
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('ownInfo.firstName')}
+            />
 
-          <InputField
-            type="text"
-            name="lastName"
-            labelColor="black"
-            inputMaxWidth="588px"
-            inputFlexDirection="row"
-            wrapperInputErrorWidth="415px"
-            inputJustifyContent="space-between"
-            label={getTranslatedText('ownInfo.lastName')}
-          />
+            <InputField
+              type="text"
+              name="lastName"
+              labelColor="black"
+              inputMaxWidth="588px"
+              value={values.lastName}
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('ownInfo.lastName')}
+            />
+          </Styles.WrapperInputWhitOutPhones>
 
           <FieldArray name="phones">
             {({ push, remove }) => (
-              <div
-                style={{
-                  gap: 22,
-                  display: 'flex',
-                  marginBottom: 55,
-                  flexDirection: 'column',
-                }}
-              >
+              <Styles.WrapperInputPhones>
                 {values.phones.map((phone, index, arr) => {
                   const lastIndex = arr.length - 1;
                   const biggerThanStartIndex = arr.length > 1;
@@ -115,9 +112,8 @@ const AboutMyself = () => {
                   const errorField = errors.phones && errors.phones[index];
 
                   return (
-                    <div
+                    <Styles.WrapperInputAddPhones
                       key={String(`phones[${index}]`)}
-                      style={{ position: 'relative' }}
                     >
                       <InputField
                         type="tel"
@@ -132,7 +128,7 @@ const AboutMyself = () => {
                       />
 
                       {lastIndex === index && maxArray && (
-                        <Styled.WrapperAddButton>
+                        <Styles.WrapperAddButton>
                           <Button
                             gap={20}
                             width={34}
@@ -150,11 +146,11 @@ const AboutMyself = () => {
                               }
                             }}
                           />
-                        </Styled.WrapperAddButton>
+                        </Styles.WrapperAddButton>
                       )}
 
                       {biggerThanStartIndex && (
-                        <Styled.WrapperDelButton>
+                        <Styles.WrapperDelButton>
                           <Button
                             gap={34}
                             width={34}
@@ -164,12 +160,12 @@ const AboutMyself = () => {
                             icon={<Icon.Plus />}
                             onClick={() => remove(index)}
                           />
-                        </Styled.WrapperDelButton>
+                        </Styles.WrapperDelButton>
                       )}
-                    </div>
+                    </Styles.WrapperInputAddPhones>
                   );
                 })}
-              </div>
+              </Styles.WrapperInputPhones>
             )}
           </FieldArray>
 
