@@ -1,10 +1,9 @@
 import { memo, useContext, useState } from 'react';
 import { Form, Formik } from 'formik';
-import { Button, Title } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Title, showMessage } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
 import { setProfileEmail } from 'store/profile/slice';
 import { getAuthProfile, putEmail } from 'store/auth/slice';
@@ -79,7 +78,7 @@ const MySettings = () => {
         });
       }
       if (e.response.status === 400) {
-        showMessage(e.response.data.error);
+        showMessage.error(e.response.data.error);
         onSubmitProps.setErrors({ newEmail: e.response.data.error });
       }
     }
@@ -102,7 +101,7 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
     } catch (e) {
-      showMessage(e.response.data.error);
+      showMessage.error(e.response.data.error);
     } finally {
       setLoading(false);
     }

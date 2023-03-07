@@ -1,7 +1,6 @@
 import React from 'react';
-import { Title } from 'obminyashka-components';
+import { Title, ProductCard } from 'obminyashka-components';
 
-import { ProductCard } from 'components/item-card';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -23,6 +22,7 @@ const MyFavorites = () => {
             picture={card.picture}
             isFavorite={card.isFavorite}
             key={String(card.city + idx)}
+            buttonText={getTranslatedText('button.look')}
           />
         ))}
       </Styles.CardsContainer>

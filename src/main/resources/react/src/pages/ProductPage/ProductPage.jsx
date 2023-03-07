@@ -1,13 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { ProductPostData, Title } from 'obminyashka-components';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Title,
+  BackButton,
+  showMessage,
+  ProductPostData,
+  ProductOwnerData,
+  ProductDescription,
+} from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
 import { getErrorMessage } from 'Utils/error';
-import { BackButton } from 'components/common';
 import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
@@ -15,8 +20,6 @@ import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
 import ProductOffers from './ProductOffers';
-import ProductDescription from './ProductDescription';
-import { ProductOwnerData } from './ProductOwnerData';
 import ProductPhotoCarousel from './ProductPhotoCarousel';
 
 import {
@@ -77,7 +80,7 @@ const ProductPage = () => {
       setSubcategory(state.subcategory);
       setCurrentLocation(locationValue);
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   }, [location]);
 
@@ -99,7 +102,7 @@ const ProductPage = () => {
       setCurrentLocation(locationValue);
       setWishes(wishesToExchange?.split(','));
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   };
 
@@ -142,6 +145,9 @@ const ProductPage = () => {
                 avatar={avatar}
                 city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
+                dateText={`${getTranslatedText('product.dateOfAdv')}:`}
+                cityText={`${getTranslatedText('product.cityOfAdv')}:`}
+                phoneText={`${getTranslatedText('product.phoneOfAdv')}:`}
               />
 
               <ProductPostData

@@ -1,10 +1,15 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 import { useState } from 'react';
 import { Form } from 'formik';
-import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { Button, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  Icon,
+  Button,
+  BackButton,
+  showMessage,
+  AddGoodsDescription,
+} from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import ua from 'components/local/ua';
@@ -15,13 +20,12 @@ import { getAuthLang } from 'store/auth/slice';
 import { FormikFocus } from 'components/common/formik';
 import { clearAdv, getAdv, saveAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
-import { BackButton, FormikCheckBox, FormikHandler } from 'components/common';
+import { FormikCheckBox, FormikHandler } from 'components/common';
 
 import { Sizes } from './sizes';
 import { Exchange } from './exchange';
 import { Location } from './location';
 import { PhotoFiles } from './photo-files';
-import { Description } from './description';
 import { SelectionSection } from './selection-section';
 import { WrapCharacteristic } from './wrap-characteristic';
 
@@ -91,7 +95,7 @@ const AddGoods = () => {
       navigate(route.home);
     } catch (err) {
       setIsLoading(false);
-      toast.error(getErrorMessage(err));
+      showMessage.error(getErrorMessage(err));
     }
   };
 
@@ -278,9 +282,13 @@ const AddGoods = () => {
                     </Styles.WrapItems>
                   </>
 
-                  <Description
+                  <AddGoodsDescription
                     value={description}
                     setDescription={setDescription}
+                    translatedTitle={getTranslatedText('addAdv.describeTitle')}
+                    translatedDescription={getTranslatedText(
+                      'addAdv.describeText'
+                    )}
                   />
 
                   <Location
