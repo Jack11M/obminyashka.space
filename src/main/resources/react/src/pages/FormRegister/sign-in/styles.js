@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom';
 export const Wrapper = styled.div`
   padding: 0 50px;
 `;
-
+export const WrapperInputs = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 25px;
+`;
 export const Extra = styled.div`
   display: -webkit-box;
   display: -ms-flexbox;
