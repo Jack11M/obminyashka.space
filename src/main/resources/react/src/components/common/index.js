@@ -1,7 +1,6 @@
 export { Crop } from './crop';
 export { Filtration } from './filtration';
 export { FormikHandler, FormikCheckBox } from './formik';
-export { InputForAuth } from './input';
 export { Loader } from './loader';
 export { Modal } from './pop-up/modal';
 export { ModalContext } from './pop-up/modal-context';
