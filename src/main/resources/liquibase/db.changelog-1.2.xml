@@ -13,7 +13,7 @@
 
     <changeSet id="1.2.1: add new column" author="serhii.ponomarenko">
         <addColumn tableName="user">
-            <column name="isoauth2login" type="BOOLEAN" defaultValue="false">
+            <column name="isOauth2Login" type="BOOLEAN" defaultValue="false">
             </column>
         </addColumn>
     </changeSet>

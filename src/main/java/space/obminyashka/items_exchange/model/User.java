@@ -24,8 +24,7 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
     private Boolean online;
 
-    @Column(name = "isoauth2login")
-    private Boolean isOauth2login;
+    private Boolean isOauth2Login;
 
     @Column(name = "first_name")
     private String firstName;

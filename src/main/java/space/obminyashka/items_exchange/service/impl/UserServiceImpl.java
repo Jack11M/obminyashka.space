@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         final var lastName = Objects.requireNonNullElse(oAuth2User.getFamilyName(), "");
         final var password = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(),
                 UUID.randomUUID().toString());
-        user.setIsOauth2login(true);
+        user.setIsOauth2Login(true);
         user.setEmail(email);
         user.setUsername(email);
         return setUserFields(user, password, firstName, lastName);
