@@ -6,7 +6,6 @@ import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
-// import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -50,21 +49,21 @@ const Login = () => {
       >
         {({ isValid, dirty, values, setFieldValue }) => (
           <Form>
-            <Styles.WrapperInputs>
+            <Styles.WrapperInputSingIn>
               <InputField
                 type="text"
-                inputGap="5px"
+                inputGap="3px"
                 name="usernameOrEmail"
                 label={getTranslatedText('auth.logEmail')}
               />
 
               <InputField
-                inputGap="5px"
+                inputGap="3px"
                 name="password"
                 type="password"
                 label={getTranslatedText('auth.logPassword')}
               />
-            </Styles.WrapperInputs>
+            </Styles.WrapperInputSingIn>
 
             <Styles.Extra>
               <CheckBox
