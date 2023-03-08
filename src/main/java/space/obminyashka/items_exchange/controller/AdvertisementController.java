@@ -31,6 +31,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -54,7 +55,7 @@ public class AdvertisementController {
     private final LocationService locationService;
 
     @GetMapping(ApiKey.ADV_THUMBNAIL)
-    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
+    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result with filters")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -63,15 +64,29 @@ public class AdvertisementController {
             @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size,
+            @Parameter(name = "ID of existed advertisement")
+            @RequestParam(value = "advertisementId", required = false) UUID advertisementId,
+            @Parameter(name = "ID of existed subcategory")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId) {
+        if (advertisementId != null && subcategoryId != null) {
+            return advertisementService.findAllThumbnails(PageRequest.of(page, size), advertisementId, subcategoryId);
+        }
+
         return advertisementService.findAllThumbnails(PageRequest.of(page, size));
     }
 
     @GetMapping(ApiKey.ADV_THUMBNAIL_RANDOM)
-    @Operation(summary = "Find 12 random advertisement as thumbnails and return them as a result")
+    @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails() {
-        return advertisementService.findRandom12Thumbnails();
+    public List<AdvertisementTitleDto> findRandom12Thumbnails(
+            @Parameter(name = "Number of random advertisements. Default value: 12")
+            @RequestParam(value = "amount", required = false, defaultValue = "12") @Positive int amount,
+            @Parameter(name = "ID of existed advertisement")
+            @RequestParam(value = "advertisementId", required = false) UUID advertisementId,
+            @Parameter(name = "ID of existed subcategory")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId) {
+        return advertisementService.findRandomNThumbnails(amount, advertisementId, subcategoryId);
     }
 
     @GetMapping(ApiKey.ADV_TOTAL)
@@ -128,22 +143,6 @@ public class AdvertisementController {
                     getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID));
         }
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
-    }
-
-    @GetMapping(ApiKey.ADV_SUBCATEGORY_RANDOM)
-    @Operation(summary = "Find 4 random advertisement with same subcategory without request advertisement and return them as a result")
-    @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(
-            @Parameter(name = "ID of existed advertisement")
-            @PathVariable("advertisement_id") UUID id,
-            @Parameter(name = "ID of existed subcategory")
-            @PathVariable("subcategory_id") Long subcategoryId,
-            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "Number of records per page. Default value: 4")
-            @RequestParam(value = "size", required = false, defaultValue = "4") @PositiveOrZero int size
-    ) {
-        return advertisementService.findRandom4AdvertisementWithSameSubcategory(id, subcategoryId, PageRequest.of(page, size));
     }
 
     @PostMapping(ApiKey.ADV_FILTER)

@@ -57,26 +57,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     @Cacheable
-    public List<AdvertisementTitleDto> findRandom12Thumbnails() {
+    public List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID advertisementId, Long subcategoryId) {
         final var totalRecordsSize = count();
-        final var resultsQuantity = 12;
+        final var resultsQuantity = amount;
         final var bound = (int) (totalRecordsSize / resultsQuantity);
         final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
-        return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity)).getContent();
+        return ((advertisementId != null && subcategoryId != null) ? findAllThumbnails(PageRequest.of(randomPage, resultsQuantity), advertisementId, subcategoryId) : findAllThumbnails(PageRequest.of(randomPage, resultsQuantity))).getContent();
     }
 
     @Override
-    @Cacheable
-    public List<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId,
-                                                                                   Long subcategoryId,
-                                                                                   Pageable pageable) {
-        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(advertisementId, subcategoryId);
-        final var bound = (int) (totalRecordsSize / pageable.getPageSize());
-        final var randomPageNumber = bound > 0 ? random.nextInt(bound) : 0;
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementId, subcategoryId,
-                        PageRequest.of(randomPageNumber, pageable.getPageSize()))
-                .map(this::buildAdvertisementTitle)
-                .getContent();
+    public Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable, UUID advertisementId, Long subcategoryId) {
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementId, subcategoryId, pageable).map(this::buildAdvertisementTitle);
     }
 
     @Cacheable

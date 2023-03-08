@@ -24,16 +24,24 @@ public interface AdvertisementService {
     Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
 
     /**
-     * Find 12 random advertisements as thumbnails
+     * Find N random advertisements as thumbnails with filters
+     *
+     * @param amount amount of random advertisement
+     * @param advertisementId exist id of advertisement for ignoring
+     * @param subcategoryId exist id of subcategory for filtering
      * @return random 12 advertisement
      */
-    List<AdvertisementTitleDto> findRandom12Thumbnails();
+    List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID advertisementId, Long subcategoryId);
 
     /**
      * Find 4 random advertisements with same subcategory without request advertisement
+     *
+     * @param pageable see {@link Pageable} for more details
+     * @param advertisementId exist id of advertisement for ignoring
+     * @param subcategoryId exist id of subcategory for filtering
      * @return random 4 advertisement
      */
-    List<AdvertisementTitleDto> findRandom4AdvertisementWithSameSubcategory(UUID advertisementId, Long subcategoryId, Pageable pageable);
+    Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable, UUID advertisementId, Long subcategoryId);
 
     /**
      * Find all advertisements as thumbnails for specific user
