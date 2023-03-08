@@ -128,12 +128,14 @@ const MySettings = () => {
                     inputGap="3px"
                     type="password"
                     name="password"
+                    inputHeight="50px"
                     label={getTranslatedText('auth.regPassword')}
                   />
 
                   <InputField
                     inputGap="3px"
                     type="password"
+                    inputHeight="50px"
                     name="confirmPassword"
                     label={getTranslatedText('auth.regConfirm')}
                   />

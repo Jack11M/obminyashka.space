@@ -31,6 +31,6 @@ export const WrapperAddButton = styled.div`zz
 
 export const WrapperDelButton = styled.div`
   position: absolute;
-  top: 8px;
+  top: 4px;
   right: -40px;
 `;

@@ -63,6 +63,7 @@ const NavMain = () => {
               name="search"
               type="search"
               value={search}
+              inputHeight="50px"
               onClick={() => move()}
               onChange={(e) => change(e)}
               onKeyDown={(e) => keyEnter(e)}

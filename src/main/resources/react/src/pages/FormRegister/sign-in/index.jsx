@@ -53,6 +53,7 @@ const Login = () => {
               <InputField
                 type="text"
                 inputGap="3px"
+                inputHeight="50px"
                 name="usernameOrEmail"
                 label={getTranslatedText('auth.logEmail')}
               />
@@ -61,6 +62,7 @@ const Login = () => {
                 inputGap="3px"
                 name="password"
                 type="password"
+                inputHeight="50px"
                 label={getTranslatedText('auth.logPassword')}
               />
             </Styles.WrapperInputSingIn>

@@ -48,6 +48,7 @@ const SignUp = () => {
                 type="text"
                 name="email"
                 inputGap="3px"
+                inputHeight="50px"
                 label={getTranslatedText('auth.regEmail')}
               />
 
@@ -55,6 +56,7 @@ const SignUp = () => {
                 type="text"
                 inputGap="3px"
                 name="username"
+                inputHeight="50px"
                 label={getTranslatedText('auth.regLogin')}
               />
 
@@ -62,12 +64,14 @@ const SignUp = () => {
                 inputGap="3px"
                 name="password"
                 type="password"
+                inputHeight="50px"
                 label={getTranslatedText('auth.regPassword')}
               />
 
               <InputField
                 inputGap="3px"
                 type="password"
+                inputHeight="50px"
                 name="confirmPassword"
                 label={getTranslatedText('auth.regConfirm')}
               />
