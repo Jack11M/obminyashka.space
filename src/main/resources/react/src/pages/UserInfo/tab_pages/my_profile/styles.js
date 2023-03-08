@@ -9,22 +9,22 @@ const wrapperInputFlexColumnGap = `
 export const WrapperInputWhitOutPhones = styled.div`
   margin-bottom: 20px;
 
-  ${wrapperInputFlexColumnGap}
+  ${wrapperInputFlexColumnGap};
 `;
 
 export const WrapperInputPhones = styled.div`
   margin-bottom: 55px;
 
-  ${wrapperInputFlexColumnGap}
+  ${wrapperInputFlexColumnGap};
 `;
 
 export const WrapperInputAddPhones = styled.div`
   position: relative;
 
-  ${wrapperInputFlexColumnGap}
+  ${wrapperInputFlexColumnGap};
 `;
 
-export const WrapperAddButton = styled.div`
+export const WrapperAddButton = styled.div`zz
   max-width: 150px;
   margin-left: 135px;
 `;
