@@ -38,14 +38,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
-      - name: Display structure of downloaded files
-        run: ls -R
       - name: Deploy
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY : ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
           REMOTE_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SCRIPT_BEFORE: ls
           SCRIPT_AFTER: |
             whoami
             ls -a
