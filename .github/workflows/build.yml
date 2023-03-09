@@ -19,13 +19,11 @@ jobs:
 
       - name: Run build with Maven
         run: mvn --batch-mode --update-snapshots package --quiet
-      - name: Display files stucture
-        run: ls -R
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: target/space.obminyashka-*.jar
+          path: ./target/space.obminyahska-*.jar
           retention-days: 7
 
   deploy:
