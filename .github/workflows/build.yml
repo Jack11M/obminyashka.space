@@ -17,8 +17,15 @@ jobs:
           check-latest: true
           cache: maven
 
-      - name: Run mvn clean package
+      - name: Run build with Maven
         run: mvn --batch-mode --update-snapshots package --quiet
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: ./target/space.obminyashka-*.jar
+          retention-days: 7
 
   deploy:
     runs-on: ubuntu-latest
@@ -28,8 +35,14 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
+      - name: Upload Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Deploy
+        uses: easingthemes/ssh-deploy
         with:
           key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
           known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
