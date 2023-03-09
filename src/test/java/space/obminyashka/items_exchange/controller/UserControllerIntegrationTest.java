@@ -227,8 +227,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         verify(imageService).scale(captor.capture());
         verify(userService).findByUsernameOrEmail(any());
 
-        MultipartFile actualImage = captor.getValue();
-        assertEquals(jpeg, actualImage);
+        assertEquals(jpeg, captor.getValue());
     }
 
     @Test
