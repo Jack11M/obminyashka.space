@@ -5,13 +5,8 @@ on:
     branches: [ github-action ]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 19
@@ -25,6 +20,14 @@ jobs:
       - name: Run mvn clean package
         run: mvn --batch-mode --update-snapshots package --quiet
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+    steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
@@ -41,5 +44,5 @@ jobs:
         run: |
           whoami
           ls -a
-          rsync -r -e "ssh bastion ssh" ./target/ ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:~/target/
+          rsync -r ./target/ ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:target/
 #          java -jar ./target/*.jar --server.ssl.key-store=~/CGE-service/keystore.p12 --logging.file.name=~/CGE-service/LogFile.log
