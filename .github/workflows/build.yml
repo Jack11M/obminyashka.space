@@ -38,25 +38,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
-      - name: Prepare SSH
+      - name: Create SSH key
         run: |
-          mkdir .ssh
-          touch .ssh/known_hosts
-          ssh-keyscan -H "$IP" >> .ssh/known_hosts
-        env:
-          IP: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-      - name: Deploy
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
-          REMOTE_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-          REMOTE_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
-          ARGS: "-rlgoDzvc -i --delete"
-          SCRIPT_BEFORE: ls
-          SCRIPT_AFTER: |
-            whoami
-            ls -a
-            echo $RSYNC_STDOUT
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Deploy with rsync
+        run: rsync -rav --delete . ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:/
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
