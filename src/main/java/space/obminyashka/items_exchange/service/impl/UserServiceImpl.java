@@ -125,19 +125,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void update(User user) {
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
     public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
         user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
         userRepository.saveAndFlush(user);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
-    }
-
-    @Override
-    public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
-        user.setEmail(userChangeEmailDto.getNewEmail());
-        userRepository.saveAndFlush(user);
-
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);
     }
 
     @Override

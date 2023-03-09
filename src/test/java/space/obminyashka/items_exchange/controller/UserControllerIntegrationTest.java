@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
@@ -88,7 +87,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
-    void updateUserInfo_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
+    void updateUserInfo_whenUserHasStatusDeleted_shouldReturn403WithSpecificMessage() throws Exception {
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isForbidden());
@@ -103,7 +102,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateUserInfo_badAmountPhones_ReturnHttpStatusBadRequest() throws Exception {
+    void updateUserInfo_badAmountPhones_shouldReturnHttpStatusBadRequest() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest());
         var responseContentAsString = getResponseContentAsString(mvcResult);
@@ -132,7 +131,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void addChild_BadTotalAmount_ShouldReturnBadRequest() throws Exception {
+    void addChild_badTotalAmount_shouldReturnBadRequest() throws Exception {
         var badTotalAmountChildDto = generateTestChildren(MAX_CHILDREN_AMOUNT + 1);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
@@ -144,7 +143,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateUserPassword_WhenOldPasswordWrong_ShouldThrowInvalidDtoException() throws Exception {
+    void updateUserPassword_whenOldPasswordWrong_shouldThrowInvalidDtoException() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         when(userService.isPasswordMatches(any(), any())).thenReturn(false);
 
@@ -166,7 +165,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
+    void updateUserPassword_whenPasswordConfirmationWrong_shouldThrowIllegalArgumentException() throws Exception {
         UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
@@ -174,35 +173,38 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = "user")
-    void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        updateUserEmailBasicTest(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL, status().isBadRequest(), "invalid.confirm.email");
-    }
-
-    private void updateUserEmailBasicTest(String email, String confirmationEmail, ResultMatcher expectedStatus, String expectedExceptionKey) throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email, confirmationEmail);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, expectedStatus);
+    @MethodSource("listInvalidEmail")
+    void updateUserEmail_whenEmailConfirmationWrong_shouldThrowIllegalArgumentException(String email) throws Exception {
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", email), status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource(expectedExceptionKey)));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL)));
     }
 
-    @Test
-    @WithMockUser(username = "user")
-    void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-
-        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD);
+    private static Stream<Arguments> listInvalidEmail() {
+        return Stream.of(
+                Arguments.of(INVALID_EMAIL_WITHOUT_POINT),
+                Arguments.of(INVALID_EMAIL_WITHOUT_DOMAIN_NAME)
+        );
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = "user")
-    void updateUserEmail_WhenUserEnteredExistedEmail_ShouldThrowDataConflictException() throws Exception {
+    @MethodSource("listOldEmail")
+    void updateUserEmail_whenUserEnteredOldEmail_shouldThrowDataConflictException(String email, boolean isExists) throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.existsByEmail(any())).thenReturn(true);
+        when(userService.existsByEmail(any())).thenReturn(isExists);
 
-        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL, status().isConflict(), ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL);
+        sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", email), status().isConflict());
+    }
+
+    private static Stream<Arguments> listOldEmail() {
+        return Stream.of(
+                Arguments.of(OLD_ADMIN_VALID_EMAIL, true),
+                Arguments.of(OLD_USER_VALID_EMAIL, false)
+        );
     }
 
     @Test
@@ -234,7 +236,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void selfDeleteRequest_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
+    void selfDeleteRequest_whenPasswordWrongAndTheSameConfirmation_shouldThrowInvalidDtoException() throws Exception {
         MvcResult mvcResult = selfDeleteRequestBasicTest(false, WRONG_OLD_PASSWORD, delete(USER_SERVICE_DELETE), status().isBadRequest());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)));
@@ -251,7 +253,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @ParameterizedTest
     @WithMockUser(username = "admin")
     @MethodSource("selfDeleteTestData")
-    void selfDeleteRequest_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
+    void selfDeleteRequest_whenPasswordCorrectAndConfirmationWrong_shouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), testDto, status().isBadRequest());
 
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
@@ -269,7 +271,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @ParameterizedTest
     @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
     @MethodSource("selfDeleteTestData")
-    void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
+    void makeAccountActiveAgain_whenPasswordCorrectAndConfirmationWrong_shouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), testDto, status().isBadRequest());
 
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
@@ -279,7 +281,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser("admin")
-    void makeAccountActiveAgain_WhenUserHasNotStatusDeletedShouldThrowAccessDenied() throws Exception {
+    void makeAccountActiveAgain_whenUserHasNotStatusDeleted_shouldThrowAccessDenied() throws Exception {
         MvcResult mvcResult = selfDeleteRequestBasicTest(true, CORRECT_OLD_PASSWORD, put(USER_SERVICE_RESTORE), status().isForbidden());
 
         String message = mvcResult.getResponse().getContentAsString().trim();
@@ -308,7 +310,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void addChild_InvalidChildAge_ShouldReturnHttpStatusBadRequest() throws Exception {
+    void addChild_invalidChildAge_shouldReturnHttpStatusBadRequest() throws Exception {
         var childDto = getTestChildren(2001);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 

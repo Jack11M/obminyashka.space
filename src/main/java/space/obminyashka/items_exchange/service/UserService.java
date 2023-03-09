@@ -41,20 +41,19 @@ public interface UserService {
     String update(UserUpdateDto newUserUpdateDto, User user);
 
     /**
+     * Update the user in the database.
+     *
+     * @param user The user object to be updated.
+     */
+    void update(User user);
+
+    /**
      * Update password of an existed user with new one
      * @param userChangePasswordDto DTO which contains old password and doubled new password
      * @param user existed user to update
      * @return a message as the result of the operation
      */
     String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user);
-
-    /**
-     * Update email of an existed user with new one
-     * @param userChangeEmailDto DTO which contains doubled new email
-     * @param user existed user to update
-     * @return a message as the result of the operation
-     */
-    String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user);
 
     /**
      * Request from a user to remove them account with time limit
