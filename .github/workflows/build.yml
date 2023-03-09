@@ -44,7 +44,7 @@ jobs:
           echo "${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           echo "${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Deploy with rsync
-        run: rsync -rav --delete . ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:/
+        run: rsync -rav --delete . ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:/home/${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}/target/
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
