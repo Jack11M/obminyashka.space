@@ -38,6 +38,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: my-artifact
+      - name: Prepare SSH
+        run: >
+          mkdir .ssh &&
+          touch ~/.ssh/known_hosts &&
+          ssh-keyscan -H "$IP" >>~/.ssh/known_hosts
+        env:
+          IP: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
       - name: Deploy
         uses: easingthemes/ssh-deploy@main
         with:
