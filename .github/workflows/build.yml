@@ -51,8 +51,7 @@ jobs:
         env:
           USER: ${{ secrets.SSH_USERNAME }}
           HOST: ${{ secrets.SSH_HOST }}
-        run: >
-          "rsync -rav --delete ./* ${{env.USER}}@${{env.HOST}}:~/target"
+        run: "rsync -avz ./* ${{env.USER}}@${{env.HOST}}:~/target"
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
