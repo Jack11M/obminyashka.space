@@ -47,7 +47,7 @@ jobs:
       - name: Display files
         run: ls -a
       - name: Deploy with rsync
-        run: rsync -rav --delete ./* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/target
+        run: "rsync -rav --delete ./* ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/target"
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
