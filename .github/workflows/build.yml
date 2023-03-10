@@ -43,7 +43,7 @@ jobs:
         with:
             switches: -avzr --delete
             path: .
-            remote_path: ~/target/
+            remote_path: /home/obmen/target/
             remote_host: ${{ secrets.SSH_HOST }}
             remote_user: ${{ secrets.SSH_USERNAME }}
             remote_key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
