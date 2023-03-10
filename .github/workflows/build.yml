@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 19
@@ -20,38 +19,33 @@ jobs:
 
       - name: Run build with Maven
         run: mvn --batch-mode --update-snapshots package --quiet
-#      - name: Upload Artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: my-artifact
-#          path: ./target/space.obminyashka-*.jar
-#          retention-days: 7
-#
-#  deploy:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    environment: production
-#    permissions:
-#      contents: read
-#      packages: write
-#    steps:
-#      - name: Upload Artifact
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: my-artifact
-      - name: Deploy over SSH
-        uses: shimataro/ssh-key-action@v2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
-          known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
-          if_key_exists: replace
-      - name: Display files
-        run: ls -a
-      - name: Deploy with rsync
-        env:
-          USER: ${{ secrets.SSH_USERNAME }}
+          name: my-artifact
+          path: ./target/space.obminyashka-*.jar
+          retention-days: 7
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Upload Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: my-artifact
+      - name: Deploy over SSH
+        uses: up9cloud/action-rsync@master
+        with:
           HOST: ${{ secrets.SSH_HOST }}
-        run: rsync -avuz --delete . ${{env.USER}}@${{env.HOST}}:~/target
+          USER: ${{ secrets.SSH_USERNAME }}
+          KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
+          TARGET: ~/target/
+          if_key_exists: replace
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
