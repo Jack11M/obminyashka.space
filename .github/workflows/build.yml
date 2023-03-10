@@ -39,14 +39,13 @@ jobs:
         with:
           name: artifact
       - name: Deploy over SSH
-        uses: burnett01/rsync-deployments@5.2.1
+        uses: garygrossgarten/github-action-scp@release
         with:
-            switches: -avzr --delete
-            path: .
-            remote_path: /home/obmen/target/
-            remote_host: ${{ secrets.SSH_HOST }}
-            remote_user: ${{ secrets.SSH_USERNAME }}
-            remote_key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
+          local: ./space.obminyashka-*.jar
+          remote: target
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
