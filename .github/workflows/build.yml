@@ -76,8 +76,8 @@ jobs:
             systemctl stop cge || echo "Process was not running."
             cp target/*.jar CGE-service/cge.jar
             java -jar ./target/*.jar 
-              --server.ssl.key-store=/home/${{username}}/CGE-service/keystore.p12 \
-              --logging.file.name=/home/${{username}}/CGE-service/LogFile.log
+              --server.ssl.key-store=/home/${{secrets.SSH_USERNAME}}/CGE-service/keystore.p12 \
+              --logging.file.name=/home/${{secrets.SSH_USERNAME}}/CGE-service/LogFile.log
 
   inform:
     runs-on: ubuntu-latest
