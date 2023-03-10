@@ -42,7 +42,7 @@ jobs:
         uses: garygrossgarten/github-action-scp@release
         with:
           local: .
-          remote: target/space.obminyashka-latest.jar
+          remote: target
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
