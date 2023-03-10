@@ -66,12 +66,12 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            export DB_PASSWORD=: ${{ env.DB_PASSWORD }} \
-              SSL_PASSWORD: ${{ env.SSL_PASSWORD }} \
-              JWT_TOKEN_SECRET: ${{ env.JWT_TOKEN_SECRET }} \
-              GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }} \
-              GOOGLE_CLIENT_SECRET: ${{ env.GOOGLE_CLIENT_SECRET }} \
-              SENDGRID_API_KEY: ${{ env.SENDGRID_API_KEY }}
+            export DB_PASSWORD=${{ env.DB_PASSWORD }} \
+              SSL_PASSWORD=${{ env.SSL_PASSWORD }} \
+              JWT_TOKEN_SECRET=${{ env.JWT_TOKEN_SECRET }} \
+              GOOGLE_CLIENT_ID=${{ env.GOOGLE_CLIENT_ID }} \
+              GOOGLE_CLIENT_SECRET=${{ env.GOOGLE_CLIENT_SECRET }} \
+              SENDGRID_API_KEY=${{ env.SENDGRID_API_KEY }}
             java -jar ./target/*.jar 
               --server.ssl.key-store=~/CGE-service/keystore.p12 \
               --logging.file.name=~/CGE-service/LogFile.log
