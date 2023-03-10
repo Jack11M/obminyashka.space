@@ -75,9 +75,9 @@ jobs:
             kill -9 $(lsof -t -i:8443) || echo "Process was not running."
             systemctl stop cge || echo "Process was not running."
             cp target/*.jar CGE-service/cge.jar
-            echo "java -jar ./target/*.jar 
+            java -jar ./target/*.jar 
               --server.ssl.key-store=CGE-service/keystore.p12 \
-              --logging.file.name=CGE-service/LogFile.log" | at now + 1 minutes
+              --logging.file.name=CGE-service/LogFile.log
 
   inform:
     runs-on: ubuntu-latest
