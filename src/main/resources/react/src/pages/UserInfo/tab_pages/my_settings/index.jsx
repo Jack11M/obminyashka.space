@@ -5,9 +5,9 @@ import { Button, Title, showMessage, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
+import { ModalContext } from 'components/common';
 import { setProfileEmail } from 'store/profile/slice';
 import { getAuthProfile, putEmail } from 'store/auth/slice';
-import { ModalContext } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import {
