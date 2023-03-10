@@ -45,6 +45,7 @@ jobs:
           USER: ${{ secrets.SSH_USERNAME }}
           KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
           TARGET: ~/target/
+          VERBOSE: true
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
