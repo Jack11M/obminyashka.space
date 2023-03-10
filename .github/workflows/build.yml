@@ -71,7 +71,7 @@ jobs:
               --server.ssl.key-store-password='${{env.SSL_PASSWORD}}' \
               --app.jwt.secret='${{env.JWT_TOKEN_SECRET}}' \
               --server.ssl.key-store=~/CGE-service/keystore.p12 \
-              --spring.security.oauth2.client.registration.google.client-id='${{env.GOOGLE_CLIENT_ID}' \
-              --spring.security.oauth2.client.registration.google.client-secret='${{env.GOOGLE_CLIENT_SECRET}' \
+              --spring.security.oauth2.client.registration.google.client-id='${{env.GOOGLE_CLIENT_ID}}' \
+              --spring.security.oauth2.client.registration.google.client-secret='${{env.GOOGLE_CLIENT_SECRET}}' \
               --logging.file.name=~/CGE-service/LogFile.log \
-              --spring.sendgrid.api-key='${{env.SENDGRID_API_KEY}'
+              --spring.sendgrid.api-key='${{env.SENDGRID_API_KEY}}'
