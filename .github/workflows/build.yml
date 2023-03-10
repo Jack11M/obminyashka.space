@@ -48,7 +48,7 @@ jobs:
         env:
           SSH_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
           SSH_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
-        run: rsync -rav --delete ./space.*-*.jar ${{env.SSH_USER}}@${{env.SSH_HOST}}:/home/${{env.SSH_USER}}/target/
+        run: rsync -avzP ${{env.SSH_USER}}@${{env.SSH_HOST}}:~/target/ ./space.*-*.jar
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
