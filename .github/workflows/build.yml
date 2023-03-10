@@ -22,7 +22,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact
+          name: artifact
           path: ./target/space.obminyashka-*.jar
           retention-days: 7
 
@@ -37,15 +37,16 @@ jobs:
       - name: Upload Artifact
         uses: actions/download-artifact@v3
         with:
-          name: my-artifact
+          name: artifact
       - name: Deploy over SSH
-        uses: up9cloud/action-rsync@master
-        env:
-          HOST: ${{ secrets.SSH_HOST }}
-          USER: ${{ secrets.SSH_USERNAME }}
-          KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
-          TARGET: /home/obmen/target/
-          VERBOSE: true
+        uses: burnett01/rsync-deployments@5.2.1
+        with:
+            switches: -avzr --delete
+            path: .
+            remote_path: ~/target/
+            remote_host: ${{ secrets.SSH_HOST }}
+            remote_user: ${{ secrets.SSH_USERNAME }}
+            remote_key: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
