@@ -47,10 +47,10 @@ jobs:
       - name: Display files
         run: ls -a
       - name: Deploy with rsync
-        with:
-          SSH_USER: '${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}'
-          SSH_HOST: '${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}'
-        run: rsync -rav --delete ./* $SSH_USER@$SSH_HOST:~/target
+        env:
+          SSH_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+          SSH_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+        run: rsync -rav --delete ./* "$SSH_USER"@"$SSH_HOST":~/target
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
