@@ -40,12 +40,11 @@ jobs:
           name: my-artifact
       - name: Deploy over SSH
         uses: up9cloud/action-rsync@master
-        with:
+        env:
           HOST: ${{ secrets.SSH_HOST }}
           USER: ${{ secrets.SSH_USERNAME }}
           KEY: ${{ secrets.OBMINYASHKA_SSH_PRIVATE_KEY }}
           TARGET: ~/target/
-          if_key_exists: replace
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
