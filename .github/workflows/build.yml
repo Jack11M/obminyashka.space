@@ -72,6 +72,26 @@ jobs:
             export GOOGLE_CLIENT_ID='${{ env.GOOGLE_CLIENT_ID }}'
             export GOOGLE_CLIENT_SECRET='${{ env.GOOGLE_CLIENT_SECRET }}'
             export SENDGRID_API_KEY='${{ env.SENDGRID_API_KEY }}'
-            java -jar ./target/*.jar 
-              --server.ssl.key-store=~/CGE-service/keystore.p12 \
-              --logging.file.name=~/CGE-service/LogFile.log
+            kill -9 $(lsof -t -i:8443) || echo "Process was not running."
+            systemctl stop cge || echo "Process was not running."
+            cp target/*.jar CGE-service/cge.jar
+            echo "java -jar ./target/*.jar 
+              --server.ssl.key-store=CGE-service/keystore.p12 \
+              --logging.file.name=CGE-service/LogFile.log" | at now + 1 minutes
+
+  inform:
+    runs-on: ubuntu-latest
+    needs: [ build, deploy, run ]
+    steps:
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}
