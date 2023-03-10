@@ -45,7 +45,10 @@ jobs:
           known_hosts: ${{ secrets.OBMINYASHKA_KNOWN_HOSTS }}
           if_key_exists: replace
       - name: Deploy with rsync
-        run: rsync -rav --delete ./space.obminyashka-*.jar ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}@${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}:~/target/
+        env:
+          SSH_USER: ${{ secrets.OBMINYASHKA_SERVER_USERNAME_SECRET }}
+          SSH_HOST: ${{ secrets.OBMINYASHKA_SERVER_HOST_SECRET }}
+        run: rsync -rav --delete ./space.*-*.jar $SSH_USER@$SSH_HOST:~/target/
       - name: Run commands
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
