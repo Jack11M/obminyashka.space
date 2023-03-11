@@ -116,7 +116,7 @@ public class UserController {
                                   @RequestParam String email,
                                   @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         User user = getUser(authentication.getName());
-        validEmail(user.getEmail(), email);
+        checkEmailUniqueAndNotUsed(user.getEmail(), email);
         user.setEmail(email);
         userService.update(user);
 
@@ -221,7 +221,7 @@ public class UserController {
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
     }
 
-    private void validEmail(String currentEmail, String newEmail) throws DataConflictException {
+    private void checkEmailUniqueAndNotUsed(String currentEmail, String newEmail) throws DataConflictException {
         if (currentEmail.equals(newEmail)) {
             throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
         }
