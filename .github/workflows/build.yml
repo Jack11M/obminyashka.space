@@ -89,9 +89,11 @@ jobs:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
-            ${{ github.actor }} created commit:
-            Commit message: ${{ github.event.commits[0].message }}
+            GitHub Action scheduled deployed is finished!
             
-            Repository: ${{ github.repository }}
+            Last deployed commit:
+            Author: ${{ github.actor }}
+            Message: ${{ github.event.commits[0].message }}
+            Changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            Commits stack: https://github.com/${{ github.repository }}/commits/master
