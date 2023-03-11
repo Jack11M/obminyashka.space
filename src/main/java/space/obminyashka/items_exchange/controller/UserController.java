@@ -114,7 +114,8 @@ public class UserController {
                                   @Email(regexp = PatternHandler.EMAIL, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
                                   @RequestParam String email,
                                   @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
-        User user = findUserByValidEmail(authentication, email);
+        User user = getUser(authentication.getName());
+        validEmail(user.getEmail(), email);
         user.setEmail(email);
         userService.update(user);
 
@@ -219,15 +220,13 @@ public class UserController {
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
     }
 
-    private User findUserByValidEmail(Authentication authentication, String email) throws DataConflictException {
-        User user = getUser(authentication.getName());
-        if (user.getEmail().equals(email)) {
+    private void validEmail(String currentEmail, String newEmail) throws DataConflictException {
+        if (currentEmail.equals(newEmail)) {
             throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
         }
-        if (userService.existsByEmail(email)) {
+        if (userService.existsByEmail(newEmail)) {
             throw new DataConflictException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
         }
-        return user;
     }
 }
