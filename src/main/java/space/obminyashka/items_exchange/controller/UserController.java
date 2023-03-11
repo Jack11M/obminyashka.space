@@ -37,6 +37,7 @@ import java.util.Map;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name  = "User")
@@ -111,7 +112,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserEmail(@Parameter(name = "New email")
-                                  @Email(regexp = PatternHandler.EMAIL, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
+                                  @Email(regexp = PatternHandler.EMAIL, message = "{" + INVALID_EMAIL + "}")
                                   @RequestParam String email,
                                   @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         User user = getUser(authentication.getName());
