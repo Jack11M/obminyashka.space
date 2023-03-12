@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +33,7 @@ public class SubcategoryController {
 
     private final SubcategoryService subcategoryService;
 
-    @GetMapping("/{category_id}/names")
+    @GetMapping(value = "/{category_id}/names", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find all subcategories names by category ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),

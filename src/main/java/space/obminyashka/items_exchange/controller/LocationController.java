@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -37,14 +38,14 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExcepti
 public class LocationController {
     private final LocationService locationService;
 
-    @GetMapping(ApiKey.LOCATION_ALL)
+    @GetMapping(value = ApiKey.LOCATION_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all of existed locations.")
     @ResponseStatus(HttpStatus.OK)
     public List<LocationDto> getAllLocations() {
         return locationService.findAll();
     }
 
-    @GetMapping(ApiKey.LOCATION_ID)
+    @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get an existed location by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -55,7 +56,7 @@ public class LocationController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping(ApiKey.LOCATION)
+    @PostMapping(value = ApiKey.LOCATION, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Save a new Location", description = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
@@ -66,7 +67,7 @@ public class LocationController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PutMapping(ApiKey.LOCATION_ID)
+    @PutMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an existed Location", description = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "ACCEPTED"),
@@ -101,6 +102,22 @@ public class LocationController {
         locationService.removeById(locationIds);
     }
 
+    @PreAuthorize(HAS_ROLE_ADMIN)
+    @PostMapping(ApiKey.LOCATIONS_INIT)
+    @Operation(summary = "Setting up locations from request", description = "ADMIN ONLY")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> createLocationsInitFile(@RequestBody LocationsRequest locationsRequest) {
+        try {
+            return new ResponseEntity<>(locationService.createParsedLocationsFile(locationsRequest.rawLocations), HttpStatus.OK);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
     private static String getNonExistingLocationsIds(List<UUID> locationIds, List<LocationDto> locations) {
         final var foundLocationsIdsToBeRemoved = locations.stream()
                 .map(LocationDto::getId)
@@ -110,21 +127,5 @@ public class LocationController {
                 .filter(Predicate.not(foundLocationsIdsToBeRemoved::contains))
                 .map(String::valueOf)
                 .collect(Collectors.joining(", ", ": ", ""));
-    }
-
-    @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping(ApiKey.LOCATIONS_INIT)
-    @Operation(summary = "Setting up locations from request", description = "ADMIN ONLY")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode= "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestBody LocationsRequest locationsRequest) {
-        try {
-            return new ResponseEntity<>(locationService.createParsedLocationsFile(locationsRequest.rawLocations), HttpStatus.OK);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
     }
 }

@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @EqualsAndHashCode
 public class PhoneDto {
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "+38(123)456-78-90, 38 123 456 78 90")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "381234567890")
     @Pattern(regexp = PatternHandler.PHONE_NUMBER,
             message = ResponseMessagesHandler.ValidationMessage.INVALID_PHONE_NUMBER)
     private String phoneNumber;

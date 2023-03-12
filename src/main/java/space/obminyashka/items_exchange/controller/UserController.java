@@ -37,7 +37,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 
 @RestController
-@Tag(name  = "User")
+@Tag(name = "User")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -51,7 +51,7 @@ public class UserController {
     private final ImageService imageService;
     private final AdvertisementService advService;
 
-    @GetMapping(ApiKey.USER_MY_INFO)
+    @GetMapping(value = ApiKey.USER_MY_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -73,7 +73,7 @@ public class UserController {
         return userService.update(userUpdateDto, getUser(authentication.getName()));
     }
 
-    @GetMapping(ApiKey.USER_MY_ADV)
+    @GetMapping(value = ApiKey.USER_MY_ADV, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -155,7 +155,7 @@ public class UserController {
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN);
     }
 
-    @GetMapping(ApiKey.USER_CHILD)
+    @GetMapping(value = ApiKey.USER_CHILD, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find a registered requested user's children data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -166,7 +166,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.USER_CHILD)
+    @PutMapping(value = ApiKey.USER_CHILD, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update child data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -174,14 +174,14 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
-                                             @RequestBody List<@Valid ChildDto> childrenDto,
+                                         @RequestBody List<@Valid ChildDto> childrenDto,
                                          @Parameter(hidden = true) Authentication authentication) {
         final User user = getUser(authentication.getName());
         return userService.updateChildren(user, childrenDto);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Set a new user's avatar image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),

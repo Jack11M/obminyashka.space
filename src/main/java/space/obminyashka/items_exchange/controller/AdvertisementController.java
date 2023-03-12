@@ -53,7 +53,7 @@ public class AdvertisementController {
     private final CategoryService categoryService;
     private final LocationService locationService;
 
-    @GetMapping(ApiKey.ADV_THUMBNAIL)
+    @GetMapping(value = ApiKey.ADV_THUMBNAIL, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -67,7 +67,7 @@ public class AdvertisementController {
         return advertisementService.findAllThumbnails(PageRequest.of(page, size));
     }
 
-    @GetMapping(ApiKey.ADV_THUMBNAIL_RANDOM)
+    @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find 12 random advertisement as thumbnails and return them as a result")
     @ApiResponse(responseCode = "200", description = "OK")
     public List<AdvertisementTitleDto> findRandom12Thumbnails() {
@@ -81,7 +81,7 @@ public class AdvertisementController {
         return advertisementService.count();
     }
 
-    @GetMapping(ApiKey.ADV_ID)
+    @GetMapping(value = ApiKey.ADV_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find an advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -93,7 +93,7 @@ public class AdvertisementController {
         return ResponseEntity.of(advertisementService.findDtoById(id));
     }
 
-    @GetMapping(ApiKey.ADV_SEARCH_PAGINATED)
+    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find advertisements by keyword")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -111,7 +111,7 @@ public class AdvertisementController {
                 new ResponseEntity<>(allByKeyword, HttpStatus.OK);
     }
 
-    @GetMapping(ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID)
+    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -130,7 +130,7 @@ public class AdvertisementController {
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
-    @PostMapping(ApiKey.ADV_FILTER)
+    @PostMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
             "Fill only needed parameters.")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -144,7 +144,8 @@ public class AdvertisementController {
             consumes = {
                     MediaType.APPLICATION_JSON_VALUE,
                     MediaType.MULTIPART_FORM_DATA_VALUE,
-                    MediaType.APPLICATION_OCTET_STREAM_VALUE})
+                    MediaType.APPLICATION_OCTET_STREAM_VALUE},
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
@@ -165,13 +166,13 @@ public class AdvertisementController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.ADV_ID)
+    @PutMapping(value = ApiKey.ADV_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an existed advertisement")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description= "ACCEPTED"),
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode= "403", description = "FORBIDDEN")})
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AdvertisementModificationDto updateAdvertisement(@PathVariable("advertisement_id") UUID id,
                                                             @Valid @RequestBody AdvertisementModificationDto dto,

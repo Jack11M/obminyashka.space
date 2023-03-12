@@ -47,7 +47,7 @@ public class ImageController {
     @Value("${max.images.amount}")
     private int maxImagesAmount;
 
-    @GetMapping(value = ApiKey.IMAGE_RESOURCE)
+    @GetMapping(value = ApiKey.IMAGE_RESOURCE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find all byte representation of images for an existed advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -60,7 +60,7 @@ public class ImageController {
         return imageService.getImagesResourceByAdvertisementId(id);
     }
 
-    @GetMapping(ApiKey.IMAGE_BY_ADV_ID)
+    @GetMapping(value = ApiKey.IMAGE_BY_ADV_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find all images for an existed advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -96,7 +96,7 @@ public class ImageController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "404", description = "Advertisement Not Found with such ID"),
-            @ApiResponse(responseCode = "406", description= "NOT ACCEPTABLE"),
+            @ApiResponse(responseCode = "406", description = "NOT ACCEPTABLE"),
             @ApiResponse(responseCode = "415", description = "UNSUPPORTED MEDIA TYPE")})
     public ResponseEntity<String> addImagesToAdvertisement(
             @Parameter(name = "ID of the Advertisement for adding the image(s)", required = true)
