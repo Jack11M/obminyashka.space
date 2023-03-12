@@ -143,11 +143,20 @@ public class ImageServiceImpl implements ImageService {
                 .collect(Collectors.toSet());
     }
 
-    @SneakyThrows({UnsupportedMediaTypeException.class, IOException.class})
+    @SneakyThrows(UnsupportedMediaTypeException.class)
     @Override
     public byte[] scale(MultipartFile image) {
         validateImagesTypes(List.of(image));
-        return scale(image.getBytes());
+
+        try (var bais = new ByteArrayInputStream(image.getBytes());
+             var baos = new ByteArrayOutputStream()) {
+
+            return returnScaledBytes(image.getBytes(), bais, baos);
+        } catch (IOException e) {
+            log.error("An error occurred while scale an image", e);
+            throw new UnsupportedMediaTypeException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.INCORRECT_IMAGE_FORMAT));
+        }
     }
 
     @Override
@@ -155,20 +164,24 @@ public class ImageServiceImpl implements ImageService {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-            BufferedImage originImage = ImageIO.read(bais);
-            if (originImage != null) {
-                Dimension newSize = calculatePreferThumbnailSize(
-                        new Dimension(originImage.getWidth(), originImage.getHeight()));
-                BufferedImage scaledImage = getScaled(newSize, originImage);
-                String type = URLConnection.guessContentTypeFromStream(
-                        new ByteArrayInputStream(bytes)).replace("image/", "");
-                ImageIO.write(scaledImage, type, baos);
-            }
-            return baos.toByteArray();
+            return returnScaledBytes(bytes, bais, baos);
         } catch (IOException e) {
             log.error("An error occurred while scale an image", e);
             return bytes;
         }
+    }
+
+    private byte[] returnScaledBytes(byte[] bytes, ByteArrayInputStream bais, ByteArrayOutputStream baos) throws IOException {
+        BufferedImage originImage = ImageIO.read(bais);
+        if (originImage != null) {
+            Dimension newSize = calculatePreferThumbnailSize(
+                    new Dimension(originImage.getWidth(), originImage.getHeight()));
+            BufferedImage scaledImage = getScaled(newSize, originImage);
+            String type = URLConnection.guessContentTypeFromStream(
+                    new ByteArrayInputStream(bytes)).replace("image/", "");
+            ImageIO.write(scaledImage, type, baos);
+        }
+        return baos.toByteArray();
     }
 
     @Override

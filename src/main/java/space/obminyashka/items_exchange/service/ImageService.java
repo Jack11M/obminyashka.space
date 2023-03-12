@@ -73,7 +73,7 @@ public interface ImageService {
     void removeById(UUID imageId);
 
     /**
-     * Makes scaled image (thumbnail) from given image
+     * Makes scaled image (thumbnail) from given image bytes
      * @param image received representative of image to scale
      * @return scaled image bytes
      */
