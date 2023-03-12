@@ -107,6 +107,8 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             type="text"
             name="topic"
             errorGap="5px"
+            autoComplete="off"
+            inputHeight="50px"
             errorFontSize="16px"
             error={touched && !!error && error}
             value={announcement.announcementTitle}

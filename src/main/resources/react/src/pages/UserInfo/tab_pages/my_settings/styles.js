@@ -2,7 +2,9 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 export const InputContainer = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
   height: auto;
 `;
@@ -28,8 +30,8 @@ export const StylizedLink = styled(Link)`
 export const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin: 24px 0;
+  gap: 35px;
+  margin: 25px 0 50px;
 `;
 
 export const ModalTitle = styled.p`

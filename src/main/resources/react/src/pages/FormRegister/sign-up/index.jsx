@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { Button, CheckBox, Icon } from 'obminyashka-components';
+import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
-import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from '../sign-in/styles';
@@ -44,31 +43,39 @@ const SignUp = () => {
       >
         {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
           <Form>
-            <div>
-              <InputForAuth
+            <Styles.WrapperInputSingUp>
+              <InputField
+                type="text"
                 name="email"
-                type="text"
-                text={getTranslatedText('auth.regEmail')}
+                inputGap="3px"
+                inputHeight="50px"
+                label={getTranslatedText('auth.regEmail')}
               />
 
-              <InputForAuth
+              <InputField
                 type="text"
+                inputGap="3px"
                 name="username"
-                text={getTranslatedText('auth.regLogin')}
+                inputHeight="50px"
+                label={getTranslatedText('auth.regLogin')}
               />
 
-              <InputForAuth
+              <InputField
+                inputGap="3px"
                 name="password"
                 type="password"
-                text={getTranslatedText('auth.regPassword')}
+                inputHeight="50px"
+                label={getTranslatedText('auth.regPassword')}
               />
 
-              <InputForAuth
+              <InputField
+                inputGap="3px"
                 type="password"
+                inputHeight="50px"
                 name="confirmPassword"
-                text={getTranslatedText('auth.regConfirm')}
+                label={getTranslatedText('auth.regConfirm')}
               />
-            </div>
+            </Styles.WrapperInputSingUp>
 
             <Styles.Extra>
               <CheckBox
