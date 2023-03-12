@@ -48,13 +48,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    @Cacheable(key = "#pageable.pageNumber")
     public Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
         return advertisementRepository.findAll(pageable).map(this::buildAdvertisementTitle);
     }
 
     @Override
-    @Cacheable
     public List<AdvertisementTitleDto> findRandom12Thumbnails() {
         final var totalRecordsSize = count();
         final var resultsQuantity = 12;
