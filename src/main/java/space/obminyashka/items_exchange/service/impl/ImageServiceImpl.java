@@ -15,7 +15,6 @@ import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.SupportedMediaTypes;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 
 import static java.awt.Image.SCALE_REPLICATE;
 import static java.awt.Image.SCALE_SMOOTH;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Slf4j
 @Service
@@ -60,6 +58,17 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
         return imageMapper.toDtoList(imageRepository.findByAdvertisementId(advertisementId));
+    }
+
+    @Override
+    public List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException {
+        validateImagesTypes(images);
+
+        List<byte[]> compressedImages = new ArrayList<>();
+        for (MultipartFile photo : images) {
+            compressedImages.add(compress(photo));
+        }
+        return compressedImages;
     }
 
     @SneakyThrows({IOException.class, UnsupportedMediaTypeException.class})
@@ -143,45 +152,24 @@ public class ImageServiceImpl implements ImageService {
                 .collect(Collectors.toSet());
     }
 
-    @SneakyThrows(UnsupportedMediaTypeException.class)
-    @Override
-    public byte[] scale(MultipartFile image) {
-        validateImagesTypes(List.of(image));
-
-        try (var bais = new ByteArrayInputStream(image.getBytes());
-             var baos = new ByteArrayOutputStream()) {
-
-            return returnScaledBytes(image.getBytes(), bais, baos);
-        } catch (IOException e) {
-            log.error("An error occurred while scale an image", e);
-            throw new UnsupportedMediaTypeException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.INCORRECT_IMAGE_FORMAT));
-        }
-    }
-
     @Override
     public byte[] scale(byte[] bytes) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-            return returnScaledBytes(bytes, bais, baos);
+            BufferedImage originImage = ImageIO.read(bais);
+            if (originImage != null) {
+                Dimension newSize = calculatePreferThumbnailSize(
+                        new Dimension(originImage.getWidth(), originImage.getHeight()));
+                BufferedImage scaledImage = getScaled(newSize, originImage);
+                String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
+                ImageIO.write(scaledImage, type, baos);
+            }
+            return baos.toByteArray();
         } catch (IOException e) {
             log.error("An error occurred while scale an image", e);
             return bytes;
         }
-    }
-
-    private byte[] returnScaledBytes(byte[] bytes, ByteArrayInputStream bais, ByteArrayOutputStream baos) throws IOException {
-        BufferedImage originImage = ImageIO.read(bais);
-        if (originImage != null) {
-            Dimension newSize = calculatePreferThumbnailSize(
-                    new Dimension(originImage.getWidth(), originImage.getHeight()));
-            BufferedImage scaledImage = getScaled(newSize, originImage);
-            String type = URLConnection.guessContentTypeFromStream(
-                    new ByteArrayInputStream(bytes)).replace("image/", "");
-            ImageIO.write(scaledImage, type, baos);
-        }
-        return baos.toByteArray();
     }
 
     @Override

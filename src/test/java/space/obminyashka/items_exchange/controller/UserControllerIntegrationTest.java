@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -224,10 +225,11 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
         sendUriAndGetMvcResult(multipart(USER_SERVICE_CHANGE_AVATAR).file(jpeg).file(bmp), status().is2xxSuccessful());
 
-        verify(imageService).scale(captor.capture());
-        verify(userService).findByUsernameOrEmail(any());
+        Mockito.verify(imageService).compress(captor.capture());
+        Mockito.verify(userService).findByUsernameOrEmail(any());
 
-        assertEquals(jpeg, captor.getValue());
+        MultipartFile actualImage = captor.getValue();
+        assertEquals(jpeg, actualImage);
     }
 
     @Test

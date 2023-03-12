@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import space.obminyashka.items_exchange.dao.ImageRepository;
 import space.obminyashka.items_exchange.dto.ImageDto;
+import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.basic.BasicImageCreator;
@@ -68,6 +69,13 @@ class ImageServiceTest extends BasicImageCreator{
     }
 
     @Test
+    void compressImages_shouldCompressImage_WhenValidImageTypes() throws IOException, UnsupportedMediaTypeException {
+        List<byte[]> compressed = imageService.compress(List.of(testJpg, testPng));
+        assertNotEquals(compressed.get(0).length, testJpg.getBytes().length);
+        assertNotEquals(compressed.get(1).length, testPng.getBytes().length);
+    }
+
+    @Test
     void compressImage_shouldCompressImage_WhenValidImageType() throws IOException {
         byte[] compressImage = imageService.compress(testJpg);
         assertTrue(testJpg.getBytes().length > compressImage.length);
@@ -116,14 +124,14 @@ class ImageServiceTest extends BasicImageCreator{
     @Test
     void scale_shouldReturnScaledImage() throws IOException {
         byte[] bytes = testPng.getBytes();
-        byte[] result = imageService.scale(testPng);
+        byte[] result = imageService.scale(bytes);
         assertTrue(bytes.length >= result.length, "Images' resources should have a smaller size");
     }
 
     @Test
     void scale_shouldReturnScaledJpegImage() throws IOException {
         byte[] bytes = testJpg.getBytes();
-        byte[] result = imageService.scale(testJpg);
+        byte[] result = imageService.scale(bytes);
         assertTrue(bytes.length >= result.length, "Images' resources should have a smaller size");
     }
 }
