@@ -191,7 +191,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Map<String, byte[]> updateUserAvatar(@RequestPart MultipartFile image, @Parameter(hidden = true) Authentication authentication) {
         User user = getUser(authentication.getName());
-        byte[] newAvatarImage = imageService.compress(image);
+        byte[] newAvatarImage = imageService.scale(image);
         userService.setUserAvatar(newAvatarImage, user);
         return Map.of("avatarImage", newAvatarImage);
     }
