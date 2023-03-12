@@ -163,7 +163,7 @@ public class AdvertisementController {
                 .toList();
         byte[] scaledTitleImage = images.stream().findFirst()
                 .map(imageService::scale)
-                .orElse(compressedImages.get(0));
+                .orElse(new byte[0]);
         return advertisementService.createAdvertisement(dto, owner, compressedImages, scaledTitleImage);
     }
 
