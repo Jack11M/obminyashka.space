@@ -26,15 +26,18 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.PatternHandler;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name  = "User")
@@ -108,18 +111,16 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody UserChangeEmailDto userChangeEmailDto, @Parameter(hidden = true) Authentication authentication)
-            throws DataConflictException {
+    public String updateUserEmail(@Parameter(name = "New email")
+                                  @Email(regexp = PatternHandler.EMAIL, message = "{" + INVALID_EMAIL + "}")
+                                  @RequestParam String email,
+                                  @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         User user = getUser(authentication.getName());
-        if (user.getEmail().equals(userChangeEmailDto.getNewEmail())) {
-            throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
-        }
-        if (userService.existsByEmail(userChangeEmailDto.getNewEmail())) {
-            throw new DataConflictException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
-        }
+        checkEmailUniqueAndNotUsed(user.getEmail(), email);
+        user.setEmail(email);
+        userService.update(user);
 
-        return userService.updateUserEmail(userChangeEmailDto, user);
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
@@ -218,5 +219,15 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
+    }
+
+    private void checkEmailUniqueAndNotUsed(String currentEmail, String newEmail) throws DataConflictException {
+        if (currentEmail.equals(newEmail)) {
+            throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
+        }
+        if (userService.existsByEmail(newEmail)) {
+            throw new DataConflictException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
+        }
     }
 }

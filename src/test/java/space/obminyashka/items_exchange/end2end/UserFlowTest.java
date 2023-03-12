@@ -21,7 +21,6 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
@@ -144,9 +143,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
-
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isAccepted());
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", NEW_VALID_EMAIL), status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }
