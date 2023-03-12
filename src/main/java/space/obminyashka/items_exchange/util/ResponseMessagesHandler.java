@@ -46,6 +46,7 @@ public class ResponseMessagesHandler {
         public final String EMPTY_PASSWORD = "empty.password";
         public final String EMPTY_CONFIRM_PASS = "empty.confirm.password";
         public final String EMPTY_EMAIL = "empty.email";
+        public final String INCORRECT_IMAGE_FORMAT = "incorrect.image.format";
     }
 
     @UtilityClass

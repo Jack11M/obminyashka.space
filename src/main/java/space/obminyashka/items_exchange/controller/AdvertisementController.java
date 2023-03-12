@@ -161,7 +161,10 @@ public class AdvertisementController {
         final var compressedImages = images.parallelStream()
                 .map(imageService::compress)
                 .toList();
-        return advertisementService.createAdvertisement(dto, owner, compressedImages);
+        byte[] scaledTitleImage = images.stream().findFirst()
+                .map(imageService::scale)
+                .orElse(compressedImages.get(0));
+        return advertisementService.createAdvertisement(dto, owner, compressedImages, scaledTitleImage);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

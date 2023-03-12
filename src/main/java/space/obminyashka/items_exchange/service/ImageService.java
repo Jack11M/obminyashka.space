@@ -27,17 +27,6 @@ public interface ImageService {
     List<ImageDto> getByAdvertisementId(UUID advertisementId);
 
     /**
-     * Make in-memory compressing (20% of basic quality) only for supported types of images
-     * @param images list of images for further compression
-     * @return compressed images' bytes
-     * @throws UnsupportedMediaTypeException in case receiving unsupported types
-     * @apiNote throw IOException in cases when some of received images is corrupted, or it's impossible to read it properly
-     * @see SupportedMediaTypes supported media types
-     */
-    @SneakyThrows(IOException.class)
-    List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException;
-
-    /**
      * Make in-memory compressing (30% of basic quality) only for supported types of images
      * @param image image for further compression
      * @return compresses image's bytes
@@ -82,6 +71,13 @@ public interface ImageService {
      * @param imageId ID image to remove
      */
     void removeById(UUID imageId);
+
+    /**
+     * Makes scaled image (thumbnail) from given image
+     * @param image received representative of image to scale
+     * @return scaled image bytes
+     */
+    byte[] scale(MultipartFile image);
 
     /**
      * Makes scaled image (thumbnail) from given image bytes

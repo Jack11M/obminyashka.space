@@ -60,17 +60,6 @@ public class ImageServiceImpl implements ImageService {
         return imageMapper.toDtoList(imageRepository.findByAdvertisementId(advertisementId));
     }
 
-    @Override
-    public List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException {
-        validateImagesTypes(images);
-
-        List<byte[]> compressedImages = new ArrayList<>();
-        for (MultipartFile photo : images) {
-            compressedImages.add(compress(photo));
-        }
-        return compressedImages;
-    }
-
     @SneakyThrows({IOException.class, UnsupportedMediaTypeException.class})
     @Override
     public byte[] compress(MultipartFile image) {
@@ -152,6 +141,13 @@ public class ImageServiceImpl implements ImageService {
                 .collect(Collectors.toSet());
     }
 
+    @SneakyThrows({UnsupportedMediaTypeException.class, IOException.class})
+    @Override
+    public byte[] scale(MultipartFile image) {
+        validateImagesTypes(List.of(image));
+        return scale(image.getBytes());
+    }
+
     @Override
     public byte[] scale(byte[] bytes) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -162,7 +158,8 @@ public class ImageServiceImpl implements ImageService {
                 Dimension newSize = calculatePreferThumbnailSize(
                         new Dimension(originImage.getWidth(), originImage.getHeight()));
                 BufferedImage scaledImage = getScaled(newSize, originImage);
-                String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
+                String type = URLConnection.guessContentTypeFromStream(
+                        new ByteArrayInputStream(bytes)).replace("image/", "");
                 ImageIO.write(scaledImage, type, baos);
             }
             return baos.toByteArray();
