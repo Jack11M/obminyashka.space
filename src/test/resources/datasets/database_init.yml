@@ -91,6 +91,7 @@ user:
     # Password encoded from string "@kuIOIY*h986"
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'admin@gmail.com'
+    isOauth2Login: "false"
     online: 'false'
     first_name: 'super'
     last_name: 'admin'
@@ -105,6 +106,7 @@ user:
     username: 'user'
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'user@gmail.com'
+    isOauth2Login: "false"
     online: 'false'
     first_name: 'plain'
     last_name: 'user'

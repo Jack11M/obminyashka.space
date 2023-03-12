@@ -173,6 +173,7 @@ class UserFlowTest extends BasicControllerTest {
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
+
     @Test
     @Commit
     @DataSet("database_init.yml")
@@ -183,6 +184,7 @@ class UserFlowTest extends BasicControllerTest {
         var oauth2User = createDefaultOidcUser();
         var user = userService.loginUserWithOAuth2(oauth2User);
         assertNotNull(user);
+        assertEquals(true, user.getIsOauth2Login());
 
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
                 .andExpect(jsonPath("$.username").value(NEW_USER_EMAIL))
@@ -192,21 +194,20 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     private DefaultOidcUser createDefaultOidcUser() {
-        var familyName = "family_name";
-        var givenName = "given_name";
         var roleUser = "ROLE_USER";
-        var groupsKey = "groups";
-        var emailKey = "email";
-        var subKey = "sub";
 
+        final var now = Instant.now();
         var idToken = new OidcIdToken(
                 ID_TOKEN,
-                Instant.now(),
-                Instant.now().plusSeconds(60),
-                Map.of(groupsKey, roleUser, subKey, 123)
-        );
+                now,
+                now.plusSeconds(60),
+                Map.of("groups", roleUser, "sub", 123));
 
-        final var userInfo = new OidcUserInfo(Map.of(emailKey, NEW_USER_EMAIL, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
+        final var userInfo = new OidcUserInfo(Map.of(
+                "email", NEW_USER_EMAIL,
+                "given_name", USER_FIRST_NAME,
+                "family_name", USER_LAST_NAME));
+
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 
