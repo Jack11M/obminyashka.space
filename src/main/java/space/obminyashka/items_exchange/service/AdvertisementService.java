@@ -94,9 +94,11 @@ public interface AdvertisementService {
      * @param modificationDto DTO for converting and saving
      * @param user owner of a new advertisement
      * @param compressedImages images related to an advertisement
+     * @param titleImage scaled title image
      * @return saved advertisement DTO with updated id
      */
-    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto modificationDto, User user, List<byte[]> compressedImages);
+    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto modificationDto, User user,
+                                                     List<byte[]> compressedImages, byte[] titleImage);
 
     /**
      * Update existed advertisement

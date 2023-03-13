@@ -9,7 +9,8 @@ public class UserDtoCreatingUtil {
 
     public static final Set<PhoneDto> NEW_PHONES = Set.of(new PhoneDto("381234567890", true));
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
-    public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
+    public static final String INVALID_EMAIL_WITHOUT_POINT = "username@domain";
+    public static final String INVALID_EMAIL_WITHOUT_DOMAIN_NAME = "username@.com";
     public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
     public static final String OLD_ADMIN_VALID_EMAIL = "admin@gmail.com";
     public static final String NEW_VALID_NAME_WITH_APOSTROPHE = "Мар'яна";

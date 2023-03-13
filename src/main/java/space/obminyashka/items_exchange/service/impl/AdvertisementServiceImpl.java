@@ -118,12 +118,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto dto, User owner, List<byte[]> compressedImages) {
+    public AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto dto, User owner, List<byte[]> compressedImages, byte[] titleImage) {
         Advertisement adv = advertisementMapper.toModel(dto);
         adv.setUser(owner);
         adv.setStatus(Status.NEW);
         adv.setImages(compressedImages.stream().map(image -> new Image(image, adv)).toList());
-        adv.setDefaultPhoto(imageService.scale(compressedImages.get(0)));
+        adv.setDefaultPhoto(titleImage);
         updateSubcategory(adv, dto.getSubcategoryId());
         updateLocation(adv, dto.getLocationId());
         return advertisementMapper.toModificationDto(advertisementRepository.save(adv));

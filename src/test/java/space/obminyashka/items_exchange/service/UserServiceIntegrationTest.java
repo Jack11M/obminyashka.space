@@ -11,23 +11,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
@@ -36,6 +36,9 @@ class UserServiceIntegrationTest {
     public static final String CORRECT_OLD_PASSWORD = "123456xX";
     public static final String NEW_PASSWORD = "123456wW";
     public static final String NEW_USER_EMAIL = "user@mail.ru";
+    private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
+    private static final String USER_FIRST_NAME = "First";
+    private static final String USER_LAST_NAME = "Last";
 
     @MockBean
     private UserRepository userRepository;
@@ -43,6 +46,8 @@ class UserServiceIntegrationTest {
     private RoleService roleService;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<String> oauth2UserArgumentCaptor;
     @Captor
     private ArgumentCaptor<String> usernameArgumentCaptor;
     @Autowired
@@ -70,16 +75,6 @@ class UserServiceIntegrationTest {
     }
 
     @Test
-    void testUpdateUserEmail_WhenDataCorrect_Successfully() {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL, NEW_USER_EMAIL);
-        String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
-
-        assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), message);
-        assertEquals(NEW_USER_EMAIL, userWithOldPassword.getEmail());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
-    }
-
-    @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
         when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
 
@@ -88,6 +83,15 @@ class UserServiceIntegrationTest {
         assertEquals("ROLE_SELF_REMOVING", userWithOldPassword.getRole().getName());
         verify(userRepository).saveAndFlush(userWithOldPassword);
 
+    }
+
+    @Test
+    void testLoginUserWithOAuth2_WhenDataCorrect_Successfully() {
+        var oauth2User = createDefaultOidcUser();
+        userService.loginUserWithOAuth2(oauth2User);
+
+        verify(userRepository).findByEmailOrUsername(oauth2UserArgumentCaptor.capture(), oauth2UserArgumentCaptor.capture());
+        assertEquals(NEW_USER_EMAIL,oauth2UserArgumentCaptor.getValue());
     }
 
     @Test
@@ -157,5 +161,23 @@ class UserServiceIntegrationTest {
 
     private static List<Locale> getTestLocales() {
         return List.of(Locale.ENGLISH, new Locale("ua"), new Locale("ru"));
+    }
+
+    private DefaultOidcUser createDefaultOidcUser() {
+        var roleUser = "ROLE_USER";
+
+        final var now = Instant.now();
+        var idToken = new OidcIdToken(
+                ID_TOKEN,
+                now,
+                now.plusSeconds(60),
+                Map.of("groups", roleUser, "sub", 123));
+
+        final var userInfo = new OidcUserInfo(Map.of(
+                "email", NEW_USER_EMAIL,
+                "given_name", USER_FIRST_NAME,
+                "family_name", USER_LAST_NAME));
+
+        return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 }

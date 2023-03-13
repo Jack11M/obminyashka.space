@@ -1,17 +1,14 @@
 import { memo, useContext, useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { Title, Button } from '@wolshebnik/obminyashka-components';
+import { Button, Title, showMessage, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { route } from 'routes/routeConstants';
+import { ModalContext } from 'components/common';
 import { setProfileEmail } from 'store/profile/slice';
-import { putEmail, getAuthProfile } from 'store/auth/slice';
-import { ModalContext, InputForAuth } from 'components/common';
+import { getAuthProfile, putEmail } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
-
-import InputProfile from '../../components/inputProfile';
 
 import {
   initialValuesDelete,
@@ -79,7 +76,7 @@ const MySettings = () => {
         });
       }
       if (e.response.status === 400) {
-        showMessage(e.response.data.error);
+        showMessage.error(e.response.data.error);
         onSubmitProps.setErrors({ newEmail: e.response.data.error });
       }
     }
@@ -102,7 +99,7 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
     } catch (e) {
-      showMessage(e.response.data.error);
+      showMessage.error(e.response.data.error);
     } finally {
       setLoading(false);
     }
@@ -127,16 +124,20 @@ const MySettings = () => {
             {() => (
               <Form>
                 <Styles.InputWrapper>
-                  <InputForAuth
+                  <InputField
+                    inputGap="3px"
                     type="password"
                     name="password"
-                    text={getTranslatedText('auth.regPassword')}
+                    inputHeight="50px"
+                    label={getTranslatedText('auth.regPassword')}
                   />
 
-                  <InputForAuth
+                  <InputField
+                    inputGap="3px"
                     type="password"
+                    inputHeight="50px"
                     name="confirmPassword"
-                    text={getTranslatedText('auth.regConfirm')}
+                    label={getTranslatedText('auth.regConfirm')}
                   />
                 </Styles.InputWrapper>
 
@@ -166,24 +167,42 @@ const MySettings = () => {
         initialValues={initialPasswordValues}
         validationSchema={validationPassword}
       >
-        {({ errors, isValid, handleSubmit, dirty }) => (
-          <>
+        {({ values }) => (
+          <Form>
             <Styles.InputContainer>
-              <InputProfile
+              <InputField
                 type="password"
                 name="oldPassword"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
+                value={values.oldPassword}
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.currentPassword')}
               />
 
-              <InputProfile
+              <InputField
                 type="password"
                 name="newPassword"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
+                value={values.newPassword}
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.newPassword')}
               />
 
-              <InputProfile
+              <InputField
                 type="password"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
                 name="confirmNewPassword"
+                wrapperInputErrorWidth="415px"
+                value={values.confirmNewPassword}
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.confirmPassword')}
               />
             </Styles.InputContainer>
@@ -194,12 +213,10 @@ const MySettings = () => {
                 type="submit"
                 style={{ height: 49 }}
                 isLoading={isFetchPass}
-                disabling={!isValid && !dirty}
                 text={getTranslatedText('button.saveChanges')}
-                onClick={!errors.oldPassword ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
-          </>
+          </Form>
         )}
       </Formik>
 
@@ -213,26 +230,43 @@ const MySettings = () => {
         initialValues={initialEmailValues}
         validationSchema={validationEmail}
       >
-        {({ errors, isValid, handleSubmit, dirty }) => (
-          <>
+        {({ values }) => (
+          <Form>
             <Styles.InputContainer>
-              <InputProfile
+              <InputField
                 readOnly
                 type="text"
                 name="oldEmail"
+                labelColor="black"
                 value={currentEmail}
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.oldEmail')}
               />
 
-              <InputProfile
+              <InputField
                 type="text"
                 name="newEmail"
+                labelColor="black"
+                inputMaxWidth="588px"
+                value={values.newEmail}
+                inputFlexDirection="row"
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
                 label={getTranslatedText('settings.newEmail')}
               />
 
-              <InputProfile
+              <InputField
                 type="text"
+                labelColor="black"
+                inputMaxWidth="588px"
+                inputFlexDirection="row"
                 name="newEmailConfirmation"
+                wrapperInputErrorWidth="415px"
+                inputJustifyContent="space-between"
+                value={values.newEmailConfirmation}
                 label={getTranslatedText('settings.confirmEmail')}
               />
             </Styles.InputContainer>
@@ -242,13 +276,11 @@ const MySettings = () => {
                 width={248}
                 type="submit"
                 isLoading={isFetchEmail}
-                disabling={!isValid && !dirty}
                 style={{ margin: '50px 0', height: 49 }}
                 text={getTranslatedText('button.saveChanges')}
-                onClick={!errors.newEmail ? handleSubmit : null}
               />
             </Styles.ButtonContainer>
-          </>
+          </Form>
         )}
       </Formik>
 

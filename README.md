@@ -68,11 +68,11 @@ openssl pkcs12 -export -in obminyashka.crt -inkey obminyashka.key -out keystore.
 
 ```bash
 mvn clean install
-mvn spring-boot:run -Dspring-boot.run-arguments=\
---server.ssl.key-store=path_to_keystore.p12,\
---server.ssl.key-store-password='your_keystore_pass',\
---spring.datasource.password='your_db_pass',\
---app.jwt.secret='your_jwt_pass'
+mvn spring-boot:run -Dspring-boot.run-arguments="\
+--SSL_PATH=path_to_keystore.p12 \
+--SSL_PASSWORD='your_keystore_pass' \
+--DB_PASSWORD='your_db_pass' \
+--app.jwt.secret='your_jwt_pass'"
 ```
 
 ## Obminyashka URL

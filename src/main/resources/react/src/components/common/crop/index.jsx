@@ -2,9 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
-import { Button, Icon } from '@wolshebnik/obminyashka-components';
+import { Button, Icon, showMessage } from 'obminyashka-components';
 
-import { showMessage } from 'hooks';
 import { getErrorMessage } from 'Utils/error';
 import { getTranslatedText } from 'components/local';
 import { deleteAvatarThunk, postAvatarThunk } from 'store/profile/thunk';
@@ -53,7 +52,7 @@ const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
         onClose();
       }
     } catch (e) {
-      showMessage(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     } finally {
       setLoading(false);
     }
@@ -66,7 +65,7 @@ const Crop = ({ image, onClose, setImage, setCroppedImage, disabled }) => {
       setImage(null);
       onClose();
     } catch (e) {
-      showMessage(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     } finally {
       setLoadingDelete(false);
     }

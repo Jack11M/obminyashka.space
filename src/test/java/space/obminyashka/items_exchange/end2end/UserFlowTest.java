@@ -21,7 +21,6 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
 import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
@@ -144,9 +143,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
-
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isAccepted());
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", NEW_VALID_EMAIL), status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }
@@ -176,6 +173,7 @@ class UserFlowTest extends BasicControllerTest {
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
+
     @Test
     @Commit
     @DataSet("database_init.yml")
@@ -186,6 +184,7 @@ class UserFlowTest extends BasicControllerTest {
         var oauth2User = createDefaultOidcUser();
         var user = userService.loginUserWithOAuth2(oauth2User);
         assertNotNull(user);
+        assertEquals(true, user.getOauth2Login());
 
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
                 .andExpect(jsonPath("$.username").value(NEW_USER_EMAIL))
@@ -195,21 +194,20 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     private DefaultOidcUser createDefaultOidcUser() {
-        var familyName = "family_name";
-        var givenName = "given_name";
         var roleUser = "ROLE_USER";
-        var groupsKey = "groups";
-        var emailKey = "email";
-        var subKey = "sub";
 
+        final var now = Instant.now();
         var idToken = new OidcIdToken(
                 ID_TOKEN,
-                Instant.now(),
-                Instant.now().plusSeconds(60),
-                Map.of(groupsKey, roleUser, subKey, 123)
-        );
+                now,
+                now.plusSeconds(60),
+                Map.of("groups", roleUser, "sub", 123));
 
-        final var userInfo = new OidcUserInfo(Map.of(emailKey, NEW_USER_EMAIL, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
+        final var userInfo = new OidcUserInfo(Map.of(
+                "email", NEW_USER_EMAIL,
+                "given_name", USER_FIRST_NAME,
+                "family_name", USER_LAST_NAME));
+
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 
