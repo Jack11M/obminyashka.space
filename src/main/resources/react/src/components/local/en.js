@@ -320,7 +320,7 @@ const en = {
   seasonEnum: {
     WINTER: 'Winter',
     SUMMER: 'Summer',
-    ALL_SEASONS: 'All seasons',
+    NO_SEASONS: 'All seasons',
     DEMI_SEASON: 'Demi-season',
   },
   filterPage: {
