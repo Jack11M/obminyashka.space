@@ -132,19 +132,19 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "user")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
-        UUID advertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
+        UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
         Long subcategoryId = 1l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("advertisementId", advertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
-                .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(advertisementId, subcategoryId)));
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+                .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
     }
 
     @Test
     @WithMockUser(username = "user")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
-        UUID advertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
+        UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
         Long subcategoryId = 4l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("advertisementId", advertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
                 .andExpect(jsonPath("$.size()").value(0));
     }
 

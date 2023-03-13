@@ -48,24 +48,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    @Cacheable(key = "#pageable.pageNumber")
-    public Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
-        return advertisementRepository.findAll(pageable).map(this::buildAdvertisementTitle);
-    }
-
-    @Override
-    @Cacheable
-    public List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID advertisementId, Long subcategoryId) {
-        final var totalRecordsSize = count();
-        final var resultsQuantity = amount;
-        final var bound = (int) (totalRecordsSize / resultsQuantity);
+    public List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID excludeAdvertisementId, Long subcategoryId) {
+        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId);
+        final var bound = (int) (totalRecordsSize / amount);
         final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
-        return ((advertisementId != null && subcategoryId != null) ? findAllThumbnails(PageRequest.of(randomPage, resultsQuantity), advertisementId, subcategoryId) : findAllThumbnails(PageRequest.of(randomPage, resultsQuantity))).getContent();
+        return findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(randomPage, amount)).getContent();
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable, UUID advertisementId, Long subcategoryId) {
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementId, subcategoryId, pageable).map(this::buildAdvertisementTitle);
+    public Page<AdvertisementTitleDto> findAllThumbnails(UUID excludeAdvertisementId, Long subcategoryId, Pageable pageable) {
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId, pageable).map(this::buildAdvertisementTitle);
     }
 
     @Cacheable

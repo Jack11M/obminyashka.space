@@ -61,32 +61,28 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(
+            @Parameter(name = "ID of excluded advertisement")
+            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
+            @Parameter(name = "ID of existed subcategory for searching same advertisements")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
             @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size,
-            @Parameter(name = "ID of existed advertisement")
-            @RequestParam(value = "advertisementId", required = false) UUID advertisementId,
-            @Parameter(name = "ID of existed subcategory")
-            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId) {
-        if (advertisementId != null && subcategoryId != null) {
-            return advertisementService.findAllThumbnails(PageRequest.of(page, size), advertisementId, subcategoryId);
-        }
-
-        return advertisementService.findAllThumbnails(PageRequest.of(page, size));
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
+        return advertisementService.findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(page, size));
     }
 
     @GetMapping(ApiKey.ADV_THUMBNAIL_RANDOM)
     @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
     @ApiResponse(responseCode = "200", description = "OK")
     public List<AdvertisementTitleDto> findRandom12Thumbnails(
+            @Parameter(name = "ID of excluded advertisement")
+            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
+            @Parameter(name = "ID of existed subcategory for searching same advertisements")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
             @Parameter(name = "Number of random advertisements. Default value: 12")
-            @RequestParam(value = "amount", required = false, defaultValue = "12") @Positive int amount,
-            @Parameter(name = "ID of existed advertisement")
-            @RequestParam(value = "advertisementId", required = false) UUID advertisementId,
-            @Parameter(name = "ID of existed subcategory")
-            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId) {
-        return advertisementService.findRandomNThumbnails(amount, advertisementId, subcategoryId);
+            @RequestParam(value = "amount", required = false, defaultValue = "12") @Positive int amount) {
+        return advertisementService.findRandomNThumbnails(amount, excludeAdvertisementId, subcategoryId);
     }
 
     @GetMapping(ApiKey.ADV_TOTAL)
