@@ -1,11 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { LanguageSelection } from 'obminyashka-components';
 
 import { setLanguage, getAuth } from 'store/auth/slice';
 
-import * as Styles from './styles';
-
-const LanguageSelection = () => {
+const SelectLanguage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { lang } = useSelector(getAuth);
@@ -18,18 +17,13 @@ const LanguageSelection = () => {
   };
 
   return (
-    <Styles.LanguagePanel>
-      {languageArray.map((el) => (
-        <Styles.LanguageItem
-          key={el}
-          checked={el === lang}
-          onClick={() => handleSelected(el)}
-        >
-          {el}
-        </Styles.LanguageItem>
-      ))}
-    </Styles.LanguagePanel>
+    <LanguageSelection
+      lang={lang}
+      onClick={() =>
+        handleSelected(languageArray.filter((el) => lang !== el).toString())
+      }
+    />
   );
 };
 
-export { LanguageSelection };
+export { SelectLanguage };
