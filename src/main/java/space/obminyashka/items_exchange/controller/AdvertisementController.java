@@ -31,6 +31,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -54,24 +55,34 @@ public class AdvertisementController {
     private final LocationService locationService;
 
     @GetMapping(ApiKey.ADV_THUMBNAIL)
-    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
+    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result with filters")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(
+            @Parameter(name = "ID of excluded advertisement")
+            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
+            @Parameter(name = "ID of existed subcategory for searching same advertisements")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
             @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        return advertisementService.findAllThumbnails(PageRequest.of(page, size));
+        return advertisementService.findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(page, size));
     }
 
     @GetMapping(ApiKey.ADV_THUMBNAIL_RANDOM)
-    @Operation(summary = "Find 12 random advertisement as thumbnails and return them as a result")
+    @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails() {
-        return advertisementService.findRandom12Thumbnails();
+    public List<AdvertisementTitleDto> findRandom12Thumbnails(
+            @Parameter(name = "ID of excluded advertisement")
+            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
+            @Parameter(name = "ID of existed subcategory for searching same advertisements")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
+            @Parameter(name = "Number of random advertisements. Default value: 12")
+            @RequestParam(value = "amount", required = false, defaultValue = "12") @Positive int amount) {
+        return advertisementService.findRandomNThumbnails(amount, excludeAdvertisementId, subcategoryId);
     }
 
     @GetMapping(ApiKey.ADV_TOTAL)

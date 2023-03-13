@@ -48,19 +48,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    @Cacheable(key = "#pageable.pageNumber")
-    public Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable) {
-        return advertisementRepository.findAll(pageable).map(this::buildAdvertisementTitle);
+    public List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID excludeAdvertisementId, Long subcategoryId) {
+        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId);
+        final var bound = (int) (totalRecordsSize / amount);
+        final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
+        return findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(randomPage, amount)).getContent();
     }
 
     @Override
-    @Cacheable
-    public List<AdvertisementTitleDto> findRandom12Thumbnails() {
-        final var totalRecordsSize = count();
-        final var resultsQuantity = 12;
-        final var bound = (int) (totalRecordsSize / resultsQuantity);
-        final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
-        return findAllThumbnails(PageRequest.of(randomPage, resultsQuantity)).getContent();
+    public Page<AdvertisementTitleDto> findAllThumbnails(UUID excludeAdvertisementId, Long subcategoryId, Pageable pageable) {
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId, pageable).map(this::buildAdvertisementTitle);
     }
 
     @Cacheable

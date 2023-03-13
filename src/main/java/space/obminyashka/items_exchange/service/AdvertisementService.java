@@ -16,18 +16,24 @@ import java.util.UUID;
 public interface AdvertisementService {
 
     /**
-     * Find all advertisements as thumbnails and return them by requested quantity (size) and page
+     * Find N random advertisements as thumbnails with filters
      *
-     * @param pageable see {@link Pageable} for more details
-     * @return wanted quantity of advertisement on a page
-     */
-    Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
-
-    /**
-     * Find 12 random advertisements as thumbnails
+     * @param amount amount of random advertisement
+     * @param excludeAdvertisementId excluded id of advertisement for ignoring
+     * @param subcategoryId exist id of subcategory for filtering
      * @return random 12 advertisement
      */
-    List<AdvertisementTitleDto> findRandom12Thumbnails();
+    List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID excludeAdvertisementId, Long subcategoryId);
+
+    /**
+     * Find page of advertisements with same subcategory without request advertisement
+     *
+     * @param excludeAdvertisementId excluded id of advertisement for ignoring
+     * @param subcategoryId exist id of subcategory for filtering
+     * @param pageable see {@link Pageable} for more details
+     * @return page of advertisements
+     */
+    Page<AdvertisementTitleDto> findAllThumbnails(UUID excludeAdvertisementId, Long subcategoryId, Pageable pageable);
 
     /**
      * Find all advertisements as thumbnails for specific user
