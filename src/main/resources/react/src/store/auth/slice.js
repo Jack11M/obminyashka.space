@@ -4,9 +4,9 @@ import { showMessage } from 'obminyashka-components';
 import { getStorageLang, getStorageUser, setStorageUser } from 'Utils';
 
 const authInitialState = {
-  profile: getStorageUser('user'),
   isFetchingAuth: false,
   lang: getStorageLang(),
+  profile: getStorageUser('user'),
   isAuthed: !!getStorageUser('user'),
 };
 
