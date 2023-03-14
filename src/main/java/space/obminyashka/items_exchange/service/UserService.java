@@ -49,11 +49,10 @@ public interface UserService {
 
     /**
      * Update password of an existed user with new one
-     * @param userChangePasswordDto DTO which contains old password and doubled new password
-     * @param user existed user to update
-     * @return a message as the result of the operation
+     * @param newUserPassword The new user password
+     * @return BCrypt password
      */
-    String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user);
+    String updateUserPassword(String newUserPassword);
 
     /**
      * Request from a user to remove them account with time limit

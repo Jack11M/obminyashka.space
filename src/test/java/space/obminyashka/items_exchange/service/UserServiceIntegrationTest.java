@@ -17,10 +17,8 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -28,7 +26,6 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
 class UserServiceIntegrationTest {
@@ -66,10 +63,9 @@ class UserServiceIntegrationTest {
 
     @Test
     void testUpdateUserPassword_WhenDataCorrect_Successfully() {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
-        String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
+        userWithOldPassword.setPassword(userService.updateUserPassword(NEW_PASSWORD));
+        userService.update(userWithOldPassword);
 
-        assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), message);
         assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
         verify(userRepository).saveAndFlush(userWithOldPassword);
     }

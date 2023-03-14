@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.Phone;
@@ -141,36 +140,29 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().contains(expectedErrorMessage));
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserPassword_whenOldPasswordWrong_shouldThrowInvalidDtoException() throws Exception {
+    @ParameterizedTest
+    @WithMockUser(username = "user")
+    @MethodSource("listIncorrectDataPassword")
+    void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException(String password, String confirmPassword, String response)
+            throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(false);
+        user.setPassword(CORRECT_OLD_PASSWORD);
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD).
+                param("password", password).
+                param("confirmPassword", confirmPassword), status().isConflict());
 
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(WRONG_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)));
-    }
-
-    @Test
-    @WithMockUser()
-    void updateUserPassword_whenUserEnteredOldPassword_shouldThrowIllegalArgumentException() throws Exception {
-        var userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS)));
+        assertTrue(message.contains(getMessageSource(response)));
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserPassword_whenPasswordConfirmationWrong_shouldThrowIllegalArgumentException() throws Exception {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
+    private static Stream<Arguments> listIncorrectDataPassword() {
+        return Stream.of(
+                Arguments.of(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD,
+                        ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS),
+                Arguments.of(NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION,
+                        ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)
+        );
     }
 
     @ParameterizedTest
