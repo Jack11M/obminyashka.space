@@ -320,7 +320,7 @@ const ua = {
   seasonEnum: {
     WINTER: 'Зима',
     SUMMER: 'Літо',
-    ALL_SEASONS: 'Всі сезони',
+    NO_SEASONS: 'Всі сезони',
     DEMI_SEASON: 'Демісезон',
   },
   filterPage: {
