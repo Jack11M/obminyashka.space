@@ -31,6 +31,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
@@ -95,11 +96,19 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     @Parameter(hidden = true) Authentication authentication) throws InvalidDtoException {
-        User user = findUserByValidCredentials(authentication, userChangePasswordDto.getOldPassword());
+    public String updateUserPassword(@Parameter(name = "New password")
+                                     @Size(min = 8, max = 30, message = "{" + INVALID_PASSWORD_SIZE + "}")
+                                     @Pattern(regexp = PatternHandler.PASSWORD, message = "{" + INVALID_PASSWORD + "}")
+                                     @RequestParam String password,
+                                     @Parameter(name = "Confirm new password")
+                                     @RequestParam String confirmPassword,
+                                     @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
+        User user = getUser(authentication.getName());
+        checkPasswordUniqueAndNotUsed(user.getPassword(), password, confirmPassword);
+        user.setPassword(userService.updateUserPassword(password));
+        userService.update(user);
 
-        return userService.updateUserPassword(userChangePasswordDto, user);
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
@@ -219,6 +228,16 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
+    }
+
+    private void checkPasswordUniqueAndNotUsed(String userPassword, String newPassword, String confirmPassword)
+            throws DataConflictException {
+        if (userPassword.equals(newPassword)) {
+            throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
+        }
+        if (!newPassword.equals(confirmPassword)) {
+            throw new DataConflictException(getMessageSource(DIFFERENT_PASSWORDS));
+        }
     }
 
     private void checkEmailUniqueAndNotUsed(String currentEmail, String newEmail) throws DataConflictException {

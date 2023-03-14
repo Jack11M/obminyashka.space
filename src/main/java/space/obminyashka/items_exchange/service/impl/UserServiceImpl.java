@@ -131,11 +131,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
-        userRepository.saveAndFlush(user);
-
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
+    public String updateUserPassword(String newUserPassword) {
+        return bCryptPasswordEncoder.encode(newUserPassword);
     }
 
     @Override
