@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
@@ -31,7 +32,6 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
@@ -96,16 +96,12 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserPassword(@Parameter(name = "New password")
-                                     @Size(min = 8, max = 30, message = "{" + INVALID_PASSWORD_SIZE + "}")
-                                     @Pattern(regexp = PatternHandler.PASSWORD, message = "{" + INVALID_PASSWORD + "}")
-                                     @RequestParam String password,
-                                     @Parameter(name = "Confirm new password")
-                                     @RequestParam String confirmPassword,
+    public String updateUserPassword(@Valid ChangePasswordRequest changePasswordRequest,
                                      @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         User user = getUser(authentication.getName());
-        checkPasswordUniqueAndNotUsed(user.getPassword(), password, confirmPassword);
-        user.setPassword(userService.updateUserPassword(password));
+        checkPasswordUniqueAndNotUsed(user.getPassword(),
+                changePasswordRequest.getPassword(), changePasswordRequest.getConfirmPassword());
+        user.setPassword(userService.updateUserPassword(changePasswordRequest.getPassword()));
         userService.update(user);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
