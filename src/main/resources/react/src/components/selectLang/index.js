@@ -9,21 +9,12 @@ const SelectLanguage = () => {
   const navigate = useNavigate();
   const { lang } = useSelector(getAuth);
 
-  const languageArray = ['ua', 'en'];
-
   const handleSelected = (langValue) => {
-    dispatch(setLanguage(langValue));
+    dispatch(setLanguage(langValue.target.firstChild.data));
     navigate(0);
   };
 
-  return (
-    <LanguageSelection
-      lang={lang}
-      onClick={() =>
-        handleSelected(languageArray.filter((el) => lang !== el).toString())
-      }
-    />
-  );
+  return <LanguageSelection lang={lang} onClick={handleSelected} />;
 };
 
 export { SelectLanguage };
