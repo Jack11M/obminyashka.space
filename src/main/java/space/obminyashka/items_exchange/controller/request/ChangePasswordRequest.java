@@ -9,9 +9,7 @@ import space.obminyashka.items_exchange.util.PatternHandler;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD_SIZE;
-
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 @NoArgsConstructor
 @Getter
 @Setter
