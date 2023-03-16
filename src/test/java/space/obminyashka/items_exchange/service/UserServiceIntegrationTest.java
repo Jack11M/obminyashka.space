@@ -91,7 +91,25 @@ class UserServiceIntegrationTest {
         userService.loginUserWithOAuth2(oauth2User);
 
         verify(userRepository).findByEmailOrUsername(oauth2UserArgumentCaptor.capture(), oauth2UserArgumentCaptor.capture());
-        assertEquals(NEW_USER_EMAIL,oauth2UserArgumentCaptor.getValue());
+        assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
+    }
+
+    @Test
+    void testLoginUserWithOAuth2_WhenUserBeenCreated() {
+        var oauth2User = createDefaultOidcUser();
+        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL,NEW_USER_EMAIL)).thenReturn(creatOptionalUser());
+        userService.loginUserWithOAuth2(oauth2User);
+
+        verify(userRepository).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
+        assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
+    }
+
+    private Optional<User> creatOptionalUser(){
+        User user = new User();
+        user.setEmail(NEW_USER_EMAIL);
+        user.setUsername(USER_FIRST_NAME);
+        user.setOauth2Login(null);
+        return Optional.of(user);
     }
 
     @Test
