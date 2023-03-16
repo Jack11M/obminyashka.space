@@ -121,7 +121,7 @@ public class AuthController {
                 ResponseMessagesHandler.ValidationMessage.USER_NOT_REGISTERED));
     }
 
-    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN, produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Renew access token with refresh token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
