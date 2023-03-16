@@ -8,6 +8,7 @@ import {
   Button,
   BackButton,
   showMessage,
+  CancelEverything,
   AddGoodsDescription,
 } from 'obminyashka-components';
 
@@ -325,10 +326,10 @@ const AddGoods = () => {
                       />
                     </Styles.BlockButtons>
 
-                    <Styles.BackButtons onClick={resetAll}>
-                      <Styles.Cross />
-                      <p>{getTranslatedText('addAdv.cancel')}</p>
-                    </Styles.BackButtons>
+                    <CancelEverything
+                      onClick={resetAll}
+                      text={getTranslatedText('addAdv.cancel')}
+                    />
                   </Styles.WrapButtons>
                 </Styles.AddContainer>
               </Styles.Container>
