@@ -75,8 +75,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
         var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
-        optionalUser.ifPresent(user -> userRepository.setOAuth2LoginToUserByEmail(oauth2User.getEmail()));
+        optionalUser.ifPresent(ignored -> setOAuth2LoginToUserByEmail(oauth2User.getEmail()));
         return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
+    }
+
+    @Override
+    public void setOAuth2LoginToUserByEmail(String email) {
+        userRepository.setOAuth2LoginToUserByEmail(email);
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
