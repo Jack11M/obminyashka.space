@@ -40,7 +40,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParamet
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
-@Tag(name  = "User")
+@Tag(name = "User")
 @RequiredArgsConstructor
 @Validated
 @Slf4j
@@ -54,7 +54,7 @@ public class UserController {
     private final ImageService imageService;
     private final AdvertisementService advService;
 
-    @GetMapping(ApiKey.USER_MY_INFO)
+    @GetMapping(value = ApiKey.USER_MY_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.USER_MY_INFO)
+    @PutMapping(value = ApiKey.USER_MY_INFO, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
@@ -76,7 +76,7 @@ public class UserController {
         return userService.update(userUpdateDto, getUser(authentication.getName()));
     }
 
-    @GetMapping(ApiKey.USER_MY_ADV)
+    @GetMapping(value = ApiKey.USER_MY_ADV, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -88,7 +88,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.USER_SERVICE_CHANGE_PASSWORD)
+    @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_PASSWORD, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Update a user password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
@@ -103,7 +103,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.USER_SERVICE_CHANGE_EMAIL)
+    @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_EMAIL, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Update a user email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
@@ -111,7 +111,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Parameter(name = "New email")
+    public String updateUserEmail(@Parameter(name = "email", description = "New email", example = "username@example.com")
                                   @Email(regexp = PatternHandler.EMAIL, message = "{" + INVALID_EMAIL + "}")
                                   @RequestParam String email,
                                   @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
@@ -124,7 +124,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @DeleteMapping(ApiKey.USER_SERVICE_DELETE)
+    @DeleteMapping(value = ApiKey.USER_SERVICE_DELETE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Delete user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
@@ -141,7 +141,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('SELF_REMOVING')")
-    @PutMapping(ApiKey.USER_SERVICE_RESTORE)
+    @PutMapping(value = ApiKey.USER_SERVICE_RESTORE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Restore user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
@@ -156,7 +156,7 @@ public class UserController {
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN);
     }
 
-    @GetMapping(ApiKey.USER_CHILD)
+    @GetMapping(value = ApiKey.USER_CHILD, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find a registered requested user's children data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -167,7 +167,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.USER_CHILD)
+    @PutMapping(value = ApiKey.USER_CHILD, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update child data for a registered requested user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -175,14 +175,14 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
-                                             @RequestBody List<@Valid ChildDto> childrenDto,
+                                         @RequestBody List<@Valid ChildDto> childrenDto,
                                          @Parameter(hidden = true) Authentication authentication) {
         final User user = getUser(authentication.getName());
         return userService.updateChildren(user, childrenDto);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Set a new user's avatar image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),

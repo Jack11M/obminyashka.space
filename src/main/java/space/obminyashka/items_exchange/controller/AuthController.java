@@ -56,7 +56,7 @@ public class AuthController {
     private final MailService mailService;
 
     @PostMapping(value = ApiKey.AUTH_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary  = "Login in a registered user")
+    @Operation(summary = "Login in a registered user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -74,8 +74,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping(ApiKey.AUTH_LOGOUT)
-    @Operation(summary  = "Log out a registered user")
+    @PostMapping(value = ApiKey.AUTH_LOGOUT)
+    @Operation(summary = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req,
                        HttpServletResponse resp,
@@ -89,8 +89,8 @@ public class AuthController {
         }
     }
 
-    @PostMapping(ApiKey.AUTH_REGISTER)
-    @Operation(summary  = "Register new user")
+    @PostMapping(value = ApiKey.AUTH_REGISTER, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Operation(summary = "Register new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
@@ -121,8 +121,8 @@ public class AuthController {
                 ResponseMessagesHandler.ValidationMessage.USER_NOT_REGISTERED));
     }
 
-    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN)
-    @Operation(summary  = "Renew access token with refresh token")
+    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN, produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Operation(summary = "Renew access token with refresh token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "Required request header is not present"),
@@ -137,8 +137,8 @@ public class AuthController {
         return authService.renewAccessTokenByRefresh(resolvedToken);
     }
 
-    @PostMapping(value =ApiKey.AUTH_OAUTH2_SUCCESS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary  = "Finish login via OAuth2")
+    @PostMapping(value = ApiKey.AUTH_OAUTH2_SUCCESS, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Finish login via OAuth2")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
