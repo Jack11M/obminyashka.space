@@ -10,7 +10,7 @@ const SelectLanguage = () => {
   const { lang } = useSelector(getAuth);
 
   const handleSelected = (langValue) => {
-    dispatch(setLanguage(langValue.target.firstChild.data));
+    dispatch(setLanguage(langValue.lang));
     navigate(0);
   };
 
