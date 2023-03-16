@@ -227,16 +227,6 @@ public class UserController {
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
     }
 
-    private void checkPasswordUniqueAndNotUsed(String userPassword, String newPassword, String confirmPassword)
-            throws DataConflictException {
-        if (userPassword.equals(newPassword)) {
-            throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
-        }
-        if (!newPassword.equals(confirmPassword)) {
-            throw new DataConflictException(getMessageSource(DIFFERENT_PASSWORDS));
-        }
-    }
-
     private void checkEmailUniqueAndNotUsed(String currentEmail, String newEmail) throws DataConflictException {
         if (currentEmail.equals(newEmail)) {
             throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
