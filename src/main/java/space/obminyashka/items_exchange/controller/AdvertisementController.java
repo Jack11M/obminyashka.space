@@ -31,6 +31,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -53,47 +55,57 @@ public class AdvertisementController {
     private final CategoryService categoryService;
     private final LocationService locationService;
 
-    @GetMapping(ApiKey.ADV_THUMBNAIL)
-    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result")
+    @GetMapping(value = ApiKey.ADV_THUMBNAIL, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result with filters")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(
-            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
+            @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement")
+            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
+            @Parameter(name = "subcategoryId", description = "ID of existed subcategory for searching same advertisements")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
+            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "Number of records per page. Default value: 12")
+            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        return advertisementService.findAllThumbnails(PageRequest.of(page, size));
+        return advertisementService.findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(page, size));
     }
 
-    @GetMapping(ApiKey.ADV_THUMBNAIL_RANDOM)
-    @Operation(summary = "Find 12 random advertisement as thumbnails and return them as a result")
+    @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails() {
-        return advertisementService.findRandom12Thumbnails();
+    public List<AdvertisementTitleDto> findRandom12Thumbnails(
+            @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement")
+            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
+            @Parameter(name = "subcategoryId", description = "ID of existed subcategory for searching same advertisements")
+            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
+            @Parameter(name = "amount", description = "Number of random advertisements. Default value: 12")
+            @RequestParam(value = "amount", required = false, defaultValue = "12") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") int amount) {
+        return advertisementService.findRandomNThumbnails(amount, excludeAdvertisementId, subcategoryId);
     }
 
-    @GetMapping(ApiKey.ADV_TOTAL)
+    @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Count existed advertisements and return total records amount number")
     @ApiResponse(responseCode = "200", description = "OK")
     public Long countAdvertisements() {
         return advertisementService.count();
     }
 
-    @GetMapping(ApiKey.ADV_ID)
+    @GetMapping(value = ApiKey.ADV_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find an advertisement by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public ResponseEntity<AdvertisementDisplayDto> getAdvertisement(
-            @Parameter(name = "ID of existed advertisement")
+            @Parameter(name = "advertisement_id", description = "ID of existed advertisement")
             @PathVariable("advertisement_id") UUID id) {
         return ResponseEntity.of(advertisementService.findDtoById(id));
     }
 
-    @GetMapping(ApiKey.ADV_SEARCH_PAGINATED)
+    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find advertisements by keyword")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -101,9 +113,9 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public ResponseEntity<Page<AdvertisementTitleDto>> getPageOfAdvertisementsByKeyword(
             @PathVariable @NotEmpty String keyword,
-            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
+            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "Number of records per page. Default value: 12")
+            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
         Page<AdvertisementTitleDto> allByKeyword = advertisementService.findByKeyword(keyword, PageRequest.of(page, size, Sort.by("topic")));
         return allByKeyword.isEmpty() ?
@@ -111,7 +123,7 @@ public class AdvertisementController {
                 new ResponseEntity<>(allByKeyword, HttpStatus.OK);
     }
 
-    @GetMapping(ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID)
+    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -119,9 +131,9 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
             @PathVariable("category_id") Long categoryId,
-            @Parameter(name = "Results page you want to retrieve (0..N). Default value: 0")
+            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "Number of records per page. Default value: 12")
+            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
         if (!categoryService.isCategoryExistsById(categoryId)) {
             throw new CategoryIdNotFoundException(
@@ -130,7 +142,7 @@ public class AdvertisementController {
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
-    @PostMapping(ApiKey.ADV_FILTER)
+    @PostMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
             "Fill only needed parameters.")
     @ApiResponse(responseCode = "200", description = "OK")
@@ -144,7 +156,8 @@ public class AdvertisementController {
             consumes = {
                     MediaType.APPLICATION_JSON_VALUE,
                     MediaType.MULTIPART_FORM_DATA_VALUE,
-                    MediaType.APPLICATION_OCTET_STREAM_VALUE})
+                    MediaType.APPLICATION_OCTET_STREAM_VALUE},
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
@@ -161,17 +174,20 @@ public class AdvertisementController {
         final var compressedImages = images.parallelStream()
                 .map(imageService::compress)
                 .toList();
-        return advertisementService.createAdvertisement(dto, owner, compressedImages);
+        byte[] scaledTitleImage = images.stream().findFirst()
+                .map(imageService::scale)
+                .orElse(compressedImages.get(0));
+        return advertisementService.createAdvertisement(dto, owner, compressedImages, scaledTitleImage);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(ApiKey.ADV_ID)
+    @PutMapping(value = ApiKey.ADV_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an existed advertisement")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description= "ACCEPTED"),
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
-            @ApiResponse(responseCode= "403", description = "FORBIDDEN")})
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public AdvertisementModificationDto updateAdvertisement(@PathVariable("advertisement_id") UUID id,
                                                             @Valid @RequestBody AdvertisementModificationDto dto,
@@ -208,8 +224,8 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void setDefaultImage(
-            @Parameter(name = "ID of existed advertisement") @PathVariable UUID advertisementId,
-            @Parameter(name = "ID of existed image") @PathVariable UUID imageId,
+            @Parameter(name = "advertisementId", description = "ID of existed advertisement") @PathVariable UUID advertisementId,
+            @Parameter(name = "imageId", description = "ID of existed image") @PathVariable UUID imageId,
             @Parameter(hidden = true) Authentication authentication) throws BadRequestException {
         User owner = getUser(authentication.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {

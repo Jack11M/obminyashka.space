@@ -24,14 +24,14 @@ class AdvertisementServiceIntegrationTest {
     @DataSet("database_init.yml")
     void findRandom12Thumbnails_shouldReturnEmpty() {
 
-        final var firstTitlesGetAttempt = advertisementService.findRandom12Thumbnails();
+        final var firstTitlesGetAttempt = advertisementService.findRandomNThumbnails(12, null, null);
 
         assertAll("ValidationMessage of all parameters and mocks",
                 () -> assertFalse(firstTitlesGetAttempt.isEmpty()),
                 () -> assertEquals(repository.count(), firstTitlesGetAttempt.size())
         );
 
-        final var secondTitlesGetAttempt = advertisementService.findRandom12Thumbnails();
+        final var secondTitlesGetAttempt = advertisementService.findRandomNThumbnails(12, null, null);
         assertEquals(firstTitlesGetAttempt, secondTitlesGetAttempt, "Collections must be equals because of caching response");
     }
 

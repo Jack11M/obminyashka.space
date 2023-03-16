@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,7 @@ import java.util.function.Predicate;
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Category")
@@ -35,7 +37,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping(ApiKey.CATEGORY_NAMES)
+    @GetMapping(value = ApiKey.CATEGORY_NAMES, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all names of existing categories.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -47,7 +49,7 @@ public class CategoryController {
                 new ResponseEntity<>(categoriesNames, HttpStatus.OK);
     }
 
-    @GetMapping(ApiKey.CATEGORY_ALL)
+    @GetMapping(value = ApiKey.CATEGORY_ALL, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all existing categories.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -59,25 +61,25 @@ public class CategoryController {
                 new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
-    @GetMapping(ApiKey.CATEGORY_ID)
+    @GetMapping(value = ApiKey.CATEGORY_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a category by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
+    public ResponseEntity<CategoryDto> getCategoryById(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
                                                        @PathVariable("category_id") long id) {
 
         return ResponseEntity.of(categoryService.findCategoryDtoById(id));
     }
 
-    @GetMapping(ApiKey.CATEGORY_SIZES)
+    @GetMapping(value = ApiKey.CATEGORY_SIZES, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get a category sizes by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public List<String> getCategorySizesById(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID)
+    public List<String> getCategorySizesById(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
                                              @PathVariable("category_id") int id) throws CategorySizeNotFoundException {
         return Optional.of(categoryService.findSizesForCategory(id))
                 .filter(Predicate.not(List::isEmpty))
@@ -86,7 +88,7 @@ public class CategoryController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping(ApiKey.CATEGORY)
+    @PostMapping(value = ApiKey.CATEGORY, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create a new category", description = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
@@ -104,14 +106,14 @@ public class CategoryController {
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)
-    @PutMapping(ApiKey.CATEGORY_ID)
+    @PutMapping(value = ApiKey.CATEGORY_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an existed category", description = "ADMIN ONLY")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public CategoryDto updateCategory(@Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID) @PathVariable("category_id") long id,
+    public CategoryDto updateCategory(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") @PathVariable("category_id") long id,
                                       @Valid @RequestBody CategoryDto categoryDto) {
         categoryDto.setId(id);
         if (categoryService.isCategoryDtoUpdatable(categoryDto)) {
@@ -130,7 +132,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID) long id)
+    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long id)
             throws InvalidDtoException {
 
         if (!categoryService.isCategoryDtoDeletable(id)) {

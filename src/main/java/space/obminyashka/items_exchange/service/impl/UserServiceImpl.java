@@ -91,6 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         final var lastName = Objects.requireNonNullElse(oAuth2User.getFamilyName(), "");
         final var password = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(),
                 UUID.randomUUID().toString());
+        user.setOauth2Login(true);
         user.setEmail(email);
         user.setUsername(email);
         return setUserFields(user, password, firstName, lastName);
@@ -125,19 +126,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void update(User user) {
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
     public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
         user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
         userRepository.saveAndFlush(user);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
-    }
-
-    @Override
-    public String updateUserEmail(UserChangeEmailDto userChangeEmailDto, User user) {
-        user.setEmail(userChangeEmailDto.getNewEmail());
-        userRepository.saveAndFlush(user);
-
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);
     }
 
     @Override

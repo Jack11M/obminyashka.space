@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, CheckBox, Icon } from 'obminyashka-components';
+import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
-import { InputForAuth } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -50,19 +49,23 @@ const Login = () => {
       >
         {({ isValid, dirty, values, setFieldValue }) => (
           <Form>
-            <div>
-              <InputForAuth
+            <Styles.WrapperInputSingIn>
+              <InputField
                 type="text"
+                inputGap="3px"
+                inputHeight="50px"
                 name="usernameOrEmail"
-                text={getTranslatedText('auth.logEmail')}
+                label={getTranslatedText('auth.logEmail')}
               />
 
-              <InputForAuth
+              <InputField
+                inputGap="3px"
                 name="password"
                 type="password"
-                text={getTranslatedText('auth.logPassword')}
+                inputHeight="50px"
+                label={getTranslatedText('auth.logPassword')}
               />
-            </div>
+            </Styles.WrapperInputSingIn>
 
             <Styles.Extra>
               <CheckBox

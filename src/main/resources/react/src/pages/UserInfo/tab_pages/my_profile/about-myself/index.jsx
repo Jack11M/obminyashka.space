@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { FieldArray, Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon, showMessage } from 'obminyashka-components';
+import { Button, Icon, showMessage, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
-import * as Styled from '../styles';
+import * as Styles from '../styles';
 import { validationUserSchema } from './config';
-import InputProfile from '../../../components/inputProfile';
 
 const amount = 3;
 
@@ -75,23 +74,37 @@ const AboutMyself = () => {
       initialValues={initialUserValues}
       validationSchema={validationSchema}
     >
-      {({ values, errors, handleSubmit }) => (
+      {({ values, errors }) => (
         <Form>
-          <InputProfile
-            type="text"
-            name="firstName"
-            label={getTranslatedText('ownInfo.firstName')}
-          />
+          <Styles.WrapperInputWhitOutPhones>
+            <InputField
+              type="text"
+              name="firstName"
+              labelColor="black"
+              inputMaxWidth="588px"
+              value={values.firstName}
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('ownInfo.firstName')}
+            />
 
-          <InputProfile
-            type="text"
-            name="lastName"
-            label={getTranslatedText('ownInfo.lastName')}
-          />
+            <InputField
+              type="text"
+              name="lastName"
+              labelColor="black"
+              inputMaxWidth="588px"
+              value={values.lastName}
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('ownInfo.lastName')}
+            />
+          </Styles.WrapperInputWhitOutPhones>
 
           <FieldArray name="phones">
             {({ push, remove }) => (
-              <div style={{ marginBottom: 55 }}>
+              <Styles.WrapperInputPhones>
                 {values.phones.map((phone, index, arr) => {
                   const lastIndex = arr.length - 1;
                   const biggerThanStartIndex = arr.length > 1;
@@ -99,19 +112,24 @@ const AboutMyself = () => {
                   const errorField = errors.phones && errors.phones[index];
 
                   return (
-                    <div
+                    <Styles.WrapperInputAddPhones
                       key={String(`phones[${index}]`)}
-                      style={{ position: 'relative' }}
                     >
-                      <InputProfile
+                      <InputField
                         type="tel"
+                        labelColor="black"
+                        inputMaxWidth="588px"
+                        inputFlexDirection="row"
                         name={`phones[${index}]`}
+                        value={values.phones[index]}
+                        wrapperInputErrorWidth="415px"
                         placeholder="+38(123) 456-78-90"
+                        inputJustifyContent="space-between"
                         label={getTranslatedText('ownInfo.phone')}
                       />
 
                       {lastIndex === index && maxArray && (
-                        <Styled.WrapperAddButton>
+                        <Styles.WrapperAddButton>
                           <Button
                             gap={20}
                             width={34}
@@ -129,11 +147,11 @@ const AboutMyself = () => {
                               }
                             }}
                           />
-                        </Styled.WrapperAddButton>
+                        </Styles.WrapperAddButton>
                       )}
 
                       {biggerThanStartIndex && (
-                        <Styled.WrapperDelButton>
+                        <Styles.WrapperDelButton>
                           <Button
                             gap={34}
                             width={34}
@@ -143,19 +161,18 @@ const AboutMyself = () => {
                             icon={<Icon.Plus />}
                             onClick={() => remove(index)}
                           />
-                        </Styled.WrapperDelButton>
+                        </Styles.WrapperDelButton>
                       )}
-                    </div>
+                    </Styles.WrapperInputAddPhones>
                   );
                 })}
-              </div>
+              </Styles.WrapperInputPhones>
             )}
           </FieldArray>
 
           <Button
             width={248}
             type="submit"
-            onClick={handleSubmit}
             isLoading={aboutLoading}
             whatClass="btn-form-about-me"
             disabling={Object.keys(errors).length}

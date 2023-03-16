@@ -13,3 +13,10 @@ export const enumSex = {
   MALE: 'MALE',
   UNSELECTED: 'UNSELECTED',
 };
+
+export const seasonEnum = {
+  WINTER: 'Winter',
+  SUMMER: 'Summer',
+  NO_SEASONS: 'All seasons',
+  DEMI_SEASON: 'Demi-season',
+};
