@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String updateUserPassword(String newUserPassword) {
+    public String encodeUserPassword(String newUserPassword) {
         return bCryptPasswordEncoder.encode(newUserPassword);
     }
 

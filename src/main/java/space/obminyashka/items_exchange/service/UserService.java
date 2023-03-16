@@ -52,7 +52,7 @@ public interface UserService {
      * @param newUserPassword The new user password
      * @return BCrypt password
      */
-    String updateUserPassword(String newUserPassword);
+    String encodeUserPassword(String newUserPassword);
 
     /**
      * Request from a user to remove them account with time limit

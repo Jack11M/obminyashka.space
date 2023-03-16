@@ -99,9 +99,10 @@ public class UserController {
     public String updateUserPassword(@Valid ChangePasswordRequest changePasswordRequest,
                                      @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         User user = getUser(authentication.getName());
-        checkPasswordUniqueAndNotUsed(user.getPassword(),
-                changePasswordRequest.getPassword(), changePasswordRequest.getConfirmPassword());
-        user.setPassword(userService.updateUserPassword(changePasswordRequest.getPassword()));
+        if (user.getPassword().equals(changePasswordRequest.getPassword())) {
+            throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
+        }
+        user.setPassword(userService.encodeUserPassword(changePasswordRequest.getPassword()));
         userService.update(user);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
