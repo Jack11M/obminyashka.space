@@ -11,7 +11,7 @@ import {
 } from 'config';
 
 export const validationPasswordSchema = yup.object().shape({
-  oldPassword: yup
+  /* oldPassword: yup
     .string()
     .required(getTranslatedText('errors.requireField'))
     .min(8, getTranslatedText('errors.min8'))
@@ -19,7 +19,7 @@ export const validationPasswordSchema = yup.object().shape({
     .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
     .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
     .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-    .default(() => ''),
+    .default(() => ''), */
   newPassword: yup
     .string()
     .required(getTranslatedText('errors.requireField'))

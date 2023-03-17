@@ -35,6 +35,7 @@ const MySettings = () => {
   const initialPasswordValues = validationPassword.cast({});
 
   const handlePassword = async (values, onSubmitProps) => {
+    console.log('handlePassword() ==>', values);
     setIsFetchPass(true);
     try {
       const data = await api.profile.putPasswordFetch(values);
@@ -46,9 +47,9 @@ const MySettings = () => {
       setIsFetchPass(false);
     } catch (e) {
       setIsFetchPass(false);
-      if (e.response.status === 400) {
+      /*       if (e.response.status === 400) {
         onSubmitProps.setErrors({ oldPassword: e.response.data.error });
-      }
+      } */
     }
   };
 
@@ -170,7 +171,7 @@ const MySettings = () => {
         {({ values }) => (
           <Form>
             <Styles.InputContainer>
-              <InputField
+              {/* <InputField
                 type="password"
                 name="oldPassword"
                 labelColor="black"
@@ -180,7 +181,7 @@ const MySettings = () => {
                 wrapperInputErrorWidth="415px"
                 inputJustifyContent="space-between"
                 label={getTranslatedText('settings.currentPassword')}
-              />
+              /> */}
 
               <InputField
                 type="password"
