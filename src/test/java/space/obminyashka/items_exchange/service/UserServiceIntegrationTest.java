@@ -63,8 +63,7 @@ class UserServiceIntegrationTest {
 
     @Test
     void testUpdateUserPassword_WhenDataCorrect_Successfully() {
-        userWithOldPassword.setPassword(userService.encodeUserPassword(NEW_PASSWORD));
-        userService.update(userWithOldPassword);
+        userService.updateUserPassword(userWithOldPassword, NEW_PASSWORD);
 
         assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
         verify(userRepository).saveAndFlush(userWithOldPassword);

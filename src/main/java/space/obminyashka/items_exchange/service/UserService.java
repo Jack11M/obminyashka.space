@@ -48,11 +48,11 @@ public interface UserService {
     void update(User user);
 
     /**
-     * Update password of an existed user with new one
-     * @param newUserPassword The new user password
-     * @return BCrypt password
+     * Updates the password of the given user.
+     * @param user The user object that you want to update.
+     * @param password The new password for the user.
      */
-    String encodeUserPassword(String newUserPassword);
+    void updateUserPassword(User user, String password);
 
     /**
      * Request from a user to remove them account with time limit
