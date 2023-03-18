@@ -43,24 +43,24 @@ export const validationPasswordSchema = yup.object().shape({
     .default(() => ''),
 });
 
-export const validationEmailSchema = (currentEmail) =>
+export const validationEmailSchema = (email) =>
   yup.object().shape({
-    newEmail: yup
+    email: yup
       .string()
       .required(getTranslatedText('errors.requireField'))
       .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .notOneOf([currentEmail], getTranslatedText('errors.emailIdentical'))
+      .notOneOf([email], getTranslatedText('errors.emailIdentical'))
       .matches(EMAIL_REG_EXP, getTranslatedText('errors.invalidEmailFormat'))
       .matches(NUMBER_OF_CHARACTERS, getTranslatedText('errors.max129'))
       .default(() => ''),
-    newEmailConfirmation: yup
+    /* newEmailConfirmation: yup
       .string()
       .required(getTranslatedText('errors.requireField'))
       .oneOf(
         [yup.ref('newEmail')],
         getTranslatedText('errors.emailNotIdentical')
       )
-      .default(() => ''),
+      .default(() => ''), */
   });
 
 export const validationDeleteSchema = yup.object().shape({
