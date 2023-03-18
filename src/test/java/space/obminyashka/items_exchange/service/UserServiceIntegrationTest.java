@@ -91,7 +91,7 @@ class UserServiceIntegrationTest {
         userService.loginUserWithOAuth2(oauth2User);
 
         verify(userRepository).findByEmailOrUsername(oauth2UserArgumentCaptor.capture(), oauth2UserArgumentCaptor.capture());
-        assertEquals(NEW_USER_EMAIL,oauth2UserArgumentCaptor.getValue());
+        assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
     }
 
     @Test

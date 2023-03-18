@@ -150,4 +150,10 @@ public interface UserService {
      * @return {@link User} from OAuth2User credentials if exists, otherwise register a new user and return it
      */
     User loginUserWithOAuth2(DefaultOidcUser oauth2User);
+
+    /**
+     * set "true" to the oauth2Login field if the user has already been created
+     * @param email set "true" by email in DB
+     */
+    void setOAuth2LoginToUserByEmail(String email);
 }
