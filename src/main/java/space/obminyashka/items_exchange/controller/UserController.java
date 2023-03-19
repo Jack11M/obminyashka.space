@@ -98,12 +98,12 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserPassword(@Valid ChangePasswordRequest changePasswordRequest,
                                      @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
-        User user = getUser(authentication.getName());
+        var username = authentication.getName();
         var password = changePasswordRequest.getPassword();
-        if (user.getPassword().equals(password)) {
+        if (userService.isUserPasswordMatches(username, password)) {
             throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
         }
-        userService.updateUserPassword(user, password);
+        userService.updateUserPassword(username, password);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
     }

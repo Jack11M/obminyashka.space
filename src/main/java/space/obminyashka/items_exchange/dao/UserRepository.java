@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select u.updated from User u where u.username = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);
 
+    @Query("select u.password from User u where u.username = :username")
+    String getUserPasswordByUsername(String username);
+
     boolean existsByEmail(String email);
 
     boolean existsByUsernameOrEmail(String username, String email);
@@ -31,4 +34,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Query("update User u set u.avatarImage = null where u.username = :username")
     void cleanAvatarForUserByName(String username);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.password = :password where u.username = :username")
+    void saveUserPasswordByUsername(String username, String password);
 }

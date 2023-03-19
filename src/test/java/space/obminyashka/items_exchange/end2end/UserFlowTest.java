@@ -5,6 +5,9 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +23,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
@@ -31,6 +35,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
@@ -120,20 +125,31 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = ADMIN_USERNAME)
+    @MethodSource("listDataPassword")
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
-    void updateUserPassword_whenDataCorrect_successfully() throws Exception {
+    void updateUserPassword_shouldGetResponse
+            (String password, String confirmPassword, ResultMatcher status, String response) throws Exception {
         MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD).
-                param("password", NEW_PASSWORD).
-                param("confirmPassword", NEW_PASSWORD), status().isAccepted());
+                param("password", password).
+                param("confirmPassword", confirmPassword), status);
 
         String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
-        assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, pwd));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD)));
+        assertTrue(bCryptPasswordEncoder.matches(password, pwd));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(response)));
+    }
+
+    private static Stream<Arguments> listDataPassword() {
+        return Stream.of(
+                Arguments.of(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD, status().isConflict(),
+                        ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS),
+                Arguments.of(NEW_PASSWORD, NEW_PASSWORD, status().isAccepted(),
+                        ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD)
+        );
     }
 
     @Test

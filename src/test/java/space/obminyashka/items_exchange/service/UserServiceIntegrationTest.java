@@ -31,7 +31,6 @@ import static org.mockito.Mockito.*;
 class UserServiceIntegrationTest {
 
     public static final String CORRECT_OLD_PASSWORD = "123456xX";
-    public static final String NEW_PASSWORD = "123456wW";
     public static final String NEW_USER_EMAIL = "user@mail.ru";
     private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
     private static final String USER_FIRST_NAME = "First";
@@ -62,11 +61,10 @@ class UserServiceIntegrationTest {
     }
 
     @Test
-    void testUpdateUserPassword_WhenDataCorrect_Successfully() {
-        userService.updateUserPassword(userWithOldPassword, NEW_PASSWORD);
-
-        assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
-        verify(userRepository).saveAndFlush(userWithOldPassword);
+    void testIsUserPasswordMatches_WhenDataCorrect_Successfully() {
+        userService.isUserPasswordMatches(userWithOldPassword.getUsername(), CORRECT_OLD_PASSWORD);
+        assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, userWithOldPassword.getPassword()));
+        verify(userRepository).getUserPasswordByUsername(userWithOldPassword.getUsername());
     }
 
     @Test

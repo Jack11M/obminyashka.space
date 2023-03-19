@@ -131,9 +131,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUserPassword(User user, String password) {
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        update(user);
+    public void updateUserPassword(String username, String password) {
+        userRepository.saveUserPasswordByUsername(username, bCryptPasswordEncoder.encode(password));
     }
 
     @Override
@@ -191,6 +190,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean isPasswordMatches(User user, String encodedPassword) {
         return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
+    }
+
+    @Override
+    public boolean isUserPasswordMatches(String username, String encodedPassword) {
+        return bCryptPasswordEncoder.matches(encodedPassword, userRepository.getUserPasswordByUsername(username));
     }
 
     private UserDto mapUserToDto(User user) {

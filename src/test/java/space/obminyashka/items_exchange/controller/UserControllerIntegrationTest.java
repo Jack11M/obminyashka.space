@@ -159,8 +159,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     private static Stream<Arguments> listIncorrectDataPassword() {
         return Stream.of(
-                Arguments.of(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD, status().isConflict(),
-                        ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS),
                 Arguments.of(NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION, status().isBadRequest(),
                         ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)
         );

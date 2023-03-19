@@ -48,11 +48,11 @@ public interface UserService {
     void update(User user);
 
     /**
-     * Updates the password of the given user.
-     * @param user The user object that you want to update.
+     * Update the password for the user with the given username.
+     * @param username The username of the user whose password you want to update.
      * @param password The new password for the user.
      */
-    void updateUserPassword(User user, String password);
+    void updateUserPassword(String  username, String password);
 
     /**
      * Request from a user to remove them account with time limit
@@ -107,6 +107,15 @@ public interface UserService {
      * @return result of the check
      */
     boolean isPasswordMatches(User user, String encodedPassword);
+
+    /**
+     * Given a username and an encoded password, return true if the encoded password matches the user's password, false
+     * otherwise.
+     * @param username The username of the user.
+     * @param encodedPassword The encoded password that you want to check against the user's password.
+     * @return A boolean value.
+     */
+    boolean isUserPasswordMatches(String username, String encodedPassword);
 
     /**
      * Get all children from gained user
