@@ -5,7 +5,7 @@ import { Avatar, Icon, EllipsisText } from 'obminyashka-components';
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
-import { LanguageSelection } from 'components/selectLang';
+import { SelectLanguage } from 'components/selectLang';
 import { getAuthed, getAuthProfile } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
@@ -55,7 +55,7 @@ const NavTop = () => {
               </Styles.ProfileSpan>
             </Styles.LoginLink>
 
-            <LanguageSelection />
+            <SelectLanguage />
           </Styles.WrapPersonal>
         </Styles.DivTop>
       </Styles.Wrapper>
