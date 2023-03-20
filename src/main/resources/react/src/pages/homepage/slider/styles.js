@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-export const CategorySliderWrapper = styled.div`
+export const SliderWrapper = styled.div`
   margin: 125px 0;
 
   .slick-track {
@@ -16,12 +16,12 @@ export const CategorySliderWrapper = styled.div`
   }
 `;
 
-export const CategorySliderItem = styled(Link)`
+export const SliderItem = styled(Link)`
   position: relative;
   outline: none;
 `;
 
-export const SubtitleSpan = styled.span`
+export const SliderSubtitle = styled.span`
   position: absolute;
   top: 22px;
   right: 22px;
@@ -37,7 +37,7 @@ export const SubtitleSpan = styled.span`
   }
 `;
 
-export const Title = styled.b`
+export const SliderTitle = styled.b`
   color: ${({ theme }) => theme.colors.white};
   font-size: 36px;
   line-height: 44px;

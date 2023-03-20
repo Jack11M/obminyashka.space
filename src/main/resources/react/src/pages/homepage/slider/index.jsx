@@ -6,25 +6,25 @@ import { settings } from './config';
 
 const Slides = () => {
   return (
-    <Styles.CategorySliderWrapper>
+    <Styles.SliderWrapper>
       <Slider {...settings}>
         {sliderData.map((image) => (
-          <Styles.CategorySliderItem
+          <Styles.SliderItem
             to={image.href}
             key={image.title}
             style={{ width: image.width }}
           >
             <img src={image.src} alt={image.title} />
 
-            <Styles.SubtitleSpan>
+            <Styles.SliderSubtitle>
               {image.subtitle}
 
-              <Styles.Title>{image.title}</Styles.Title>
-            </Styles.SubtitleSpan>
-          </Styles.CategorySliderItem>
+              <Styles.SliderTitle>{image.title}</Styles.SliderTitle>
+            </Styles.SliderSubtitle>
+          </Styles.SliderItem>
         ))}
       </Slider>
-    </Styles.CategorySliderWrapper>
+    </Styles.SliderWrapper>
   );
 };
 
