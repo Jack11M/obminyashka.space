@@ -63,6 +63,7 @@ class UserServiceIntegrationTest {
     @Test
     void testIsUserPasswordMatches_WhenDataCorrect_Successfully() {
         userService.isUserPasswordMatches(userWithOldPassword.getUsername(), CORRECT_OLD_PASSWORD);
+
         assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, userWithOldPassword.getPassword()));
         verify(userRepository).getUserPasswordByUsername(userWithOldPassword.getUsername());
     }

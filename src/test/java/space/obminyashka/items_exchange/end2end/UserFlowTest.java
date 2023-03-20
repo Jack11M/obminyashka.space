@@ -131,8 +131,8 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
-    void updateUserPassword_shouldGetResponse
-            (String password, String confirmPassword, ResultMatcher status, String response) throws Exception {
+    void updateUserPassword_shouldGetResponse(String password, String confirmPassword, ResultMatcher status, String response)
+            throws Exception {
         MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD).
                 param("password", password).
                 param("confirmPassword", confirmPassword), status);

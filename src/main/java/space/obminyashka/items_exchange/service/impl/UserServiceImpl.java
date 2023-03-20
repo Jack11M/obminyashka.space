@@ -193,8 +193,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean isUserPasswordMatches(String username, String encodedPassword) {
-        return bCryptPasswordEncoder.matches(encodedPassword, userRepository.getUserPasswordByUsername(username));
+    public boolean isUserPasswordMatches(String username, String password) {
+        return bCryptPasswordEncoder.matches(password, userRepository.getUserPasswordByUsername(username));
     }
 
     private UserDto mapUserToDto(User user) {

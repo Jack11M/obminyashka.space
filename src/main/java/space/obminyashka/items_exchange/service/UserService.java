@@ -109,13 +109,12 @@ public interface UserService {
     boolean isPasswordMatches(User user, String encodedPassword);
 
     /**
-     * Given a username and an encoded password, return true if the encoded password matches the user's password, false
-     * otherwise.
+     * Given a username and password, return true if the user password and new password match, false otherwise.
      * @param username The username of the user.
-     * @param encodedPassword The encoded password that you want to check against the user's password.
+     * @param password The password to be checked.
      * @return A boolean value.
      */
-    boolean isUserPasswordMatches(String username, String encodedPassword);
+    boolean isUserPasswordMatches(String username, String password);
 
     /**
      * Get all children from gained user

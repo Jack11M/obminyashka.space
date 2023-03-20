@@ -140,28 +140,16 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().contains(expectedErrorMessage));
     }
 
-    @ParameterizedTest
+    @Test
     @WithMockUser(username = "user")
-    @MethodSource("listIncorrectDataPassword")
-    void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException
-            (String password, String confirmPassword, ResultMatcher status, String response)
-            throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        user.setPassword(CORRECT_OLD_PASSWORD);
+    void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException() throws Exception {
         MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD).
-                param("password", password).
-                param("confirmPassword", confirmPassword), status);
+                param("password", NEW_PASSWORD).
+                param("confirmPassword", WRONG_NEW_PASSWORD_CONFIRMATION), status().isBadRequest());
 
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource(response)));
-    }
-
-    private static Stream<Arguments> listIncorrectDataPassword() {
-        return Stream.of(
-                Arguments.of(NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION, status().isBadRequest(),
-                        ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)
-        );
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
     @ParameterizedTest
