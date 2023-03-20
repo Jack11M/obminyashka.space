@@ -5,7 +5,7 @@ import { logOutUser } from 'store/auth/slice';
 import { setStorageUser, getStorageUser, getStorageLang } from 'Utils';
 
 const refreshUrl = '/auth/refresh/token';
-const array = ['/user/my-info', '/user/child', '/user/my-adv'];
+const endPointsAllowed = ['/user/my-info', '/user/child', '/user/my-adv'];
 
 function handleAuthError(error, onAuthError) {
   if (onAuthError) onAuthError();
@@ -13,7 +13,7 @@ function handleAuthError(error, onAuthError) {
 }
 
 const isProvideToken = ({ method, url }) =>
-  method === 'get' && !array.includes(url);
+  method === 'get' && !endPointsAllowed.includes(url);
 
 function initObminyashka({ onAuthError }) {
   axios.defaults.baseURL = '/api/v1';
