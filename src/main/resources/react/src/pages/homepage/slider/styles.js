@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
-export const CategorySlider = styled.div`
+export const CategorySliderWrapper = styled.div`
   margin: 125px 0;
 
+  .slick-track {
+    display: flex;
+    flex-direction: row;
+  }
   .slick-slide {
     margin-right: 20px;
   }
@@ -12,13 +16,20 @@ export const CategorySlider = styled.div`
   }
 `;
 
-export const CategorySliderSpan = styled.span`
+export const CategorySliderItem = styled(Link)`
+  position: relative;
+  outline: none;
+`;
+
+export const SubtitleSpan = styled.span`
+  position: absolute;
   top: 22px;
   right: 22px;
-  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  color: ${({ theme }) => theme.colors.white};
   font-size: 18px;
   line-height: 24px;
-  position: absolute;
   font-family: Roboto;
 
   :active {
@@ -26,16 +37,11 @@ export const CategorySliderSpan = styled.span`
   }
 `;
 
-export const CategorySliderImageTitle = styled.b`
-  color: #ffffff;
+export const Title = styled.b`
+  color: ${({ theme }) => theme.colors.white};
   font-size: 36px;
   line-height: 44px;
   letter-spacing: 1px;
   text-transform: uppercase;
   font-family: Caveat;
-`;
-
-export const CategorySliderLink = styled(Link)`
-  outline: none;
-  position: relative;
 `;
