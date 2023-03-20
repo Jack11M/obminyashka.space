@@ -19,5 +19,11 @@ public interface MailService {
      */
     void sendMail(String emailTo, EmailType emailType, Locale locale) throws IOException;
 
+    /**
+     * Validate code and if it is existed and unexpired, users`s email will be confirmed
+     * @param validationCode a code for activate email
+     * @throws EmailTokenNotExistsException when service can`t find code in database
+     * @throws EmailTokenExpiredException when service find code but code is expired
+     */
     void validateEmail(UUID validationCode) throws EmailTokenNotExistsException, EmailTokenExpiredException;
 }
