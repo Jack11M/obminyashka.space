@@ -10,11 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.exception.EmailTokenExpiredException;
+import space.obminyashka.items_exchange.exception.EmailTokenNotExistsException;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
@@ -33,6 +36,11 @@ public class SendGridService implements MailService {
         var request = createMailRequest(mail2send);
         final var response = sendGrid.api(request);
         log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", response.getStatusCode(), response.getBody());
+    }
+
+    @Override
+    public void validateEmail(UUID validationCode) throws EmailTokenNotExistsException, EmailTokenExpiredException {
+        //TODO
     }
 
     private Request createMailRequest(Mail mail) throws IOException {

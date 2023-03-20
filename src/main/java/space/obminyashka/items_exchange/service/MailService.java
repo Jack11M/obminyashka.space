@@ -1,9 +1,12 @@
 package space.obminyashka.items_exchange.service;
 
+import space.obminyashka.items_exchange.exception.EmailTokenExpiredException;
+import space.obminyashka.items_exchange.exception.EmailTokenNotExistsException;
 import space.obminyashka.items_exchange.util.EmailType;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.UUID;
 
 public interface MailService {
 
@@ -15,4 +18,6 @@ public interface MailService {
      * @throws IOException when service is unavailable or some unexpected case happened
      */
     void sendMail(String emailTo, EmailType emailType, Locale locale) throws IOException;
+
+    void validateEmail(UUID validationCode) throws EmailTokenNotExistsException, EmailTokenExpiredException;
 }

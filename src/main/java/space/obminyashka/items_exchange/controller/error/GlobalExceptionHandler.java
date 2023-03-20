@@ -101,6 +101,18 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 
+    @ExceptionHandler({EmailTokenNotExistsException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleEmailTokenNotExistsException(Exception ex, ServletWebRequest request){
+        return logAndGetErrorMessage(request, ex, Level.ERROR);
+    }
+
+    @ExceptionHandler({EmailTokenExpiredException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleEmailTokenExpiredException(Exception ex, ServletWebRequest request){
+        return logAndGetErrorMessage(request, ex, Level.ERROR);
+    }
+
     @ExceptionHandler(UndeclaredThrowableException.class)
     public ResponseEntity<ErrorMessage> handleSneakyThrownException(UndeclaredThrowableException ex, ServletWebRequest request){
         final var cause = ex.getCause();
