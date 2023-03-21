@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,8 +16,6 @@ import space.obminyashka.items_exchange.service.MailService;
 
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
-
 @RestController
 @Tag(name = "Mail")
 @RequiredArgsConstructor
@@ -26,7 +23,6 @@ import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_AD
 public class EmailController {
     private final MailService mailService;
 
-    @PreAuthorize(HAS_ROLE_ADMIN)
     @PutMapping(value = ApiKey.MAIL_VALIDATE_TOKEN)
     @Operation(summary = "Validate confirmation email token id and then activate email")
     @ApiResponses(value = {
