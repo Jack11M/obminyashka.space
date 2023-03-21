@@ -38,6 +38,6 @@ public class EmailController {
     public ResponseEntity<String> validateEmailAndThenActivate(@PathVariable("token_id") UUID tokenID) throws EmailTokenExpiredException, EmailTokenNotExistsException {
         mailService.validateEmail(tokenID);
         return new ResponseEntity<>(getMessageSource(
-                ResponseMessagesHandler.PositiveMessage.EMAIL_ACTIVATION_MESSAGE), HttpStatus.OK);
+                ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMATION_MESSAGE), HttpStatus.OK);
     }
 }

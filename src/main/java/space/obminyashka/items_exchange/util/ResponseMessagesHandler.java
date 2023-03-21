@@ -72,6 +72,6 @@ public class ResponseMessagesHandler {
         public final String ACCOUNT_ACTIVE_AGAIN = "account.made.active.again";
         public final String EMAIL_REGISTRATION_HEADER = "registration.header";
         public final String EMAIL_REGISTRATION_BODY = "registration.body";
-        public final String EMAIL_ACTIVATION_MESSAGE = "activation.message";
+        public final String EMAIL_CONFIRMATION_MESSAGE = "confirmation.message";
     }
 }
