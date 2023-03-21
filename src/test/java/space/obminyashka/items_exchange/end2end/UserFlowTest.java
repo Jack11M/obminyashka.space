@@ -25,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
@@ -133,10 +135,11 @@ class UserFlowTest extends BasicControllerTest {
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserPassword_shouldGetResponse(String password, String confirmPassword, ResultMatcher status, String response)
             throws Exception {
-        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD).
-                param("password", password).
-                param("confirmPassword", confirmPassword), status);
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setPassword(password);
+        changePasswordRequest.setConfirmPassword(confirmPassword);
 
+        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status);
         String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
         assertTrue(bCryptPasswordEncoder.matches(password, pwd));
@@ -153,12 +156,31 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
+            ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
+    void updateUserEmail_shouldGetResponse() throws Exception {
+        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
+        changeEmailRequest.setEmail(OLD_ADMIN_VALID_EMAIL);
+
+        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
+        String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
+
+        assertEquals(userEmail, changeEmailRequest.getEmail());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD)));
+    }
+
+    @Test
     @WithMockUser(username = "user")
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
-        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", NEW_VALID_EMAIL), status().isAccepted());
+        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
+        changeEmailRequest.setEmail(NEW_VALID_EMAIL);
+
+        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }

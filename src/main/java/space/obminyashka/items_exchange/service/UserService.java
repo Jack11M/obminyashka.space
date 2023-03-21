@@ -55,6 +55,13 @@ public interface UserService {
     void updateUserPassword(String  username, String password);
 
     /**
+     * Update the email for the user with the given username.
+     * @param username The username of the user whose email you want to update.
+     * @param email The new email for the user.
+     */
+    void updateUserEmail(String username, String email);
+
+    /**
      * Request from a user to remove them account with time limit
      * @param user existed user which is requested self-removing procedure
      */
@@ -92,6 +99,7 @@ public interface UserService {
      * @return result of the check
      */
     boolean existsByEmail(String email);
+
     /**
      * Check whether the user exist into DB by username or email
      * @param username username of the user to check
@@ -115,6 +123,14 @@ public interface UserService {
      * @return A boolean value.
      */
     boolean isUserPasswordMatches(String username, String password);
+
+    /**
+     * Given a username and email, return true if the user email and new email equals, false otherwise.
+     * @param username The username of the user.
+     * @param email The email to be checked.
+     * @return A boolean value.
+     */
+    boolean isUserEmailMatches(String username, String email);
 
     /**
      * Get all children from gained user

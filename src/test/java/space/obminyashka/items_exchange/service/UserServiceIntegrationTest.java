@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 class UserServiceIntegrationTest {
 
     public static final String CORRECT_OLD_PASSWORD = "123456xX";
-    public static final String NEW_USER_EMAIL = "user@mail.ru";
+    public static final String NEW_USER_EMAIL = "user@mail.com";
     private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
     private static final String USER_FIRST_NAME = "First";
     private static final String USER_LAST_NAME = "Last";
