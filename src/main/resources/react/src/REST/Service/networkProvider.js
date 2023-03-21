@@ -5,11 +5,15 @@ import { logOutUser } from 'store/auth/slice';
 import { setStorageUser, getStorageUser, getStorageLang } from 'Utils';
 
 const refreshUrl = '/auth/refresh/token';
+const endPointsAllowed = ['/user/my-info', '/user/child', '/user/my-adv'];
 
 function handleAuthError(error, onAuthError) {
   if (onAuthError) onAuthError();
   return Promise.reject(error);
 }
+
+const isProvideToken = ({ method, url }) =>
+  method === 'get' && !endPointsAllowed.includes(url);
 
 function initObminyashka({ onAuthError }) {
   axios.defaults.baseURL = '/api/v1';
@@ -32,6 +36,11 @@ function initObminyashka({ onAuthError }) {
 
     if (newConfig.headers.is_access) {
       delete newConfig.headers.Authorization;
+      newConfig.headers.is_access = false;
+    }
+
+    if (isProvideToken({ method: newConfig.method, url: newConfig.url })) {
+      delete newConfig.headers.Authorization;
     }
 
     return newConfig;
@@ -50,6 +59,11 @@ function initObminyashka({ onAuthError }) {
 
       if (error?.response?.status === 401) {
         delete originalRequest.headers.Authorization;
+
+        if (error.response.config.url === refreshUrl) {
+          return handleAuthError(error, onAuthError);
+        }
+
         return axios
           .post(
             refreshUrl,
@@ -57,8 +71,7 @@ function initObminyashka({ onAuthError }) {
             {
               headers: {
                 refresh: `Bearer ${refreshToken}`,
-                grant_type: 'refresh_token',
-                is_access: 'true',
+                is_access: true,
               },
             }
           )

@@ -8,16 +8,16 @@ import {
   Button,
   BackButton,
   showMessage,
+  CancelEverything,
   AddGoodsDescription,
 } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import ua from 'components/local/ua';
-import { enumAge } from 'config/ENUM';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
 import { getAuthLang } from 'store/auth/slice';
 import { FormikFocus } from 'components/common/formik';
+import { enumAge, seasonEnum, enumSex } from 'config/ENUM';
 import { clearAdv, getAdv, saveAdv } from 'store/adv/slice';
 import { getTranslatedText } from 'components/local/localization';
 import { FormikCheckBox, FormikHandler } from 'components/common';
@@ -37,7 +37,6 @@ const AddGoods = () => {
   const dispatch = useDispatch();
   const adv = useSelector(getAdv);
   const lang = useSelector(getAuthLang);
-  const { genderEnum, seasonEnum } = ua;
 
   const regexp = /data:image\/(jpg|jpeg|png|gif);base64,/;
 
@@ -152,8 +151,8 @@ const AddGoods = () => {
 
   const initialValues = validationAdv.cast({});
 
+  const sexShow = Object.keys(enumSex);
   const agesShow = Object.keys(enumAge);
-  const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
 
   const resetAll = () => {
@@ -327,10 +326,10 @@ const AddGoods = () => {
                       />
                     </Styles.BlockButtons>
 
-                    <Styles.BackButtons onClick={resetAll}>
-                      <Styles.Cross />
-                      <p>{getTranslatedText('addAdv.cancel')}</p>
-                    </Styles.BackButtons>
+                    <CancelEverything
+                      onClick={resetAll}
+                      text={getTranslatedText('addAdv.cancel')}
+                    />
                   </Styles.WrapButtons>
                 </Styles.AddContainer>
               </Styles.Container>
