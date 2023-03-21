@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class EmailController {
     private final MailService mailService;
 
-    @PutMapping(value = ApiKey.MAIL_VALIDATE_TOKEN)
+    @PutMapping(value = ApiKey.MAIL_VALIDATE_TOKEN, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Validate confirmation email token id and then activate email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
