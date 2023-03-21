@@ -30,14 +30,6 @@ public abstract class BasicControllerTest {
         return getResultActionsAndExpectStatus(method, dto, expectedStatus);
     }
 
-    protected <T> MvcResult sendRequestAndGetMvcResult(MockHttpServletRequestBuilder method, T request, ResultMatcher expectedStatus) throws Exception {
-        return this.sendRequestAndGetResultAction(method, request, expectedStatus).andReturn();
-    }
-
-    protected <T> ResultActions sendRequestAndGetResultAction(MockHttpServletRequestBuilder method, T request, ResultMatcher expectedStatus) throws Exception {
-        return getResultActionsAndExpectStatus(method, request, expectedStatus);
-    }
-
     protected MvcResult sendUriAndGetMvcResult(MockHttpServletRequestBuilder method, ResultMatcher expectedStatus) throws Exception {
         return this.sendUriAndGetResultAction(method, expectedStatus).andReturn();
     }

@@ -139,7 +139,7 @@ class UserFlowTest extends BasicControllerTest {
         changePasswordRequest.setPassword(password);
         changePasswordRequest.setConfirmPassword(confirmPassword);
 
-        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status);
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status);
         String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
         assertTrue(bCryptPasswordEncoder.matches(password, pwd));
@@ -164,7 +164,7 @@ class UserFlowTest extends BasicControllerTest {
         ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
         changeEmailRequest.setEmail(OLD_ADMIN_VALID_EMAIL);
 
-        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
         String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
         assertEquals(userEmail, changeEmailRequest.getEmail());
@@ -180,7 +180,7 @@ class UserFlowTest extends BasicControllerTest {
         ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
         changeEmailRequest.setEmail(NEW_VALID_EMAIL);
 
-        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }

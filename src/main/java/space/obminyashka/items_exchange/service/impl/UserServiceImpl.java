@@ -136,6 +136,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void updateUserEmail(String username, String email) {
+        userRepository.saveUserEmailByUsername(username, email);
+    }
+
+    @Override
     public void selfDeleteRequest(User user) {
         roleService.getRole("ROLE_SELF_REMOVING").ifPresent(user::setRole);
         userRepository.saveAndFlush(user);
@@ -195,6 +200,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean isUserPasswordMatches(String username, String password) {
         return bCryptPasswordEncoder.matches(password, userRepository.getUserPasswordByUsername(username));
+    }
+
+    @Override
+    public boolean isUserEmailMatches(String username, String email) {
+        return userRepository.getUserEmailByUsername(username).equals(email);
     }
 
     private UserDto mapUserToDto(User user) {

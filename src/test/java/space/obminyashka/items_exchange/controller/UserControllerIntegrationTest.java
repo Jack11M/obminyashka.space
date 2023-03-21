@@ -149,7 +149,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         request.setPassword(NEW_PASSWORD);
         request.setConfirmPassword(WRONG_NEW_PASSWORD_CONFIRMATION);
 
-        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), request, status().isBadRequest());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), request, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
@@ -162,7 +162,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
         changeEmailRequest.setEmail(email);
 
-        MvcResult mvcResult = sendRequestAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isBadRequest());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
         assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL)));
