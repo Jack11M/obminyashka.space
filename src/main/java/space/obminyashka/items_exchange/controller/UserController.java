@@ -19,6 +19,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
@@ -26,11 +28,9 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.PatternHandler;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
@@ -95,11 +95,16 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserPassword(@Valid @RequestBody UserChangePasswordDto userChangePasswordDto,
-                                     @Parameter(hidden = true) Authentication authentication) throws InvalidDtoException {
-        User user = findUserByValidCredentials(authentication, userChangePasswordDto.getOldPassword());
+    public String updateUserPassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
+                                     @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
+        var username = authentication.getName();
+        var password = changePasswordRequest.getPassword();
+        if (userService.isUserPasswordMatches(username, password)) {
+            throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
+        }
+        userService.updateUserPassword(username, password);
 
-        return userService.updateUserPassword(userChangePasswordDto, user);
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
@@ -111,14 +116,12 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Parameter(name = "email", description = "New email", example = "username@example.com")
-                                  @Email(regexp = PatternHandler.EMAIL, message = "{" + INVALID_EMAIL + "}")
-                                  @RequestParam String email,
+    public String updateUserEmail(@Valid @RequestBody ChangeEmailRequest changeEmailRequest,
                                   @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
-        User user = getUser(authentication.getName());
-        checkEmailUniqueAndNotUsed(user.getEmail(), email);
-        user.setEmail(email);
-        userService.update(user);
+        var username = authentication.getName();
+        var email = changeEmailRequest.getEmail();
+        checkEmailUniqueAndNotUsed(username, email);
+        userService.updateUserEmail(username, email);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);
     }
@@ -221,11 +224,11 @@ public class UserController {
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
     }
 
-    private void checkEmailUniqueAndNotUsed(String currentEmail, String newEmail) throws DataConflictException {
-        if (currentEmail.equals(newEmail)) {
+    private void checkEmailUniqueAndNotUsed(String username, String email) throws DataConflictException {
+        if (userService.isUserEmailMatches(username, email)) {
             throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
         }
-        if (userService.existsByEmail(newEmail)) {
+        if (userService.existsByEmail(email)) {
             throw new DataConflictException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
         }

@@ -137,11 +137,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(userChangePasswordDto.getNewPassword()));
-        userRepository.saveAndFlush(user);
+    public void updateUserPassword(String username, String password) {
+        userRepository.saveUserPasswordByUsername(username, bCryptPasswordEncoder.encode(password));
+    }
 
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
+    @Override
+    public void updateUserEmail(String username, String email) {
+        userRepository.saveUserEmailByUsername(username, email);
     }
 
     @Override
@@ -199,6 +201,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean isPasswordMatches(User user, String encodedPassword) {
         return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
+    }
+
+    @Override
+    public boolean isUserPasswordMatches(String username, String password) {
+        return bCryptPasswordEncoder.matches(password, userRepository.getUserPasswordByUsername(username));
+    }
+
+    @Override
+    public boolean isUserEmailMatches(String username, String email) {
+        return userRepository.getUserEmailByUsername(username).equals(email);
     }
 
     private UserDto mapUserToDto(User user) {

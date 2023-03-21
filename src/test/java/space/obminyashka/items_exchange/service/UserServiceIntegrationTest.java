@@ -17,10 +17,8 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -28,14 +26,12 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
 class UserServiceIntegrationTest {
 
     public static final String CORRECT_OLD_PASSWORD = "123456xX";
-    public static final String NEW_PASSWORD = "123456wW";
-    public static final String NEW_USER_EMAIL = "user@mail.ru";
+    public static final String NEW_USER_EMAIL = "user@mail.com";
     private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
     private static final String USER_FIRST_NAME = "First";
     private static final String USER_LAST_NAME = "Last";
@@ -65,13 +61,11 @@ class UserServiceIntegrationTest {
     }
 
     @Test
-    void testUpdateUserPassword_WhenDataCorrect_Successfully() {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
-        String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
+    void testIsUserPasswordMatches_WhenDataCorrect_Successfully() {
+        userService.isUserPasswordMatches(userWithOldPassword.getUsername(), CORRECT_OLD_PASSWORD);
 
-        assertEquals(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), message);
-        assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
-        verify(userRepository).saveAndFlush(userWithOldPassword);
+        assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, userWithOldPassword.getPassword()));
+        verify(userRepository).getUserPasswordByUsername(userWithOldPassword.getUsername());
     }
 
     @Test

@@ -48,12 +48,18 @@ public interface UserService {
     void update(User user);
 
     /**
-     * Update password of an existed user with new one
-     * @param userChangePasswordDto DTO which contains old password and doubled new password
-     * @param user existed user to update
-     * @return a message as the result of the operation
+     * Update the password for the user with the given username.
+     * @param username The username of the user whose password you want to update.
+     * @param password The new password for the user.
      */
-    String updateUserPassword(UserChangePasswordDto userChangePasswordDto, User user);
+    void updateUserPassword(String  username, String password);
+
+    /**
+     * Update the email for the user with the given username.
+     * @param username The username of the user whose email you want to update.
+     * @param email The new email for the user.
+     */
+    void updateUserEmail(String username, String email);
 
     /**
      * Request from a user to remove them account with time limit
@@ -93,6 +99,7 @@ public interface UserService {
      * @return result of the check
      */
     boolean existsByEmail(String email);
+
     /**
      * Check whether the user exist into DB by username or email
      * @param username username of the user to check
@@ -108,6 +115,22 @@ public interface UserService {
      * @return result of the check
      */
     boolean isPasswordMatches(User user, String encodedPassword);
+
+    /**
+     * Given a username and password, return true if the user password and new password match, false otherwise.
+     * @param username The username of the user.
+     * @param password The password to be checked.
+     * @return A boolean value.
+     */
+    boolean isUserPasswordMatches(String username, String password);
+
+    /**
+     * Given a username and email, return true if the user email and new email equals, false otherwise.
+     * @param username The username of the user.
+     * @param email The email to be checked.
+     * @return A boolean value.
+     */
+    boolean isUserEmailMatches(String username, String email);
 
     /**
      * Get all children from gained user
