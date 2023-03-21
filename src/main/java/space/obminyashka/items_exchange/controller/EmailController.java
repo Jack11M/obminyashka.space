@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,8 +15,11 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.exception.EmailTokenExpiredException;
 import space.obminyashka.items_exchange.exception.EmailTokenNotExistsException;
 import space.obminyashka.items_exchange.service.MailService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.UUID;
+
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
 @Tag(name = "Mail")
@@ -29,7 +34,9 @@ public class EmailController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public void validateEmailAndThenActivate(@PathVariable("token_id") UUID tokenID) throws EmailTokenExpiredException, EmailTokenNotExistsException {
+    public ResponseEntity<String> validateEmailAndThenActivate(@PathVariable("token_id") UUID tokenID) throws EmailTokenExpiredException, EmailTokenNotExistsException {
         mailService.validateEmail(tokenID);
+        return new ResponseEntity<>(getMessageSource(
+                ResponseMessagesHandler.PositiveMessage.EMAIL_ACTIVATION_MESSAGE), HttpStatus.OK);
     }
 }
