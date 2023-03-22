@@ -54,24 +54,13 @@ const MySettings = () => {
   const handleEmail = async (values, onSubmitProps) => {
     setIsFetchEmail(true);
     try {
-      // console.log(onSubmitProps);
-      /* const data = await api.profile.putEmailFetch({
-        email: 'asdfsdgf@values.email',
-      }); */
-      const data = await api.profile.putEmailFetch(values.email);
-      /* const data = await api.profile.putEmailFetch({
-        `${values.email}`,
-      }); */
+      const data = await api.profile.putEmailFetch({ email: values.email });
       openModal({
         title: getTranslatedText('popup.serverResponse'),
         children: <p>{data}</p>,
       });
-
-      // onSubmitProps.setFieldValue('email', values.email);
-
       dispatch(putEmail(values.email));
       dispatch(setProfileEmail(values.email));
-      // onSubmitProps.resetForm();
     } catch (e) {
       if (e.response.status === 409) {
         onSubmitProps.setErrors({
