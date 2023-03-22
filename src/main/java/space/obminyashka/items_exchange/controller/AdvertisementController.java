@@ -20,10 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
@@ -70,7 +67,10 @@ public class AdvertisementController {
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "size", description = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        return advertisementService.findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(page, size));
+        AdvertisementFindThumbnails advertisementFindThumbnails = AdvertisementFindThumbnails.builder()
+                .excludeAdvertisementId(excludeAdvertisementId)
+                .subcategoryId(subcategoryId).page(page).size(size).build();
+        return advertisementService.findAllThumbnails(advertisementFindThumbnails);
     }
 
     @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,9 +81,12 @@ public class AdvertisementController {
             @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
             @Parameter(name = "subcategoryId", description = "ID of existed subcategory for searching same advertisements")
             @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
-            @Parameter(name = "amount", description = "Number of random advertisements. Default value: 12")
-            @RequestParam(value = "amount", required = false, defaultValue = "12") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") int amount) {
-        return advertisementService.findRandomNThumbnails(amount, excludeAdvertisementId, subcategoryId);
+            @Parameter(name = "size", description = "Number of random advertisements. Default value: 12")
+            @RequestParam(value = "size", required = false, defaultValue = "12") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") int size) {
+        AdvertisementFindThumbnails advertisementFindThumbnails = AdvertisementFindThumbnails.builder()
+                .excludeAdvertisementId(excludeAdvertisementId)
+                .subcategoryId(subcategoryId).size(size).build();
+        return advertisementService.findRandomNThumbnails(advertisementFindThumbnails);
     }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)

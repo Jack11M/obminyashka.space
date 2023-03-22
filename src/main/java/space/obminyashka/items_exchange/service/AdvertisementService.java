@@ -2,10 +2,7 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 
@@ -18,22 +15,16 @@ public interface AdvertisementService {
     /**
      * Find N random advertisements as thumbnails with filters
      *
-     * @param amount amount of random advertisement
-     * @param excludeAdvertisementId excluded id of advertisement for ignoring
-     * @param subcategoryId exist id of subcategory for filtering
      * @return random 12 advertisement
      */
-    List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID excludeAdvertisementId, Long subcategoryId);
+    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnails advertisementFindThumbnails);
 
     /**
      * Find page of advertisements with same subcategory without request advertisement
      *
-     * @param excludeAdvertisementId excluded id of advertisement for ignoring
-     * @param subcategoryId exist id of subcategory for filtering
-     * @param pageable see {@link Pageable} for more details
      * @return page of advertisements
      */
-    Page<AdvertisementTitleDto> findAllThumbnails(UUID excludeAdvertisementId, Long subcategoryId, Pageable pageable);
+    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnails advertisementFindThumbnails);
 
     /**
      * Find all advertisements as thumbnails for specific user
