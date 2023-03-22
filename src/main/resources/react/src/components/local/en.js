@@ -90,9 +90,8 @@ const en = {
     newPassword: 'New password:',
     confirmPassword: 'Confirm password:',
     changeEmail: 'Change EmaiL',
-    oldEmail: 'Current Email:',
-    newEmail: 'New Email:',
-    confirmEmail: 'Confirm Email:',
+    email: 'Email:',
+    buttonChangeEmail: 'Change Email',
     remove: 'Remove account',
     removeConfirm:
       'To delete your account, you need to enter a password and confirm it.',

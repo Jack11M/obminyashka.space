@@ -236,7 +236,7 @@ const MySettings = () => {
                 inputFlexDirection="row"
                 wrapperInputErrorWidth="415px"
                 inputJustifyContent="space-between"
-                label={getTranslatedText('settings.oldEmail')}
+                label={getTranslatedText('settings.email')}
               />
             </Styles.InputContainer>
 
@@ -246,7 +246,7 @@ const MySettings = () => {
                 type="submit"
                 isLoading={isFetchEmail}
                 style={{ margin: '50px 0', height: 49 }}
-                text={getTranslatedText('button.saveChanges')}
+                text={getTranslatedText('settings.buttonChangeEmail')}
               />
             </Styles.ButtonContainer>
           </Form>
