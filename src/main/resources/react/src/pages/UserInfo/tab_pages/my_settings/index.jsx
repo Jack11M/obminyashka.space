@@ -44,12 +44,10 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
       onSubmitProps.resetForm();
-      setIsFetchPass(false);
     } catch (e) {
+      onSubmitProps.setErrors({ password: e.response.data.error });
+    } finally {
       setIsFetchPass(false);
-      /*       if (e.response.status === 400) {
-        onSubmitProps.setErrors({ oldPassword: e.response.data.error });
-      } */
     }
   };
 
@@ -171,25 +169,13 @@ const MySettings = () => {
         {({ values }) => (
           <Form>
             <Styles.InputContainer>
-              {/* <InputField
-                type="password"
-                name="oldPassword"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                value={values.oldPassword}
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.currentPassword')}
-              /> */}
-
               <InputField
                 type="password"
-                name="newPassword"
+                name="password"
                 labelColor="black"
                 inputMaxWidth="588px"
                 inputFlexDirection="row"
-                value={values.newPassword}
+                value={values.password}
                 wrapperInputErrorWidth="415px"
                 inputJustifyContent="space-between"
                 label={getTranslatedText('settings.newPassword')}
@@ -200,9 +186,9 @@ const MySettings = () => {
                 labelColor="black"
                 inputMaxWidth="588px"
                 inputFlexDirection="row"
-                name="confirmNewPassword"
+                name="confirmPassword"
                 wrapperInputErrorWidth="415px"
-                value={values.confirmNewPassword}
+                value={values.confirmPassword}
                 inputJustifyContent="space-between"
                 label={getTranslatedText('settings.confirmPassword')}
               />
