@@ -53,14 +53,6 @@ export const validationEmailSchema = (email) =>
       .matches(EMAIL_REG_EXP, getTranslatedText('errors.invalidEmailFormat'))
       .matches(NUMBER_OF_CHARACTERS, getTranslatedText('errors.max129'))
       .default(() => ''),
-    /* newEmailConfirmation: yup
-      .string()
-      .required(getTranslatedText('errors.requireField'))
-      .oneOf(
-        [yup.ref('newEmail')],
-        getTranslatedText('errors.emailNotIdentical')
-      )
-      .default(() => ''), */
   });
 
 export const validationDeleteSchema = yup.object().shape({
