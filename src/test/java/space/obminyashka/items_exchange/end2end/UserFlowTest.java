@@ -5,6 +5,9 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,8 +23,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
+import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
@@ -32,6 +37,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,7 +109,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
+    void getChildren_success_shouldReturnUsersChildren() throws Exception {
         sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].sex").value("MALE"))
@@ -114,11 +120,39 @@ class UserFlowTest extends BasicControllerTest {
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/update.yml", orderBy = {"created", "name", "birth_date"}, ignoreCols = "id")
-    void updateChild_Success_ShouldReturnHttpStatusOk() throws Exception {
+    void updateChild_success_shouldReturnHttpStatusOk() throws Exception {
         var validUpdatingChildDtoJson = getTestChildren(2018);
 
         sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @ParameterizedTest
+    @WithMockUser(username = ADMIN_USERNAME)
+    @MethodSource("listDataPassword")
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
+            ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
+    void updateUserPassword_shouldGetResponse(String password, String confirmPassword, ResultMatcher status, String response)
+            throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
+        changePasswordRequest.setPassword(password);
+        changePasswordRequest.setConfirmPassword(confirmPassword);
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status);
+        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
+
+        assertTrue(bCryptPasswordEncoder.matches(password, pwd));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(response)));
+    }
+
+    private static Stream<Arguments> listDataPassword() {
+        return Stream.of(
+                Arguments.of(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD, status().isConflict(),
+                        ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS),
+                Arguments.of(NEW_PASSWORD, NEW_PASSWORD, status().isAccepted(),
+                        ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD)
+        );
     }
 
     @Test
@@ -126,15 +160,15 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
-    void updateUserPassword_WhenDataCorrect_Successfully() throws Exception {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
+    void updateUserEmail_shouldGetResponse() throws Exception {
+        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
+        changeEmailRequest.setEmail(OLD_ADMIN_VALID_EMAIL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isAccepted());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
+        String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
-        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
-
-        assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(), pwd));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD)));
+        assertEquals(userEmail, changeEmailRequest.getEmail());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD)));
     }
 
     @Test
@@ -142,8 +176,11 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
-        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).param("email", NEW_VALID_EMAIL), status().isAccepted());
+    void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
+        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
+        changeEmailRequest.setEmail(NEW_VALID_EMAIL);
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }
@@ -153,7 +190,7 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/delete_user_first_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void selfDeleteRequest_WhenDataCorrect_Successfully() throws Exception {
+    void selfDeleteRequest_whenDataCorrect_successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
         MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isAccepted());
 
@@ -166,7 +203,7 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = "user/deleted_user_restore_expected.yml", orderBy = {"created", "name"},
             ignoreCols = {"password", "lastOnlineTime", "updated", "status"})
-    void makeAccountActiveAgain_WhenDataCorrect_Successfully() throws Exception {
+    void makeAccountActiveAgain_whenDataCorrect_successfully() throws Exception {
         UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isAccepted());
