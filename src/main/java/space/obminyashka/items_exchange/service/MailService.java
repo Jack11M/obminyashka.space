@@ -1,7 +1,7 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.exception.EmailTokenExpiredException;
-import space.obminyashka.items_exchange.exception.EmailTokenNotExistsException;
+import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
+import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.util.EmailType;
 
 import java.io.IOException;
@@ -20,10 +20,10 @@ public interface MailService {
     void sendMail(String emailTo, EmailType emailType, Locale locale) throws IOException;
 
     /**
-     * Validate code and if it is existed and unexpired, users`s email will be confirmed
+     * Validate users' email by previously generated UUID code
      * @param validationCode a code for activate email
-     * @throws EmailTokenNotExistsException when service can`t find code in database
-     * @throws EmailTokenExpiredException when service find code but code is expired
+     * @throws EmailValidationCodeNotFoundException when the code isn't found
+     * @throws EmailValidationCodeExpiredException when the code is expired
      */
-    void validateEmail(UUID validationCode) throws EmailTokenNotExistsException, EmailTokenExpiredException;
+    void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException;
 }

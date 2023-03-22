@@ -44,7 +44,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             InvalidDtoException.class,
-            IllegalIdentifierException.class})
+            IllegalIdentifierException.class,
+            EmailValidationCodeNotFoundException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleBadRequestExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
@@ -98,18 +99,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IOException.class, ElementsNumberExceedException.class})
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ErrorMessage handleIOException(Exception ex, ServletWebRequest request){
-        return logAndGetErrorMessage(request, ex, Level.ERROR);
-    }
-
-    @ExceptionHandler({EmailTokenNotExistsException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleEmailTokenNotExistsException(Exception ex, ServletWebRequest request){
-        return logAndGetErrorMessage(request, ex, Level.ERROR);
-    }
-
-    @ExceptionHandler({EmailTokenExpiredException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleEmailTokenExpiredException(Exception ex, ServletWebRequest request){
         return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 

@@ -10,8 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.exception.EmailTokenExpiredException;
-import space.obminyashka.items_exchange.exception.EmailTokenNotExistsException;
+import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
+import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;
 
@@ -39,8 +39,8 @@ public class SendGridService implements MailService {
     }
 
     @Override
-    public void validateEmail(UUID validationCode) throws EmailTokenNotExistsException, EmailTokenExpiredException {
-        //TODO
+    public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException {
+        //TODO in ticket OBMIN-344
     }
 
     private Request createMailRequest(Mail mail) throws IOException {

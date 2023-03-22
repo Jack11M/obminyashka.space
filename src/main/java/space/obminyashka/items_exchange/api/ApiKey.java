@@ -31,9 +31,9 @@ public class ApiKey {
     public static final String CATEGORY_ALL = CATEGORY + "/all";
     public static final String CATEGORY_ID = CATEGORY + "/{category_id}";
     public static final String CATEGORY_SIZES = CATEGORY_ID + "/sizes";
-    // Mail API
-    public static final String MAIL = API + "/email";
-    public static final String MAIL_VALIDATE_TOKEN = MAIL + "/validate/{token_id}";
+    // Email API
+    public static final String EMAIL = API + "/email";
+    public static final String EMAIL_VALIDATE_TOKEN = EMAIL + "/validate/{token_id}";
     // Image API
     public static final String IMAGE = API + "/image";
     public static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";
