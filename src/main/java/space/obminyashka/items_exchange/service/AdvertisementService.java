@@ -14,17 +14,17 @@ public interface AdvertisementService {
 
     /**
      * Find N random advertisements as thumbnails with filters
-     *
+     * @param advertisementFindThumbnailsDto an object that contains all parameters to search
      * @return random 12 advertisement
      */
-    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnails advertisementFindThumbnails);
+    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto);
 
     /**
      * Find page of advertisements with same subcategory without request advertisement
-     *
+     * @param advertisementFindThumbnailsDto an object that contains all parameters to search
      * @return page of advertisements
      */
-    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnails advertisementFindThumbnails);
+    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto);
 
     /**
      * Find all advertisements as thumbnails for specific user

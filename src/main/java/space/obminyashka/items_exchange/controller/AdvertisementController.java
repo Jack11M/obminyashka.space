@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,7 +29,6 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -36,7 +36,6 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -58,35 +57,15 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(
-            @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement")
-            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
-            @Parameter(name = "subcategoryId", description = "ID of existed subcategory for searching same advertisements")
-            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
-            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        AdvertisementFindThumbnails advertisementFindThumbnails = AdvertisementFindThumbnails.builder()
-                .excludeAdvertisementId(excludeAdvertisementId)
-                .subcategoryId(subcategoryId).page(page).size(size).build();
-        return advertisementService.findAllThumbnails(advertisementFindThumbnails);
+    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto) {
+        return advertisementService.findAllThumbnails(advertisementFindThumbnailsDto);
     }
 
     @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails(
-            @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement")
-            @RequestParam(value = "excludeAdvertisementId", required = false) UUID excludeAdvertisementId,
-            @Parameter(name = "subcategoryId", description = "ID of existed subcategory for searching same advertisements")
-            @RequestParam(value = "subcategoryId", required = false) Long subcategoryId,
-            @Parameter(name = "size", description = "Number of random advertisements. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") int size) {
-        AdvertisementFindThumbnails advertisementFindThumbnails = AdvertisementFindThumbnails.builder()
-                .excludeAdvertisementId(excludeAdvertisementId)
-                .subcategoryId(subcategoryId).size(size).build();
-        return advertisementService.findRandomNThumbnails(advertisementFindThumbnails);
+    public List<AdvertisementTitleDto> findRandom12Thumbnails(@Valid @ParameterObject AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto) {
+        return advertisementService.findRandomNThumbnails(advertisementFindThumbnailsDto);
     }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -48,19 +48,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnails advertisementFindThumbnails) {
+    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto) {
         final var totalRecordsSize = advertisementRepository
-                .countByIdNotAndSubcategoryId(advertisementFindThumbnails.getExcludeAdvertisementId(), advertisementFindThumbnails.getSubcategoryId());
-        final var bound = (int) (totalRecordsSize / advertisementFindThumbnails.getSize());
-        advertisementFindThumbnails.setPage(bound > 0 ? random.nextInt(bound) : 0);
-        return findAllThumbnails(advertisementFindThumbnails).getContent();
+                .countByIdNotAndSubcategoryId(advertisementFindThumbnailsDto.getExcludeAdvertisementId(), advertisementFindThumbnailsDto.getSubcategoryId());
+        final var bound = (int) (totalRecordsSize / advertisementFindThumbnailsDto.getSize());
+        advertisementFindThumbnailsDto.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        return findAllThumbnails(advertisementFindThumbnailsDto).getContent();
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnails advertisementFindThumbnails) {
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementFindThumbnails.getExcludeAdvertisementId(),
-                advertisementFindThumbnails.getSubcategoryId(),
-                PageRequest.of(advertisementFindThumbnails.getPage(), advertisementFindThumbnails.getSize()))
+    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto) {
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementFindThumbnailsDto.getExcludeAdvertisementId(),
+                        advertisementFindThumbnailsDto.getSubcategoryId(),
+                        PageRequest.of(advertisementFindThumbnailsDto.getPage(), advertisementFindThumbnailsDto.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
 
