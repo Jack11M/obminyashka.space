@@ -64,3 +64,5 @@ export const initialValuesDelete = {
   password: '',
   confirmPassword: '',
 };
+
+export const getInitialValueEmail = (value) => ({ email: value || '' });

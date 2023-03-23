@@ -91,7 +91,6 @@ const en = {
     confirmPassword: 'Confirm password:',
     changeEmail: 'Change EmaiL',
     email: 'Email:',
-    buttonChangeEmail: 'Change Email',
     remove: 'Remove account',
     removeConfirm:
       'To delete your account, you need to enter a password and confirm it.',

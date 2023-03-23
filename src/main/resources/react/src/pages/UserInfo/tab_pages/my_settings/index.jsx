@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Title, showMessage, InputField } from 'obminyashka-components';
@@ -12,6 +12,7 @@ import { getTranslatedText } from 'components/local/localization';
 
 import {
   initialValuesDelete,
+  getInitialValueEmail,
   validationEmailSchema,
   validationDeleteSchema,
   validationPasswordSchema,
@@ -30,7 +31,6 @@ const MySettings = () => {
 
   const validationPassword = validationPasswordSchema;
   const validationEmail = validationEmailSchema(email);
-  const initialEmailValues = validationEmail.cast({ email });
   const initialPasswordValues = validationPassword.cast({});
 
   const handlePassword = async (values, onSubmitProps) => {
@@ -221,36 +221,33 @@ const MySettings = () => {
 
       <Formik
         onSubmit={handleEmail}
-        initialValues={initialEmailValues}
         validationSchema={validationEmail}
+        initialValues={getInitialValueEmail(email)}
       >
-        {({ values }) => (
-          <Form>
-            <Styles.InputContainer>
-              <InputField
-                type="text"
-                name="email"
-                labelColor="black"
-                value={values.email}
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.email')}
-              />
-            </Styles.InputContainer>
+        <Form>
+          <Styles.InputContainer>
+            <InputField
+              type="text"
+              name="email"
+              labelColor="black"
+              inputMaxWidth="588px"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('settings.email')}
+            />
+          </Styles.InputContainer>
 
-            <Styles.ButtonContainer>
-              <Button
-                width={248}
-                type="submit"
-                isLoading={isFetchEmail}
-                style={{ margin: '50px 0', height: 49 }}
-                text={getTranslatedText('settings.buttonChangeEmail')}
-              />
-            </Styles.ButtonContainer>
-          </Form>
-        )}
+          <Styles.ButtonContainer>
+            <Button
+              width={248}
+              type="submit"
+              isLoading={isFetchEmail}
+              style={{ margin: '50px 0', height: 49 }}
+              text={getTranslatedText('button.saveChanges')}
+            />
+          </Styles.ButtonContainer>
+        </Form>
       </Formik>
 
       <Title
@@ -277,4 +274,4 @@ const MySettings = () => {
   );
 };
 
-export default memo(MySettings);
+export default MySettings;

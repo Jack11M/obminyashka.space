@@ -91,7 +91,6 @@ const ua = {
     confirmPassword: 'Повторіть пароль:',
     changeEmail: 'Змінити EmaiL',
     email: 'Email:',
-    buttonChangeEmail: 'Змінити Email',
     confirmEmail: 'Повторіть Email:',
     remove: 'Видалити акаунт',
     removeConfirm:
