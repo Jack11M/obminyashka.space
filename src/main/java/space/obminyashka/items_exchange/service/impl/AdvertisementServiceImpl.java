@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFindThumbnailsRequest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
@@ -48,19 +49,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto) {
+    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest) {
         final var totalRecordsSize = advertisementRepository
-                .countByIdNotAndSubcategoryId(advertisementFindThumbnailsDto.getExcludeAdvertisementId(), advertisementFindThumbnailsDto.getSubcategoryId());
-        final var bound = (int) (totalRecordsSize / advertisementFindThumbnailsDto.getSize());
-        advertisementFindThumbnailsDto.setPage(bound > 0 ? random.nextInt(bound) : 0);
-        return findAllThumbnails(advertisementFindThumbnailsDto).getContent();
+                .countByIdNotAndSubcategoryId(advertisementFindThumbnailsRequest.getExcludeAdvertisementId(), advertisementFindThumbnailsRequest.getSubcategoryId());
+        final var bound = (int) (totalRecordsSize / advertisementFindThumbnailsRequest.getSize());
+        advertisementFindThumbnailsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        return findAllThumbnails(advertisementFindThumbnailsRequest).getContent();
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto) {
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementFindThumbnailsDto.getExcludeAdvertisementId(),
-                        advertisementFindThumbnailsDto.getSubcategoryId(),
-                        PageRequest.of(advertisementFindThumbnailsDto.getPage(), advertisementFindThumbnailsDto.getSize()))
+    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest) {
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(advertisementFindThumbnailsRequest.getExcludeAdvertisementId(),
+                        advertisementFindThumbnailsRequest.getSubcategoryId(),
+                        PageRequest.of(advertisementFindThumbnailsRequest.getPage(), advertisementFindThumbnailsRequest.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
 

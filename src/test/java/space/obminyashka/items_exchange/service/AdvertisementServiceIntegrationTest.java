@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementFindThumbnailsDto;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFindThumbnailsRequest;
 
 import javax.transaction.Transactional;
 
@@ -24,16 +24,16 @@ class AdvertisementServiceIntegrationTest {
     @Transactional
     @DataSet("database_init.yml")
     void findRandom12Thumbnails_shouldReturnEmpty() {
-        AdvertisementFindThumbnailsDto advertisementFindThumbnailsDto = new AdvertisementFindThumbnailsDto();
-        advertisementFindThumbnailsDto.setSize(12);
-        final var firstTitlesGetAttempt = advertisementService.findRandomNThumbnails(advertisementFindThumbnailsDto);
+        AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest = new AdvertisementFindThumbnailsRequest();
+        advertisementFindThumbnailsRequest.setSize(12);
+        final var firstTitlesGetAttempt = advertisementService.findRandomNThumbnails(advertisementFindThumbnailsRequest);
 
         assertAll("ValidationMessage of all parameters and mocks",
                 () -> assertFalse(firstTitlesGetAttempt.isEmpty()),
                 () -> assertEquals(repository.count(), firstTitlesGetAttempt.size())
         );
 
-        final var secondTitlesGetAttempt = advertisementService.findRandomNThumbnails(advertisementFindThumbnailsDto);
+        final var secondTitlesGetAttempt = advertisementService.findRandomNThumbnails(advertisementFindThumbnailsRequest);
         assertEquals(firstTitlesGetAttempt, secondTitlesGetAttempt, "Collections must be equals because of caching response");
     }
 

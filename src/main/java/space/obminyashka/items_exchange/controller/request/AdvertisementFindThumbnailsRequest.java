@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.dto;
+package space.obminyashka.items_exchange.controller.request;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.*;
@@ -11,8 +11,7 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-public class AdvertisementFindThumbnailsDto {
+public class AdvertisementFindThumbnailsRequest {
 
     @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
