@@ -6,7 +6,7 @@ import lombok.*;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Getter
 @Setter
