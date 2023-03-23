@@ -10,7 +10,6 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class AdvertisementFindThumbnailsRequest {
 
     @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
