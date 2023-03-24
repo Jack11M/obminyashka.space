@@ -2,7 +2,7 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindThumbnailsRequest;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
@@ -15,17 +15,17 @@ public interface AdvertisementService {
 
     /**
      * Find N random advertisements as thumbnails with filters
-     * @param advertisementFindThumbnailsRequest an object that contains all parameters to search
+     * @param findAdvsRequest  an object that contains all parameters to search
      * @return random 12 advertisement
      */
-    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest);
+    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find page of advertisements with same subcategory without request advertisement
-     * @param advertisementFindThumbnailsRequest an object that contains all parameters to search
+     * @param findAdvsRequest  an object that contains all parameters to search
      * @return page of advertisements
      */
-    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest);
+    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user

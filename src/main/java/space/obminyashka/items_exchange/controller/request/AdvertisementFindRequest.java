@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.controller.request;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.PositiveOrZero;
 import java.util.UUID;
@@ -10,7 +11,7 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 
 @Getter
 @Setter
-public class AdvertisementFindThumbnailsRequest {
+public class AdvertisementFindRequest {
 
     @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
@@ -22,9 +23,11 @@ public class AdvertisementFindThumbnailsRequest {
     private int size = 12;
 
     @Parameter(name = "subcategoryId", description = "ID of existed subcategory for searching same advertisements")
+    @Nullable
     private Long subcategoryId;
 
     @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement")
+    @Nullable
     private UUID excludeAdvertisementId;
 
 }

@@ -21,7 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindThumbnailsRequest;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.model.User;
@@ -58,15 +58,15 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest) {
-        return advertisementService.findAllThumbnails(advertisementFindThumbnailsRequest);
+    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
+        return advertisementService.findAllThumbnails(findAdvsRequest);
     }
 
     @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
     @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails(@Valid @ParameterObject AdvertisementFindThumbnailsRequest advertisementFindThumbnailsRequest) {
-        return advertisementService.findRandomNThumbnails(advertisementFindThumbnailsRequest);
+    public List<AdvertisementTitleDto> findRandom12Thumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
+        return advertisementService.findRandomNThumbnails(findAdvsRequest);
     }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)
