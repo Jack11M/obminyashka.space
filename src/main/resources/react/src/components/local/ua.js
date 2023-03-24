@@ -90,8 +90,7 @@ const ua = {
     newPassword: 'Новий пароль:',
     confirmPassword: 'Повторіть пароль:',
     changeEmail: 'Змінити EmaiL',
-    oldEmail: 'Поточний Email:',
-    newEmail: 'Новий Email:',
+    email: 'Email:',
     confirmEmail: 'Повторіть Email:',
     remove: 'Видалити акаунт',
     removeConfirm:
