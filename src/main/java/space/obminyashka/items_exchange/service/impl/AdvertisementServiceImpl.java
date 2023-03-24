@@ -50,8 +50,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
-        final var totalRecordsSize = advertisementRepository
-                .countByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
+        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
+                findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
         final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
         findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
         return findAllThumbnails(findAdvsRequest).getContent();
