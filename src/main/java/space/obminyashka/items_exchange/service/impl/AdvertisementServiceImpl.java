@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
@@ -48,16 +49,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(int amount, UUID excludeAdvertisementId, Long subcategoryId) {
-        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId);
-        final var bound = (int) (totalRecordsSize / amount);
-        final var randomPage = bound > 0 ? random.nextInt(bound) : 0;
-        return findAllThumbnails(excludeAdvertisementId, subcategoryId, PageRequest.of(randomPage, amount)).getContent();
+    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
+        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
+                findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
+        final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
+        findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        return findAllThumbnails(findAdvsRequest).getContent();
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(UUID excludeAdvertisementId, Long subcategoryId, Pageable pageable) {
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId, pageable).map(this::buildAdvertisementTitle);
+    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
+        return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
+                        findAdvsRequest.getSubcategoryId(),
+                        PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
+                .map(this::buildAdvertisementTitle);
     }
 
     @Cacheable
