@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMED;
 
 @ExtendWith(MockitoExtension.class)
 class EmailControllerTest {
@@ -45,33 +44,37 @@ class EmailControllerTest {
     }
 
     @ParameterizedTest
-    @MethodSource("getTrowingExceptionsAndExpectedExceptions")
-    public void validateEmail_whenServiceTrowedException_shouldCatchException(Exception exception, Class clazz) throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
-        Mockito.doThrow(exception).when(mailService).validateEmail(any(UUID.class));
+    @MethodSource("expectedMailServiceExceptions")
+    void validateEmail_whenServiceThrewException_shouldCatchException(Exception expectedException)
+            throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
+        Mockito.doThrow(expectedException).when(mailService).validateEmail(any(UUID.class));
 
-        assertThrows(clazz, () -> emailController.validateEmail(UUID.randomUUID()));
-        verifyNoInteractions(MessageSourceUtil.getMessageSource("email.confirmed"));
+        assertThrows(expectedException.getClass(), () -> emailController.validateEmail(UUID.randomUUID()));
+
+        verifyNoInteractions(messageSource);
     }
 
-    private static Stream<Arguments> getTrowingExceptionsAndExpectedExceptions() {
+    private static Stream<Exception> expectedMailServiceExceptions() {
         return Stream.of(
-                Arguments.of(new EmailValidationCodeNotFoundException("the code was not found"), EmailValidationCodeNotFoundException.class),
-                Arguments.of(new EmailValidationCodeExpiredException("the code was expired"), EmailValidationCodeExpiredException.class)
+                new EmailValidationCodeNotFoundException("the code was not found"),
+                new EmailValidationCodeExpiredException("the code was expired")
         );
     }
 
     @Test
-    public void validateEmail_whenCodeExistAndUnexpired_shouldExecuteCorrectly() throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
-        UUID expectedUUID = UUID.randomUUID();
-        String expectedMessageProperty = "email.confirmed";
+    void validateEmail_whenCodeExistAndUnexpired_shouldExecuteCorrectly()
+            throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
+        when(messageSource.getMessage(eq(EMAIL_CONFIRMED), any(), any()))
+                .thenReturn("Your email was successfully activated");
 
-        Mockito.doReturn("Your email was successfully activated").when(messageSource).getMessage(eq(expectedMessageProperty), any(), any());
+        UUID expectedUUID = UUID.randomUUID();
 
         emailController.validateEmail(expectedUUID);
+
         verify(mailService).validateEmail(uuidCaptor.capture());
         verify(messageSource).getMessage(stringCaptor.capture(), any(), any());
 
         assertEquals(expectedUUID, uuidCaptor.getValue());
-        assertEquals(expectedMessageProperty, stringCaptor.getValue());
+        assertEquals(EMAIL_CONFIRMED, stringCaptor.getValue());
     }
 }
