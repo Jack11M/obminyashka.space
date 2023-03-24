@@ -39,7 +39,7 @@ public class EmailController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "406", description = "NOT ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
-    public String validateEmail(@PathVariable("code") UUID code) throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
+    public String validateEmail(@PathVariable UUID code) throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
         log.info("receive the code {} for validation", code);
         mailService.validateEmail(code);
         log.info("the code {} was successfully validated", code);
