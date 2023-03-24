@@ -21,7 +21,7 @@ public interface MailService {
 
     /**
      * Validate users' email by previously generated UUID code
-     * @param validationCode a code for activate email
+     * @param validationCode a code for an email activation
      * @throws EmailValidationCodeNotFoundException when the code isn't found
      * @throws EmailValidationCodeExpiredException when the code is expired
      */

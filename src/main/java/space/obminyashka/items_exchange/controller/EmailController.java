@@ -31,7 +31,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class EmailController {
     private final MailService mailService;
 
-    @PostMapping(value = ApiKey.EMAIL_VALIDATE_TOKEN, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @PostMapping(value = ApiKey.EMAIL_VALIDATE_CODE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Validate confirmation email token id and then activate email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -39,10 +39,10 @@ public class EmailController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "406", description = "NOT ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
-    public String validateEmail(@PathVariable("token_id") UUID code) throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
-        log.info("receive the code " + code + " for validation");
+    public String validateEmail(@PathVariable("code") UUID code) throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
+        log.info("receive the code {} for validation", code);
         mailService.validateEmail(code);
-        log.info("the code " + code + " was successfully validated");
+        log.info("the code {} was successfully validated", code);
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMED);
     }
 }
