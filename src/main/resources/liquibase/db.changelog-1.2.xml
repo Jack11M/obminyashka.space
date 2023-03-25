@@ -50,4 +50,10 @@
                                  referencedColumnNames="id"
                                  referencedTableName="user"/>
     </changeSet>
+
+    <changeSet id="1.2.3: add new column" author="serhii.ponomarenko">
+        <addColumn tableName="user">
+            <column name="validated_email" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
