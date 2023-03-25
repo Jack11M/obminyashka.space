@@ -10,13 +10,18 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
+import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.model.EmailConfirmationToken;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -27,6 +32,8 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class SendGridService implements MailService {
     private final SendGrid sendGrid;
     private final Email sender;
+    private final UserRepository userRepository;
+    private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
 
     @Override
     public void sendMail(String emailTo, EmailType subject, Locale locale) throws IOException {
@@ -40,7 +47,15 @@ public class SendGridService implements MailService {
 
     @Override
     public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException {
-        //TODO in ticket OBMIN-344
+        Optional<EmailConfirmationToken> optionalEmail = emailConfirmationTokenRepository.findById(validationCode);
+
+        if (optionalEmail.isEmpty()) {
+            throw new EmailValidationCodeNotFoundException("Email not exists");
+        }
+        if (optionalEmail.get().getExpiryDate().isBefore(LocalDateTime.now())) {
+            throw new EmailValidationCodeExpiredException("Validation code expired");
+        }
+        userRepository.setValidatedEmailToUserById(optionalEmail.get().getUser().getId());
     }
 
     private Request createMailRequest(Mail mail) throws IOException {
