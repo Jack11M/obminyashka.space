@@ -8,7 +8,7 @@ import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from '../styles';
-import { validationUserSchema } from './config';
+import { validationUserSchema, getInitialUser } from './config';
 
 const amount = 3;
 
@@ -26,17 +26,9 @@ const AboutMyself = () => {
     array
       .map((phone) => ({
         defaultPhone: false,
-        phoneNumber: phone,
+        phoneNumber: phone.replace(/-|\(|\)| /gi, ''),
       }))
       .filter((phone) => phone.phoneNumber !== '');
-
-  const validationSchema = validationUserSchema({
-    lastName,
-    firstName,
-    phoneForInitial,
-  });
-
-  const initialUserValues = validationSchema.cast({});
 
   const onSubmit = async (dataFormik) => {
     setAboutLoading(true);
@@ -60,7 +52,7 @@ const AboutMyself = () => {
       if (err.response?.status === 400) {
         const indexStart =
           err.response?.data?.error && err.response.data.error.indexOf(':') + 1;
-        showMessage.success(err.response?.data?.error?.slice(indexStart));
+        showMessage.error(err.response?.data?.error?.slice(indexStart));
       }
     } finally {
       setAboutLoading(false);
@@ -71,8 +63,8 @@ const AboutMyself = () => {
     <Formik
       enableReinitialize
       onSubmit={onSubmit}
-      initialValues={initialUserValues}
-      validationSchema={validationSchema}
+      validationSchema={validationUserSchema}
+      initialValues={getInitialUser({ lastName, firstName, phoneForInitial })}
     >
       {({ values, errors }) => (
         <Form>
@@ -103,7 +95,7 @@ const AboutMyself = () => {
           <FieldArray name="phones">
             {({ push, remove }) => (
               <Styles.WrapperInputPhones>
-                {values.phones.map((phone, index, arr) => {
+                {values.phones?.map((phone, index, arr) => {
                   const lastIndex = arr.length - 1;
                   const biggerThanStartIndex = arr.length > 1;
                   const maxArray = index + 1 !== amount;
@@ -119,9 +111,8 @@ const AboutMyself = () => {
                         inputMaxWidth="588px"
                         inputFlexDirection="row"
                         name={`phones[${index}]`}
-                        value={values.phones[index]}
                         wrapperInputErrorWidth="415px"
-                        placeholder="+38(123) 456-78-90"
+                        placeholder="+380(12)345-67-89"
                         inputJustifyContent="space-between"
                         label={getTranslatedText('ownInfo.phone')}
                       />
