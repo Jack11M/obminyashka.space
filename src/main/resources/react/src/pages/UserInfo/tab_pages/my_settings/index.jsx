@@ -1,4 +1,4 @@
-import { memo, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Title, showMessage, InputField } from 'obminyashka-components';
@@ -12,6 +12,7 @@ import { getTranslatedText } from 'components/local/localization';
 
 import {
   initialValuesDelete,
+  getInitialValueEmail,
   validationEmailSchema,
   validationDeleteSchema,
   validationPasswordSchema,
@@ -22,16 +23,14 @@ import * as Styles from './styles';
 const MySettings = () => {
   const dispatch = useDispatch();
   const { openModal } = useContext(ModalContext);
-  const { email: currentEmail } = useSelector(getAuthProfile);
+  const { email } = useSelector(getAuthProfile);
 
   const [loading, setLoading] = useState(false);
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
   const validationPassword = validationPasswordSchema;
-  const validationEmail = validationEmailSchema(currentEmail);
-
-  const initialEmailValues = validationEmail.cast({});
+  const validationEmail = validationEmailSchema(email);
   const initialPasswordValues = validationPassword.cast({});
 
   const handlePassword = async (values, onSubmitProps) => {
@@ -52,32 +51,27 @@ const MySettings = () => {
   };
 
   const handleEmail = async (values, onSubmitProps) => {
-    const { newEmail, newEmailConfirmation } = values;
     setIsFetchEmail(true);
     try {
-      const data = await api.profile.putEmailFetch({
-        newEmail,
-        newEmailConfirmation,
-      });
+      const data = await api.profile.putEmailFetch({ email: values.email });
       openModal({
         title: getTranslatedText('popup.serverResponse'),
         children: <p>{data}</p>,
       });
-      dispatch(putEmail(newEmail));
-      dispatch(setProfileEmail(newEmail));
-      onSubmitProps.resetForm();
-      setIsFetchEmail(false);
+      dispatch(putEmail(values.email));
+      dispatch(setProfileEmail(values.email));
     } catch (e) {
-      setIsFetchEmail(false);
       if (e.response.status === 409) {
         onSubmitProps.setErrors({
-          newEmailConfirmation: e.response.data.error,
+          email: e.response.data.error,
         });
       }
       if (e.response.status === 400) {
         showMessage.error(e.response.data.error);
-        onSubmitProps.setErrors({ newEmail: e.response.data.error });
+        onSubmitProps.setErrors({ email: e.response.data.error });
       }
+    } finally {
+      setIsFetchEmail(false);
     }
   };
 
@@ -214,61 +208,33 @@ const MySettings = () => {
 
       <Formik
         onSubmit={handleEmail}
-        initialValues={initialEmailValues}
         validationSchema={validationEmail}
+        initialValues={getInitialValueEmail(email)}
       >
-        {({ values }) => (
-          <Form>
-            <Styles.InputContainer>
-              <InputField
-                readOnly
-                type="text"
-                name="oldEmail"
-                labelColor="black"
-                value={currentEmail}
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.oldEmail')}
-              />
+        <Form>
+          <Styles.InputContainer>
+            <InputField
+              type="text"
+              name="email"
+              labelColor="black"
+              inputMaxWidth="588px"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('settings.email')}
+            />
+          </Styles.InputContainer>
 
-              <InputField
-                type="text"
-                name="newEmail"
-                labelColor="black"
-                inputMaxWidth="588px"
-                value={values.newEmail}
-                inputFlexDirection="row"
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.newEmail')}
-              />
-
-              <InputField
-                type="text"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                name="newEmailConfirmation"
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                value={values.newEmailConfirmation}
-                label={getTranslatedText('settings.confirmEmail')}
-              />
-            </Styles.InputContainer>
-
-            <Styles.ButtonContainer>
-              <Button
-                width={248}
-                type="submit"
-                isLoading={isFetchEmail}
-                style={{ margin: '50px 0', height: 49 }}
-                text={getTranslatedText('button.saveChanges')}
-              />
-            </Styles.ButtonContainer>
-          </Form>
-        )}
+          <Styles.ButtonContainer>
+            <Button
+              width={248}
+              type="submit"
+              isLoading={isFetchEmail}
+              style={{ margin: '50px 0', height: 49 }}
+              text={getTranslatedText('button.saveChanges')}
+            />
+          </Styles.ButtonContainer>
+        </Form>
       </Formik>
 
       <Title
@@ -295,4 +261,4 @@ const MySettings = () => {
   );
 };
 
-export default memo(MySettings);
+export default MySettings;

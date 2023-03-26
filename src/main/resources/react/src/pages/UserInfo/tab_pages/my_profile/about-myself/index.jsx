@@ -82,7 +82,6 @@ const AboutMyself = () => {
               name="firstName"
               labelColor="black"
               inputMaxWidth="588px"
-              value={values.firstName}
               inputFlexDirection="row"
               wrapperInputErrorWidth="415px"
               inputJustifyContent="space-between"
@@ -94,7 +93,6 @@ const AboutMyself = () => {
               name="lastName"
               labelColor="black"
               inputMaxWidth="588px"
-              value={values.lastName}
               inputFlexDirection="row"
               wrapperInputErrorWidth="415px"
               inputJustifyContent="space-between"
