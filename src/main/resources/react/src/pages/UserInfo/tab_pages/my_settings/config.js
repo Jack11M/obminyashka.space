@@ -11,16 +11,7 @@ import {
 } from 'config';
 
 export const validationPasswordSchema = yup.object().shape({
-  /* oldPassword: yup
-    .string()
-    .required(getTranslatedText('errors.requireField'))
-    .min(8, getTranslatedText('errors.min8'))
-    .max(30, getTranslatedText('errors.max30'))
-    .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
-    .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
-    .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-    .default(() => ''), */
-  newPassword: yup
+  password: yup
     .string()
     .required(getTranslatedText('errors.requireField'))
     .min(8, getTranslatedText('errors.min8'))
@@ -33,12 +24,9 @@ export const validationPasswordSchema = yup.object().shape({
       getTranslatedText('errors.passwordIdentical')
     )
     .default(() => ''),
-  confirmNewPassword: yup
+  confirmPassword: yup
     .string()
-    .oneOf(
-      [yup.ref('newPassword')],
-      getTranslatedText('errors.passwordMismatch')
-    )
+    .oneOf([yup.ref('password')], getTranslatedText('errors.passwordMismatch'))
     .required(getTranslatedText('errors.requireField'))
     .default(() => ''),
 });

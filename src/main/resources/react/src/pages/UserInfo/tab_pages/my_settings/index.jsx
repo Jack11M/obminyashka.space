@@ -29,12 +29,10 @@ const MySettings = () => {
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
-  const validationPassword = validationPasswordSchema;
   const validationEmail = validationEmailSchema(email);
-  const initialPasswordValues = validationPassword.cast({});
+  const initialPasswordValues = validationPasswordSchema.cast({});
 
   const handlePassword = async (values, onSubmitProps) => {
-    console.log('handlePassword() ==>', values);
     setIsFetchPass(true);
     try {
       const data = await api.profile.putPasswordFetch(values);
@@ -158,47 +156,43 @@ const MySettings = () => {
       <Formik
         onSubmit={handlePassword}
         initialValues={initialPasswordValues}
-        validationSchema={validationPassword}
+        validationSchema={validationPasswordSchema}
       >
-        {({ values }) => (
-          <Form>
-            <Styles.InputContainer>
-              <InputField
-                type="password"
-                name="password"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                value={values.password}
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.newPassword')}
-              />
+        <Form>
+          <Styles.InputContainer>
+            <InputField
+              type="password"
+              name="password"
+              labelColor="black"
+              inputMaxWidth="588px"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('settings.newPassword')}
+            />
 
-              <InputField
-                type="password"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                name="confirmPassword"
-                wrapperInputErrorWidth="415px"
-                value={values.confirmPassword}
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.confirmPassword')}
-              />
-            </Styles.InputContainer>
+            <InputField
+              type="password"
+              labelColor="black"
+              inputMaxWidth="588px"
+              name="confirmPassword"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('settings.confirmPassword')}
+            />
+          </Styles.InputContainer>
 
-            <Styles.ButtonContainer>
-              <Button
-                width={248}
-                type="submit"
-                style={{ height: 49 }}
-                isLoading={isFetchPass}
-                text={getTranslatedText('button.saveChanges')}
-              />
-            </Styles.ButtonContainer>
-          </Form>
-        )}
+          <Styles.ButtonContainer>
+            <Button
+              width={248}
+              type="submit"
+              style={{ height: 49 }}
+              isLoading={isFetchPass}
+              text={getTranslatedText('button.saveChanges')}
+            />
+          </Styles.ButtonContainer>
+        </Form>
       </Formik>
 
       <Title
