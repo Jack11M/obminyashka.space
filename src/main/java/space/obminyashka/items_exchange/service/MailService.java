@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.util.EmailType;
@@ -26,4 +27,10 @@ public interface MailService {
      * @throws EmailValidationCodeExpiredException when the code is expired
      */
     void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException;
+
+    /**
+     * Scheduled job which checks emails that needs to be removed from DB after exhaustion of the grace period
+     */
+    @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
+    void permanentlyDeleteEmails();
 }
