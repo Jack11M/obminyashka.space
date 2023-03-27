@@ -187,7 +187,7 @@ const MySettings = () => {
             <Button
               width={248}
               type="submit"
-              style={{ height: 49 }}
+              style={{ height: 50 }}
               isLoading={isFetchPass}
               text={getTranslatedText('button.saveChanges')}
             />
@@ -224,7 +224,7 @@ const MySettings = () => {
               width={248}
               type="submit"
               isLoading={isFetchEmail}
-              style={{ margin: '50px 0', height: 49 }}
+              style={{ margin: '50px 0', height: 50 }}
               text={getTranslatedText('button.saveChanges')}
             />
           </Styles.ButtonContainer>
