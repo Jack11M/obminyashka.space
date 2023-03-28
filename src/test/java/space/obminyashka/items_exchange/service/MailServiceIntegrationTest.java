@@ -22,16 +22,16 @@ class MailServiceIntegrationTest {
     @Autowired
     private MailService mailService;
 
-    @Value("${number.of.days.to.keep.deleted.emails}")
+    @Value("${number.of.days.to.keep.deleted.email.confirmation.token}")
     private int numberOfDaysToKeepDeletedEmails;
 
     @Test
-    void testPermanentlyDeleteEmails_ShouldDeleteRequiredEmails() {
+    void testPermanentlyDeleteEmailConfirmationToken_shouldDeleteRequiredEmailConfirmationToken() {
         List<EmailConfirmationToken> emails = createTestEmails();
         assertEquals(3, emails.size());
 
         when(emailRepository.findAll()).thenReturn(emails);
-        mailService.permanentlyDeleteEmails();
+        mailService.permanentlyDeleteEmailConfirmationToken();
 
         verify(emailRepository).delete(emails.get(0));
 

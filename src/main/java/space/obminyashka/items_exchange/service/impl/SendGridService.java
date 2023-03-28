@@ -36,7 +36,7 @@ public class SendGridService implements MailService {
     private final SendGrid sendGrid;
     private final Email sender;
 
-    @Value("${number.of.days.to.keep.deleted.emails}")
+    @Value("${number.of.days.to.keep.deleted.email.confirmation.token}")
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
@@ -64,7 +64,7 @@ public class SendGridService implements MailService {
 
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
-    public void permanentlyDeleteEmails() {
+    public void permanentlyDeleteEmailConfirmationToken() {
         emailRepository.findAll().stream()
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedEmail)
                 .forEach(emailRepository::delete);
