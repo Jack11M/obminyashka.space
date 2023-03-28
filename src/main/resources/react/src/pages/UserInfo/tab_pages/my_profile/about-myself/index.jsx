@@ -26,7 +26,7 @@ const AboutMyself = () => {
     array
       .map((phone) => ({
         defaultPhone: false,
-        phoneNumber: phone.replace(/-|\(|\)| /gi, ''),
+        phoneNumber: phone.replace(/-|\(|\)/gi, ''),
       }))
       .filter((phone) => phone.phoneNumber !== '');
 

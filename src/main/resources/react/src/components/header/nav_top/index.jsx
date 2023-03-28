@@ -47,6 +47,7 @@ const NavTop = () => {
                   width={400}
                   offset={50}
                   place="left"
+                  cursor="pointer"
                   id="show-tooltip"
                 >
                   {authProfile?.username ||
