@@ -29,9 +29,8 @@ const MySettings = () => {
   const [isFetchPass, setIsFetchPass] = useState(false);
   const [isFetchEmail, setIsFetchEmail] = useState(false);
 
-  const validationPassword = validationPasswordSchema;
   const validationEmail = validationEmailSchema(email);
-  const initialPasswordValues = validationPassword.cast({});
+  const initialPasswordValues = validationPasswordSchema.cast({});
 
   const handlePassword = async (values, onSubmitProps) => {
     setIsFetchPass(true);
@@ -42,12 +41,10 @@ const MySettings = () => {
         children: <p>{data}</p>,
       });
       onSubmitProps.resetForm();
-      setIsFetchPass(false);
     } catch (e) {
+      onSubmitProps.setErrors({ password: e.response.data.error });
+    } finally {
       setIsFetchPass(false);
-      if (e.response.status === 400) {
-        onSubmitProps.setErrors({ oldPassword: e.response.data.error });
-      }
     }
   };
 
@@ -159,59 +156,43 @@ const MySettings = () => {
       <Formik
         onSubmit={handlePassword}
         initialValues={initialPasswordValues}
-        validationSchema={validationPassword}
+        validationSchema={validationPasswordSchema}
       >
-        {({ values }) => (
-          <Form>
-            <Styles.InputContainer>
-              <InputField
-                type="password"
-                name="oldPassword"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                value={values.oldPassword}
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.currentPassword')}
-              />
+        <Form>
+          <Styles.InputContainer>
+            <InputField
+              type="password"
+              name="password"
+              labelColor="black"
+              inputMaxWidth="588px"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('settings.newPassword')}
+            />
 
-              <InputField
-                type="password"
-                name="newPassword"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                value={values.newPassword}
-                wrapperInputErrorWidth="415px"
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.newPassword')}
-              />
+            <InputField
+              type="password"
+              labelColor="black"
+              inputMaxWidth="588px"
+              name="confirmPassword"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('settings.confirmPassword')}
+            />
+          </Styles.InputContainer>
 
-              <InputField
-                type="password"
-                labelColor="black"
-                inputMaxWidth="588px"
-                inputFlexDirection="row"
-                name="confirmNewPassword"
-                wrapperInputErrorWidth="415px"
-                value={values.confirmNewPassword}
-                inputJustifyContent="space-between"
-                label={getTranslatedText('settings.confirmPassword')}
-              />
-            </Styles.InputContainer>
-
-            <Styles.ButtonContainer>
-              <Button
-                width={248}
-                type="submit"
-                style={{ height: 49 }}
-                isLoading={isFetchPass}
-                text={getTranslatedText('button.saveChanges')}
-              />
-            </Styles.ButtonContainer>
-          </Form>
-        )}
+          <Styles.ButtonContainer>
+            <Button
+              width={248}
+              type="submit"
+              style={{ height: 50 }}
+              isLoading={isFetchPass}
+              text={getTranslatedText('button.saveChanges')}
+            />
+          </Styles.ButtonContainer>
+        </Form>
       </Formik>
 
       <Title
@@ -243,7 +224,7 @@ const MySettings = () => {
               width={248}
               type="submit"
               isLoading={isFetchEmail}
-              style={{ margin: '50px 0', height: 49 }}
+              style={{ margin: '50px 0', height: 50 }}
               text={getTranslatedText('button.saveChanges')}
             />
           </Styles.ButtonContainer>
