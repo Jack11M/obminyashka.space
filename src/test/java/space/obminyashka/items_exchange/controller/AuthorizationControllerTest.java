@@ -37,21 +37,18 @@ class AuthorizationControllerTest {
     @Mock
     private AuthService authService;
     private AuthController authController;
-    @Captor
-    private ArgumentCaptor<EmailConfirmationToken> captor;
-    private final UserRegistrationDto dto = new UserRegistrationDto("user", "user@mail.ua", "pass", "pass");
-    private User userFromDto = new User();
+    private UserRegistrationDto dto;
 
     @BeforeEach
     void setUp() {
-        BeanUtils.copyProperties(dto, userFromDto);
+        authController = new AuthController(authenticationManager, userService, authService, mailService);
+        dto = new UserRegistrationDto("user", "user@mail.ua", "pass", "pass");
         messageSourceUtil.setMSource(mock(MessageSource.class));
     }
 
     @Test
     void register_whenAllServicesPositiveFlow_shouldReturnCreated() throws Exception {
-        when(userService.registerNewUser(any())).thenReturn(true);
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(userFromDto));
+        when(userService.registerNewUser(any(), any())).thenReturn(true);
 
         final var responseEntity = authController.registerUser(dto);
 

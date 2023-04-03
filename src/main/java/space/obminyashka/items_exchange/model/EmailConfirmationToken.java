@@ -25,7 +25,7 @@ public class EmailConfirmationToken {
     private User user;
 
     @Column(nullable = false, unique = true)
-    private String token;
+    private UUID token;
 
     @Column(name = "expiry_date", columnDefinition = "DATE", nullable = false)
     private LocalDateTime expiryDate;
@@ -34,9 +34,8 @@ public class EmailConfirmationToken {
     @CreatedDate
     private LocalDateTime created;
 
-    public EmailConfirmationToken(User user, String token, LocalDateTime expiryDate) {
-        this.user = user;
+    public EmailConfirmationToken(UUID token, int expirationHours) {
         this.token = token;
-        this.expiryDate = expiryDate;
+        this.expiryDate = LocalDateTime.now().plusHours(expirationHours);
     }
 }

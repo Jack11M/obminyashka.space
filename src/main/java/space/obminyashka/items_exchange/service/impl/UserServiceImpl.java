@@ -18,6 +18,7 @@ import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.EmailConfirmationToken;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -50,6 +51,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
 
+    @Value("${number.of.hours.to.keep.email.confirmation.token}")
+    private final int numberOfHoursToKeepEmailConformationToken;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUsernameOrEmail(username)
@@ -68,6 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID token) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
+        userToRegister.setEmailConfirmationToken(new EmailConfirmationToken(token, numberOfHoursToKeepEmailConformationToken));
         final var locale = LocaleContextHolder.getLocale();
         userToRegister.setLanguage(locale);
         return userRepository.save(userToRegister).getId() != null;

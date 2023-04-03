@@ -77,6 +77,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.ALL})
+    private EmailConfirmationToken emailConfirmationToken;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(getRole().getName()));
