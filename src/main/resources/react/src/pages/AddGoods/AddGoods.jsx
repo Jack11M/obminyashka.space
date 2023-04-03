@@ -6,10 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
   Button,
+  Subtitle,
+  InputField,
   BackButton,
   showMessage,
   CancelEverything,
-  AddGoodsDescription,
 } from 'obminyashka-components';
 
 import api from 'REST/Resources';
@@ -192,19 +193,16 @@ const AddGoods = () => {
                     style={{ marginBottom: 16 }}
                     text={getTranslatedText('button.back')}
                   />
-
                   <SelectionSection
                     category={{ categoryItems, setCategoryItems }}
                     subcategory={{ subCategoryItems, setSubCategoryItems }}
                     announcement={{ announcementTitle, setAnnouncementTitle }}
                   />
-
                   <Exchange
                     exchangeList={exchangeList}
                     setExchange={setExchangeList}
                     readyOffers={{ readyOffer, setReadyOffer }}
                   />
-
                   <>
                     <Styles.TitleH3>
                       {getTranslatedText('addAdv.options')}&nbsp;
@@ -281,14 +279,21 @@ const AddGoods = () => {
                     </Styles.WrapItems>
                   </>
 
-                  <AddGoodsDescription
-                    value={description}
-                    setDescription={setDescription}
-                    translatedTitle={getTranslatedText('addAdv.describeTitle')}
-                    translatedDescription={getTranslatedText(
-                      'addAdv.describeText'
-                    )}
-                  />
+                  <Styles.StyledInputField>
+                    <Subtitle
+                      textTitle={getTranslatedText('addAdv.describeTitle')}
+                      hiddenStar="true"
+                    />
+
+                    <InputField
+                      name="textarea"
+                      type="textarea"
+                      inputGap="20px"
+                      value={description}
+                      setDescription={setDescription}
+                      label={getTranslatedText('addAdv.describeText')}
+                    />
+                  </Styles.StyledInputField>
 
                   <Location
                     name="locationId"
@@ -296,7 +301,6 @@ const AddGoods = () => {
                     setLocationCurrent={setLocationCurrent}
                     onInputLocation={{ showLocation, setShowLocation }}
                   />
-
                   <PhotoFiles
                     name="images"
                     imageFiles={imageFiles}
@@ -306,7 +310,6 @@ const AddGoods = () => {
                     currentIndexImage={currentIndexImage}
                     setCurrentIndexImage={setCurrentIndexImage}
                   />
-
                   <Styles.WrapButtons>
                     <Styles.BlockButtons>
                       <Button
