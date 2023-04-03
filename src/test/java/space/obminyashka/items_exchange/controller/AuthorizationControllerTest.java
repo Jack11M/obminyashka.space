@@ -3,18 +3,14 @@ package space.obminyashka.items_exchange.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
+import org.springframework.security.authentication.AuthenticationManager;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.model.EmailConfirmationToken;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
@@ -22,7 +18,6 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,8 +33,9 @@ class AuthorizationControllerTest {
     @Mock
     private MailService mailService;
     @Mock
-    private EmailConfirmationTokenRepository confirmationTokenRepository;
-    @InjectMocks
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private AuthService authService;
     private AuthController authController;
     @Captor
     private ArgumentCaptor<EmailConfirmationToken> captor;
@@ -62,9 +58,7 @@ class AuthorizationControllerTest {
         assertAll("Verify invoking services one by one and expected status",
                 () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
                 () -> verify(mailService).sendMail(dto.getEmail(), EmailType.REGISTRATION, Locale.getDefault()),
-                () -> verify(userService).registerNewUser(dto),
-                () -> verify(confirmationTokenRepository).save(captor.capture()),
-                () -> assertEquals(userFromDto.getEmail(), captor.getValue().getUser().getEmail()),
+                () -> verify(userService).registerNewUser(eq(dto), any()),
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()));
     }
 

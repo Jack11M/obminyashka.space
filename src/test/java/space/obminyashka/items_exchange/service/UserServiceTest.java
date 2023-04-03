@@ -2,12 +2,20 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
+import space.obminyashka.items_exchange.mapper.ChildMapper;
+import space.obminyashka.items_exchange.mapper.PhoneMapper;
+import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
@@ -20,22 +28,32 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     public static final String NEW_USER_EMAIL = "user@mail.ua";
 
     @Mock
     private UserRepository userRepository;
-
+    @Mock
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Mock
+    private ChildMapper childMapper;
+    @Mock
+    private PhoneMapper phoneMapper;
+    @Mock
+    private RoleService roleService;
+    @Mock
+    private UserMapper userMapper;
     @Captor
     private ArgumentCaptor<String> oauth2UserArgumentCaptor;
-
-    @InjectMocks
     private UserServiceImpl userService;
+    @Value("${number.of.hours.to.keep.email.confirmation.token}")
+    private int numberOfHoursToKeepEmailConformationToken;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, childMapper, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test

@@ -101,4 +101,9 @@ public class User extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return this.getStatus() != Status.DELETED;
     }
+
+    public void setEmailConfirmationToken(EmailConfirmationToken emailConfirmationToken) {
+        this.emailConfirmationToken = emailConfirmationToken;
+        emailConfirmationToken.setUser(this);
+    }
 }
