@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
@@ -28,6 +30,7 @@ import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
+import space.obminyashka.items_exchange.model.EmailConfirmationToken;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.MailService;
@@ -39,6 +42,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -54,6 +59,9 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
     private final MailService mailService;
+    private final EmailConfirmationTokenRepository confirmationTokenRepository;
+    @Value("${number.of.hours.to.keep.email.confirmation.token}")
+    private int numberOfHoursToKeepEmailConformationToken;
 
     @PostMapping(value = ApiKey.AUTH_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Login in a registered user")
@@ -104,6 +112,9 @@ public class AuthController {
                     ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE));
         }
 
+        EmailConfirmationToken token = new EmailConfirmationToken(null, UUID.randomUUID().toString(),
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationToken));
+
         try {
             mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
         } catch (IOException e) {
@@ -114,6 +125,8 @@ public class AuthController {
 
         if (userService.registerNewUser(userRegistrationDto)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
+            token.setUser(userService.findByUsernameOrEmail(userRegistrationDto.getEmail()).get());
+            confirmationTokenRepository.save(token);
             return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED), HttpStatus.CREATED);
         }
 
