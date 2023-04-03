@@ -281,8 +281,8 @@ const AddGoods = () => {
 
                   <Styles.StyledInputField>
                     <Subtitle
-                      textTitle={getTranslatedText('addAdv.describeTitle')}
                       hiddenStar="true"
+                      textTitle={getTranslatedText('addAdv.describeTitle')}
                     />
 
                     <InputField
