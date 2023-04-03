@@ -68,7 +68,8 @@ class AuthorizationFlowTest extends BasicControllerTest {
     }
 
     @Test
-    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessage() throws Exception {
+    @ExpectedDataSet(value = "auth/create_token.yml", ignoreCols = {"id", "created", "expiry_date", "token", "user_id"})
+    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessageAndCreateEmailConfirmationToken() throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
