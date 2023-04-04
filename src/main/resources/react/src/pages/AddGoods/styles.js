@@ -116,6 +116,6 @@ export const BlockButtons = styled.div`
   gap: 30px;
 `;
 
-export const StyledInputField = styled.div`
+export const TextAreaBlock = styled.div`
   margin-bottom: 20px;
 `;

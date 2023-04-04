@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
+  Input,
   Button,
   Subtitle,
-  InputField,
   BackButton,
   showMessage,
   CancelEverything,
@@ -279,21 +279,22 @@ const AddGoods = () => {
                     </Styles.WrapItems>
                   </>
 
-                  <Styles.StyledInputField>
+                  <Styles.TextAreaBlock>
                     <Subtitle
                       hiddenStar="true"
                       textTitle={getTranslatedText('addAdv.describeTitle')}
                     />
 
-                    <InputField
+                    <Input
                       name="textarea"
                       type="textarea"
                       inputGap="20px"
                       value={description}
                       setDescription={setDescription}
                       label={getTranslatedText('addAdv.describeText')}
+                      onChange={(e) => setDescription(e.target.value)}
                     />
-                  </Styles.StyledInputField>
+                  </Styles.TextAreaBlock>
 
                   <Location
                     name="locationId"
