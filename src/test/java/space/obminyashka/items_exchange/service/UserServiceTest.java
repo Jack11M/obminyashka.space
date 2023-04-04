@@ -48,7 +48,7 @@ class UserServiceTest {
     @Captor
     private ArgumentCaptor<String> oauth2UserArgumentCaptor;
     private UserServiceImpl userService;
-    @Value("${number.of.hours.to.keep.email.confirmation.token}")
+    @Value("${number.of.hours.to.keep.email.confirmation.code}")
     private int numberOfHoursToKeepEmailConformationToken;
 
     @BeforeEach

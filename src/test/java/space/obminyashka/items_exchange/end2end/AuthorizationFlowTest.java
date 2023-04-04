@@ -72,7 +72,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     }
 
     @Test
-    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessageAndCreateEmailConfirmationToken() throws Exception {
+    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessageAndCreateEmailConfirmationCode() throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);

@@ -30,12 +30,12 @@ public interface UserService {
     Optional<UserDto> findByUsername(String username);
 
     /**
-     * Register new user and create email confirmation token
+     * Register new user and create email confirmation code
      * @param userRegistrationDto DTO which contains all required data for registration the user
-     * @param token UIID for confirmation email
+     * @param code UIID for confirmation email
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID token);
+    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID code);
 
     /**
      * Update an existed user with new data
