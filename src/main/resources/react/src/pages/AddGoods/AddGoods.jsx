@@ -281,7 +281,7 @@ const AddGoods = () => {
 
                   <Styles.TextAreaBlock>
                     <Subtitle
-                      hiddenStar="true"
+                      hiddenStar
                       textTitle={getTranslatedText('addAdv.describeTitle')}
                     />
 
