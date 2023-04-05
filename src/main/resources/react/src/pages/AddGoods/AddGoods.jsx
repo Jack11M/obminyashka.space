@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
   Button,
+  Subtitle,
   BackButton,
   showMessage,
   CancelEverything,
@@ -206,10 +207,7 @@ const AddGoods = () => {
                   />
 
                   <>
-                    <Styles.TitleH3>
-                      {getTranslatedText('addAdv.options')}&nbsp;
-                      <Styles.Star>*</Styles.Star>
-                    </Styles.TitleH3>
+                    <Subtitle textTitle={getTranslatedText('addAdv.options')} />
 
                     <Styles.WrapItems>
                       <Styles.SectionsItem>
