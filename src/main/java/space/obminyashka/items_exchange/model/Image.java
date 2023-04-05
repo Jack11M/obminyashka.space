@@ -1,12 +1,13 @@
 package space.obminyashka.items_exchange.model;
 
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
-import javax.persistence.*;
+import java.sql.Types;
 import java.util.UUID;
 
 @Entity
@@ -21,7 +22,7 @@ public class Image {
     private UUID id;
 
     @Lob
-    @Type(type = "org.hibernate.type.BinaryType")
+    @JdbcTypeCode(Types.VARBINARY)
     private byte[] resource;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

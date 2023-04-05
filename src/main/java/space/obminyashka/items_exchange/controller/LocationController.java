@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.LocationsRequest;
+import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithAdditionalInfo;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 @RestController
 @Tag(name = "Location")
@@ -62,8 +66,14 @@ public class LocationController {
             @ApiResponse(responseCode = "201", description = "CREATED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
-    public ResponseEntity<LocationDto> createLocation(@Valid @RequestBody LocationDto locationDto) {
-        return new ResponseEntity<>(locationService.save(locationDto), HttpStatus.CREATED);
+    public ResponseEntity<LocationDto> createLocation(@Valid @RequestBody LocationDto locationDto) throws BadRequestException {
+        try {
+
+            return new ResponseEntity<>(locationService.save(locationDto), HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            log.warn("Attempt of creation an existing location: {} ", locationDto, e);
+            throw new BadRequestException(getMessageSource(LOCATION_ALREADY_EXIST));
+        }
     }
 
     @PreAuthorize(HAS_ROLE_ADMIN)

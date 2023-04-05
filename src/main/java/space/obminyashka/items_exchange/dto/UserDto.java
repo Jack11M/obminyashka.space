@@ -7,8 +7,8 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.PatternHandler;
 import lombok.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;

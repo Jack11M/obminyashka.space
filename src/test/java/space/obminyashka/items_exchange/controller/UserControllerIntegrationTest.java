@@ -26,6 +26,7 @@ import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -39,6 +40,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -50,6 +52,7 @@ import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.generat
 import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -145,9 +148,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "user")
     void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException() throws Exception {
-        ChangePasswordRequest request = new ChangePasswordRequest();
-        request.setPassword(NEW_PASSWORD);
-        request.setConfirmPassword(WRONG_NEW_PASSWORD_CONFIRMATION);
+        var request = new ChangePasswordRequest(NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), request, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
@@ -159,8 +160,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser(username = "user")
     @MethodSource("listInvalidEmail")
     void updateUserEmail_whenEmailConfirmationWrong_shouldThrowIllegalArgumentException(String email) throws Exception {
-        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
-        changeEmailRequest.setEmail(email);
+        var changeEmailRequest = new ChangeEmailRequest(email);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
@@ -205,7 +205,9 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void selfDeleteRequest_whenPasswordWrongAndTheSameConfirmation_shouldThrowInvalidDtoException() throws Exception {
         MvcResult mvcResult = selfDeleteRequestBasicTest(false, WRONG_OLD_PASSWORD, delete(USER_SERVICE_DELETE), status().isBadRequest());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(InvalidDtoException.class)
+                .hasMessage(getMessageSource(INCORRECT_PASSWORD));
     }
 
     private MvcResult selfDeleteRequestBasicTest(boolean isUsernameExists, String oldPassword, MockHttpServletRequestBuilder request, ResultMatcher expectedResult) throws Exception {

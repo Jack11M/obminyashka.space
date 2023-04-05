@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +24,7 @@ import java.util.UUID;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @RestController
-@Log4j2
+@Slf4j
 @Tag(name = "Email")
 @RequiredArgsConstructor
 @Validated
