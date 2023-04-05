@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';
-import { Input, showMessage } from 'obminyashka-components';
+import { useEffect, useState } from 'react';
+import { Input, showMessage, Subtitle } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { getAuthLang } from 'store/auth/slice';
@@ -63,10 +63,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
 
   return (
     <Styles.AddChoose>
-      <Styles.TitleH3>
-        {getTranslatedText('addAdv.chooseSection')}&nbsp;
-        <Styles.Star>*</Styles.Star>
-      </Styles.TitleH3>
+      <Subtitle textTitle={getTranslatedText('addAdv.chooseSection')} />
 
       <Styles.Sections>
         <Styles.SectionsItem>

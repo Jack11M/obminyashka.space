@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { Subtitle } from 'obminyashka-components';
 import imageCompression from 'browser-image-compression';
 
 import { ModalContext } from 'components/common';
@@ -148,10 +149,7 @@ const PhotoFiles = ({
 
   return (
     <Styles.WrapFiles name={name}>
-      <Styles.FileTittle>
-        {getTranslatedText('addAdv.uploadDescription')}&nbsp;
-        <Styles.Star>*</Styles.Star>
-      </Styles.FileTittle>
+      <Subtitle textTitle={getTranslatedText('addAdv.uploadDescription')} />
 
       <p>{getTranslatedText('addAdv.firstUploadDescription')}</p>
 
