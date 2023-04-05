@@ -78,7 +78,7 @@ public class User extends BaseEntity implements UserDetails {
     private RefreshToken refreshToken;
 
     @OneToOne(mappedBy = "user", cascade = {CascadeType.ALL})
-    private EmailConfirmationToken emailConfirmationCode;
+    private EmailConfirmationCode emailConfirmationCode;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -105,8 +105,8 @@ public class User extends BaseEntity implements UserDetails {
         return this.getStatus() != Status.DELETED;
     }
 
-    public void setEmailConfirmationCode(EmailConfirmationToken emailConfirmationToken) {
-        this.emailConfirmationCode = emailConfirmationToken;
-        emailConfirmationToken.setUser(this);
+    public void setEmailConfirmationCode(EmailConfirmationCode emailConfirmationCode) {
+        this.emailConfirmationCode = emailConfirmationCode;
+        emailConfirmationCode.setUser(this);
     }
 }

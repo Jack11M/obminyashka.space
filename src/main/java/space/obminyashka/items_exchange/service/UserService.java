@@ -32,10 +32,10 @@ public interface UserService {
     /**
      * Register new user and create email confirmation code
      * @param userRegistrationDto DTO which contains all required data for registration the user
-     * @param code UIID for confirmation email
+     * @param codeId UIID for confirmation email
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID code);
+    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId);
 
     /**
      * Update an existed user with new data

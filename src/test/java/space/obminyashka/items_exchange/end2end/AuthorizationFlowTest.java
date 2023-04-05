@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
@@ -56,12 +56,12 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_USERNAME = "user name";
     private static final String BEARER_PREFIX = "Bearer ";
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
-    private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
+    private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
 
     @Autowired
-    public AuthorizationFlowTest(MockMvc mockMvc, EmailConfirmationTokenRepository emailConfirmationTokenRepository) {
+    public AuthorizationFlowTest(MockMvc mockMvc, EmailConfirmationCodeRepository emailConfirmationCodeRepository) {
         super(mockMvc);
-        this.emailConfirmationTokenRepository = emailConfirmationTokenRepository;
+        this.emailConfirmationCodeRepository = emailConfirmationCodeRepository;
     }
 
     @Test
@@ -77,7 +77,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
-        assertEquals(1, emailConfirmationTokenRepository.count());
+        assertEquals(1, emailConfirmationCodeRepository.count());
     }
 
     @ParameterizedTest

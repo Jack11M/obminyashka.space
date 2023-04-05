@@ -15,7 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class EmailConfirmationToken {
+public class EmailConfirmationCode {
     @Id
     @GeneratedValue
     private UUID id;
@@ -24,9 +24,6 @@ public class EmailConfirmationToken {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Column(nullable = false, unique = true)
-    private UUID token;
-
     @Column(name = "expiry_date", columnDefinition = "DATE", nullable = false)
     private LocalDateTime expiryDate;
 
@@ -34,8 +31,8 @@ public class EmailConfirmationToken {
     @CreatedDate
     private LocalDateTime created;
 
-    public EmailConfirmationToken(UUID token, int expirationHours) {
-        this.token = token;
+    public EmailConfirmationCode(UUID id, int expirationHours) {
+        this.id = id;
         this.expiryDate = LocalDateTime.now().plusHours(expirationHours);
     }
 }

@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.model.EmailConfirmationToken;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;
 
@@ -32,7 +32,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @Slf4j
 public class SendGridService implements MailService {
 
-    private final EmailConfirmationTokenRepository emailRepository;
+    private final EmailConfirmationCodeRepository emailRepository;
     private final SendGrid sendGrid;
     private final Email sender;
 
@@ -70,7 +70,7 @@ public class SendGridService implements MailService {
                 .forEach(emailRepository::delete);
     }
 
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationToken email) {
+    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationCode email) {
         Duration duration = Duration.between(email.getExpiryDate(), LocalDateTime.now());
 
         return duration.toDays() > numberOfDaysToKeepDeletedEmails;

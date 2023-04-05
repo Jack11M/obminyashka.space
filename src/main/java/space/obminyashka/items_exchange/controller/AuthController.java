@@ -105,7 +105,7 @@ public class AuthController {
                     ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE));
         }
 
-        UUID code = UUID.randomUUID();
+        UUID codeId = UUID.randomUUID();
 
         try {
             mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
@@ -115,7 +115,7 @@ public class AuthController {
                     ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
-        if (userService.registerNewUser(userRegistrationDto, code)) {
+        if (userService.registerNewUser(userRegistrationDto, codeId)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
             return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED), HttpStatus.CREATED);
         }

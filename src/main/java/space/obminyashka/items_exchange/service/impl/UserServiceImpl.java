@@ -17,7 +17,7 @@ import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.EmailConfirmationToken;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -69,9 +69,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID code) {
+    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
-        userToRegister.setEmailConfirmationCode(new EmailConfirmationToken(code, numberOfHoursToKeepEmailConformationCode));
+        userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
         final var locale = LocaleContextHolder.getLocale();
         userToRegister.setLanguage(locale);
         return userRepository.save(userToRegister).getId() != null;
