@@ -50,4 +50,18 @@
                                  referencedColumnNames="id"
                                  referencedTableName="user"/>
     </changeSet>
+
+    <changeSet id="1.2.3: add new column" author="serhii.ponomarenko">
+        <addColumn tableName="user">
+            <column name="validated_email" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1.2.4: rename table and remove column token" author="serhii.ponomarenko">
+        <renameTable oldTableName="email_confirmation_token" newTableName="email_confirmation_code"/>
+
+        <dropColumn tableName="email_confirmation_code">
+            <column name="token"/>
+        </dropColumn>
+    </changeSet>
 </databaseChangeLog>
