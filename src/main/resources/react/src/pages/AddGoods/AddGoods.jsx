@@ -286,13 +286,13 @@ const AddGoods = () => {
                     />
 
                     <Input
-                      name="textarea"
                       type="textarea"
                       inputGap="20px"
+                      name="description"
                       value={description}
-                      setDescription={setDescription}
                       label={getTranslatedText('addAdv.describeText')}
                       onChange={(e) => setDescription(e.target.value)}
+                      error={description.length >= 255 ? 'error' : undefined}
                     />
                   </Styles.TextAreaBlock>
 
