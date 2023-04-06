@@ -53,7 +53,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update User u set u.oauth2Login = true where u.email = :email and u.oauth2Login is null")
     void setOAuth2LoginToUserByEmail(String email);
 
+    @Transactional
     @Modifying
-    @Query("update User u set u.validatedEmail = true where u.id = :id")
+    @Query("update User u set u.validatedEmail = true where u.username = (select user.username from email_confirmation_code where id=:id)")
     void setValidatedEmailToUserById(UUID id);
 }

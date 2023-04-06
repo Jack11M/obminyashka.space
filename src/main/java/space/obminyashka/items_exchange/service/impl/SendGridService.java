@@ -10,13 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.model.EmailConfirmationToken;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public class SendGridService implements MailService {
     private final SendGrid sendGrid;
     private final Email sender;
     private final UserRepository userRepository;
-    private final EmailConfirmationTokenRepository emailConfirmationTokenRepository;
+    private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
 
     @Override
     public void sendMail(String emailTo, EmailType subject, Locale locale) throws IOException {
@@ -47,15 +48,14 @@ public class SendGridService implements MailService {
 
     @Override
     public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException {
-        Optional<EmailConfirmationToken> optionalEmail = emailConfirmationTokenRepository.findById(validationCode);
+        Optional<EmailConfirmationCode> optionalEmail = emailConfirmationCodeRepository.findById(validationCode);
 
-        if (optionalEmail.isEmpty()) {
-            throw new EmailValidationCodeNotFoundException("Email not exists");
-        }
+        optionalEmail.orElseThrow(() -> new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND)));
+
         if (optionalEmail.get().getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new EmailValidationCodeExpiredException("Validation code expired");
+            throw new EmailValidationCodeExpiredException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_CODE_EXPIRED));
         }
-        userRepository.setValidatedEmailToUserById(optionalEmail.get().getUser().getId());
+        userRepository.setValidatedEmailToUserById(optionalEmail.get().getId());
     }
 
     private Request createMailRequest(Mail mail) throws IOException {
