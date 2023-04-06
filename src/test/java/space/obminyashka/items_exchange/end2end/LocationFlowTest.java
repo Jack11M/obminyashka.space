@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.DataConflictException;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -111,7 +112,7 @@ class LocationFlowTest extends BasicControllerTest {
     @Test
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "location/createSameLocation.yml", orderBy = "city_en", ignoreCols = "id")
-    void createLocation_shouldGetStatusBadRequest_whenCreateSameLocation() throws Exception
+    void createLocation_shouldGetConflictResponse_whenCreateSameLocation() throws Exception
     {
         var sameLocation = LocationDto.builder()
                 .cityUA("Харків")
@@ -123,7 +124,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .build();
         MvcResult mvcResult = sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isBadRequest()).andReturn();
         assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(BadRequestException.class)
+                .isInstanceOf(DataConflictException.class)
                 .hasMessage(getMessageSource(LOCATION_ALREADY_EXIST));
 
     }

@@ -19,6 +19,7 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.LocationsRequest;
 import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
@@ -65,14 +66,14 @@ public class LocationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
-    public ResponseEntity<LocationDto> createLocation(@Valid @RequestBody LocationDto locationDto) throws BadRequestException {
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "409", description = "CONFLICT")})
+    public ResponseEntity<LocationDto> createLocation(@Valid @RequestBody LocationDto locationDto) throws DataConflictException {
         try {
-
             return new ResponseEntity<>(locationService.save(locationDto), HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
             log.warn("Attempt of creation an existing location: {} ", locationDto, e);
-            throw new BadRequestException(getMessageSource(LOCATION_ALREADY_EXIST));
+            throw new DataConflictException(getMessageSource(LOCATION_ALREADY_EXIST));
         }
     }
 
