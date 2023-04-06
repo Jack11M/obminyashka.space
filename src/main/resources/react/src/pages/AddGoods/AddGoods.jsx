@@ -6,9 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   Icon,
   Input,
-  Input,
   Button,
-  Subtitle,
   Subtitle,
   BackButton,
   showMessage,
