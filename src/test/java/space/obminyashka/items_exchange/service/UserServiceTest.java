@@ -2,7 +2,9 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -19,24 +21,17 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     public static final String NEW_USER_EMAIL = "user@mail.ua";
 
     @Mock
     private UserRepository userRepository;
-
     @Captor
     private ArgumentCaptor<String> oauth2UserArgumentCaptor;
-
     @InjectMocks
     private UserServiceImpl userService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testLoginUserWithOAuth2_WhenUserBeenCreated() {
