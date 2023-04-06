@@ -6,10 +6,13 @@ import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
@@ -28,13 +31,18 @@ import java.util.UUID;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class SendGridService implements MailService {
+
+    private final EmailConfirmationTokenRepository emailRepository;
     private final SendGrid sendGrid;
     private final Email sender;
     private final UserRepository userRepository;
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
+
+    @Value("${number.of.days.to.keep.deleted.email.confirmation.token}")
+    private int numberOfDaysToKeepDeletedEmails;
 
     @Override
     public void sendMail(String emailTo, EmailType subject, Locale locale) throws IOException {
