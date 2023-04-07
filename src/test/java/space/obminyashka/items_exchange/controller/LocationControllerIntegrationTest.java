@@ -45,7 +45,7 @@ class LocationControllerIntegrationTest extends BasicControllerTest {
         );
     }
 
-    @WithMockUser(username = "admin")
+    @WithMockUser
     @Test
     void deleteLocations_shouldReturn409WhenUserHasNotRoleAdmin() throws Exception {
         sendUriAndGetMvcResult(delete(LOCATION).param("ids", "2c5467f3-b7ee-48b1-9451-7028255b757b"), status().isForbidden());

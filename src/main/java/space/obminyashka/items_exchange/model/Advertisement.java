@@ -1,17 +1,16 @@
 package space.obminyashka.items_exchange.model;
 
-import java.util.List;
-
+import jakarta.persistence.*;
 import lombok.*;
-
-import javax.persistence.*;
-import java.util.Set;
-
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
+
+import java.sql.Types;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -48,7 +47,7 @@ public class Advertisement extends BaseEntity {
     private String wishesToExchange;
 
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @JdbcTypeCode(Types.VARBINARY)
     @Column(name = "default_photo")
     private byte[] defaultPhoto;
 

@@ -5,9 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,13 +18,14 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
+import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -37,8 +35,8 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -48,11 +46,14 @@ import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserFlowTest extends BasicControllerTest {
 
     private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
@@ -127,32 +128,34 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)));
     }
 
-    @ParameterizedTest
     @WithMockUser(username = ADMIN_USERNAME)
-    @MethodSource("listDataPassword")
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
-    void updateUserPassword_shouldGetResponse(String password, String confirmPassword, ResultMatcher status, String response)
+    void updateUserPassword_shouldGetResponseOK_whenDataValid()
             throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
-        changePasswordRequest.setPassword(password);
-        changePasswordRequest.setConfirmPassword(confirmPassword);
+        var changePasswordRequest = new ChangePasswordRequest(NEW_PASSWORD, NEW_PASSWORD);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status);
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status().isAccepted());
         String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
-        assertTrue(bCryptPasswordEncoder.matches(password, pwd));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(response)));
+        assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, pwd));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(CHANGED_USER_PASSWORD)));
     }
 
-    private static Stream<Arguments> listDataPassword() {
-        return Stream.of(
-                Arguments.of(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD, status().isConflict(),
-                        ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS),
-                Arguments.of(NEW_PASSWORD, NEW_PASSWORD, status().isAccepted(),
-                        ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD)
-        );
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet("database_init.yml")
+    void updateUserPassword_shouldReturnException_whenPasswordsSame() throws Exception {
+        var changePasswordRequest = new ChangePasswordRequest(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status().isConflict());
+        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
+
+        assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, pwd));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage(getMessageSource(SAME_PASSWORDS));
     }
 
     @Test
@@ -161,14 +164,15 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserEmail_shouldGetResponse() throws Exception {
-        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
-        changeEmailRequest.setEmail(OLD_ADMIN_VALID_EMAIL);
+        var changeEmailRequest = new ChangeEmailRequest(OLD_ADMIN_VALID_EMAIL);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
         String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
-        assertEquals(userEmail, changeEmailRequest.getEmail());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD)));
+        assertEquals(userEmail, changeEmailRequest.email());
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
     }
 
     @Test
@@ -177,8 +181,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
-        ChangeEmailRequest changeEmailRequest = new ChangeEmailRequest();
-        changeEmailRequest.setEmail(NEW_VALID_EMAIL);
+        var changeEmailRequest = new ChangeEmailRequest(NEW_VALID_EMAIL);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
 

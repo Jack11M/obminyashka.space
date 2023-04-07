@@ -5,7 +5,7 @@ import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.util.PatternHandler;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @AllArgsConstructor

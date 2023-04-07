@@ -7,7 +7,7 @@ import space.obminyashka.items_exchange.model.enums.Season;
 import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 @NoArgsConstructor

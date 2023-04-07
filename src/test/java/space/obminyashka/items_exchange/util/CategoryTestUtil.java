@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.util;
 
-import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import lombok.NoArgsConstructor;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.dto.SubcategoryDto;
@@ -47,10 +47,6 @@ public class CategoryTestUtil {
         return new CategoryDto(NEW_ENTITY_ID, CATEGORY_NAME_BOOKS, Arrays.asList(fairyTales, educationalBooks));
     }
 
-    public static CategoryDto createNonExistCategoryDtoWithInvalidId() {
-        return createNewInvalidCategoryDto(EXISTING_ENTITY_ID, NEW_ENTITY_ID, NEW_CATEGORY_NAME);
-    }
-
     public static CategoryDto createNonExistCategoryDtoWithInvalidName() {
         final SubcategoryDto fairyTales = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
         final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
@@ -58,13 +54,13 @@ public class CategoryTestUtil {
     }
 
     public static CategoryDto createNonExistCategoryDtoWithInvalidSubcategory() {
-        final var categoryDto = createNewInvalidCategoryDto(NEW_ENTITY_ID, EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
+        final var categoryDto = createNewInvalidCategoryDto(EXISTING_ENTITY_ID, NEW_CATEGORY_NAME);
         categoryDto.getSubcategories().add(new SubcategoryDto(0, RandomStringUtils.randomAlphabetic(60)));
         return categoryDto;
     }
 
     public static CategoryDto createCategoryDtoWithDuplicateName() {
-        return createNewInvalidCategoryDto(NEW_ENTITY_ID, NEW_ENTITY_ID, EXISTING_CATEGORY_NAME);
+        return createNewInvalidCategoryDto(NEW_ENTITY_ID, EXISTING_CATEGORY_NAME);
     }
 
     public static CategoryDto getUpdatedCategoryDto(long subcategoryId, long categoryId, String updatedCategoryName) {
@@ -82,13 +78,12 @@ public class CategoryTestUtil {
         updatedCategoryDto.setName(INVALID_CATEGORY_NAME);
         return updatedCategoryDto;
     }
-    private static CategoryDto createNewInvalidCategoryDto(long categoryId,
-                                                           long subcategoryId,
+    private static CategoryDto createNewInvalidCategoryDto(long subcategoryId,
                                                            String categoryName) {
 
         final SubcategoryDto newValidSubcategory = new SubcategoryDto(NEW_ENTITY_ID, NEW_SUBCATEGORY_NAME);
         final SubcategoryDto otherNewSubcategory = new SubcategoryDto(subcategoryId, OTHER_NEW_SUBCATEGORY_NAME);
-        return new CategoryDto(categoryId, categoryName, new ArrayList<>(Arrays.asList(newValidSubcategory, otherNewSubcategory)));
+        return new CategoryDto(CategoryTestUtil.NEW_ENTITY_ID, categoryName, new ArrayList<>(Arrays.asList(newValidSubcategory, otherNewSubcategory)));
     }
 
     public static List<String> createCategoryNamesList() {

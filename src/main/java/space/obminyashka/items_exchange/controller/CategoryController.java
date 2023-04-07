@@ -18,8 +18,8 @@ import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
