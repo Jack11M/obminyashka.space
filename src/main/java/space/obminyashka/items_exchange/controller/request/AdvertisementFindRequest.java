@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.*;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;

@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotEmpty;
 
 @Getter
 @AllArgsConstructor

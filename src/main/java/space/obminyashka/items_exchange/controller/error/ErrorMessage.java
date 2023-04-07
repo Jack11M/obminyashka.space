@@ -1,20 +1,10 @@
 package space.obminyashka.items_exchange.controller.error;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.springframework.http.HttpMethod;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
 
-@Getter
-@AllArgsConstructor
-public class ErrorMessage {
-
-    private String error;
-    private String path;
-    private HttpMethod method;
+public record ErrorMessage(String error, String path, String method) {
 
     @Override
     public String toString() {
