@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useField } from 'formik';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import { Input, showMessage, Subtitle } from 'obminyashka-components';
 
 import api from 'REST/Resources';
