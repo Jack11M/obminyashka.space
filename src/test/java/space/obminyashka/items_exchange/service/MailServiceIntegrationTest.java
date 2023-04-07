@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
-import space.obminyashka.items_exchange.model.EmailConfirmationToken;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 class MailServiceIntegrationTest {
 
     @MockBean
-    private EmailConfirmationTokenRepository emailRepository;
+    private EmailConfirmationCodeRepository emailRepository;
     @Autowired
     private MailService mailService;
 
@@ -27,7 +27,7 @@ class MailServiceIntegrationTest {
 
     @Test
     void testPermanentlyDeleteEmailConfirmationToken_shouldDeleteRequiredEmailConfirmationToken() {
-        List<EmailConfirmationToken> emails = createTestEmails();
+        List<EmailConfirmationCode> emails = createTestEmails();
         assertEquals(3, emails.size());
 
         when(emailRepository.findAll()).thenReturn(emails);
@@ -40,19 +40,19 @@ class MailServiceIntegrationTest {
         }
     }
 
-    private List<EmailConfirmationToken> createTestEmails() {
-        EmailConfirmationToken shouldBeDeletedExpiredDateDayEighth = createEmailForDeleting(numberOfDaysToKeepDeletedEmails + 1);
-        EmailConfirmationToken shouldNotBeDeletedExpiredDateNull = createEmailForDeleting(0);
-        EmailConfirmationToken shouldNotBeDeletedExpiredDateDaySixth = createEmailForDeleting(numberOfDaysToKeepDeletedEmails - 1);
+    private List<EmailConfirmationCode> createTestEmails() {
+        EmailConfirmationCode shouldBeDeletedExpiredDateDayEighth = createEmailForDeleting(numberOfDaysToKeepDeletedEmails + 1);
+        EmailConfirmationCode shouldNotBeDeletedExpiredDateNull = createEmailForDeleting(0);
+        EmailConfirmationCode shouldNotBeDeletedExpiredDateDaySixth = createEmailForDeleting(numberOfDaysToKeepDeletedEmails - 1);
 
         return List.of(shouldBeDeletedExpiredDateDayEighth, shouldNotBeDeletedExpiredDateNull, shouldNotBeDeletedExpiredDateDaySixth);
     }
 
-    private EmailConfirmationToken createEmailForDeleting(int delay) {
-        EmailConfirmationToken emailConfirmationToken = new EmailConfirmationToken();
-        emailConfirmationToken.setExpiryDate(LocalDateTime.now().minusDays(delay));
+    private EmailConfirmationCode createEmailForDeleting(int delay) {
+        EmailConfirmationCode emailConfirmationCode = new EmailConfirmationCode();
+        emailConfirmationCode.setExpiryDate(LocalDateTime.now().minusDays(delay));
 
-        return emailConfirmationToken;
+        return emailConfirmationCode;
     }
 }
 
