@@ -42,12 +42,23 @@ export const ItemTittle = styled.h4`
   color: ${(p) => (p.error ? p.theme.colors.colorError : '#383838')};
 `;
 
+export const WrapDescription = styled.div`
+  padding-bottom: 40px;
+`;
+
 export const Star = styled.span`
   color: ${({ theme }) => theme.colors.colorRed};
 `;
 
 export const WrapFiles = styled.div`
   margin-bottom: 100px;
+`;
+
+export const FileTittle = styled.h3`
+  color: ${({ theme }) => theme.colors.colorInput};
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 40px;
 `;
 
 export const FileDescription = styled.p`
