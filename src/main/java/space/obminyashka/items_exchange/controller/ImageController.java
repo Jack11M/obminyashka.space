@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.ImageDto;
+import space.obminyashka.items_exchange.exception.AdvertisementIdNotFoundException;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
@@ -29,6 +30,7 @@ import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import jakarta.validation.constraints.Size;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -69,8 +71,12 @@ public class ImageController {
     @ResponseStatus(HttpStatus.OK)
     public List<ImageDto> getByAdvertisementId(
             @Parameter(name = "advertisement_id", description = "ID of the Advertisement for getting all the images representation", required = true)
-            @PathVariable("advertisement_id") UUID id) {
-        return imageService.getByAdvertisementId(id);
+            @PathVariable("advertisement_id") UUID id) throws AdvertisementIdNotFoundException {
+        List<ImageDto> listImagesByAdvertisement = imageService.getByAdvertisementId(id);
+        if (listImagesByAdvertisement.isEmpty()) {
+            throw new AdvertisementIdNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
+        }
+        return listImagesByAdvertisement;
     }
 
     @GetMapping(value = ApiKey.IMAGE_IN_ADV_COUNT, produces = MediaType.APPLICATION_JSON_VALUE)

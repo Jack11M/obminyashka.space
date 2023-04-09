@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
+import space.obminyashka.items_exchange.exception.AdvertisementIdNotFoundException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({UsernameNotFoundException.class, EntityNotFoundException.class})
+    @ExceptionHandler({UsernameNotFoundException.class, EntityNotFoundException.class, AdvertisementIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleNotFoundExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);
