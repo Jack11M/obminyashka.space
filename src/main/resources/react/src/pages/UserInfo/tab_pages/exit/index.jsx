@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
-import { useClickAway } from 'react-use';
+import { useCallback } from 'react';
+// import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'obminyashka-components';
+import { Button, Modal } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import logout2 from 'assets/img/log-out-2.png';
@@ -12,10 +12,10 @@ import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
 
-const Exit = ({ toggle, setIsModalOpen }) => {
+const Exit = ({ toggle, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const ref = React.useRef(null);
+  // const ref = React.useRef(null);
 
   const setLogOut = useCallback(async () => {
     await dispatch(logoutUserThunk());
@@ -23,35 +23,31 @@ const Exit = ({ toggle, setIsModalOpen }) => {
     navigate(route.home);
   }, [dispatch, navigate]);
 
-  useClickAway(ref, () => {
-    setIsModalOpen(false);
-    toggle();
-  });
+  // useClickAway(ref, () => {
+  //   onClose(false);
+  //   toggle();
+  // });
 
   return (
-    <Styles.ModalOverlay>
-      <Styles.Modal ref={ref}>
-        <Styles.ModalCross onClick={toggle} />
+    <Modal isOpen={toggle} onClose={onClose} duration={1000}>
+      <Styles.ModalTitle>
+        {getTranslatedText('exit.question')}
+      </Styles.ModalTitle>
 
-        <Styles.ModalTitle>
-          {getTranslatedText('exit.question')}
-        </Styles.ModalTitle>
+      <Styles.ModalText>{getTranslatedText('exit.text')}</Styles.ModalText>
 
-        <Styles.ModalText>{getTranslatedText('exit.text')}</Styles.ModalText>
+      <Styles.ButtonStyles>
+        <Button
+          width={180}
+          onClick={setLogOut}
+          text={getTranslatedText('exit.exit')}
+        />
+      </Styles.ButtonStyles>
 
-        <Styles.ButtonStyles>
-          <Button
-            width={179}
-            onClick={setLogOut}
-            text={getTranslatedText('exit.exit')}
-          />
-        </Styles.ButtonStyles>
-
-        <Styles.ModalBackground>
-          <Styles.ModalImage src={logout2} alt="log-out" />
-        </Styles.ModalBackground>
-      </Styles.Modal>
-    </Styles.ModalOverlay>
+      <Styles.ModalBackground>
+        <Styles.ModalImage src={logout2} alt="log-out" />
+      </Styles.ModalBackground>
+    </Modal>
   );
 };
 export { Exit };

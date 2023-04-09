@@ -11,11 +11,11 @@ import * as Styles from './styles';
 const UserInfo = () => {
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, onClose] = useState(false);
   const [prevLocation, setPrevLocation] = useState('');
 
   const close = () => {
-    setIsModalOpen(false);
+    onClose(false);
     navigate(prevLocation);
   };
 
@@ -24,7 +24,7 @@ const UserInfo = () => {
       <Styles.Aside>
         <ActiveProfile />
 
-        <Tabs toggle={() => setIsModalOpen(true)} />
+        <Tabs toggle={() => onClose(true)} />
       </Styles.Aside>
 
       <Styles.Main>
@@ -33,7 +33,7 @@ const UserInfo = () => {
         </Styles.ContentWrapper>
       </Styles.Main>
 
-      {isModalOpen && <Exit toggle={close} setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && <Exit toggle={close} onClose={onClose} />}
     </Styles.Container>
   );
 };

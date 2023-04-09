@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "optionalDependencies": {
-    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#main"
+    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#e8a6268"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
