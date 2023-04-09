@@ -1,0 +1,34 @@
+user:
+  - id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    username: 'admin'
+    # Password encoded from string "@kuIOIY*h986"
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'admin@gmail.com'
+    is_validated_email: 'false'
+    oauth2Login: 'false'
+    online: 'false'
+    first_name: 'super'
+    last_name: 'admin'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-01 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    role_id: ccfe8c89-bded-4933-afe9-c38f2815057c
+  - id: 9a73b2d0-3528-4123-b2b1-27d61ed5afd3
+    username: 'user'
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'user@gmail.com'
+    is_validated_email: 'true'
+    oauth2Login: 'false'
+    online: 'false'
+    first_name: 'plain'
+    last_name: 'user'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-02 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    role_id: c0bb0913-f772-49e9-a9ac-e87246fa3505

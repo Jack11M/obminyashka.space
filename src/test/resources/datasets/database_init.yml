@@ -85,13 +85,20 @@ advertisement:
     subcategory_id: 1
     default_photo: null
 
+email_confirmation_code:
+  - id: ee36c78c-cfe9-11ed-b542-744ca1559076
+    user_id: 9a73b2d0-3528-4123-b2b1-27d61ed5afd3
+    expiry_date: '2029-03-30 00:00:01'
+    created: '2022-03-30 00:00:01'
+
 user:
   - id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
     username: 'admin'
     # Password encoded from string "@kuIOIY*h986"
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'admin@gmail.com'
-    oauth2Login: "false"
+    is_validated_email: 'false'
+    oauth2Login: 'false'
     online: 'false'
     first_name: 'super'
     last_name: 'admin'
@@ -106,7 +113,8 @@ user:
     username: 'user'
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'user@gmail.com'
-    oauth2Login: "false"
+    is_validated_email: 'false'
+    oauth2Login: 'false'
     online: 'false'
     first_name: 'plain'
     last_name: 'user'
