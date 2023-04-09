@@ -2,11 +2,10 @@ package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +14,7 @@ import javax.validation.constraints.Size;
 @ToString
 public class SubcategoryDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty
     private long id;
 
     @Schema(

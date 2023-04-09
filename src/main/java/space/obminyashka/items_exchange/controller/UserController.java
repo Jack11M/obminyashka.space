@@ -30,8 +30,8 @@ import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +98,7 @@ public class UserController {
     public String updateUserPassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
                                      @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         var username = authentication.getName();
-        var password = changePasswordRequest.getPassword();
+        var password = changePasswordRequest.password();
         if (userService.isUserPasswordMatches(username, password)) {
             throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
         }
@@ -119,7 +119,7 @@ public class UserController {
     public String updateUserEmail(@Valid @RequestBody ChangeEmailRequest changeEmailRequest,
                                   @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
         var username = authentication.getName();
-        var email = changeEmailRequest.getEmail();
+        var email = changeEmailRequest.email();
         checkEmailUniqueAndNotUsed(username, email);
         userService.updateUserEmail(username, email);
 

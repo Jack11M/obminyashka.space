@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,9 +28,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.stream.Stream;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -42,6 +41,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @DataSet("database_init.yml")
 @AutoConfigureMockMvc
 @MockBean(classes = MailService.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AuthorizationFlowTest extends BasicControllerTest {
 
     protected static final String VALID_USERNAME = "test";
@@ -86,8 +86,9 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void register_whenUserDataInvalid_shouldThrowException(UserRegistrationDto dto, ResultMatcher expectedStatus, String errorMessage, Class<Exception> resolvedException) throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), dto, expectedStatus);
 
-        assertThat(result.getResolvedException(), is(instanceOf(resolvedException)));
-        assertTrue(result.getResponse().getContentAsString().contains(getMessageSource(errorMessage)));
+        assertThat(result.getResolvedException())
+                .isInstanceOf(resolvedException)
+                .hasMessageContaining(getMessageSource(errorMessage));
     }
 
     private static Stream<Arguments> userRegistrationData() {

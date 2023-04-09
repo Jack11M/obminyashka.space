@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.8</version>
+        <version>3.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -21,11 +21,11 @@
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <lombok.version>1.18.26</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <swagger.version>1.6.15</swagger.version>
-        <liquibase.version>[4.6.2]</liquibase.version>
+        <swagger.version>2.1.0</swagger.version>
+        <liquibase.version>4.20.0</liquibase.version>
         <db-rider.version>1.36.0</db-rider.version>
-        <log4j2.version>2.18.0</log4j2.version>
-        <snakeyaml.version>1.33</snakeyaml.version>
+        <log4j2.version>2.20.0</log4j2.version>
+        <snakeyaml.version>2.0</snakeyaml.version>
         <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
         <node.version>v18.13.0</node.version>
         <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -94,7 +94,7 @@
 
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${swagger.version}</version>
         </dependency>
 

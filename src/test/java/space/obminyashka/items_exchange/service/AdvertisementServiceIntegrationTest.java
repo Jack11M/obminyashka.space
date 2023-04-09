@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 

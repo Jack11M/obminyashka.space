@@ -115,3 +115,7 @@ export const BlockButtons = styled.div`
   display: flex;
   gap: 30px;
 `;
+
+export const TextAreaBlock = styled.div`
+  margin-bottom: 20px;
+`;

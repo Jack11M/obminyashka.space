@@ -1,13 +1,11 @@
 package space.obminyashka.items_exchange.util;
 
-import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 public class AdvertisementDtoCreatingUtil {
@@ -56,10 +54,6 @@ public class AdvertisementDtoCreatingUtil {
                 .wishesToExchange(wishes)
                 .description(description)
                 .build();
-    }
-
-    public static boolean isResponseContainsExpectedResponse(String expectedResponse, MvcResult mvcResult) throws UnsupportedEncodingException {
-        return mvcResult.getResponse().getContentAsString().contains(expectedResponse);
     }
 
     private static String createString(int quantityOfCharsInNewsString){

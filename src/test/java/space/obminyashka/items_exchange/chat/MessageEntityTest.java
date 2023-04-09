@@ -2,10 +2,13 @@ package space.obminyashka.items_exchange.chat;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import space.obminyashka.items_exchange.dao.ChatRepository;
 import space.obminyashka.items_exchange.dao.MessageRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
@@ -14,8 +17,6 @@ import space.obminyashka.items_exchange.model.Chat;
 import space.obminyashka.items_exchange.model.Message;
 import space.obminyashka.items_exchange.model.User;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DBRider
 @Transactional
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class MessageEntityTest {
 
     private static final String EXISTING_CHAT_HASH = "ChatHash";

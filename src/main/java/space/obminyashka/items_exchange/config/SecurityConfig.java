@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -28,19 +28,18 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.authorization.jwt.TokenAuthenticator;
 import space.obminyashka.items_exchange.authorization.oauth2.OAuthLoginSuccessHandler;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
-@EnableGlobalMethodSecurity(
+@EnableMethodSecurity(
         securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
+        jsr250Enabled = true
 )
 @Order(SecurityProperties.BASIC_AUTH_ORDER)
 public class SecurityConfig {
@@ -49,6 +48,7 @@ public class SecurityConfig {
     private final OAuthLoginSuccessHandler oauthLoginSuccessHandler;
     private final AccessDeniedHandler accessDeniedHandler;
     private final @Lazy JwtTokenService tokenService;
+    private final TokenAuthenticator tokenAuthenticator;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -99,8 +99,8 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-                .antMatchers(
+                .authorizeHttpRequests()
+                .requestMatchers(
                         "/",
                         "/favicon.ico",
                         "/static/css/**",
@@ -113,34 +113,31 @@ public class SecurityConfig {
                         "/**/*.css",
                         "/**/*.js",
                         "/**/*.ttf").permitAll()
-                .antMatchers("/swagger-ui**", "/swagger-resources/**", "/v3/api-docs/**", "/error").permitAll()
-                .antMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
-                .antMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
-                .antMatchers(HttpMethod.GET,
+                .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/error").permitAll()
+                .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
+                .requestMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
+                .requestMatchers(HttpMethod.GET,
                         ApiKey.FRONT_LOGIN,
                         ApiKey.FRONT_SIGN,
                         ApiKey.FRONT_USER,
                         ApiKey.FRONT_ADV_ADD,
                         ApiKey.FRONT_PRODUCT,
                         ApiKey.FRONT_FILTER).permitAll()
-                .antMatchers(HttpMethod.GET,
+                .requestMatchers(HttpMethod.GET,
                         ApiKey.OAUTH2_SUCCESS,
                         ApiKey.ADV + "/**",
                         ApiKey.IMAGE + "/**",
                         ApiKey.CATEGORY + "/**",
                         ApiKey.SUBCATEGORY + "/**",
                         ApiKey.LOCATION + "/**").permitAll()
-                .antMatchers(ApiKey.AUTH_OAUTH2_SUCCESS, ApiKey.AUTH_LOGOUT, ApiKey.USER_MY_INFO, ApiKey.USER_MY_ADV).authenticated()
+                .requestMatchers(ApiKey.AUTH_OAUTH2_SUCCESS, ApiKey.AUTH_LOGOUT, ApiKey.USER_MY_INFO, ApiKey.USER_MY_ADV).authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .oauth2Login().successHandler(oauthLoginSuccessHandler)
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint((request, response, ex) -> {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getOutputStream().println("JWT is expired and needs to be recreated");
-                })
+                .authenticationEntryPoint(tokenAuthenticator)
                 .and()
                 .build();
     }
