@@ -23,8 +23,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(unique = true)
     private String email;
     private Boolean online;
-
     private Boolean oauth2Login;
+
+    @Column(name = "is_validated_email")
+    private Boolean validatedEmail;
 
     @Column(name = "first_name")
     private String firstName;
