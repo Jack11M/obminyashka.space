@@ -58,21 +58,20 @@ export const Span = styled.span`
   cursor: pointer;
   transition: 0.3s ease-in-out;
 
+  &:before,
   &:after {
     position: absolute;
     content: '';
     width: 1px;
     height: 11px;
     background: ${({ theme }) => theme.colors.white};
+  }
+
+  &:after {
     transform: rotate(45deg);
   }
 
   &:before {
-    position: absolute;
-    content: '';
-    width: 1px;
-    height: 11px;
-    background: ${({ theme }) => theme.colors.white};
     transform: rotate(-45deg);
   }
 
@@ -87,7 +86,6 @@ export const ChangeInput = styled.input`
   box-sizing: border-box;
   min-width: 262px;
   height: 32px;
-  font-family: 'Roboto', sans-serif;
   line-height: 24px;
   border: none;
   outline: none;

@@ -19,7 +19,5 @@ export const theme = {
     activeColor: '#00C0FF',
     scrollbarBg: '#f1f1f1',
     white: '#FFFFFF',
-    colorInput: '#11171f',
-    borderColor: '#bcbcbc',
   },
 };

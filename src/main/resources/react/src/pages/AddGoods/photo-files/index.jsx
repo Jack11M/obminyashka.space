@@ -151,7 +151,9 @@ const PhotoFiles = ({
     <Styles.WrapFiles name={name}>
       <Subtitle textTitle={getTranslatedText('addAdv.uploadDescription')} />
 
-      <p>{getTranslatedText('addAdv.firstUploadDescription')}</p>
+      <Styles.FileDescription>
+        {getTranslatedText('addAdv.firstUploadDescription')}
+      </Styles.FileDescription>
 
       <Styles.FileDescription>
         {getTranslatedText('addAdv.photosUploaded')}
