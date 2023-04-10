@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -16,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.exception.AdvertisementIdNotFoundException;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
@@ -139,7 +139,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
         when(imageService.getByAdvertisementId(advertisementId)).thenReturn(new ArrayList<>());
 
         final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_BY_ADV_ID, advertisementId), status().isNotFound());
-        assertThat(mvcResult.getResolvedException()).isInstanceOf(AdvertisementIdNotFoundException.class)
+        assertThat(mvcResult.getResolvedException()).isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
     }
 

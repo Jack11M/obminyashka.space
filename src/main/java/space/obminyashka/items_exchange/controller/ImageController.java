@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.AdvertisementIdNotFoundException;
 import space.obminyashka.items_exchange.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
@@ -71,10 +71,10 @@ public class ImageController {
     @ResponseStatus(HttpStatus.OK)
     public List<ImageDto> getByAdvertisementId(
             @Parameter(name = "advertisement_id", description = "ID of the Advertisement for getting all the images representation", required = true)
-            @PathVariable("advertisement_id") UUID id) throws AdvertisementIdNotFoundException {
+            @PathVariable("advertisement_id") UUID id) throws EntityNotFoundException {
         List<ImageDto> listImagesByAdvertisement = imageService.getByAdvertisementId(id);
         if (listImagesByAdvertisement.isEmpty()) {
-            throw new AdvertisementIdNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
+            throw new EntityNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
         }
         return listImagesByAdvertisement;
     }
