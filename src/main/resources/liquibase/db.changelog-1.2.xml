@@ -52,7 +52,7 @@
     </changeSet>
     <changeSet id="1.2.3: add new column, rename table and remove column token" author="serhii.ponomarenko">
         <addColumn tableName="user">
-            <column name="is_validated_email" type="BOOLEAN"/>
+            <column name="validated_email" type="BOOLEAN"/>
         </addColumn>
 
         <renameTable oldTableName="email_confirmation_token" newTableName="email_confirmation_code"/>
