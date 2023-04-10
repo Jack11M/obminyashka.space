@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -131,6 +132,15 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, UUID.randomUUID())
                         .file(jpeg))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getByAdvertisementId_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
+        when(imageService.getByAdvertisementId(advertisementId)).thenReturn(new ArrayList<>());
+
+        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_BY_ADV_ID, advertisementId), status().isNotFound());
+        assertThat(mvcResult.getResolvedException()).isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
     }
 
     @WithMockUser("admin")

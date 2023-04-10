@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import jakarta.validation.constraints.Size;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -69,8 +71,12 @@ public class ImageController {
     @ResponseStatus(HttpStatus.OK)
     public List<ImageDto> getByAdvertisementId(
             @Parameter(name = "advertisement_id", description = "ID of the Advertisement for getting all the images representation", required = true)
-            @PathVariable("advertisement_id") UUID id) {
-        return imageService.getByAdvertisementId(id);
+            @PathVariable("advertisement_id") UUID id) throws EntityNotFoundException {
+        List<ImageDto> listImagesByAdvertisement = imageService.getByAdvertisementId(id);
+        if (listImagesByAdvertisement.isEmpty()) {
+            throw new EntityNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
+        }
+        return listImagesByAdvertisement;
     }
 
     @GetMapping(value = ApiKey.IMAGE_IN_ADV_COUNT, produces = MediaType.APPLICATION_JSON_VALUE)
