@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
@@ -19,7 +20,6 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import java.io.IOException;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -48,6 +48,10 @@ class MailServiceTest {
         mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH);
 
         verify(sendGrid).api(requestCapture.capture());
-        assertTrue(requestCapture.getValue().getBody().contains(emailTo));
+        Request capturedRequest = requestCapture.getValue();
+        verify(sendGrid, times(1))
+                .api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
+                        capturedRequest.getEndpoint().equals("mail/send") &&
+                        capturedRequest.getBody().contains(emailTo)));
     }
 }

@@ -4,12 +4,11 @@ import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
@@ -26,6 +25,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,12 +41,31 @@ public class SendGridService implements MailService {
 
     @Override
     public void sendMail(String emailTo, EmailType subject, Locale locale) throws IOException {
-        Email to = new Email(emailTo);
-        var content = new Content(MediaType.TEXT_PLAIN_VALUE, getMessageSource(subject.body));
-        var mail2send = new Mail(sender, getMessageSource(subject.header), to, content);
+        var mail2send = new Mail();
+        mail2send.setFrom(sender);
+        mail2send.setTemplateId(subject.template);
+
+        final var personalization = populatePersonalization(emailTo);
+        mail2send.addPersonalization(personalization);
+
         var request = createMailRequest(mail2send);
         final var response = sendGrid.api(request);
-        log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", response.getStatusCode(), response.getBody());
+        final var statusCode = response.getStatusCode();
+        log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
+    }
+
+    private static Personalization populatePersonalization(String receiver) {
+        final var personalization = new Personalization();
+        personalization.addDynamicTemplateData("subject", getMessageSource(EMAIL_REGISTRATION_TOPIC));
+        personalization.addDynamicTemplateData("header", getMessageSource(EMAIL_REGISTRATION_HEADER));
+        personalization.addDynamicTemplateData("greetings", getMessageSource(EMAIL_REGISTRATION_GREETINGS));
+        personalization.addDynamicTemplateData("information", getMessageSource(EMAIL_REGISTRATION_INFORMATION));
+        personalization.addDynamicTemplateData("benefits", getMessageSource(EMAIL_REGISTRATION_BENEFITS));
+        personalization.addDynamicTemplateData("confirm", getMessageSource(EMAIL_REGISTRATION_CONFIRM_BUTTON));
+        personalization.addDynamicTemplateData("footer", getMessageSource(EMAIL_REGISTRATION_FOOTER));
+        personalization.addDynamicTemplateData("url", "https://obminyashka.space/");
+        personalization.addTo(new Email(receiver));
+        return personalization;
     }
 
     @Override
