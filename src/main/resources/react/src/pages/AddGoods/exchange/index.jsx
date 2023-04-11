@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useField } from 'formik';
+import { Subtitle } from 'obminyashka-components';
 import { useTransition, animated } from 'react-spring';
 
 import { FormikCheckBox } from 'components/common/formik';
@@ -80,7 +81,7 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
   return (
     <Styles.Wrap name="wishesToExchange">
-      <Styles.TitleH3>{getTranslatedText('addAdv.exchange')}</Styles.TitleH3>
+      <Subtitle textTitle={getTranslatedText('addAdv.exchange')} />
 
       <Styles.Description>
         &nbsp;
