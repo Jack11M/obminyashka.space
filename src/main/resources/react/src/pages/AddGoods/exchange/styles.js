@@ -5,23 +5,15 @@ export const Wrap = styled.div`
   margin-bottom: 50px;
 `;
 
-export const TitleH3 = styled.h3`
-  font-family: 'Open Sans', sans-serif;
-  font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  line-height: 40px;
-`;
-
 export const Description = styled.p`
-  color: ${({ theme }) => theme.colors.colorGrey};
   margin-bottom: 0;
+  color: ${({ theme }) => theme.colors.colorGrey};
 `;
 
 export const Explanation = styled.p`
+  margin-bottom: 10px;
   color: ${({ theme }) => theme.colors.colorGrey};
   font-size: 14px;
-  margin-bottom: 10px;
 `;
 
 export const ChangeWrap = styled.div`
@@ -41,14 +33,17 @@ export const ChangeWrap = styled.div`
 
 export const ChangeItem = styled.div`
   position: relative;
-  margin: 6px 7px;
   padding: 6px 34px 6px 14px;
-  background-color: ${({ theme }) => theme.colors.btnBlue};
+  margin: 6px 7px;
   border-radius: 5px;
-  color: ${({ theme }) => theme.colors.white};
   text-transform: uppercase;
   font-size: 12px;
   line-height: 24px;
+
+  ${({ theme }) => css`
+    background-color: ${theme.colors.btnBlue};
+    color: ${theme.colors.white};
+  `};
 `;
 
 export const Span = styled.span`
@@ -63,21 +58,20 @@ export const Span = styled.span`
   cursor: pointer;
   transition: 0.3s ease-in-out;
 
+  &:before,
   &:after {
     position: absolute;
     content: '';
     width: 1px;
     height: 11px;
-    background: #fff;
+    background: ${({ theme }) => theme.colors.white};
+  }
+
+  &:after {
     transform: rotate(45deg);
   }
 
   &:before {
-    position: absolute;
-    content: '';
-    width: 1px;
-    height: 11px;
-    background: #fff;
     transform: rotate(-45deg);
   }
 
@@ -88,11 +82,10 @@ export const Span = styled.span`
 
 export const ChangeInput = styled.input`
   position: relative;
-  min-width: 262px;
-  box-sizing: border-box;
-  height: 32px;
   margin: 8px 7px;
-  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+  min-width: 262px;
+  height: 32px;
   line-height: 24px;
   border: none;
   outline: none;

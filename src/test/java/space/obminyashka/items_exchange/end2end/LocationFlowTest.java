@@ -122,7 +122,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .districtEN("Kharkivska district")
                 .areaEN("Kharkivska area")
                 .build();
-        MvcResult mvcResult = sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isBadRequest()).andReturn();
+        MvcResult mvcResult = sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isConflict()).andReturn();
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(DataConflictException.class)
                 .hasMessage(getMessageSource(LOCATION_ALREADY_EXIST));

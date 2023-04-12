@@ -204,10 +204,7 @@ const AddGoods = () => {
                     readyOffers={{ readyOffer, setReadyOffer }}
                   />
                   <>
-                    <Styles.TitleH3>
-                      {getTranslatedText('addAdv.options')}&nbsp;
-                      <Styles.Star>*</Styles.Star>
-                    </Styles.TitleH3>
+                    <Subtitle textTitle={getTranslatedText('addAdv.options')} />
 
                     <Styles.WrapItems>
                       <Styles.SectionsItem>
