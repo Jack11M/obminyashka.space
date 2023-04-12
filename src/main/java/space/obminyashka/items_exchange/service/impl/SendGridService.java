@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
@@ -25,7 +24,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -54,17 +52,15 @@ public class SendGridService implements MailService {
     }
 
     @Override
-    public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException {
-        Optional<EmailConfirmationCode> optionalEmail = emailRepository.findById(validationCode);
+    public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException {
+        emailRepository.findById(validationCode)
+                .filter(emailConfirmationCode -> LocalDateTime.now().isBefore(emailConfirmationCode.getExpiryDate()))
+                .map(EmailConfirmationCode::getId)
+                .ifPresentOrElse(userRepository::setValidatedEmailToUserByEmailId, this::throwNotFoundException);
+    }
 
-        optionalEmail
-                .orElseThrow(() -> new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND)));
-
-        if (optionalEmail.get().getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new EmailValidationCodeExpiredException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_CODE_EXPIRED));
-        }
-
-        userRepository.setValidatedEmailToUserByEmailId(optionalEmail.get().getId());
+    private void throwNotFoundException() throws EmailValidationCodeNotFoundException {
+        throw new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND_OR_EXPIRED));
     }
 
     private Request createMailRequest(Mail mail) throws IOException {
@@ -88,4 +84,8 @@ public class SendGridService implements MailService {
 
         return duration.toDays() > numberOfDaysToKeepDeletedEmails;
     }
+
+
+
+
 }
