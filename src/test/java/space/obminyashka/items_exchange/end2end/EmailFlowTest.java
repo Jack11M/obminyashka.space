@@ -16,8 +16,6 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.EMAIL_VALIDATE_CODE;
@@ -26,7 +24,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
-public class EmailFlowTest extends BasicControllerTest {
+class EmailFlowTest extends BasicControllerTest {
 
     @Autowired
     public EmailFlowTest(MockMvc mockMvc) {
@@ -36,11 +34,12 @@ public class EmailFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = { "email_confirmation_code/validate_code.yml"})
+    @ExpectedDataSet(value = {"email_confirmation_code/validate_code.yml"})
     void validateEmail_whenDataCorrect_successfully() throws Exception {
-        MvcResult mvcResult =  sendUriAndGetMvcResult(post(EMAIL_VALIDATE_CODE, UUID.fromString("ee36c78c-cfe9-11ed-b542-744ca1559076")), status().isOk());
+        final var exceptedCode = UUID.fromString("ee36c78c-cfe9-11ed-b542-744ca1559076");
+        MvcResult mvcResult = sendUriAndGetMvcResult(post(EMAIL_VALIDATE_CODE, exceptedCode), status().isOk());
 
-        assertThat(mvcResult.getResponse().getContentAsString()).contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMED));
+        final var exceptedResponse = getMessageSource(ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMED);
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(exceptedResponse);
     }
-
 }
