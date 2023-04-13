@@ -32,9 +32,9 @@ public class EmailConfirmationCode {
     @CreatedDate
     private LocalDateTime created;
 
-    public EmailConfirmationCode(User user, UUID id, LocalDateTime expiryDate) {
-        this.user = user;
+    public EmailConfirmationCode(UUID id, User user, LocalDateTime expiryDate) {
         this.id = id;
+        this.user = user;
         this.expiryDate = expiryDate;
     }
 }

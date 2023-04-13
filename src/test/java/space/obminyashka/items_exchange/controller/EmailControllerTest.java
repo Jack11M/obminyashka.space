@@ -40,7 +40,7 @@ class EmailControllerTest {
     }
 
     @Test
-    void validateEmail_whenServiceThrewException_shouldCatchException()
+    void validateEmail_whenValidationCodeNotFound_shouldDoNothing()
             throws EmailValidationCodeNotFoundException {
         Mockito.doThrow(EmailValidationCodeNotFoundException.class).when(mailService).validateEmail(any(UUID.class));
 

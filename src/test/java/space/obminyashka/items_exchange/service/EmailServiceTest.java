@@ -64,7 +64,7 @@ class EmailServiceTest {
     private EmailConfirmationCode creatEmailConfirmCode() {
         User user = new User();
         user.setId(EXPECTED_ID);
-        return new EmailConfirmationCode(user, EXPECTED_ID ,LocalDateTime.now().plusDays(1));
+        return new EmailConfirmationCode(EXPECTED_ID, user, LocalDateTime.now().plusDays(1));
     }
 
     @ParameterizedTest
@@ -77,6 +77,6 @@ class EmailServiceTest {
     private static Stream<Arguments> exception_whenEmailNotFoundOrExpiryDateOut() {
         return Stream.of(
                 Arguments.of(null, new EmailValidationCodeNotFoundException("the code was not found")),
-                Arguments.of(new EmailConfirmationCode(new User(), EXPECTED_ID ,LocalDateTime.now().minusDays(1)), new EmailValidationCodeNotFoundException("the code was expired")));
+                Arguments.of(new EmailConfirmationCode(EXPECTED_ID, new User(), LocalDateTime.now().minusDays(1)), new EmailValidationCodeNotFoundException("the code was expired")));
     }
 }
