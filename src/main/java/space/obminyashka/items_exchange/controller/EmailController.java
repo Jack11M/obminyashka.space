@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -39,7 +38,7 @@ public class EmailController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "406", description = "NOT ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
-    public String validateEmail(@PathVariable UUID code) throws EmailValidationCodeExpiredException, EmailValidationCodeNotFoundException {
+    public String validateEmail(@PathVariable UUID code) throws EmailValidationCodeNotFoundException {
         log.info("receive the code {} for validation", code);
         mailService.validateEmail(code);
         log.info("the code {} was successfully validated", code);
