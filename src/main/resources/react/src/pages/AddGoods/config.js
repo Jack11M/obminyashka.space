@@ -28,7 +28,7 @@ export const getValidationAdv = ({
     topic: Yup.string()
       .required(getTranslatedText('errors.requireField'))
       .min(3, getTranslatedText('errors.min3'))
-      .max(30, getTranslatedText('errors.max30'))
+      .max(40, getTranslatedText('errors.max40'))
       .default(() => announcementTitle),
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
