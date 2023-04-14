@@ -39,7 +39,6 @@ class MailServiceTest {
         messageSourceUtil.setMSource(mock(MessageSource.class));
     }
 
-
     @Test
     void sendMail_shouldPassTheFlow() throws IOException {
         when(sendGrid.api(any())).thenReturn(new Response());

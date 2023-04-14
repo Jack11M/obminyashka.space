@@ -3,6 +3,8 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -12,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
@@ -24,12 +28,19 @@ import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.service.MailService;
+import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
+import java.io.IOException;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,6 +64,10 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_EMAIL = "email.com";
     protected static final String INVALID_USERNAME = "user name";
     private static final String BEARER_PREFIX = "Bearer ";
+    @MockBean
+    private SendGrid sendGrid;
+    @SpyBean
+    private MailService mailService;
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
 
     @Autowired
@@ -65,6 +80,27 @@ class AuthorizationFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "auth/register_user.yml", orderBy = {"created", "name"}, ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
         sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
+    }
+
+    @Test
+    void register_shouldCreateNewUserAndSendMail() throws Exception {
+        when(sendGrid.api(any())).thenReturn(new Response(200, null, null));
+
+        sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
+
+        verify(mailService).sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, Locale.ENGLISH);
+
+        Response sendGridApi = sendGrid.api(any());
+        assertEquals(HttpStatus.OK.value(), sendGridApi.getStatusCode());
+    }
+
+    @Test
+    void register_whenSendGridFailed_shouldReturnServiceUnavailable() throws Exception {
+        doThrow(new IOException("Expected exception!")).when(mailService).sendMail(anyString(), any(), any());
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isServiceUnavailable());
+
+        String seekingResponse = getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION);
+        assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
     }
 
     @Test

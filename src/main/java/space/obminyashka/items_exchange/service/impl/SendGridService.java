@@ -47,7 +47,7 @@ public class SendGridService implements MailService {
         mail2send.setFrom(sender);
         mail2send.setTemplateId(subject.template);
 
-        final var personalization = populatePersonalization(emailTo);
+        final var personalization = populatePersonalization(emailTo, subject.topic);
         mail2send.addPersonalization(personalization);
 
         var request = createMailRequest(mail2send);
@@ -56,9 +56,9 @@ public class SendGridService implements MailService {
         log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
     }
 
-    private static Personalization populatePersonalization(String receiver) {
+    private static Personalization populatePersonalization(String receiver, String subject) {
         final var personalization = new Personalization();
-        personalization.addDynamicTemplateData("subject", getMessageSource(EMAIL_REGISTRATION_TOPIC));
+        personalization.addDynamicTemplateData("subject", getMessageSource(subject));
         personalization.addDynamicTemplateData("header", getMessageSource(EMAIL_REGISTRATION_HEADER));
         personalization.addDynamicTemplateData("greetings", getMessageSource(EMAIL_REGISTRATION_GREETINGS));
         personalization.addDynamicTemplateData("information", getMessageSource(EMAIL_REGISTRATION_INFORMATION));
