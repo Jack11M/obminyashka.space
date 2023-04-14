@@ -36,6 +36,8 @@ const SearchResults = () => {
     } catch (err) {
       if (err?.response?.status !== 404) {
         showMessage.error(err.response?.data ?? err.message);
+      } else {
+        setAdv({});
       }
     } finally {
       setIsFetch(false);
