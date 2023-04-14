@@ -11,12 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.EmailConfirmationTokenRepository;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeExpiredException;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.model.EmailConfirmationToken;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -32,9 +33,10 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Posi
 @Slf4j
 public class SendGridService implements MailService {
 
-    private final EmailConfirmationTokenRepository emailRepository;
+    private final EmailConfirmationCodeRepository emailRepository;
     private final SendGrid sendGrid;
     private final Email sender;
+    private final UserRepository userRepository;
 
     @Value("${number.of.days.to.keep.deleted.email.confirmation.token}")
     private int numberOfDaysToKeepDeletedEmails;
@@ -69,8 +71,15 @@ public class SendGridService implements MailService {
     }
 
     @Override
-    public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException, EmailValidationCodeExpiredException {
-        //TODO in ticket OBMIN-344
+    public void validateEmail(UUID validationCode) throws EmailValidationCodeNotFoundException {
+        emailRepository.findById(validationCode)
+                .filter(emailConfirmationCode -> LocalDateTime.now().isBefore(emailConfirmationCode.getExpiryDate()))
+                .map(EmailConfirmationCode::getId)
+                .ifPresentOrElse(userRepository::setValidatedEmailToUserByEmailId, this::throwNotFoundException);
+    }
+
+    private void throwNotFoundException() throws EmailValidationCodeNotFoundException {
+        throw new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND_OR_EXPIRED));
     }
 
     private Request createMailRequest(Mail mail) throws IOException {
@@ -89,9 +98,13 @@ public class SendGridService implements MailService {
                 .forEach(emailRepository::delete);
     }
 
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationToken email) {
+    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationCode email) {
         Duration duration = Duration.between(email.getExpiryDate(), LocalDateTime.now());
 
         return duration.toDays() > numberOfDaysToKeepDeletedEmails;
     }
+
+
+
+
 }

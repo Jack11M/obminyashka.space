@@ -62,6 +62,7 @@ public class ResponseMessagesHandler {
         public final String EMAIL_REGISTRATION = "exception.emailing.registration";
         public final String EMAIL_OLD = "exception.email.old";
         public final String LOCATION_ALREADY_EXIST = "exception.location.exist";
+        public final String EMAIL_NOT_FOUND_OR_EXPIRED = "exception.email.validation-code";
     }
 
     @UtilityClass
