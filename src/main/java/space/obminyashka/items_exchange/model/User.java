@@ -26,7 +26,6 @@ public class User extends BaseEntity implements UserDetails {
     private Boolean online;
     private Boolean oauth2Login;
 
-    @Accessors(fluent = true)
     @Column(name = "validated_email")
     private Boolean isValidatedEmail;
 
