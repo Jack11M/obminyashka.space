@@ -1,12 +1,13 @@
 package space.obminyashka.items_exchange.model;
 
+import lombok.experimental.Accessors;
 import space.obminyashka.items_exchange.model.enums.Status;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,8 +24,11 @@ public class User extends BaseEntity implements UserDetails {
     @Column(unique = true)
     private String email;
     private Boolean online;
-
     private Boolean oauth2Login;
+
+    @Accessors(fluent = true)
+    @Column(name = "validated_email")
+    private Boolean isValidatedEmail;
 
     @Column(name = "first_name")
     private String firstName;

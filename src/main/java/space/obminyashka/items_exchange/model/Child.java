@@ -3,7 +3,7 @@ package space.obminyashka.items_exchange.model;
 import lombok.*;
 import space.obminyashka.items_exchange.model.enums.Gender;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 

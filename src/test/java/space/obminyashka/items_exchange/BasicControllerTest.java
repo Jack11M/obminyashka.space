@@ -9,11 +9,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
@@ -54,13 +49,6 @@ public abstract class BasicControllerTest {
                                                           MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder)
                 .andExpect(expectedStatus);
-    }
-
-    protected void verifyResultException(MvcResult mvcResult, Class<? extends Exception> exceptionClass, String exceptionMessage) {
-        final var resolvedException = mvcResult.getResolvedException();
-        assertNotNull(resolvedException);
-        assertThat(resolvedException, is(instanceOf(exceptionClass)));
-        assertEquals(exceptionMessage, resolvedException.getLocalizedMessage());
     }
 
     private <T> ResultActions getResultActionsAndExpectStatus(MockHttpServletRequestBuilder builder, T dto,

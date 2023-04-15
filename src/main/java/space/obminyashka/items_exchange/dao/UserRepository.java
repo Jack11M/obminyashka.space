@@ -1,12 +1,12 @@
 package space.obminyashka.items_exchange.dao;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,4 +52,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Query("update User u set u.oauth2Login = true where u.email = :email and u.oauth2Login is null")
     void setOAuth2LoginToUserByEmail(String email);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.isValidatedEmail = true where u.username = " +
+            "(select user.username from email_confirmation_code where id=:id)")
+    void setValidatedEmailToUserByEmailId(UUID id);
 }

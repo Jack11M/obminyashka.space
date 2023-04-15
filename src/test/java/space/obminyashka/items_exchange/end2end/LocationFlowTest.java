@@ -10,19 +10,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.exception.BadRequestException;
+import space.obminyashka.items_exchange.exception.DataConflictException;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,10 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class LocationFlowTest extends BasicControllerTest {
 
     @Value("${test.data.location.init.file.path}")
@@ -107,7 +112,7 @@ class LocationFlowTest extends BasicControllerTest {
     @Test
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "location/createSameLocation.yml", orderBy = "city_en", ignoreCols = "id")
-    void createLocation_shouldGetStatusBadRequest_whenCreateSameLocation() throws Exception
+    void createLocation_shouldGetConflictResponse_whenCreateSameLocation() throws Exception
     {
         var sameLocation = LocationDto.builder()
                 .cityUA("Харків")
@@ -117,9 +122,10 @@ class LocationFlowTest extends BasicControllerTest {
                 .districtEN("Kharkivska district")
                 .areaEN("Kharkivska area")
                 .build();
-        MvcResult mvcResult = sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isBadRequest()).andReturn();
-        var responseContentAsString = mvcResult.getResponse().getContentAsString();
-        assertTrue(responseContentAsString.contains(getMessageSource(ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST)));
+        MvcResult mvcResult = sendDtoAndGetResultAction(post(LOCATION), sameLocation, status().isConflict()).andReturn();
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage(getMessageSource(LOCATION_ALREADY_EXIST));
 
     }
 

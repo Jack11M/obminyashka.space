@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.authorization;
+package space.obminyashka.items_exchange.end2end;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
@@ -30,7 +31,8 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
-class SecurityConfigIntegrationTest extends BasicControllerTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class SecurityConfigFlowTest extends BasicControllerTest {
     private static final String VALID_USERNAME = "admin";
     private static final String VALID_PASSWORD = "@kuIOIY*h986";
     private static final String NOT_VALID_USERNAME = "nimda";
@@ -45,7 +47,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    public SecurityConfigIntegrationTest(MockMvc mockMvc) {
+    public SecurityConfigFlowTest(MockMvc mockMvc) {
         super(mockMvc);
     }
 
@@ -82,7 +84,7 @@ class SecurityConfigIntegrationTest extends BasicControllerTest {
         final var headers = getAuthorizationHeaderWithValidToken();
         final var mvcResult = sendUriWithHeadersAndGetMvcResult(multipart(ADV), status().isBadRequest(), headers);
         final var errorMessage = new JSONObject(mvcResult.getResponse().getContentAsString()).get("error");
-        assertEquals("Required request part 'dto' is not present", errorMessage);
+        assertEquals("Required part 'dto' is not present.", errorMessage);
     }
 
     @Test

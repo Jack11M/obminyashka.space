@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -34,9 +35,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,6 +44,7 @@ import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_BY_ADV_ID;
 import static space.obminyashka.items_exchange.api.ApiKey.IMAGE_IN_ADV_COUNT;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -100,7 +100,8 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
 
         verify(advertisementService).existById(any());
         verify(advertisementService).findByIdAndOwnerUsername(any(), anyString());
-        assertThat(mvcResult.getResolvedException(), is(instanceOf(ElementsNumberExceedException.class)));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(ElementsNumberExceedException.class);
     }
 
     @Test
@@ -133,6 +134,15 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void getByAdvertisementId_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
+        when(imageService.getByAdvertisementId(advertisementId)).thenReturn(new ArrayList<>());
+
+        final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_BY_ADV_ID, advertisementId), status().isNotFound());
+        assertThat(mvcResult.getResolvedException()).isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+    }
+
     @WithMockUser("admin")
     @Test
     void deleteImages_shouldThrow400WhenImageIdNotExist() throws Exception {
@@ -142,7 +152,9 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 status().isBadRequest());
 
         verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("admin"));
-        verifyResultException(mvcResult, IllegalIdentifierException.class, getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID, "[%s]".formatted(randomID)));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(IllegalIdentifierException.class)
+                .hasMessage(getParametrizedMessageSource(IMAGE_NOT_EXISTED_ID, "[%s]".formatted(randomID)));
     }
 
     @WithMockUser
@@ -153,6 +165,8 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 status().isForbidden());
 
         verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("user"));
-        verifyResultException(mvcResult, IllegalOperationException.class, getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(IllegalOperationException.class)
+                .hasMessage(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
     }
 }

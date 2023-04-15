@@ -1,5 +1,8 @@
 package space.obminyashka.items_exchange.authorization.oauth2;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -10,9 +13,6 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.UserService;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 

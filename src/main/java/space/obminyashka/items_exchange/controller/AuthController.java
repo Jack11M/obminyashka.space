@@ -35,9 +35,9 @@ import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -95,7 +95,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "422", description = "UNPROCESSABLE ENTITY")
+            @ApiResponse(responseCode = "409", description = "The user is with such email is already registered")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto)
             throws BadRequestException, DataConflictException {

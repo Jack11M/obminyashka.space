@@ -17,7 +17,7 @@ import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;

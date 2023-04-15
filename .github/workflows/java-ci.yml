@@ -1,8 +1,16 @@
 name: Java CI
 
 on:
-  push:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'info'
+        type: choice
+        options:
+          - info
+          - debug
   schedule:
     # every Monday at 10 AM
     - cron: '0 10 * * Mon'
@@ -79,7 +87,7 @@ jobs:
             kill -9 $(lsof -t -i:8443) || echo "Process was not running."
             systemctl stop cge || echo "Process was not running."
             cp target/*.jar CGE-service/cge.jar
-            echo "java -jar ./target/*.jar  --logging.file.name=/home/obmen/CGE-service/LogFile.log" | at now + 1 minutes
+            echo "java -jar ./target/*.jar" | at now + 1 minutes
 
   inform:
     runs-on: ubuntu-latest
