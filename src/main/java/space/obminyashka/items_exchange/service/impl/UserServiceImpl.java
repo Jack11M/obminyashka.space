@@ -76,12 +76,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
         var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
         optionalUser.ifPresent(ignored -> setOAuth2LoginToUserByEmail(oauth2User.getEmail()));
+        optionalUser.ifPresent(this::setValidatedEmailToUserLoggedWithOAuth2ByEmail);
         return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
     @Override
     public void setOAuth2LoginToUserByEmail(String email) {
         userRepository.setOAuth2LoginToUserByEmail(email);
+    }
+
+    private void setValidatedEmailToUserLoggedWithOAuth2ByEmail(User user) {
+        if (user.isValidatedEmail() == null) {
+            userRepository.setValidatedEmailToUserLoggedWithOAuth2ByEmail(user.getEmail());
+        }
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
@@ -98,7 +105,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         final var password = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(),
                 UUID.randomUUID().toString());
         user.setOauth2Login(true);
-        user.setIsValidatedEmail(true);
+        user.isValidatedEmail(true);
         user.setEmail(email);
         user.setUsername(email);
         return setUserFields(user, password, firstName, lastName);

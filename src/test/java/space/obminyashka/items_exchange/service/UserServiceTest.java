@@ -45,6 +45,7 @@ class UserServiceTest {
         userService.loginUserWithOAuth2(oauth2User);
 
         verify(userRepository).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
+        verify(userRepository).setValidatedEmailToUserLoggedWithOAuth2ByEmail(oauth2User.getEmail());
         assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
     }
 
