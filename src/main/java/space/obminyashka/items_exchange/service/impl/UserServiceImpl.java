@@ -13,7 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.ChildDto;
+import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
@@ -26,7 +29,10 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
