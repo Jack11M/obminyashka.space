@@ -43,6 +43,7 @@ const en = {
     max30: 'Maximum 30 characters',
     max40: 'Maximum 40 characters',
     max50: 'Maximum 50 characters',
+    max70: 'Maximum 70 characters',
     max129: 'Maximum 129 characters',
     max200: 'Maximum 200 characters',
     max255: 'Maximum 255 characters',
