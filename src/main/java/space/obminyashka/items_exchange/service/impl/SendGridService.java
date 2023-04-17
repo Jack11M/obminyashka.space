@@ -42,7 +42,7 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public void sendMail(String emailTo, EmailType subject, Locale locale) throws IOException {
+    public void sendMail(String emailTo, EmailType subject, Locale locale, UUID codeId) throws IOException {
         Email to = new Email(emailTo);
         var content = new Content(MediaType.TEXT_PLAIN_VALUE, getMessageSource(subject.body));
         var mail2send = new Mail(sender, getMessageSource(subject.header), to, content);

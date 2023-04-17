@@ -108,7 +108,7 @@ public class AuthController {
         UUID codeId = UUID.randomUUID();
 
         try {
-            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
+            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale(), codeId);
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
             return new ResponseEntity<>(getMessageSource(

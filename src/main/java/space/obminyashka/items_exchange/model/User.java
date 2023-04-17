@@ -81,7 +81,7 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user", cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private EmailConfirmationCode emailConfirmationCode;
 
     @Override
