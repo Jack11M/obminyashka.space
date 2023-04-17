@@ -8,7 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
@@ -30,37 +32,42 @@ class AuthorizationControllerTest {
     private UserService userService;
     @Mock
     private MailService mailService;
-    @InjectMocks
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private AuthService authService;
     private AuthController authController;
-    private final UserRegistrationDto dto = new UserRegistrationDto("user", "user@mail.ua", "pass", "pass");
+    private UserRegistrationDto dto;
 
     @BeforeEach
     void setUp() {
+        authController = new AuthController(authenticationManager, userService, authService, mailService);
+        dto = new UserRegistrationDto("user", "user@mail.ua", "pass", "pass");
         messageSourceUtil.setMSource(mock(MessageSource.class));
     }
 
     @Test
     void register_whenAllServicesPositiveFlow_shouldReturnCreated() throws Exception {
-        when(userService.registerNewUser(any())).thenReturn(true);
+        when(userService.registerNewUser(any(), any())).thenReturn(true);
 
         final var responseEntity = authController.registerUser(dto);
 
         assertAll("Verify invoking services one by one and expected status",
                 () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
-                () -> verify(mailService).sendMail(dto.getEmail(), EmailType.REGISTRATION, Locale.getDefault()),
-                () -> verify(userService).registerNewUser(dto),
+                () -> verify(mailService).sendMail(eq(dto.getEmail()), eq(EmailType.REGISTRATION), eq(Locale.getDefault()), any()),
+                () -> verify(userService).registerNewUser(eq(dto), any()),
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()));
     }
 
     @Test
     void register_whenMailServiceFailed_shouldReturnServiceUnavailable() throws Exception {
-        doThrow(new IOException("Expected exception!")).when(mailService).sendMail(anyString(), any(), any());
+        doThrow(new IOException("Expected exception!")).when(mailService).sendMail(anyString(), any(), any(), any());
 
         final var responseEntity = authController.registerUser(dto);
 
         assertAll("Verify invoking services one by one and expected status",
                 () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
-                () -> verify(mailService).sendMail(dto.getEmail(), EmailType.REGISTRATION, Locale.getDefault()),
+                () -> verify(mailService).sendMail(eq(dto.getEmail()), eq(EmailType.REGISTRATION), eq(Locale.getDefault()), any()),
                 () -> verifyNoMoreInteractions(userService),
                 () -> assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode()));
     }

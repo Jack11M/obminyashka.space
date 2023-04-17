@@ -13,10 +13,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.ChildDto;
+import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -25,7 +29,10 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -49,6 +56,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
 
+    @Value("${number.of.hours.to.keep.email.confirmation.code}")
+    private final int numberOfHoursToKeepEmailConformationCode;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUsernameOrEmail(username)
@@ -65,8 +75,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto) {
+    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
+        userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
         final var locale = LocaleContextHolder.getLocale();
         userToRegister.setLanguage(locale);
         return userRepository.save(userToRegister).getId() != null;

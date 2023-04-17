@@ -32,6 +32,10 @@ public class EmailConfirmationCode {
     @CreatedDate
     private LocalDateTime created;
 
+    public EmailConfirmationCode(UUID id, int expirationHours) {
+        this(id, null, LocalDateTime.now().plusHours(expirationHours));
+    }
+
     public EmailConfirmationCode(UUID id, User user, LocalDateTime expiryDate) {
         this.id = id;
         this.user = user;

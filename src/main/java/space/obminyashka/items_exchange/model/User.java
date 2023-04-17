@@ -81,6 +81,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private EmailConfirmationCode emailConfirmationCode;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(getRole().getName()));
@@ -104,5 +107,10 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.getStatus() != Status.DELETED;
+    }
+
+    public void setEmailConfirmationCode(EmailConfirmationCode emailConfirmationCode) {
+        this.emailConfirmationCode = emailConfirmationCode;
+        emailConfirmationCode.setUser(this);
     }
 }
