@@ -45,7 +45,7 @@ class MailServiceTest {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH);
+        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, null);
 
         verify(sendGrid).api(requestCapture.capture());
         assertTrue(requestCapture.getValue().getBody().contains(emailTo));

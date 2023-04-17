@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
@@ -29,6 +30,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,10 +56,12 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_USERNAME = "user name";
     private static final String BEARER_PREFIX = "Bearer ";
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
+    private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
 
     @Autowired
-    public AuthorizationFlowTest(MockMvc mockMvc) {
+    public AuthorizationFlowTest(MockMvc mockMvc, EmailConfirmationCodeRepository emailConfirmationCodeRepository) {
         super(mockMvc);
+        this.emailConfirmationCodeRepository = emailConfirmationCodeRepository;
     }
 
     @Test
@@ -68,11 +72,12 @@ class AuthorizationFlowTest extends BasicControllerTest {
     }
 
     @Test
-    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessage() throws Exception {
+    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessageAndCreateEmailConfirmationCode() throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
+        assertEquals(1, emailConfirmationCodeRepository.count());
     }
 
     @ParameterizedTest
