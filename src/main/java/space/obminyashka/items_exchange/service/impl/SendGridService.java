@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public void sendMail(String emailTo, EmailType subject, Locale locale) throws IOException {
+    public void sendMail(String emailTo, EmailType subject, Locale locale, UUID codeId) throws IOException {
         var mail2send = new Mail();
         mail2send.setFrom(sender);
         mail2send.setTemplateId(subject.template);
