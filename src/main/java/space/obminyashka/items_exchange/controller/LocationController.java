@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.LocationsRequest;
-import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;

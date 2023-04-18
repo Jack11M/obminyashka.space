@@ -6,9 +6,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +22,18 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.dto.ChildDto;
+import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -45,9 +47,6 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 @Validated
 @Slf4j
 public class UserController {
-
-    @Value(ResponseMessagesHandler.ValidationMessage.INCORRECT_PASSWORD)
-    public String incorrectPassword;
     private static final int MAX_CHILDREN_AMOUNT = 10;
 
     private final UserService userService;
@@ -134,13 +133,11 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String selfDeleteRequest(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @Parameter(hidden = true) Authentication authentication)
-            throws InvalidDtoException {
-        User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
-        userService.selfDeleteRequest(user);
+    public String selfDeleteRequest(@Parameter(hidden = true) Authentication authentication) {
+        userService.selfDeleteRequest(authentication.getName());
 
         return getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT,
-                userService.calculateDaysBeforeCompleteRemove(user.getUpdated()));
+                userService.calculateDaysBeforeCompleteRemove(LocalDateTime.now()));
     }
 
     @PreAuthorize("hasRole('SELF_REMOVING')")
@@ -151,10 +148,8 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String makeAccountActiveAgain(@Valid @RequestBody UserDeleteFlowDto userDeleteFlowDto, @Parameter(hidden = true) Authentication authentication)
-            throws InvalidDtoException {
-        User user = findUserByValidCredentials(authentication, userDeleteFlowDto.getPassword());
-        userService.makeAccountActiveAgain(user.getUsername());
+    public String makeAccountActiveAgain(@Parameter(hidden = true) Authentication authentication) {
+        userService.makeAccountActiveAgain(authentication.getName());
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN);
     }
@@ -209,14 +204,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void removeAvatar(@Parameter(hidden = true) Authentication authentication) {
         userService.removeUserAvatarFor(authentication.getName());
-    }
-
-    private User findUserByValidCredentials(Authentication authentication, String password) throws InvalidDtoException {
-        User user = getUser(authentication.getName());
-        if (!userService.isPasswordMatches(user, password)) {
-            throw new InvalidDtoException(getMessageSource(incorrectPassword));
-        }
-        return user;
     }
 
     private User getUser(String username) {
