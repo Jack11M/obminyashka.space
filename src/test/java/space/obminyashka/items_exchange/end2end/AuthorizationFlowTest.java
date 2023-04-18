@@ -66,13 +66,11 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @Test
     @Commit
-    @ExpectedDataSet(value = "auth/register_user.yml", orderBy = {"created", "name"}, ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
+    @ExpectedDataSet(
+            value = "auth/register_user.yml",
+            orderBy = {"created", "name"},
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
-        sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
-    }
-
-    @Test
-    void register_whenDtoIsValid_shouldReturnSpecificSuccessMessageAndCreateEmailConfirmationCode() throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);

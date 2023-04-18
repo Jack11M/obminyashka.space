@@ -22,7 +22,6 @@ import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -78,9 +77,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
         userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
-        final var locale = LocaleContextHolder.getLocale();
-        userToRegister.setLanguage(locale);
         return userRepository.save(userToRegister).getId() != null;
+    }
+
+    private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
+        return User.builder()
+                .username(userRegistrationDto.getUsername())
+                .email(userRegistrationDto.getEmail())
+                .password(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()))
+                .role(roleService.getRole(ROLE_USER).orElse(null))
+                .build();
     }
 
     @Override
@@ -90,42 +96,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
+    private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
+        final var email = oAuth2User.getEmail();
+        final var pass = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(), UUID.randomUUID().toString());
+        return User.builder()
+                .oauth2Login(true)
+                .username(email)
+                .email(email)
+                .isValidatedEmail(oAuth2User.getEmailVerified())
+                .password(bCryptPasswordEncoder.encode(pass))
+                .firstName(oAuth2User.getGivenName())
+                .lastName(oAuth2User.getFamilyName())
+                .lastOnlineTime(LocalDateTime.now())
+                .online(true)
+                .role(roleService.getRole(ROLE_USER).orElse(null))
+                .build();
+    }
+
     @Override
     public void setOAuth2LoginToUserByEmail(String email) {
         userRepository.setOAuth2LoginToUserByEmail(email);
-    }
-
-    private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
-        var user = new User();
-        BeanUtils.copyProperties(userRegistrationDto, user);
-        return setUserFields(user, userRegistrationDto.getPassword(), "", "");
-    }
-
-    private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
-        final var user = new User();
-        final var email = oAuth2User.getEmail();
-        final var firstName = Objects.requireNonNullElse(oAuth2User.getGivenName(), "");
-        final var lastName = Objects.requireNonNullElse(oAuth2User.getFamilyName(), "");
-        final var password = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(),
-                UUID.randomUUID().toString());
-        user.setOauth2Login(true);
-        user.setEmail(email);
-        user.setUsername(email);
-        return setUserFields(user, password, firstName, lastName);
-    }
-
-    private User setUserFields(User user, String password, String firstName, String lastName) {
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        roleService.getRole(ROLE_USER).ifPresent(user::setRole);
-        user.setOnline(false);
-        user.setAvatarImage(new byte[0]);
-        var now = LocalDateTime.now();
-        user.setLastOnlineTime(now);
-        user.setLanguage(LocaleContextHolder.getLocale());
-        user.setStatus(Status.ACTIVE);
-        return user;
     }
 
     @Override
@@ -158,9 +148,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void selfDeleteRequest(User user) {
-        roleService.getRole("ROLE_SELF_REMOVING").ifPresent(user::setRole);
-        userRepository.saveAndFlush(user);
+    public void selfDeleteRequest(String username) {
+        userRepository.updateUserByUsernameWithRole(username, "ROLE_SELF_REMOVING");
+        log.info("[UserServiceImpl] User '{}' is now in SELF REMOVING role", username);
     }
 
     @Override
@@ -177,8 +167,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
-        userRepository.findAll().stream()
-                .filter(user -> user.getRole().getName().equals("ROLE_SELF_REMOVING"))
+        userRepository.findByRole_Name("ROLE_SELF_REMOVING").stream()
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
                 .forEach(userRepository::delete);
     }
@@ -192,6 +181,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void makeAccountActiveAgain(String username) {
         roleService.setUserRoleToUserByUsername(username);
+        log.info("[UserServiceImpl] User '{}' is active once again", username);
     }
 
     @Override
@@ -207,11 +197,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<UserDto> findByUsername(String username) {
         return userRepository.findByUsername(username).map(this::mapUserToDto);
-    }
-
-    @Override
-    public boolean isPasswordMatches(User user, String encodedPassword) {
-        return bCryptPasswordEncoder.matches(encodedPassword, user.getPassword());
     }
 
     @Override

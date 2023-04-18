@@ -1,12 +1,11 @@
 package space.obminyashka.items_exchange.model;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -33,12 +32,7 @@ public class EmailConfirmationCode {
     private LocalDateTime created;
 
     public EmailConfirmationCode(UUID id, int expirationHours) {
-        this(id, null, LocalDateTime.now().plusHours(expirationHours));
-    }
-
-    public EmailConfirmationCode(UUID id, User user, LocalDateTime expiryDate) {
         this.id = id;
-        this.user = user;
-        this.expiryDate = expiryDate;
+        this.expiryDate = LocalDateTime.now().plusHours(expirationHours);
     }
 }
