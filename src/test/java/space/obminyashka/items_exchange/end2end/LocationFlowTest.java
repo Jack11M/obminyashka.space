@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.exception.BadRequestException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.LocationDtoCreatingUtil.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST;
 
 @SpringBootTest
 @DBRider

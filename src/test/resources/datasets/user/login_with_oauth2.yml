@@ -34,7 +34,7 @@ user:
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
     email: 'test@test.com'
     oauth2Login: 'true'
-    online: 'false'
+    online: 'true'
     first_name: "First"
     last_name: "Last"
     avatar_image: null

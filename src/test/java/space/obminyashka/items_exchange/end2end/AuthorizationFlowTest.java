@@ -29,19 +29,13 @@ import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.service.MailService;
-import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import java.io.IOException;
-import java.util.Locale;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,10 +59,6 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_EMAIL = "email.com";
     protected static final String INVALID_USERNAME = "user name";
     private static final String BEARER_PREFIX = "Bearer ";
-    @MockBean
-    private SendGrid sendGrid;
-    @SpyBean
-    private MailService mailService;
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
 
@@ -80,9 +70,16 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @Test
     @Commit
-    @ExpectedDataSet(value = "auth/register_user.yml", orderBy = {"created", "name"}, ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
+    @ExpectedDataSet(
+            value = "auth/register_user.yml",
+            orderBy = {"created", "name"},
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
-        sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
+
+        String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
+        assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
+        assertEquals(1, emailConfirmationCodeRepository.count());
     }
 
     @Test

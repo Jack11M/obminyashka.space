@@ -68,9 +68,10 @@ public interface UserService {
 
     /**
      * Request from a user to remove them account with time limit
-     * @param user existed user which is requested self-removing procedure
+     *
+     * @param username login or email of existing user which is requested self-removing procedure
      */
-    void selfDeleteRequest(User user);
+    void selfDeleteRequest(String username);
 
     /**
      * Getting days which is/are left for the user before removing from DB
@@ -112,14 +113,6 @@ public interface UserService {
      * @return result of the check
      */
     boolean existsByUsernameOrEmail(String username, String email);
-
-    /**
-     * Check whether received user's password matches to gained user
-     * @param user user to check password
-     * @param encodedPassword encoded password
-     * @return result of the check
-     */
-    boolean isPasswordMatches(User user, String encodedPassword);
 
     /**
      * Given a username and password, return true if the user password and new password match, false otherwise.
