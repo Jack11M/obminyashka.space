@@ -1,13 +1,14 @@
 package space.obminyashka.items_exchange.model;
 
-import lombok.experimental.Accessors;
-import space.obminyashka.items_exchange.model.enums.Status;
+import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import space.obminyashka.items_exchange.model.enums.Status;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -15,34 +16,42 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, of = {"username", "email", "firstName", "lastName"})
+@AllArgsConstructor
+@Builder
 public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true)
+    @Accessors(chain = true)
     private String username;
     private String password;
     @Column(unique = true)
     private String email;
-    private Boolean online;
-    private Boolean oauth2Login;
+    @Builder.Default
+    private Boolean online = false;
+    @Builder.Default
+    private Boolean oauth2Login = false;
 
     @Accessors(fluent = true)
     @Column(name = "validated_email")
     private Boolean isValidatedEmail;
 
     @Column(name = "first_name")
-    private String firstName;
+    @Builder.Default
+    private String firstName = "";
 
     @Column(name = "last_name")
-    private String lastName;
+    @Builder.Default
+    private String lastName = "";
 
     @Column(name = "avatar_image")
-    private byte[] avatarImage;
+    @Builder.Default
+    private byte[] avatarImage = new byte[0];
 
     @Column(name = "last_online_time", columnDefinition = "TIMESTAMP", nullable = false)
     private LocalDateTime lastOnlineTime;
 
-    private Locale language;
+    @Builder.Default
+    private Locale language = LocaleContextHolder.getLocale();
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
@@ -69,7 +78,7 @@ public class User extends BaseEntity implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"))
     private Set<Chat> chats;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages;
 
     @ManyToMany
@@ -79,7 +88,11 @@ public class User extends BaseEntity implements UserDetails {
     private List<User> blacklistedUsers;
 
     @OneToOne(mappedBy = "user")
+    @Accessors(chain = true)
     private RefreshToken refreshToken;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.DETACH)
+    private EmailConfirmationCode emailConfirmationCode;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -104,5 +117,22 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.getStatus() != Status.DELETED;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o instanceof User user) {
+            return Objects.equals(getUsername(), user.getUsername())
+                    && Objects.equals(getEmail(), user.getEmail())
+                    && Objects.equals(getFirstName(), user.getFirstName())
+                    && Objects.equals(getLastName(), user.getLastName());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

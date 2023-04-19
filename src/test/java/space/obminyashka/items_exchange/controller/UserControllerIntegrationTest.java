@@ -18,15 +18,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -40,7 +36,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -52,7 +47,6 @@ import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.generat
 import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -201,56 +195,11 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
-    void selfDeleteRequest_whenPasswordWrongAndTheSameConfirmation_shouldThrowInvalidDtoException() throws Exception {
-        MvcResult mvcResult = selfDeleteRequestBasicTest(false, WRONG_OLD_PASSWORD, delete(USER_SERVICE_DELETE), status().isBadRequest());
-
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(InvalidDtoException.class)
-                .hasMessage(getMessageSource(INCORRECT_PASSWORD));
-    }
-
-    private MvcResult selfDeleteRequestBasicTest(boolean isUsernameExists, String oldPassword, MockHttpServletRequestBuilder request, ResultMatcher expectedResult) throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(isUsernameExists);
-
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(oldPassword, oldPassword);
-        return sendDtoAndGetMvcResult(request, userDeleteFlowDto, expectedResult);
-    }
-
-    @ParameterizedTest
-    @WithMockUser(username = "admin")
-    @MethodSource("selfDeleteTestData")
-    void selfDeleteRequest_whenPasswordCorrectAndConfirmationWrong_shouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
-        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), testDto, status().isBadRequest());
-
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
-    }
-
-    private static Stream<Arguments> selfDeleteTestData() {
-        return Stream.of(
-                Arguments.of(new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD)),
-                Arguments.of(new UserDeleteFlowDto(WRONG_OLD_PASSWORD, CORRECT_OLD_PASSWORD))
-        );
-    }
-
-    @ParameterizedTest
-    @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
-    @MethodSource("selfDeleteTestData")
-    void makeAccountActiveAgain_whenPasswordCorrectAndConfirmationWrong_shouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), testDto, status().isBadRequest());
-
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
-    }
-
-    @Test
     @WithMockUser("admin")
     void makeAccountActiveAgain_whenUserHasNotStatusDeleted_shouldThrowAccessDenied() throws Exception {
-        MvcResult mvcResult = selfDeleteRequestBasicTest(true, CORRECT_OLD_PASSWORD, put(USER_SERVICE_RESTORE), status().isForbidden());
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_RESTORE), status().isForbidden());
 
         String message = mvcResult.getResponse().getContentAsString().trim();
         assertEquals(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN), message);

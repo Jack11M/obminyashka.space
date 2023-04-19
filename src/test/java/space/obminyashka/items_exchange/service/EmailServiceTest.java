@@ -16,18 +16,17 @@ import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
-import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.impl.SendGridService;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
@@ -53,18 +52,12 @@ class EmailServiceTest {
 
     @Test
     void validateEmail_whenConfirmationCodeFound_thenShouldReturn() throws EmailValidationCodeNotFoundException {
-        final var exceptedConfirmCode = creatEmailConfirmCode();
+        final var exceptedConfirmCode = new EmailConfirmationCode(EXPECTED_ID, 1);
         when(emailConfirmationCodeRepository.findById(EXPECTED_ID)).thenReturn(Optional.of(exceptedConfirmCode));
         sendGridService.validateEmail(EXPECTED_ID);
 
         verify(userRepository).setValidatedEmailToUserByEmailId(IdArgumentCaptor.capture());
         assertEquals(exceptedConfirmCode.getId(), IdArgumentCaptor.getValue());
-    }
-
-    private EmailConfirmationCode creatEmailConfirmCode() {
-        User user = new User();
-        user.setId(EXPECTED_ID);
-        return new EmailConfirmationCode(EXPECTED_ID, user, LocalDateTime.now().plusDays(1));
     }
 
     @ParameterizedTest
@@ -77,6 +70,6 @@ class EmailServiceTest {
     private static Stream<Arguments> exception_whenEmailNotFoundOrExpiryDateOut() {
         return Stream.of(
                 Arguments.of(null, new EmailValidationCodeNotFoundException("the code was not found")),
-                Arguments.of(new EmailConfirmationCode(EXPECTED_ID, new User(), LocalDateTime.now().minusDays(1)), new EmailValidationCodeNotFoundException("the code was expired")));
+                Arguments.of(new EmailConfirmationCode(EXPECTED_ID, -1), new EmailValidationCodeNotFoundException("the code was expired")));
     }
 }

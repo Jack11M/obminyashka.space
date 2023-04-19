@@ -24,7 +24,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -70,13 +71,9 @@ class UserServiceIntegrationTest {
 
     @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
-        when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
+        userService.selfDeleteRequest(NEW_USER_EMAIL);
 
-        userService.selfDeleteRequest(userWithOldPassword);
-
-        assertEquals("ROLE_SELF_REMOVING", userWithOldPassword.getRole().getName());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
-
+        verify(userRepository).updateUserByUsernameWithRole(NEW_USER_EMAIL, "ROLE_SELF_REMOVING");
     }
 
     @Test
@@ -100,20 +97,18 @@ class UserServiceIntegrationTest {
     @Test
     void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
         List<User> users = createTestUsers();
-        assertEquals(4, users.size());
+        assertEquals(2, users.size());
+        when(userRepository.findByRole_Name(anyString())).thenReturn(users);
 
-        when(userRepository.findAll()).thenReturn(users);
         userService.permanentlyDeleteUsers();
 
         verify(userRepository).delete(users.get(0));
-
-        for (int i = 1; i < users.size(); i++) {
-            verify(userRepository, never()).delete(users.get(i));
-        }
+        verify(userRepository).delete(users.get(1));
     }
 
     private User createUserWithOldPassword() {
         userWithOldPassword = new User();
+        userWithOldPassword.setUsername(NEW_USER_EMAIL);
         userWithOldPassword.setPassword(bCryptPasswordEncoder.encode(CORRECT_OLD_PASSWORD));
         userWithOldPassword.setUpdated(LocalDateTime.now());
 
@@ -121,15 +116,14 @@ class UserServiceIntegrationTest {
     }
 
     private List<User> createTestUsers() {
-        when(roleService.getRole("ROLE_SELF_REMOVING")).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
-        when(roleService.getRole("ROLE_USER")).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_USER", List.of())));
+        final var roleSelfRemoving = new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of());
 
-        User shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate = createUserForDeleting(roleService.getRole("ROLE_SELF_REMOVING").get(), numberOfDaysToKeepDeletedUsers + 1);
-        User shouldNotBeDeletedHaveRoleUserAndExpiredDate = createUserForDeleting(roleService.getRole("ROLE_USER").get(), 0);
-        User shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate = createUserForDeleting(roleService.getRole("ROLE_SELF_REMOVING").get(), numberOfDaysToKeepDeletedUsers - 1);
-        User shouldNotBeDeletedHaveRoleUserAndUnexpiredDate = createUserForDeleting(roleService.getRole("ROLE_USER").get(), numberOfDaysToKeepDeletedUsers + 1);
+        User shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate = createUserForDeleting(
+                roleSelfRemoving, numberOfDaysToKeepDeletedUsers + 1);
+        User shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate = createUserForDeleting(
+                roleSelfRemoving, numberOfDaysToKeepDeletedUsers - 1);
 
-        return List.of(shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate, shouldNotBeDeletedHaveRoleUserAndExpiredDate, shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate, shouldNotBeDeletedHaveRoleUserAndUnexpiredDate);
+        return List.of(shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate, shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate);
     }
 
     private User createUserForDeleting(Role role, int delay) {
@@ -154,7 +148,7 @@ class UserServiceIntegrationTest {
     }
 
     private static List<Locale> getTestLocales() {
-        return List.of(Locale.ENGLISH, new Locale("ua"), new Locale("ru"));
+        return List.of(Locale.ENGLISH, Locale.of("ua"), Locale.of("ru"));
     }
 
     private DefaultOidcUser createDefaultOidcUser() {

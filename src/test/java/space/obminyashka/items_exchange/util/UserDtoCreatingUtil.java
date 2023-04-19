@@ -18,7 +18,6 @@ public class UserDtoCreatingUtil {
     public static final String NEW_INVALID_SHORT_NAME = "n";
     public static final String NEW_INVALID_TWO_WORDS_NAME = "new Name";
     public static final String CORRECT_OLD_PASSWORD = "@kuIOIY*h986";
-    public static final String WRONG_OLD_PASSWORD = "123456wWWW";
     public static final String NEW_PASSWORD = "123456wW";
     public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
     private static final int MAX_AMOUNT_OF_PHONES = 3;

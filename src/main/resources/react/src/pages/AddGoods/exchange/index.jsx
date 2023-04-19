@@ -115,8 +115,6 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
         />
       </Styles.ChangeWrap>
 
-      <ErrorDisplay error={!!error && error} />
-
       <FormikCheckBox
         type="checkbox"
         name="readyForOffers"
@@ -126,6 +124,8 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
         selectedValues={readyOffers.readyOffer}
         text={getTranslatedText('addAdv.readyForOffers')}
       />
+
+      <ErrorDisplay error={!!error && error} marginTop="10px" />
     </Styles.Wrap>
   );
 };
