@@ -75,20 +75,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
         var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
-        optionalUser.ifPresent(ignored -> setOAuth2LoginToUserByEmail(oauth2User.getEmail()));
-        optionalUser.ifPresent(this::setValidatedEmailToUserLoggedWithOAuth2ByEmail);
+        optionalUser.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
+                .map(User::getEmail)
+                .ifPresent(userRepository::setOAuth2LoginToUserByEmail);
+
         return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
-    @Override
-    public void setOAuth2LoginToUserByEmail(String email) {
-        userRepository.setOAuth2LoginToUserByEmail(email);
-    }
-
-    private void setValidatedEmailToUserLoggedWithOAuth2ByEmail(User user) {
-        if (user.isValidatedEmail() == null) {
-            userRepository.setValidatedEmailToUserLoggedWithOAuth2ByEmail(user.getEmail());
-        }
+    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
+        return Objects.requireNonNullElse(user.getOauth2Login(), false)
+                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {

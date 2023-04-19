@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -21,8 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -31,6 +31,12 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Mock
+    private RoleService roleService;
 
     @Captor
     private ArgumentCaptor<String> oauth2UserArgumentCaptor;
@@ -41,15 +47,28 @@ class UserServiceTest {
     @Test
     void testLoginUserWithOAuth2_WhenUserBeenCreated() {
         var oauth2User = createDefaultOidcUser();
-        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL,NEW_USER_EMAIL)).thenReturn(creatOptionalUser());
+        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL, NEW_USER_EMAIL)).thenReturn(creatOptionalUser());
         userService.loginUserWithOAuth2(oauth2User);
 
         verify(userRepository).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
-        verify(userRepository).setValidatedEmailToUserLoggedWithOAuth2ByEmail(oauth2User.getEmail());
+
         assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
     }
 
-    private Optional<User> creatOptionalUser(){
+    @Test
+    void testLoginUserWithOAuth2_WhenUserBeenCreatedAndHasValidatedEmailWithOauth2Login() {
+        var oauth2User = createDefaultOidcUser();
+        var optionalUser = creatOptionalUser();
+        optionalUser.get().isValidatedEmail(true);
+        optionalUser.get().setOauth2Login(true);
+
+        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL, NEW_USER_EMAIL)).thenReturn(optionalUser);
+        userService.loginUserWithOAuth2(oauth2User);
+
+        verify(userRepository, never()).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
+    }
+
+    private Optional<User> creatOptionalUser() {
         User user = new User();
         user.setEmail(NEW_USER_EMAIL);
         user.setUsername("First");
