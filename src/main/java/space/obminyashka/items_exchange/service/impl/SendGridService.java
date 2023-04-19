@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
+import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Service
@@ -46,7 +47,7 @@ public class SendGridService implements MailService {
         Email to = new Email(emailTo);
         var content = new Content(MediaType.TEXT_PLAIN_VALUE, getMessageSource(subject.body));
         var mail2send = new Mail(sender, getMessageSource(subject.header), to, content);
-        var request = createMailRequest(mail2send);
+        var request = createMailRequest(mail2send, codeId);
         final var response = sendGrid.api(request);
         log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", response.getStatusCode(), response.getBody());
     }
@@ -63,17 +64,18 @@ public class SendGridService implements MailService {
         throw new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND_OR_EXPIRED));
     }
 
-    private Request createMailRequest(Mail mail) throws IOException {
+    private Request createMailRequest(Mail mail, UUID codeId) throws IOException {
+        var apiPrefix = EMAIL_VALIDATE_CODE.substring(0, 23);
         var request = new Request();
         request.setMethod(Method.POST);
-        request.setEndpoint("mail/send");
+        request.setEndpoint("https://obminyashka.space" + apiPrefix + codeId);
         request.setBody(mail.build());
         return request;
     }
 
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
-    public void permanentlyDeleteEmailConfirmationToken() {
+    public void permanentlyDeleteEmailConfirmationCode() {
         emailRepository.findAll().stream()
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedEmail)
                 .forEach(emailRepository::delete);

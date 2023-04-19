@@ -18,7 +18,9 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -45,9 +47,14 @@ class MailServiceTest {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, null);
+        UUID codeId = UUID.fromString("e58ed763-928c-4155-bee9-fdbaaadc15f3");
+        var endpointUrl = "https://obminyashka.space/api/v1/email/validate/" + codeId;
+
+        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, codeId);
 
         verify(sendGrid).api(requestCapture.capture());
         assertTrue(requestCapture.getValue().getBody().contains(emailTo));
+        assertTrue(requestCapture.getValue().getEndpoint().contains(endpointUrl));
+        assertEquals(endpointUrl, requestCapture.getValue().getEndpoint());
     }
 }
