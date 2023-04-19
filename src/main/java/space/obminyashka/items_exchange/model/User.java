@@ -21,6 +21,7 @@ import java.util.*;
 public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true)
+    @Accessors(chain = true)
     private String username;
     private String password;
     @Column(unique = true)
@@ -87,6 +88,7 @@ public class User extends BaseEntity implements UserDetails {
     private List<User> blacklistedUsers;
 
     @OneToOne(mappedBy = "user")
+    @Accessors(chain = true)
     private RefreshToken refreshToken;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.DETACH)
