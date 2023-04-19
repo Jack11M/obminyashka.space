@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
@@ -194,8 +193,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/delete_user_first_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void selfDeleteRequest_whenDataCorrect_successfully() throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isAccepted());
+        MvcResult mvcResult = sendUriAndGetMvcResult(delete(USER_SERVICE_DELETE), status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(
                 getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, numberOfDaysToKeepDeletedUsers)));
@@ -207,9 +205,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/deleted_user_restore_expected.yml", orderBy = {"created", "name"},
             ignoreCols = {"password", "lastOnlineTime", "updated", "status"})
     void makeAccountActiveAgain_whenDataCorrect_successfully() throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isAccepted());
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_RESTORE), status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }

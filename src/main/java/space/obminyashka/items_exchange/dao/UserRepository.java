@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,6 +33,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByRefreshToken_Token(String token);
+
+    List<User> findByRole_Name(String name);
 
     @Transactional
     @Modifying
@@ -58,4 +61,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update User u set u.isValidatedEmail = true where u.username = " +
             "(select user.username from email_confirmation_code where id=:id)")
     void setValidatedEmailToUserByEmailId(UUID id);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) where u.username = :username")
+    void updateUserByUsernameWithRole(String username, String roleName);
 }

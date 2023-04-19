@@ -2,12 +2,16 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.ChildDto;
+import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
 
@@ -26,11 +30,12 @@ public interface UserService {
     Optional<UserDto> findByUsername(String username);
 
     /**
-     * Register new user
+     * Register new user and create email confirmation code
      * @param userRegistrationDto DTO which contains all required data for registration the user
+     * @param codeId UIID for confirmation email
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto);
+    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId);
 
     /**
      * Update an existed user with new data
@@ -63,9 +68,10 @@ public interface UserService {
 
     /**
      * Request from a user to remove them account with time limit
-     * @param user existed user which is requested self-removing procedure
+     *
+     * @param username login or email of existing user which is requested self-removing procedure
      */
-    void selfDeleteRequest(User user);
+    void selfDeleteRequest(String username);
 
     /**
      * Getting days which is/are left for the user before removing from DB
@@ -107,14 +113,6 @@ public interface UserService {
      * @return result of the check
      */
     boolean existsByUsernameOrEmail(String username, String email);
-
-    /**
-     * Check whether received user's password matches to gained user
-     * @param user user to check password
-     * @param encodedPassword encoded password
-     * @return result of the check
-     */
-    boolean isPasswordMatches(User user, String encodedPassword);
 
     /**
      * Given a username and password, return true if the user password and new password match, false otherwise.

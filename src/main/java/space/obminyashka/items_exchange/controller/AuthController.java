@@ -39,6 +39,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.UUID;
 
 import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -69,6 +70,7 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             return ResponseEntity.of(authService.createUserLoginResponseDto(username));
         } catch (AuthenticationException e) {
+            log.warn("[AuthController] An exception occurred while authorization for '{}'", userLoginDto.getUsernameOrEmail(), e);
             throw new BadCredentialsException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_PASSWORD));
         }
@@ -104,15 +106,17 @@ public class AuthController {
                     ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE));
         }
 
+        UUID codeId = UUID.randomUUID();
+
         try {
-            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
+            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale(), codeId);
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
             return new ResponseEntity<>(getMessageSource(
                     ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
-        if (userService.registerNewUser(userRegistrationDto)) {
+        if (userService.registerNewUser(userRegistrationDto, codeId)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
             return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED), HttpStatus.CREATED);
         }
