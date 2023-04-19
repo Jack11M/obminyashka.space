@@ -99,15 +99,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
+    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
+        return Objects.requireNonNullElse(user.getOauth2Login(), false)
+                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
+    }
 
     private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
         final var email = oAuth2User.getEmail();
         final var pass = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(), UUID.randomUUID().toString());
         return User.builder()
                 .oauth2Login(true)
+                .isValidatedEmail(true)
                 .username(email)
                 .email(email)
-                .isValidatedEmail(oAuth2User.getEmailVerified())
                 .password(bCryptPasswordEncoder.encode(pass))
                 .firstName(oAuth2User.getGivenName())
                 .lastName(oAuth2User.getFamilyName())
@@ -117,10 +121,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .build();
     }
 
-    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
-        return Objects.requireNonNullElse(user.getOauth2Login(), false)
-                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
-    }
     @Override
     public String update(UserUpdateDto newUserUpdateDto, User user) {
         BeanUtils.copyProperties(newUserUpdateDto, user, "phones");
