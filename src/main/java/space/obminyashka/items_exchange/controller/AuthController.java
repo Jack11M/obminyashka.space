@@ -70,6 +70,7 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             return ResponseEntity.of(authService.createUserLoginResponseDto(username));
         } catch (AuthenticationException e) {
+            log.warn("[AuthController] An exception occurred while authorization for '{}'", userLoginDto.getUsernameOrEmail(), e);
             throw new BadCredentialsException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_PASSWORD));
         }

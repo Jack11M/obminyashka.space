@@ -87,7 +87,10 @@ public class JwtTokenService implements OAuth2TokenValidator<Jwt> {
     }
 
     public LocalDateTime getAccessTokenExpiration(String accessToken) {
-        return tokenDecoder.decode(accessToken).getExpiresAt().atZone(ZoneId.of("Europe/Kiev")).toLocalDateTime();
+        return Optional.ofNullable(tokenDecoder.decode(accessToken).getExpiresAt())
+                .map(instant -> instant.atZone(ZoneId.of("Europe/Kiev")))
+                .map(ZonedDateTime::toLocalDateTime)
+                .orElse(LocalDateTime.now());
     }
 
     public String getRefreshTokenExpiration(ZonedDateTime zonedDateTime) {
