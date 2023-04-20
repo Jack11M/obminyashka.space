@@ -62,4 +62,10 @@
             <column name="token"/>
         </dropColumn>
     </changeSet>
+
+    <changeSet id="1.2.4: drop column is_validated_email " author="serhii.ponomarenko">
+        <dropColumn tableName="user">
+            <column name="is_validated_email"/>
+        </dropColumn>
+    </changeSet>
 </databaseChangeLog>
