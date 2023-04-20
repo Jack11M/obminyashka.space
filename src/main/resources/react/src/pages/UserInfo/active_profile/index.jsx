@@ -39,7 +39,6 @@ const ActiveProfile = () => {
       dataForm.append('image', file);
 
       const receivedImage = await dispatch(postAvatarThunk(dataForm));
-      console.log(receivedImage);
       setOpenCrop(false);
       handleSetImage(receivedImage);
     } catch (e) {
