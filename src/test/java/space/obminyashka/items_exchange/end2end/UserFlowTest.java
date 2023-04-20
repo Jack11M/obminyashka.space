@@ -221,6 +221,7 @@ class UserFlowTest extends BasicControllerTest {
         var user = userService.loginUserWithOAuth2(oauth2User);
         assertNotNull(user);
         assertEquals(true, user.getOauth2Login());
+        assertEquals(true, user.isValidatedEmail());
 
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
                 .andExpect(jsonPath("$.username").value(NEW_USER_EMAIL))
@@ -242,7 +243,8 @@ class UserFlowTest extends BasicControllerTest {
         final var userInfo = new OidcUserInfo(Map.of(
                 "email", NEW_USER_EMAIL,
                 "given_name", USER_FIRST_NAME,
-                "family_name", USER_LAST_NAME));
+                "family_name", USER_LAST_NAME,
+                "email_verified", true));
 
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
