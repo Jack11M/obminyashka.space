@@ -243,7 +243,8 @@ class UserFlowTest extends BasicControllerTest {
         final var userInfo = new OidcUserInfo(Map.of(
                 "email", NEW_USER_EMAIL,
                 "given_name", USER_FIRST_NAME,
-                "family_name", USER_LAST_NAME));
+                "family_name", USER_LAST_NAME,
+                "email_verified", true));
 
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }

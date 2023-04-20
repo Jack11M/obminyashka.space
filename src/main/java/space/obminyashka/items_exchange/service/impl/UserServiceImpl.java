@@ -109,9 +109,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         final var pass = Objects.requireNonNullElse(oAuth2User.getIdToken().getTokenValue(), UUID.randomUUID().toString());
         return User.builder()
                 .oauth2Login(true)
-                .isValidatedEmail(true)
                 .username(email)
                 .email(email)
+                .isValidatedEmail(oAuth2User.getEmailVerified())
                 .password(bCryptPasswordEncoder.encode(pass))
                 .firstName(oAuth2User.getGivenName())
                 .lastName(oAuth2User.getFamilyName())
