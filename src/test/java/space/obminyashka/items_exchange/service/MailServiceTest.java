@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static space.obminyashka.items_exchange.api.ApiKey.*;
 
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
@@ -48,7 +49,8 @@ class MailServiceTest {
 
         final var emailTo = "test@mail.ua";
         UUID codeId = UUID.fromString("e58ed763-928c-4155-bee9-fdbaaadc15f3");
-        var endpointUrl = "https://obminyashka.space/api/v1/email/validate/" + codeId;
+        var apiPrefix = EMAIL_VALIDATE_CODE.replace("{code}", "");
+        var endpointUrl = "https://obminyashka.space" + apiPrefix + codeId;
 
         mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, codeId);
 

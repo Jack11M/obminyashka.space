@@ -65,7 +65,7 @@ public class SendGridService implements MailService {
     }
 
     private Request createMailRequest(Mail mail, UUID codeId) throws IOException {
-        var apiPrefix = EMAIL_VALIDATE_CODE.substring(0, 23);
+        var apiPrefix = EMAIL_VALIDATE_CODE.replace("{code}", "");
         var request = new Request();
         request.setMethod(Method.POST);
         request.setEndpoint("https://obminyashka.space" + apiPrefix + codeId);
