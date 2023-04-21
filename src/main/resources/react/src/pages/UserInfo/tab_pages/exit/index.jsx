@@ -29,7 +29,7 @@ const Exit = ({ toggle, onClose }) => {
   // });
 
   return (
-    <Modal isOpen={toggle} onClose={onClose} duration={1000}>
+    <Modal isOpen={toggle} onClose={onClose}>
       <Styles.ModalTitle>
         {getTranslatedText('exit.question')}
       </Styles.ModalTitle>
