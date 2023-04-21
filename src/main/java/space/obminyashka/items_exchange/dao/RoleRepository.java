@@ -18,7 +18,8 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User set role.id =(select id from Role where name='ROLE_USER') where username = :username")
+    @Query("update User set role.id =(select id from Role where name='ROLE_USER') " +
+            "where username = :username or email = :username")
     void setUserRoleToUserByUsername(String username);
 
 }
