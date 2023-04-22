@@ -17,9 +17,10 @@ public interface MailService {
      * @param emailType one of the supported email types to be sent
      * @param locale    user locale
      * @param codeId code for generating link for confirming email
+     * @param host domain name url
      * @throws IOException when service is unavailable or some unexpected case happened
      */
-    void sendMail(String emailTo, EmailType emailType, Locale locale, UUID codeId) throws IOException;
+    void sendMail(String emailTo, EmailType emailType, Locale locale, UUID codeId, String host) throws IOException;
 
     /**
      * Validate users' email by previously generated UUID code

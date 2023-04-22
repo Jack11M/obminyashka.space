@@ -98,7 +98,8 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "409", description = "The user is with such email is already registered")
     })
-    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto)
+    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
+                                               @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host)
             throws BadRequestException, DataConflictException {
 
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
@@ -109,7 +110,7 @@ public class AuthController {
         UUID codeId = UUID.randomUUID();
 
         try {
-            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale(), codeId);
+            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale(), codeId, host);
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
             return new ResponseEntity<>(getMessageSource(

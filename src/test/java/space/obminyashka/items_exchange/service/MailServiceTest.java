@@ -48,15 +48,15 @@ class MailServiceTest {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
-        UUID codeId = UUID.fromString("e58ed763-928c-4155-bee9-fdbaaadc15f3");
-        var apiPrefix = EMAIL_VALIDATE_CODE.replace("{code}", "");
-        var endpointUrl = "https://obminyashka.space" + apiPrefix + codeId;
+        var expectedCode = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
+        var expectedHost = "https://obminyashka.space";
+        var expectedUrl = expectedHost.concat(EMAIL_VALIDATE_CODE.replace("{code}", expectedCode));
 
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, codeId);
+        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, UUID.fromString(expectedCode), expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         assertTrue(requestCapture.getValue().getBody().contains(emailTo));
-        assertTrue(requestCapture.getValue().getEndpoint().contains(endpointUrl));
-        assertEquals(endpointUrl, requestCapture.getValue().getEndpoint());
+        assertTrue(requestCapture.getValue().getEndpoint().contains(expectedUrl));
+        assertEquals(expectedUrl, requestCapture.getValue().getEndpoint());
     }
 }
