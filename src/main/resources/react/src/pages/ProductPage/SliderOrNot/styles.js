@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
-
-import * as Icon from 'assets/icons';
+import { Icon } from 'obminyashka-components';
 
 export const Image = styled.img`
   height: 140px;

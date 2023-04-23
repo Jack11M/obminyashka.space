@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-
-import checkSvg from 'assets/icons/product-post-check.svg';
+import { Icon } from 'obminyashka-components';
 
 export const Container = styled.div`
   display: flex;
@@ -42,7 +41,7 @@ export const PostDataDescriptionSpan = styled.span`
 `;
 
 export const PostDataDescriptionOl = styled.ol`
-  list-style-image: url(${checkSvg}) !important;
+  list-style-image: url(${Icon.ProductPostCheck}) !important;
   margin-left: 30px !important;
   padding-right: 20px;
 `;

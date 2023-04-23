@@ -1,13 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { Images } from 'obminyashka-components';
 
-import {
-  loop,
-  shadow,
-  greenDots,
-  fourOhFour,
-  orangeDots,
-  shadowDark,
-} from 'assets/img/all_images_export/errorPage';
 import { getTranslatedText } from 'components/local/localization';
 
 import { goTo } from './helpers';
@@ -19,24 +12,24 @@ const FourOhFourPage = () => {
   return (
     <>
       <Styles.WrapCenter>
-        <Styles.Img404 src={fourOhFour} alt="404" />
+        <Styles.Img404 src={Images.fourOhFour} alt="404" />
 
         <Styles.WrapperShadow>
-          <Styles.ImageLight src={shadow} alt="shadow" />
-          <Styles.ImageDark src={shadowDark} alt="shadow dark" />
+          <Styles.ImageLight src={Images.shadow} alt="shadow" />
+          <Styles.ImageDark src={Images.shadowDark} alt="shadow dark" />
         </Styles.WrapperShadow>
       </Styles.WrapCenter>
 
       <Styles.WrapOImg>
-        <Styles.Image src={orangeDots} alt="orange dots" />
+        <Styles.Image src={Images.orangeDots} alt="orange dots" />
       </Styles.WrapOImg>
 
       <Styles.WrapGImg>
-        <Styles.Image src={greenDots} alt="green dots" />
+        <Styles.Image src={Images.greenDots} alt="green dots" />
       </Styles.WrapGImg>
 
       <Styles.WrapRImg>
-        <Styles.Image src={loop} alt="loop" />
+        <Styles.Image src={Images.greenDots} alt="loop" />
       </Styles.WrapRImg>
 
       <Styles.Tittle>{getTranslatedText('fourOhFour.noPage')}</Styles.Tittle>

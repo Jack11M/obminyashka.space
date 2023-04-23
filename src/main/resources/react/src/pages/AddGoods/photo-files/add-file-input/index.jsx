@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useField } from 'formik';
-
-import dropsPng from 'assets/img/drag-n-drop.png';
+import { Images } from 'obminyashka-components';
 
 import * as Styles from './styles';
 import { ErrorDisplay } from '../../error-display';
@@ -43,7 +42,11 @@ const AddFileInput = ({ onChange }) => {
         onChange={onChange}
         accept=".png, .jpg, .jpeg, .gif"
       />
-      {drag ? <Styles.Image src={dropsPng} alt="drop" /> : <Styles.SpanAdd />}
+      {drag ? (
+        <Styles.Image src={Images.dragNDrop} alt="drop" />
+      ) : (
+        <Styles.SpanAdd />
+      )}
       {error && (
         <Styles.WrapError>
           <ErrorDisplay error={!!error && error} />

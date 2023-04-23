@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
-
-import SomethingBad from 'assets/img/errorPage/SomethingBad.png';
+import { Images } from 'obminyashka-components';
 
 export const button = css`
   margin: 0 5px 20px;
@@ -99,7 +98,7 @@ export const Tittle = styled.h2`
 export const Container = styled.div`
   min-height: 100vh;
   position: relative;
-  background: url(${SomethingBad});
+  background: url(${Images.somethingBad});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
