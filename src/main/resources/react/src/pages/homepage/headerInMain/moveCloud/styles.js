@@ -1,5 +1,5 @@
-import styled, { keyframes } from 'styled-components';
 import { Images } from 'obminyashka-components';
+import styled, { keyframes } from 'styled-components';
 
 const move1 = keyframes`
   0% {
