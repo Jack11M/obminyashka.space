@@ -8,7 +8,7 @@ import { OAuthSuccess } from 'pages/OAuthSuccess';
 import { Login } from 'pages/FormRegister/sign-in';
 import { SignUp } from 'pages/FormRegister/sign-up';
 import { SearchResults } from 'pages/SearchResults';
-import ProductPage from 'pages/ProductPage/ProductPage';
+import { ProductPage } from 'pages/ProductPage/ProductPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';

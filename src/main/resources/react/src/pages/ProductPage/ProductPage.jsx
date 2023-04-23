@@ -19,8 +19,8 @@ import { getCity } from 'Utils/getLocationProperties';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
-import ProductOffers from './ProductOffers';
-import ProductPhotoCarousel from './ProductPhotoCarousel';
+import { ProductOffers } from './ProductOffers';
+import { ProductPhotoCarousel } from './ProductPhotoCarousel';
 
 import {
   Span,
@@ -96,11 +96,16 @@ const ProductPage = () => {
       } = await api.product.getProduct(id);
 
       setProduct(rest);
-      setPhotos(images);
       setCategory(categoryValue);
       setSubcategory(subcategoryValue);
       setCurrentLocation(locationValue);
       setWishes(wishesToExchange?.split(','));
+      setPhotos(
+        images.map((photo) => ({
+          ...photo,
+          resource: `data:image/jpeg;base64,${photo.resource}`,
+        }))
+      );
     } catch (e) {
       showMessage.error(getErrorMessage(e));
     }
@@ -189,4 +194,4 @@ const ProductPage = () => {
     </>
   );
 };
-export default ProductPage;
+export { ProductPage };

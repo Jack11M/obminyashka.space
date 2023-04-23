@@ -1,9 +1,8 @@
-// /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import Slider from 'react-slick';
 
 import * as Styles from './styles';
 import { settings } from './config';
-import NoPhoto from '../ProductPhotoCarousel/NoPhoto/NoPhoto';
+import { NoPhoto } from '../ProductPhotoCarousel/NoPhoto';
 
 const SliderOrNot = ({ photos = [], showBigImg, bigPhoto }) => {
   let variable;
@@ -17,9 +16,9 @@ const SliderOrNot = ({ photos = [], showBigImg, bigPhoto }) => {
           <div key={`index-${photo.id}`}>
             <Styles.Image
               alt={photo.id}
+              src={photo.resource}
               selected={bigPhoto.id === photo.id}
               onClick={() => showBigImg(photo.id)}
-              src={`data:image/jpeg;base64,${photo.resource}`}
             />
           </div>
         ))}
@@ -34,9 +33,9 @@ const SliderOrNot = ({ photos = [], showBigImg, bigPhoto }) => {
               <Styles.Image
                 small
                 alt={photo.id}
+                src={photo.resource}
                 selected={bigPhoto.id === photo.id}
                 onClick={() => showBigImg(photo.id)}
-                src={`data:image/jpeg;base64,${photo.resource}`}
               />
             </div>
           ))}
@@ -44,6 +43,8 @@ const SliderOrNot = ({ photos = [], showBigImg, bigPhoto }) => {
       </Styles.ImageSlider>
     );
   }
+
   return variable;
 };
-export default SliderOrNot;
+
+export { SliderOrNot };

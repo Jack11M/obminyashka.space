@@ -35,4 +35,4 @@ const ProductOffers = () => (
     />
   </OffersContainer>
 );
-export default ProductOffers;
+export { ProductOffers };
