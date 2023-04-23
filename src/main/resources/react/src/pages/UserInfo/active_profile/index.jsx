@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   CroppedImage,
@@ -16,9 +17,12 @@ import { getName } from './helpers';
 const ActiveProfile = () => {
   const profile = useSelector(getProfile);
   const { firstName, lastName, avatarImage, email } = profile || {};
+  const [isSaveLoading, setIsSaveLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const dispatch = useDispatch();
   const cropDelete = async (props) => {
-    const { handleClear, setOpenCrop, setIsDeleteLoading } = props;
+    const { handleClear, setOpenCrop } = props;
     try {
       setIsDeleteLoading(true);
       await dispatch(deleteAvatarThunk());
@@ -31,7 +35,7 @@ const ActiveProfile = () => {
     }
   };
   const cropSave = async (props) => {
-    const { file, setOpenCrop, handleSetImage, setIsSaveLoading } = props;
+    const { file, setOpenCrop, handleSetImage } = props;
     try {
       setIsSaveLoading(true);
 
@@ -39,8 +43,8 @@ const ActiveProfile = () => {
       dataForm.append('image', file);
 
       const receivedImage = await dispatch(postAvatarThunk(dataForm));
+      await handleSetImage(receivedImage);
       setOpenCrop(false);
-      handleSetImage(receivedImage);
     } catch (e) {
       showMessage.error(getErrorMessage(e));
     } finally {
@@ -52,6 +56,8 @@ const ActiveProfile = () => {
       <Styles.ProfileBox>
         <CroppedImage
           avatarImage={avatarImage}
+          isSaveLoading={isSaveLoading}
+          isDeleteLoading={isDeleteLoading}
           onSave={(props) => cropSave(props)}
           saveBtnText={getTranslatedText('button.save')}
           errorSize={getTranslatedText('popup.sizeFile')}
