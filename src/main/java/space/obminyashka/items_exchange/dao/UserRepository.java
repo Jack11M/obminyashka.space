@@ -17,10 +17,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailOrUsername(String username, String email);
 
-    @Query("select u.updated from User u where u.username = :username")
+    @Query("select u.updated from User u where u.username = :username or u.email = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);
 
-    @Query("select u.password from User u where u.username = :username")
+    @Query("select u.password from User u where u.username = :username or u.email = :username")
     String getUserPasswordByUsername(String username);
 
     @Query("select u.email from User u where u.username = :username")
@@ -30,6 +30,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByUsernameOrEmail(String username, String email);
 
+    @Query("select u from User u where u.username = :username or u.email = :username")
     Optional<User> findByUsername(String username);
 
     Optional<User> findByRefreshToken_Token(String token);
@@ -53,7 +54,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.oauth2Login = true where u.email = :email and u.oauth2Login is null")
+    @Query("update User u set u.oauth2Login = true, u.isValidatedEmail = true where u.email = :email")
     void setOAuth2LoginToUserByEmail(String email);
 
     @Transactional
@@ -64,6 +65,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) where u.username = :username")
+    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) " +
+            "where u.username = :username or u.email = :username")
     void updateUserByUsernameWithRole(String username, String roleName);
 }

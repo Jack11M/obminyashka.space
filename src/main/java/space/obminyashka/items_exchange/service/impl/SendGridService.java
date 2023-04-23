@@ -41,6 +41,11 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
+    public void sendMail(String emailTo, EmailType subject, Locale locale, UUID codeId, String host) throws IOException {
+        Email to = new Email(emailTo);
+        var content = new Content(MediaType.TEXT_PLAIN_VALUE, getMessageSource(subject.body));
+        var mail2send = new Mail(sender, getMessageSource(subject.header), to, content);
+        var request = createMailRequest(mail2send, codeId, host);
     public void sendMail(String emailTo, EmailType subject, Locale locale, UUID codeId) throws IOException {
         var mail2send = new Mail();
         mail2send.setFrom(sender);
@@ -81,17 +86,17 @@ public class SendGridService implements MailService {
         throw new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND_OR_EXPIRED));
     }
 
-    private Request createMailRequest(Mail mail) throws IOException {
+    private Request createMailRequest(Mail mail, UUID codeId, String host) throws IOException {
         var request = new Request();
         request.setMethod(Method.POST);
-        request.setEndpoint("mail/send");
+        request.setEndpoint(host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
         request.setBody(mail.build());
         return request;
     }
 
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
-    public void permanentlyDeleteEmailConfirmationToken() {
+    public void permanentlyDeleteEmailConfirmationCode() {
         emailRepository.findAll().stream()
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedEmail)
                 .forEach(emailRepository::delete);

@@ -92,8 +92,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
         var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
-        optionalUser.ifPresent(ignored -> setOAuth2LoginToUserByEmail(oauth2User.getEmail()));
+        optionalUser.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
+                .map(User::getEmail)
+                .ifPresent(userRepository::setOAuth2LoginToUserByEmail);
+
         return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
+    }
+
+    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
+        return Objects.requireNonNullElse(user.getOauth2Login(), false)
+                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
     }
 
     private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
@@ -111,11 +119,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .online(true)
                 .role(roleService.getRole(ROLE_USER).orElse(null))
                 .build();
-    }
-
-    @Override
-    public void setOAuth2LoginToUserByEmail(String email) {
-        userRepository.setOAuth2LoginToUserByEmail(email);
     }
 
     @Override
