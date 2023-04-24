@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import { Button, Icon } from 'obminyashka-components';
+import { Button, Icon, Images } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
-import logoFooter from 'assets/img/Logo-footer.png';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -65,7 +64,7 @@ const Footer = () => {
             </Styles.Span>
 
             <Styles.FootLink to={route.home}>
-              <Styles.Img src={logoFooter} alt="Logo" />
+              <Styles.Img src={Images.logoFooter} alt="Logo" />
             </Styles.FootLink>
 
             <Button

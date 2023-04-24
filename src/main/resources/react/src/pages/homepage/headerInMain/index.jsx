@@ -1,6 +1,5 @@
-import toys from 'assets/img/clouds/STEPthree.png';
-import monitor from 'assets/img/clouds/STEPtwo.png';
-import furniture from 'assets/img/clouds/STEP-one.png';
+import { Images } from 'obminyashka-components';
+
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -12,7 +11,7 @@ const HeaderInMain = () => {
       <Styles.Wrapper>
         <Styles.PresentSlider>
           <Styles.PresentSliderElement>
-            <Styles.FirstImage src={furniture} alt="furniture" />
+            <Styles.FirstImage src={Images.stepOne} alt="furniture" />
 
             <Styles.TextWrapper>
               <Styles.FirstText>
@@ -24,7 +23,7 @@ const HeaderInMain = () => {
           </Styles.PresentSliderElement>
 
           <Styles.PresentSliderElement>
-            <Styles.SecondImage src={monitor} alt="monitor" />
+            <Styles.SecondImage src={Images.stepTwo} alt="monitor" />
 
             <Styles.TextWrapper>
               <Styles.SecondText>
@@ -40,7 +39,7 @@ const HeaderInMain = () => {
           </Styles.PresentSliderElement>
 
           <Styles.PresentSliderElement>
-            <Styles.ThirdImage src={toys} alt="toys" />
+            <Styles.ThirdImage src={Images.stepThree} alt="toys" />
 
             <Styles.TextWrapper>
               <Styles.ThirdText>

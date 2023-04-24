@@ -1,8 +1,5 @@
+import { Images } from 'obminyashka-components';
 import styled, { keyframes } from 'styled-components';
-
-import firstCloud from 'assets/img/clouds/Cloud1.png';
-import secondCloud from 'assets/img/clouds/Cloud2.png';
-import thirdCloud from 'assets/img/clouds/Cloud3.png';
 
 const move1 = keyframes`
   0% {
@@ -165,7 +162,7 @@ export const FirstCloud = styled.span`
   left: 3vh;
   width: 184px;
   height: 131px;
-  background-image: url(${firstCloud});
+  background-image: url(${Images.cloud1});
   background-position: center center;
   background-repeat: no-repeat;
 
@@ -182,7 +179,7 @@ export const SecondCloud = styled.span`
   right: 2vw;
   width: 184px;
   height: 131px;
-  background-image: url(${firstCloud});
+  background-image: url(${Images.cloud1});
   background-position: center center;
   background-repeat: no-repeat;
 
@@ -199,7 +196,7 @@ export const ThirdCloud = styled.span`
   right: 12vw;
   width: 190px;
   height: 119px;
-  background-image: url(${secondCloud});
+  background-image: url(${Images.cloud2});
   background-position: center center;
   background-repeat: no-repeat;
 
@@ -216,7 +213,7 @@ export const FourthCloud = styled.span`
   left: 42vw;
   width: 190px;
   height: 119px;
-  background-image: url(${secondCloud});
+  background-image: url(${Images.cloud2});
   background-position: center center;
   background-repeat: no-repeat;
 
@@ -234,7 +231,7 @@ export const FifthCloud = styled.span`
   left: 11vw;
   width: 106px;
   height: 67px;
-  background-image: url(${thirdCloud});
+  background-image: url(${Images.cloud3});
   background-position: center center;
   background-repeat: no-repeat;
 
@@ -251,7 +248,7 @@ export const SixthCloud = styled.span`
   right: 26vw;
   width: 106px;
   height: 67px;
-  background-image: url(${thirdCloud});
+  background-image: url(${Images.cloud3});
   background-position: center center;
   background-repeat: no-repeat;
 
