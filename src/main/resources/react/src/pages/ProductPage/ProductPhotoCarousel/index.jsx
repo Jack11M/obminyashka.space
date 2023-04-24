@@ -50,4 +50,5 @@ const ProductPhotoCarousel = ({ photos = [] }) => {
     </CarouselBox>
   );
 };
+
 export { ProductPhotoCarousel };

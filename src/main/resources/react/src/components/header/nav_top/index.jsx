@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, Icon } from 'obminyashka-components';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';

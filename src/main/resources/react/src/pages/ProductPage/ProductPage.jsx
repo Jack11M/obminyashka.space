@@ -194,4 +194,5 @@ const ProductPage = () => {
     </>
   );
 };
+
 export { ProductPage };
