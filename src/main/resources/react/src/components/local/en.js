@@ -35,7 +35,8 @@ const en = {
   },
   errors: {
     minPhoto: 'Minimum 1 photo',
-    requireField: 'Fill in the field or check the box',
+    fillOrCheck: 'Fill in the field or check the box',
+    requireField: 'Field is required',
     invalidEmailFormat: 'Invalid mail format',
     min2: 'Minimum of 2 characters',
     min3: 'Minimum of 3 characters',
