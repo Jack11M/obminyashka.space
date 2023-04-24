@@ -11,8 +11,8 @@ import * as Styles from './styles';
 
 const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const [border, setBorder] = useState(false);
-  const [isOpenModal, setIsOpenModal] = useState(false);
   const [exchangeInput, setExchangeInput] = useState('');
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [exchangeInputError, setExchangeInputError] = useState('');
 
   const [, meta, helpers] = useField({ name: 'wishesToExchange' });
