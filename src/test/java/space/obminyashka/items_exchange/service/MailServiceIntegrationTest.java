@@ -31,7 +31,7 @@ class MailServiceIntegrationTest {
         assertEquals(3, emails.size());
 
         when(emailRepository.findAll()).thenReturn(emails);
-        mailService.permanentlyDeleteEmailConfirmationToken();
+        mailService.permanentlyDeleteEmailConfirmationCode();
 
         verify(emailRepository).delete(emails.get(0));
 
