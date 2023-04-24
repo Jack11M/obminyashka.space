@@ -21,6 +21,8 @@ const en = {
     notEmptyInput: 'At least one field is required.',
     selectCategory: 'Initially you need to select a category',
     addedFile: "The photo you've just added is already exist.",
+    addedExchange:
+      'the proposition has already been added to the list of favors',
     pictureSelection: 'Select a photo with one of the supported extensions',
     sizeFile: 'Your photo total size',
     selectFile: 'Select a photo up to 10 MB total size',

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useField } from 'formik';
-import { Subtitle } from 'obminyashka-components';
 import { useTransition, animated } from 'react-spring';
+import { Modal, Subtitle } from 'obminyashka-components';
 
 import { FormikCheckBox } from 'components/common/formik';
 import { ErrorDisplay } from 'pages/AddGoods/error-display';
@@ -10,8 +10,10 @@ import { getTranslatedText } from 'components/local/localization';
 import * as Styles from './styles';
 
 const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
-  const [exchangeInput, setExchangeInput] = useState('');
   const [border, setBorder] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [exchangeInput, setExchangeInput] = useState('');
+  const [exchangeInputError, setExchangeInputError] = useState('');
 
   const [, meta, helpers] = useField({ name: 'wishesToExchange' });
   const { error } = meta;
@@ -22,6 +24,13 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
     leave: { opacity: 0, scale: 0 },
     config: { mass: 1, tension: 120, friction: 14, duration: 200 },
   });
+
+  useEffect(() => {
+    if (!isOpenModal) setExchangeInputError('');
+  }, [isOpenModal]);
+
+  const exchangeUnique = (arr, item) =>
+    !arr.filter((el) => el.toLowerCase() === item.toLowerCase()).length;
 
   const validate = (inputValue) => {
     const totalLength = exchangeList.join('').length;
@@ -56,7 +65,17 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
     if (event.key === 'Enter') {
       event.preventDefault();
-      setExchange((prev) => [...prev, exchangeInput]);
+
+      setExchange((prev) => {
+        if (!exchangeUnique(prev, exchangeInput)) {
+          setExchangeInputError(exchangeInput);
+          setIsOpenModal(true);
+          return [...prev];
+        }
+
+        return [...prev, exchangeInput];
+      });
+
       setExchangeInput('');
     }
   };
@@ -72,7 +91,15 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
   const onBlur = () => {
     if (exchangeInput && !error) {
-      setExchange((prev) => [...prev, exchangeInput]);
+      setExchange((prev) => {
+        if (!exchangeUnique(prev, exchangeInput)) {
+          setExchangeInputError(exchangeInput);
+          setIsOpenModal(true);
+          return [...prev];
+        }
+
+        return [...prev, exchangeInput];
+      });
       setExchangeInput('');
     }
 
@@ -80,53 +107,62 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   };
 
   return (
-    <Styles.Wrap name="wishesToExchange">
-      <Subtitle textTitle={getTranslatedText('addAdv.exchange')} />
+    <>
+      <Styles.Wrap name="wishesToExchange">
+        <Subtitle textTitle={getTranslatedText('addAdv.exchange')} />
 
-      <Styles.Description>
-        &nbsp;
-        {getTranslatedText('addAdv.whatChange')}
-      </Styles.Description>
+        <Styles.Description>
+          &nbsp;
+          {getTranslatedText('addAdv.whatChange')}
+        </Styles.Description>
 
-      <Styles.Explanation>
-        ({getTranslatedText('addAdv.enterPhrase')})
-      </Styles.Explanation>
+        <Styles.Explanation>
+          ({getTranslatedText('addAdv.enterPhrase')})
+        </Styles.Explanation>
 
-      <Styles.ChangeWrap borderValue={border} error={error}>
-        {transitions((styles, item, idx) => {
-          return (
-            <animated.div key={idx.ctrl.id} style={{ ...styles }}>
-              <Styles.ChangeItem>
-                {item}
-                <Styles.Span onClick={() => removeExchangeItem(item)} />
-              </Styles.ChangeItem>
-            </animated.div>
-          );
-        })}
+        <Styles.ChangeWrap borderValue={border} error={error}>
+          {transitions((styles, item, idx) => {
+            return (
+              <animated.div key={idx.ctrl.id} style={{ ...styles }}>
+                <Styles.ChangeItem>
+                  {item}
+                  <Styles.Span onClick={() => removeExchangeItem(item)} />
+                </Styles.ChangeItem>
+              </animated.div>
+            );
+          })}
 
-        <Styles.ChangeInput
-          type="text"
-          onBlur={onBlur}
-          onFocus={onFocus}
-          value={exchangeInput}
-          onKeyPress={keyEnter}
-          onChange={handleInput}
-          placeholder={getTranslatedText('addAdv.placeholderChange')}
+          <Styles.ChangeInput
+            type="text"
+            onBlur={onBlur}
+            onFocus={onFocus}
+            value={exchangeInput}
+            onKeyPress={keyEnter}
+            onChange={handleInput}
+            placeholder={getTranslatedText('addAdv.placeholderChange')}
+          />
+        </Styles.ChangeWrap>
+
+        <FormikCheckBox
+          type="checkbox"
+          name="readyForOffers"
+          value="readyForOffers"
+          style={{ marginTop: 20 }}
+          onChange={readyOffers.setReadyOffer}
+          selectedValues={readyOffers.readyOffer}
+          text={getTranslatedText('addAdv.readyForOffers')}
         />
-      </Styles.ChangeWrap>
 
-      <FormikCheckBox
-        type="checkbox"
-        name="readyForOffers"
-        value="readyForOffers"
-        style={{ marginTop: 20 }}
-        onChange={readyOffers.setReadyOffer}
-        selectedValues={readyOffers.readyOffer}
-        text={getTranslatedText('addAdv.readyForOffers')}
-      />
+        <ErrorDisplay error={!!error && error} marginTop="10px" />
+      </Styles.Wrap>
 
-      <ErrorDisplay error={!!error && error} marginTop="10px" />
-    </Styles.Wrap>
+      <Modal isOpen={isOpenModal} onClose={setIsOpenModal}>
+        <p>
+          {`${exchangeInputError} `}
+          {getTranslatedText('popup.addedExchange')}
+        </p>
+      </Modal>
+    </>
   );
 };
 
