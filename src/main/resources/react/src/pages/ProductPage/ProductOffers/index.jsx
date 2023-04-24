@@ -35,4 +35,5 @@ const ProductOffers = () => (
     />
   </OffersContainer>
 );
+
 export { ProductOffers };
