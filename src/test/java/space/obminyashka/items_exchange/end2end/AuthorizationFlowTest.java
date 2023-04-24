@@ -55,6 +55,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     protected static final String INVALID_EMAIL = "email.com";
     protected static final String INVALID_USERNAME = "user name";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String DOMAIN_URL = "https://obminyashka.space";
     private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
 
@@ -71,7 +72,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
             orderBy = {"created", "name"},
             ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
-        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), userRegistrationDto, status().isCreated());
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationDto, status().isCreated());
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
@@ -87,7 +88,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     @ParameterizedTest
     @MethodSource("userRegistrationData")
     void register_whenUserDataInvalid_shouldThrowException(UserRegistrationDto dto, ResultMatcher expectedStatus, String errorMessage, Class<Exception> resolvedException) throws Exception {
-        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER), dto, expectedStatus);
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), dto, expectedStatus);
 
         assertThat(result.getResolvedException())
                 .isInstanceOf(resolvedException)
