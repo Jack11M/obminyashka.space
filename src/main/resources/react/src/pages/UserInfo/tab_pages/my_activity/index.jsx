@@ -1,6 +1,5 @@
-import { Title, ProductCard } from 'obminyashka-components';
+import { Title, ProductCard, Images } from 'obminyashka-components';
 
-import lot3 from 'assets/img/cards/lot3.jpg';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -18,7 +17,7 @@ const MyActivity = () => {
       <Styles.InputResponseContainer>
         <ProductCard
           city="Харьков"
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={12}
           buttonText={getTranslatedText('button.look')}
           text="Велосипед ну очень крутой. просто не реально крутой для девочки 5 лет"
@@ -26,7 +25,7 @@ const MyActivity = () => {
 
         <ProductCard
           city="Львов"
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={222}
           text="Велосипед для девочки 5 лет"
           buttonText={getTranslatedText('button.look')}
@@ -34,7 +33,7 @@ const MyActivity = () => {
 
         <ProductCard
           city="Киев"
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={50}
           text="Велосипед для девочки 5 лет"
           buttonText={getTranslatedText('button.look')}
@@ -42,7 +41,7 @@ const MyActivity = () => {
 
         <ProductCard
           city="Ужгород"
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={12}
           text="Велосипед для девочки 5 лет"
           buttonText={getTranslatedText('button.look')}
@@ -50,7 +49,7 @@ const MyActivity = () => {
 
         <ProductCard
           city="Киев"
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={5}
           text="Велосипед для девочки 5 лет"
           buttonText={getTranslatedText('button.look')}
@@ -58,7 +57,7 @@ const MyActivity = () => {
 
         <ProductCard
           city="Киев"
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={33}
           text="Велосипед для девочки 5 лет"
           buttonText={getTranslatedText('button.look')}
@@ -72,7 +71,7 @@ const MyActivity = () => {
 
       <Styles.OutputResponseContainer>
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           city="Харьков"
           inboxMessage={3}
           isFavorite={isFavorite}
@@ -81,7 +80,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           city="Харьков"
           text="Велосипед"
           inboxMessage={10}
@@ -89,7 +88,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
           isFavorite={isFavorite}
@@ -98,7 +97,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           city="Харьков"
           inboxMessage={3}
           buttonText={getTranslatedText('button.look')}
@@ -106,7 +105,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           city="Харьков"
           text="Велосипед"
           inboxMessage={10}
@@ -115,7 +114,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
           text="Велосипед для девочки 5 лет"
@@ -123,7 +122,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           city="Харьков"
           inboxMessage={3}
           isFavorite={isFavorite}
@@ -132,7 +131,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           city="Харьков"
           text="Велосипед"
           inboxMessage={10}
@@ -140,7 +139,7 @@ const MyActivity = () => {
         />
 
         <ProductCard
-          picture={lot3}
+          picture={Images.lot3}
           inboxMessage={25}
           city="Ивано-Франковск"
           isFavorite={isFavorite}

@@ -1,12 +1,9 @@
 import styled from 'styled-components';
-
-import bgheader from 'assets/img/clouds/bgheader.png';
-import question from 'assets/img/question.png';
-import asnwer from 'assets/img/answer.png';
+import { Images } from 'obminyashka-components';
 
 export const PresentSection = styled.div`
   position: relative;
-  background-image: url(${bgheader});
+  background-image: url(${Images.headerBg});
   background-size: cover;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -70,7 +67,7 @@ export const FirstText = styled.p`
     content: '';
     width: 41px;
     height: 67px;
-    background-image: url(${question});
+    background-image: url(${Images.question});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -89,7 +86,7 @@ export const SecondText = styled.p`
     content: '';
     width: 13px;
     height: 60px;
-    background-image: url(${asnwer});
+    background-image: url(${Images.answer});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

@@ -38,7 +38,7 @@ export const getValidationAdv = ({
       })
       .when('readyForOffers', {
         is: (value) => value === false,
-        then: Yup.string().required(getTranslatedText('errors.requireField')),
+        then: Yup.string().required(getTranslatedText('errors.fillOrCheck')),
       })
       .max(200, getTranslatedText('errors.max200'))
       .default(() => exchangeList.join(',')),

@@ -1,11 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import { Images } from 'obminyashka-components';
 
 import { getTranslatedText } from 'components/local/localization';
-import {
-  loop,
-  greenDots,
-  orangeDots,
-} from 'assets/img/all_images_export/errorPage';
 
 import { goTo } from './helpers';
 import * as Styles from './styles';
@@ -16,15 +12,15 @@ const SomethingBad = ({ deactivateError }) => {
   return (
     <Styles.Container>
       <Styles.WrapOrange>
-        <Styles.Image src={orangeDots} alt="orange dots" />
+        <Styles.Image src={Images.orangeDots} alt="orange dots" />
       </Styles.WrapOrange>
 
       <Styles.WrapGreen>
-        <Styles.Image src={greenDots} alt="green dots" />
+        <Styles.Image src={Images.greenDots} alt="green dots" />
       </Styles.WrapGreen>
 
       <Styles.WrapRight>
-        <Styles.Image src={loop} alt="loop" />
+        <Styles.Image src={Images.loop} alt="loop" />
       </Styles.WrapRight>
 
       <Styles.WrapTittleBad>

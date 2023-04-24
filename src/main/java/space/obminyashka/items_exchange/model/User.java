@@ -33,7 +33,8 @@ public class User extends BaseEntity implements UserDetails {
 
     @Accessors(fluent = true)
     @Column(name = "validated_email")
-    private Boolean isValidatedEmail;
+    @Builder.Default
+    private Boolean isValidatedEmail = false;
 
     @Column(name = "first_name")
     @Builder.Default
