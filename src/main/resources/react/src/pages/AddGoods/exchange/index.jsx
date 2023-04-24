@@ -35,6 +35,11 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   const validate = (inputValue) => {
     const totalLength = exchangeList.join('').length;
     const inputLength = inputValue?.length;
+    const minSizeInput = inputValue.replaceAll(' ', '').length < 3;
+
+    if (minSizeInput) {
+      helpers.setError(getTranslatedText('errors.min3'));
+    }
 
     if (inputLength > 40) {
       helpers.setError(getTranslatedText('errors.max40'));
@@ -58,6 +63,8 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
   };
 
   const keyEnter = (event) => {
+    const minSizeInput = exchangeInput.replaceAll(' ', '').length < 3;
+
     if (!exchangeInput) {
       if (event.key === 'Enter') event.preventDefault();
       return;
@@ -65,6 +72,8 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
 
     if (event.key === 'Enter') {
       event.preventDefault();
+
+      if (minSizeInput) return;
 
       setExchange((prev) => {
         if (!exchangeUnique(prev, exchangeInput)) {
@@ -157,10 +166,10 @@ const Exchange = ({ exchangeList, setExchange, readyOffers }) => {
       </Styles.Wrap>
 
       <Modal isOpen={isOpenModal} onClose={setIsOpenModal}>
-        <p>
-          {`${exchangeInputError} `}
-          {getTranslatedText('popup.addedExchange')}
-        </p>
+        <h3 style={{ textAlign: 'center', marginBottom: 10 }}>
+          {exchangeInputError}
+        </h3>
+        <p>{getTranslatedText('popup.addedExchange')}</p>
       </Modal>
     </>
   );
