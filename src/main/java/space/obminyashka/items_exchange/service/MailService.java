@@ -5,7 +5,6 @@ import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundExc
 import space.obminyashka.items_exchange.util.EmailType;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.UUID;
 
 public interface MailService {
@@ -15,12 +14,11 @@ public interface MailService {
      *
      * @param emailTo   a receiver email address
      * @param emailType one of the supported email types to be sent
-     * @param locale    user locale
      * @param codeId code for generating link for confirming email
      * @param host domain name url
      * @throws IOException when service is unavailable or some unexpected case happened
      */
-    void sendMail(String emailTo, EmailType emailType, Locale locale, UUID codeId, String host) throws IOException;
+    void sendMail(String emailTo, EmailType emailType, UUID codeId, String host) throws IOException;
 
     /**
      * Validate users' email by previously generated UUID code

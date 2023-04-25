@@ -72,8 +72,17 @@ public class ResponseMessagesHandler {
         public final String CHANGED_USER_INFO = "changed.user.info";
         public final String DELETE_ACCOUNT = "account.self.delete.request";
         public final String ACCOUNT_ACTIVE_AGAIN = "account.made.active.again";
-        public final String EMAIL_REGISTRATION_HEADER = "registration.header";
-        public final String EMAIL_REGISTRATION_BODY = "registration.body";
         public final String EMAIL_CONFIRMED = "email.confirmed";
+    }
+
+    @UtilityClass
+    public class RegistrationMessage {
+        public final String EMAIL_SUBJECT = "registration.topic";
+        public final String EMAIL_HEADER = "registration.email.header";
+        public final String EMAIL_GREETINGS = "registration.email.greetings";
+        public final String EMAIL_INFORMATION = "registration.email.action.information";
+        public final String EMAIL_BENEFITS = "registration.email.benefits";
+        public final String EMAIL_BUTTON = "registration.email.confirm.button";
+        public final String EMAIL_FOOTER = "registration.email.footer";
     }
 }
