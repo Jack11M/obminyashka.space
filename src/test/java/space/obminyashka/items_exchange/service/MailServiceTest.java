@@ -18,14 +18,10 @@ import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
 
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
@@ -50,18 +46,13 @@ class MailServiceTest {
         final var emailTo = "test@mail.ua";
         var expectedCode = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
         var expectedHost = "https://obminyashka.space";
-        var expectedUrl = expectedHost.concat(EMAIL_VALIDATE_CODE.replace("{code}", expectedCode));
 
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH, UUID.fromString(expectedCode), expectedHost);
+        mailService.sendMail(emailTo, EmailType.REGISTRATION, UUID.fromString(expectedCode), expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();
-        verify(sendGrid, times(1))
-                .api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
+        verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
                         capturedRequest.getEndpoint().equals("mail/send") &&
                         capturedRequest.getBody().contains(emailTo)));
-        assertTrue(requestCapture.getValue().getBody().contains(emailTo));
-        assertTrue(requestCapture.getValue().getEndpoint().contains(expectedUrl));
-        assertEquals(expectedUrl, requestCapture.getValue().getEndpoint());
     }
 }

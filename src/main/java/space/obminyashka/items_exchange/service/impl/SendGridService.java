@@ -22,10 +22,11 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Locale;
 import java.util.UUID;
 
+import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.RegistrationMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,17 +42,13 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public void sendMail(String emailTo, EmailType subject, Locale locale, UUID codeId, String host) throws IOException {
-        Email to = new Email(emailTo);
-        var content = new Content(MediaType.TEXT_PLAIN_VALUE, getMessageSource(subject.body));
-        var mail2send = new Mail(sender, getMessageSource(subject.header), to, content);
-        var request = createMailRequest(mail2send, codeId, host);
-    public void sendMail(String emailTo, EmailType subject, Locale locale, UUID codeId) throws IOException {
+    public void sendMail(String emailTo, EmailType subject, UUID codeId, String host) throws IOException {
         var mail2send = new Mail();
         mail2send.setFrom(sender);
         mail2send.setTemplateId(subject.template);
 
-        final var personalization = populatePersonalization(emailTo, subject.topic);
+        final var personalization = populatePersonalization(subject.topic, codeId, host);
+        personalization.addTo(new Email(emailTo));
         mail2send.addPersonalization(personalization);
 
         var request = createMailRequest(mail2send);
@@ -60,17 +57,16 @@ public class SendGridService implements MailService {
         log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
     }
 
-    private static Personalization populatePersonalization(String receiver, String subject) {
+    private static Personalization populatePersonalization(String subject, UUID codeId, String host) {
         final var personalization = new Personalization();
         personalization.addDynamicTemplateData("subject", getMessageSource(subject));
-        personalization.addDynamicTemplateData("header", getMessageSource(EMAIL_REGISTRATION_HEADER));
-        personalization.addDynamicTemplateData("greetings", getMessageSource(EMAIL_REGISTRATION_GREETINGS));
-        personalization.addDynamicTemplateData("information", getMessageSource(EMAIL_REGISTRATION_INFORMATION));
-        personalization.addDynamicTemplateData("benefits", getMessageSource(EMAIL_REGISTRATION_BENEFITS));
-        personalization.addDynamicTemplateData("confirm", getMessageSource(EMAIL_REGISTRATION_CONFIRM_BUTTON));
-        personalization.addDynamicTemplateData("footer", getMessageSource(EMAIL_REGISTRATION_FOOTER));
-        personalization.addDynamicTemplateData("url", "https://obminyashka.space/");
-        personalization.addTo(new Email(receiver));
+        personalization.addDynamicTemplateData("header", getMessageSource(EMAIL_HEADER));
+        personalization.addDynamicTemplateData("greetings", getMessageSource(EMAIL_GREETINGS));
+        personalization.addDynamicTemplateData("information", getMessageSource(EMAIL_INFORMATION));
+        personalization.addDynamicTemplateData("benefits", getMessageSource(EMAIL_BENEFITS));
+        personalization.addDynamicTemplateData("confirm", getMessageSource(EMAIL_BUTTON));
+        personalization.addDynamicTemplateData("footer", getMessageSource(EMAIL_FOOTER));
+        personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
         return personalization;
     }
 
@@ -86,10 +82,10 @@ public class SendGridService implements MailService {
         throw new EmailValidationCodeNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND_OR_EXPIRED));
     }
 
-    private Request createMailRequest(Mail mail, UUID codeId, String host) throws IOException {
+    private Request createMailRequest(Mail mail) throws IOException {
         var request = new Request();
         request.setMethod(Method.POST);
-        request.setEndpoint(host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+        request.setEndpoint("mail/send");
         request.setBody(mail.build());
         return request;
     }
@@ -107,8 +103,4 @@ public class SendGridService implements MailService {
 
         return duration.toDays() > numberOfDaysToKeepDeletedEmails;
     }
-
-
-
-
 }
