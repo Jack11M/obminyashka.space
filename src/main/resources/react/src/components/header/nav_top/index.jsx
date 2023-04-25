@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
+import { Avatar, Icon } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Icon, EllipsisText } from 'obminyashka-components';
 
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
@@ -43,16 +43,16 @@ const NavTop = () => {
               <Avatar source={profile?.avatarImage} />
 
               <Styles.ProfileSpan>
-                <EllipsisText
+                {/* TODO: fixed EllipsisText */}
+                {/* <EllipsisText
                   width={400}
                   offset={50}
                   place="left"
                   cursor="pointer"
                   id="show-tooltip"
-                >
-                  {authProfile?.username ||
-                    getTranslatedText('header.myOffice')}
-                </EllipsisText>
+                > */}
+                {authProfile?.username || getTranslatedText('header.myOffice')}
+                {/* </EllipsisText> */}
               </Styles.ProfileSpan>
             </Styles.LoginLink>
 

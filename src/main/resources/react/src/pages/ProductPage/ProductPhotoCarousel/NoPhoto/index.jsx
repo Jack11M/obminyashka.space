@@ -5,4 +5,5 @@ const NoPhoto = ({ noPhoto }) => (
     <Styles.NoPhotoImg />
   </Styles.NoPhotoContainer>
 );
-export default NoPhoto;
+
+export { NoPhoto };

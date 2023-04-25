@@ -15,8 +15,6 @@ const initialState = {
   fileImage: [],
   currLocation: null,
   locationShow: null,
-  viewImage: [],
-  indexImage: null,
 };
 
 const advSlice = createSlice({
@@ -38,8 +36,6 @@ const advSlice = createSlice({
       state.fileImage = payload.imageFiles;
       state.currLocation = payload.locationCurrent;
       state.locationShow = payload.showLocation;
-      state.viewImage = payload.preViewImage;
-      state.indexImage = payload.currentIndexImage;
     },
     clearAdv: (state) => {
       state.topic = '';
@@ -56,8 +52,6 @@ const advSlice = createSlice({
       state.fileImage = [];
       state.currLocation = null;
       state.locationShow = null;
-      state.viewImage = [];
-      state.indexImage = null;
     },
   },
 });
