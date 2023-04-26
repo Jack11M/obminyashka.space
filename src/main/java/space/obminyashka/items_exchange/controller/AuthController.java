@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -110,7 +109,7 @@ public class AuthController {
         UUID codeId = UUID.randomUUID();
 
         try {
-            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale(), codeId, host);
+            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, codeId, host);
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
             return new ResponseEntity<>(getMessageSource(

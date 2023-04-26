@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import NoPhoto from './NoPhoto/NoPhoto';
-import SliderOrNot from '../SliderOrNot';
+import { NoPhoto } from './NoPhoto';
+import { SliderOrNot } from '../SliderOrNot';
 
 import {
   Image,
@@ -34,12 +34,7 @@ const ProductPhotoCarousel = ({ photos = [] }) => {
   if (!state.photos.length) {
     noArr = <NoPhoto noPhoto />;
   } else {
-    noArr = (
-      <Image
-        alt="activeSlide"
-        src={`data:image/jpeg;base64,${state.bigPhoto.resource}`}
-      />
-    );
+    noArr = <Image alt="activeSlide" src={state.bigPhoto.resource} />;
   }
 
   return (
@@ -55,4 +50,5 @@ const ProductPhotoCarousel = ({ photos = [] }) => {
     </CarouselBox>
   );
 };
-export default ProductPhotoCarousel;
+
+export { ProductPhotoCarousel };

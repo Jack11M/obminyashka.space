@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { EllipsisText } from 'obminyashka-components';
 
 import { getProfile } from 'store/profile/slice';
 
@@ -18,9 +17,10 @@ const ActiveProfile = () => {
 
         <Styles.BoxData>
           <Styles.DataName>
-            <EllipsisText id="showUserData">
-              {getName(firstName, lastName) || email}
-            </EllipsisText>
+            {/* TODO: fixed EllipsisText */}
+            {/* <EllipsisText id="showUserData"> */}
+            {getName(firstName, lastName) || email}
+            {/* </EllipsisText> */}
           </Styles.DataName>
         </Styles.BoxData>
       </Styles.ProfileBox>
