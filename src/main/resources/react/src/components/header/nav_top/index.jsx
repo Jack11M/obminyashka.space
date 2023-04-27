@@ -40,7 +40,7 @@ const NavTop = () => {
           <Styles.WrapPersonal>
             <Responsive.Desktop>
               <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-                <Avatar source={profile?.avatarImage} width={30} height={28} />
+                <Avatar source={profile?.avatarImage} width={30} height={30} />
               </Styles.LoginLink>
             </Responsive.Desktop>
 
