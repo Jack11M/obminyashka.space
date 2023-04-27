@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Avatar, Icon } from 'obminyashka-components';
+import { Avatar, Icon, Responsive } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
 import { SelectLanguage } from 'components/selectLang';
-import { getAuthed, getAuthProfile } from 'store/auth/slice';
+import { getAuthed } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -14,7 +14,6 @@ import * as Styles from './styles';
 const NavTop = () => {
   const dispatch = useDispatch();
   const isAuthed = useSelector(getAuthed);
-  const authProfile = useSelector(getAuthProfile);
   const profile = useSelector(getProfile);
 
   useEffect(() => {
@@ -39,22 +38,11 @@ const NavTop = () => {
           </Styles.WrapLinks>
 
           <Styles.WrapPersonal>
-            <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-              <Avatar source={profile?.avatarImage} />
-
-              <Styles.ProfileSpan>
-                {/* TODO: fixed EllipsisText */}
-                {/* <EllipsisText
-                  width={400}
-                  offset={50}
-                  place="left"
-                  cursor="pointer"
-                  id="show-tooltip"
-                > */}
-                {authProfile?.username || getTranslatedText('header.myOffice')}
-                {/* </EllipsisText> */}
-              </Styles.ProfileSpan>
-            </Styles.LoginLink>
+            <Responsive.Desktop>
+              <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
+                <Avatar source={profile?.avatarImage} width={30} height={28} />
+              </Styles.LoginLink>
+            </Responsive.Desktop>
 
             <SelectLanguage />
           </Styles.WrapPersonal>

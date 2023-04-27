@@ -58,12 +58,3 @@ export const LoginLink = styled(Link)`
     width: 30px;
   }
 `;
-
-export const ProfileSpan = styled.span`
-  position: relative;
-  display: block;
-  margin-left: 10px;
-  width: 150px;
-  line-height: 19px;
-  color: #444444;
-`;
