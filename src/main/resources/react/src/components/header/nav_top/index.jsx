@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { Avatar, Icon, Responsive } from 'obminyashka-components';
 import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Icon, Responsive } from 'obminyashka-components';
 
+import { getAuthed } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
 import { getProfile } from 'store/profile/slice';
 import { getUserThunk } from 'store/profile/thunk';
 import { SelectLanguage } from 'components/selectLang';
-import { getAuthed } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
