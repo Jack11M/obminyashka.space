@@ -25,7 +25,6 @@ import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.exception.BadRequestException;
-import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
@@ -98,12 +97,10 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "The user is with such email is already registered")
     })
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
-                                               @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host)
-            throws BadRequestException, DataConflictException {
-
+                                               @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) throws BadRequestException {
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
-            throw new DataConflictException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE));
+            return new ResponseEntity<>(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE), HttpStatus.CONFLICT);
         }
 
         UUID codeId = UUID.randomUUID();

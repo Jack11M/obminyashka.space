@@ -26,7 +26,6 @@ import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
@@ -94,16 +93,17 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserPassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
-                                     @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
+    public ResponseEntity<String> updateUserPassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
+                                                     @Parameter(hidden = true) Authentication authentication) {
         var username = authentication.getName();
         var password = changePasswordRequest.password();
+
         if (userService.isUserPasswordMatches(username, password)) {
-            throw new DataConflictException(getMessageSource(SAME_PASSWORDS));
+            return new ResponseEntity<>(getMessageSource(SAME_PASSWORDS), HttpStatus.CONFLICT);
         }
         userService.updateUserPassword(username, password);
 
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD);
+        return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
@@ -115,14 +115,21 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserEmail(@Valid @RequestBody ChangeEmailRequest changeEmailRequest,
-                                  @Parameter(hidden = true) Authentication authentication) throws DataConflictException {
+    public ResponseEntity<String> updateUserEmail(@Valid @RequestBody ChangeEmailRequest changeEmailRequest,
+                                                  @Parameter(hidden = true) Authentication authentication) {
         var username = authentication.getName();
         var email = changeEmailRequest.email();
-        checkEmailUniqueAndNotUsed(username, email);
+
+        if (userService.isUserEmailMatches(username, email)) {
+            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD), HttpStatus.CONFLICT);
+        }
+        if (userService.existsByEmail(email)) {
+            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL), HttpStatus.CONFLICT);
+        }
+
         userService.updateUserEmail(username, email);
 
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL);
+        return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), HttpStatus.ACCEPTED);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
@@ -209,15 +216,5 @@ public class UserController {
     private User getUser(String username) {
         return userService.findByUsernameOrEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 getMessageSource(ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
-    }
-
-    private void checkEmailUniqueAndNotUsed(String username, String email) throws DataConflictException {
-        if (userService.isUserEmailMatches(username, email)) {
-            throw new DataConflictException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
-        }
-        if (userService.existsByEmail(email)) {
-            throw new DataConflictException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL));
-        }
     }
 }
