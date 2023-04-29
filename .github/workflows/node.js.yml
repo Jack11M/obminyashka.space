@@ -1,14 +1,11 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: ['master']
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18.13.0 ]
+        node-version: [18.16.0]
 
     steps:
       - uses: actions/checkout@v3
@@ -24,6 +21,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+          scope: '@wolshebnik'
           cache: 'npm'
           cache-dependency-path: src/main/resources/react/
       - run: npm ci

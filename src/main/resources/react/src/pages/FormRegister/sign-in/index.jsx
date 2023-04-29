@@ -1,53 +1,36 @@
 import { useState } from 'react';
-import * as yup from 'yup';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
 
-import { NO_SPACE } from 'config';
-import { GoogleSvg } from 'assets/icons';
 import { route } from 'routes/routeConstants';
 import { putUserThunk } from 'store/auth/thunk';
 import { getTranslatedText } from 'components/local/localization';
-import { CheckBox, Button, InputForAuth } from 'components/common';
 
-import { Extra, ExtraLink, WrapperButton, Form } from './styles';
+import * as Styles from './styles';
+import { validationSchema } from './config';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [checkbox, setCheckbox] = useState(false);
-  const [loading, setLoading] = useState(false);
 
+  const initialValues = validationSchema.cast({});
   const fromPage = location.state?.from?.pathname || '/';
 
-  const changeCheckBox = () => {
-    setCheckbox((prev) => !prev);
-  };
+  const [loading, setLoading] = useState(false);
 
-  const validationLoginSchema = yup.object().shape({
-    usernameOrEmail: yup
-      .string()
-      .required(getTranslatedText('errors.requireField'))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .default(() => ''),
-    password: yup
-      .string()
-      .required(getTranslatedText('errors.requireField'))
-      .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-      .default(() => ''),
-  });
-  const initialLoginValues = validationLoginSchema.cast({});
-
-  const onSubmitHandler = async (values, onSubmitProps) => {
+  const onSubmit = async (values, onSubmitProps) => {
     if (loading) return;
     setLoading(true);
+
     try {
-      await dispatch(putUserThunk(values, checkbox));
+      await dispatch(putUserThunk(values));
       navigate(fromPage, { replace: true });
     } catch (err) {
       setLoading(false);
+
       if (err.response.status === 400) {
         onSubmitProps.setErrors({
           usernameOrEmail: err.response.data.error,
@@ -57,77 +40,82 @@ const Login = () => {
   };
 
   return (
-    <Form>
+    <Styles.Wrapper>
       <Formik
         validateOnBlur
-        enableReinitialize
-        onSubmit={onSubmitHandler}
-        initialValues={initialLoginValues}
-        validationSchema={validationLoginSchema}
+        onSubmit={onSubmit}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
       >
-        {({ errors, handleSubmit, isValid, dirty }) => (
-          <>
-            <div>
-              <InputForAuth
+        {({ isValid, dirty, values, setFieldValue }) => (
+          <Form>
+            <Styles.WrapperInputSingIn>
+              <InputField
                 type="text"
+                inputGap="3px"
+                inputHeight="50px"
                 name="usernameOrEmail"
-                text={getTranslatedText('auth.logEmail')}
+                label={getTranslatedText('auth.logEmail')}
               />
 
-              <InputForAuth
+              <InputField
+                inputGap="3px"
                 name="password"
                 type="password"
-                text={getTranslatedText('auth.logPassword')}
+                inputHeight="50px"
+                label={getTranslatedText('auth.logPassword')}
               />
-            </div>
+            </Styles.WrapperInputSingIn>
 
-            <Extra>
+            <Styles.Extra>
               <CheckBox
-                fontSize="14px"
-                checked={checkbox}
+                gap={22}
+                fontSize={14}
                 margin="0 0 44px 0"
-                click={changeCheckBox}
+                name="isLocalStorage"
+                checked={values.isLocalStorage}
                 text={getTranslatedText('auth.remember')}
+                onChange={() =>
+                  setFieldValue('isLocalStorage', !values.isLocalStorage)
+                }
               />
 
-              <ExtraLink to={`${route.login}/${route.signUp}`}>
+              <Styles.ExtraLink to={`${route.login}/${route.signUp}`}>
                 {getTranslatedText('auth.noLogin')}
-              </ExtraLink>
-            </Extra>
+              </Styles.ExtraLink>
+            </Styles.Extra>
 
-            <WrapperButton>
+            <Styles.WrapperButton>
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                width={222}
+                lHeight={24}
                 type="submit"
-                width="222px"
-                lHeight="24px"
                 isLoading={loading}
-                disabling={!isValid && !dirty}
+                style={{ marginBottom: 64 }}
+                disabled={!isValid && !dirty}
                 text={getTranslatedText('button.enter')}
-                click={!errors.usernameOrEmail ? handleSubmit : null}
               />
 
               <Button
                 bold
-                mb="64px"
-                height="48px"
+                width={175}
+                lHeight={24}
                 type="button"
-                width="175px"
-                lHeight="24px"
-                icon={<GoogleSvg />}
+                nativeIcon={false}
+                icon={<Icon.Google />}
+                style={{ marginBottom: 64, height: 48 }}
                 text={getTranslatedText('button.googleOAuth')}
-                click={() =>
+                onClick={() =>
                   window.location.assign('/oauth2/authorization/google')
                 }
               />
-            </WrapperButton>
-          </>
+            </Styles.WrapperButton>
+          </Form>
         )}
       </Formik>
-    </Form>
+    </Styles.Wrapper>
   );
 };
 
-export default Login;
+export { Login };

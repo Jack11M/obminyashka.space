@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -27,7 +27,7 @@ import static space.obminyashka.items_exchange.api.ApiKey.SUBCATEGORY_NAMES;
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
-@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:index-reset.sql")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class SubcategoryFlowTest extends BasicControllerTest {
 
     public static final long SUBCATEGORY_ID_FOR_DELETING = 1L;

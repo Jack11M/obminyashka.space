@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-
-import logo from 'assets/img/logo.png';
+import { Images } from 'obminyashka-components';
 
 export const DivWrap = styled.div`
   padding: 20px 0 22px;
@@ -29,7 +28,7 @@ export const LogoLink = styled(Link)`
   min-width: 148px;
   width: 148px;
   height: 56px;
-  background: url(${logo});
+  background: url(${Images.logo});
   margin-right: 40px;
 
   &:active {

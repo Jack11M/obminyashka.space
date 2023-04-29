@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { showMessage } from 'obminyashka-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { showMessage } from 'hooks';
 import { putOauthUserThunk } from 'store/auth/thunk';
 
 const OAuthSuccess = () => {
@@ -17,7 +17,7 @@ const OAuthSuccess = () => {
       await dispatch(putOauthUserThunk());
       navigate('/');
     } catch (e) {
-      showMessage(e.response);
+      showMessage.error(e.response);
     }
   };
 
@@ -28,4 +28,4 @@ const OAuthSuccess = () => {
   return null;
 };
 
-export default OAuthSuccess;
+export { OAuthSuccess };

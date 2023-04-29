@@ -1,6 +1,30 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
+const flexColumnPadding = `
+  display: flex; 
+  flex-direction: column;
+  padding-top: 3px;
+`;
+
+export const Wrapper = styled.div`
+  padding: 0 50px;
+`;
+
+export const WrapperInputSingIn = styled.div`
+  gap: 33px;
+  margin-bottom: 25px;
+
+  ${flexColumnPadding};
+`;
+
+export const WrapperInputSingUp = styled.div`
+  gap: 25px;
+  margin-bottom: 30px;
+
+  ${flexColumnPadding};
+`;
+
 export const Extra = styled.div`
   display: -webkit-box;
   display: -ms-flexbox;
@@ -8,6 +32,7 @@ export const Extra = styled.div`
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
+  margin-bottom: 44px;
 `;
 
 export const ExtraLink = styled(Link)`
@@ -22,8 +47,4 @@ export const ExtraLink = styled(Link)`
 export const WrapperButton = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-export const Form = styled.form`
-  margin: 0 50px 0 45px;
 `;

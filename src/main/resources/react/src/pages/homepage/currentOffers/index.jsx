@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Icon, Title, ProductCard, showMessage } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { route } from 'routes/routeConstants';
 import { getErrorMessage } from 'Utils/error';
-import { TitleBigBlue } from 'components/common';
-import { ProductCard } from 'components/item-card';
 import { getCity } from 'Utils/getLocationProperties';
-import noPhotos from 'assets/img/showAdv/noPhoto.svg';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -25,7 +22,7 @@ const CurrentOffers = () => {
         if (Array.isArray(data)) setOffers(data);
       })
       .catch((e) => {
-        toast.error(getErrorMessage(e));
+        showMessage.error(getErrorMessage(e));
       });
   }, []);
 
@@ -36,7 +33,7 @@ const CurrentOffers = () => {
   return (
     <Styles.ProductSection>
       <Styles.ProductHeader>
-        <TitleBigBlue text={getTranslatedText('mainPage.blueText')} />
+        <Title text={getTranslatedText('mainPage.blueText')} />
       </Styles.ProductHeader>
 
       <Styles.ProductListUl>
@@ -44,12 +41,17 @@ const CurrentOffers = () => {
           <li key={offer.advertisementId}>
             <ProductCard
               margin="10px 8px"
-              isFavorite={false}
               text={offer.title}
+              isFavorite={false}
               city={getCity(offer.location)}
-              clickOnButton={() => moveToProductPage(offer.advertisementId)}
+              buttonText={getTranslatedText('button.look')}
+              onClick={() => moveToProductPage(offer.advertisementId)}
               picture={
-                offer.image ? `data:image/jpeg;base64,${offer.image}` : noPhotos
+                offer.image ? (
+                  `data:image/jpeg;base64,${offer.image}`
+                ) : (
+                  <Icon.NoPhoto />
+                )
               }
             />
           </li>

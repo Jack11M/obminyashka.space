@@ -1,32 +1,32 @@
-import { route } from 'routes/routeConstants';
+import { Icon } from 'obminyashka-components';
 
-import * as Icon from 'assets/icons';
+import { route } from 'routes/routeConstants';
 
 export const links = [
   {
     url: '',
-    icon: <Icon.ActivitySvg />,
+    icon: <Icon.Activity />,
     textKey: 'panel.myActivity',
     end: true,
   },
   {
     url: route.myProfile,
-    icon: <Icon.ProfileSvg />,
+    icon: <Icon.Profile />,
     textKey: 'panel.myProfile',
   },
   {
     url: route.myFavorite,
-    icon: <Icon.StarSvg />,
+    icon: <Icon.Star />,
     textKey: 'panel.myFavorite',
   },
   {
     url: route.mySettings,
-    icon: <Icon.SettingsSvg />,
+    icon: <Icon.Settings />,
     textKey: 'panel.mySettings',
   },
   {
     url: route.exit,
-    icon: <Icon.LogoutSvg />,
+    icon: <Icon.Logout />,
     textKey: 'panel.myExit',
     onClick: true,
   },

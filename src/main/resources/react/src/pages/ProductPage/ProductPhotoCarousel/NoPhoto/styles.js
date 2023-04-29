@@ -1,3 +1,4 @@
+import { Icon } from 'obminyashka-components';
 import styled, { css } from 'styled-components';
 
 export const NoPhotoContainer = styled.div`
@@ -19,9 +20,9 @@ export const NoPhotoContainer = styled.div`
   `}
 `;
 
-export const NoPhotoImg = styled.img`
-  width: 40%;
-  height: 40%;
-  margin: 30% 30%;
+export const NoPhotoImg = styled(Icon.NoPhoto)`
+  width: 50%;
+  height: 41%;
+  margin: 0 auto;
   object-fit: contain;
 `;

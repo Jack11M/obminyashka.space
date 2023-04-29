@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
@@ -12,15 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import space.obminyashka.items_exchange.service.impl.SendGridService;
 import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
-import java.util.Locale;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -40,15 +39,20 @@ class MailServiceTest {
         messageSourceUtil.setMSource(mock(MessageSource.class));
     }
 
-
     @Test
     void sendMail_shouldPassTheFlow() throws IOException {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, Locale.ENGLISH);
+        var expectedCode = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
+        var expectedHost = "https://obminyashka.space";
+
+        mailService.sendMail(emailTo, EmailType.REGISTRATION, UUID.fromString(expectedCode), expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
-        assertTrue(requestCapture.getValue().getBody().contains(emailTo));
+        Request capturedRequest = requestCapture.getValue();
+        verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
+                        capturedRequest.getEndpoint().equals("mail/send") &&
+                        capturedRequest.getBody().contains(emailTo)));
     }
 }

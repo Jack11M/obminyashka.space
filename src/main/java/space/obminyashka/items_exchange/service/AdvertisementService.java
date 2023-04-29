@@ -2,10 +2,8 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 
@@ -16,18 +14,18 @@ import java.util.UUID;
 public interface AdvertisementService {
 
     /**
-     * Find all advertisements as thumbnails and return them by requested quantity (size) and page
-     *
-     * @param pageable see {@link Pageable} for more details
-     * @return wanted quantity of advertisement on a page
-     */
-    Page<AdvertisementTitleDto> findAllThumbnails(Pageable pageable);
-
-    /**
-     * Find 12 random advertisements as thumbnails
+     * Find N random advertisements as thumbnails with filters
+     * @param findAdvsRequest  an object that contains all parameters to search
      * @return random 12 advertisement
      */
-    List<AdvertisementTitleDto> findRandom12Thumbnails();
+    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest);
+
+    /**
+     * Find page of advertisements with same subcategory without request advertisement
+     * @param findAdvsRequest  an object that contains all parameters to search
+     * @return page of advertisements
+     */
+    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user
@@ -43,6 +41,15 @@ public interface AdvertisementService {
      * @return result of the request
      */
     Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
+
+    /**
+     * Find advertisements by category and return them by requested quantity (size) and page
+     *
+     * @param categoryId - searched category id
+     * @param pageable   see {@link Pageable} for more details
+     * @return result of the request
+     */
+    Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable);
 
     /**
      * Find an advertisement with additional owner check
@@ -79,9 +86,11 @@ public interface AdvertisementService {
      * @param modificationDto DTO for converting and saving
      * @param user owner of a new advertisement
      * @param compressedImages images related to an advertisement
+     * @param titleImage scaled title image
      * @return saved advertisement DTO with updated id
      */
-    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto modificationDto, User user, List<byte[]> compressedImages);
+    AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto modificationDto, User user,
+                                                     List<byte[]> compressedImages, byte[] titleImage);
 
     /**
      * Update existed advertisement

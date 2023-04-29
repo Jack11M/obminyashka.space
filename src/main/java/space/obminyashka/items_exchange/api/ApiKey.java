@@ -13,6 +13,8 @@ public class ApiKey {
     public static final String ADV_ID = ADV + "/{advertisement_id}";
     public static final String ADV_FILTER = ADV + "/filter";
     public static final String ADV_THUMBNAIL = ADV + "/thumbnail";
+    public static final String ADV_SEARCH_PAGINATED_BY_CATEGORY_ID = ADV + "/category/{category_id}";
+    public static final String ADV_BY_CATEGORY_ID = ADV_SEARCH_PAGINATED_BY_CATEGORY_ID + "?page={page}&size={size}";
     public static final String ADV_THUMBNAIL_RANDOM = ADV + "/thumbnail/random";
     public static final String ADV_THUMBNAIL_PARAMS = ADV_THUMBNAIL + "?page={page}&size={size}";
     public static final String ADV_TOTAL = ADV + "/total-amount";
@@ -29,6 +31,9 @@ public class ApiKey {
     public static final String CATEGORY_ALL = CATEGORY + "/all";
     public static final String CATEGORY_ID = CATEGORY + "/{category_id}";
     public static final String CATEGORY_SIZES = CATEGORY_ID + "/sizes";
+    // Email API
+    public static final String EMAIL = API + "/email";
+    public static final String EMAIL_VALIDATE_CODE = EMAIL + "/validate/{code}";
     // Image API
     public static final String IMAGE = API + "/image";
     public static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";

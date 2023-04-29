@@ -1,0 +1,71 @@
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="1.2.0: Add unique constraint in table location" author="ennnbaev">
+        <addUniqueConstraint
+                columnNames="city_ua,district_ua,area_ua,city_en,district_en,area_en"
+                constraintName="unique_location"
+                tableName="location"
+        />
+    </changeSet>
+
+    <changeSet id="1.2.1: add new column" author="serhii.ponomarenko">
+        <addColumn tableName="user">
+            <column name="oauth2Login" type="BOOLEAN" defaultValue="false"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet
+            id="1.2.2: Create table 'email_confirmation_token' and a foreign key between 'email_confirmation_token' and 'user' tables (one-to-one relationship)"
+            author="ennnbaev">
+        <createTable tableName="email_confirmation_token">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="${type.uuid}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="expiry_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValueComputed="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="email_confirmation_token"
+                                 constraintName="fk_email_confirmation_token_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet id="1.2.3: add new column, rename table and remove column token" author="serhii.ponomarenko">
+        <addColumn tableName="user">
+            <column name="is_validated_email" type="BOOLEAN"/>
+            <column name="validated_email" type="BOOLEAN"/>
+        </addColumn>
+
+        <renameTable oldTableName="email_confirmation_token" newTableName="email_confirmation_code"/>
+        <dropColumn tableName="email_confirmation_code">
+            <column name="token"/>
+        </dropColumn>
+    </changeSet>
+
+    <changeSet id="1.2.4: drop column is_validated_email" author="serhii.ponomarenko">
+        <dropColumn tableName="user">
+            <column name="is_validated_email"/>
+        </dropColumn>
+    </changeSet>
+</databaseChangeLog>

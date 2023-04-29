@@ -1,11 +1,11 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,15 +14,15 @@ import javax.validation.constraints.Size;
 @ToString
 public class SubcategoryDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty
     private long id;
 
-    @ApiModelProperty(
-            value = "name of subcategory",
-            dataType = "String",
+    @Schema(
+            description = "name of subcategory",
+            type = "String",
             example = "winter shoes",
-            required = true)
-    @NotEmpty(message = "{invalid.not-empty}")
-    @Size(min = 3, max = 50, message = "{invalid.size}")
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
+    @Size(min = 3, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
     private String name;
 }

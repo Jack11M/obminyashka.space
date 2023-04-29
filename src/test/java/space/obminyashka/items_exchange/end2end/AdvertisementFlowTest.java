@@ -10,12 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -23,6 +25,7 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
@@ -36,19 +39,20 @@ import java.nio.file.Path;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil.isResponseContainsExpectedResponse;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AdvertisementFlowTest extends BasicControllerTest {
 
     private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
@@ -92,6 +96,16 @@ class AdvertisementFlowTest extends BasicControllerTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(longs = {0, -2, 999})
+    @DataSet("database_init.yml")
+    void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
+        int page = 0;
+        int size = 12;
+
+        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isNotFound());
+    }
+
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
@@ -102,6 +116,38 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
                 .andExpect(jsonPath("$.content[0].title").value("Dresses"))
                 .andExpect(jsonPath("$.content[0].ownerName").value("admin"));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @DataSet("database_init.yml")
+    void findPaginatedByCategoryId_shouldReturnPageResponse() throws Exception {
+        long id = 1;
+        int page = 0;
+        int size = 12;
+        sendUriAndGetResultAction(get(ADV_BY_CATEGORY_ID, id, page, size), status().isOk())
+                .andExpect(jsonPath("$.content[0].advertisementId").value(VALID_ADV_ID))
+                .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @DataSet("database_init.yml")
+    void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
+        UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
+        Long subcategoryId = 1l;
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+                .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    @DataSet("database_init.yml")
+    void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
+        UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
+        Long subcategoryId = 4l;
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+                .andExpect(jsonPath("$.size()").value(0));
     }
 
     @Test
@@ -204,12 +250,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
 
-        var validationLocationIdMessage = MessageSourceUtil.getMessageSource("invalid.location.id");
-        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource("invalid.subcategory.id");
-        Assertions.assertAll(
-                () -> assertTrue(isResponseContainsExpectedResponse(validationLocationIdMessage, mvcResult)),
-                () -> assertTrue(isResponseContainsExpectedResponse(validationSubcategoryIdMessage, mvcResult))
-        );
+        var validationLocationIdMessage = MessageSourceUtil.getMessageSource(INVALID_LOCATION_ID);
+        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource(INVALID_SUBCATEGORY_ID);
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(IllegalIdentifierException.class)
+                .hasMessageContainingAll(validationLocationIdMessage, validationSubcategoryIdMessage);
     }
 
     @Test

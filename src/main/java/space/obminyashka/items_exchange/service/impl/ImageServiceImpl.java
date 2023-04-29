@@ -3,8 +3,6 @@ package space.obminyashka.items_exchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.dao.ImageRepository;
 import space.obminyashka.items_exchange.dto.ImageDto;
 import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.mapper.ImageMapper;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
@@ -22,7 +21,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -41,7 +40,7 @@ import static java.awt.Image.SCALE_SMOOTH;
 @Transactional
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
-    private final ModelMapper modelMapper;
+    private final ImageMapper imageMapper;
     private final ImageRepository imageRepository;
     private final Set<String> supportedTypes = Arrays.stream(SupportedMediaTypes.values())
             .map(SupportedMediaTypes::getMediaType)
@@ -58,22 +57,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
-        return mapImagesToDto(imageRepository.findByAdvertisementId(advertisementId));
-    }
-
-    private List<ImageDto> mapImagesToDto(Iterable<Image> images) {
-        return modelMapper.map(images, new TypeToken<List<ImageDto>>() {}.getType());
-    }
-
-    @Override
-    public List<byte[]> compress(List<MultipartFile> images) throws UnsupportedMediaTypeException {
-        validateImagesTypes(images);
-
-        List<byte[]> compressedImages = new ArrayList<>();
-        for (MultipartFile photo : images) {
-            compressedImages.add(compress(photo));
-        }
-        return compressedImages;
+        return imageMapper.toDtoList(imageRepository.findByAdvertisementId(advertisementId));
     }
 
     @SneakyThrows({IOException.class, UnsupportedMediaTypeException.class})
@@ -157,6 +141,13 @@ public class ImageServiceImpl implements ImageService {
                 .collect(Collectors.toSet());
     }
 
+    @SneakyThrows({UnsupportedMediaTypeException.class, IOException.class})
+    @Override
+    public byte[] scale(MultipartFile image) {
+        validateImagesTypes(List.of(image));
+        return scale(image.getBytes());
+    }
+
     @Override
     public byte[] scale(byte[] bytes) {
         try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -167,7 +158,8 @@ public class ImageServiceImpl implements ImageService {
                 Dimension newSize = calculatePreferThumbnailSize(
                         new Dimension(originImage.getWidth(), originImage.getHeight()));
                 BufferedImage scaledImage = getScaled(newSize, originImage);
-                String type = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes)).replace("image/", "");
+                String type = URLConnection.guessContentTypeFromStream(
+                        new ByteArrayInputStream(bytes)).replace("image/", "");
                 ImageIO.write(scaledImage, type, baos);
             }
             return baos.toByteArray();

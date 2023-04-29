@@ -1,16 +1,15 @@
 import { useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import { FieldArray, Form, Formik } from 'formik';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Icon, showMessage } from 'obminyashka-components';
 
 import { enumSex } from 'config/ENUM';
-import { Button } from 'components/common';
 import { getProfile } from 'store/profile/slice';
 import { putChildrenThunk } from 'store/profile/thunk';
 import { getTranslatedText } from 'components/local/localization';
-import ButtonsAddRemoveChild from 'pages/UserInfo/components/buttonsAddRemoveChild';
 
 import { Gender } from './gender';
+import * as Styled from '../styles';
 import { Calendar } from './calendar';
 import { getInitialValues, validationSchema } from './config';
 
@@ -29,9 +28,9 @@ const Children = () => {
     setIsLoading(true);
     try {
       await dispatch(putChildrenThunk(values.children));
-      toast.success(getTranslatedText('toastText.changedData'));
+      showMessage.success(getTranslatedText('toastText.changedData'));
     } catch (e) {
-      toast.error(e);
+      showMessage.error(e);
     } finally {
       setIsLoading(false);
     }
@@ -66,31 +65,46 @@ const Children = () => {
                           <Gender name={`children.${idx}.sex`} />
 
                           {biggerThanStartIndex && (
-                            <ButtonsAddRemoveChild
-                              onClick={() => remove(idx)}
-                            />
+                            <Styled.WrapperDelButton>
+                              <Button
+                                gap={34}
+                                width={34}
+                                height={34}
+                                outsideText
+                                colorType="grey"
+                                icon={<Icon.Plus />}
+                                onClick={() => remove(idx)}
+                              />
+                            </Styled.WrapperDelButton>
                           )}
                         </div>
                       );
                     })}
 
                     {amount !== values.children.length && (
-                      <ButtonsAddRemoveChild
-                        add
-                        text={getTranslatedText('button.addField')}
-                        onClick={() => {
-                          if (availablePush) {
-                            push({
-                              birthDate: null,
-                              sex: enumSex.UNSELECTED,
-                            });
-                          } else {
-                            toast.error(
-                              getTranslatedText('ownInfo.chooseData')
-                            );
-                          }
-                        }}
-                      />
+                      <Styled.WrapperAddButton>
+                        <Button
+                          gap={20}
+                          width={34}
+                          height={34}
+                          outsideText
+                          colorType="green"
+                          icon={<Icon.Plus />}
+                          text={getTranslatedText('button.addField')}
+                          onClick={() => {
+                            if (availablePush) {
+                              push({
+                                birthDate: null,
+                                sex: enumSex.UNSELECTED,
+                              });
+                            } else {
+                              showMessage.error(
+                                getTranslatedText('ownInfo.chooseData')
+                              );
+                            }
+                          }}
+                        />
+                      </Styled.WrapperAddButton>
                     )}
                   </div>
                 );
@@ -98,10 +112,10 @@ const Children = () => {
             </FieldArray>
 
             <Button
-              mb="220px"
+              width={248}
               type="submit"
-              width="248px"
               isLoading={isLoading}
+              style={{ marginBottom: 220 }}
               text={getTranslatedText('button.saveChanges')}
             />
           </Form>

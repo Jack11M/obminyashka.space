@@ -1,5 +1,6 @@
+import { showMessage } from 'obminyashka-components';
+
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { getErrorMessage } from 'Utils/error';
 
 import { putChildrenToStore, putProfile, setAvatar } from './slice';
@@ -10,7 +11,7 @@ export const getUserThunk = () => async (dispatch) => {
     dispatch(putProfile(data));
   } catch (e) {
     if (e?.response?.status !== 401) {
-      showMessage(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   }
 };
@@ -20,7 +21,7 @@ export const putChildrenThunk = (children) => async (dispatch) => {
     const data = await api.profile.putUserChildren(children);
     dispatch(putChildrenToStore(data));
   } catch (e) {
-    showMessage(getErrorMessage(e));
+    showMessage.error(getErrorMessage(e));
   }
 };
 

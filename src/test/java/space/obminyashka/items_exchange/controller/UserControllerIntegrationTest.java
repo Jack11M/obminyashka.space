@@ -5,27 +5,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
+import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -35,6 +38,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +56,13 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @MockBean
     private UserServiceImpl userService;
 
+    @SpyBean
+    private ImageServiceImpl imageService;
+
     private User user;
+
+    @Captor
+    private ArgumentCaptor<MultipartFile> captor;
 
     private static final int MAX_CHILDREN_AMOUNT = 10;
     @Value("${max.phones.amount}")
@@ -75,14 +85,14 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
-    void updateUserInfo_WhenUserHasStatusDeleted_ShouldReturn403WithSpecificMessage() throws Exception {
+    void updateUserInfo_whenUserHasStatusDeleted_shouldReturn403WithSpecificMessage() throws Exception {
         when(userService.getDaysBeforeDeletion(any())).thenReturn(7L);
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isForbidden());
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = new StringJoiner(". ")
-                .add(getMessageSource("exception.illegal.operation"))
-                .add(getParametrizedMessageSource("account.self.delete.request", 7L))
+                .add(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_OPERATION))
+                .add(getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, 7L))
                 .toString();
 
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
@@ -90,11 +100,12 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void updateUserInfo_badAmountPhones_ReturnHttpStatusBadRequest() throws Exception {
+    void updateUserInfo_badAmountPhones_shouldReturnHttpStatusBadRequest() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest());
         var responseContentAsString = getResponseContentAsString(mvcResult);
-        var expectedErrorMessage = getErrorMessageForInvalidField("invalid.phones-amount", "{max}", maxPhonesAmount);
+        var expectedErrorMessage = getErrorMessageForInvalidField(
+                ResponseMessagesHandler.ValidationMessage.INVALID_PHONES_AMOUNT, "{max}", maxPhonesAmount);
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
     }
 
@@ -103,10 +114,10 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     void updateUserInfo_invalidFirstAndLastName_shouldReturnHttpStatusBadRequest() throws Exception {
         UserUpdateDto dto = createUserUpdateDtoWithInvalidFirstAndLastName();
 
-        final var errorMessageForInvalidFirstName =
-                getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getFirstName());
-        final var errorMessageForInvalidLastName =
-                getErrorMessageForInvalidField("invalid.first-or-last.name", "${validatedValue}", dto.getLastName());
+        final var errorMessageForInvalidFirstName = getErrorMessageForInvalidField(
+                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME, "${validatedValue}", dto.getFirstName());
+        final var errorMessageForInvalidLastName = getErrorMessageForInvalidField(
+                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME, "${validatedValue}", dto.getLastName());
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), dto, status().isBadRequest());
         String responseContentAsString = getResponseContentAsString(mvcResult);
@@ -118,67 +129,44 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void addChild_BadTotalAmount_ShouldReturnBadRequest() throws Exception {
+    void addChild_badTotalAmount_shouldReturnBadRequest() throws Exception {
         var badTotalAmountChildDto = generateTestChildren(MAX_CHILDREN_AMOUNT + 1);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), badTotalAmountChildDto, status().isBadRequest());
-        final var expectedErrorMessage = getParametrizedMessageSource("exception.children-amount")
+        final var expectedErrorMessage = getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT)
                 .replace("{max}", String.valueOf(MAX_CHILDREN_AMOUNT));
         assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().contains(expectedErrorMessage));
     }
 
     @Test
-    @WithMockUser(username = "admin")
-    void updateUserPassword_WhenOldPasswordWrong_ShouldThrowInvalidDtoException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(false);
+    @WithMockUser(username = "user")
+    void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException() throws Exception {
+        var request = new ChangePasswordRequest(NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
 
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(WRONG_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserPassword_WhenPasswordConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, WRONG_NEW_PASSWORD_CONFIRMATION);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isBadRequest());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), request, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource("different.passwords")));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
-    @Test
+    @ParameterizedTest
     @WithMockUser(username = "user")
-    void updateUserEmail_WhenEmailConfirmationWrong_ShouldThrowIllegalArgumentException() throws Exception {
-        updateUserEmailBasicTest(NEW_VALID_EMAIL, NEW_INVALID_DUPLICATE_EMAIL, status().isBadRequest(), "invalid.confirm.email");
-    }
+    @MethodSource("listInvalidEmail")
+    void updateUserEmail_whenEmailConfirmationWrong_shouldThrowIllegalArgumentException(String email) throws Exception {
+        var changeEmailRequest = new ChangeEmailRequest(email);
 
-    private void updateUserEmailBasicTest(String email, String confirmationEmail, ResultMatcher expectedStatus, String expectedExceptionKey) throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(email, confirmationEmail);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, expectedStatus);
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource(expectedExceptionKey)));
+        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL)));
     }
 
-    @Test
-    @WithMockUser(username = "user")
-    void updateUserEmail_WhenUserEnteredOldEmail_ShouldThrowDataConflictException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-
-        updateUserEmailBasicTest(OLD_USER_VALID_EMAIL, OLD_USER_VALID_EMAIL, status().isConflict(), "exception.email.old");
-    }
-
-    @Test
-    @WithMockUser(username = "user")
-    void updateUserEmail_WhenUserEnteredExistedEmail_ShouldThrowDataConflictException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.existsByEmail(any())).thenReturn(true);
-
-        updateUserEmailBasicTest(OLD_ADMIN_VALID_EMAIL, OLD_ADMIN_VALID_EMAIL, status().isConflict(), "email.duplicate");
+    private static Stream<Arguments> listInvalidEmail() {
+        return Stream.of(
+                Arguments.of(INVALID_EMAIL_WITHOUT_POINT),
+                Arguments.of(INVALID_EMAIL_WITHOUT_DOMAIN_NAME)
+        );
     }
 
     @Test
@@ -191,57 +179,30 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin")
-    void selfDeleteRequest_WhenPasswordWrongAndTheSameConfirmation_ShouldThrowInvalidDtoException() throws Exception {
-        MvcResult mvcResult = selfDeleteRequestBasicTest(false, WRONG_OLD_PASSWORD, delete(USER_SERVICE_DELETE), status().isBadRequest());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("incorrect.password")));
-    }
-
-    private MvcResult selfDeleteRequestBasicTest(boolean isUsernameExists, String oldPassword, MockHttpServletRequestBuilder request, ResultMatcher expectedResult) throws Exception {
+    @WithMockUser
+    void setUserAvatar_whenReceivedSeveralImages_shouldSaveFirstImage() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        when(userService.isPasswordMatches(any(), any())).thenReturn(isUsernameExists);
 
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(oldPassword, oldPassword);
-        return sendDtoAndGetMvcResult(request, userDeleteFlowDto, expectedResult);
-    }
+        MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
+        MockMultipartFile jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpg".getBytes());
 
-    @ParameterizedTest
-    @WithMockUser(username = "admin")
-    @MethodSource("selfDeleteTestData")
-    void selfDeleteRequest_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
-        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), testDto, status().isBadRequest());
+        sendUriAndGetMvcResult(multipart(USER_SERVICE_CHANGE_AVATAR).file(jpeg).file(bmp), status().is2xxSuccessful());
 
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
+        verify(imageService).scale(captor.capture());
+        verify(userService).findByUsernameOrEmail(any());
 
-        assertTrue(message.contains(getMessageSource("different.passwords")));
-    }
-
-    private static Stream<Arguments> selfDeleteTestData() {
-        return Stream.of(
-                Arguments.of(new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, WRONG_OLD_PASSWORD)),
-                Arguments.of(new UserDeleteFlowDto(WRONG_OLD_PASSWORD, CORRECT_OLD_PASSWORD))
-        );
-    }
-
-    @ParameterizedTest
-    @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
-    @MethodSource("selfDeleteTestData")
-    void makeAccountActiveAgain_WhenPasswordCorrectAndConfirmationWrong_ShouldThrowIllegalArgumentException(UserDeleteFlowDto testDto) throws Exception {
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), testDto, status().isBadRequest());
-
-        String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
-
-        assertTrue(message.contains(getMessageSource("different.passwords")));
+        assertEquals(jpeg, captor.getValue());
     }
 
     @Test
     @WithMockUser("admin")
-    void makeAccountActiveAgain_WhenUserHasNotStatusDeletedShouldThrowAccessDenied() throws Exception {
-        MvcResult mvcResult = selfDeleteRequestBasicTest(true, CORRECT_OLD_PASSWORD, put(USER_SERVICE_RESTORE), status().isForbidden());
+    void makeAccountActiveAgain_whenUserHasNotStatusDeleted_shouldThrowAccessDenied() throws Exception {
+        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
+
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_RESTORE), status().isForbidden());
 
         String message = mvcResult.getResponse().getContentAsString().trim();
-        assertEquals(getMessageSource("invalid.token"), message);
+        assertEquals(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN), message);
     }
 
     private String getResponseContentAsString(MvcResult mvcResult) throws UnsupportedEncodingException {
@@ -266,7 +227,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    void addChild_InvalidChildAge_ShouldReturnHttpStatusBadRequest() throws Exception {
+    void addChild_invalidChildAge_shouldReturnHttpStatusBadRequest() throws Exception {
         var childDto = getTestChildren(2001);
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
@@ -276,6 +237,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
                 () -> assertNotNull(resolvedException),
                 () -> assertNotNull(resolvedException.getMessage()),
                 () -> assertTrue(resolvedException.getMessage()
-                        .contains(getParametrizedMessageSource("invalid.child.age"))));
+                        .contains(getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CHILD_AGE))));
     }
 }

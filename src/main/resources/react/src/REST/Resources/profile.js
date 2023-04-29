@@ -19,7 +19,7 @@ export const putPasswordFetch = (password) =>
   obminyashkaApi.put('/user/service/pass/', password).then(({ data }) => data);
 
 export const putEmailFetch = (email) =>
-  obminyashkaApi.put('/user/service/email/', email).then(({ data }) => data);
+  obminyashkaApi.put('/user/service/email', email).then(({ data }) => data);
 
 export const postAvatar = (avatar) =>
   obminyashkaApi

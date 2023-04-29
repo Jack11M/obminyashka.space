@@ -1,53 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { LanguageSelection } from 'obminyashka-components';
 
-import { setLanguage, getAuth, setChangeLang } from 'store/auth/slice';
+import { setLanguage, getAuth } from 'store/auth/slice';
 
-import * as Styles from './styles';
-
-const CustomSelect = () => {
+const SelectLanguage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { lang, isChangeLang } = useSelector(getAuth);
-  const [languageArray, setLanguageArray] = useState([
-    { value: 'ua', checked: false },
-    { value: 'en', checked: false },
-  ]);
-
-  useEffect(() => {
-    if (isChangeLang) {
-      dispatch(setChangeLang(false));
-      navigate(0);
-    }
-
-    const newLang = languageArray.map((item) =>
-      item.value === lang
-        ? { ...item, checked: true }
-        : { ...item, checked: false }
-    );
-
-    setLanguageArray(newLang);
-  }, [lang]);
+  const { lang } = useSelector(getAuth);
 
   const handleSelected = (langValue) => {
-    dispatch(setLanguage(langValue));
-    dispatch(setChangeLang(true));
+    dispatch(setLanguage(langValue.lang));
+    navigate(0);
   };
 
-  return (
-    <Styles.LanguagePanel>
-      {languageArray.map((option) => (
-        <Styles.LanguageItem
-          key={option.value}
-          checked={option.checked}
-          onClick={() => handleSelected(option.value)}
-        >
-          {option.value}
-        </Styles.LanguageItem>
-      ))}
-    </Styles.LanguagePanel>
-  );
+  return <LanguageSelection lang={lang} onClick={handleSelected} />;
 };
 
-export { CustomSelect };
+export { SelectLanguage };

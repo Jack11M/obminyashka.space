@@ -2,7 +2,7 @@ package space.obminyashka.items_exchange.model;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"id", "advertisements"})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "area_ua", "district_ua", "city_ua", "area_en", "district_en", "city_en" }) })
 public class Location {
 
     @Id

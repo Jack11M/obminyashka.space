@@ -1,11 +1,10 @@
-import { useField } from 'formik';
 import { useEffect, useState } from 'react';
+import { useField } from 'formik';
 import { useSelector } from 'react-redux';
+import { Input, showMessage, Subtitle } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { showMessage } from 'hooks';
 import { getAuthLang } from 'store/auth/slice';
-import { ErrorDisplay } from 'pages/AddGoods/error-display';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -27,11 +26,10 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
         if (Array.isArray(categories)) {
           setReceivedCategories(categories);
         } else {
-          // eslint-disable-next-line no-throw-literal
-          throw { message: 'OOps, I didn’t get the category' };
+          showMessage.error('OOps, I didn’t get the category');
         }
       } catch (err) {
-        showMessage(err.response?.data ?? err.message);
+        showMessage.error(err.response?.data ?? err.message);
       }
     })();
   }, []);
@@ -65,10 +63,7 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
 
   return (
     <Styles.AddChoose>
-      <Styles.TitleH3>
-        {getTranslatedText('addAdv.chooseSection')}&nbsp;
-        <Styles.Star>*</Styles.Star>
-      </Styles.TitleH3>
+      <Subtitle textTitle={getTranslatedText('addAdv.chooseSection')} />
 
       <Styles.Sections>
         <Styles.SectionsItem>
@@ -105,15 +100,17 @@ const SelectionSection = ({ category, subcategory, announcement }) => {
             {getTranslatedText('addAdv.headline')}
           </Styles.ItemDescription>
 
-          <Styles.InputText
+          <Input
             type="text"
             name="topic"
-            error={touched && !!error}
+            errorGap="5px"
+            autoComplete="off"
+            inputHeight="50px"
+            errorFontSize="16px"
+            error={touched && !!error && error}
             value={announcement.announcementTitle}
-            onChange={(e) => announcement.setAnnouncementTitle(e.target.value)}
+            onChange={(e) => announcement.setAnnouncementTitle(e?.target.value)}
           />
-
-          <ErrorDisplay error={touched && error} />
         </Styles.SectionsItem>
       </Styles.Sections>
     </Styles.AddChoose>

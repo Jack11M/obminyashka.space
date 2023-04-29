@@ -9,7 +9,8 @@ public class UserDtoCreatingUtil {
 
     public static final Set<PhoneDto> NEW_PHONES = Set.of(new PhoneDto("381234567890", true));
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
-    public static final String NEW_INVALID_DUPLICATE_EMAIL = "test@test.com";
+    public static final String INVALID_EMAIL_WITHOUT_POINT = "username@domain";
+    public static final String INVALID_EMAIL_WITHOUT_DOMAIN_NAME = "username@.com";
     public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
     public static final String OLD_ADMIN_VALID_EMAIL = "admin@gmail.com";
     public static final String NEW_VALID_NAME_WITH_APOSTROPHE = "Мар'яна";
@@ -17,7 +18,6 @@ public class UserDtoCreatingUtil {
     public static final String NEW_INVALID_SHORT_NAME = "n";
     public static final String NEW_INVALID_TWO_WORDS_NAME = "new Name";
     public static final String CORRECT_OLD_PASSWORD = "@kuIOIY*h986";
-    public static final String WRONG_OLD_PASSWORD = "123456wWWW";
     public static final String NEW_PASSWORD = "123456wW";
     public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
     private static final int MAX_AMOUNT_OF_PHONES = 3;

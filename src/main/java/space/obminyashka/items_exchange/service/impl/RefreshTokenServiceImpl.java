@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.RefreshTokenRepository;
@@ -8,7 +9,6 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -22,9 +22,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken createRefreshToken(User user) {
-        final var refreshToken = jwtTokenService.generateRefreshToken(user.getUsername());
+        final String token = jwtTokenService.generateRefreshToken(user.getUsername());
         final var tokenExpirationTime = jwtTokenService.generateRefreshTokenExpirationTime();
-        return refreshTokenRepository.save(new RefreshToken(user, refreshToken, tokenExpirationTime));
+        return refreshTokenRepository.save(Optional.ofNullable(user.getRefreshToken())
+                .map(refreshToken -> refreshToken.setToken(token)
+                        .setCreated(LocalDateTime.now())
+                        .setExpiryDate(tokenExpirationTime))
+                .orElseGet(() -> new RefreshToken(user, token, tokenExpirationTime)));
     }
 
     private boolean isRefreshTokenExpired(RefreshToken refreshToken) {

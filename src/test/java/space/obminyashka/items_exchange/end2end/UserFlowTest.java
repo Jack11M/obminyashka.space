@@ -18,14 +18,16 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
-import space.obminyashka.items_exchange.dto.UserDeleteFlowDto;
+import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,21 +35,24 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserFlowTest extends BasicControllerTest {
 
     private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
@@ -85,7 +90,7 @@ class UserFlowTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isAccepted());
 
         var responseContentAsString = mvcResult.getResponse().getContentAsString();
-        assertTrue(responseContentAsString.contains(getMessageSource("changed.user.info")));
+        assertTrue(responseContentAsString.contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_INFO)));
     }
 
     @Test
@@ -104,7 +109,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    void getChildren_Success_ShouldReturnUsersChildren() throws Exception {
+    void getChildren_success_shouldReturnUsersChildren() throws Exception {
         sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].sex").value("MALE"))
@@ -115,11 +120,41 @@ class UserFlowTest extends BasicControllerTest {
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "children/update.yml", orderBy = {"created", "name", "birth_date"}, ignoreCols = "id")
-    void updateChild_Success_ShouldReturnHttpStatusOk() throws Exception {
+    void updateChild_success_shouldReturnHttpStatusOk() throws Exception {
         var validUpdatingChildDtoJson = getTestChildren(2018);
 
         sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
+            ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
+    void updateUserPassword_shouldGetResponseOK_whenDataValid()
+            throws Exception {
+        var changePasswordRequest = new ChangePasswordRequest(NEW_PASSWORD, NEW_PASSWORD);
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status().isAccepted());
+        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
+
+        assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, pwd));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(CHANGED_USER_PASSWORD)));
+    }
+
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet("database_init.yml")
+    void updateUserPassword_shouldReturnException_whenPasswordsSame() throws Exception {
+        var changePasswordRequest = new ChangePasswordRequest(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), changePasswordRequest, status().isConflict());
+        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
+
+        assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, pwd));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage(getMessageSource(SAME_PASSWORDS));
     }
 
     @Test
@@ -127,15 +162,16 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
-    void updateUserPassword_WhenDataCorrect_Successfully() throws Exception {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
+    void updateUserEmail_shouldGetResponse() throws Exception {
+        var changeEmailRequest = new ChangeEmailRequest(OLD_ADMIN_VALID_EMAIL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), userChangePasswordDto, status().isAccepted());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
+        String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
-        String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
-
-        assertTrue(bCryptPasswordEncoder.matches(userChangePasswordDto.getNewPassword(), pwd));
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.password")));
+        assertEquals(userEmail, changeEmailRequest.email());
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(DataConflictException.class)
+                .hasMessage(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
     }
 
     @Test
@@ -143,12 +179,12 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void updateUserEmail_WhenDataIsCorrect_Successfully() throws Exception {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_VALID_EMAIL, NEW_VALID_EMAIL);
+    void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
+        var changeEmailRequest = new ChangeEmailRequest(NEW_VALID_EMAIL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), userChangeEmailDto, status().isAccepted());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("changed.user.email")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }
 
     @Test
@@ -156,25 +192,22 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/delete_user_first_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void selfDeleteRequest_WhenDataCorrect_Successfully() throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
-        MvcResult mvcResult = sendDtoAndGetMvcResult(delete(USER_SERVICE_DELETE), userDeleteFlowDto, status().isAccepted());
+    void selfDeleteRequest_whenDataCorrect_successfully() throws Exception {
+        MvcResult mvcResult = sendUriAndGetMvcResult(delete(USER_SERVICE_DELETE), status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(
-                getParametrizedMessageSource("account.self.delete.request", numberOfDaysToKeepDeletedUsers)));
+                getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, numberOfDaysToKeepDeletedUsers)));
     }
 
     @Test
     @WithMockUser(username = "deletedUser", roles = "SELF_REMOVING")
     @DataSet(value = {"database_init.yml", "user/deleted_user_init.yml"})
     @ExpectedDataSet(value = "user/deleted_user_restore_expected.yml", orderBy = {"created", "name"},
-            ignoreCols = {"password", "lastOnlineTime", "updated"})
-    void makeAccountActiveAgain_WhenDataCorrect_Successfully() throws Exception {
-        UserDeleteFlowDto userDeleteFlowDto = new UserDeleteFlowDto(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
+            ignoreCols = {"password", "lastOnlineTime", "updated", "status"})
+    void makeAccountActiveAgain_whenDataCorrect_successfully() throws Exception {
+        MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_RESTORE), status().isAccepted());
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_RESTORE), userDeleteFlowDto, status().isAccepted());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource("account.made.active.again")));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN)));
     }
 
     @Test
@@ -187,6 +220,8 @@ class UserFlowTest extends BasicControllerTest {
         var oauth2User = createDefaultOidcUser();
         var user = userService.loginUserWithOAuth2(oauth2User);
         assertNotNull(user);
+        assertEquals(true, user.getOauth2Login());
+        assertEquals(true, user.isValidatedEmail());
 
         sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
                 .andExpect(jsonPath("$.username").value(NEW_USER_EMAIL))
@@ -196,21 +231,21 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     private DefaultOidcUser createDefaultOidcUser() {
-        var familyName = "family_name";
-        var givenName = "given_name";
         var roleUser = "ROLE_USER";
-        var groupsKey = "groups";
-        var emailKey = "email";
-        var subKey = "sub";
 
+        final var now = Instant.now();
         var idToken = new OidcIdToken(
                 ID_TOKEN,
-                Instant.now(),
-                Instant.now().plusSeconds(60),
-                Map.of(groupsKey, roleUser, subKey, 123)
-        );
+                now,
+                now.plusSeconds(60),
+                Map.of("groups", roleUser, "sub", 123));
 
-        final var userInfo = new OidcUserInfo(Map.of(emailKey, NEW_USER_EMAIL, givenName, USER_FIRST_NAME, familyName, USER_LAST_NAME));
+        final var userInfo = new OidcUserInfo(Map.of(
+                "email", NEW_USER_EMAIL,
+                "given_name", USER_FIRST_NAME,
+                "family_name", USER_LAST_NAME,
+                "email_verified", true));
+
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 

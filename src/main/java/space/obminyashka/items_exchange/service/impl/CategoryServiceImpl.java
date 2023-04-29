@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.service.impl;
 import space.obminyashka.items_exchange.dao.CategoryRepository;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.dto.SubcategoryDto;
+import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.model.Category;
 import space.obminyashka.items_exchange.model.Subcategory;
 import space.obminyashka.items_exchange.model.enums.Size;
@@ -13,7 +14,6 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static space.obminyashka.items_exchange.mapper.UtilMapper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final SubcategoryService subcategoryService;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<String> findAllCategoryNames() {
@@ -29,24 +30,29 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> findAllCategoryDtos() {
-        return convertAllTo(categoryRepository.findAll(), CategoryDto.class);
+        return categoryMapper.toDtoList(categoryRepository.findAll());
     }
 
     @Override
     public Optional<CategoryDto> findCategoryDtoById(long id) {
         return categoryRepository.findById(id)
-                .map(category -> convertTo(category, CategoryDto.class));
+                .map(categoryMapper::toDto);
     }
 
     @Override
     public CategoryDto saveCategoryWithSubcategories(CategoryDto categoryDto) {
         final Category category = saveCategory(categoryDto);
-        return convertTo(category, CategoryDto.class);
+        return categoryMapper.toDto(category);
     }
 
     @Override
     public void removeById(long categoryId) {
         categoryRepository.deleteById(categoryId);
+    }
+
+    @Override
+    public boolean isCategoryExistsById(long id) {
+        return categoryRepository.existsById(id);
     }
 
     @Override
@@ -106,7 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private Category saveCategory(CategoryDto categoryDto) {
-        final Category category = convertTo(categoryDto, Category.class);
+        final Category category = categoryMapper.toModel(categoryDto);
         category.getSubcategories().forEach(subcategory -> subcategory.setCategory(category));
         return categoryRepository.saveAndFlush(category);
     }

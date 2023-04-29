@@ -1,14 +1,14 @@
 import { Route, Routes as Switch } from 'react-router-dom';
 
-import Auth from 'pages/FormRegister/Auth';
-import OAuthSuccess from 'pages/OAuthSuccess';
+import { Auth } from 'pages/FormRegister/Auth';
 import HomePage from 'pages/homepage/HomePage';
 import UserInfo from 'pages/UserInfo/UserInfo';
 import AddGoods from 'pages/AddGoods/AddGoods';
-import Login from 'pages/FormRegister/sign-in';
-import SignUp from 'pages/FormRegister/sign-up';
+import { OAuthSuccess } from 'pages/OAuthSuccess';
+import { Login } from 'pages/FormRegister/sign-in';
+import { SignUp } from 'pages/FormRegister/sign-up';
 import { SearchResults } from 'pages/SearchResults';
-import ProductPage from 'pages/ProductPage/ProductPage';
+import { ProductPage } from 'pages/ProductPage/ProductPage';
 import FourOhFourPage from 'pages/ErrorPages/FourOhFourPage';
 
 import { route } from './routeConstants';

@@ -8,20 +8,31 @@ export const setStorageUser = (data, type = 'user') => {
   const local = JSON.parse(localStorage.getItem(type));
   const session = JSON.parse(sessionStorage.getItem(type));
   let newData;
-  if (local) {
+
+  if (local && type === 'user') {
     newData = { ...local, ...data };
     localStorage.setItem(type, JSON.stringify(newData));
-  } else {
+  }
+
+  if (session && type === 'user') {
     newData = { ...session, ...data };
     sessionStorage.setItem(type, JSON.stringify(newData));
   }
 };
 
 export const getDefaultLang = () => {
-  let lang = navigator.language || navigator.userLanguage;
-  lang = lang?.substring(0, 2);
+  const localLang = localStorage.getItem('lang');
 
-  return lang === 'en' ? 'en' : 'ua';
+  if (localLang) {
+    return localLang;
+  }
+
+  let lang = navigator.language;
+  const getLang = lang?.substring(0, 2);
+  lang = getLang === 'en' ? 'en' : 'ua';
+  localStorage.setItem('lang', lang);
+
+  return lang;
 };
 
 export const getStorageLang = () =>

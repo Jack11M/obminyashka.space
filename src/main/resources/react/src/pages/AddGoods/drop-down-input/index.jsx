@@ -1,6 +1,6 @@
 import { useField } from 'formik';
+import { Icon } from 'obminyashka-components';
 
-import { CloseSvg } from 'assets/icons';
 import { ErrorDisplay } from 'pages/AddGoods/error-display';
 
 import * as Styles from './styles';
@@ -35,13 +35,13 @@ const DropDownInput = ({
         error={error}
         value={value}
         onFocus={onFocus}
-        autocomplete="off"
+        autoComplete="off"
         disabled={disabled}
         onChange={onChangeInput}
       />
       {checkInputValue && (
         <Styles.WrapSvg onClick={clearInput}>
-          <CloseSvg />
+          <Icon.Close />
         </Styles.WrapSvg>
       )}
       <ErrorDisplay error={!!error && error} />

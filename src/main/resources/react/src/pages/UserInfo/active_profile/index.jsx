@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { getProfile } from 'store/profile/slice';
-import { EllipsisText } from 'components/common';
 
 import * as Styles from './styles';
 import { getName } from './helpers';
@@ -18,7 +17,10 @@ const ActiveProfile = () => {
 
         <Styles.BoxData>
           <Styles.DataName>
-            <EllipsisText>{getName(firstName, lastName) || email}</EllipsisText>
+            {/* TODO: fixed EllipsisText */}
+            {/* <EllipsisText id="showUserData"> */}
+            {getName(firstName, lastName) || email}
+            {/* </EllipsisText> */}
           </Styles.DataName>
         </Styles.BoxData>
       </Styles.ProfileBox>

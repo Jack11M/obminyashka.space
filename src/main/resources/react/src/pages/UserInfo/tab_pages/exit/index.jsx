@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 import { useClickAway } from 'react-use';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Button, Images } from 'obminyashka-components';
 
-import { Button } from 'components/common';
 import { route } from 'routes/routeConstants';
-import logout2 from 'assets/img/log-out-2.png';
-import { clearProfile } from 'store/profile/slice';
 import { logoutUserThunk } from 'store/auth/thunk';
+import { clearProfile } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
 import * as Styles from './styles';
@@ -41,14 +40,14 @@ const Exit = ({ toggle, setIsModalOpen }) => {
 
         <Styles.ButtonStyles>
           <Button
-            width="179px"
-            click={setLogOut}
+            width={179}
+            onClick={setLogOut}
             text={getTranslatedText('exit.exit')}
           />
         </Styles.ButtonStyles>
 
         <Styles.ModalBackground>
-          <Styles.ModalImage src={logout2} alt="log-out" />
+          <Styles.ModalImage src={Images.logout2} alt="log-out" />
         </Styles.ModalBackground>
       </Styles.Modal>
     </Styles.ModalOverlay>

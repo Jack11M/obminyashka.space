@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
@@ -27,7 +28,6 @@ import java.util.stream.Stream;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
@@ -36,6 +36,7 @@ import static space.obminyashka.items_exchange.api.ApiKey.*;
 @DBRider
 @AutoConfigureMockMvc
 @DataSet("database_init.yml")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ImageFlowTest extends BasicControllerTest {
     private static final String EXISTED_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
     private static final String TEST_JPEG = "test image jpeg";
@@ -104,7 +105,6 @@ class ImageFlowTest extends BasicControllerTest {
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
                 .file(jpeg)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 }

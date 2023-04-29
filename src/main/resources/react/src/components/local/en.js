@@ -21,6 +21,8 @@ const en = {
     notEmptyInput: 'At least one field is required.',
     selectCategory: 'Initially you need to select a category',
     addedFile: "The photo you've just added is already exist.",
+    addedExchange:
+      'the proposition has already been added to the list of favors',
     pictureSelection: 'Select a photo with one of the supported extensions',
     sizeFile: 'Your photo total size',
     selectFile: 'Select a photo up to 10 MB total size',
@@ -35,6 +37,7 @@ const en = {
   },
   errors: {
     minPhoto: 'Minimum 1 photo',
+    fillOrCheck: 'Fill in the field or check the box',
     requireField: 'Field is required',
     invalidEmailFormat: 'Invalid mail format',
     min2: 'Minimum of 2 characters',
@@ -43,6 +46,7 @@ const en = {
     max30: 'Maximum 30 characters',
     max40: 'Maximum 40 characters',
     max50: 'Maximum 50 characters',
+    max70: 'Maximum 70 characters',
     max129: 'Maximum 129 characters',
     max200: 'Maximum 200 characters',
     max255: 'Maximum 255 characters',
@@ -90,9 +94,7 @@ const en = {
     newPassword: 'New password:',
     confirmPassword: 'Confirm password:',
     changeEmail: 'Change EmaiL',
-    oldEmail: 'Current Email:',
-    newEmail: 'New Email:',
-    confirmEmail: 'Confirm Email:',
+    email: 'Email:',
     remove: 'Remove account',
     removeConfirm:
       'To delete your account, you need to enter a password and confirm it.',
@@ -320,7 +322,7 @@ const en = {
   seasonEnum: {
     WINTER: 'Winter',
     SUMMER: 'Summer',
-    ALL_SEASONS: 'All seasons',
+    NO_SEASONS: 'All seasons',
     DEMI_SEASON: 'Demi-season',
   },
   filterPage: {

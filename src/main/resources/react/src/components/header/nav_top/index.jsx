@@ -1,22 +1,19 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, Icon, Responsive } from 'obminyashka-components';
 
+import { getAuthed } from 'store/auth/slice';
 import { route } from 'routes/routeConstants';
-import { EllipsisText } from 'components/common';
 import { getProfile } from 'store/profile/slice';
-import { Avatar } from 'components/common/avatar';
 import { getUserThunk } from 'store/profile/thunk';
-import { CustomSelect } from 'components/selectLang';
-import { getAuthed, getAuthProfile } from 'store/auth/slice';
+import { SelectLanguage } from 'components/selectLang';
 import { getTranslatedText } from 'components/local/localization';
-import { ReactComponent as HeartSvg } from 'assets/icons/heart.svg';
 
 import * as Styles from './styles';
 
 const NavTop = () => {
   const dispatch = useDispatch();
   const isAuthed = useSelector(getAuthed);
-  const authProfile = useSelector(getAuthProfile);
   const profile = useSelector(getProfile);
 
   useEffect(() => {
@@ -35,24 +32,19 @@ const NavTop = () => {
             </Styles.NavTopLink>
 
             <Styles.NavTopLink to={route.home}>
-              <HeartSvg />
+              <Icon.Heart />
               {getTranslatedText('header.goodness')}
             </Styles.NavTopLink>
           </Styles.WrapLinks>
 
           <Styles.WrapPersonal>
-            <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
-              <Avatar source={profile?.avatarImage} />
+            <Responsive.Desktop>
+              <Styles.LoginLink to={isAuthed ? route.userInfo : route.login}>
+                <Avatar source={profile?.avatarImage} width={30} height={30} />
+              </Styles.LoginLink>
+            </Responsive.Desktop>
 
-              <Styles.ProfileSpan>
-                <EllipsisText>
-                  {authProfile?.username ||
-                    getTranslatedText('header.myOffice')}
-                </EllipsisText>
-              </Styles.ProfileSpan>
-            </Styles.LoginLink>
-
-            <CustomSelect />
+            <SelectLanguage />
           </Styles.WrapPersonal>
         </Styles.DivTop>
       </Styles.Wrapper>

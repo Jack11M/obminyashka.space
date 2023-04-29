@@ -27,8 +27,8 @@ const AnimatedLabel = styled(animated.div)`
 `;
 
 const PlaceHolder = styled.p`
-  padding: 10px;
-  line-height: 26px;
+  padding: 12px 10px;
+  line-height: 24px;
   color: #8e8e8e;
 `;
 

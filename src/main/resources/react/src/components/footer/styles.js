@@ -1,12 +1,11 @@
-import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
-
-import footerBg from 'assets/img/footerBg.png';
+import styled, { css } from 'styled-components';
+import { Images } from 'obminyashka-components';
 
 export const Container = styled.div`
   position: relative;
   margin-top: auto;
-  background-image: url(${footerBg});
+  background-image: url(${Images.footerBg});
   background-size: cover;
   background-position: top;
   background-repeat: no-repeat;
@@ -62,7 +61,6 @@ export const WrapContacts = styled.div`
 export const Contact = styled.a`
   font-size: 22px;
   line-height: 30px;
-
   display: block;
   line-height: 24px;
   text-decoration: none;

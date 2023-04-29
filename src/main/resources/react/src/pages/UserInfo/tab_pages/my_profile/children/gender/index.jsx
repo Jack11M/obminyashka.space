@@ -1,4 +1,5 @@
 import { useField } from 'formik';
+import { CheckBox } from 'obminyashka-components';
 
 import { enumSex } from 'config/ENUM';
 import { getTranslatedText } from 'components/local/localization';
@@ -14,26 +15,29 @@ const Gender = ({ name }) => {
       <Styles.Title>{getTranslatedText('ownInfo.gender')}</Styles.Title>
 
       <Styles.Container>
-        <Styles.ChildDiv onClick={() => helpers.setValue(enumSex.MALE)}>
-          <Styles.Circle selected={value === enumSex.MALE} />
-          <Styles.LabelGander>
-            {getTranslatedText('ownInfo.boy')}
-          </Styles.LabelGander>
-        </Styles.ChildDiv>
+        <CheckBox
+          type="radio"
+          fontSize={16}
+          checked={value === enumSex.MALE}
+          text={getTranslatedText('ownInfo.boy')}
+          onChange={() => helpers.setValue(enumSex.MALE)}
+        />
 
-        <Styles.ChildDiv onClick={() => helpers.setValue(enumSex.FEMALE)}>
-          <Styles.Circle selected={value === enumSex.FEMALE} />
-          <Styles.LabelGander>
-            {getTranslatedText('ownInfo.girl')}
-          </Styles.LabelGander>
-        </Styles.ChildDiv>
+        <CheckBox
+          type="radio"
+          fontSize={16}
+          checked={value === enumSex.FEMALE}
+          text={getTranslatedText('ownInfo.girl')}
+          onChange={() => helpers.setValue(enumSex.FEMALE)}
+        />
 
-        <Styles.ChildDiv onClick={() => helpers.setValue(enumSex.UNSELECTED)}>
-          <Styles.Circle selected={value === enumSex.UNSELECTED} />
-          <Styles.LabelGander>
-            {getTranslatedText('ownInfo.unselected')}
-          </Styles.LabelGander>
-        </Styles.ChildDiv>
+        <CheckBox
+          type="radio"
+          fontSize={16}
+          checked={value === enumSex.UNSELECTED}
+          text={getTranslatedText('ownInfo.unselected')}
+          onChange={() => helpers.setValue(enumSex.UNSELECTED)}
+        />
       </Styles.Container>
     </Styles.GenderDiv>
   );

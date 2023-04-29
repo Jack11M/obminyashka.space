@@ -31,7 +31,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       SERVER_SSL_KEY_STORE_PASSWORD: root
       SERVER_SSL_KEY_STORE: /etc/ssl/certs/keystore.p12
-      APP_JWT_SECRET: root
+      APP_JWT_SECRET: super_secret_256_bit_phrase_jwt_key
     command: mvn clean spring-boot:run
     volumes:
       - ssl:/etc/ssl/certs/

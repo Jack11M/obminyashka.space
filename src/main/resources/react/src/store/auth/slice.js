@@ -1,13 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { showMessage } from 'obminyashka-components';
 
-import { showMessage } from 'hooks';
 import { getStorageLang, getStorageUser, setStorageUser } from 'Utils';
 
 const authInitialState = {
-  profile: getStorageUser('user'),
   isFetchingAuth: false,
   lang: getStorageLang(),
-  isChangeLang: false,
+  profile: getStorageUser('user'),
   isAuthed: !!getStorageUser('user'),
 };
 
@@ -18,13 +17,11 @@ const authSlice = createSlice({
     setLanguage: (state, { payload }) => {
       try {
         setStorageUser({ 'Accept-Language': payload });
+        localStorage.setItem('lang', payload);
         state.lang = payload;
       } catch (e) {
-        showMessage('You need to enable a localStorage');
+        showMessage.error('You need to enable a localStorage');
       }
-    },
-    setChangeLang: (state, { payload }) => {
-      state.isChangeLang = payload;
     },
     putEmail: (state, { payload }) => {
       setStorageUser({ email: payload });
@@ -59,7 +56,6 @@ const {
     setLoader,
     logOutUser,
     setLanguage,
-    setChangeLang,
   },
 } = authSlice;
 
@@ -76,6 +72,5 @@ export {
   logOutUser,
   setLanguage,
   authReducer,
-  setChangeLang,
   authInitialState,
 };

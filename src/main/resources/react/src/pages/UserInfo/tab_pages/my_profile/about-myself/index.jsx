@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { toast } from 'react-toastify';
-import { FieldArray, Formik } from 'formik';
+import { FieldArray, Form, Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Icon, showMessage, InputField } from 'obminyashka-components';
 
 import api from 'REST/Resources';
-import { Button } from 'components/common';
 import { getProfile, putUserToStore } from 'store/profile/slice';
 import { getTranslatedText } from 'components/local/localization';
 
-import { validationUserSchema } from './config';
-import InputProfile from '../../../components/inputProfile';
-import ButtonsAddRemoveChild from '../../../components/buttonsAddRemoveChild';
+import * as Styles from '../styles';
+import { validationUserSchema, getInitialUser } from './config';
 
 const amount = 3;
 
@@ -28,17 +26,9 @@ const AboutMyself = () => {
     array
       .map((phone) => ({
         defaultPhone: false,
-        phoneNumber: phone,
+        phoneNumber: phone.replace(/-|\(|\)/gi, ''),
       }))
       .filter((phone) => phone.phoneNumber !== '');
-
-  const validationSchema = validationUserSchema({
-    firstName,
-    lastName,
-    phoneForInitial,
-  });
-
-  const initialUserValues = validationSchema.cast({});
 
   const onSubmit = async (dataFormik) => {
     setAboutLoading(true);
@@ -52,17 +42,17 @@ const AboutMyself = () => {
         !newUserData.firstName &&
         !newUserData.phones.length
       ) {
-        toast.success(getTranslatedText('popup.notEmptyInput'));
+        showMessage.success(getTranslatedText('popup.notEmptyInput'));
         return;
       }
       await api.profile.putUserInfo(newUserData);
       dispatch(putUserToStore(newUserData));
-      toast.success(getTranslatedText('toastText.changedData'));
+      showMessage.success(getTranslatedText('toastText.changedData'));
     } catch (err) {
       if (err.response?.status === 400) {
         const indexStart =
           err.response?.data?.error && err.response.data.error.indexOf(':') + 1;
-        toast.success(err.response?.data?.error?.slice(indexStart));
+        showMessage.error(err.response?.data?.error?.slice(indexStart));
       }
     } finally {
       setAboutLoading(false);
@@ -73,80 +63,111 @@ const AboutMyself = () => {
     <Formik
       enableReinitialize
       onSubmit={onSubmit}
-      initialValues={initialUserValues}
-      validationSchema={validationSchema}
+      validationSchema={validationUserSchema}
+      initialValues={getInitialUser({ lastName, firstName, phoneForInitial })}
     >
-      {({ values, errors, handleSubmit }) => (
-        <>
-          <InputProfile
-            type="text"
-            name="firstName"
-            label={getTranslatedText('ownInfo.firstName')}
-          />
+      {({ values, errors }) => (
+        <Form>
+          <Styles.WrapperInputWhitOutPhones>
+            <InputField
+              type="text"
+              name="firstName"
+              labelColor="black"
+              inputMaxWidth="588px"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('ownInfo.firstName')}
+            />
 
-          <InputProfile
-            type="text"
-            name="lastName"
-            label={getTranslatedText('ownInfo.lastName')}
-          />
+            <InputField
+              type="text"
+              name="lastName"
+              labelColor="black"
+              inputMaxWidth="588px"
+              inputFlexDirection="row"
+              wrapperInputErrorWidth="415px"
+              inputJustifyContent="space-between"
+              label={getTranslatedText('ownInfo.lastName')}
+            />
+          </Styles.WrapperInputWhitOutPhones>
 
           <FieldArray name="phones">
             {({ push, remove }) => (
-              <div style={{ marginBottom: 55 }}>
-                {values.phones.map((phone, index, arr) => {
+              <Styles.WrapperInputPhones>
+                {values.phones?.map((phone, index, arr) => {
                   const lastIndex = arr.length - 1;
                   const biggerThanStartIndex = arr.length > 1;
                   const maxArray = index + 1 !== amount;
                   const errorField = errors.phones && errors.phones[index];
 
                   return (
-                    <div
+                    <Styles.WrapperInputAddPhones
                       key={String(`phones[${index}]`)}
-                      style={{ position: 'relative' }}
                     >
-                      <InputProfile
+                      <InputField
                         type="tel"
+                        labelColor="black"
+                        inputMaxWidth="588px"
+                        inputFlexDirection="row"
                         name={`phones[${index}]`}
-                        placeholder="+38(123) 456-78-90"
+                        wrapperInputErrorWidth="415px"
+                        placeholder="+380(12)345-67-89"
+                        inputJustifyContent="space-between"
                         label={getTranslatedText('ownInfo.phone')}
                       />
 
                       {lastIndex === index && maxArray && (
-                        <ButtonsAddRemoveChild
-                          add
-                          text={getTranslatedText('button.addField')}
-                          onClick={() => {
-                            if (!!phone && !errorField) {
-                              push('');
-                            } else {
-                              toast.error(
-                                getTranslatedText('ownInfo.choosePhone')
-                              );
-                            }
-                          }}
-                        />
+                        <Styles.WrapperAddButton>
+                          <Button
+                            gap={20}
+                            width={34}
+                            height={34}
+                            outsideText
+                            colorType="green"
+                            icon={<Icon.Plus />}
+                            text={getTranslatedText('button.addField')}
+                            onClick={() => {
+                              if (!!phone && !errorField) push('');
+                              else {
+                                showMessage.error(
+                                  getTranslatedText('ownInfo.choosePhone')
+                                );
+                              }
+                            }}
+                          />
+                        </Styles.WrapperAddButton>
                       )}
 
                       {biggerThanStartIndex && (
-                        <ButtonsAddRemoveChild onClick={() => remove(index)} />
+                        <Styles.WrapperDelButton>
+                          <Button
+                            gap={34}
+                            width={34}
+                            height={34}
+                            outsideText
+                            colorType="grey"
+                            icon={<Icon.Plus />}
+                            onClick={() => remove(index)}
+                          />
+                        </Styles.WrapperDelButton>
                       )}
-                    </div>
+                    </Styles.WrapperInputAddPhones>
                   );
                 })}
-              </div>
+              </Styles.WrapperInputPhones>
             )}
           </FieldArray>
 
           <Button
-            width="248px"
+            width={248}
             type="submit"
-            click={handleSubmit}
             isLoading={aboutLoading}
             whatClass="btn-form-about-me"
             disabling={Object.keys(errors).length}
             text={getTranslatedText('button.saveChanges')}
           />
-        </>
+        </Form>
       )}
     </Formik>
   );

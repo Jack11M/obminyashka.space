@@ -28,11 +28,18 @@ export const getValidationAdv = ({
     topic: Yup.string()
       .required(getTranslatedText('errors.requireField'))
       .min(3, getTranslatedText('errors.min3'))
-      .max(30, getTranslatedText('errors.max30'))
+      .max(70, getTranslatedText('errors.max70'))
       .default(() => announcementTitle),
     readyForOffers: Yup.boolean().default(() => !!readyOffer.length),
     wishesToExchange: Yup.string()
-      .required(getTranslatedText('errors.requireField'))
+      .when('readyForOffers', {
+        is: (value) => value === true,
+        then: Yup.string(),
+      })
+      .when('readyForOffers', {
+        is: (value) => value === false,
+        then: Yup.string().required(getTranslatedText('errors.fillOrCheck')),
+      })
       .max(200, getTranslatedText('errors.max200'))
       .default(() => exchangeList.join(',')),
     age: Yup.string()

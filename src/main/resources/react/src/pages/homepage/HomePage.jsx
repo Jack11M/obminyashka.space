@@ -1,6 +1,9 @@
+import { HelpChildren } from 'obminyashka-components';
+
+import { getTranslatedText } from 'components/local';
+
 import Sliders from './slider';
 import HeaderInMain from './headerInMain';
-import HelpChildren from './helpChildren';
 import { CurrentOffers } from './currentOffers';
 
 import * as Styles from './styles';
@@ -13,7 +16,13 @@ const HomePage = () => {
       <Styles.Container>
         <CurrentOffers />
         <Sliders />
-        <HelpChildren />
+
+        <HelpChildren
+          name={getTranslatedText('mainPage.helpName')}
+          text={getTranslatedText('mainPage.helpText')}
+          title={getTranslatedText('mainPage.helpTitle')}
+          buttonText={getTranslatedText('mainPage.helpButton')}
+        />
       </Styles.Container>
     </Styles.Main>
   );

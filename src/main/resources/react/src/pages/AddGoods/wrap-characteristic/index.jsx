@@ -1,5 +1,6 @@
 import { useField } from 'formik';
 
+import * as Styles from './styles';
 import { ItemTittle } from '../styles';
 
 const WrapCharacteristic = ({ title, name, children }) => {
@@ -11,7 +12,8 @@ const WrapCharacteristic = ({ title, name, children }) => {
       <ItemTittle error={error} name={name}>
         {title}:
       </ItemTittle>
-      {children}
+
+      <Styles.Div>{children}</Styles.Div>
     </>
   );
 };

@@ -1,10 +1,10 @@
 /* eslint-disable indent */
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { showMessage } from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { area, city } from 'Utils';
-import { showMessage } from 'hooks';
 import { getAuthLang } from 'store/auth/slice';
 import { getTranslatedText } from 'components/local';
 
@@ -39,7 +39,7 @@ const Location = ({
             );
           setLocation(modifiedLocation);
         } catch (e) {
-          showMessage(e.response?.data?.error);
+          showMessage.error(e.response?.data?.error);
         }
       }
     };

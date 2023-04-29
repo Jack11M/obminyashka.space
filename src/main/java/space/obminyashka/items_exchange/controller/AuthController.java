@@ -1,9 +1,12 @@
 package space.obminyashka.items_exchange.controller;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +16,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,19 +32,20 @@ import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
-import springfox.documentation.annotations.ApiIgnore;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.UUID;
 
 import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Slf4j
 @RestController
-@Api(tags = "Authorization")
+@Tag(name = "Authorization")
 @RequiredArgsConstructor
 @Validated
 public class AuthController {
@@ -53,11 +56,11 @@ public class AuthController {
     private final MailService mailService;
 
     @PostMapping(value = ApiKey.AUTH_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Login in a registered user")
+    @Operation(summary = "Login in a registered user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
@@ -66,82 +69,91 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             return ResponseEntity.of(authService.createUserLoginResponseDto(username));
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getMessageSource("invalid.username-or-password"));
+            log.warn("[AuthController] An exception occurred while authorization for '{}'", userLoginDto.getUsernameOrEmail(), e);
+            throw new BadCredentialsException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_PASSWORD));
         }
     }
 
-    @PostMapping(ApiKey.AUTH_LOGOUT)
-    @ApiOperation(value = "Log out a registered user")
+    @PostMapping(value = ApiKey.AUTH_LOGOUT)
+    @Operation(summary = "Log out a registered user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req,
                        HttpServletResponse resp,
-                       @ApiIgnore Authentication authentication,
-                       @ApiIgnore @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+                       @Parameter(hidden = true) Authentication authentication,
+                       @Parameter(hidden = true) @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         new SecurityContextLogoutHandler().logout(req, resp, authentication);
         if (!authService.logout(token, authentication.getName())) {
-            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource("invalid.token");
+            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN);
             log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
             req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
         }
     }
 
-    @PostMapping(ApiKey.AUTH_REGISTER)
-    @ApiOperation(value = "Register new user")
+    @PostMapping(value = ApiKey.AUTH_REGISTER, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Operation(summary = "Register new user")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "CREATED"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 422, message = "UNPROCESSABLE ENTITY")
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "409", description = "The user is with such email is already registered")
     })
-    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto)
+    public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
+                                               @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host)
             throws BadRequestException, DataConflictException {
 
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
-            throw new DataConflictException(getMessageSource("username-email.duplicate"));
+            throw new DataConflictException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE));
         }
+
+        UUID codeId = UUID.randomUUID();
 
         try {
-            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, LocaleContextHolder.getLocale());
+            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, codeId, host);
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
-            return new ResponseEntity<>(getMessageSource("exception.emailing.registration"), HttpStatus.SERVICE_UNAVAILABLE);
+            return new ResponseEntity<>(getMessageSource(
+                    ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION), HttpStatus.SERVICE_UNAVAILABLE);
         }
 
-        if (userService.registerNewUser(userRegistrationDto)) {
+        if (userService.registerNewUser(userRegistrationDto, codeId)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
-            return new ResponseEntity<>(getMessageSource("user.created"), HttpStatus.CREATED);
+            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED), HttpStatus.CREATED);
         }
 
-        throw new BadRequestException(getMessageSource("user.not-registered"));
+        throw new BadRequestException(getMessageSource(
+                ResponseMessagesHandler.ValidationMessage.USER_NOT_REGISTERED));
     }
 
-    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN)
-    @ApiOperation(value = "Renew access token with refresh token")
+    @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Renew access token with refresh token")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Required request header is not present"),
-            @ApiResponse(code = 401, message = "Refresh token is expired or not exist")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "Required request header is not present"),
+            @ApiResponse(responseCode = "401", description = "Refresh token is expired or not exist")
     })
     @ResponseStatus(HttpStatus.OK)
     public RefreshTokenResponseDto refreshToken(
-            @ApiParam(required = true)
+            @Parameter(required = true)
             @RequestHeader("refresh") String refreshToken) throws RefreshTokenException {
         final var resolvedToken = JwtTokenService.resolveToken(refreshToken);
         userService.updatePreferableLanguage(resolvedToken);
         return authService.renewAccessTokenByRefresh(resolvedToken);
     }
 
-    @PostMapping(value =ApiKey.AUTH_OAUTH2_SUCCESS, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Finish login via OAuth2")
+    @PostMapping(value = ApiKey.AUTH_OAUTH2_SUCCESS, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Finish login via OAuth2")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "BAD REQUEST"),
-            @ApiResponse(code = 404, message = "NOT FOUND")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
-    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@ApiIgnore Authentication authentication) {
+    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
         try {
             return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getMessageSource("invalid.oauth2.login"));
+            throw new BadCredentialsException(getMessageSource(
+                    ResponseMessagesHandler.ValidationMessage.INVALID_OAUTH2_LOGIN));
         }
     }
 }

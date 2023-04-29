@@ -8,10 +8,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
@@ -23,15 +23,15 @@ public class AccessDeniedResponseHandler implements AccessDeniedHandler {
     private final UserService userService;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
 
-        String responseMessage = getMessageSource("invalid.token");
+        String responseMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && isInSelfRemovingProcess(authentication)) {
             final var daysBeforeDeletion = userService.getDaysBeforeDeletion(authentication.getName());
-            responseMessage = getMessageSource("exception.illegal.operation")
+            responseMessage = getMessageSource(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_OPERATION)
                     .concat(". ")
-                    .concat(getParametrizedMessageSource("account.self.delete.request", daysBeforeDeletion));
+                    .concat(getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, daysBeforeDeletion));
         }
         response.getWriter().println(responseMessage);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

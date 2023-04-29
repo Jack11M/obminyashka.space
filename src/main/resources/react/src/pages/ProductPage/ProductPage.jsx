@@ -1,7 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Title,
+  BackButton,
+  showMessage,
+  ProductPostData,
+  ProductOwnerData,
+  ProductDescription,
+} from 'obminyashka-components';
 
 import api from 'REST/Resources';
 import { enumAge } from 'config/ENUM';
@@ -9,15 +16,11 @@ import { getErrorMessage } from 'Utils/error';
 import { getAuthLang } from 'store/auth/slice';
 import { getProfile } from 'store/profile/slice';
 import { getCity } from 'Utils/getLocationProperties';
-import { BackButton, TitleBigBlue } from 'components/common';
 import { getTranslatedText } from 'components/local/localization';
 
 import { getDate } from './helpers';
-import ProductOffers from './ProductOffers';
-import { ProductPostData } from './ProductPostData';
-import { ProductOwnerData } from './ProductOwnerData';
-import ProductDescription from './ProductDescription';
-import ProductPhotoCarousel from './ProductPhotoCarousel';
+import { ProductOffers } from './ProductOffers';
+import { ProductPhotoCarousel } from './ProductPhotoCarousel';
 
 import {
   Span,
@@ -77,7 +80,7 @@ const ProductPage = () => {
       setSubcategory(state.subcategory);
       setCurrentLocation(locationValue);
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   }, [location]);
 
@@ -93,13 +96,18 @@ const ProductPage = () => {
       } = await api.product.getProduct(id);
 
       setProduct(rest);
-      setPhotos(images);
       setCategory(categoryValue);
       setSubcategory(subcategoryValue);
       setCurrentLocation(locationValue);
       setWishes(wishesToExchange?.split(','));
+      setPhotos(
+        images.map((photo) => ({
+          ...photo,
+          resource: `data:image/jpeg;base64,${photo.resource}`,
+        }))
+      );
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      showMessage.error(getErrorMessage(e));
     }
   };
 
@@ -142,16 +150,30 @@ const ProductPage = () => {
                 avatar={avatar}
                 city={getCity(currentLocation)}
                 date={product.createdDate || getDate(lang)}
+                dateText={`${getTranslatedText('product.dateOfAdv')}:`}
+                cityText={`${getTranslatedText('product.cityOfAdv')}:`}
+                phoneText={`${getTranslatedText('product.phoneOfAdv')}:`}
               />
 
               <ProductPostData
+                lang={lang}
                 wishes={wishes}
                 title={product.topic}
                 readyForOffers={product.readyForOffers}
                 size={product.size || product.sizeValue}
                 age={enumAge[product.age] || product.age}
+                buttonText={getTranslatedText('product.button')}
+                translatedTextAge={getTranslatedText('product.age')}
+                translatedTextSize={getTranslatedText('product.size')}
+                translatedTextGender={getTranslatedText('product.sex')}
+                translatedTextSeason={getTranslatedText('product.season')}
                 gender={getTranslatedText(`genderEnum.${product.gender}`)}
                 season={getTranslatedText(`seasonEnum.${product.season}`)}
+                translatedTextCheckInUl={getTranslatedText('product.checkInUl')}
+                translatedTextChangesTo={getTranslatedText('product.changesTo')}
+                translatedTextDescription={getTranslatedText(
+                  'product.description'
+                )}
               />
             </OwnerAndPost>
           </ProductPageInner>
@@ -162,7 +184,7 @@ const ProductPage = () => {
         <ProductPageContainer>
           <ProductPageInner>
             <SectionHeading>
-              <TitleBigBlue text={getTranslatedText('product.blueTitle')} />
+              <Title text={getTranslatedText('product.blueTitle')} />
             </SectionHeading>
 
             <ProductOffers />
@@ -172,4 +194,5 @@ const ProductPage = () => {
     </>
   );
 };
-export default ProductPage;
+
+export { ProductPage };

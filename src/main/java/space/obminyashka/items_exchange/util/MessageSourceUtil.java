@@ -19,9 +19,7 @@ public class MessageSourceUtil {
     }
 
     public static String getMessageSource(String message) {
-        return mSource.getMessage(message,
-                null,
-                LocaleContextHolder.getLocale());
+        return getParametrizedMessageSource(message, (Object[]) null);
     }
 
     public static String getParametrizedMessageSource(String message, Object... parameters) {

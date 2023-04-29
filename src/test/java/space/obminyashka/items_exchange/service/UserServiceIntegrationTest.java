@@ -11,33 +11,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserChangeEmailDto;
-import space.obminyashka.items_exchange.dto.UserChangePasswordDto;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static space.obminyashka.items_exchange.model.enums.Status.ACTIVE;
-import static space.obminyashka.items_exchange.model.enums.Status.DELETED;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @SpringBootTest
 class UserServiceIntegrationTest {
 
     public static final String CORRECT_OLD_PASSWORD = "123456xX";
-    public static final String NEW_PASSWORD = "123456wW";
-    public static final String NEW_USER_EMAIL = "user@mail.ru";
+    public static final String NEW_USER_EMAIL = "user@mail.com";
+    private static final String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
+    private static final String USER_FIRST_NAME = "First";
+    private static final String USER_LAST_NAME = "Last";
 
     @MockBean
     private UserRepository userRepository;
@@ -45,6 +43,10 @@ class UserServiceIntegrationTest {
     private RoleService roleService;
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<String> oauth2UserArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<String> usernameArgumentCaptor;
     @Autowired
     private UserService userService;
     @Autowired
@@ -60,60 +62,53 @@ class UserServiceIntegrationTest {
     }
 
     @Test
-    void testUpdateUserPassword_WhenDataCorrect_Successfully() {
-        UserChangePasswordDto userChangePasswordDto = new UserChangePasswordDto(CORRECT_OLD_PASSWORD, NEW_PASSWORD, NEW_PASSWORD);
-        String message = userService.updateUserPassword(userChangePasswordDto, userWithOldPassword);
+    void testIsUserPasswordMatches_WhenDataCorrect_Successfully() {
+        userService.isUserPasswordMatches(userWithOldPassword.getUsername(), CORRECT_OLD_PASSWORD);
 
-        assertEquals(getMessageSource("changed.user.password"), message);
-        assertTrue(bCryptPasswordEncoder.matches(NEW_PASSWORD, userWithOldPassword.getPassword()));
-        verify(userRepository).saveAndFlush(userWithOldPassword);
-    }
-
-    @Test
-    void testUpdateUserEmail_WhenDataCorrect_Successfully() {
-        UserChangeEmailDto userChangeEmailDto = new UserChangeEmailDto(NEW_USER_EMAIL, NEW_USER_EMAIL);
-        String message = userService.updateUserEmail(userChangeEmailDto, userWithOldPassword);
-
-        assertEquals(getMessageSource("changed.user.email"), message);
-        assertEquals(NEW_USER_EMAIL, userWithOldPassword.getEmail());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
+        assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, userWithOldPassword.getPassword()));
+        verify(userRepository).getUserPasswordByUsername(userWithOldPassword.getUsername());
     }
 
     @Test
     void testSelfDeleteRequest_WhenDataCorrect_Successfully() {
-        when(roleService.getRole(anyString())).thenReturn(Optional.of(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
+        userService.selfDeleteRequest(NEW_USER_EMAIL);
 
-        userService.selfDeleteRequest(userWithOldPassword);
+        verify(userRepository).updateUserByUsernameWithRole(NEW_USER_EMAIL, "ROLE_SELF_REMOVING");
+    }
 
-        assertEquals("ROLE_SELF_REMOVING", userWithOldPassword.getRole().getName());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
+    @Test
+    void testLoginUserWithOAuth2_WhenDataCorrect_Successfully() {
+        var oauth2User = createDefaultOidcUser();
+        userService.loginUserWithOAuth2(oauth2User);
+
+        verify(userRepository).findByEmailOrUsername(oauth2UserArgumentCaptor.capture(), oauth2UserArgumentCaptor.capture());
+        assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
+    }
+
+    @Test
+    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
+        userWithOldPassword.setUsername("BoB");
+        userService.makeAccountActiveAgain(userWithOldPassword.getUsername());
+
+        verify(roleService).setUserRoleToUserByUsername(usernameArgumentCaptor.capture());
+        assertEquals(userWithOldPassword.getUsername(), usernameArgumentCaptor.getValue());
     }
 
     @Test
     void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
         List<User> users = createTestUsers();
-        assertEquals(4, users.size());
+        assertEquals(2, users.size());
+        when(userRepository.findByRole_Name(anyString())).thenReturn(users);
 
-        when(userRepository.findAll()).thenReturn(users);
         userService.permanentlyDeleteUsers();
 
         verify(userRepository).delete(users.get(0));
-
-        for (int i = 1; i < users.size(); i++) {
-            verify(userRepository, never()).delete(users.get(i));
-        }
-    }
-
-    @Test
-    void makeAccountActiveAgain_WhenDataCorrect_Successfully() {
-        userService.makeAccountActiveAgain(userWithOldPassword);
-
-        assertEquals(ACTIVE, userWithOldPassword.getStatus());
-        verify(userRepository).saveAndFlush(userWithOldPassword);
+        verify(userRepository).delete(users.get(1));
     }
 
     private User createUserWithOldPassword() {
         userWithOldPassword = new User();
+        userWithOldPassword.setUsername(NEW_USER_EMAIL);
         userWithOldPassword.setPassword(bCryptPasswordEncoder.encode(CORRECT_OLD_PASSWORD));
         userWithOldPassword.setUpdated(LocalDateTime.now());
 
@@ -121,17 +116,19 @@ class UserServiceIntegrationTest {
     }
 
     private List<User> createTestUsers() {
-        User shouldBeDeleted = createUserForDeleting(DELETED, numberOfDaysToKeepDeletedUsers + 1);
-        User shouldNotBeDeleted0 = createUserForDeleting(ACTIVE, 0);
-        User shouldNotBeDeleted1 = createUserForDeleting(DELETED, numberOfDaysToKeepDeletedUsers - 1);
-        User shouldNotBeDeleted2 = createUserForDeleting(ACTIVE, numberOfDaysToKeepDeletedUsers + 1);
+        final var roleSelfRemoving = new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of());
 
-        return List.of(shouldBeDeleted, shouldNotBeDeleted0, shouldNotBeDeleted1, shouldNotBeDeleted2);
+        User shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate = createUserForDeleting(
+                roleSelfRemoving, numberOfDaysToKeepDeletedUsers + 1);
+        User shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate = createUserForDeleting(
+                roleSelfRemoving, numberOfDaysToKeepDeletedUsers - 1);
+
+        return List.of(shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate, shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate);
     }
 
-    private User createUserForDeleting(Status status, int delay) {
+    private User createUserForDeleting(Role role, int delay) {
         User user = new User();
-        user.setStatus(status);
+        user.setRole(role);
         user.setUpdated(LocalDateTime.now().minusDays(delay));
 
         return user;
@@ -151,6 +148,24 @@ class UserServiceIntegrationTest {
     }
 
     private static List<Locale> getTestLocales() {
-        return List.of(Locale.ENGLISH, new Locale("ua"), new Locale("ru"));
+        return List.of(Locale.ENGLISH, Locale.of("ua"), Locale.of("ru"));
+    }
+
+    private DefaultOidcUser createDefaultOidcUser() {
+        var roleUser = "ROLE_USER";
+
+        final var now = Instant.now();
+        var idToken = new OidcIdToken(
+                ID_TOKEN,
+                now,
+                now.plusSeconds(60),
+                Map.of("groups", roleUser, "sub", 123));
+
+        final var userInfo = new OidcUserInfo(Map.of(
+                "email", NEW_USER_EMAIL,
+                "given_name", USER_FIRST_NAME,
+                "family_name", USER_LAST_NAME));
+
+        return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 }

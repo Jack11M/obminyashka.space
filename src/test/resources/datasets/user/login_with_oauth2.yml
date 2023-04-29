@@ -3,6 +3,8 @@ user:
     username: 'admin'
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'admin@gmail.com'
+    oauth2Login: "false"
+    validated_email: 'false'
     online: 'false'
     first_name: 'super'
     last_name: 'admin'
@@ -17,6 +19,8 @@ user:
     username: 'user'
     password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
     email: 'user@gmail.com'
+    oauth2Login: "false"
+    validated_email: 'false'
     online: 'false'
     first_name: 'plain'
     last_name: 'user'
@@ -31,7 +35,9 @@ user:
     username: 'test@test.com'
     password: '$2a$10$BMCbuHgovIf/zrwMAkqIA.R1KAKsbgitAnADUkDzDlTA0fq.dvpEa'
     email: 'test@test.com'
-    online: 'false'
+    oauth2Login: 'true'
+    validated_email: 'true'
+    online: 'true'
     first_name: "First"
     last_name: "Last"
     avatar_image: null

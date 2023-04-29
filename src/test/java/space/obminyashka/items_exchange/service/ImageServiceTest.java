@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import space.obminyashka.items_exchange.dao.ImageRepository;
 import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
 import space.obminyashka.items_exchange.service.basic.BasicImageCreator;
@@ -66,13 +65,6 @@ class ImageServiceTest extends BasicImageCreator{
                 () -> assertEquals(jpeg.getId(), imageDto.getId()),
                 () -> assertArrayEquals(jpeg.getResource(), imageDto.getResource()));
         verify(imageRepository).findByAdvertisementId(any());
-    }
-
-    @Test
-    void compressImages_shouldCompressImage_WhenValidImageTypes() throws IOException, UnsupportedMediaTypeException {
-        List<byte[]> compressed = imageService.compress(List.of(testJpg, testPng));
-        assertNotEquals(compressed.get(0).length, testJpg.getBytes().length);
-        assertNotEquals(compressed.get(1).length, testPng.getBytes().length);
     }
 
     @Test
