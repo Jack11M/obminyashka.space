@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
-import { route } from 'routes/routeConstants';
-import { getTranslatedText } from 'components/local/localization';
+import { route } from 'src/routes/routeConstants';
+import { getTranslatedText } from 'src/components/local/localization';
 
 import { Tabs } from './styles';
 import { CustomLink } from './custom-link';
