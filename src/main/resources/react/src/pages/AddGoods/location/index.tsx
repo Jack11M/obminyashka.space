@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 // TODO: fix typescript
-/* eslint-disable indent */
+
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { showMessage } from 'obminyashka-components';
