@@ -1,7 +1,9 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { obminyashkaApi } from '../Service/networkProvider';
 
-export const getUserInfo = () =>
-  obminyashkaApi.get('/user/my-info').then(({ data }) => data);
+export const getUserInfo = () => obminyashkaApi.get('/user/my-info').then(({ data }) => data);
 
 export const putUserInfo = (payload) =>
   obminyashkaApi.put('/user/my-info', payload).then(({ data }) => data);
@@ -34,6 +36,4 @@ export const deleteAvatar = () =>
   obminyashkaApi.delete('/user/service/avatar').then(({ data }) => data);
 
 export const deleteUserAccount = (userData) =>
-  obminyashkaApi
-    .delete('/user/service/delete', { data: userData })
-    .then(({ data }) => data);
+  obminyashkaApi.delete('/user/service/delete', { data: userData }).then(({ data }) => data);

@@ -11,5 +11,6 @@ target/
 ### Project's Files ###
 
 build_tools
+node_modules
 *.log
 /src/test/resources/fill-table-location.sql

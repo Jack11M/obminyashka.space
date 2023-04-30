@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { showMessage } from 'obminyashka-components';
 
 import api from 'src/REST/Resources';

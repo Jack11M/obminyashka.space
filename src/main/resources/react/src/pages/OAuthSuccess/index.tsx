@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { showMessage } from 'obminyashka-components';

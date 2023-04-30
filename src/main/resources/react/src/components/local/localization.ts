@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { store } from 'src/store';
 
 import ua from './ua';

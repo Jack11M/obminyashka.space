@@ -6,7 +6,7 @@ import { getTranslatedText } from 'src/components/local/localization';
 
 import * as Styles from './styles';
 
-const Gender = ({ name }) => {
+const Gender = ({ name }: { name: string }) => {
   const [field, , helpers] = useField(name);
   const { value } = field;
 
@@ -16,6 +16,7 @@ const Gender = ({ name }) => {
 
       <Styles.Container>
         <CheckBox
+          name={name}
           type='radio'
           fontSize={16}
           checked={value === enumSex.MALE}
@@ -24,6 +25,7 @@ const Gender = ({ name }) => {
         />
 
         <CheckBox
+          name={name}
           type='radio'
           fontSize={16}
           checked={value === enumSex.FEMALE}
@@ -32,6 +34,7 @@ const Gender = ({ name }) => {
         />
 
         <CheckBox
+          name={name}
           type='radio'
           fontSize={16}
           checked={value === enumSex.UNSELECTED}

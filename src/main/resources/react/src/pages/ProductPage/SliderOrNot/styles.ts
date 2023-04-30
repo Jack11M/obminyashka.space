@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 import { Icon } from 'obminyashka-components';
 
-export const Image = styled.img`
+export const Image = styled.img<{ selected: boolean; small: boolean }>`
   height: 140px;
   width: 140px;
   margin: 10px 0;

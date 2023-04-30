@@ -1,5 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
+// TODO: fix typescript
 import { useCallback, useRef, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { useClickAway } from 'react-use';

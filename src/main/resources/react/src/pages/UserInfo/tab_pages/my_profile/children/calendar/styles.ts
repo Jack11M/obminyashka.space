@@ -76,7 +76,7 @@ export const Label = styled.label`
   margin-top: 13px;
 `;
 
-export const Input = styled.input`
+export const Input = styled.input<{ error: string }>`
   display: inline-flex;
   box-sizing: border-box;
   width: 415px;

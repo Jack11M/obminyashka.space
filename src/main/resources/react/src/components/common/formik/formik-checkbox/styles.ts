@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const LabelSquare = styled.div`
+const LabelSquare = styled.div<{ type: string }>`
   position: relative;
   margin-right: 20px;
   box-sizing: border-box;
@@ -45,7 +45,7 @@ const Input = styled.input`
   `}
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ fontSize: string }>`
   display: flex;
   font-size: ${({ fontSize }) => fontSize || '14px'};
   line-height: 17px;

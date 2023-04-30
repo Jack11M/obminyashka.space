@@ -1,5 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
+// TODO: fix typescript
 import React from 'react';
 import { showMessage } from 'obminyashka-components';
 

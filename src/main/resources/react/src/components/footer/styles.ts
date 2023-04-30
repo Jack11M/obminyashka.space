@@ -72,7 +72,7 @@ export const FootLink = styled(Link)`
   text-decoration: none;
 `;
 
-export const FootLinkWrapper = styled.div`
+export const FootLinkWrapper = styled.div<{ rules: boolean }>`
   margin-bottom: ${({ rules }) => (rules ? '10px' : '0')};
 `;
 

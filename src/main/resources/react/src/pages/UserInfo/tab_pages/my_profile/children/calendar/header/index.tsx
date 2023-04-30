@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { useMemo } from 'react';
 import dayjs from 'dayjs';
 
@@ -18,8 +21,7 @@ const Header = ({
   nextMonthButtonDisabled,
 }) => {
   const years = useMemo(
-    () =>
-      range(dayjs(new Date()).year() - yearsOld, dayjs(new Date()).year() + 1),
+    () => range(dayjs(new Date()).year() - yearsOld, dayjs(new Date()).year() + 1),
     [yearsOld]
   );
 
@@ -34,10 +36,7 @@ const Header = ({
 
   return (
     <Styles.Header>
-      <Styles.ChevronLeft
-        onClick={decreaseMonth}
-        disabled={prevMonthButtonDisabled}
-      />
+      <Styles.ChevronLeft onClick={decreaseMonth} disabled={prevMonthButtonDisabled} />
 
       <Styles.DateContainer>
         <Select
@@ -46,17 +45,10 @@ const Header = ({
           selectedValue={months[dayjs(date).month()]}
         />
 
-        <Select
-          data={years}
-          changeYear={changeYear}
-          selectedValue={dayjs(date).year()}
-        />
+        <Select data={years} changeYear={changeYear} selectedValue={dayjs(date).year()} />
       </Styles.DateContainer>
 
-      <Styles.ChevronRight
-        onClick={increaseMonth}
-        disabled={nextMonthButtonDisabled}
-      />
+      <Styles.ChevronRight onClick={increaseMonth} disabled={nextMonthButtonDisabled} />
     </Styles.Header>
   );
 };

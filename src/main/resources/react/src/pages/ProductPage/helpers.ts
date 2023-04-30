@@ -1,4 +1,4 @@
-export const getDate = (lang) => {
+export const getDate = (lang: string) => {
   const date = new Date();
   const day = date.getDate();
   const month = date.getMonth() + 1;

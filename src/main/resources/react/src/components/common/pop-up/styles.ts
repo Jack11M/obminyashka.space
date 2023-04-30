@@ -12,7 +12,7 @@ const fadeIn = keyframes`
 const moveDown = keyframes`
  0% {
    opacity: 0;
-     
+
   }
   5%{
     transform: translateY(-100vh);
@@ -43,7 +43,7 @@ const continueMoveDown = keyframes`
   }
 `;
 
-const WrapDiv = styled.div`
+const WrapDiv = styled.div<{ closing: boolean }>`
   position: fixed;
   display: flex;
   justify-content: center;
@@ -55,11 +55,10 @@ const WrapDiv = styled.div`
   background-color: rgba(17, 181, 237, 0.4);
   z-index: 999;
   ${(p) => css`
-    animation: ${p.closing ? fadeOut : fadeIn} 0.3s
-      cubic-bezier(0.44, 0.44, 0.61, 0.63);
+    animation: ${p.closing ? fadeOut : fadeIn} 0.3s cubic-bezier(0.44, 0.44, 0.61, 0.63);
   `}
 `;
-const ContentModal = styled.div`
+const ContentModal = styled.div<{ closing: boolean }>`
   position: relative;
   max-width: 600px;
   padding: 44px 50px;
@@ -67,8 +66,7 @@ const ContentModal = styled.div`
   box-shadow: 0 0 75px 10px rgba(17, 181, 237, 0.6);
   opacity: 1;
   ${(p) => css`
-    animation: ${p.closing ? continueMoveDown : moveDown} 0.3s
-      cubic-bezier(0.44, 0.44, 0.61, 0.63);
+    animation: ${p.closing ? continueMoveDown : moveDown} 0.3s cubic-bezier(0.44, 0.44, 0.61, 0.63);
   `}
 `;
 

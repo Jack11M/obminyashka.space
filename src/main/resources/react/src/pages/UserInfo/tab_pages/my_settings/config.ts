@@ -19,7 +19,7 @@ export const validationPasswordSchema = yup.object().shape({
     .matches(PASSWORD_REG_EXP, getTranslatedText('errors.passwordMatch'))
     .matches(PASSWORD_ALT_CODE_EXP, getTranslatedText('errors.altCodeMatch'))
     .matches(NO_SPACE, getTranslatedText('errors.noSpace'))
-    .notOneOf([yup.ref('oldPassword'), false], getTranslatedText('errors.passwordIdentical'))
+    .notOneOf([yup.ref('oldPassword')], getTranslatedText('errors.passwordIdentical'))
     .default(() => ''),
   confirmPassword: yup
     .string()
@@ -28,7 +28,7 @@ export const validationPasswordSchema = yup.object().shape({
     .default(() => ''),
 });
 
-export const validationEmailSchema = (email) =>
+export const validationEmailSchema = (email: string) =>
   yup.object().shape({
     email: yup
       .string()
@@ -50,4 +50,4 @@ export const initialValuesDelete = {
   confirmPassword: '',
 };
 
-export const getInitialValueEmail = (value) => ({ email: value || '' });
+export const getInitialValueEmail = (value: string) => ({ email: value || '' });

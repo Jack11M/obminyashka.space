@@ -1,5 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck
+// TODO: fix typescript
 
 export const createImage = (url) =>
   new Promise((resolve, reject) => {

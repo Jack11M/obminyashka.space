@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { obminyashkaApi } from '../Service/networkProvider';
 
 export const getSearch = (searchValue, page = 0, size = 12) =>

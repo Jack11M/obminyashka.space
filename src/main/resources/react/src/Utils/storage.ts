@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 export const getStorageUser = (option) => {
   const local = JSON.parse(localStorage.getItem(option)) || '';
   const session = JSON.parse(sessionStorage.getItem(option)) || '';
@@ -35,8 +38,7 @@ export const getDefaultLang = () => {
   return lang;
 };
 
-export const getStorageLang = () =>
-  getStorageUser('user')?.['Accept-Language'] || getDefaultLang();
+export const getStorageLang = () => getStorageUser('user')?.['Accept-Language'] || getDefaultLang();
 
 export const removeTokenFromStorage = () => {
   localStorage.removeItem('user');

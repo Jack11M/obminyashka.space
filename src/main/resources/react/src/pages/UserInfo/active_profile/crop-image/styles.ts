@@ -10,7 +10,7 @@ export const WrapCropSvg = styled.div`
   }
 `;
 
-export const WrapAvatar = styled.label`
+export const WrapAvatar = styled.label<{ hasImage: boolean }>`
   position: relative;
   display: flex;
   justify-content: center;

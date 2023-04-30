@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { createSlice } from '@reduxjs/toolkit';
 import { showMessage } from 'obminyashka-components';
 

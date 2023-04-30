@@ -1,7 +1,7 @@
 import { Icon } from 'obminyashka-components';
 import styled, { css } from 'styled-components';
 
-export const NoPhotoContainer = styled.div`
+export const NoPhotoContainer = styled.div<{ noPhoto: boolean }>`
   margin: 10px 0;
   width: 138px;
   height: 138px;

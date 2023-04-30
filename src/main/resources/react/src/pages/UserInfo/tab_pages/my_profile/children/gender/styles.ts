@@ -27,7 +27,7 @@ export const ChildDiv = styled.div`
   cursor: pointer;
 `;
 
-export const Circle = styled.span`
+export const Circle = styled.span<{ selected: boolean }>`
   width: 15px;
   height: 15px;
   border-radius: 50%;

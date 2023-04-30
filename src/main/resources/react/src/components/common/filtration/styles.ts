@@ -44,7 +44,7 @@ export const TitleOfEachCategory = styled.div`
   line-height: 24px;
 `;
 
-export const Close = styled.div`
+export const Close = styled.div<{ isSelected: boolean }>`
   display: flex;
   flex-shrink: 0;
 

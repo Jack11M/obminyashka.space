@@ -17,7 +17,7 @@ export const Title = styled.span`
   line-height: 24px;
 `;
 
-export const OptionWrapper = styled.div`
+export const OptionWrapper = styled.div<{ hideSelect: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -28,7 +28,7 @@ export const OptionWrapper = styled.div`
   `}
 `;
 
-export const Close = styled.div`
+export const Close = styled.div<{ isSelected: boolean }>`
   display: flex;
   flex-shrink: 0;
   transition: transform 0.3s linear;
@@ -45,7 +45,7 @@ export const Close = styled.div`
   `}
 `;
 
-export const RotateRectangle = styled.div`
+export const RotateRectangle = styled.div<{ openSelect: boolean }>`
   padding-left: 10px;
 
   svg {
@@ -64,7 +64,7 @@ export const RotateRectangle = styled.div`
   `}
 `;
 
-export const SubTitleBlock = styled.div`
+export const SubTitleBlock = styled.div<{ isSelected: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;

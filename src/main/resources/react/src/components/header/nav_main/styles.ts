@@ -79,7 +79,7 @@ export const WrapCategoriesBottom = styled.div`
   }
 `;
 
-export const WrapCategories = styled.div`
+export const WrapCategories = styled.div<{ open: boolean }>`
   position: absolute;
   height: 48px;
   font-size: 16px;

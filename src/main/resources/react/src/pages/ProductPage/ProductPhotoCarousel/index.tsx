@@ -1,14 +1,12 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import { useEffect, useState } from 'react';
 
 import { NoPhoto } from './NoPhoto';
 import { SliderOrNot } from '../SliderOrNot';
 
-import {
-  Image,
-  CarouselBox,
-  SliderPosition,
-  ProductPhotoSlideBig,
-} from './styles';
+import { Image, CarouselBox, SliderPosition, ProductPhotoSlideBig } from './styles';
 
 const ProductPhotoCarousel = ({ photos = [] }) => {
   const [state, setState] = useState({
@@ -34,17 +32,13 @@ const ProductPhotoCarousel = ({ photos = [] }) => {
   if (!state.photos.length) {
     noArr = <NoPhoto noPhoto />;
   } else {
-    noArr = <Image alt="activeSlide" src={state.bigPhoto.resource} />;
+    noArr = <Image alt='activeSlide' src={state.bigPhoto.resource} />;
   }
 
   return (
     <CarouselBox>
       <SliderPosition>
-        <SliderOrNot
-          photos={state.photos}
-          showBigImg={showBigImg}
-          bigPhoto={state.bigPhoto}
-        />
+        <SliderOrNot photos={state.photos} showBigImg={showBigImg} bigPhoto={state.bigPhoto} />
       </SliderPosition>
       <ProductPhotoSlideBig>{noArr}</ProductPhotoSlideBig>
     </CarouselBox>

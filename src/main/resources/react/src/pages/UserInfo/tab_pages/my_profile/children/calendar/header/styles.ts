@@ -13,7 +13,7 @@ export const DateContainer = styled.div`
   gap: 16px;
 `;
 
-const commonChevron = css`
+const commonChevron = css<{ disabled: boolean }>`
   transition: all 0.3s;
   cursor: pointer;
 

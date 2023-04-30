@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const StyledError = styled.div`
+const StyledError = styled.div<{ marginTop: string }>`
   width: fit-content;
   font-style: normal;
   font-weight: 400;

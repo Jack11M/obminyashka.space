@@ -28,14 +28,13 @@ export const Elements = styled.div`
   width: 100%;
   background-color: #fff;
   font-size: 14px;
-  box-shadow: 0px 0px 38px -24px rgba(0, 0, 0, 1.25),
-    0px 31px 32px -24px rgba(0, 0, 0, 0.18);
+  box-shadow: 0px 0px 38px -24px rgba(0, 0, 0, 1.25), 0px 31px 32px -24px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   border-radius: 8px;
   z-index: 1;
 `;
 
-export const Span = styled.span`
+export const Span = styled.span<{ selected: boolean }>`
   padding: 6px;
   cursor: pointer;
 

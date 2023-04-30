@@ -33,7 +33,7 @@ export const SectionsItem = styled.div`
   font-size: inherit;
 `;
 
-export const ItemTittle = styled.h4`
+export const ItemTittle = styled.h4<{ error: string }>`
   margin-bottom: 13px;
   font-style: normal;
   font-weight: 400;
