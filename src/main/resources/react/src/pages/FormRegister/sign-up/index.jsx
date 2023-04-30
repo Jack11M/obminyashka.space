@@ -25,8 +25,7 @@ const SignUp = () => {
       navigate(route.login);
     } catch (err) {
       if (err.response.status === 409) {
-        const { error: message } = err.response.data;
-        onSubmitProps.setErrors({ username: message });
+        onSubmitProps.setErrors({ username: err.response.data });
       }
     } finally {
       setLoading(false);
