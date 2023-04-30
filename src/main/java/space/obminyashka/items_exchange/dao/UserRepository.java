@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select u.password from User u where u.username = :username or u.email = :username")
     String getUserPasswordByUsername(String username);
 
-    @Query("select u.email from User u where u.username = :username")
+    @Query("select u.email from User u where u.username = :username or u.email = :username")
     String getUserEmailByUsername(String username);
 
     boolean existsByEmail(String email);
