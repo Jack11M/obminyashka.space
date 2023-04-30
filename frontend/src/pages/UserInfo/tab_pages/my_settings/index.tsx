@@ -64,7 +64,7 @@ const MySettings = () => {
     } catch (e) {
       if (e.response.status === 409) {
         onSubmitProps.setErrors({
-          email: e.response.data.error,
+          email: e.response.data
         });
       }
       if (e.response.status === 400) {
