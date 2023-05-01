@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: src/main/resources/react/
+        working-directory: frontend
 
     strategy:
       matrix:
@@ -21,10 +21,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
-          scope: '@wolshebnik'
           cache: 'npm'
-          cache-dependency-path: src/main/resources/react/
+          cache-dependency-path: frontend
       - run: npm ci
       - run: npm run build --if-present
 #        Disable the step once no existing test available

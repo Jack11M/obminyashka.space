@@ -26,7 +26,7 @@
         <db-rider.version>1.36.0</db-rider.version>
         <log4j2.version>2.20.0</log4j2.version>
         <snakeyaml.version>2.0</snakeyaml.version>
-        <frontend-src-dir>${project.basedir}/src/main/resources/react</frontend-src-dir>
+        <frontend-src-dir>${project.basedir}/frontend</frontend-src-dir>
         <node.version>v18.16.0</node.version>
         <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
     </properties>
@@ -203,11 +203,10 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/.idea/**</exclude>
-                    <exclude>**/node_modules/**</exclude>
-                </excludes>
-                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/frontend/dist</directory>
+                <targetPath>static</targetPath>
             </resource>
         </resources>
     </build>
