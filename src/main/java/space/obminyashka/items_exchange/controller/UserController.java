@@ -38,7 +38,6 @@ import java.util.Map;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "User")
@@ -91,7 +90,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "409", description = "CONFLICT")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<String> updateUserPassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
                                                      @Parameter(hidden = true) Authentication authentication) {
@@ -99,8 +99,9 @@ public class UserController {
         var password = changePasswordRequest.password();
 
         if (userService.isUserPasswordMatches(username, password)) {
-            return new ResponseEntity<>(getMessageSource(SAME_PASSWORDS), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS), HttpStatus.CONFLICT);
         }
+
         userService.updateUserPassword(username, password);
 
         return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), HttpStatus.ACCEPTED);

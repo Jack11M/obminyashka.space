@@ -18,7 +18,7 @@ export const deleteUserChildren = (id) =>
   obminyashkaApi.delete(`/user/child/${id}`).then(({ data }) => data);
 
 export const putPasswordFetch = (password) =>
-  obminyashkaApi.put('/user/service/pass/', password).then(({ data }) => data);
+  obminyashkaApi.put('/user/service/pass', password).then(({ data }) => data);
 
 export const putEmailFetch = (email) =>
   obminyashkaApi.put('/user/service/email', email).then(({ data }) => data);

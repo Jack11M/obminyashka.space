@@ -45,7 +45,7 @@ const MySettings = () => {
       });
       onSubmitProps.resetForm();
     } catch (e) {
-      onSubmitProps.setErrors({ password: e.response.data.error });
+      onSubmitProps.setErrors({ password: e.response.data });
     } finally {
       setIsFetchPass(false);
     }
