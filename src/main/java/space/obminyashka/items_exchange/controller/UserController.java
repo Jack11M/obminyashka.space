@@ -92,7 +92,6 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<String> updateUserPassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
                                                      @Parameter(hidden = true) Authentication authentication) {
         var username = authentication.getName();
@@ -115,7 +114,6 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<String> updateUserEmail(@Valid @RequestBody ChangeEmailRequest changeEmailRequest,
                                                   @Parameter(hidden = true) Authentication authentication) {
         var username = authentication.getName();
