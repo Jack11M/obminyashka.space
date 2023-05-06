@@ -45,7 +45,7 @@ const MySettings = () => {
       });
       onSubmitProps.resetForm();
     } catch (e) {
-      onSubmitProps.setErrors({ password: e.response.data.error });
+      onSubmitProps.setErrors({ password: e.response.data });
     } finally {
       setIsFetchPass(false);
     }
@@ -64,7 +64,7 @@ const MySettings = () => {
     } catch (e) {
       if (e.response.status === 409) {
         onSubmitProps.setErrors({
-          email: e.response.data
+          email: e.response.data,
         });
       }
       if (e.response.status === 400) {

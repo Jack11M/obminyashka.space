@@ -26,7 +26,6 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.IOException;
@@ -115,6 +114,23 @@ class AuthorizationFlowTest extends BasicControllerTest {
     }
 
     @ParameterizedTest
+    @MethodSource("userRegistrationConflictData")
+    void register_whenUserRegistrationDtoIsEmpty_shouldReturnConflictRequest(UserRegistrationDto dto, String errorMessage) throws Exception {
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), dto, status().isConflict());
+
+        assertTrue(result.getResponse().getContentAsString().contains(getMessageSource(errorMessage)));
+    }
+
+    private static Stream<Arguments> userRegistrationConflictData() {
+        return Stream.of(
+                Arguments.of(new UserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                        ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE),
+                Arguments.of(new UserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                        ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE)
+        );
+    }
+
+    @ParameterizedTest
     @MethodSource("userRegistrationData")
     void register_whenUserDataInvalid_shouldThrowException(UserRegistrationDto dto, ResultMatcher expectedStatus, String errorMessage, Class<Exception> resolvedException) throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), dto, expectedStatus);
@@ -126,12 +142,8 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> userRegistrationData() {
         return Stream.of(
-                Arguments.of(new UserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
-                        status().isConflict(), ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE, DataConflictException.class),
                 Arguments.of(new UserRegistrationDto(INVALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME, MethodArgumentNotValidException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
-                        status().isConflict(), ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE, DataConflictException.class),
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL, MethodArgumentNotValidException.class),
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, INVALID_PASSWORD),

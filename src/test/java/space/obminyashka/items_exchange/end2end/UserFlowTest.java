@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -35,7 +34,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -142,9 +140,11 @@ class UserFlowTest extends BasicControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(CHANGED_USER_PASSWORD)));
     }
 
+    @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet("database_init.yml")
+    @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
+            ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserPassword_shouldReturnException_whenPasswordsSame() throws Exception {
         var changePasswordRequest = new ChangePasswordRequest(CORRECT_OLD_PASSWORD, CORRECT_OLD_PASSWORD);
 
@@ -152,9 +152,7 @@ class UserFlowTest extends BasicControllerTest {
         String pwd = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getPassword).orElse("");
 
         assertTrue(bCryptPasswordEncoder.matches(CORRECT_OLD_PASSWORD, pwd));
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(DataConflictException.class)
-                .hasMessage(getMessageSource(SAME_PASSWORDS));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(SAME_PASSWORDS)));
     }
 
     @Test
@@ -169,9 +167,7 @@ class UserFlowTest extends BasicControllerTest {
         String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
         assertEquals(userEmail, changeEmailRequest.email());
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(DataConflictException.class)
-                .hasMessage(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_OLD)));
     }
 
     @Test
