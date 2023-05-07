@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -58,6 +59,7 @@ class UserFlowTest extends BasicControllerTest {
     private static final String USER_FIRST_NAME = "First";
     private static final String USER_LAST_NAME = "Last";
     private static final String ADMIN_USERNAME = "admin";
+    private static final String DOMAIN_URL = "https://obminyashka.space";
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -163,7 +165,7 @@ class UserFlowTest extends BasicControllerTest {
     void updateUserEmail_shouldGetResponse() throws Exception {
         var changeEmailRequest = new ChangeEmailRequest(OLD_ADMIN_VALID_EMAIL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isConflict());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL), changeEmailRequest, status().isConflict());
         String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
         assertEquals(userEmail, changeEmailRequest.email());
@@ -178,7 +180,7 @@ class UserFlowTest extends BasicControllerTest {
     void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
         var changeEmailRequest = new ChangeEmailRequest(NEW_VALID_EMAIL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isAccepted());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL), changeEmailRequest, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }

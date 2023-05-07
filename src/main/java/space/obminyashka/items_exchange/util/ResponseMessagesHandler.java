@@ -60,6 +60,7 @@ public class ResponseMessagesHandler {
         public final String IMAGE_NOT_EXISTED_ID = "exception.image.not-existed-id";
         public final String ADVERTISEMENT_NOT_EXISTED_ID = "exception.advertisement.not-existed-id";
         public final String EMAIL_REGISTRATION = "exception.emailing.registration";
+        public final String EMAIL_CHANGING = "exception.emailing.changing";
         public final String EMAIL_OLD = "exception.email.old";
         public final String LOCATION_ALREADY_EXIST = "exception.location.exist";
         public final String EMAIL_NOT_FOUND_OR_EXPIRED = "exception.email.validation-code";
@@ -84,5 +85,16 @@ public class ResponseMessagesHandler {
         public final String EMAIL_BENEFITS = "registration.email.benefits";
         public final String EMAIL_BUTTON = "registration.email.confirm.button";
         public final String EMAIL_FOOTER = "registration.email.footer";
+    }
+
+    @UtilityClass
+    public class ChangingMessage {
+        public final String EMAIL_SUBJECT = "changing.topic";
+        public final String EMAIL_HEADER = "changing.email.header";
+        public final String EMAIL_GREETINGS = "changing.email.greetings";
+        public final String EMAIL_INFORMATION = "changing.email.action.information";
+        public final String EMAIL_BENEFITS = "changing.email.benefits";
+        public final String EMAIL_BUTTON = "changing.email.confirm.button";
+        public final String EMAIL_FOOTER = "changing.email.footer";
     }
 }

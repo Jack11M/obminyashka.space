@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +30,16 @@ import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
+import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
@@ -50,6 +55,7 @@ public class UserController {
     private final UserService userService;
     private final ImageService imageService;
     private final AdvertisementService advService;
+    private final MailService mailService;
 
     @GetMapping(value = ApiKey.USER_MY_INFO, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find a registered requested user's data")
@@ -115,7 +121,8 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "409", description = "CONFLICT")})
     public ResponseEntity<String> updateUserEmail(@Valid @RequestBody ChangeEmailRequest changeEmailRequest,
-                                                  @Parameter(hidden = true) Authentication authentication) {
+                                                  @Parameter(hidden = true) Authentication authentication,
+                                                  @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var username = authentication.getName();
         var email = changeEmailRequest.email();
 
@@ -126,7 +133,17 @@ public class UserController {
             return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL), HttpStatus.CONFLICT);
         }
 
-        userService.updateUserEmail(username, email);
+        UUID codeId = UUID.randomUUID();
+
+        try {
+            mailService.sendMail(email, EmailType.EMAIL_CHANGING, codeId, host);
+        } catch (IOException e) {
+            log.error("Error while sending confirmation for changing email", e);
+            return new ResponseEntity<>(getMessageSource(
+                    ResponseMessagesHandler.ExceptionMessage.EMAIL_CHANGING), HttpStatus.SERVICE_UNAVAILABLE);
+        }
+
+        userService.updateUserEmail(username, email, codeId);
 
         return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), HttpStatus.ACCEPTED);
     }

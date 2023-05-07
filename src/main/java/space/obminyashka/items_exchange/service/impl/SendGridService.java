@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.RegistrationMessage.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +47,7 @@ public class SendGridService implements MailService {
         mail2send.setFrom(sender);
         mail2send.setTemplateId(subject.template);
 
-        final var personalization = populatePersonalization(subject.topic, codeId, host);
+        final var personalization = populatePersonalization(subject, codeId, host);
         personalization.addTo(new Email(emailTo));
         mail2send.addPersonalization(personalization);
 
@@ -57,16 +57,37 @@ public class SendGridService implements MailService {
         log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
     }
 
-    private static Personalization populatePersonalization(String subject, UUID codeId, String host) {
+    private static Personalization populatePersonalization(EmailType subject, UUID codeId, String host) {
         final var personalization = new Personalization();
-        personalization.addDynamicTemplateData("subject", getMessageSource(subject));
-        personalization.addDynamicTemplateData("header", getMessageSource(EMAIL_HEADER));
-        personalization.addDynamicTemplateData("greetings", getMessageSource(EMAIL_GREETINGS));
-        personalization.addDynamicTemplateData("information", getMessageSource(EMAIL_INFORMATION));
-        personalization.addDynamicTemplateData("benefits", getMessageSource(EMAIL_BENEFITS));
-        personalization.addDynamicTemplateData("confirm", getMessageSource(EMAIL_BUTTON));
-        personalization.addDynamicTemplateData("footer", getMessageSource(EMAIL_FOOTER));
-        personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+
+        switch (subject)
+        {
+            case REGISTRATION: {
+                personalization.addDynamicTemplateData("subject", getMessageSource(subject.topic));
+                personalization.addDynamicTemplateData("header", getMessageSource(RegistrationMessage.EMAIL_HEADER));
+                personalization.addDynamicTemplateData("greetings", getMessageSource(RegistrationMessage.EMAIL_GREETINGS));
+                personalization.addDynamicTemplateData("information", getMessageSource(RegistrationMessage.EMAIL_INFORMATION));
+                personalization.addDynamicTemplateData("benefits", getMessageSource(RegistrationMessage.EMAIL_BENEFITS));
+                personalization.addDynamicTemplateData("confirm", getMessageSource(RegistrationMessage.EMAIL_BUTTON));
+                personalization.addDynamicTemplateData("footer", getMessageSource(RegistrationMessage.EMAIL_FOOTER));
+                personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+
+                break;
+            }
+            case EMAIL_CHANGING: {
+                personalization.addDynamicTemplateData("subject", getMessageSource(subject.topic));
+                personalization.addDynamicTemplateData("header", getMessageSource(ChangingMessage.EMAIL_HEADER));
+                personalization.addDynamicTemplateData("greetings", getMessageSource(ChangingMessage.EMAIL_GREETINGS));
+                personalization.addDynamicTemplateData("information", getMessageSource(ChangingMessage.EMAIL_INFORMATION));
+                personalization.addDynamicTemplateData("benefits", getMessageSource(ChangingMessage.EMAIL_BENEFITS));
+                personalization.addDynamicTemplateData("confirm", getMessageSource(ChangingMessage.EMAIL_BUTTON));
+                personalization.addDynamicTemplateData("footer", getMessageSource(ChangingMessage.EMAIL_FOOTER));
+                personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+
+                break;
+            }
+        }
+
         return personalization;
     }
 

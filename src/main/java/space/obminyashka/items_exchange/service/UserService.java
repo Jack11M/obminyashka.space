@@ -63,8 +63,9 @@ public interface UserService {
      * Update the email for the user with the given username.
      * @param username The username of the user whose email you want to update.
      * @param email The new email for the user.
+     * @param codeId The code for confirmation email.
      */
-    void updateUserEmail(String username, String email);
+    void updateUserEmail(String username, String email, UUID codeId);
 
     /**
      * Request from a user to remove them account with time limit
