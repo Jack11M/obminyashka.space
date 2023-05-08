@@ -55,8 +55,7 @@ public class UserController {
     @Operation(summary = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     public ResponseEntity<UserDto> getPersonalInfo(@Parameter(hidden = true) Authentication authentication) {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
@@ -77,7 +76,7 @@ public class UserController {
     @Operation(summary = "Update a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "401", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
     public List<AdvertisementTitleDto> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
