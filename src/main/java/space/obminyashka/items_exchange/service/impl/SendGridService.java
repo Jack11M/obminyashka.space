@@ -59,36 +59,40 @@ public class SendGridService implements MailService {
 
     private static Personalization populatePersonalization(EmailType subject, UUID codeId, String host) {
         final var personalization = new Personalization();
+        personalization.addDynamicTemplateData("subject", getMessageSource(subject.topic));
+        personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
 
-        switch (subject)
-        {
+        switch (subject) {
             case REGISTRATION: {
-                personalization.addDynamicTemplateData("subject", getMessageSource(subject.topic));
-                personalization.addDynamicTemplateData("header", getMessageSource(RegistrationMessage.EMAIL_HEADER));
-                personalization.addDynamicTemplateData("greetings", getMessageSource(RegistrationMessage.EMAIL_GREETINGS));
-                personalization.addDynamicTemplateData("information", getMessageSource(RegistrationMessage.EMAIL_INFORMATION));
-                personalization.addDynamicTemplateData("benefits", getMessageSource(RegistrationMessage.EMAIL_BENEFITS));
-                personalization.addDynamicTemplateData("confirm", getMessageSource(RegistrationMessage.EMAIL_BUTTON));
-                personalization.addDynamicTemplateData("footer", getMessageSource(RegistrationMessage.EMAIL_FOOTER));
-                personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+                setPersonalizationParameters(personalization, RegistrationMessage.EMAIL_HEADER,
+                        RegistrationMessage.EMAIL_GREETINGS, RegistrationMessage.EMAIL_INFORMATION,
+                        RegistrationMessage.EMAIL_BENEFITS, RegistrationMessage.EMAIL_BUTTON,
+                        RegistrationMessage.EMAIL_FOOTER);
 
                 break;
             }
             case EMAIL_CHANGING: {
-                personalization.addDynamicTemplateData("subject", getMessageSource(subject.topic));
-                personalization.addDynamicTemplateData("header", getMessageSource(ChangingMessage.EMAIL_HEADER));
-                personalization.addDynamicTemplateData("greetings", getMessageSource(ChangingMessage.EMAIL_GREETINGS));
-                personalization.addDynamicTemplateData("information", getMessageSource(ChangingMessage.EMAIL_INFORMATION));
-                personalization.addDynamicTemplateData("benefits", getMessageSource(ChangingMessage.EMAIL_BENEFITS));
-                personalization.addDynamicTemplateData("confirm", getMessageSource(ChangingMessage.EMAIL_BUTTON));
-                personalization.addDynamicTemplateData("footer", getMessageSource(ChangingMessage.EMAIL_FOOTER));
-                personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+                setPersonalizationParameters(personalization, ChangingMessage.EMAIL_HEADER,
+                        ChangingMessage.EMAIL_GREETINGS, ChangingMessage.EMAIL_INFORMATION,
+                        ChangingMessage.EMAIL_BENEFITS, ChangingMessage.EMAIL_BUTTON,
+                        ChangingMessage.EMAIL_FOOTER);
 
                 break;
             }
         }
 
         return personalization;
+    }
+
+    private static void setPersonalizationParameters(Personalization personalization, String emailHeader,
+                                                     String emailGreetings, String emailInformation,
+                                                     String emailBenefits, String emailButton, String emailFooter) {
+        personalization.addDynamicTemplateData("header", getMessageSource(emailHeader));
+        personalization.addDynamicTemplateData("greetings", getMessageSource(emailGreetings));
+        personalization.addDynamicTemplateData("information", getMessageSource(emailInformation));
+        personalization.addDynamicTemplateData("benefits", getMessageSource(emailBenefits));
+        personalization.addDynamicTemplateData("confirm", getMessageSource(emailButton));
+        personalization.addDynamicTemplateData("footer", getMessageSource(emailFooter));
     }
 
     @Override
