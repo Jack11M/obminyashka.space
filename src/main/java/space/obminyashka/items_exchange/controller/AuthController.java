@@ -75,6 +75,7 @@ public class AuthController {
 
     @PostMapping(value = ApiKey.AUTH_LOGOUT)
     @Operation(summary = "Log out a registered user")
+    @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(HttpServletRequest req,
                        HttpServletResponse resp,
@@ -142,6 +143,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
