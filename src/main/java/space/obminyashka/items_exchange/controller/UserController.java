@@ -55,8 +55,7 @@ public class UserController {
     @Operation(summary = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
     public ResponseEntity<UserDto> getPersonalInfo(@Parameter(hidden = true) Authentication authentication) {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
