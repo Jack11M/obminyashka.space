@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
+import space.obminyashka.items_exchange.exception.EmailSendingException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
@@ -51,7 +52,7 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public UUID sendMail(String emailTo, EmailType emailType, String host) throws IOException {
+    public UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host){
         var mail2send = new Mail();
         mail2send.setFrom(sender);
         mail2send.setTemplateId(emailType.template);
@@ -61,10 +62,17 @@ public class SendGridService implements MailService {
         personalization.addTo(new Email(emailTo));
         mail2send.addPersonalization(personalization);
 
-        var request = createMailRequest(mail2send);
-        final var response = sendGrid.api(request);
-        final var statusCode = response.getStatusCode();
-        log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
+        try {
+            Request request  = createMailRequest(mail2send);
+            final var response = sendGrid.api(request);
+            final var statusCode = response.getStatusCode();
+
+            log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
+        } catch (IOException e) {
+            log.error("Error while sending {emailType.name()} email", e);
+            throw new EmailSendingException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL));
+        }
+
         return codeId;
     }
 

@@ -18,7 +18,6 @@ import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -46,7 +45,7 @@ class MailServiceTest {
         final var emailTo = "test@mail.ua";
         var expectedHost = "https://obminyashka.space";
 
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, expectedHost);
+        mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.REGISTRATION, expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();

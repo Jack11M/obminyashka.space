@@ -4,7 +4,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.util.EmailType;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public interface MailService {
@@ -16,9 +15,8 @@ public interface MailService {
      * @param emailType one of the supported email types to be sent
      * @param host domain name url
      * @return generated code for confirming email
-     * @throws IOException when service is unavailable or some unexpected case happened
      */
-    UUID sendMail(String emailTo, EmailType emailType, String host) throws IOException;
+    UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host);
 
     /**
      * Validate users' email by previously generated UUID code

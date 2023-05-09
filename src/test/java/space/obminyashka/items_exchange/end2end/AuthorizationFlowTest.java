@@ -26,6 +26,7 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
+import space.obminyashka.items_exchange.exception.EmailSendingException;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.IOException;
@@ -103,8 +104,9 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
         verify(sendGrid).api(any());
 
-        String seekingResponse = getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION);
-        assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
+        assertThat(result.getResolvedException())
+                .isInstanceOf(EmailSendingException.class)
+                .hasMessageContaining(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL));
     }
 
     @ParameterizedTest

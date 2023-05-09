@@ -36,7 +36,7 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.io.IOException;
+
 import java.util.UUID;
 
 import static liquibase.util.StringUtil.escapeHtml;
@@ -103,15 +103,7 @@ public class AuthController {
                     ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE), HttpStatus.CONFLICT);
         }
 
-        UUID codeId;
-
-        try {
-            codeId = mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, host);
-        } catch (IOException e) {
-            log.error("Error while sending registration email", e);
-            return new ResponseEntity<>(getMessageSource(
-                    ResponseMessagesHandler.ExceptionMessage.EMAIL_REGISTRATION), HttpStatus.SERVICE_UNAVAILABLE);
-        }
+        UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(userRegistrationDto.getEmail(), EmailType.REGISTRATION, host);
 
         if (userService.registerNewUser(userRegistrationDto, codeId)) {
             log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));

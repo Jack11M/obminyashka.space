@@ -35,7 +35,6 @@ import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -133,15 +132,7 @@ public class UserController {
             return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL), HttpStatus.CONFLICT);
         }
 
-        UUID codeId;
-
-        try {
-            codeId = mailService.sendMail(email, EmailType.CHANGING, host);
-        } catch (IOException e) {
-            log.error("Error while sending confirmation for changing email", e);
-            return new ResponseEntity<>(getMessageSource(
-                    ResponseMessagesHandler.ExceptionMessage.EMAIL_CHANGING), HttpStatus.SERVICE_UNAVAILABLE);
-        }
+        UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.CHANGING, host);
 
         userService.updateUserEmail(username, email, codeId);
 
