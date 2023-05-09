@@ -133,10 +133,10 @@ public class UserController {
             return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.DUPLICATE_EMAIL), HttpStatus.CONFLICT);
         }
 
-        UUID codeId = UUID.randomUUID();
+        UUID codeId;
 
         try {
-            mailService.sendMail(email, EmailType.CHANGING, codeId, host);
+            codeId = mailService.sendMail(email, EmailType.CHANGING, host);
         } catch (IOException e) {
             log.error("Error while sending confirmation for changing email", e);
             return new ResponseEntity<>(getMessageSource(

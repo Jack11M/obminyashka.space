@@ -14,11 +14,11 @@ public interface MailService {
      *
      * @param emailTo   a receiver email address
      * @param emailType one of the supported email types to be sent
-     * @param codeId code for generating link for confirming email
      * @param host domain name url
+     * @return generated code for confirming email
      * @throws IOException when service is unavailable or some unexpected case happened
      */
-    void sendMail(String emailTo, EmailType emailType, UUID codeId, String host) throws IOException;
+    UUID sendMail(String emailTo, EmailType emailType, String host) throws IOException;
 
     /**
      * Validate users' email by previously generated UUID code

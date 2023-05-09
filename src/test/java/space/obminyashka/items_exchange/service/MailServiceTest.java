@@ -44,10 +44,9 @@ class MailServiceTest {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
-        var expectedCode = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
         var expectedHost = "https://obminyashka.space";
 
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, UUID.fromString(expectedCode), expectedHost);
+        mailService.sendMail(emailTo, EmailType.REGISTRATION, expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();

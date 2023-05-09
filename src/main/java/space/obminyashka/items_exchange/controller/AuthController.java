@@ -103,10 +103,10 @@ public class AuthController {
                     ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE), HttpStatus.CONFLICT);
         }
 
-        UUID codeId = UUID.randomUUID();
+        UUID codeId;
 
         try {
-            mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, codeId, host);
+            codeId = mailService.sendMail(userRegistrationDto.getEmail(), EmailType.REGISTRATION, host);
         } catch (IOException e) {
             log.error("Error while sending registration email", e);
             return new ResponseEntity<>(getMessageSource(

@@ -51,11 +51,12 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public void sendMail(String emailTo, EmailType emailType, UUID codeId, String host) throws IOException {
+    public UUID sendMail(String emailTo, EmailType emailType, String host) throws IOException {
         var mail2send = new Mail();
         mail2send.setFrom(sender);
         mail2send.setTemplateId(emailType.template);
 
+        UUID codeId = UUID.randomUUID();
         final var personalization = createPersonalizationAndSetParameters(emailType, codeId, host);
         personalization.addTo(new Email(emailTo));
         mail2send.addPersonalization(personalization);
@@ -64,6 +65,7 @@ public class SendGridService implements MailService {
         final var response = sendGrid.api(request);
         final var statusCode = response.getStatusCode();
         log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
+        return codeId;
     }
 
     private static Personalization createPersonalizationAndSetParameters(EmailType emailType, UUID codeId, String host) {

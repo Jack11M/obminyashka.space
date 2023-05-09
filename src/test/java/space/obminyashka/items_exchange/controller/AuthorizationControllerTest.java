@@ -54,20 +54,20 @@ class AuthorizationControllerTest {
 
         assertAll("Verify invoking services one by one and expected status",
                 () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
-                () -> verify(mailService).sendMail(eq(dto.getEmail()), eq(EmailType.REGISTRATION), any(), any()),
+                () -> verify(mailService).sendMail(eq(dto.getEmail()), eq(EmailType.REGISTRATION), any()),
                 () -> verify(userService).registerNewUser(eq(dto), any()),
                 () -> assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()));
     }
 
     @Test
     void register_whenMailServiceFailed_shouldReturnServiceUnavailable() throws Exception {
-        doThrow(new IOException("Expected exception!")).when(mailService).sendMail(anyString(), any(), any(), any());
+        doThrow(new IOException("Expected exception!")).when(mailService).sendMail(anyString(), any(), any());
 
         final var responseEntity = authController.registerUser(dto, HttpHeaders.HOST);
 
         assertAll("Verify invoking services one by one and expected status",
                 () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),
-                () -> verify(mailService).sendMail(eq(dto.getEmail()), eq(EmailType.REGISTRATION), any(), any()),
+                () -> verify(mailService).sendMail(eq(dto.getEmail()), eq(EmailType.REGISTRATION), any()),
                 () -> verifyNoMoreInteractions(userService),
                 () -> assertEquals(HttpStatus.SERVICE_UNAVAILABLE, responseEntity.getStatusCode()));
     }
