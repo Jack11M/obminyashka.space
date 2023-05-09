@@ -136,7 +136,7 @@ public class UserController {
         UUID codeId = UUID.randomUUID();
 
         try {
-            mailService.sendMail(email, EmailType.EMAIL_CHANGING, codeId, host);
+            mailService.sendMail(email, EmailType.CHANGING, codeId, host);
         } catch (IOException e) {
             log.error("Error while sending confirmation for changing email", e);
             return new ResponseEntity<>(getMessageSource(

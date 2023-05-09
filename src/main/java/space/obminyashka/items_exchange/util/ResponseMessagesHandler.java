@@ -75,26 +75,4 @@ public class ResponseMessagesHandler {
         public final String ACCOUNT_ACTIVE_AGAIN = "account.made.active.again";
         public final String EMAIL_CONFIRMED = "email.confirmed";
     }
-
-    @UtilityClass
-    public class RegistrationMessage {
-        public final String EMAIL_SUBJECT = "registration.topic";
-        public final String EMAIL_HEADER = "registration.email.header";
-        public final String EMAIL_GREETINGS = "registration.email.greetings";
-        public final String EMAIL_INFORMATION = "registration.email.action.information";
-        public final String EMAIL_BENEFITS = "registration.email.benefits";
-        public final String EMAIL_BUTTON = "registration.email.confirm.button";
-        public final String EMAIL_FOOTER = "registration.email.footer";
-    }
-
-    @UtilityClass
-    public class ChangingMessage {
-        public final String EMAIL_SUBJECT = "changing.topic";
-        public final String EMAIL_HEADER = "changing.email.header";
-        public final String EMAIL_GREETINGS = "changing.email.greetings";
-        public final String EMAIL_INFORMATION = "changing.email.action.information";
-        public final String EMAIL_BENEFITS = "changing.email.benefits";
-        public final String EMAIL_BUTTON = "changing.email.confirm.button";
-        public final String EMAIL_FOOTER = "changing.email.footer";
-    }
 }
