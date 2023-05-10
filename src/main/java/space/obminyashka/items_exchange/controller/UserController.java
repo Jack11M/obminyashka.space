@@ -195,9 +195,8 @@ public class UserController {
             @ApiResponse(responseCode = "415", description = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Map<String, byte[]> updateUserAvatar(@RequestPart MultipartFile image, @Parameter(hidden = true) Authentication authentication) {
-        User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.scale(image);
-        userService.setUserAvatar(newAvatarImage, user);
+        userService.setUserAvatar(authentication.getName(), newAvatarImage);
         return Map.of("avatarImage", newAvatarImage);
     }
 

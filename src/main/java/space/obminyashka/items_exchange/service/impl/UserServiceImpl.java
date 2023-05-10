@@ -234,9 +234,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void setUserAvatar(byte[] newAvatarImage, User user) {
-        user.setAvatarImage(newAvatarImage);
-        userRepository.saveAndFlush(user);
+    public void setUserAvatar(String username, byte[] newAvatarImage) {
+        userRepository.updateAvatarByUsername(username, newAvatarImage);
     }
 
     @Override

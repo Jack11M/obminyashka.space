@@ -31,7 +31,9 @@ class UserControllerTest {
     @Mock(answer = Answers.RETURNS_SMART_NULLS)
     private Authentication authentication;
     @Captor
-    private ArgumentCaptor<byte[]> captor;
+    private ArgumentCaptor<byte[]> captorAvatar;
+    @Captor
+    private ArgumentCaptor<String> captorName;
     @InjectMocks
     private UserController userController;
     private final MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
@@ -39,15 +41,14 @@ class UserControllerTest {
 
     @Test
     void updateUserAvatar_WhenAuthorized_ShouldSetAvatar() throws IOException {
-        when(userService.findByUsernameOrEmail(anyString())).thenReturn(Optional.of(mock(User.class)));
         when(imageService.scale(jpeg)).thenReturn(jpeg.getBytes());
 
         Map<String, byte[]> result = userController.updateUserAvatar(jpeg, authentication);
 
         assertAll("Validate all operations with image were invoked",
                 () -> assertEquals(Map.of("avatarImage", jpeg.getBytes()), result),
-                () -> verify(userService).setUserAvatar(captor.capture(), any(User.class)),
-                () -> assertEquals(jpeg.getBytes(), captor.getValue()));
+                () -> verify(userService).setUserAvatar(captorName.capture(), captorAvatar.capture()),
+                        () -> assertEquals(jpeg.getBytes(), captorAvatar.getValue()));
     }
 
     @Test

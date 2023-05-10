@@ -150,7 +150,7 @@ public interface UserService {
      * @param newAvatarImage image represented into array of bytes
      * @param user user whom the image has to be set as new avatar image
      */
-    void setUserAvatar(byte[] newAvatarImage, User user);
+    void setUserAvatar(String username, byte[] newAvatarImage);
 
     /**
      * Remove avatar of selected user

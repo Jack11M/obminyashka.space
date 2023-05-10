@@ -68,4 +68,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update User u set u.role = (select r from Role r where r.name = :roleName) " +
             "where u.username = :username or u.email = :username")
     void updateUserByUsernameWithRole(String username, String roleName);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.avatarImage = :newAvatarImage where u.username = :username")
+    void updateAvatarByUsername(String username, byte[] newAvatarImage);
+
 }
