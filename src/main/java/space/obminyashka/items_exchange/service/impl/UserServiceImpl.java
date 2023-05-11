@@ -20,7 +20,6 @@ import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
@@ -76,8 +75,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
-        userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
-        return userRepository.save(userToRegister).getId() != null;
+        UUID userId = userRepository.save(userToRegister).getId();
+        userRepository.saveUserEmailConfirmationCodeByUserId(userId, codeId,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+        return  userId != null;
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
@@ -147,11 +148,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserEmail(String username, String email, UUID codeId) {
-        var emailConfirmationCode = new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode);
-
-        userRepository.saveUserEmailConfirmationCodeByUsername(username, emailConfirmationCode.getId(),
-                emailConfirmationCode.getExpiryDate());
-        userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email, codeId);
+        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+        userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }
 
     @Override

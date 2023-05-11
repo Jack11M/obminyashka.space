@@ -92,9 +92,6 @@ public class User extends BaseEntity implements UserDetails {
     @Accessors(chain = true)
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.DETACH)
-    private EmailConfirmationCode emailConfirmationCode;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(getRole().getName()));
