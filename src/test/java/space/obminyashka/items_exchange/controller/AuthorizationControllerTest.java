@@ -59,10 +59,12 @@ class AuthorizationControllerTest {
 
     @Test
     void register_whenMailServiceFailed_shouldThrowEmailSendingException() throws Exception {
-        doThrow(new EmailSendingException("Expected exception!")).when(mailService).sendEmailTemplateAndGenerateConfrimationCode(anyString(), any(), any());
+        doThrow(new EmailSendingException("Expected exception!"))
+                .when(mailService)
+                .sendEmailTemplateAndGenerateConfrimationCode(anyString(), any(), any());
 
 
-        assertThrows(EmailSendingException.class, ()->authController.registerUser(dto, HttpHeaders.HOST));
+        assertThrows(EmailSendingException.class, () -> authController.registerUser(dto, HttpHeaders.HOST));
 
         assertAll("Verify invoking services one by one and expected status",
                 () -> verify(userService).existsByUsernameOrEmail(dto.getUsername(), dto.getEmail()),

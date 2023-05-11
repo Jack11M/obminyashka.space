@@ -3,12 +3,15 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -37,6 +40,8 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,6 +73,8 @@ class UserFlowTest extends BasicControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserService userService;
+    @MockBean
+    private SendGrid sendGrid;
 
     @Autowired
     public UserFlowTest(MockMvc mockMvc) {
@@ -163,6 +170,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserEmail_shouldGetResponse() throws Exception {
+        when(sendGrid.api(any())).thenReturn(new Response(200, null, null));
         var changeEmailRequest = new ChangeEmailRequest(OLD_ADMIN_VALID_EMAIL);
         var httpTemplate = put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL);
 
@@ -179,6 +187,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
+        when(sendGrid.api(any())).thenReturn(new Response(200, null, null));
         var changeEmailRequest = new ChangeEmailRequest(NEW_VALID_EMAIL);
         var httpTemplate = put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL);
 
