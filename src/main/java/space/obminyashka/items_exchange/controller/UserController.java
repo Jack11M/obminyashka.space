@@ -60,8 +60,7 @@ public class UserController {
     @Operation(summary = "Find a registered requested user's data")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
     public ResponseEntity<UserDto> getPersonalInfo(@Parameter(hidden = true) Authentication authentication) {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
@@ -72,6 +71,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @Parameter(hidden = true) Authentication authentication) {
@@ -79,10 +79,10 @@ public class UserController {
     }
 
     @GetMapping(value = ApiKey.USER_MY_ADV, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update a registered requested user's data")
+    @Operation(summary = "Find user's created advertisements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
     public List<AdvertisementTitleDto> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {

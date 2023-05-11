@@ -80,7 +80,7 @@ public class LocationController {
     @PutMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an existed Location", description = "ADMIN ONLY")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
