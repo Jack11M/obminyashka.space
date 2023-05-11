@@ -164,8 +164,9 @@ class UserFlowTest extends BasicControllerTest {
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserEmail_shouldGetResponse() throws Exception {
         var changeEmailRequest = new ChangeEmailRequest(OLD_ADMIN_VALID_EMAIL);
+        var httpTemplate = put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL), changeEmailRequest, status().isConflict());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(httpTemplate, changeEmailRequest, status().isConflict());
         String userEmail = userService.findByUsernameOrEmail(ADMIN_USERNAME).map(User::getEmail).orElse("");
 
         assertEquals(userEmail, changeEmailRequest.email());
@@ -179,8 +180,9 @@ class UserFlowTest extends BasicControllerTest {
             ignoreCols = {"password", "lastOnlineTime", "updated"})
     void updateUserEmail_whenDataIsCorrect_successfully() throws Exception {
         var changeEmailRequest = new ChangeEmailRequest(NEW_VALID_EMAIL);
+        var httpTemplate = put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL);
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL).header(HttpHeaders.HOST, DOMAIN_URL), changeEmailRequest, status().isAccepted());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(httpTemplate, changeEmailRequest, status().isAccepted());
 
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL)));
     }

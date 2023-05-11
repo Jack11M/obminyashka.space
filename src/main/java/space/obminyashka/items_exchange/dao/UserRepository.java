@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,18 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Query("update User u set u.password = :password where u.username = :username")
     void saveUserPasswordByUsername(String username, String password);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.email = :email, u.emailConfirmationCode = :confirmationCodeId, u.isValidatedEmail = false" +
+            " where u.username = :username or u.email = :username")
+    void updateUserEmailAndConfirmationCodeByUsername(String username, String email, UUID confirmationCodeId);
+
+    @Transactional
+    @Modifying
+    @Query(value = "insert into email_confirmation_code(id, user_id, expiry_date) " +
+            "values(:codeId, (select id from user where username = :username or email = :username), :expiryDate)", nativeQuery = true)
+    void saveUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryDate);
 
     @Transactional
     @Modifying

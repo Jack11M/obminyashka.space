@@ -69,8 +69,8 @@ public class SendGridService implements MailService {
 
             log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
         } catch (IOException e) {
-            log.error("Error while sending {emailType.name()} email", e);
-            throw new EmailSendingException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL));
+            log.error("Error while sending {} email", emailType.name(), e);
+            throw new EmailSendingException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_SENDING));
         }
 
         return codeId;

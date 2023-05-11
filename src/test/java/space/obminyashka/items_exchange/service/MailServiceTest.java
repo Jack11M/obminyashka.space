@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
@@ -44,13 +45,13 @@ class MailServiceTest {
 
         final var emailTo = "test@mail.ua";
         var expectedHost = "https://obminyashka.space";
-
-        mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.REGISTRATION, expectedHost);
+        var confirmationCode = mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.REGISTRATION, expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();
         verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
                         capturedRequest.getEndpoint().equals("mail/send") &&
                         capturedRequest.getBody().contains(emailTo)));
+        assertNotNull(confirmationCode);
     }
 }

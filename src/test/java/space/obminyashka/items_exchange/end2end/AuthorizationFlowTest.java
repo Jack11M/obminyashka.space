@@ -106,7 +106,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
         assertThat(result.getResolvedException())
                 .isInstanceOf(EmailSendingException.class)
-                .hasMessageContaining(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL));
+                .hasMessageContaining(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_SENDING));
     }
 
     @ParameterizedTest
