@@ -20,10 +20,13 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select u.updated from User u where u.username = :username or u.email = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);
 
-    @Query("select u.password from User u where u.username = :username or u.email = :username")
+    @Query("select u.username from User u where u.username = :username or u.email = :username")
+    String getByEmailOrUsername(String username);
+
+    @Query("select u.password from User u where u.username = :username")
     String getUserPasswordByUsername(String username);
 
-    @Query("select u.email from User u where u.username = :username or u.email = :username")
+    @Query("select u.email from User u where u.username = :username")
     String getUserEmailByUsername(String username);
 
     boolean existsByEmail(String email);

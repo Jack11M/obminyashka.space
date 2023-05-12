@@ -63,7 +63,7 @@ public class AuthController {
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
         try {
-            final var username = escapeHtml(userLoginDto.getUsernameOrEmail());
+            final var username = userService.getByUsernameOrEmail(escapeHtml(userLoginDto.getUsernameOrEmail()));
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
             return ResponseEntity.of(authService.createUserLoginResponseDto(username));
         } catch (AuthenticationException e) {

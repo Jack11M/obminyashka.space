@@ -23,6 +23,14 @@ public interface UserService {
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
 
     /**
+     * Find a username by checking gained param either username or email columns
+     * @param username login of the user
+     * @return username user as the result
+     */
+    String getByUsernameOrEmail(String username);
+
+
+    /**
      * Find a user into DB by checking gained username and convert it into DTO
      * @param username login of the user
      * @return {@link Optional} with the converted user as the result

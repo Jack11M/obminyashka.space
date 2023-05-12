@@ -74,6 +74,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public String getByUsernameOrEmail(String username) {
+        return userRepository.getByEmailOrUsername(username);
+    }
+
+    @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
         userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
