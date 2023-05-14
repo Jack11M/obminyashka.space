@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
@@ -20,6 +21,7 @@ import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
     private final ChildMapper childMapper;
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
@@ -75,10 +78,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
-        UUID userId = userRepository.save(userToRegister).getId();
-        userRepository.saveUserEmailConfirmationCodeByUserId(userId, codeId,
-                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
-        return  userId != null;
+        EmailConfirmationCode confirmationCode = new EmailConfirmationCode(codeId, userToRegister,
+                numberOfHoursToKeepEmailConformationCode);
+        return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {

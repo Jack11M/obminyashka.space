@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -79,11 +80,13 @@ class AuthorizationFlowTest extends BasicControllerTest {
             ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
         when(sendGrid.api(any())).thenReturn(new Response(200, null, null));
+        long codesCountBeforeRegister = emailConfirmationCodeRepository.count();
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationDto, status().isCreated());
+        long codesCountAfterRegister = emailConfirmationCodeRepository.count();
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
         assertTrue(result.getResponse().getContentAsString().contains(seekingResponse));
-        assertEquals(1, emailConfirmationCodeRepository.count());
+        assertEquals(1, codesCountAfterRegister - codesCountBeforeRegister);
     }
 
     @Test

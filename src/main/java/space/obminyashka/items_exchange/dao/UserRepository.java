@@ -61,12 +61,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query(value = "insert into email_confirmation_code(id, user_id, expiry_date) " +
-            "values(:codeId, :userId, :expiryDate)", nativeQuery = true)
-    void saveUserEmailConfirmationCodeByUserId(UUID userId, UUID codeId, LocalDateTime expiryDate);
-
-    @Transactional
-    @Modifying
     @Query("update User u set u.oauth2Login = true, u.isValidatedEmail = true where u.email = :email")
     void setOAuth2LoginToUserByEmail(String email);
 
