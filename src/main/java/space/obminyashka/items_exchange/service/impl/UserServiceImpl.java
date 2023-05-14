@@ -20,6 +20,7 @@ import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -222,14 +223,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+    public List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate) {
         final var childrenToSave = childMapper.toModelList(childrenDtoToUpdate);
-        final var existedChildren = parent.getChildren();
-        existedChildren.clear();
-        existedChildren.addAll(childrenToSave);
-        childrenToSave.forEach(child -> child.setUser(parent));
-
-        userRepository.saveAndFlush(parent);
+        userRepository.deleteAllChildrenByUsername(username);
+        for (Child child : childrenToSave) {
+            userRepository.createChildrenByUsername(UUID.randomUUID(), username, child.getBirthDate(), child.getSex().name());
+        }
         return childrenDtoToUpdate;
     }
 

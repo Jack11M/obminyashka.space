@@ -139,11 +139,11 @@ public interface UserService {
 
     /**
      * Update existed children of gained user
-     * @param parent user for children update
+     * @param username for children update
      * @param childrenDtoToUpdate updated children data
      * @return children which were updated
      */
-    List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate);
+    List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate);
 
     /**
      * Set received image to existed user as the avatar image

@@ -181,8 +181,7 @@ public class UserController {
     public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
                                          @RequestBody List<@Valid ChildDto> childrenDto,
                                          @Parameter(hidden = true) Authentication authentication) {
-        final User user = getUser(authentication.getName());
-        return userService.updateChildren(user, childrenDto);
+        return userService.updateChildren(authentication.getName(), childrenDto);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
