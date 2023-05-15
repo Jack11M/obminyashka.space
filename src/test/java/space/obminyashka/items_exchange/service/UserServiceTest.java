@@ -27,6 +27,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -83,23 +84,23 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateChildren() {
+    void testUpdateChildren_whenGetNewChildrenForUser_shouldWorkCorrectly() {
         // Arrange
         String username = "testuser";
-        List<ChildDto> childrenDtoToUpdate = new ArrayList<>();
-        childrenDtoToUpdate.add(new ChildDto(Gender.MALE, LocalDate.now()));
+        List<ChildDto> childrenDtoToUpdate = List.of(new ChildDto(Gender.MALE, LocalDate.now()));
 
-        List<Child> childrenToSave = new ArrayList<>();
-        childrenToSave.add(new Child(UUID.randomUUID(), Gender.MALE, LocalDate.now(), null));
+        List<Child> childrenToSave = List.of(new Child(UUID.randomUUID(), Gender.MALE, LocalDate.now(), null));
         when(childMapper.toModelList(childrenDtoToUpdate)).thenReturn(childrenToSave);
 
         // Act
         List<ChildDto> result = userService.updateChildren(username, childrenDtoToUpdate);
 
         // Assert
-        verify(userRepository).deleteAllChildrenByUsername(username);
-        verify(userRepository, times(childrenDtoToUpdate.size())).createChildrenByUsername(any(UUID.class), eq(username), any(LocalDate.class), anyString());
-        assertEquals(childrenDtoToUpdate, result);
+        assertAll(
+                () -> verify(userRepository).deleteAllChildrenByUsername(username),
+                () -> verify(userRepository, times(childrenDtoToUpdate.size())).createChildrenByUsername(any(UUID.class),
+                        eq(username), any(LocalDate.class), anyString()),
+                () -> assertEquals(childrenDtoToUpdate, result));
     }
 
     private Optional<User> creatOptionalUser() {
