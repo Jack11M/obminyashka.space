@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -75,4 +76,15 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update User u set u.role = (select r from Role r where r.name = :roleName) " +
             "where u.username = :username or u.email = :username")
     void updateUserByUsernameWithRole(String username, String roleName);
+
+    @Transactional
+    @Modifying
+    @Query("delete from Child c where c.user = (select u from User u where u.username = :username or u.email = :username)")
+    void deleteAllChildrenByUsername(String username);
+
+    @Transactional
+    @Modifying
+    @Query(value = "insert into Child values (:uuid, (select id from user where username = :username or email = :username), :birthDay, :sex)",
+            nativeQuery = true)
+    void createChildrenByUsername(UUID uuid, String username, LocalDate birthDay, String sex);
 }
