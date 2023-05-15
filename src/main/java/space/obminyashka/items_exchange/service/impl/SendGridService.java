@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
+import space.obminyashka.items_exchange.exception.EmailSendingException;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
@@ -22,17 +23,26 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.RegistrationMessage.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SendGridService implements MailService {
 
+    public static final Map<String, String> EMAIL_TEMPLATE_KEYS = Map.of(
+        "subject", "topic",
+            "header", "email.header",
+            "greetings", "email.greetings",
+            "information", "email.action.information",
+            "benefits", "email.benefits",
+            "confirm", "email.confirm.button",
+            "footer", "email.footer"
+    );
     private final EmailConfirmationCodeRepository emailRepository;
     private final SendGrid sendGrid;
     private final Email sender;
@@ -42,31 +52,40 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public void sendMail(String emailTo, EmailType subject, UUID codeId, String host) throws IOException {
+    public UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host){
         var mail2send = new Mail();
         mail2send.setFrom(sender);
-        mail2send.setTemplateId(subject.template);
+        mail2send.setTemplateId(emailType.template);
 
-        final var personalization = populatePersonalization(subject.topic, codeId, host);
+        UUID codeId = UUID.randomUUID();
+        final var personalization = createPersonalizationAndSetParameters(emailType, codeId, host);
         personalization.addTo(new Email(emailTo));
         mail2send.addPersonalization(personalization);
 
-        var request = createMailRequest(mail2send);
-        final var response = sendGrid.api(request);
-        final var statusCode = response.getStatusCode();
-        log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
+        try {
+            Request request  = createMailRequest(mail2send);
+            final var response = sendGrid.api(request);
+            final var statusCode = response.getStatusCode();
+
+            log.debug("[SendGridService] A sent email result. STATUS: {} BODY: {}", statusCode, response.getBody());
+        } catch (IOException e) {
+            log.error("Error while sending {} email", emailType.name(), e);
+            throw new EmailSendingException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_SENDING));
+        }
+
+        return codeId;
     }
 
-    private static Personalization populatePersonalization(String subject, UUID codeId, String host) {
-        final var personalization = new Personalization();
-        personalization.addDynamicTemplateData("subject", getMessageSource(subject));
-        personalization.addDynamicTemplateData("header", getMessageSource(EMAIL_HEADER));
-        personalization.addDynamicTemplateData("greetings", getMessageSource(EMAIL_GREETINGS));
-        personalization.addDynamicTemplateData("information", getMessageSource(EMAIL_INFORMATION));
-        personalization.addDynamicTemplateData("benefits", getMessageSource(EMAIL_BENEFITS));
-        personalization.addDynamicTemplateData("confirm", getMessageSource(EMAIL_BUTTON));
-        personalization.addDynamicTemplateData("footer", getMessageSource(EMAIL_FOOTER));
+    private static Personalization createPersonalizationAndSetParameters(EmailType emailType, UUID codeId, String host) {
+        var personalization = new Personalization();
+
+        EMAIL_TEMPLATE_KEYS.forEach((key, value)->{
+            var parameterSource = emailType.name().toLowerCase().concat(".").concat(value);
+            personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
+        });
+
         personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+
         return personalization;
     }
 

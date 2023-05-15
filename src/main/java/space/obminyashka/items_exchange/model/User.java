@@ -92,7 +92,7 @@ public class User extends BaseEntity implements UserDetails {
     @Accessors(chain = true)
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.DETACH)
+    @OneToOne(mappedBy = "user")
     private EmailConfirmationCode emailConfirmationCode;
 
     @Override

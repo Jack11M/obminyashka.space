@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
@@ -36,6 +37,8 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private EmailConfirmationCodeRepository emailConfirmationCodeRepository;
+    @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Mock
     private ChildMapper childMapper;
@@ -53,7 +56,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, childMapper, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
+        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, emailConfirmationCodeRepository, childMapper, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test

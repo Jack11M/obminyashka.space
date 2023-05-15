@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
+import space.obminyashka.items_exchange.exception.EmailSendingException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
 
@@ -68,6 +69,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IOException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ErrorMessage handleIOException(Exception ex, ServletWebRequest request){
+        return logAndGetErrorMessage(request, ex, Level.ERROR);
+    }
+
+    @ExceptionHandler(EmailSendingException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ErrorMessage handleEmailException(Exception ex, ServletWebRequest request){
         return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 

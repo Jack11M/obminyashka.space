@@ -49,8 +49,15 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.email = :email where u.username = :username")
-    void saveUserEmailByUsername(String username, String email);
+    @Query("update User u set u.email = :email, u.isValidatedEmail = false" +
+            " where u.username = :username or u.email = :username")
+    void updateUserEmailAndConfirmationCodeByUsername(String username, String email);
+
+    @Transactional
+    @Modifying
+    @Query(value = "insert into email_confirmation_code(id, user_id, expiry_date) " +
+            "values(:codeId, (select id from user where username = :username or email = :username), :expiryDate)", nativeQuery = true)
+    void saveUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryDate);
 
     @Transactional
     @Modifying

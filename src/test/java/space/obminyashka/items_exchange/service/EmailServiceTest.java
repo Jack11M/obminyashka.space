@@ -52,7 +52,7 @@ class EmailServiceTest {
 
     @Test
     void validateEmail_whenConfirmationCodeFound_thenShouldReturn() throws EmailValidationCodeNotFoundException {
-        final var exceptedConfirmCode = new EmailConfirmationCode(EXPECTED_ID, 1);
+        final var exceptedConfirmCode = new EmailConfirmationCode(EXPECTED_ID, null, 1);
         when(emailConfirmationCodeRepository.findById(EXPECTED_ID)).thenReturn(Optional.of(exceptedConfirmCode));
         sendGridService.validateEmail(EXPECTED_ID);
 
@@ -70,6 +70,6 @@ class EmailServiceTest {
     private static Stream<Arguments> exception_whenEmailNotFoundOrExpiryDateOut() {
         return Stream.of(
                 Arguments.of(null, new EmailValidationCodeNotFoundException("the code was not found")),
-                Arguments.of(new EmailConfirmationCode(EXPECTED_ID, -1), new EmailValidationCodeNotFoundException("the code was expired")));
+                Arguments.of(new EmailConfirmationCode(EXPECTED_ID, null, -1), new EmailValidationCodeNotFoundException("the code was expired")));
     }
 }

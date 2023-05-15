@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
     private final ChildMapper childMapper;
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
@@ -76,8 +78,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
-        userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
-        return userRepository.save(userToRegister).getId() != null;
+        EmailConfirmationCode confirmationCode = new EmailConfirmationCode(codeId, userToRegister,
+                numberOfHoursToKeepEmailConformationCode);
+        return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
@@ -146,8 +149,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUserEmail(String username, String email) {
-        userRepository.saveUserEmailByUsername(username, email);
+    public void updateUserEmail(String username, String email, UUID codeId) {
+        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+        userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }
 
     @Override

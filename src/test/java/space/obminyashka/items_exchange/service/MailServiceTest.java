@@ -18,10 +18,10 @@ import space.obminyashka.items_exchange.util.EmailType;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
@@ -44,15 +44,14 @@ class MailServiceTest {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
-        var expectedCode = "e58ed763-928c-4155-bee9-fdbaaadc15f3";
         var expectedHost = "https://obminyashka.space";
-
-        mailService.sendMail(emailTo, EmailType.REGISTRATION, UUID.fromString(expectedCode), expectedHost);
+        var confirmationCode = mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.REGISTRATION, expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();
         verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
                         capturedRequest.getEndpoint().equals("mail/send") &&
                         capturedRequest.getBody().contains(emailTo)));
+        assertNotNull(confirmationCode);
     }
 }
