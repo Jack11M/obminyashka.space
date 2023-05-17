@@ -48,7 +48,8 @@ class UserControllerTest {
         assertAll("Validate all operations with image were invoked",
                 () -> assertEquals(Map.of("avatarImage", jpeg.getBytes()), result),
                 () -> verify(userService).setUserAvatar(captorName.capture(), captorAvatar.capture()),
-                        () -> assertEquals(jpeg.getBytes(), captorAvatar.getValue()));
+                () -> assertEquals(authentication.getName(), captorName.getValue()),
+                () -> assertEquals(jpeg.getBytes(), captorAvatar.getValue()));
     }
 
     @Test
