@@ -79,6 +79,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
+    @Query("update User u set u.avatarImage = :newAvatarImage " +
+            "where u.username = :usernameOrEmail or u.email =:usernameOrEmail ")
+    void updateAvatarByUsername(String usernameOrEmail, byte[] newAvatarImage);
+
     @Query("delete from Child c where c.user = (select u from User u where u.username = :username or u.email = :username)")
     void deleteAllChildrenByUsername(String username);
 
@@ -87,4 +91,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "insert into Child values (:uuid, (select id from user where username = :username or email = :username), :birthDay, :sex)",
             nativeQuery = true)
     void createChildrenByUsername(UUID uuid, String username, LocalDate birthDay, String sex);
+
 }

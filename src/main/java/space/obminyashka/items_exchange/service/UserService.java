@@ -147,11 +147,11 @@ public interface UserService {
     List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate);
 
     /**
-     * Set received image to existed user as the avatar image
+     * Set received image to existed username as the avatar image
      * @param newAvatarImage image represented into array of bytes
-     * @param user user whom the image has to be set as new avatar image
+     * @param usernameOrEmail whom the image has to be set as new avatar image
      */
-    void setUserAvatar(byte[] newAvatarImage, User user);
+    void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage);
 
     /**
      * Remove avatar of selected user
