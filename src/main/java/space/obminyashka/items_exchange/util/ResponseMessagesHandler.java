@@ -59,7 +59,7 @@ public class ResponseMessagesHandler {
         public final String ADVERTISEMENT_IMAGE_ID_NOT_FOUND = "exception.advertisement-image.id.not-found";
         public final String IMAGE_NOT_EXISTED_ID = "exception.image.not-existed-id";
         public final String ADVERTISEMENT_NOT_EXISTED_ID = "exception.advertisement.not-existed-id";
-        public final String EMAIL_REGISTRATION = "exception.emailing.registration";
+        public final String EMAIL_SENDING = "exception.email.sending";
         public final String EMAIL_OLD = "exception.email.old";
         public final String LOCATION_ALREADY_EXIST = "exception.location.exist";
         public final String EMAIL_NOT_FOUND_OR_EXPIRED = "exception.email.validation-code";
@@ -73,16 +73,5 @@ public class ResponseMessagesHandler {
         public final String DELETE_ACCOUNT = "account.self.delete.request";
         public final String ACCOUNT_ACTIVE_AGAIN = "account.made.active.again";
         public final String EMAIL_CONFIRMED = "email.confirmed";
-    }
-
-    @UtilityClass
-    public class RegistrationMessage {
-        public final String EMAIL_SUBJECT = "registration.topic";
-        public final String EMAIL_HEADER = "registration.email.header";
-        public final String EMAIL_GREETINGS = "registration.email.greetings";
-        public final String EMAIL_INFORMATION = "registration.email.action.information";
-        public final String EMAIL_BENEFITS = "registration.email.benefits";
-        public final String EMAIL_BUTTON = "registration.email.confirm.button";
-        public final String EMAIL_FOOTER = "registration.email.footer";
     }
 }
