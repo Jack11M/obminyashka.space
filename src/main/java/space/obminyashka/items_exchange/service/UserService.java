@@ -71,8 +71,9 @@ public interface UserService {
      * Update the email for the user with the given username.
      * @param username The username of the user whose email you want to update.
      * @param email The new email for the user.
+     * @param codeId The code for confirmation email.
      */
-    void updateUserEmail(String username, String email);
+    void updateUserEmail(String username, String email, UUID codeId);
 
     /**
      * Request from a user to remove them account with time limit
@@ -147,18 +148,18 @@ public interface UserService {
 
     /**
      * Update existed children of gained user
-     * @param parent user for children update
+     * @param username for children update
      * @param childrenDtoToUpdate updated children data
      * @return children which were updated
      */
-    List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate);
+    List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate);
 
     /**
-     * Set received image to existed user as the avatar image
+     * Set received image to existed username as the avatar image
      * @param newAvatarImage image represented into array of bytes
-     * @param user user whom the image has to be set as new avatar image
+     * @param usernameOrEmail whom the image has to be set as new avatar image
      */
-    void setUserAvatar(byte[] newAvatarImage, User user);
+    void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage);
 
     /**
      * Remove avatar of selected user

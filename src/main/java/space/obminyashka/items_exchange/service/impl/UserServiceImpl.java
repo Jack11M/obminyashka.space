@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
@@ -20,6 +21,7 @@ import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.RoleService;
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
+    private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
     private final ChildMapper childMapper;
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
@@ -81,8 +84,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
-        userToRegister.setEmailConfirmationCode(new EmailConfirmationCode(codeId, numberOfHoursToKeepEmailConformationCode));
-        return userRepository.save(userToRegister).getId() != null;
+        EmailConfirmationCode confirmationCode = new EmailConfirmationCode(codeId, userToRegister,
+                numberOfHoursToKeepEmailConformationCode);
+        return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
     private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
@@ -151,8 +155,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUserEmail(String username, String email) {
-        userRepository.saveUserEmailByUsername(username, email);
+    public void updateUserEmail(String username, String email, UUID codeId) {
+        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+        userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }
 
     @Override
@@ -227,21 +233,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<ChildDto> updateChildren(User parent, List<ChildDto> childrenDtoToUpdate) {
+    public List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate) {
         final var childrenToSave = childMapper.toModelList(childrenDtoToUpdate);
-        final var existedChildren = parent.getChildren();
-        existedChildren.clear();
-        existedChildren.addAll(childrenToSave);
-        childrenToSave.forEach(child -> child.setUser(parent));
-
-        userRepository.saveAndFlush(parent);
+        userRepository.deleteAllChildrenByUsername(username);
+        for (Child child : childrenToSave) {
+            userRepository.createChildrenByUsername(UUID.randomUUID(), username, child.getBirthDate(), child.getSex().name());
+        }
         return childrenDtoToUpdate;
     }
 
     @Override
-    public void setUserAvatar(byte[] newAvatarImage, User user) {
-        user.setAvatarImage(newAvatarImage);
-        userRepository.saveAndFlush(user);
+    public void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage) {
+        userRepository.updateAvatarByUsername(usernameOrEmail, newAvatarImage);
     }
 
     @Override

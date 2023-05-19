@@ -1,4 +1,4 @@
-FROM maven:3.8.7-eclipse-temurin-19
+FROM maven:3.9.1-eclipse-temurin-20
 COPY frontend /tmp/frontend
 COPY pom.xml /tmp/
 COPY src /tmp/src/

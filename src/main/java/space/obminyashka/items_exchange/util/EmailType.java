@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum EmailType {
-    REGISTRATION(ResponseMessagesHandler.RegistrationMessage.EMAIL_SUBJECT,
-            "d-d3d24de0a19f49afb06fc5505929b00c");
+    REGISTRATION("d-d3d24de0a19f49afb06fc5505929b00c"),
+    CHANGING("d-d3d24de0a19f49afb06fc5505929b00c");
 
-    public final String topic;
     public final String template;
 }
