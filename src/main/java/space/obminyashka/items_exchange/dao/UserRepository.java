@@ -67,8 +67,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.isValidatedEmail = true where u.username = " +
-            "(select user.username from email_confirmation_code where id=:id)")
+    @Query(value = "UPDATE user u SET validated_email = true where u.id = " +
+            "(SELECT user_id from email_confirmation_code where id = :id)", nativeQuery = true)
     void setValidatedEmailToUserByEmailId(UUID id);
 
     @Transactional
