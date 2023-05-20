@@ -107,7 +107,6 @@ public class UserController {
         }
 
         userService.updateUserPassword(username, password);
-
         return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), HttpStatus.ACCEPTED);
     }
 
@@ -133,9 +132,7 @@ public class UserController {
         }
 
         UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.CHANGING, host);
-
         userService.updateUserEmail(username, email, codeId);
-
         return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_EMAIL), HttpStatus.ACCEPTED);
     }
 

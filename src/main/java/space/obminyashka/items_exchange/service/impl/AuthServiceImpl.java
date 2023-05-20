@@ -8,6 +8,7 @@ import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
@@ -16,7 +17,6 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
@@ -33,19 +33,22 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    public Optional<UserLoginResponseDto> createUserLoginResponseDto(String username) throws UsernameNotFoundException {
-        final var user = userService.findByUsernameOrEmail(username);
-        if (user.isPresent()) {
-            final var userLoginResponseDto = userMapper.toLoginResponseDto(user.get());
-            final var accessToken = jwtTokenService.createAccessToken(username, user.get().getRole());
-            userLoginResponseDto.setAccessToken(accessToken);
-            userLoginResponseDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken));
-            userLoginResponseDto.setRefreshToken(refreshTokenService.createRefreshToken(user.get()).getToken());
-            userLoginResponseDto.setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
-            log.info("User {} is successfully logged in", username);
-            return Optional.of(userLoginResponseDto);
-        }
-        return Optional.empty();
+    public UserLoginResponseDto createUserLoginResponseDto(String username) throws UsernameNotFoundException {
+        return userService.findByUsernameOrEmail(username)
+                .map(this::populateUserLoginResponseDto)
+                .orElseThrow(() -> new UsernameNotFoundException("User" + username + " is not logged in"));
+    }
+
+    private UserLoginResponseDto populateUserLoginResponseDto(User user) {
+        final var userLoginResponseDto = userMapper.toLoginResponseDto(user);
+        final var accessToken = jwtTokenService.createAccessToken(userLoginResponseDto.getUsername(), user.getRole());
+        userLoginResponseDto
+                .setAccessToken(accessToken)
+                .setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken))
+                .setRefreshToken(refreshTokenService.createRefreshToken(user).getToken())
+                .setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
+        log.info("User {} is successfully logged in", userLoginResponseDto.getUsername());
+        return userLoginResponseDto;
     }
 
     @Override

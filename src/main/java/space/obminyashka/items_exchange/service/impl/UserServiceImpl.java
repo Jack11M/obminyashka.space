@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserEmail(String username, String email, UUID codeId) {
-        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+        userRepository.updateUserEmailConfirmationCodeByUsername(username, codeId,
                 LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
         userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }

@@ -18,20 +18,20 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailOrUsername(String username, String email);
 
-    @Query("select u.updated from User u where u.username = :username or u.email = :username")
+    @Query("select u.updated from User u where u.username = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);
 
-    @Query("select u.password from User u where u.username = :username or u.email = :username")
+    @Query("select u.password from User u where u.username = :username")
     String getUserPasswordByUsername(String username);
 
-    @Query("select u.email from User u where u.username = :username or u.email = :username")
+    @Query("select u.email from User u where u.username = :username")
     String getUserEmailByUsername(String username);
 
     boolean existsByEmail(String email);
 
     boolean existsByUsernameOrEmail(String username, String email);
 
-    @Query("select u from User u where u.username = :username or u.email = :username")
+    @Query("select u from User u where u.username = :username")
     Optional<User> findByUsername(String username);
 
     Optional<User> findByRefreshToken_Token(String token);
@@ -51,14 +51,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Transactional
     @Modifying
     @Query("update User u set u.email = :email, u.isValidatedEmail = false" +
-            " where u.username = :username or u.email = :username")
+            " where u.username = :username")
     void updateUserEmailAndConfirmationCodeByUsername(String username, String email);
 
     @Transactional
     @Modifying
-    @Query(value = "insert into email_confirmation_code(id, user_id, expiry_date) " +
-            "values(:codeId, (select id from user where username = :username or email = :username), :expiryDate)", nativeQuery = true)
-    void saveUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryDate);
+    @Query("update email_confirmation_code e set e.id = :codeId, e.expiryDate = :expiryData " +
+            "where e.user.id = (select u.id from User u where u.username = :username)")
+    void updateUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryData);
 
     @Transactional
     @Modifying
@@ -74,7 +74,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Transactional
     @Modifying
     @Query("update User u set u.role = (select r from Role r where r.name = :roleName) " +
-            "where u.username = :username or u.email = :username")
+            "where u.username = :username")
     void updateUserByUsernameWithRole(String username, String roleName);
 
     @Transactional
@@ -83,12 +83,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             "where u.username = :usernameOrEmail or u.email =:usernameOrEmail ")
     void updateAvatarByUsername(String usernameOrEmail, byte[] newAvatarImage);
 
-    @Query("delete from Child c where c.user = (select u from User u where u.username = :username or u.email = :username)")
+    @Query("delete from Child c where c.user = (select u from User u where u.username = :username)")
     void deleteAllChildrenByUsername(String username);
 
     @Transactional
     @Modifying
-    @Query(value = "insert into Child values (:uuid, (select id from user where username = :username or email = :username), :birthDay, :sex)",
+    @Query(value = "insert into Child values (:uuid, (select id from user where username = :username), :birthDay, :sex)",
             nativeQuery = true)
     void createChildrenByUsername(UUID uuid, String username, LocalDate birthDay, String sex);
 
