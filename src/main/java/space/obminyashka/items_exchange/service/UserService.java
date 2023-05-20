@@ -2,14 +2,12 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.User;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -130,21 +128,6 @@ public interface UserService {
      * @return A boolean value.
      */
     boolean isUserEmailMatches(String username, String email);
-
-    /**
-     * Get all children from gained user
-     * @param parent the user which is requested for getting all the children
-     * @return all existed children for provided user
-     */
-    List<ChildDto> getChildren(User parent);
-
-    /**
-     * Update existed children of gained user
-     * @param username for children update
-     * @param childrenDtoToUpdate updated children data
-     * @return children which were updated
-     */
-    List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate);
 
     /**
      * Set received image to existed username as the avatar image

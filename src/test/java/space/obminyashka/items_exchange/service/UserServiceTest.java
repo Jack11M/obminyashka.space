@@ -15,20 +15,16 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -44,8 +40,6 @@ class UserServiceTest {
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Mock
-    private ChildMapper childMapper;
-    @Mock
     private PhoneMapper phoneMapper;
     @Mock
     private RoleService roleService;
@@ -59,7 +53,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, emailConfirmationCodeRepository, childMapper, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
+        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, emailConfirmationCodeRepository, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test
@@ -86,25 +80,7 @@ class UserServiceTest {
         verify(userRepository, never()).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
     }
 
-    @Test
-    void testUpdateChildren_whenGetNewChildrenForUser_shouldWorkCorrectly() {
-        // Arrange
-        String username = "testuser";
-        List<ChildDto> childrenDtoToUpdate = List.of(new ChildDto(Gender.MALE, LocalDate.now()));
 
-        List<Child> childrenToSave = List.of(new Child(UUID.randomUUID(), Gender.MALE, LocalDate.now(), null));
-        when(childMapper.toModelList(childrenDtoToUpdate)).thenReturn(childrenToSave);
-
-        // Act
-        List<ChildDto> result = userService.updateChildren(username, childrenDtoToUpdate);
-
-        // Assert
-        assertAll(
-                () -> verify(userRepository).deleteAllChildrenByUsername(username),
-                () -> verify(userRepository, times(childrenDtoToUpdate.size())).createChildrenByUsername(any(UUID.class),
-                        eq(username), any(LocalDate.class), anyString()),
-                () -> assertEquals(childrenDtoToUpdate, result));
-    }
 
     private Optional<User> creatOptionalUser() {
         User user = new User();

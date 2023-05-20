@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -67,8 +66,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE user u SET validated_email = true where u.id = " +
-            "(SELECT user_id from email_confirmation_code where id = :id)", nativeQuery = true)
+    @Query("update User u set u.isValidatedEmail = true where u = " +
+            "(select user from email_confirmation_code where id = :id)")
     void setValidatedEmailToUserByEmailId(UUID id);
 
     @Transactional
@@ -82,14 +81,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update User u set u.avatarImage = :newAvatarImage " +
             "where u.username = :usernameOrEmail or u.email =:usernameOrEmail ")
     void updateAvatarByUsername(String usernameOrEmail, byte[] newAvatarImage);
-
-    @Query("delete from Child c where c.user = (select u from User u where u.username = :username or u.email = :username)")
-    void deleteAllChildrenByUsername(String username);
-
-    @Transactional
-    @Modifying
-    @Query(value = "insert into Child values (:uuid, (select id from user where username = :username or email = :username), :birthDay, :sex)",
-            nativeQuery = true)
-    void createChildrenByUsername(UUID uuid, String username, LocalDate birthDay, String sex);
 
 }

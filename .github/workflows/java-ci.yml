@@ -13,7 +13,7 @@ on:
           - debug
   schedule:
     # every Monday at 10 AM
-    - cron: '0 10 * * Mon'
+    - cron: '0 10 * * MON'
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '20'
-          distribution: 'temurin'
+          distribution: 'oracle'
           check-latest: true
       - name: Run build with Maven
         run: mvn --batch-mode --update-snapshots package
