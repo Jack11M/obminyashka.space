@@ -46,11 +46,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -111,27 +110,6 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$[2].title").value("Dresses"))
                 .andExpect(jsonPath("$[3].title").value("Skirts"))
                 .andExpect(jsonPath("$[4].title").value("Pajamas"));
-    }
-
-    @Test
-    @WithMockUser(username = ADMIN_USERNAME)
-    @DataSet("database_init.yml")
-    void getChildren_success_shouldReturnUsersChildren() throws Exception {
-        sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].sex").value("MALE"))
-                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
-    }
-
-    @Test
-    @WithMockUser(username = ADMIN_USERNAME)
-    @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "children/update.yml", orderBy = {"created", "name", "birth_date"}, ignoreCols = "id")
-    void updateChild_success_shouldReturnHttpStatusOk() throws Exception {
-        var validUpdatingChildDtoJson = getTestChildren(2018);
-
-        sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @WithMockUser(username = ADMIN_USERNAME)

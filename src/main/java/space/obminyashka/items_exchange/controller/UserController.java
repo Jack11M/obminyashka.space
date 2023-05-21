@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +23,6 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.User;
@@ -49,7 +47,6 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParamet
 @Validated
 @Slf4j
 public class UserController {
-    private static final int MAX_CHILDREN_AMOUNT = 10;
 
     private final UserService userService;
     private final ImageService imageService;
@@ -168,30 +165,6 @@ public class UserController {
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.ACCOUNT_ACTIVE_AGAIN);
     }
 
-    @GetMapping(value = ApiKey.USER_CHILD, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find a registered requested user's children data")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> getChildren(@Parameter(hidden = true) Authentication authentication) {
-        return userService.getChildren(getUser(authentication.getName()));
-    }
-
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(value = ApiKey.USER_CHILD, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Update child data for a registered requested user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
-    @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
-                                         @RequestBody List<@Valid ChildDto> childrenDto,
-                                         @Parameter(hidden = true) Authentication authentication) {
-        return userService.updateChildren(authentication.getName(), childrenDto);
-    }
-
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PostMapping(value = ApiKey.USER_SERVICE_CHANGE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Set a new user's avatar image")
@@ -202,9 +175,8 @@ public class UserController {
             @ApiResponse(responseCode = "415", description = "UNSUPPORTED MEDIA TYPE")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Map<String, byte[]> updateUserAvatar(@RequestPart MultipartFile image, @Parameter(hidden = true) Authentication authentication) {
-        User user = getUser(authentication.getName());
         byte[] newAvatarImage = imageService.scale(image);
-        userService.setUserAvatar(newAvatarImage, user);
+        userService.setUserAvatar(authentication.getName(), newAvatarImage);
         return Map.of("avatarImage", newAvatarImage);
     }
 
