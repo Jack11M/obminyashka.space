@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.service.MailService;
@@ -30,7 +27,7 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 public class EmailController {
     private final MailService mailService;
 
-    @PostMapping(value = ApiKey.EMAIL_VALIDATE_CODE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @GetMapping(value = ApiKey.EMAIL_VALIDATE_CODE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Validate confirmation email token id and then activate email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
