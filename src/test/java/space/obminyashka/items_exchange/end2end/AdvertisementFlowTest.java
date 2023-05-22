@@ -136,7 +136,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
         Long subcategoryId = 1l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
                 .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
     }
 
@@ -146,7 +146,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
         Long subcategoryId = 4l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
                 .andExpect(jsonPath("$.size()").value(0));
     }
 
@@ -164,7 +164,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM), status().isOk())
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
                 .andExpect(jsonPath("$.length()").value(advertisementRepository.count()));
     }
 

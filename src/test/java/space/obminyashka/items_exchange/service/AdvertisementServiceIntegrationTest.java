@@ -26,14 +26,14 @@ class AdvertisementServiceIntegrationTest {
     void findRandom12Thumbnails_shouldReturnEmpty() {
         AdvertisementFindRequest findAdvsRequest = new AdvertisementFindRequest();
         findAdvsRequest.setSize(12);
-        final var firstTitlesGetAttempt = advertisementService.findRandomNThumbnails(findAdvsRequest);
+        final var firstTitlesGetAttempt = advertisementService.findThumbnails(findAdvsRequest);
 
         assertAll("ValidationMessage of all parameters and mocks",
                 () -> assertFalse(firstTitlesGetAttempt.isEmpty()),
                 () -> assertEquals(repository.count(), firstTitlesGetAttempt.size())
         );
 
-        final var secondTitlesGetAttempt = advertisementService.findRandomNThumbnails(findAdvsRequest);
+        final var secondTitlesGetAttempt = advertisementService.findThumbnails(findAdvsRequest);
         assertEquals(firstTitlesGetAttempt, secondTitlesGetAttempt, "Collections must be equals because of caching response");
     }
 
