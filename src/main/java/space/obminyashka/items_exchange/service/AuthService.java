@@ -4,8 +4,6 @@ import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 
-import java.util.Optional;
-
 public interface AuthService {
 
     /**
@@ -14,7 +12,7 @@ public interface AuthService {
      * @param username user for children update
      * @return response on /login endpoint represented as {@link UserLoginResponseDto}
      */
-    Optional<UserLoginResponseDto> createUserLoginResponseDto(String username);
+    UserLoginResponseDto createUserLoginResponseDto(String username);
 
     /**
      * Invalidate access and refresh tokens for selected user

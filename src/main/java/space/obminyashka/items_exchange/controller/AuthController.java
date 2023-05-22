@@ -59,12 +59,14 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
-    public ResponseEntity<UserLoginResponseDto> login(@RequestBody @Valid UserLoginDto userLoginDto) {
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginDto userLoginDto) {
 
         try {
             final var username = escapeHtml(userLoginDto.getUsernameOrEmail());
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userLoginDto.getPassword()));
-            return ResponseEntity.of(authService.createUserLoginResponseDto(username));
+            var userLoginResponseDto = authService.createUserLoginResponseDto(username);
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    userLoginResponseDto.getUsername(), userLoginDto.getPassword()));
+            return userLoginResponseDto;
         } catch (AuthenticationException e) {
             log.warn("[AuthController] An exception occurred while authorization for '{}'", userLoginDto.getUsernameOrEmail(), e);
             throw new BadCredentialsException(getMessageSource(
@@ -137,9 +139,9 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
-    public ResponseEntity<UserLoginResponseDto> loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
+    public UserLoginResponseDto loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
         try {
-            return ResponseEntity.of(authService.createUserLoginResponseDto(authentication.getName()));
+            return authService.createUserLoginResponseDto(authentication.getName());
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.INVALID_OAUTH2_LOGIN));

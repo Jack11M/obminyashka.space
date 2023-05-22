@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.UserProjection;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,20 +19,20 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<UserProjection> findByEmail(String email);
 
-    @Query("select u.updated from User u where u.username = :username or u.email = :username")
+    @Query("select u.updated from User u where u.username = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);
 
-    @Query("select u.password from User u where u.username = :username or u.email = :username")
+    @Query("select u.password from User u where u.username = :username")
     String getUserPasswordByUsername(String username);
 
-    @Query("select u.email from User u where u.username = :username or u.email = :username")
+    @Query("select u.email from User u where u.username = :username")
     String getUserEmailByUsername(String username);
 
     boolean existsByEmail(String email);
 
     boolean existsByUsernameOrEmail(String username, String email);
 
-    @Query("select u from User u where u.username = :username or u.email = :username")
+    @Query("select u from User u where u.username = :username")
     Optional<User> findByUsername(String username);
 
     Optional<User> findByRefreshToken_Token(String token);
@@ -52,15 +51,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.email = :email, u.isValidatedEmail = false" +
-            " where u.username = :username or u.email = :username")
+    @Query("update User u set u.email = :email, u.isValidatedEmail = false where u.username = :username")
     void updateUserEmailAndConfirmationCodeByUsername(String username, String email);
 
     @Transactional
     @Modifying
-    @Query(value = "insert into email_confirmation_code(id, user_id, expiry_date) " +
-            "values(:codeId, (select id from user where username = :username or email = :username), :expiryDate)", nativeQuery = true)
-    void saveUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryDate);
+    @Query("update email_confirmation_code e set e.id = :codeId, e.expiryDate = :expiryData " +
+            "where e.user.id = (select u.id from User u where u.username = :username)")
+    void updateUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryData);
 
     @Transactional
     @Modifying
@@ -75,14 +73,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) " +
-            "where u.username = :username or u.email = :username")
+    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) where u.username = :username")
     void updateUserByUsernameWithRole(String username, String roleName);
 
     @Transactional
     @Modifying
-    @Query("update User u set u.avatarImage = :newAvatarImage " +
-            "where u.username = :usernameOrEmail or u.email =:usernameOrEmail ")
+    @Query("update User u set u.avatarImage = :newAvatarImage where u.username = :usernameOrEmail")
     void updateAvatarByUsername(String usernameOrEmail, byte[] newAvatarImage);
 
 }
