@@ -27,7 +27,7 @@ class AdvertisementServiceTest {
     private AdvertisementService advertisementService;
 
     @Test
-    void isSubcategoryDeletable_whenSubcategoryDoesNotExistById_shouldReturnFalse() {
+    void isAdvertisementsHaveSubcategoryWithId_whenSubcategoryDoesNotExistById_shouldReturnFalse() {
         when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(false);
 
         final boolean result = advertisementService.isAdvertisementsHaveSubcategoryWithId(NONEXISTENT_ENTITY_ID);
