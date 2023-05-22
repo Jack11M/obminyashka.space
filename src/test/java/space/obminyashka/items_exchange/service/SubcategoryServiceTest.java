@@ -1,32 +1,21 @@
 package space.obminyashka.items_exchange.service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dao.SubcategoryRepository;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Subcategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import space.obminyashka.items_exchange.dao.SubcategoryRepository;
+import space.obminyashka.items_exchange.model.Subcategory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
 
 @SpringBootTest
 class SubcategoryServiceTest {
