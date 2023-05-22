@@ -21,7 +21,7 @@ import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.UserProjection;
+import space.obminyashka.items_exchange.model.projection.UserProjection;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -90,11 +90,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
-        Optional<UserProjection> optionalUser = userRepository.findByEmail(oauth2User.getEmail());
-        optionalUser.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
+        Optional<UserProjection> optionalUserProjection = userRepository.findUserProjectionByEmail(oauth2User.getEmail());
+        optionalUserProjection.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
                 .map(UserProjection::getEmail)
                 .ifPresent(userRepository::setOAuth2LoginToUserByEmail);
-        return optionalUser.map(userMapper::toUserFromProjection)
+        return optionalUserProjection.map(userMapper::toUserFromProjection)
                 .orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 

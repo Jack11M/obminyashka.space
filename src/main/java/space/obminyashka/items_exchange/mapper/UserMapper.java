@@ -6,7 +6,7 @@ import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.UserProjection;
+import space.obminyashka.items_exchange.model.projection.UserProjection;
 
 import java.util.List;
 import java.util.Locale;

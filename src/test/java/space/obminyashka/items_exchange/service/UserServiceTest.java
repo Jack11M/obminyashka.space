@@ -3,8 +3,6 @@ package space.obminyashka.items_exchange.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +15,9 @@ import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserProjection;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.time.Instant;
@@ -36,6 +36,8 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private UserProjection userProjection;
+    @Mock
     private EmailConfirmationCodeRepository emailConfirmationCodeRepository;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -45,45 +47,70 @@ class UserServiceTest {
     private RoleService roleService;
     @Mock
     private UserMapper userMapper;
-    @Captor
-    private ArgumentCaptor<String> oauth2UserArgumentCaptor;
     private UserServiceImpl userService;
     @Value("${number.of.hours.to.keep.email.confirmation.code}")
     private int numberOfHoursToKeepEmailConformationToken;
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, emailConfirmationCodeRepository, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
+        userService = new UserServiceImpl(bCryptPasswordEncoder, userRepository, emailConfirmationCodeRepository, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test
-    void testLoginUserWithOAuth2_WhenUserBeenCreated() {
+    void testLoginUserWithOAuth2_WhenUserBeenCreatedWithFalseValidatedEmail() {
+        //Arrange
+
         var oauth2User = createDefaultOidcUser();
-        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL, NEW_USER_EMAIL)).thenReturn(creatOptionalUser());
-        userService.loginUserWithOAuth2(oauth2User);
+        var optionalUserProjection = creatOptionalUserProjection();
+        when(userProjection.getEmail()).thenReturn(NEW_USER_EMAIL);
+        when(userProjection.getOauth2Login()).thenReturn(false);
+        when(userProjection.getIsValidatedEmail()).thenReturn(false);
+        when(userRepository.findUserProjectionByEmail(NEW_USER_EMAIL)).thenReturn(optionalUserProjection);
+        when(userMapper.toUserFromProjection(optionalUserProjection.get())).thenReturn(creatOptionalUser().get());
 
-        verify(userRepository).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
+        //Act
+        User user = userService.loginUserWithOAuth2(oauth2User);
 
-        assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
+        //Assert
+        verify(userRepository).setOAuth2LoginToUserByEmail(NEW_USER_EMAIL);
+        assertEquals(user.getUsername(), optionalUserProjection.get().getUsername());
+        assertEquals(user.getRole().getName(), optionalUserProjection.get().getRole().getName());
+        assertEquals(NEW_USER_EMAIL, user.getEmail());
     }
 
     @Test
     void testLoginUserWithOAuth2_WhenUserBeenCreatedAndHasValidatedEmailWithOauth2Login() {
+        //Arrange
+
         var oauth2User = createDefaultOidcUser();
-        var optionalUser = creatOptionalUser();
-        optionalUser.get().isValidatedEmail(true);
-        optionalUser.get().setOauth2Login(true);
+        var optionalUserProjection = creatOptionalUserProjection();
+        when(userProjection.getOauth2Login()).thenReturn(true);
+        when(userRepository.findUserProjectionByEmail(NEW_USER_EMAIL)).thenReturn(optionalUserProjection);
+        when(userMapper.toUserFromProjection(optionalUserProjection.get())).thenReturn(creatOptionalUser().get());
 
-        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL, NEW_USER_EMAIL)).thenReturn(optionalUser);
-        userService.loginUserWithOAuth2(oauth2User);
+        //Act
+        User user = userService.loginUserWithOAuth2(oauth2User);
 
-        verify(userRepository, never()).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
+        //Assert
+        verify(userRepository, never()).setOAuth2LoginToUserByEmail(NEW_USER_EMAIL);
+        assertEquals(user.getUsername(), optionalUserProjection.get().getUsername());
+        assertEquals(user.getRole().getName(), optionalUserProjection.get().getRole().getName());
+        assertEquals(NEW_USER_EMAIL, user.getEmail());
     }
 
-
+    private Optional<UserProjection> creatOptionalUserProjection() {
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        when(userProjection.getUsername()).thenReturn("First");
+        when(userProjection.getRole()).thenReturn(role);
+        return Optional.of(userProjection);
+    }
 
     private Optional<User> creatOptionalUser() {
+        Role role = new Role();
+        role.setName("ROLE_USER");
         User user = new User();
+        user.setRole(role);
         user.setEmail(NEW_USER_EMAIL);
         user.setUsername("First");
         user.setOauth2Login(null);

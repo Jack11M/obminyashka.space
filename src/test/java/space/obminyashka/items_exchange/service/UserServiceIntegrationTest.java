@@ -81,7 +81,7 @@ class UserServiceIntegrationTest {
         var oauth2User = createDefaultOidcUser();
         userService.loginUserWithOAuth2(oauth2User);
 
-        verify(userRepository).findByEmailOrUsername(oauth2UserArgumentCaptor.capture(), oauth2UserArgumentCaptor.capture());
+        verify(userRepository).findUserProjectionByEmail(oauth2UserArgumentCaptor.capture());
         assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
     }
 
