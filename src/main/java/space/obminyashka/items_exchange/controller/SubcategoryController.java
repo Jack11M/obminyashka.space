@@ -57,7 +57,7 @@ public class SubcategoryController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteSubcategoryById(@PathVariable("subcategory_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long id)
             throws InvalidDtoException {
-        if (!subcategoryService.isSubcategoryDeletable(id)) {
+        if (subcategoryService.isSubcategoryDeletable(id)) {
             throw new InvalidDtoException(getExceptionMessageSourceWithId(id, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
         }
         subcategoryService.removeSubcategoryById(id);

@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dao.SubcategoryRepository;
 import space.obminyashka.items_exchange.model.Subcategory;
 import space.obminyashka.items_exchange.service.SubcategoryService;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class SubcategoryServiceImpl implements SubcategoryService {
 
     private final SubcategoryRepository subcategoryRepository;
+    private final AdvertisementRepository advertisementRepository;
 
     @Override
     public List<String> findSubcategoryNamesByCategoryId(long categoryId) {
@@ -37,7 +39,7 @@ public class SubcategoryServiceImpl implements SubcategoryService {
 
     @Override
     public boolean isSubcategoryDeletable(long id) {
-        return subcategoryRepository.existsAdvertisementBySubcategoryId(id);
+        return advertisementRepository.existsBySubcategoryId(id);
     }
 
     @Override

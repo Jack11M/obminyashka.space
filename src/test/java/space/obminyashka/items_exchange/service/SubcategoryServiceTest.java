@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dao.SubcategoryRepository;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Subcategory;
@@ -32,6 +33,8 @@ class SubcategoryServiceTest {
 
     @MockBean
     private SubcategoryRepository subcategoryRepository;
+    @MockBean
+    private AdvertisementRepository advertisementRepository;
     @Autowired
     private SubcategoryService subcategoryService;
     private Subcategory existingSubcategory;
@@ -117,11 +120,11 @@ class SubcategoryServiceTest {
 
     @Test
     void isSubcategoryDeletable_whenSubcategoryDoesNotExistById_shouldReturnFalse() {
-        when(subcategoryRepository.existsAdvertisementBySubcategoryId(anyLong())).thenReturn(false);
+        when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(false);
 
         final boolean result = subcategoryService.isSubcategoryDeletable(NONEXISTENT_ENTITY_ID);
         assertFalse(result);
-        verify(subcategoryRepository, times(1)).existsAdvertisementBySubcategoryId(NONEXISTENT_ENTITY_ID);
+        verify(advertisementRepository, times(1)).existsBySubcategoryId(NONEXISTENT_ENTITY_ID);
     }
 
     @Test
