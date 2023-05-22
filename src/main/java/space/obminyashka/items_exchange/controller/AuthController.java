@@ -64,8 +64,8 @@ public class AuthController {
         try {
             final var username = escapeHtml(userLoginDto.getUsernameOrEmail());
             var userLoginResponseDto = authService.createUserLoginResponseDto(username);
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginResponseDto.getUsername(),
-                    userLoginDto.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    userLoginResponseDto.getUsername(), userLoginDto.getPassword()));
             return userLoginResponseDto;
         } catch (AuthenticationException e) {
             log.warn("[AuthController] An exception occurred while authorization for '{}'", userLoginDto.getUsernameOrEmail(), e);

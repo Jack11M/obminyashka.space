@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
 
     private UserLoginResponseDto populateUserLoginResponseDto(User user) {
         final var userLoginResponseDto = userMapper.toLoginResponseDto(user);
-        final var accessToken = jwtTokenService.createAccessToken(userLoginResponseDto.getUsername(), user.getRole());
+        final var accessToken = jwtTokenService.createAccessToken(user.getUsername(), user.getRole());
         userLoginResponseDto
                 .setAccessToken(accessToken)
                 .setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken))

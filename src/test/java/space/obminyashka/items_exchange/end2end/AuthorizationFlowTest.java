@@ -159,7 +159,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @Test
     @DataSet(value = "auth/login.yml")
-    void login_whenUserUseEmail_shouldReturnHttpOk() throws Exception {
+    void login_whenUserLoginViaEmail_shouldReturnHttpOk() throws Exception {
         sendDtoAndGetResultAction(post(AUTH_LOGIN), new UserLoginDto(VALID_EMAIL, VALID_PASSWORD), status().isOk())
                 .andExpect(content().json("{\"username\": \"test\"}"));
 

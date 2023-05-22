@@ -49,8 +49,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.email = :email, u.isValidatedEmail = false" +
-            " where u.username = :username")
+    @Query("update User u set u.email = :email, u.isValidatedEmail = false where u.username = :username")
     void updateUserEmailAndConfirmationCodeByUsername(String username, String email);
 
     @Transactional
@@ -72,14 +71,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Transactional
     @Modifying
-    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) " +
-            "where u.username = :username")
+    @Query("update User u set u.role = (select r from Role r where r.name = :roleName) where u.username = :username")
     void updateUserByUsernameWithRole(String username, String roleName);
 
     @Transactional
     @Modifying
-    @Query("update User u set u.avatarImage = :newAvatarImage " +
-            "where u.username = :usernameOrEmail or u.email =:usernameOrEmail ")
+    @Query("update User u set u.avatarImage = :newAvatarImage where u.username = :usernameOrEmail")
     void updateAvatarByUsername(String usernameOrEmail, byte[] newAvatarImage);
 
 }
