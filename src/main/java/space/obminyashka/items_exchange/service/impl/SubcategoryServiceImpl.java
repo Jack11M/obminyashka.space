@@ -38,11 +38,6 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public boolean isSubcategoryDeletable(long id) {
-        return advertisementRepository.existsBySubcategoryId(id);
-    }
-
-    @Override
     public List<Long> findAllSubcategoryIds() {
         return subcategoryRepository.findAll().stream()
                 .map(Subcategory::getId)

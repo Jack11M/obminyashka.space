@@ -38,14 +38,6 @@ public interface SubcategoryService {
     boolean isSubcategoryExistsById(long id);
 
     /**
-     * Checks if a subcategory with the given ID exists in DB and has not advertisements.
-     *
-     * @param id is Subcategory ID.
-     * @return {@code true} if a subcategory with the given ID can be deleted, {@code false} otherwise.
-     */
-    boolean isSubcategoryDeletable(long id);
-
-    /**
      * Returns all Subcategory identifiers.
      *
      * @return list of all subcategory identifiers from DB

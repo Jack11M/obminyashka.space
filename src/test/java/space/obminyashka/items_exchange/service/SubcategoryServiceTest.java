@@ -33,8 +33,6 @@ class SubcategoryServiceTest {
 
     @MockBean
     private SubcategoryRepository subcategoryRepository;
-    @MockBean
-    private AdvertisementRepository advertisementRepository;
     @Autowired
     private SubcategoryService subcategoryService;
     private Subcategory existingSubcategory;
@@ -116,15 +114,6 @@ class SubcategoryServiceTest {
         final boolean result = subcategoryService.isSubcategoryExistsById(NONEXISTENT_ENTITY_ID);
         assertFalse(result);
         verify(subcategoryRepository, times(1)).existsById(NONEXISTENT_ENTITY_ID);
-    }
-
-    @Test
-    void isSubcategoryDeletable_whenSubcategoryDoesNotExistById_shouldReturnFalse() {
-        when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(false);
-
-        final boolean result = subcategoryService.isSubcategoryDeletable(NONEXISTENT_ENTITY_ID);
-        assertFalse(result);
-        verify(advertisementRepository, times(1)).existsBySubcategoryId(NONEXISTENT_ENTITY_ID);
     }
 
     @Test

@@ -202,6 +202,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return advertisementRepository.count();
     }
 
+    @Override
+    public boolean isAdvertisementsHaveSubcategoryWithId(long id)
+    {
+        return advertisementRepository.existsBySubcategoryId(id);
+    }
+
     private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
         return AdvertisementTitleDto.builder()
                 .advertisementId(advertisement.getId())
