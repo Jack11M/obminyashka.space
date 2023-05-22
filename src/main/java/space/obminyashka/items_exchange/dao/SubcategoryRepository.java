@@ -15,4 +15,7 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
     List<String> findSubcategoriesNamesByCategory(Long categoryId);
 
     Optional<Subcategory> findById(long id);
+
+    @Query(value = "select case when count(*) <= 0 then true else false end from advertisement a where a.subcategory_id = :id limit 1", nativeQuery = true)
+    boolean existsAdvertisementBySubcategoryId(long id);
 }

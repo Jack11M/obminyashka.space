@@ -115,32 +115,13 @@ class SubcategoryServiceTest {
         verify(subcategoryRepository, times(1)).existsById(NONEXISTENT_ENTITY_ID);
     }
 
-    @ParameterizedTest
-    @MethodSource("getDeletableCategories")
-    void isSubcategoryDeletable_whenSubcategoryExistsByIdAndHasNotAdvertisement_shouldReturnTrue(Subcategory subcategory, boolean expectedResult) {
-        when(subcategoryRepository.findById(anyLong())).thenReturn(Optional.of(subcategory));
-
-        final boolean result = subcategoryService.isSubcategoryDeletable(EXISTING_ENTITY_ID);
-        assertEquals(expectedResult, result);
-        verify(subcategoryRepository).findById(EXISTING_ENTITY_ID);
-    }
-
-    private static Stream<Arguments> getDeletableCategories() {
-        final var subcategory = createSubcategory(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
-        subcategory.setAdvertisements(List.of(new Advertisement(), new Advertisement()));
-        return Stream.of(
-                Arguments.of(createSubcategory(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME), true),
-                Arguments.of(subcategory, false)
-        );
-    }
-
     @Test
     void isSubcategoryDeletable_whenSubcategoryDoesNotExistById_shouldReturnFalse() {
-        when(subcategoryRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(subcategoryRepository.existsAdvertisementBySubcategoryId(anyLong())).thenReturn(false);
 
         final boolean result = subcategoryService.isSubcategoryDeletable(NONEXISTENT_ENTITY_ID);
         assertFalse(result);
-        verify(subcategoryRepository, times(1)).findById(NONEXISTENT_ENTITY_ID);
+        verify(subcategoryRepository, times(1)).existsAdvertisementBySubcategoryId(NONEXISTENT_ENTITY_ID);
     }
 
     @Test
