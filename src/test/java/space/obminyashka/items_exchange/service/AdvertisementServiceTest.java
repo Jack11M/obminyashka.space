@@ -1,17 +1,15 @@
 package space.obminyashka.items_exchange.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dao.SubcategoryRepository;
-import space.obminyashka.items_exchange.model.Subcategory;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -26,12 +24,21 @@ class AdvertisementServiceTest {
     @Autowired
     private AdvertisementService advertisementService;
 
-    @Test
-    void isAdvertisementsHaveSubcategoryWithId_whenSubcategoryDoesNotExistById_shouldReturnFalse() {
-        when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(false);
+    @ParameterizedTest
+    @MethodSource("getResultsOfInteraction")
+    void isAdvertisementsHaveSubcategoryWithId_whenTryToCheckSubcategory_shouldSameResults(boolean returnedValue,
+                                                                                           boolean expectedResult) {
+        when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(returnedValue);
 
         final boolean result = advertisementService.isAdvertisementsHaveSubcategoryWithId(NONEXISTENT_ENTITY_ID);
-        assertFalse(result);
-        verify(advertisementRepository, times(1)).existsBySubcategoryId(NONEXISTENT_ENTITY_ID);
+        assertEquals(expectedResult, result);
+        verify(advertisementRepository).existsBySubcategoryId(NONEXISTENT_ENTITY_ID);
+    }
+
+    private static Stream<Arguments> getResultsOfInteraction() {
+        return Stream.of(
+                Arguments.of(true, true),
+                Arguments.of(false, false)
+        );
     }
 }
