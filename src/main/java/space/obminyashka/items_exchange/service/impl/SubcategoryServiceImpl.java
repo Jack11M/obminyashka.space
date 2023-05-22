@@ -15,7 +15,6 @@ import java.util.Optional;
 public class SubcategoryServiceImpl implements SubcategoryService {
 
     private final SubcategoryRepository subcategoryRepository;
-    private final AdvertisementRepository advertisementRepository;
 
     @Override
     public List<String> findSubcategoryNamesByCategoryId(long categoryId) {
