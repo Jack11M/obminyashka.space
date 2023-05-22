@@ -141,5 +141,5 @@ public interface AdvertisementService {
      * @param id is Subcategory ID.
      * @return {@code true} if a subcategory with the given ID can not be deleted, {@code false} otherwise.
      */
-    boolean isAdvertisementsHaveSubcategoryWithId(long id);
+    boolean areAdvertisementsExistWithSubcategory(long id);
 }

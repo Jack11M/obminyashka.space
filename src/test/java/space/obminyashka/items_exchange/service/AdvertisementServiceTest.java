@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.service;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,7 +29,7 @@ class AdvertisementServiceTest {
                                                                                            boolean expectedResult) {
         when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(returnedValue);
 
-        final boolean result = advertisementService.isAdvertisementsHaveSubcategoryWithId(NONEXISTENT_ENTITY_ID);
+        final boolean result = advertisementService.areAdvertisementsExistWithSubcategory(NONEXISTENT_ENTITY_ID);
         assertEquals(expectedResult, result);
         verify(advertisementRepository).existsBySubcategoryId(NONEXISTENT_ENTITY_ID);
     }

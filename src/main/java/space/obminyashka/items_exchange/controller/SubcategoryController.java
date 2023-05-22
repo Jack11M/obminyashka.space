@@ -57,11 +57,11 @@ public class SubcategoryController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteSubcategoryById(@PathVariable("subcategory_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long id)
+    public void deleteSubcategoryById(@PathVariable("subcategory_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long subcategoryId)
             throws InvalidDtoException {
-        if (advertisementService.isAdvertisementsHaveSubcategoryWithId(id)) {
-            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
+        if (advertisementService.areAdvertisementsExistWithSubcategory(subcategoryId)) {
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(subcategoryId, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
         }
-        subcategoryService.removeSubcategoryById(id);
+        subcategoryService.removeSubcategoryById(subcategoryId);
     }
 }

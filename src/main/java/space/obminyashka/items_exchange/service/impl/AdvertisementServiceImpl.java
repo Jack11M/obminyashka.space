@@ -203,7 +203,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean isAdvertisementsHaveSubcategoryWithId(long id)
+    public boolean areAdvertisementsExistWithSubcategory(long id)
     {
         return advertisementRepository.existsBySubcategoryId(id);
     }
