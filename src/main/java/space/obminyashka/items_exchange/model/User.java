@@ -25,6 +25,7 @@ public class User extends BaseEntity implements UserDetails {
     private String username;
     private String password;
     @Column(unique = true)
+    @Accessors(chain = true)
     private String email;
     @Builder.Default
     private Boolean online = false;
@@ -56,6 +57,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
+    @Accessors(chain = true)
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

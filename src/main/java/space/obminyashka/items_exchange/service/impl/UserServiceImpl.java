@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserEmail(String username, String email, UUID codeId) {
-        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+        userRepository.updateUserEmailConfirmationCodeByUsername(username, codeId,
                 LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
         userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }
@@ -217,8 +217,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage) {
-        userRepository.updateAvatarByUsername(usernameOrEmail, newAvatarImage);
+    public void setUserAvatar(String username, byte[] newAvatarImage) {
+        userRepository.updateAvatarByUsername(username, newAvatarImage);
     }
 
     @Override

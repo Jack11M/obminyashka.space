@@ -22,7 +22,7 @@ public interface ChildRepository extends JpaRepository<Child, UUID> {
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "insert into Child values (:id, " +
-            "(select id from user where username = :username or email = :username), :birthDay, :sex)")
+            "(select id from user where username = :username), :birthDay, :sex)")
     void createChildrenByUsername(UUID id, LocalDate birthDay, String sex, String username);
 
     default void createChildrenByUsername(Child child, String username) {
