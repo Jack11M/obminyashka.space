@@ -17,7 +17,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class EmailConfirmationCode {
     @Id
-    @GeneratedValue
     private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

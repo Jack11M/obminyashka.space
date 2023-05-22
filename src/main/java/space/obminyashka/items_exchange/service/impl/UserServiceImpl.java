@@ -14,14 +14,11 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.UserProjection;
@@ -31,7 +28,6 @@ import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,13 +41,11 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
-
     private static final String ROLE_USER = "ROLE_USER";
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
-    private final ChildMapper childMapper;
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
     private final UserMapper userMapper;
@@ -221,21 +215,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserDto mapUserToDto(User user) {
         return userMapper.toDto(user);
-    }
-
-    @Override
-    public List<ChildDto> getChildren(User parent) {
-        return childMapper.toDtoList(parent.getChildren());
-    }
-
-    @Override
-    public List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate) {
-        final var childrenToSave = childMapper.toModelList(childrenDtoToUpdate);
-        userRepository.deleteAllChildrenByUsername(username);
-        for (Child child : childrenToSave) {
-            userRepository.createChildrenByUsername(UUID.randomUUID(), username, child.getBirthDate(), child.getSex().name());
-        }
-        return childrenDtoToUpdate;
     }
 
     @Override

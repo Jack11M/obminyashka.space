@@ -38,13 +38,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.generateTestChildren;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
@@ -64,7 +63,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @Captor
     private ArgumentCaptor<MultipartFile> captor;
 
-    private static final int MAX_CHILDREN_AMOUNT = 10;
     @Value("${max.phones.amount}")
     private String maxPhonesAmount;
 
@@ -127,17 +125,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         );
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void addChild_badTotalAmount_shouldReturnBadRequest() throws Exception {
-        var badTotalAmountChildDto = generateTestChildren(MAX_CHILDREN_AMOUNT + 1);
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
-        final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), badTotalAmountChildDto, status().isBadRequest());
-        final var expectedErrorMessage = getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT)
-                .replace("{max}", String.valueOf(MAX_CHILDREN_AMOUNT));
-        assertTrue(Objects.requireNonNull(mvcResult.getResolvedException()).getMessage().contains(expectedErrorMessage));
-    }
 
     @Test
     @WithMockUser(username = "user")
@@ -180,16 +168,14 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser
-    void setUserAvatar_whenReceivedSeveralImages_shouldSaveFirstImage() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-
+    void updateUserAvatar_whenReceivedSeveralImages_shouldSaveFirstImage() throws Exception {
         MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
         MockMultipartFile jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpg".getBytes());
 
         sendUriAndGetMvcResult(multipart(USER_SERVICE_CHANGE_AVATAR).file(jpeg).file(bmp), status().is2xxSuccessful());
 
         verify(imageService).scale(captor.capture());
-        verify(userService).findByUsernameOrEmail(any());
+        verify(userService).setUserAvatar(eq("user"), any());
 
         assertEquals(jpeg, captor.getValue());
     }
@@ -223,20 +209,5 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         user.setPhones(Set.of(new Phone(UUID.randomUUID(), +381234567890L, true, user)));
 
         return user;
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    void addChild_invalidChildAge_shouldReturnHttpStatusBadRequest() throws Exception {
-        var childDto = getTestChildren(2001);
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-
-        final MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_CHILD), childDto, status().isBadRequest());
-        final var resolvedException = mvcResult.getResolvedException();
-        assertAll(
-                () -> assertNotNull(resolvedException),
-                () -> assertNotNull(resolvedException.getMessage()),
-                () -> assertTrue(resolvedException.getMessage()
-                        .contains(getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CHILD_AGE))));
     }
 }
