@@ -1,7 +1,7 @@
 package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,10 +22,9 @@ class AdvertisementServiceTest {
     private AdvertisementService advertisementService;
 
     @ParameterizedTest
-    @CsvSource({"true,true", "false,false"})
-    void isAdvertisementsHaveSubcategoryWithId_whenTryToCheckSubcategory_shouldSameResults(boolean returnedValue,
-                                                                                           boolean expectedResult) {
-        when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(returnedValue);
+    @ValueSource(booleans = {true, false})
+    void isAdvertisementsHaveSubcategoryWithId_whenTryToCheckSubcategory_shouldSameResults(boolean expectedResult) {
+        when(advertisementRepository.existsBySubcategoryId(anyLong())).thenReturn(expectedResult);
 
         final boolean result = advertisementService.areAdvertisementsExistWithSubcategory(NONEXISTENT_ENTITY_ID);
         assertEquals(expectedResult, result);
