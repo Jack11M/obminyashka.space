@@ -27,6 +27,7 @@ import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import jakarta.persistence.EntityNotFoundException;
+
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -48,8 +49,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Value("${display.adv.date.format}")
     private String dateFormat;
 
-    @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
+
+    private List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
         final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
                 findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
         final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
@@ -57,12 +58,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return findAllThumbnails(findAdvsRequest).getContent();
     }
 
-    @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
+
+    private Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
         return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
                         findAdvsRequest.getSubcategoryId(),
                         PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
                 .map(this::buildAdvertisementTitle);
+    }
+
+    @Override
+    public List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
+        if (findAdvsRequest.isEnableRandom()) {
+            return findRandomNThumbnails(findAdvsRequest);
+        } else return findAllThumbnails(findAdvsRequest).getContent();
     }
 
     @Cacheable

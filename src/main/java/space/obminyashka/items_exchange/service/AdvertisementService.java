@@ -14,18 +14,12 @@ import java.util.UUID;
 public interface AdvertisementService {
 
     /**
-     * Find N random advertisements as thumbnails with filters
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return random 12 advertisement
+     * Find N random advertisements as thumbnails with filters or page of advertisements with same subcategory
+     * without request advertisement
+     * @param findAdvsRequest an object that contains all parameters to search
+     * @return random 12 advertisement or page of advertisements
      */
-    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest);
-
-    /**
-     * Find page of advertisements with same subcategory without request advertisement
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return page of advertisements
-     */
-    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest);
+    List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user
@@ -36,7 +30,7 @@ public interface AdvertisementService {
 
     /**
      * Find advertisements having requested keyword
-     * @param keyword - searched word
+     * @param keyword  - searched word
      * @param pageable see {@link Pageable} for more details
      * @return result of the request
      */
@@ -44,7 +38,6 @@ public interface AdvertisementService {
 
     /**
      * Find advertisements by category and return them by requested quantity (size) and page
-     *
      * @param categoryId - searched category id
      * @param pageable   see {@link Pageable} for more details
      * @return result of the request
@@ -54,7 +47,7 @@ public interface AdvertisementService {
     /**
      * Find an advertisement with additional owner check
      * @param advertisementId ID of an advertisement
-     * @param ownerName login or email of the advertisement's owner
+     * @param ownerName       login or email of the advertisement's owner
      * @return {@link Optional} as result
      */
     Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName);
@@ -75,7 +68,7 @@ public interface AdvertisementService {
 
     /**
      * Check whenever user has an advertisement with selected id
-     * @param id advertisement id
+     * @param id   advertisement id
      * @param user for checking authority
      * @return result of the check
      */
@@ -83,10 +76,10 @@ public interface AdvertisementService {
 
     /**
      * Create a new advertisement
-     * @param modificationDto DTO for converting and saving
-     * @param user owner of a new advertisement
+     * @param modificationDto  DTO for converting and saving
+     * @param user             owner of a new advertisement
      * @param compressedImages images related to an advertisement
-     * @param titleImage scaled title image
+     * @param titleImage       scaled title image
      * @return saved advertisement DTO with updated id
      */
     AdvertisementModificationDto createAdvertisement(AdvertisementModificationDto modificationDto, User user,
@@ -108,22 +101,21 @@ public interface AdvertisementService {
     /**
      * Set an image as title image of an advertisement
      * @param advertisement advertisement for setting the title image
-     * @param imageId id of an image that planned to be set as title image
+     * @param imageId       id of an image that planned to be set as title image
      */
     void setDefaultImage(Advertisement advertisement, UUID imageId);
 
     /**
      * Check if a user owns such advertisement, and it has selected image
      * @param advertisementId id of selected advertisement to check
-     * @param imageId id of an image to check into the advertisement
-     * @param owner user to check the advertisement and the image
+     * @param imageId         id of an image to check into the advertisement
+     * @param owner           user to check the advertisement and the image
      * @return result of the check
      */
     boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, User owner);
 
     /**
      * Returns whether an advertisement with the given id exists.
-     *
      * @param id must not be {@literal null}.
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */

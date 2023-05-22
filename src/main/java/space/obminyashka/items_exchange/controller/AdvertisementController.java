@@ -58,15 +58,8 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
-        return advertisementService.findAllThumbnails(findAdvsRequest);
-    }
-
-    @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
-    @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
-        return advertisementService.findRandomNThumbnails(findAdvsRequest);
+    public List<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
+        return advertisementService.findThumbnails(findAdvsRequest);
     }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)

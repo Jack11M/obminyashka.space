@@ -30,4 +30,6 @@ public class AdvertisementFindRequest {
     @Nullable
     private UUID excludeAdvertisementId;
 
+    private boolean enableRandom = true;
+
 }
