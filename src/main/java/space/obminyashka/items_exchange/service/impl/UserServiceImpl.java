@@ -24,6 +24,7 @@ import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.UserProjection;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -95,17 +96,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
-        var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
+        Optional<UserProjection> optionalUser = userRepository.findByEmail(oauth2User.getEmail());
         optionalUser.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
-                .map(User::getEmail)
+                .map(UserProjection::getEmail)
                 .ifPresent(userRepository::setOAuth2LoginToUserByEmail);
-
-        return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
+        return optionalUser.map(userMapper::toUserFromProjection)
+                .orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
-    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
+    private boolean isUserHasNoOAuthOrValidatedEmail(UserProjection user) {
         return Objects.requireNonNullElse(user.getOauth2Login(), false)
-                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
+                || Objects.requireNonNullElse(user.getIsValidatedEmail(), false);
     }
 
     private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
