@@ -61,4 +61,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
             "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
     Long countByIdNotAndSubcategoryId(@Param("id") UUID id, @Param("subcategoryId") Long subcategoryId);
+
+    boolean existsBySubcategoryId(long id);
 }

@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
@@ -32,6 +33,7 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 public class SubcategoryController {
 
     private final SubcategoryService subcategoryService;
+    private final AdvertisementService advertisementService;
 
     @GetMapping(value = "/{category_id}/names", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Find all subcategories names by category ID")
@@ -55,11 +57,11 @@ public class SubcategoryController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteSubcategoryById(@PathVariable("subcategory_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long id)
+    public void deleteSubcategoryById(@PathVariable("subcategory_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long subcategoryId)
             throws InvalidDtoException {
-        if (!subcategoryService.isSubcategoryDeletable(id)) {
-            throw new InvalidDtoException(getExceptionMessageSourceWithId(id, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
+        if (advertisementService.areAdvertisementsExistWithSubcategory(subcategoryId)) {
+            throw new InvalidDtoException(getExceptionMessageSourceWithId(subcategoryId, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
         }
-        subcategoryService.removeSubcategoryById(id);
+        subcategoryService.removeSubcategoryById(subcategoryId);
     }
 }
