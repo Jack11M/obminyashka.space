@@ -58,7 +58,7 @@ class UserServiceTest {
     }
 
     @Test
-    void testLoginUserWithOAuth2_WhenUserBeenCreatedAndHasValidatedEmailWithOauth2Login() {
+    void testLoginUserWithOAuth2_WhenUserBeenCreated() {
         //Arrange
 
         var oauth2User = createDefaultOidcUser();
@@ -91,9 +91,7 @@ class UserServiceTest {
         role.setName("ROLE_USER");
         User user = new User();
         user.setRole(role);
-        user.setEmail(NEW_USER_EMAIL);
         user.setUsername("First");
-        user.setOauth2Login(null);
         return user;
     }
 
