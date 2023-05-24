@@ -6,6 +6,7 @@ import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserProjection;
 
 import java.util.List;
 import java.util.Locale;
@@ -32,6 +33,7 @@ public interface UserMapper {
     @Mapping(source = "refreshToken.token", target = "refreshToken")
     UserLoginResponseDto toLoginResponseDto(User model);
 
+    User toUserFromProjection(UserProjection userProjection);
     List<UserLoginResponseDto> toDtoList(List<User> modelList);
     List<User> toModelList(List<UserLoginResponseDto> dtoList);
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserProjection;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,8 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailOrUsername(String username, String email);
+
+    Optional<UserProjection> findUserProjectionByEmail(String email);
 
     @Query("select u.updated from User u where u.username = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);
@@ -57,11 +60,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update email_confirmation_code e set e.id = :codeId, e.expiryDate = :expiryData " +
             "where e.user.id = (select u.id from User u where u.username = :username)")
     void updateUserEmailConfirmationCodeByUsername(String username, UUID codeId, LocalDateTime expiryData);
-
-    @Transactional
-    @Modifying
-    @Query("update User u set u.oauth2Login = true, u.isValidatedEmail = true where u.email = :email")
-    void setOAuth2LoginToUserByEmail(String email);
 
     @Transactional
     @Modifying

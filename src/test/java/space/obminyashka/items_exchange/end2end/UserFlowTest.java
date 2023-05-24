@@ -112,6 +112,7 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$[4].title").value("Pajamas"));
     }
 
+    @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
