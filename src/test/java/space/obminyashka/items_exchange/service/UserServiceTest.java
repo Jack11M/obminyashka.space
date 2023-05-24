@@ -6,6 +6,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -25,6 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -35,8 +38,6 @@ class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-    @Mock
-    private UserProjection userProjection;
     @Mock
     private EmailConfirmationCodeRepository emailConfirmationCodeRepository;
     @Mock
@@ -57,56 +58,35 @@ class UserServiceTest {
     }
 
     @Test
-    void testLoginUserWithOAuth2_WhenUserBeenCreatedWithFalseValidatedEmail() {
-        //Arrange
-
-        var oauth2User = createDefaultOidcUser();
-        var optionalUserProjection = creatOptionalUserProjection();
-        when(userProjection.getEmail()).thenReturn(NEW_USER_EMAIL);
-        when(userProjection.getOauth2Login()).thenReturn(false);
-        when(userProjection.getIsValidatedEmail()).thenReturn(false);
-        when(userRepository.findUserProjectionByEmail(NEW_USER_EMAIL)).thenReturn(optionalUserProjection);
-        when(userMapper.toUserFromProjection(optionalUserProjection.get())).thenReturn(creatOptionalUser().get());
-
-        //Act
-        User user = userService.loginUserWithOAuth2(oauth2User);
-
-        //Assert
-        verify(userRepository).setOAuth2LoginToUserByEmail(NEW_USER_EMAIL);
-        assertEquals(user.getUsername(), optionalUserProjection.get().getUsername());
-        assertEquals(user.getRole().getName(), optionalUserProjection.get().getRole().getName());
-        assertEquals(NEW_USER_EMAIL, user.getEmail());
-    }
-
-    @Test
     void testLoginUserWithOAuth2_WhenUserBeenCreatedAndHasValidatedEmailWithOauth2Login() {
         //Arrange
 
         var oauth2User = createDefaultOidcUser();
-        var optionalUserProjection = creatOptionalUserProjection();
-        when(userProjection.getOauth2Login()).thenReturn(true);
-        when(userRepository.findUserProjectionByEmail(NEW_USER_EMAIL)).thenReturn(optionalUserProjection);
-        when(userMapper.toUserFromProjection(optionalUserProjection.get())).thenReturn(creatOptionalUser().get());
+        var userProjection = creatUserProjection();
+        when(userRepository.findUserProjectionByEmail(NEW_USER_EMAIL)).thenReturn(Optional.of(userProjection));
+        when(userMapper.toUserFromProjection(userProjection)).thenReturn(creatUser());
 
         //Act
         User user = userService.loginUserWithOAuth2(oauth2User);
 
         //Assert
-        verify(userRepository, never()).setOAuth2LoginToUserByEmail(NEW_USER_EMAIL);
-        assertEquals(user.getUsername(), optionalUserProjection.get().getUsername());
-        assertEquals(user.getRole().getName(), optionalUserProjection.get().getRole().getName());
-        assertEquals(NEW_USER_EMAIL, user.getEmail());
+        assertAll(
+                () -> assertEquals(user.getUsername(), userProjection.getUsername()),
+                () -> assertEquals(user.getRole().getName(), userProjection.getRole().getName()));
     }
 
-    private Optional<UserProjection> creatOptionalUserProjection() {
+    private UserProjection creatUserProjection() {
+        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
         Role role = new Role();
         role.setName("ROLE_USER");
-        when(userProjection.getUsername()).thenReturn("First");
-        when(userProjection.getRole()).thenReturn(role);
-        return Optional.of(userProjection);
+        Map<String, Object> map = Map.of(
+                "username", "First",
+                "role", role
+        );
+        return factory.createProjection(UserProjection.class, map);
     }
 
-    private Optional<User> creatOptionalUser() {
+    private User creatUser() {
         Role role = new Role();
         role.setName("ROLE_USER");
         User user = new User();
@@ -114,7 +94,7 @@ class UserServiceTest {
         user.setEmail(NEW_USER_EMAIL);
         user.setUsername("First");
         user.setOauth2Login(null);
-        return Optional.of(user);
+        return user;
     }
 
     private DefaultOidcUser createDefaultOidcUser() {

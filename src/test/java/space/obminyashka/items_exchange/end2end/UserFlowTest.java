@@ -218,26 +218,6 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$.lastName").value(USER_LAST_NAME));
     }
 
-    @Test
-    @Commit
-    @DataSet("user/login_with_oauth2_init.yml")
-    @ExpectedDataSet(value = "user/login_with_oauth2.yml", orderBy = {"created", "name"},
-            ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
-    @WithMockUser(username = NEW_USER_EMAIL)
-    void loginNewUserViaOauth2_shouldFindAndSetValidatedEmail() throws Exception {
-        var oauth2User = createDefaultOidcUser();
-        var user = userService.loginUserWithOAuth2(oauth2User);
-        assertNotNull(user);
-        assertNotNull(user.getRole());
-        assertEquals(NEW_USER_EMAIL, user.getUsername());
-
-        sendUriAndGetResultAction(get(USER_MY_INFO), status().isOk())
-                .andExpect(jsonPath("$.username").value(NEW_USER_EMAIL))
-                .andExpect(jsonPath("$.email").value(NEW_USER_EMAIL))
-                .andExpect(jsonPath("$.firstName").value(USER_FIRST_NAME))
-                .andExpect(jsonPath("$.lastName").value(USER_LAST_NAME));
-    }
-
     private DefaultOidcUser createDefaultOidcUser() {
         var roleUser = "ROLE_USER";
 
