@@ -8,6 +8,8 @@ import lombok.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -16,13 +18,13 @@ import java.util.UUID;
 @Setter
 @Builder
 public class AdvertisementFilterDto {
-    private AgeRange age;
-    private Gender gender;
-    private Season season;
+    private List<AgeRange> age;
+    private List<Gender> gender;
+    private List<Season> season;
     @JsonProperty("sizeValue")
     @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
-    private String size;
-    private Long subcategoryId;
-    private Long categoryId;
+    private List<String> size;
+    private List<Long> subcategoryId;
+    private List<Long> categoryId;
     private UUID locationId;
 }

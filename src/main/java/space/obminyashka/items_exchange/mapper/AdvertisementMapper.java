@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.model.Advertisement;
 
 import java.util.List;
@@ -31,6 +32,15 @@ public interface AdvertisementMapper {
     @Mapping(source = "locationId", target = "location.id")
     Advertisement toModel(AdvertisementModificationDto dto);
 
+    @Mapping(source = "id", target = "advertisementId")
+    @Mapping(source = "topic", target = "title")
+    @Mapping(source = "user.username", target = "ownerName")
+    @Mapping(source = "user.avatarImage", target = "ownerAvatar")
+    AdvertisementTitleDto toTitleDto(Advertisement advertisement);
+
+    List<AdvertisementTitleDto> toTitleDtoList(Iterable<Advertisement> modelList);
+
     List<AdvertisementDisplayDto> toDtoList(List<Advertisement> modelList);
+
     List<Advertisement> toModelList(List<AdvertisementDisplayDto> dtoList);
 }

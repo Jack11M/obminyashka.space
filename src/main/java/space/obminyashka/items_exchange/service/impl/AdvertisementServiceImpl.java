@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.mapper.LocationMapper;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
+import space.obminyashka.items_exchange.model.QAdvertisement;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -27,6 +29,7 @@ import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import jakarta.persistence.EntityNotFoundException;
+
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -105,16 +108,27 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
-        return advertisementRepository.findFirst10ByParams(
-                        dto.getAge(),
-                        dto.getGender(),
-                        dto.getSize(),
-                        dto.getSeason(),
-                        dto.getSubcategoryId(),
-                        dto.getCategoryId(),
-                        dto.getLocationId()).stream()
-                .map(this::buildAdvertisementTitle)
-                .toList();
+        QAdvertisement qAdvertisement = QAdvertisement.advertisement;
+        BooleanBuilder predicate = new BooleanBuilder();
+        if (!dto.getSubcategoryId().isEmpty()) {
+            predicate.and(qAdvertisement.subcategory.id.in(dto.getSubcategoryId()));
+        }
+        if (dto.getLocationId() != null) {
+            predicate.and(qAdvertisement.location.id.eq(dto.getLocationId()));
+        }
+        if (!dto.getSize().isEmpty()) {
+            predicate.and(qAdvertisement.size.in(dto.getSize()));
+        }
+        if (!dto.getSeason().isEmpty()) {
+            predicate.and(qAdvertisement.season.in(dto.getSeason()));
+        }
+        if (!dto.getGender().isEmpty()) {
+            predicate.and(qAdvertisement.gender.in(dto.getGender()));
+        }
+        if (!dto.getAge().isEmpty()) {
+            predicate.and(qAdvertisement.age.in(dto.getAge()));
+        }
+        return advertisementMapper.toTitleDtoList(advertisementRepository.findAll(predicate));
     }
 
     @Override
