@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.scheduling.support.CronExpression;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -24,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -51,14 +53,21 @@ class UserServiceIntegrationTest {
     private UserService userService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Value("${number.of.days.to.keep.deleted.users}")
-    private int numberOfDaysToKeepDeletedUsers;
+    @Value("${cron.expression.once_per_day_at_3am}")
+    private String selfRemovedUsersCleanupTime;
     private User userWithOldPassword;
 
     @BeforeEach
     void setUp() {
         userWithOldPassword = createUserWithOldPassword();
+    }
+
+
+    private User createUserWithOldPassword() {
+        var user = new User().setUsername(NEW_USER_EMAIL);
+        user.setPassword(bCryptPasswordEncoder.encode(CORRECT_OLD_PASSWORD));
+        user.setUpdated(LocalDateTime.now());
+        return user;
     }
 
     @Test
@@ -95,43 +104,17 @@ class UserServiceIntegrationTest {
     }
 
     @Test
-    void testPermanentlyDeleteUsers_ShouldDeleteRequiredUsers() {
-        List<User> users = createTestUsers();
-        assertEquals(2, users.size());
-        when(userRepository.findByRole_Name(anyString())).thenReturn(users);
+    void permanentlyDeleteUsers_shouldDeleteUserAndValidateCronSchedule() {
+        List<User> userToRemove = List.of(new User().setRole(new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of())));
+        when(userRepository.findAllByUpdatedLessThanEqualAndRoleName(any(), anyString())).thenReturn(userToRemove);
 
         userService.permanentlyDeleteUsers();
 
-        verify(userRepository).delete(users.get(0));
-        verify(userRepository).delete(users.get(1));
-    }
-
-    private User createUserWithOldPassword() {
-        userWithOldPassword = new User();
-        userWithOldPassword.setUsername(NEW_USER_EMAIL);
-        userWithOldPassword.setPassword(bCryptPasswordEncoder.encode(CORRECT_OLD_PASSWORD));
-        userWithOldPassword.setUpdated(LocalDateTime.now());
-
-        return userWithOldPassword;
-    }
-
-    private List<User> createTestUsers() {
-        final var roleSelfRemoving = new Role(UUID.randomUUID(), "ROLE_SELF_REMOVING", List.of());
-
-        User shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate = createUserForDeleting(
-                roleSelfRemoving, numberOfDaysToKeepDeletedUsers + 1);
-        User shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate = createUserForDeleting(
-                roleSelfRemoving, numberOfDaysToKeepDeletedUsers - 1);
-
-        return List.of(shouldBeDeletedHaveRoleSelfRemovingAndExpiredDate, shouldNotBeDeletedHaveRoleSelfRemovingAndUnexpiredDate);
-    }
-
-    private User createUserForDeleting(Role role, int delay) {
-        User user = new User();
-        user.setRole(role);
-        user.setUpdated(LocalDateTime.now().minusDays(delay));
-
-        return user;
+        verify(userRepository).deleteAll(userToRemove);
+        assertThat(CronExpression.parse(selfRemovedUsersCleanupTime)
+                .next(LocalDateTime.of(2023, Calendar.JULY, 1, 9, 53, 50)))
+                .as("Checking permanently delete users nearest scheduled date time")
+                .isEqualTo(LocalDateTime.of(2023, Calendar.JULY, 2, 3, 0));
     }
 
     @ParameterizedTest

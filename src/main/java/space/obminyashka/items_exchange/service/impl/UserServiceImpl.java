@@ -25,7 +25,6 @@ import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -162,15 +161,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
-        userRepository.findByRole_Name("ROLE_SELF_REMOVING").stream()
-                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
-                .forEach(userRepository::delete);
-    }
-
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
-        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
-
-        return duration.toDays() > numberOfDaysToKeepDeletedUsers;
+        final var selfRemovingNearestDate = LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers);
+        userRepository.deleteAll(
+                userRepository.findAllByUpdatedLessThanEqualAndRoleName(selfRemovingNearestDate, "ROLE_SELF_REMOVING"));
     }
 
     @Override

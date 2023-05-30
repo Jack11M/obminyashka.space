@@ -38,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByRefreshToken_Token(String token);
 
-    List<User> findByRole_Name(String name);
+    List<User> findAllByUpdatedLessThanEqualAndRoleName(LocalDateTime updated, String roleName);
 
     @Transactional
     @Modifying
