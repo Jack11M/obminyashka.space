@@ -36,7 +36,8 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -194,9 +195,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
         AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
-                .season(List.of(Season.SUMMER))
-                .gender(List.of(Gender.FEMALE))
-                .age(List.of(AgeRange.FROM_10_TO_12))
+                .season(Set.of(Season.SUMMER))
+                .gender(Set.of(Gender.FEMALE))
+                .age(Set.of(AgeRange.FROM_10_TO_12))
+                .size(Set.of("M"))
+                .categoryId(new HashSet<>())
+                .subcategoryId(new HashSet<>())
                 .build();
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), dto, status().isOk());

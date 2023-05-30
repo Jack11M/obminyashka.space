@@ -109,25 +109,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
         QAdvertisement qAdvertisement = QAdvertisement.advertisement;
-        BooleanBuilder predicate = new BooleanBuilder();
-        if (!dto.getSubcategoryId().isEmpty()) {
-            predicate.and(qAdvertisement.subcategory.id.in(dto.getSubcategoryId()));
-        }
-        if (dto.getLocationId() != null) {
-            predicate.and(qAdvertisement.location.id.eq(dto.getLocationId()));
-        }
-        if (!dto.getSize().isEmpty()) {
-            predicate.and(qAdvertisement.size.in(dto.getSize()));
-        }
-        if (!dto.getSeason().isEmpty()) {
-            predicate.and(qAdvertisement.season.in(dto.getSeason()));
-        }
-        if (!dto.getGender().isEmpty()) {
-            predicate.and(qAdvertisement.gender.in(dto.getGender()));
-        }
-        if (!dto.getAge().isEmpty()) {
-            predicate.and(qAdvertisement.age.in(dto.getAge()));
-        }
+        BooleanBuilder predicate = new BooleanBuilder()
+                .and(!dto.getSubcategoryId().isEmpty() ? qAdvertisement.subcategory.id.in(dto.getSubcategoryId()) : null)
+                .and(dto.getLocationId() != null ? qAdvertisement.location.id.eq(dto.getLocationId()) : null)
+                .and(!dto.getSize().isEmpty() ? qAdvertisement.size.in(dto.getSize()) : null)
+                .and(!dto.getSeason().isEmpty() ? qAdvertisement.season.in(dto.getSeason()) : null)
+                .and(!dto.getGender().isEmpty() ? qAdvertisement.gender.in(dto.getGender()) : null)
+                .and(!dto.getAge().isEmpty() ? qAdvertisement.age.in(dto.getAge()) : null);
+
         return advertisementMapper.toTitleDtoList(advertisementRepository.findAll(predicate));
     }
 
@@ -217,8 +206,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean areAdvertisementsExistWithSubcategory(long id)
-    {
+    public boolean areAdvertisementsExistWithSubcategory(long id) {
         return advertisementRepository.existsBySubcategoryId(id);
     }
 
