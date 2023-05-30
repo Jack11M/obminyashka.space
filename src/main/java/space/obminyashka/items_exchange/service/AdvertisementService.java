@@ -32,7 +32,7 @@ public interface AdvertisementService {
      * @param username login of the user
      * @return all advertisements created by the user
      */
-    List<AdvertisementTitleDto> findAllByUsername(String username);
+    List<AdvertisementTitleDto> findAllByUsername(String username, byte[] avatarImage);
 
     /**
      * Find advertisements having requested keyword

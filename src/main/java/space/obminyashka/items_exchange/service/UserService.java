@@ -137,6 +137,12 @@ public interface UserService {
     void setUserAvatar(String username, byte[] newAvatarImage);
 
     /**
+     * Get avatar image of selected user by username
+     * @param username username of the user to check
+     */
+    byte[] getAvatarByUsername(String username);
+
+    /**
      * Remove avatar of selected user
      * @param username login of existing user
      */

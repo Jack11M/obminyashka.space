@@ -29,6 +29,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("select u.email from User u where u.username = :username")
     String getUserEmailByUsername(String username);
 
+    @Query("select u.avatarImage from User u where u.username = :username")
+    byte[] getUserAvatarByUsername(String username);
+
     boolean existsByEmail(String email);
 
     boolean existsByUsernameOrEmail(String username, String email);

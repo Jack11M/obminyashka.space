@@ -214,6 +214,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public byte[] getAvatarByUsername(String username) {
+        return userRepository.getUserAvatarByUsername(username);
+    }
+
+    @Override
     public void removeUserAvatarFor(String username) {
         userRepository.cleanAvatarForUserByName(username);
     }

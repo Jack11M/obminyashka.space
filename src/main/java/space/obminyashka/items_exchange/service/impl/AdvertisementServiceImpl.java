@@ -67,10 +67,29 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Cacheable
     @Override
-    public List<AdvertisementTitleDto> findAllByUsername(String username) {
-        return advertisementRepository.findAllByUserUsername(username).stream()
-                .map(this::buildAdvertisementTitle)
+    public List<AdvertisementTitleDto> findAllByUsername(String username, byte[] avatarImage) {
+        var list = advertisementRepository.findAllByUserUsername(username).stream()
+                .map(this::buildAdvertisementTitleDto)
                 .toList();
+
+        return setToAdvertisementTitle(list, username, avatarImage);
+    }
+
+    private AdvertisementTitleDto buildAdvertisementTitleDto(Advertisement advertisement) {
+        return AdvertisementTitleDto.builder()
+                .advertisementId(advertisement.getId())
+                .image(getImage(advertisement))
+                .title(advertisement.getTopic())
+                .location(locationMapper.toDto(advertisement.getLocation()))
+                .build();
+    }
+
+    private List<AdvertisementTitleDto> setToAdvertisementTitle(List<AdvertisementTitleDto> advList, String username, byte[] avatarImage) {
+        for (AdvertisementTitleDto dto : advList) {
+            dto.setOwnerName(username);
+            dto.setOwnerAvatar(avatarImage);
+        }
+        return advList;
     }
 
     // @Cacheable(key = "#keyword")
