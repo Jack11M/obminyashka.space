@@ -110,16 +110,15 @@ public class AdvertisementController {
     @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
             @PathVariable("category_id") Long categoryId,
             @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "size", description = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
+            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws BadRequestException {
         if (!categoryService.isCategoryExistsById(categoryId)) {
-            throw new CategoryIdNotFoundException(
+            throw new BadRequestException(
                     getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID));
         }
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));

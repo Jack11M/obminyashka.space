@@ -102,8 +102,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
         int page = 0;
         int size = 12;
-
-        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isNotFound());
+        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isBadRequest());
     }
 
     @Test
