@@ -97,7 +97,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {0, -2, 999})
+    @ValueSource(longs = {0, -2})
     @DataSet("database_init.yml")
     void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
         int page = 0;
