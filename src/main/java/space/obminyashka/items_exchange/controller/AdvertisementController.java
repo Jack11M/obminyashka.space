@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -35,8 +36,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -113,14 +113,14 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
-            @PathVariable("category_id") Long categoryId,
+            @PathVariable("category_id") @Positive Long categoryId,
             @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @Parameter(name = "size", description = "Number of records per page. Default value: 12")
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
         if (!categoryService.isCategoryExistsById(categoryId)) {
             throw new CategoryIdNotFoundException(
-                    getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID));
+                    getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID, categoryId));
         }
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }

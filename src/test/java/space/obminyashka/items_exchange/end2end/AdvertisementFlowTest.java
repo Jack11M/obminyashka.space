@@ -97,13 +97,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {0, -2, 999})
+    @ValueSource(longs = {0, -2})
     @DataSet("database_init.yml")
     void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
         int page = 0;
         int size = 12;
-
-        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isNotFound());
+        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isBadRequest());
     }
 
     @Test

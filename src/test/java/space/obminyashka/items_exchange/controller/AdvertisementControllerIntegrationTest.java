@@ -48,7 +48,7 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     void findPaginatedByCategoryId_shouldReturnNotFound() throws Exception {
-        long id = 0;
+        long id = 9;
         int page = 0;
         int size = 12;
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, id, page, size), status().isNotFound());
