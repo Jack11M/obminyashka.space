@@ -36,8 +36,7 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -111,7 +110,8 @@ public class AdvertisementController {
     @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
             @PathVariable("category_id") @Positive Long categoryId,
             @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
@@ -120,7 +120,7 @@ public class AdvertisementController {
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
         if (!categoryService.isCategoryExistsById(categoryId)) {
             throw new CategoryIdNotFoundException(
-                    getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID));
+                    getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID, categoryId));
         }
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
