@@ -2,14 +2,14 @@ package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Getter
 @Setter
@@ -21,7 +21,7 @@ public class CategoryNameDto {
     private long id;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
-    @Size(min = 3, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
+    @NotEmpty(message = "{" + INVALID_NOT_EMPTY + "}")
+    @Size(min = 3, max = 50, message = "{" + INVALID_SIZE + "}")
     private String name;
 }

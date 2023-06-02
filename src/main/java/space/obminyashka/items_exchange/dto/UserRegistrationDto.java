@@ -1,13 +1,13 @@
 package space.obminyashka.items_exchange.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
-import space.obminyashka.items_exchange.util.PatternHandler;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import space.obminyashka.items_exchange.util.PatternHandler;
 
-import jakarta.validation.constraints.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Data
 @AllArgsConstructor
@@ -15,28 +15,26 @@ import jakarta.validation.constraints.*;
 public class UserRegistrationDto {
 
     @Schema(example = "string")
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_USERNAME)
-    @Size(min = 2, max = 50, message = ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_SIZE)
-    @Pattern(regexp = PatternHandler.USERNAME,
-            message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME + "}")
+    @NotEmpty(message = "{" + EMPTY_USERNAME + "}")
+    @Size(min = 2, max = 50, message = "{" + INVALID_USERNAME_SIZE + "}")
+    @Pattern(regexp = PatternHandler.USERNAME, message = "{" + INVALID_USERNAME + "}")
     private String username;
 
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_EMAIL)
-    @Email(regexp = PatternHandler.EMAIL, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL + "}")
+    @NotEmpty(message = "{" + EMPTY_EMAIL + "}")
+    @Email(regexp = PatternHandler.EMAIL, message = "{" + INVALID_EMAIL + "}")
     private String email;
 
     @Schema(example = "string")
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
-    @Size(min = 8, max = 30, message = ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD_SIZE)
-    @Pattern(regexp = PatternHandler.PASSWORD,
-            message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD + "}")
+    @NotEmpty(message = "{" + EMPTY_PASSWORD + "}")
+    @Size(min = 8, max = 30, message = "{" + INVALID_PASSWORD_SIZE + "}")
+    @Pattern(regexp = PatternHandler.PASSWORD, message = "{" + INVALID_PASSWORD + "}")
     private String password;
 
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_CONFIRM_PASS)
+    @NotEmpty(message = "{" + EMPTY_CONFIRM_PASS + "}")
     private String confirmPassword;
 
     @SuppressWarnings("unused")                         // Used in validation process by Spring Validator
-    @AssertTrue(message = "{" + ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS + "}")
+    @AssertTrue(message = "{" + DIFFERENT_PASSWORDS + "}")
     private boolean isPasswordsEquals() {
         return password.equals(confirmPassword);
     }
