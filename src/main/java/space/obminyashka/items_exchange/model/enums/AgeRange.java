@@ -1,8 +1,10 @@
 package space.obminyashka.items_exchange.model.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum AgeRange {
     YOUNGER_THAN_1("0-1"),
     FROM_1_TO_2("1-2"),
@@ -13,8 +15,4 @@ public enum AgeRange {
     OLDER_THAN_14("14+");
 
     private final String value;
-
-    AgeRange(String value) {
-        this.value = value;
-    }
 }

@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class SubcategoryDto {
             type = "String",
             example = "winter shoes",
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_EMPTY)
-    @Size(min = 3, max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_SIZE + "}")
+    @NotEmpty(message = "{" + INVALID_NOT_EMPTY + "}")
+    @Size(min = 3, max = 50, message = "{" + INVALID_SIZE + "}")
     private String name;
 }

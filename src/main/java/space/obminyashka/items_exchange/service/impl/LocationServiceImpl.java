@@ -60,11 +60,6 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Location save(Location location) {
-        return locationRepository.save(location);
-    }
-
-    @Override
     public LocationDto save(LocationDto locationDto) {
         Location location = locationMapper.toModel(locationDto);
         Location savedLocation = locationRepository.saveAndFlush(location);

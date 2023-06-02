@@ -21,9 +21,3 @@ role:
     name: 'ROLE_USER'
   - id: 53c59620-37bb-4a8c-9b90-2965619496ec
     name: 'ROLE_SELF_REMOVING'
-
-chat:
-
-advertisement:
-
-user_chat:

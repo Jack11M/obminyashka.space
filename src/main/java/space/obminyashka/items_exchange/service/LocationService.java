@@ -40,13 +40,6 @@ public interface LocationService {
 
     /**
      * Creates a new record in table location in DB.
-     * @param location must not be null.
-     * @return the created Location DTO; will never be null.
-     */
-    Location save(Location location);
-
-    /**
-     * Creates a new record in table location in DB.
      * @param locationDto must not be null.
      * @return the created Location DTO; will never be null.
      */

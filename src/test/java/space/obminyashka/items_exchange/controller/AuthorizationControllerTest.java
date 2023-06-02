@@ -58,7 +58,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    void register_whenMailServiceFailed_shouldThrowEmailSendingException() throws Exception {
+    void register_whenMailServiceFailed_shouldThrowEmailSendingException() {
         doThrow(new EmailSendingException("Expected exception!"))
                 .when(mailService)
                 .sendEmailTemplateAndGenerateConfrimationCode(anyString(), any(), any());

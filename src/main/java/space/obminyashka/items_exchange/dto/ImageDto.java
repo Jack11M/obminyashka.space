@@ -1,13 +1,14 @@
 package space.obminyashka.items_exchange.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
+
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +16,5 @@ import java.util.UUID;
 @Setter
 public class ImageDto {
     private UUID id;
-    @NotNull(message = ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL)
-    private byte[] resource;
+    private byte @NotNull(message = "{" + INVALID_NOT_NULL + "}") [] resource;
 }

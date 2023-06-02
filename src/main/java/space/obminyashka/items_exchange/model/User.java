@@ -76,15 +76,6 @@ public class User extends BaseEntity implements UserDetails {
     private List<Child> children;
 
     @ManyToMany
-    @JoinTable(name = "user_chat",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"))
-    private Set<Chat> chats;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> messages;
-
-    @ManyToMany
     @JoinTable(name = "black_list",
             joinColumns = @JoinColumn(name = "blocker_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "blocked_id", referencedColumnName = "id"))

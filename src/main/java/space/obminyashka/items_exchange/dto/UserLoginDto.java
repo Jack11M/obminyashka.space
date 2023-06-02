@@ -1,22 +1,22 @@
 package space.obminyashka.items_exchange.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLoginDto {
 
-    @Size(max = 130, message = ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE)
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_USERNAME)
+    @Size(max = 130, message = "{" + INVALID_MAX_SIZE + "}")
+    @NotEmpty(message = "{" + EMPTY_USERNAME + "}")
     private String usernameOrEmail;
 
-    @NotEmpty(message = ResponseMessagesHandler.ValidationMessage.EMPTY_PASSWORD)
+    @NotEmpty(message = "{" + EMPTY_PASSWORD + "}")
     private String password;
 }

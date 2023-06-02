@@ -2,8 +2,6 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,9 +28,6 @@ class LocationServiceIntegrationTest {
     private LocationMapper locationMapper;
     private Location location;
     private LocationDto locationDto;
-
-    @Captor
-    private ArgumentCaptor<Location> locationCaptor;
 
     @BeforeEach
     void setUp() {
@@ -80,26 +75,6 @@ class LocationServiceIntegrationTest {
         Optional<LocationDto> optionalLocationDto = locationService.getById(id);
         assertTrue(optionalLocationDto.isEmpty());
         verify(locationRepository, times(1)).findById(id);
-    }
-
-    @Test
-    void save_shouldSaveLocation_WithLocationParameter() {
-        saveLocationBasicTest();
-    }
-
-    private void saveLocationBasicTest() {
-        locationService.save(location);
-        verify(locationRepository, times(1)).save(locationCaptor.capture());
-        assertAll("Checking objects' data equal",
-                () -> assertEquals(locationCaptor.getValue().getCityUA(), location.getCityUA()),
-                () -> assertEquals(locationCaptor.getValue().getDistrictUA(), location.getDistrictUA()));
-    }
-
-    @Test
-    void save_shouldSaveLocation_WithLocationDtoParameter() {
-        when(locationRepository.saveAndFlush(any())).thenReturn(location);
-
-        saveLocationBasicTest();
     }
 
     @Test
