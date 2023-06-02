@@ -21,12 +21,12 @@ public interface AdvertisementMapper {
     @Mapping(source = "subcategory.id", target = "subcategoryId")
     AdvertisementModificationDto toModificationDto(Advertisement model);
 
-    //Unmapped target properties: "updated, status, defaultPhoto, user, chats".
+    //Unmapped target properties: "updated, status, defaultPhoto, user".
     @Mapping(source = "advertisementId", target = "id")
     @Mapping(source = "createdDate", target = "created")
     Advertisement toModel(AdvertisementDisplayDto dto);
 
-    //Unmapped target properties:updated,status, defaultPhoto, user, images, chats
+    //Unmapped target properties:updated,status, defaultPhoto, user, images
     @Mapping(source = "subcategoryId", target = "subcategory.id")
     @Mapping(source = "locationId", target = "location.id")
     Advertisement toModel(AdvertisementModificationDto dto);

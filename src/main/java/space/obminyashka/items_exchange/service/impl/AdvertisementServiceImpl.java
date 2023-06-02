@@ -155,7 +155,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
         if (!fromDB.equals(toUpdate)) {
-            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images", "chats");
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images");
         }
     }
 
