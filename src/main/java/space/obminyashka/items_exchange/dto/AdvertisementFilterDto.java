@@ -1,18 +1,20 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
-import lombok.*;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
 import java.util.UUID;
+
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +26,7 @@ public class AdvertisementFilterDto {
     private Set<@Valid Gender> gender;
     private Set<@Valid Season> season;
     @JsonProperty("sizeValue")
-    @Size(max = 50, message = "{" + ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE + "}")
+    @Size(max = 50, message = "{" + INVALID_MAX_SIZE + "}")
     private Set<String> size;
     private Set<Long> subcategoryId;
     private Set<Long> categoryId;

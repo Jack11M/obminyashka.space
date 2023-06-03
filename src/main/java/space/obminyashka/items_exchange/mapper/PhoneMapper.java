@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import space.obminyashka.items_exchange.dto.PhoneDto;
 import space.obminyashka.items_exchange.model.Phone;
 
@@ -11,7 +12,8 @@ import java.util.Set;
 public interface PhoneMapper {
     PhoneDto toDto(Phone model);
 
-    //Unmapped target properties: "id, user".
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
     Phone toModel(PhoneDto dto);
 
     List<PhoneDto> toDtoList(List<Phone> modelList);

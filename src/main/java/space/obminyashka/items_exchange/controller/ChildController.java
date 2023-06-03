@@ -18,9 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.service.ChildService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.List;
+
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 
 @RestController
@@ -49,7 +50,7 @@ public class ChildController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT + "}")
+    public List<ChildDto> updateChildren(@Size(max = MAX_CHILDREN_AMOUNT, message = "{" + CHILDREN_AMOUNT + "}")
                                          @RequestBody List<@Valid ChildDto> childrenDto,
                                          @Parameter(hidden = true) Authentication authentication) {
         return childService.updateChildren(authentication.getName(), childrenDto);

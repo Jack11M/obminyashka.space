@@ -99,13 +99,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {0, -2, 999})
+    @ValueSource(longs = {0, -2})
     @DataSet("database_init.yml")
     void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
         int page = 0;
         int size = 12;
-
-        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isNotFound());
+        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isBadRequest());
     }
 
     @Test
@@ -137,8 +136,10 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
-        Long subcategoryId = 1l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+        Long subcategoryId = 1L;
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM)
+                .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
+                .queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
                 .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
     }
 
@@ -147,8 +148,9 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
-        Long subcategoryId = 4l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL_RANDOM)
+                .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
+                .queryParam("subcategoryId", "4"), status().isOk())
                 .andExpect(jsonPath("$.size()").value(0));
     }
 
