@@ -179,3 +179,9 @@ subcategory:
   - id: 3
     name: 'puzzles'
     category_id: 2
+
+phone:
+  - id: 65e3ee49-5927-40be-aafd-0461ce45f200
+    phone_number: 380994556243
+    default_phone: true
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
