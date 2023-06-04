@@ -13,7 +13,7 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 @Setter
 @EqualsAndHashCode
 public class PhoneDto {
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "381234567890")
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "+381234567890")
     @Pattern(regexp = PatternHandler.PHONE_NUMBER, message = "{" + INVALID_PHONE_NUMBER + "}")
     private String phoneNumber;
 
