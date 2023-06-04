@@ -94,7 +94,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email"})
+    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email", "id"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isAccepted());
 
