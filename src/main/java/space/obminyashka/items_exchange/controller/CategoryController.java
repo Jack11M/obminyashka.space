@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.http.HttpStatus;
@@ -14,19 +16,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.exception.*;
+import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.CategorySizeNotFoundException;
+import space.obminyashka.items_exchange.exception.DataConflictException;
+import space.obminyashka.items_exchange.exception.bad_request.InvalidDtoException;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getExceptionMessageSourceWithId;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
@@ -132,12 +134,13 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoryById(@PathVariable("category_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long id)
-            throws InvalidDtoException {
-
-        if (!categoryService.isCategoryDtoDeletable(id)) {
-            throw new InvalidDtoException(getExceptionMessageSourceWithId(
-                    id, ResponseMessagesHandler.ValidationMessage.CATEGORY_NOT_DELETABLE));
+    public void deleteCategoryById(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
+                                   @PathVariable("category_id") long id) throws DataConflictException, CategoryIdNotFoundException {
+        if (!categoryService.isCategoryExistsById(id)) {
+            throw new CategoryIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, id));
+        }
+        if (!categoryService.isCategoryDeletable(id)) {
+            throw new DataConflictException(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, id));
         }
         categoryService.removeById(id);
     }

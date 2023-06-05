@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
-import space.obminyashka.items_exchange.exception.CategoryIdNotFoundException;
-import space.obminyashka.items_exchange.exception.EmailSendingException;
-import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.exception.*;
+import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.CategorySizeNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -27,12 +28,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler({UsernameNotFoundException.class, EntityNotFoundException.class, CategoryIdNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleNotFoundExceptions(Exception e, ServletWebRequest request) {
-        return logAndGetErrorMessage(request, e, Level.WARN);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -46,19 +41,7 @@ public class GlobalExceptionHandler {
         return errorMessage;
     }
 
-    @ExceptionHandler({JwtException.class, RefreshTokenException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErrorMessage handleUnauthorizedExceptions(Exception e, ServletWebRequest request) {
-        return logAndGetErrorMessage(request, e, Level.ERROR);
-    }
-
-    @ExceptionHandler(ServletException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleServletException(ServletException e, ServletWebRequest request) {
-        return logAndGetErrorMessage(request, e, Level.ERROR);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler({BadRequestException.class, ServletException.class, RuntimeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
         if (e instanceof AccessDeniedException accessDeniedException) {
@@ -67,10 +50,39 @@ public class GlobalExceptionHandler {
         return logAndGetErrorMessage(request, e, Level.ERROR);
     }
 
-    @ExceptionHandler(IOException.class)
+    @ExceptionHandler({JwtException.class, RefreshTokenException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorMessage handleUnauthorizedExceptions(Exception e, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, e, Level.ERROR);
+    }
+
+    @ExceptionHandler(IllegalOperationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorMessage handleForbiddenExceptions(Exception e, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, e, Level.ERROR);
+    }
+
+    @ExceptionHandler({
+            UsernameNotFoundException.class,
+            EntityNotFoundException.class,
+            CategoryIdNotFoundException.class,
+            CategorySizeNotFoundException.class,
+            EmailValidationCodeNotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorMessage handleNotFoundExceptions(Exception e, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, e, Level.WARN);
+    }
+
+    @ExceptionHandler({ElementsNumberExceedException.class, IOException.class})
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     public ErrorMessage handleIOException(Exception ex, ServletWebRequest request){
         return logAndGetErrorMessage(request, ex, Level.ERROR);
+    }
+
+    @ExceptionHandler(DataConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorMessage handleConflictExceptions(Exception e, ServletWebRequest request) {
+        return logAndGetErrorMessage(request, e, Level.WARN);
     }
 
     @ExceptionHandler(EmailSendingException.class)

@@ -25,7 +25,7 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
+import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;

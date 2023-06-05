@@ -18,7 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
+import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 

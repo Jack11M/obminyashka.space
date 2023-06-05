@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.exception.bad_request.InvalidDtoException;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;

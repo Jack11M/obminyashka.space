@@ -129,22 +129,6 @@ class CategoryServiceTest {
         verifyNoMoreInteractions(categoryRepository);
     }
 
-    @Test
-    void isCategoryDtoDeletable_whenCategoryExistsByIdAndInternalSubcategoriesHaveNotAdvertisements_shouldReturnTrue() {
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(categoryShoes));
-        final boolean result = categoryService.isCategoryDtoDeletable(EXISTING_ENTITY_ID);
-        verify(categoryRepository, times(1)).findById(EXISTING_ENTITY_ID);
-        assertTrue(result);
-    }
-
-    @Test
-    void isCategoryDtoDeletable_whenCategoryDoesNotExistsById_shouldReturnFalse() {
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
-        final boolean result = categoryService.isCategoryDtoDeletable(EXISTING_ENTITY_ID);
-        verify(categoryRepository, times(1)).findById(EXISTING_ENTITY_ID);
-        assertFalse(result);
-    }
-
     @ParameterizedTest
     @MethodSource("getTestCategoriesData")
     void isCategoryDtoUpdatable_whenCategoryExistsByIdAndNameAndSubcategories_shouldReturnTrue(CategoryDto testCategory, boolean expectedResult) {

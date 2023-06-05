@@ -1,18 +1,20 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.CategoryRepository;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.dto.SubcategoryDto;
 import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.model.Category;
-import space.obminyashka.items_exchange.model.Subcategory;
 import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
-import java.util.*;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -56,12 +58,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean isCategoryDtoDeletable(long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .map(category -> category.getSubcategories().stream()
-                        .map(Subcategory::getAdvertisements)
-                        .allMatch(Collection::isEmpty))
-                .orElse(false);
+    public boolean isCategoryDeletable(long categoryId) {
+        return categoryRepository.existsBySubcategoriesAdvertisementsEmptyAndId(categoryId);
     }
 
     @Override
