@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.impl.SendGridService;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;

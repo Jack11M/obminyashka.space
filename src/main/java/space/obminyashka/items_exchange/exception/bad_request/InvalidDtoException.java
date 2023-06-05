@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.exception;
+package space.obminyashka.items_exchange.exception.bad_request;
 
 public class InvalidDtoException extends BadRequestException {
 
