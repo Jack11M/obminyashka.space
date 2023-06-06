@@ -32,6 +32,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -107,17 +108,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
+    public Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterDto dto) {
         QAdvertisement qAdvertisement = QAdvertisement.advertisement;
         BooleanBuilder predicate = new BooleanBuilder()
                 .and(!dto.getSubcategoryId().isEmpty() ? qAdvertisement.subcategory.id.in(dto.getSubcategoryId()) : null)
-                .and(dto.getLocationId() != null ? qAdvertisement.location.id.eq(dto.getLocationId()) : null)
-                .and(!dto.getSize().isEmpty() ? qAdvertisement.size.in(dto.getSize()) : null)
+                .and(!dto.getSizeClothes().isEmpty() ? qAdvertisement.size.in(dto.getSizeClothes().stream().map(x -> x.range)
+                        .collect(Collectors.toSet())) : null)
+                .and(!dto.getSizeShoes().isEmpty() ? qAdvertisement.size.in(dto.getSizeShoes().stream().map(x -> String.valueOf(x.length))
+                        .collect(Collectors.toSet())) : null)
                 .and(!dto.getSeason().isEmpty() ? qAdvertisement.season.in(dto.getSeason()) : null)
-                .and(!dto.getGender().isEmpty() ? qAdvertisement.gender.in(dto.getGender()) : null)
-                .and(!dto.getAge().isEmpty() ? qAdvertisement.age.in(dto.getAge()) : null);
+                .and(!dto.getAge().isEmpty() ? qAdvertisement.age.in(dto.getAge()) : null)
+                .and(dto.getLocationId() != null ? qAdvertisement.location.id.eq(dto.getLocationId()) : null)
+                .and(dto.getGender() != null ? qAdvertisement.gender.in(dto.getGender()) : null);
 
-        return advertisementMapper.toTitleDtoList(advertisementRepository.findAll(predicate));
+        return advertisementRepository.findAll(predicate, PageRequest.of(dto.getPage(), dto.getSize()))
+                .map(this::buildAdvertisementTitle);
     }
 
     @Override

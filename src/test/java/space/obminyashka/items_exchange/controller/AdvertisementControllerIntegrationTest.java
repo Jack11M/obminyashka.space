@@ -4,6 +4,8 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,12 +17,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.exception.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -120,5 +124,32 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
         final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertEquals("Користувача не знайдено", new JSONObject(errorMessage).get("error"));
+    }
+
+    @Test
+    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
+        String subcategoryId = "1";
+        String size = Size.Shoes.ELEVEN_POINT_FIVE.name();
+
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
+                .queryParam("subcategoryId", subcategoryId)
+                .queryParam("sizeShoes", size), status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidSizeAndSubcategoryCombinations")
+    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategory(String subcategoryId, String size) throws Exception {
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
+                .queryParam("subcategoryId", subcategoryId)
+                .queryParam("sizeClothes", size), status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
+    }
+
+    static Stream<Arguments> invalidSizeAndSubcategoryCombinations() {
+        return Stream.of(
+                Arguments.of("14", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name()),
+                Arguments.of("18", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name())
+        );
     }
 }

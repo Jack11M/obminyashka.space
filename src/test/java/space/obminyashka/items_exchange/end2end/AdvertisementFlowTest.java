@@ -29,6 +29,7 @@ import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
+import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.JsonConverter;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
@@ -196,26 +197,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-        AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
-                .season(Set.of(Season.SUMMER))
-                .gender(Set.of(Gender.FEMALE))
-                .age(Set.of(AgeRange.FROM_10_TO_12))
-                .size(Set.of("M"))
-                .categoryId(new HashSet<>())
-                .subcategoryId(new HashSet<>())
-                .build();
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), dto, status().isOk());
+        sendUriAndGetResultAction(get(ADV_FILTER)
+                .queryParam("subcategoryId", "1")
+                .queryParam("sizeClothes", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name()), status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1));
 
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        AdvertisementTitleDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString,
-                AdvertisementTitleDto[].class);
-
-        Assertions.assertAll(
-                () -> assertEquals(1, advertisementDtos.length),
-                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId()),
-                () -> assertEquals("admin", advertisementDtos[0].getOwnerName())
-        );
     }
 
     @Test

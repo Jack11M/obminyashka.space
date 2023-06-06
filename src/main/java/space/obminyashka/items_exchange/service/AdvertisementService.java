@@ -71,7 +71,7 @@ public interface AdvertisementService {
      * @param dto an object that contains all parameters to search
      * @return result of the request
      */
-    List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto);
+    Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterDto dto);
 
     /**
      * Check whenever user has an advertisement with selected id

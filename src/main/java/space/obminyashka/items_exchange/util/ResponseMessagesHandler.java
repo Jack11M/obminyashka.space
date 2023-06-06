@@ -28,6 +28,7 @@ public class ResponseMessagesHandler {
         public final String INVALID_PHONES_AMOUNT = "invalid.phones-amount";
         public final String INVALID_FIRST_LAST_NAME = "invalid.first-or-last.name";
         public final String INVALID_CHILD_AGE = "invalid.child.age";
+        public final String INVALID_SIZE_SUBCATEGORY_COMBINATION = "invalid.size.subcategory";
         public final String CATEGORY_NOT_DELETABLE = "category.not-deletable";
         public final String INVALID_NEW_CATEGORY_DTO = "invalid.new-category-dto";
         public final String INVALID_UPDATED_CATEGORY_DTO = "invalid.updated-category.dto";

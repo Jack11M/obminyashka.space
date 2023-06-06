@@ -125,13 +125,13 @@ public class AdvertisementController {
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
-    @PostMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
             "Fill only needed parameters.")
     @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
-    public List<AdvertisementTitleDto> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto filterDto) {
-        return advertisementService.findFirst10ByFilter(filterDto);
+    public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterDto filterDto) {
+        return advertisementService.findAdvertisementByFilter(filterDto);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
