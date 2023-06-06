@@ -69,7 +69,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
         return advertisementRepository.findAllByUserUsername(username).stream()
-                .map(this::buildAdvertisementTitle)
+                .map(advertisementMapper::toAdvertisementTitleDto)
                 .toList();
     }
 

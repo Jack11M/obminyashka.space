@@ -155,4 +155,11 @@ public interface UserService {
      * @return {@link User} from OAuth2User credentials if exists, otherwise register a new user and return it
      */
     User loginUserWithOAuth2(DefaultOidcUser oauth2User);
+
+    /**
+     * Get user avatar image
+     * @param username username of the user to check
+     * @return result
+     */
+    byte[] getAvatarByUsername(String username);
 }
