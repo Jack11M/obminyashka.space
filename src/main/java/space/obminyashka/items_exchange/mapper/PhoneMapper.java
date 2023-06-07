@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface PhoneMapper {
+    @Mapping(target = "phoneNumber", expression = "java(\"+\".concat(String.valueOf(model.getPhoneNumber())))")
     PhoneDto toDto(Phone model);
 
     @Mapping(target = "id", ignore = true)

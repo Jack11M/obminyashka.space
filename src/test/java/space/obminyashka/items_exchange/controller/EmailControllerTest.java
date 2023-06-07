@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 

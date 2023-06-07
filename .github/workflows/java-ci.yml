@@ -84,8 +84,6 @@ jobs:
             export GOOGLE_CLIENT_SECRET='${{ env.GOOGLE_CLIENT_SECRET }}'
             export SENDGRID_API_KEY='${{ env.SENDGRID_API_KEY }}'
             kill -9 $(lsof -t -i:8443) || echo "Process was not running."
-            systemctl stop cge || echo "Process was not running."
-            cp target/*.jar CGE-service/cge.jar
             echo "java -jar ./target/*.jar" | at now + 1 minutes
 
   inform:

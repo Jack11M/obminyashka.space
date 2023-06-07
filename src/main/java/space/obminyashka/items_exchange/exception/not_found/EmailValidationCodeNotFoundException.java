@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.exception;
+package space.obminyashka.items_exchange.exception.not_found;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

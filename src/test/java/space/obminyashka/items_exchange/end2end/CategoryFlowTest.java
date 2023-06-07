@@ -19,7 +19,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
+import space.obminyashka.items_exchange.exception.DataConflictException;
+import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.Objects;
@@ -34,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_UPDATED_CATEGORY_DTO;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
 @DBRider
@@ -152,18 +154,19 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowInvalidDtoException() throws Exception {
-        MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isBadRequest());
+        MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
         assertThat(result.getResolvedException())
-                .isInstanceOf(InvalidDtoException.class);
+                .isInstanceOf(CategoryIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(INVALID_CATEGORY_ID, NONEXISTENT_ENTITY_ID));
     }
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
-    void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnBadRequest() throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, EXISTING_ENTITY_ID), status().isBadRequest());
+    void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnConflict() throws Exception {
+        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, EXISTING_ENTITY_ID), status().isConflict());
         assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(InvalidDtoException.class)
-                .hasMessageContaining("The category can not be deleted by this id, because it has to exist by id");
+                .isInstanceOf(DataConflictException.class)
+                .hasMessageContaining(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, EXISTING_ENTITY_ID));
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.exception.EmailSendingException;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.EmailType;

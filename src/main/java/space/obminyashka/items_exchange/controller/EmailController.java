@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 

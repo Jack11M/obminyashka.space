@@ -21,7 +21,7 @@ public interface ChildRepository extends JpaRepository<Child, UUID> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "insert into Child values (:id, " +
+    @Query(nativeQuery = true, value = "insert into child values (:id, " +
             "(select id from user where username = :username), :birthDay, :sex)")
     void createChildrenByUsername(UUID id, LocalDate birthDay, String sex, String username);
 
