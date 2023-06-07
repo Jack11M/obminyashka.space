@@ -39,7 +39,6 @@ public interface AdvertisementMapper {
     Advertisement toModel(AdvertisementModificationDto dto);
 
     @Mapping(source = "id", target = "advertisementId")
-    @Mapping(source = "defaultPhoto", target = "image")
     @Mapping(source = "topic", target = "title")
     AdvertisementTitleDto toAdvertisementTitleDto(AdvertisementTitleProjection projection);
 

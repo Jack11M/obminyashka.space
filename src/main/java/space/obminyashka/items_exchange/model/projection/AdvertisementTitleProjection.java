@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public interface AdvertisementTitleProjection {
     UUID getId();
-    byte[] getDefaultPhoto();
     String getTopic();
     Location getLocation();
 }

@@ -222,9 +222,4 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     log.info("Preferable language was successfully updated for User: {}", user.getUsername());
                 });
     }
-
-    @Override
-    public byte[] getAvatarByUsername(String username) {
-        return userRepository.getAvatarByUsername(username);
-    }
 }

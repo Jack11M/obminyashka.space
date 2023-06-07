@@ -77,7 +77,4 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("update User u set u.avatarImage = :newAvatarImage where u.username = :usernameOrEmail")
     void updateAvatarByUsername(String usernameOrEmail, byte[] newAvatarImage);
 
-    @Query("select u.avatarImage from User u where u.username = :username")
-    byte[] getAvatarByUsername(String username);
-
 }

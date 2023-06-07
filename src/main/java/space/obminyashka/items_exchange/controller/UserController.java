@@ -83,15 +83,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
     public List<AdvertisementTitleDto> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
-        var username = authentication.getName();
-        var avatarImage = userService.getAvatarByUsername(username);
-        final var usersAdvertisements = advService.findAllByUsername(username);
-        usersAdvertisements.forEach(advertisement -> {
-            advertisement.setOwnerName(username);
-            advertisement.setOwnerAvatar(avatarImage);
-        });
-
-        return usersAdvertisements;
+        return advService.findAllByUsername(authentication.getName());
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

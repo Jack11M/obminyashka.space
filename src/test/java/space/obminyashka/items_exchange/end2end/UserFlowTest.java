@@ -112,8 +112,7 @@ class UserFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$[1].title").value("Blouses"))
                 .andExpect(jsonPath("$[2].title").value("Dresses"))
                 .andExpect(jsonPath("$[3].title").value("Skirts"))
-                .andExpect(jsonPath("$[4].title").value("Pajamas"))
-                .andExpect(jsonPath("$[4].ownerName").value(ADMIN_USERNAME));
+                .andExpect(jsonPath("$[4].title").value("Pajamas"));
     }
 
     @Test

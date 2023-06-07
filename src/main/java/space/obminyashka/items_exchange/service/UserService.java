@@ -156,10 +156,4 @@ public interface UserService {
      */
     User loginUserWithOAuth2(DefaultOidcUser oauth2User);
 
-    /**
-     * Get user avatar image
-     * @param username username of the user to check
-     * @return result
-     */
-    byte[] getAvatarByUsername(String username);
 }
