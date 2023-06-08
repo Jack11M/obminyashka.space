@@ -214,8 +214,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .image(getImage(advertisement))
                 .title(advertisement.getTopic())
                 .location(locationMapper.toDto(advertisement.getLocation()))
-                .ownerName(advertisement.getUser().getUsername())
-                .ownerAvatar(advertisement.getUser().getAvatarImage())
                 .build();
     }
 
