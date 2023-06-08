@@ -155,5 +155,4 @@ public interface UserService {
      * @return {@link User} from OAuth2User credentials if exists, otherwise register a new user and return it
      */
     User loginUserWithOAuth2(DefaultOidcUser oauth2User);
-
 }
