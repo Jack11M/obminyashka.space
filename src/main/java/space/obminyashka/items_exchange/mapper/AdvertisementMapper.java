@@ -5,7 +5,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.model.Advertisement;
+import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
 import java.util.List;
 
@@ -35,6 +37,11 @@ public interface AdvertisementMapper {
     @Mapping(source = "subcategoryId", target = "subcategory.id")
     @Mapping(source = "locationId", target = "location.id")
     Advertisement toModel(AdvertisementModificationDto dto);
+
+    @Mapping(source = "id", target = "advertisementId")
+    @Mapping(source = "defaultPhoto", target = "image")
+    @Mapping(source = "topic", target = "title")
+    AdvertisementTitleDto toAdvertisementTitleDto(AdvertisementTitleProjection projection);
 
     List<AdvertisementDisplayDto> toDtoList(List<Advertisement> modelList);
     List<Advertisement> toModelList(List<AdvertisementDisplayDto> dtoList);

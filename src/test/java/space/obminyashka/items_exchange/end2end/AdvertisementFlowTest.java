@@ -113,8 +113,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         int size = 1;
         sendUriAndGetResultAction(get(ADV_THUMBNAIL_PARAMS, page, size), status().isOk())
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
-                .andExpect(jsonPath("$.content[0].title").value("Dresses"))
-                .andExpect(jsonPath("$.content[0].ownerName").value("admin"));
+                .andExpect(jsonPath("$.content[0].title").value("Dresses"));
     }
 
     @Test
@@ -208,8 +207,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
 
         Assertions.assertAll(
                 () -> assertEquals(1, advertisementDtos.length),
-                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId()),
-                () -> assertEquals("admin", advertisementDtos[0].getOwnerName())
+                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId())
         );
     }
 
