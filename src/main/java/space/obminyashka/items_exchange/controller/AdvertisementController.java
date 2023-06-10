@@ -42,8 +42,7 @@ import jakarta.validation.constraints.Size;
 import java.util.*;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE_SUBCATEGORY_COMBINATION;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -133,8 +132,7 @@ public class AdvertisementController {
     }
 
     @GetMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
-            "Fill only needed parameters.")
+    @Operation(summary = "Filter advertisements by multiple params")
     @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterRequest filterDto) throws BadRequestException, CategoryIdNotFoundException {

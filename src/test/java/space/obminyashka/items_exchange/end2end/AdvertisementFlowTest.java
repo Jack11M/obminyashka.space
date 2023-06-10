@@ -201,7 +201,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
+    void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByAllParameters() throws Exception {
         sendUriAndGetResultAction(get(ADV_FILTER)
                 .queryParam("subcategorySearchRequest.categoryId", "1")
                 .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")

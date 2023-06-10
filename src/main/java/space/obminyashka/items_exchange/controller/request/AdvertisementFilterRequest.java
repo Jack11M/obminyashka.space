@@ -8,18 +8,18 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 
 @Getter
 @Setter
 public class AdvertisementFilterRequest {
 
-    @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
+    @Parameter(description = "Results page you want to retrieve (0..N). Default value: 0")
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
     private int page = 0;
 
-    @Parameter(name = "size", description = "Number of records per page. Default value: 12")
+    @Parameter(description = "Number of records per page. Default value: 12")
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
     private int size = 12;
 

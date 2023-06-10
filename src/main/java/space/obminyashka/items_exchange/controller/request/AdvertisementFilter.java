@@ -14,19 +14,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Getter
 @Setter
 public class AdvertisementFilter {
 
-    @Parameter(name = "locationId", description = "Location of clothes/shoes", allowEmptyValue = true, example = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10")
+    @Parameter(description = "Location of clothes/shoes", allowEmptyValue = true, example = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10")
     private UUID locationId;
 
-    @Parameter(name = "gender", description = "Gender of child", allowEmptyValue = true)
+    @Parameter(description = "Gender of child", allowEmptyValue = true)
     private Gender gender;
 
-    @Parameter(name = "age", description = "Age of child", allowEmptyValue = true)
+    @Parameter(description = "Age of child", allowEmptyValue = true)
     @JsonSetter(nulls = Nulls.SKIP)
     private Set<AgeRange> age = new HashSet<>();
 
@@ -40,7 +40,7 @@ public class AdvertisementFilter {
     @Parameter(description = "Size of shoes", allowEmptyValue = true)
     private Set<space.obminyashka.items_exchange.model.enums.Size.Shoes> shoesSizes = new HashSet<>();
 
-    @Parameter(name = "season", description = "Season of clothes/shoes", allowEmptyValue = true)
+    @Parameter(description = "Season of clothes/shoes", allowEmptyValue = true)
     @JsonSetter(nulls = Nulls.SKIP)
     private Set<Season> season = new HashSet<>();
 }
