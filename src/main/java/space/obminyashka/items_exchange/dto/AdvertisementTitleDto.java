@@ -15,6 +15,4 @@ public class AdvertisementTitleDto {
     private byte[] image;
     private String title;
     private LocationDto location;
-    private String ownerName;
-    private byte[] ownerAvatar;
 }
