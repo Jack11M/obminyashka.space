@@ -22,6 +22,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilter;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.exception.*;
@@ -36,10 +38,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE_SUBCATEGORY_COMBINATION;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -123,7 +127,7 @@ public class AdvertisementController {
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
         if (!categoryService.isCategoryExistsById(categoryId)) {
             throw new CategoryIdNotFoundException(
-                    getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID, categoryId));
+                    getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId));
         }
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
@@ -133,8 +137,20 @@ public class AdvertisementController {
             "Fill only needed parameters.")
     @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
-    public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterDto filterDto) {
+    public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterRequest filterDto) throws BadRequestException, CategoryIdNotFoundException {
+            validateCategoryCombinationSize(filterDto.getSubcategorySearchRequest().getCategoryId(), filterDto.getAdvertisementFilter());
         return advertisementService.findAdvertisementByFilter(filterDto);
+    }
+
+    private void validateCategoryCombinationSize(long categoryId, AdvertisementFilter filter) throws BadRequestException, CategoryIdNotFoundException {
+        String categoryName = categoryService.findCategoryDtoById(categoryId)
+                .orElseThrow(() -> new CategoryIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId)))
+                .getName();
+        if ((categoryName.equals("Clothing") && !filter.getShoesSizes().isEmpty()) ||
+                (categoryName.equals("Shoes") && !filter.getClothingSizes().isEmpty()) ||
+                (!filter.getClothingSizes().isEmpty() && !filter.getShoesSizes().isEmpty())) {
+            throw new BadRequestException(getMessageSource(INVALID_SIZE_SUBCATEGORY_COMBINATION));
+        }
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

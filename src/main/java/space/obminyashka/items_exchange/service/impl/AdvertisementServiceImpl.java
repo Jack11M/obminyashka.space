@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
@@ -108,18 +109,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterDto dto) {
+    public Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterRequest dto) {
         QAdvertisement qAdvertisement = QAdvertisement.advertisement;
         BooleanBuilder predicate = new BooleanBuilder()
-                .and(!dto.getSubcategoryId().isEmpty() ? qAdvertisement.subcategory.id.in(dto.getSubcategoryId()) : null)
-                .and(!dto.getSizeClothes().isEmpty() ? qAdvertisement.size.in(dto.getSizeClothes().stream().map(x -> x.range)
+                .and(!dto.getSubcategorySearchRequest().getSubcategoriesIdValues().isEmpty()
+                        ? qAdvertisement.subcategory.id.in(dto.getSubcategorySearchRequest().getSubcategoriesIdValues()) : null)
+                .and(!dto.getAdvertisementFilter().getClothingSizes().isEmpty()
+                        ? qAdvertisement.size.in(dto.getAdvertisementFilter().getClothingSizes().stream().map(x -> x.range)
                         .collect(Collectors.toSet())) : null)
-                .and(!dto.getSizeShoes().isEmpty() ? qAdvertisement.size.in(dto.getSizeShoes().stream().map(x -> String.valueOf(x.length))
+                .and(!dto.getAdvertisementFilter().getShoesSizes().isEmpty() ? qAdvertisement.size.in(dto.getAdvertisementFilter().getShoesSizes().stream()
+                        .map(x -> String.valueOf(x.length))
                         .collect(Collectors.toSet())) : null)
-                .and(!dto.getSeason().isEmpty() ? qAdvertisement.season.in(dto.getSeason()) : null)
-                .and(!dto.getAge().isEmpty() ? qAdvertisement.age.in(dto.getAge()) : null)
-                .and(dto.getLocationId() != null ? qAdvertisement.location.id.eq(dto.getLocationId()) : null)
-                .and(dto.getGender() != null ? qAdvertisement.gender.in(dto.getGender()) : null);
+                .and(!dto.getAdvertisementFilter().getSeason().isEmpty() ? qAdvertisement.season.in(dto.getAdvertisementFilter().getSeason()) : null)
+                .and(!dto.getAdvertisementFilter().getAge().isEmpty() ? qAdvertisement.age.in(dto.getAdvertisementFilter().getAge()) : null)
+                .and(dto.getAdvertisementFilter().getLocationId() != null ? qAdvertisement.location.id.eq(dto.getAdvertisementFilter().getLocationId()) : null)
+                .and(dto.getAdvertisementFilter().getGender() != null ? qAdvertisement.gender.in(dto.getAdvertisementFilter().getGender()) : null);
 
         return advertisementRepository.findAll(predicate, PageRequest.of(dto.getPage(), dto.getSize()))
                 .map(this::buildAdvertisementTitle);

@@ -32,6 +32,7 @@ class SubcategoryFlowTest extends BasicControllerTest {
 
     public static final long SUBCATEGORY_ID_FOR_DELETING = 1L;
     public static final long EXISTENT_SUBCATEGORY_ID = 2L;
+    public static final long EXISTENT_CATEGORY_ID = 1L;
     public static final long NONEXISTENT_CATEGORY_ID = 22222L;
 
     @Autowired
@@ -48,7 +49,7 @@ class SubcategoryFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> subcategoryNameTestData() {
         return Stream.of(
-                Arguments.of(EXISTENT_SUBCATEGORY_ID, status().isOk()),
+                Arguments.of(EXISTENT_CATEGORY_ID, status().isOk()),
                 Arguments.of(NONEXISTENT_CATEGORY_ID, status().isNotFound())
         );
     }

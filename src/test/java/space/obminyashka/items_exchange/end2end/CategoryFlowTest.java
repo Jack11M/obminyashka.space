@@ -66,8 +66,8 @@ class CategoryFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void getCategoryById_shouldReturnCategoryByIdIfExists() throws Exception {
         sendUriAndGetResultAction(get(CATEGORY_ID, EXISTING_ENTITY_ID), status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("shoes"));
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.name").value("Shoes"));
     }
 
     @Test
@@ -146,7 +146,7 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategoryById_shouldDeleteExistedCategory() throws Exception {
-        sendUriAndGetResultAction(delete(CATEGORY_ID, 2L), status().isOk())
+        sendUriAndGetResultAction(delete(CATEGORY_ID, 1L), status().isOk())
                 .andExpect(jsonPath("$.id").doesNotExist());
     }
 

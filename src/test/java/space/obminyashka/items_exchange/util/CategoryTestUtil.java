@@ -15,26 +15,27 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryTestUtil {
 
-    public static final long EXISTING_ENTITY_ID = 1L;
+    public static final long EXISTING_ENTITY_ID = 2L;
     public static final long NEW_ENTITY_ID = 0L;
     public static final long NONEXISTENT_ENTITY_ID = 111111L;
-    public static final long CATEGORY_TOYS_ID = 2L;
+    public static final long CATEGORY_CLOTHING_ID = 1L;
+    public static final long CATEGORY_TOYS_ID = 3L;
     public static final String NEW_CATEGORY_NAME = "new category";
-    public static final String EXISTING_CATEGORY_NAME = "shoes";
+    public static final String EXISTING_CATEGORY_NAME = "Shoes";
     public static final String EXISTING_SUBCATEGORY_NAME = "light_shoes";
     public static final String NEW_SUBCATEGORY_NAME = "new subcategory";
     public static final String OTHER_NEW_SUBCATEGORY_NAME = "other new subcategory";
     public static final String INVALID_CATEGORY_NAME = "xx";
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String USERNAME_ADMIN = "admin";
-    public static final String CATEGORY_NAME_TOYS = "toys";
+    public static final String CATEGORY_NAME_TOYS = "Toys";
     public static final String SUBCATEGORY_NAME_WINTER_SHOES = "winter shoes";
     public static final String SUBCATEGORY_NAME_MEN_SHOES = "men shoes";
     public static final String SUBCATEGORY_NAME_DOLLS = "dolls";
     public static final String DATA_EQUALS_CHECKING = "Checking objects' data equal";
     public static final String CATEGORY_NAME_BOOKS = "books";
     public static final String SUBCATEGORY_NAME_FAIRY_TALES = "fairy tales";
-    public static final String SUBCATEGORY_NAME_EDUCATIONAL_BOOKS = "educational books";
+    public static final String SUBCATEGORY_NAME_LEGO = "lego";
 
     protected static CategoryDto createExistCategoryDto() {
         final SubcategoryDto lightShoes = new SubcategoryDto(EXISTING_ENTITY_ID, EXISTING_SUBCATEGORY_NAME);
@@ -43,13 +44,13 @@ public class CategoryTestUtil {
 
     public static CategoryDto createNonExistValidCategoryDto() {
         final SubcategoryDto fairyTales = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
-        final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
-        return new CategoryDto(NEW_ENTITY_ID, CATEGORY_NAME_BOOKS, Arrays.asList(fairyTales, educationalBooks));
+        final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_LEGO);
+        return new CategoryDto(NEW_ENTITY_ID, CATEGORY_NAME_TOYS, Arrays.asList(fairyTales, educationalBooks));
     }
 
     public static CategoryDto createNonExistCategoryDtoWithInvalidName() {
         final SubcategoryDto fairyTales = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
-        final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
+        final SubcategoryDto educationalBooks = new SubcategoryDto(NEW_ENTITY_ID, SUBCATEGORY_NAME_LEGO);
         return new CategoryDto(NEW_ENTITY_ID, INVALID_CATEGORY_NAME, Arrays.asList(fairyTales, educationalBooks));
     }
 
@@ -102,8 +103,8 @@ public class CategoryTestUtil {
 
     public static Category createNewCategory() {
         final Subcategory fairyTales = createSubcategory(EXISTING_ENTITY_ID, SUBCATEGORY_NAME_FAIRY_TALES);
-        final Subcategory educationalBooks = createSubcategory(CATEGORY_TOYS_ID, SUBCATEGORY_NAME_EDUCATIONAL_BOOKS);
-        return new Category(EXISTING_ENTITY_ID, CATEGORY_NAME_BOOKS, List.of(fairyTales, educationalBooks));
+        final Subcategory educationalBooks = createSubcategory(CATEGORY_TOYS_ID, SUBCATEGORY_NAME_LEGO);
+        return new Category(EXISTING_ENTITY_ID, CATEGORY_NAME_TOYS, List.of(fairyTales, educationalBooks));
     }
 
     public static Subcategory createSubcategory(long subcategoryId, String subcategoryName) {

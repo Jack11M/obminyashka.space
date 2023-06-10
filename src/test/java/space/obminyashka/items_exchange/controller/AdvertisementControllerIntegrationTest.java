@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -124,32 +125,5 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
         final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertEquals("Користувача не знайдено", new JSONObject(errorMessage).get("error"));
-    }
-
-    @Test
-    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
-        String subcategoryId = "1";
-        String size = Size.Shoes.ELEVEN_POINT_FIVE.name();
-
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
-                .queryParam("subcategoryId", subcategoryId)
-                .queryParam("sizeShoes", size), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
-    }
-
-    @ParameterizedTest
-    @MethodSource("invalidSizeAndSubcategoryCombinations")
-    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategory(String subcategoryId, String size) throws Exception {
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
-                .queryParam("subcategoryId", subcategoryId)
-                .queryParam("sizeClothes", size), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
-    }
-
-    static Stream<Arguments> invalidSizeAndSubcategoryCombinations() {
-        return Stream.of(
-                Arguments.of("14", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name()),
-                Arguments.of("18", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name())
-        );
     }
 }

@@ -4,7 +4,6 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,28 +21,24 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.JsonConverter;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -196,13 +191,63 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-
+    void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByNecessaryParameters() throws Exception {
         sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("subcategoryId", "1")
-                .queryParam("sizeClothes", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name()), status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(1));
+                .queryParam("subcategorySearchRequest.categoryId", "1")
+                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
+                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.name()), status().isOk())
+                .andExpect(jsonPath("$.content.length()").value("3"));
+    }
 
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
+        sendUriAndGetResultAction(get(ADV_FILTER)
+                .queryParam("subcategorySearchRequest.categoryId", "1")
+                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
+                .queryParam("advertisementFilter.locationId", "2c5467f3-b7ee-48b1-9451-7028255b757b")
+                .queryParam("advertisementFilter.gender", Gender.FEMALE.name())
+                .queryParam("advertisementFilter.age", AgeRange.FROM_10_TO_12.name(), AgeRange.FROM_6_TO_9.name())
+                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.name())
+                .queryParam("advertisementFilter.season", Season.SUMMER.name(), Season.WINTER.name()), status().isOk())
+                .andExpect(jsonPath("$.content.length()").value("2"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
+        String subcategoryId = "1";
+        String categoryId = "1";
+        String size = Size.Shoes.ELEVEN_POINT_FIVE.name();
+
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
+                .queryParam("subcategorySearchRequest.categoryId", categoryId)
+                .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
+                .queryParam("advertisementFilter.shoesSizes", size), status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
+    }
+
+    @ParameterizedTest
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    @MethodSource("invalidSizeAndSubcategoryCombinations")
+    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategory(String subcategoryId, String size) throws Exception {
+        String categoryId = "2";
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
+                .queryParam("subcategorySearchRequest.categoryId", categoryId)
+                .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
+                .queryParam("advertisementFilter.clothingSizes", size), status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
+
+    }
+
+    static Stream<Arguments> invalidSizeAndSubcategoryCombinations() {
+        return Stream.of(
+                Arguments.of("14", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name()),
+                Arguments.of("18", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name())
+        );
     }
 
     @Test

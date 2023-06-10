@@ -19,17 +19,17 @@ public class AdvertisementDtoCreatingUtil {
 
     public static AdvertisementModificationDto createNonExistAdvertisementModificationDto() {
         return getBuild(null,"unique topic", "unique description", "house",false, DealType.GIVEAWAY,
-                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
+                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "57 - 62", 1L);
     }
 
     public static AdvertisementModificationDto createExistAdvertisementModificationDto() {
         return getBuild(existedAdvertisementId, "topic", "description", "shoes", true, DealType.EXCHANGE,
-                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 2L);
+                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "57 - 62", 2L);
     }
 
     public static AdvertisementModificationDto createExistAdvertisementModificationDtoForUpdate() {
         return getBuild(existedAdvertisementId, "new topic", "new description", "BMW",true, DealType.EXCHANGE,
-                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "50", 2L);
+                AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.FEMALE, "57 - 62", 2L);
     }
 
     public static AdvertisementModificationDto createExistAdvertisementDtoForUpdateWithNotValidFields() {

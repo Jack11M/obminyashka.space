@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({BadRequestException.class, ServletException.class, RuntimeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorMessage handleRuntimeException(RuntimeException e, ServletWebRequest request) {
+    public ErrorMessage handleRuntimeException(Exception e, ServletWebRequest request) {
         if (e instanceof AccessDeniedException accessDeniedException) {
             throw accessDeniedException;
         }

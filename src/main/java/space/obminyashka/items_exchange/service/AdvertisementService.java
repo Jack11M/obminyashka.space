@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
@@ -71,7 +72,7 @@ public interface AdvertisementService {
      * @param dto an object that contains all parameters to search
      * @return result of the request
      */
-    Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterDto dto);
+    Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterRequest dto);
 
     /**
      * Check whenever user has an advertisement with selected id
