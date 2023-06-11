@@ -5,7 +5,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -23,8 +27,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.exception.*;
+import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
+import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
@@ -32,10 +39,6 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
@@ -156,6 +159,7 @@ public class AdvertisementController {
             @Parameter(hidden = true) Authentication authentication) throws IllegalIdentifierException {
 
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
+        validateStringFields(dto.getTopic(), dto.getDescription(), dto.getWishesToExchange());
         final var owner = getUser(authentication.getName());
         final var compressedImages = images.parallelStream()
                 .map(imageService::compress)
@@ -242,6 +246,26 @@ public class AdvertisementController {
         if (!exceptionMessage.isEmpty()) {
             throw new IllegalIdentifierException(exceptionMessage);
         }
+    }
+
+    private void validateStringFields(String topic, String description, String wishesToExchange)  throws IllegalIdentifierException {
+        var exceptionMessage = "";
+        if (isBlank(topic)) {
+            exceptionMessage = "";
+        }
+        if (isBlank(description)) {
+            exceptionMessage = "";
+        }
+        if (isBlank(wishesToExchange)) {
+            exceptionMessage = " ";
+        }
+        if (!exceptionMessage.isEmpty()) {
+            throw new IllegalIdentifierException(exceptionMessage);
+        }
+    }
+
+    private boolean isBlank(String checkable) {
+        return checkable.trim().isEmpty();
     }
 
     private User getUser(String userNameOrEmail) {
