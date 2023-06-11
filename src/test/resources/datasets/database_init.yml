@@ -180,27 +180,8 @@ subcategory:
     name: 'puzzles'
     category_id: 2
 
-chat:
-  - id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
-    hash: 'ChatHash'
-    advertisement_id: 7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7
-
-user_chat:
-  - id: 4e2e6676-cb15-4de1-a0f5-7280d810c5b0
+phone:
+  - id: 65e3ee49-5927-40be-aafd-0461ce45f200
+    phone_number: 380994556243
+    default_phone: true
     user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
-    chat_id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
-
-message:
-  - id: 4fb0be36-6d3a-4041-80e8-f764ce95ed8a
-    chat_id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
-    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
-    text: 'message text'
-    status: 'NEW'
-    created: '2019-01-01 00:00:01'
-    updated: '2019-01-01 00:00:01'
-
-attachment:
-  - id: 6d88550e-c785-4cef-8672-bf0654496b67
-    message_id: 4fb0be36-6d3a-4041-80e8-f764ce95ed8a
-    type: 'jpg'
-    file_content: 'YWJj'

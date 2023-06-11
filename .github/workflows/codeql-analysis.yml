@@ -3,6 +3,8 @@ name: "CodeQL"
 on:
   pull_request:
     branches: [ master ]
+  push:
+    branches: [ master ]
 
 jobs:
   analyze:
@@ -26,7 +28,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '20'
-        distribution: 'temurin'
+        distribution: 'oracle'
         check-latest: true
         cache: maven
 

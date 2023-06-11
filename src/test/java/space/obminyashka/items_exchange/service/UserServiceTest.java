@@ -3,11 +3,11 @@ package space.obminyashka.items_exchange.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -15,18 +15,17 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.Child;
+import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Gender;
+import space.obminyashka.items_exchange.model.projection.UserProjection;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,74 +43,56 @@ class UserServiceTest {
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Mock
-    private ChildMapper childMapper;
-    @Mock
     private PhoneMapper phoneMapper;
     @Mock
     private RoleService roleService;
     @Mock
     private UserMapper userMapper;
-    @Captor
-    private ArgumentCaptor<String> oauth2UserArgumentCaptor;
     private UserServiceImpl userService;
     @Value("${number.of.hours.to.keep.email.confirmation.code}")
     private int numberOfHoursToKeepEmailConformationToken;
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(bCryptPasswordEncoder,userRepository, emailConfirmationCodeRepository, childMapper, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
+        userService = new UserServiceImpl(bCryptPasswordEncoder, userRepository, emailConfirmationCodeRepository, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test
     void testLoginUserWithOAuth2_WhenUserBeenCreated() {
+        //Arrange
+
         var oauth2User = createDefaultOidcUser();
-        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL, NEW_USER_EMAIL)).thenReturn(creatOptionalUser());
-        userService.loginUserWithOAuth2(oauth2User);
+        var userProjection = creatUserProjection();
+        when(userRepository.findUserProjectionByEmail(NEW_USER_EMAIL)).thenReturn(Optional.of(userProjection));
+        when(userMapper.toUserFromProjection(userProjection)).thenReturn(creatUser());
 
-        verify(userRepository).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
+        //Act
+        User user = userService.loginUserWithOAuth2(oauth2User);
 
-        assertEquals(NEW_USER_EMAIL, oauth2UserArgumentCaptor.getValue());
-    }
-
-    @Test
-    void testLoginUserWithOAuth2_WhenUserBeenCreatedAndHasValidatedEmailWithOauth2Login() {
-        var oauth2User = createDefaultOidcUser();
-        var optionalUser = creatOptionalUser();
-        optionalUser.get().isValidatedEmail(true);
-        optionalUser.get().setOauth2Login(true);
-
-        when(userRepository.findByEmailOrUsername(NEW_USER_EMAIL, NEW_USER_EMAIL)).thenReturn(optionalUser);
-        userService.loginUserWithOAuth2(oauth2User);
-
-        verify(userRepository, never()).setOAuth2LoginToUserByEmail(oauth2UserArgumentCaptor.capture());
-    }
-
-    @Test
-    void testUpdateChildren_whenGetNewChildrenForUser_shouldWorkCorrectly() {
-        // Arrange
-        String username = "testuser";
-        List<ChildDto> childrenDtoToUpdate = List.of(new ChildDto(Gender.MALE, LocalDate.now()));
-
-        List<Child> childrenToSave = List.of(new Child(UUID.randomUUID(), Gender.MALE, LocalDate.now(), null));
-        when(childMapper.toModelList(childrenDtoToUpdate)).thenReturn(childrenToSave);
-
-        // Act
-        List<ChildDto> result = userService.updateChildren(username, childrenDtoToUpdate);
-
-        // Assert
+        //Assert
         assertAll(
-                () -> verify(userRepository).deleteAllChildrenByUsername(username),
-                () -> verify(userRepository, times(childrenDtoToUpdate.size())).createChildrenByUsername(any(UUID.class),
-                        eq(username), any(LocalDate.class), anyString()),
-                () -> assertEquals(childrenDtoToUpdate, result));
+                () -> assertEquals(user.getUsername(), userProjection.getUsername()),
+                () -> assertEquals(user.getRole().getName(), userProjection.getRole().getName()));
     }
 
-    private Optional<User> creatOptionalUser() {
+    private UserProjection creatUserProjection() {
+        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        Map<String, Object> map = Map.of(
+                "username", "First",
+                "role", role
+        );
+        return factory.createProjection(UserProjection.class, map);
+    }
+
+    private User creatUser() {
+        Role role = new Role();
+        role.setName("ROLE_USER");
         User user = new User();
-        user.setEmail(NEW_USER_EMAIL);
+        user.setRole(role);
         user.setUsername("First");
-        user.setOauth2Login(null);
-        return Optional.of(user);
+        return user;
     }
 
     private DefaultOidcUser createDefaultOidcUser() {

@@ -20,7 +20,6 @@ public class ResponseMessagesHandler {
         public final String INVALID_USERNAME_PASSWORD = "invalid.username-or-password";
         public final String INVALID_PASSWORD = "invalid.password";
         public final String INVALID_PASSWORD_SIZE = "invalid.password.size";
-        public final String INCORRECT_PASSWORD = "incorrect.password";
         public final String DIFFERENT_PASSWORDS = "different.passwords";
         public final String SAME_PASSWORDS = "same.passwords";
         public final String INVALID_PAST_PRESENT_DATE = "invalid.past-or-present.date";
@@ -46,7 +45,6 @@ public class ResponseMessagesHandler {
         public final String EMPTY_PASSWORD = "empty.password";
         public final String EMPTY_CONFIRM_PASS = "empty.confirm.password";
         public final String EMPTY_EMAIL = "empty.email";
-        public final String INCORRECT_IMAGE_FORMAT = "incorrect.image.format";
     }
 
     @UtilityClass

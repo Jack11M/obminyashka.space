@@ -69,7 +69,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
         return advertisementRepository.findAllByUserUsername(username).stream()
-                .map(this::buildAdvertisementTitle)
+                .map(advertisementMapper::toAdvertisementTitleDto)
                 .toList();
     }
 
@@ -155,7 +155,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
         if (!fromDB.equals(toUpdate)) {
-            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images", "chats");
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images");
         }
     }
 
@@ -202,14 +202,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return advertisementRepository.count();
     }
 
+    @Override
+    public boolean areAdvertisementsExistWithSubcategory(long id)
+    {
+        return advertisementRepository.existsBySubcategoryId(id);
+    }
+
     private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
         return AdvertisementTitleDto.builder()
                 .advertisementId(advertisement.getId())
                 .image(getImage(advertisement))
                 .title(advertisement.getTopic())
                 .location(locationMapper.toDto(advertisement.getLocation()))
-                .ownerName(advertisement.getUser().getUsername())
-                .ownerAvatar(advertisement.getUser().getAvatarImage())
                 .build();
     }
 

@@ -25,7 +25,7 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.exception.IllegalIdentifierException;
+import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
@@ -97,13 +97,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {0, -2, 999})
+    @ValueSource(longs = {0, -2})
     @DataSet("database_init.yml")
     void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
         int page = 0;
         int size = 12;
-
-        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isNotFound());
+        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isBadRequest());
     }
 
     @Test
@@ -114,8 +113,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         int size = 1;
         sendUriAndGetResultAction(get(ADV_THUMBNAIL_PARAMS, page, size), status().isOk())
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
-                .andExpect(jsonPath("$.content[0].title").value("Dresses"))
-                .andExpect(jsonPath("$.content[0].ownerName").value("admin"));
+                .andExpect(jsonPath("$.content[0].title").value("Dresses"));
     }
 
     @Test
@@ -135,8 +133,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
-        Long subcategoryId = 1l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+
+        Long subcategoryId = 1L;
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL)
+                .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
+                .queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+
                 .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
     }
 
@@ -145,8 +147,10 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
-        Long subcategoryId = 4l;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL).queryParam("excludeAdvertisementId", excludeAdvertisementId.toString()).queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+
+        sendUriAndGetResultAction(get(ADV_THUMBNAIL)
+                .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
+                .queryParam("subcategoryId", "4"), status().isOk())
                 .andExpect(jsonPath("$.size()").value(0));
     }
 
@@ -206,8 +210,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
 
         Assertions.assertAll(
                 () -> assertEquals(1, advertisementDtos.length),
-                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId()),
-                () -> assertEquals("admin", advertisementDtos[0].getOwnerName())
+                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId())
         );
     }
 

@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -156,6 +155,14 @@ class AuthorizationFlowTest extends BasicControllerTest {
                 Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, INVALID_PASSWORD, INVALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD, MethodArgumentNotValidException.class)
         );
+    }
+
+    @Test
+    @DataSet(value = "auth/login.yml")
+    void login_whenUserLoginViaEmail_shouldReturnHttpOk() throws Exception {
+        sendDtoAndGetResultAction(post(AUTH_LOGIN), new UserLoginDto(VALID_EMAIL, VALID_PASSWORD), status().isOk())
+                .andExpect(content().json("{\"username\": \"test\"}"));
+
     }
 
     @Test

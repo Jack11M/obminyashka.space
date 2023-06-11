@@ -25,6 +25,7 @@ public class User extends BaseEntity implements UserDetails {
     private String username;
     private String password;
     @Column(unique = true)
+    @Accessors(chain = true)
     private String email;
     @Builder.Default
     private Boolean online = false;
@@ -56,6 +57,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id")
+    @Accessors(chain = true)
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -72,15 +74,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Child> children;
-
-    @ManyToMany
-    @JoinTable(name = "user_chat",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"))
-    private Set<Chat> chats;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> messages;
 
     @ManyToMany
     @JoinTable(name = "black_list",

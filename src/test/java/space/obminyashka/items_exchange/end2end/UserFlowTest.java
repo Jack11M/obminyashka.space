@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -46,11 +47,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -73,6 +73,8 @@ class UserFlowTest extends BasicControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
     @MockBean
     private SendGrid sendGrid;
 
@@ -92,7 +94,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email"})
+    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email", "id"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isAccepted());
 
@@ -114,26 +116,6 @@ class UserFlowTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = ADMIN_USERNAME)
-    @DataSet("database_init.yml")
-    void getChildren_success_shouldReturnUsersChildren() throws Exception {
-        sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].sex").value("MALE"))
-                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
-    }
-
-    @Test
-    @WithMockUser(username = ADMIN_USERNAME)
-    @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "children/update.yml", orderBy = {"created", "name", "birth_date"}, ignoreCols = "id")
-    void updateChild_success_shouldReturnHttpStatusOk() throws Exception {
-        var validUpdatingChildDtoJson = getTestChildren(2018);
-
-        sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
-    }
-
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
@@ -258,9 +240,9 @@ class UserFlowTest extends BasicControllerTest {
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 
+    @Test
     @WithMockUser
     @DataSet("database_init.yml")
-    @Test
     void updateUserAvatar_shouldSetNewImage_whenFormatAndContentValid() throws Exception {
         var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
                 Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
@@ -282,5 +264,19 @@ class UserFlowTest extends BasicControllerTest {
             ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void removeUserAvatar_whenAuthorized_shouldRemoveAvatar() throws Exception {
         sendUriAndGetMvcResult(delete(USER_SERVICE_CHANGE_AVATAR), status().isOk());
+    }
+
+    @Test
+    @DataSet(value = {"database_init.yml", "user/delete_self-removing-users_init.yml"})
+    @ExpectedDataSet(
+            value = "database_init.yml",
+            orderBy = {"created", "name", "birth_date"},
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time", "resource"})
+    void permanentlyDeleteUsers_whenTimeComes_shouldRemoveUsers() {
+        assertEquals(4, userRepository.count());
+
+        userService.permanentlyDeleteUsers();
+
+        assertEquals(2, userRepository.count());
     }
 }

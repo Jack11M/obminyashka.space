@@ -55,12 +55,12 @@ public interface CategoryService {
     boolean isCategoryExistsById(long id);
 
     /**
-     * Checks if a category with the given ID exists in DB and internal subcategories have not advertisements.
+     * Checks if a category with the given ID exists in DB and internal subcategories have no advertisements.
      *
      * @param categoryId is Category ID.
      * @return {@code true} if a category with the given ID can be deleted, {@code false} otherwise.
      */
-    boolean isCategoryDtoDeletable(long categoryId);
+    boolean isCategoryDeletable(long categoryId);
 
     /**
      * Checks if the category DTO ID exists in DB, updated category name has not duplicates and internal subcategories exist or have IDs equals zero.

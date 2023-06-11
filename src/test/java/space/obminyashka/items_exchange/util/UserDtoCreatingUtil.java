@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class UserDtoCreatingUtil {
 
-    public static final Set<PhoneDto> NEW_PHONES = Set.of(new PhoneDto("381234567890", true));
+    public static final Set<PhoneDto> NEW_PHONES = Set.of(new PhoneDto("+381234567890", true));
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String INVALID_EMAIL_WITHOUT_POINT = "username@domain";
     public static final String INVALID_EMAIL_WITHOUT_DOMAIN_NAME = "username@.com";

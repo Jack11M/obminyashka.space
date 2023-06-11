@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 
@@ -21,11 +22,14 @@ public class UserLoginResponseDto {
     private String lastName;
     @JsonProperty(HttpHeaders.ACCEPT_LANGUAGE)
     private String language;
+    @Accessors(chain = true)
     @JsonProperty(OAuth2ParameterNames.ACCESS_TOKEN)
     private String accessToken;
+    @Accessors(chain = true)
     @JsonProperty(OAuth2ParameterNames.EXPIRES_IN)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime accessTokenExpirationDate;
+    @Accessors(chain = true)
     @JsonProperty(OAuth2ParameterNames.REFRESH_TOKEN)
     private String refreshToken;
     @JsonProperty("refresh_expires_in")

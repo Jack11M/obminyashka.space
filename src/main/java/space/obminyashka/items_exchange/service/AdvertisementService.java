@@ -126,4 +126,12 @@ public interface AdvertisementService {
      * @return quantity of saved advertisements
      */
     long count();
+
+    /**
+     * Checks if a subcategory with the given ID exists in DB and has advertisements.
+     *
+     * @param id is Subcategory ID.
+     * @return {@code true} if a subcategory with the given ID can not be deleted, {@code false} otherwise.
+     */
+    boolean areAdvertisementsExistWithSubcategory(long id);
 }

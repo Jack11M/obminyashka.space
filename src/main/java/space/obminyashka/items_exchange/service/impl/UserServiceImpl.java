@@ -14,23 +14,18 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,13 +39,11 @@ import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessage
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
-
     private static final String ROLE_USER = "ROLE_USER";
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
-    private final ChildMapper childMapper;
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
     private final UserMapper userMapper;
@@ -95,17 +88,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
-        var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
-        optionalUser.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
-                .map(User::getEmail)
-                .ifPresent(userRepository::setOAuth2LoginToUserByEmail);
-
-        return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
-    }
-
-    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
-        return Objects.requireNonNullElse(user.getOauth2Login(), false)
-                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
+        return userRepository.findUserProjectionByEmail(oauth2User.getEmail())
+                .map(userMapper::toUserFromProjection)
+                .orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
     private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
@@ -151,7 +136,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void updateUserEmail(String username, String email, UUID codeId) {
-        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+        userRepository.updateUserEmailConfirmationCodeByUsername(username, codeId,
                 LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
         userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }
@@ -176,15 +161,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
-        userRepository.findByRole_Name("ROLE_SELF_REMOVING").stream()
-                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
-                .forEach(userRepository::delete);
-    }
-
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
-        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
-
-        return duration.toDays() > numberOfDaysToKeepDeletedUsers;
+        final var selfRemovingNearestDate = LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers);
+        userRepository.deleteAll(
+                userRepository.findAllByUpdatedLessThanEqualAndRoleName(selfRemovingNearestDate, "ROLE_SELF_REMOVING"));
     }
 
     @Override
@@ -223,23 +202,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<ChildDto> getChildren(User parent) {
-        return childMapper.toDtoList(parent.getChildren());
-    }
-
-    @Override
-    public List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate) {
-        final var childrenToSave = childMapper.toModelList(childrenDtoToUpdate);
-        userRepository.deleteAllChildrenByUsername(username);
-        for (Child child : childrenToSave) {
-            userRepository.createChildrenByUsername(UUID.randomUUID(), username, child.getBirthDate(), child.getSex().name());
-        }
-        return childrenDtoToUpdate;
-    }
-
-    @Override
-    public void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage) {
-        userRepository.updateAvatarByUsername(usernameOrEmail, newAvatarImage);
+    public void setUserAvatar(String username, byte[] newAvatarImage) {
+        userRepository.updateAvatarByUsername(username, newAvatarImage);
     }
 
     @Override

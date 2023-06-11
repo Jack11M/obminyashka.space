@@ -12,6 +12,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
+import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
 import java.util.*;
 
@@ -48,17 +49,19 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
                                                 @Param("categoryId") Long categoryId,
                                                 @Param("locationId") UUID locationId);
 
-    Collection<Advertisement> findAllByUserUsername(String username);
+    Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 
     @Query("SELECT a from Advertisement a where " +
-            "(:id is null or a.id != :id) and " +
+            "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
     Page<Advertisement> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
                                                        @Param("subcategoryId") Long subcategoryId,
                                                        Pageable pageable);
 
     @Query("SELECT count(a) from Advertisement a where " +
-            "(:id is null or a.id != :id) and " +
+            "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
     Long countByIdNotAndSubcategoryId(@Param("id") UUID id, @Param("subcategoryId") Long subcategoryId);
+
+    boolean existsBySubcategoryId(long id);
 }

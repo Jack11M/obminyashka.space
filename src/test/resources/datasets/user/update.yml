@@ -35,3 +35,9 @@ role:
     name: 'ROLE_USER'
   - id: 53c59620-37bb-4a8c-9b90-2965619496ec
     name: 'ROLE_SELF_REMOVING'
+
+phone:
+  - id: 65e3ee49-5927-40be-aafd-0461ce45f200
+    phone_number: 381234567890
+    default_phone: true
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28

@@ -116,7 +116,6 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/error").permitAll()
                 .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
                 .requestMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
-                .requestMatchers(HttpMethod.POST, ApiKey.EMAIL + "/**").permitAll()
                 .requestMatchers(HttpMethod.GET,
                         ApiKey.FRONT_LOGIN,
                         ApiKey.FRONT_SIGN,
@@ -127,6 +126,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET,
                         ApiKey.OAUTH2_SUCCESS,
                         ApiKey.ADV + "/**",
+                        ApiKey.EMAIL + "/**",
                         ApiKey.IMAGE + "/**",
                         ApiKey.CATEGORY + "/**",
                         ApiKey.SUBCATEGORY + "/**",

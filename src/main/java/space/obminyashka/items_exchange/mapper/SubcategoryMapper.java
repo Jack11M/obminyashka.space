@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.mapper;
 
 import org.mapstruct.Mapper;
 
+import org.mapstruct.Mapping;
 import space.obminyashka.items_exchange.dto.SubcategoryDto;
 import space.obminyashka.items_exchange.model.Subcategory;
 
@@ -11,7 +12,8 @@ import java.util.List;
 public interface SubcategoryMapper {
     SubcategoryDto toDto(Subcategory model);
 
-    //Unmapped target properties: "category, advertisements".
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "advertisements", ignore = true)
     Subcategory toModel(SubcategoryDto dto);
 
     List<SubcategoryDto> toDtoList(List<Subcategory> modelList);

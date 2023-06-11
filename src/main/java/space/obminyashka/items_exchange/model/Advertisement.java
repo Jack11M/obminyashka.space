@@ -10,14 +10,13 @@ import space.obminyashka.items_exchange.model.enums.Season;
 
 import java.sql.Types;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true, exclude = {"defaultPhoto", "user", "subcategory", "location", "images", "chats"})
+@EqualsAndHashCode(callSuper = true, exclude = {"defaultPhoto", "user", "subcategory", "location", "images"})
 public class Advertisement extends BaseEntity {
 
     private String topic;
@@ -65,9 +64,6 @@ public class Advertisement extends BaseEntity {
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "advertisement")
-    private Set<Chat> chats;
 
     @PrePersist
     private void addAdvertisementReferences() {

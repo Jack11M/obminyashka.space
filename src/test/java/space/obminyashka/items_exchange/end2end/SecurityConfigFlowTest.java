@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.jayway.jsonpath.JsonPath;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,13 +13,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,8 +85,9 @@ class SecurityConfigFlowTest extends BasicControllerTest {
     void postRequestWithAccessTokenAndEmptyBodyShouldReturnBadRequest() throws Exception {
         final var headers = getAuthorizationHeaderWithValidToken();
         final var mvcResult = sendUriWithHeadersAndGetMvcResult(multipart(ADV), status().isBadRequest(), headers);
-        final var errorMessage = new JSONObject(mvcResult.getResponse().getContentAsString()).get("error");
-        assertEquals("Required part 'dto' is not present.", errorMessage);
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(MissingServletRequestPartException.class)
+                .hasMessage("Required part 'dto' is not present.");
     }
 
     @Test
