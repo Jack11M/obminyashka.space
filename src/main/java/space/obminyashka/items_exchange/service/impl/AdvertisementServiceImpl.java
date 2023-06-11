@@ -49,8 +49,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Value("${display.adv.date.format}")
     private String dateFormat;
 
-
-    private List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
+    @Override
+    public List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
         final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
                 findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
         final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
@@ -66,12 +66,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(this::buildAdvertisementTitle);
     }
 
-    @Override
-    public List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
-        if (findAdvsRequest.isEnableRandom()) {
-            return findRandomNThumbnails(findAdvsRequest);
-        } else return findAllThumbnails(findAdvsRequest).getContent();
-    }
+//    @Override
+//    public List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
+//        if (findAdvsRequest.isEnableRandom()) {
+//            return findRandomNThumbnails(findAdvsRequest);
+//        } else return findAllThumbnails(findAdvsRequest).getContent();
+//    }
 
     @Cacheable
     @Override
