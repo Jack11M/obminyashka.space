@@ -58,20 +58,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return findAllThumbnails(findAdvsRequest).getContent();
     }
 
-
     private Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
         return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
                         findAdvsRequest.getSubcategoryId(),
                         PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
-
-//    @Override
-//    public List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
-//        if (findAdvsRequest.isEnableRandom()) {
-//            return findRandomNThumbnails(findAdvsRequest);
-//        } else return findAllThumbnails(findAdvsRequest).getContent();
-//    }
 
     @Cacheable
     @Override
