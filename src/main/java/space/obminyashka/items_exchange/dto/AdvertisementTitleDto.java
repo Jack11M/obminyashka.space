@@ -17,5 +17,4 @@ public class AdvertisementTitleDto {
     private LocationDto location;
     private String ownerName;
     private byte[] ownerAvatar;
-    private boolean enableRandom = true;
 }
