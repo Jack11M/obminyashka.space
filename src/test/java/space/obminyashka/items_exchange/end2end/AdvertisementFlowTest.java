@@ -229,6 +229,21 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
+    void createAdvertisement_shouldReturn400WhenBlankFields() throws Exception {
+        var nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDtoWithBlankFields();
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
+                asJsonString(nonExistDto).getBytes());
+        final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
+        var blankWishesToExchangeMessage = MessageSourceUtil.getMessageSource(BLANK_WISHES_TO_EXCHANGE);
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(IllegalIdentifierException.class)
+                .hasMessageContaining(blankWishesToExchangeMessage);
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/update.yml", orderBy = {"created", "name", "resource"}, ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         AdvertisementModificationDto existDtoForUpdate =
