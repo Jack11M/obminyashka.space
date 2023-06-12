@@ -12,8 +12,8 @@ on:
           - info
           - debug
   schedule:
-    # every Monday at 10 AM
-    - cron: '0 10 * * MON'
+    # every Monday at 3 PM UTC (20:00 Kyiv Time)
+    - cron: '0 15 * * MON'
 
 jobs:
   build:
@@ -99,7 +99,7 @@ jobs:
             🤖 GitHub Actions 🤖 ⏲️ scheduled deployed is 🏁COMPLETED🏁 🎉
             
             🛫 LAST DEPLOYED COMMIT 🛫
-            👩‍💻 Author: ${{ github.actor }}
+            👩‍💻 Author: ${{ github.event.commits[0].author.name}}
             🗨️ Message: ${{ github.event.commits[0].message }}
             📃 Changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             
