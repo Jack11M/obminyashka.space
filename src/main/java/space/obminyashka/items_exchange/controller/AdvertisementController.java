@@ -248,16 +248,17 @@ public class AdvertisementController {
         }
     }
 
-    private void validateStringFields(String topic, String description, String wishesToExchange)  throws IllegalIdentifierException {
+    private void validateStringFields(String topic, String description, String wishesToExchange)
+            throws IllegalIdentifierException {
         var exceptionMessage = "";
         if (isBlank(topic)) {
-            exceptionMessage = "";
+            exceptionMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.BLANK_TOPIC);
         }
         if (isBlank(description)) {
-            exceptionMessage = "";
+            exceptionMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.BLANK_DESCRIPTION);
         }
         if (isBlank(wishesToExchange)) {
-            exceptionMessage = " ";
+            exceptionMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.BLANK_WISHES_TO_EXCHANGE);
         }
         if (!exceptionMessage.isEmpty()) {
             throw new IllegalIdentifierException(exceptionMessage);
