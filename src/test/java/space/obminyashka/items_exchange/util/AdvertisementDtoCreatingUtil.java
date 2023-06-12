@@ -22,6 +22,11 @@ public class AdvertisementDtoCreatingUtil {
                 AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
     }
 
+    public static AdvertisementModificationDto createNonExistAdvertisementModificationDtoWithBlankFields() {
+        return getBuild(null,"     ", "     ", "     ",false, DealType.GIVEAWAY,
+                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
+    }
+
     public static AdvertisementModificationDto createExistAdvertisementModificationDto() {
         return getBuild(existedAdvertisementId, "topic", "description", "shoes", true, DealType.EXCHANGE,
                 AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "40", 2L);
