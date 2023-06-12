@@ -230,7 +230,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @ExpectedDataSet("database_init.yml")
+    @ExpectedDataSet(value = "database_init.yml", orderBy = {"created", "name"},
+            ignoreCols = {"id", "default_photo", "created", "updated", "advertisement_id", "resource", "birth_date"})
     void createAdvertisement_shouldReturn400WhenBlankFields() throws Exception {
         var nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDtoWithBlankFields();
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
