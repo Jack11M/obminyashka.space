@@ -28,18 +28,15 @@ public class AdvertisementModificationDto {
     private UUID id;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotEmpty(message = "{" + INVALID_NOT_EMPTY + "}")
     @NotBlank(message = "{" + BLANK_TOPIC + "}")
     @Size(min = 3, max = 70, message = "{" + INVALID_SIZE + "}")
     private String topic;
 
     @Schema(description = "can't be null, but can be empty")
-    @NotNull(message = "{" + INVALID_NOT_NULL + "}")
     @NotBlank(message = "{" + BLANK_DESCRIPTION + "}")
     @Size(max = 255, message = "{" + INVALID_MAX_SIZE + "}")
     private String description;
 
-    @NotNull(message = "{" + INVALID_NOT_NULL + "}")
     @NotBlank(message = "{" + BLANK_WISHES_TO_EXCHANGE + "}")
     @Size(max = 210, message = "{" + INVALID_MAX_SIZE + "}")
     private String wishesToExchange;
