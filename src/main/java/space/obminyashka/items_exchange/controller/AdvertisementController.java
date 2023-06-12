@@ -159,7 +159,6 @@ public class AdvertisementController {
             @Parameter(hidden = true) Authentication authentication) throws IllegalIdentifierException {
 
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
-        validateStringFields(dto.getTopic(), dto.getDescription(), dto.getWishesToExchange());
         final var owner = getUser(authentication.getName());
         final var compressedImages = images.parallelStream()
                 .map(imageService::compress)
@@ -246,27 +245,6 @@ public class AdvertisementController {
         if (!exceptionMessage.isEmpty()) {
             throw new IllegalIdentifierException(exceptionMessage);
         }
-    }
-
-    private void validateStringFields(String topic, String description, String wishesToExchange)
-            throws IllegalIdentifierException {
-        var exceptionMessage = "";
-        if (isBlank(topic)) {
-            exceptionMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.BLANK_TOPIC);
-        }
-        if (isBlank(description)) {
-            exceptionMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.BLANK_DESCRIPTION);
-        }
-        if (isBlank(wishesToExchange)) {
-            exceptionMessage = getMessageSource(ResponseMessagesHandler.ValidationMessage.BLANK_WISHES_TO_EXCHANGE);
-        }
-        if (!exceptionMessage.isEmpty()) {
-            throw new IllegalIdentifierException(exceptionMessage);
-        }
-    }
-
-    private boolean isBlank(String checkable) {
-        return checkable.trim().isEmpty();
     }
 
     private User getUser(String userNameOrEmail) {

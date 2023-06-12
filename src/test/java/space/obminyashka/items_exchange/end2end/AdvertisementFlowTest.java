@@ -20,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
@@ -234,11 +235,13 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
                 asJsonString(nonExistDto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
+        var blankTopicMessage = MessageSourceUtil.getMessageSource(BLANK_TOPIC);
+        var blankDescriptionMessage = MessageSourceUtil.getMessageSource(BLANK_DESCRIPTION);
         var blankWishesToExchangeMessage = MessageSourceUtil.getMessageSource(BLANK_WISHES_TO_EXCHANGE);
 
         assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(IllegalIdentifierException.class)
-                .hasMessageContaining(blankWishesToExchangeMessage);
+                .isInstanceOf(MethodArgumentNotValidException.class)
+                .hasMessageContainingAll(blankTopicMessage, blankDescriptionMessage, blankWishesToExchangeMessage);
     }
 
     @Test
