@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.service.impl;
 
-import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.mapper.LocationMapper;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Image;
-import space.obminyashka.items_exchange.model.QAdvertisement;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -33,7 +31,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -110,22 +107,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterRequest dto) {
-        QAdvertisement qAdvertisement = QAdvertisement.advertisement;
-        BooleanBuilder predicate = new BooleanBuilder()
-                .and(!dto.getSubcategorySearchRequest().getSubcategoriesIdValues().isEmpty()
-                        ? qAdvertisement.subcategory.id.in(dto.getSubcategorySearchRequest().getSubcategoriesIdValues()) : null)
-                .and(!dto.getAdvertisementFilter().getClothingSizes().isEmpty()
-                        ? qAdvertisement.size.in(dto.getAdvertisementFilter().getClothingSizes().stream().map(x -> x.range)
-                        .collect(Collectors.toSet())) : null)
-                .and(!dto.getAdvertisementFilter().getShoesSizes().isEmpty() ? qAdvertisement.size.in(dto.getAdvertisementFilter().getShoesSizes().stream()
-                        .map(x -> String.valueOf(x.length))
-                        .collect(Collectors.toSet())) : null)
-                .and(!dto.getAdvertisementFilter().getSeason().isEmpty() ? qAdvertisement.season.in(dto.getAdvertisementFilter().getSeason()) : null)
-                .and(!dto.getAdvertisementFilter().getAge().isEmpty() ? qAdvertisement.age.in(dto.getAdvertisementFilter().getAge()) : null)
-                .and(dto.getAdvertisementFilter().getLocationId() != null ? qAdvertisement.location.id.eq(dto.getAdvertisementFilter().getLocationId()) : null)
-                .and(dto.getAdvertisementFilter().getGender() != null ? qAdvertisement.gender.in(dto.getAdvertisementFilter().getGender()) : null);
-
-        return advertisementRepository.findAll(predicate, PageRequest.of(dto.getPage(), dto.getSize()))
+        return advertisementRepository.findAll(dto.toPredicate(), PageRequest.of(dto.getPage(), dto.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
 

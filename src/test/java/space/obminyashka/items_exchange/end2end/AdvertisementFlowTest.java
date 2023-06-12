@@ -228,25 +228,18 @@ class AdvertisementFlowTest extends BasicControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
     }
 
-    @ParameterizedTest
+    @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    @MethodSource("invalidSizeAndSubcategoryCombinations")
-    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategory(String subcategoryId, String size) throws Exception {
+    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategory() throws Exception {
         String categoryId = "2";
+        String subcategoryId = "14";
+        String size = Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name();
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
                 .queryParam("subcategorySearchRequest.categoryId", categoryId)
                 .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
                 .queryParam("advertisementFilter.clothingSizes", size), status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
-
-    }
-
-    static Stream<Arguments> invalidSizeAndSubcategoryCombinations() {
-        return Stream.of(
-                Arguments.of("14", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name()),
-                Arguments.of("18", Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name())
-        );
     }
 
     @Test

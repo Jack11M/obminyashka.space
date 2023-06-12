@@ -135,12 +135,12 @@ public class AdvertisementController {
     @Operation(summary = "Filter advertisements by multiple params")
     @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
-    public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterRequest filterDto) throws BadRequestException, CategoryIdNotFoundException {
-            validateCategoryCombinationSize(filterDto.getSubcategorySearchRequest().getCategoryId(), filterDto.getAdvertisementFilter());
+    public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterRequest filterDto) throws CategoryIdNotFoundException {
+        validateCategoryCombinationSize(filterDto.getSubcategorySearchRequest().getCategoryId(), filterDto.getAdvertisementFilter());
         return advertisementService.findAdvertisementByFilter(filterDto);
     }
 
-    private void validateCategoryCombinationSize(long categoryId, AdvertisementFilter filter) throws BadRequestException, CategoryIdNotFoundException {
+    private void validateCategoryCombinationSize(long categoryId, AdvertisementFilter filter) throws CategoryIdNotFoundException {
         String categoryName = categoryService.findCategoryDtoById(categoryId)
                 .orElseThrow(() -> new CategoryIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId)))
                 .getName();
