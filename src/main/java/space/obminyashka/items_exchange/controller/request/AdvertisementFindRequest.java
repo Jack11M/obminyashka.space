@@ -29,4 +29,7 @@ public class AdvertisementFindRequest {
     @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement")
     @Nullable
     private UUID excludeAdvertisementId;
+
+    @Parameter(name = "enableRandom", description = "set true if you need random advertisement")
+    private boolean enableRandom = true;
 }

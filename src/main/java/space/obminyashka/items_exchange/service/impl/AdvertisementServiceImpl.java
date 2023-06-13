@@ -54,7 +54,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
                 findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
         final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
-        findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+
+        if (findAdvsRequest.isEnableRandom()) {
+            findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        }
+
         return findAllThumbnails(findAdvsRequest).getContent();
     }
 
@@ -203,8 +207,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean areAdvertisementsExistWithSubcategory(long id)
-    {
+    public boolean areAdvertisementsExistWithSubcategory(long id) {
         return advertisementRepository.existsBySubcategoryId(id);
     }
 
