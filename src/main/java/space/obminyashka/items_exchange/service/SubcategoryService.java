@@ -38,6 +38,15 @@ public interface SubcategoryService {
     boolean isSubcategoryExistsById(long id);
 
     /**
+     * If subcategoryIds belong to categoryId, returns {@code true}, otherwise {@code false}.
+     *
+     * @param categoryId     is Category ID
+     * @param subcategoryIds is List of Subcategory ID
+     * @return true if subcategoryIds belong to categoryId
+     */
+    boolean checkSubcategoriesCategory(Long categoryId, List<Long> subcategoryIds);
+
+    /**
      * Returns all Subcategory identifiers.
      *
      * @return list of all subcategory identifiers from DB

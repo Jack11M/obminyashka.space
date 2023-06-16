@@ -14,10 +14,7 @@ public class QPredicate {
     private final Set<Predicate> predicates = new HashSet<>();
 
     public <T> QPredicate add(T object, Function<T, Predicate> function) {
-        if (object != null) {
-            if (object instanceof Collection && ((Collection<?>) object).isEmpty()) {
-                return this;
-            }
+        if (object instanceof Collection && !((Collection<?>) object).isEmpty()) {
             predicates.add(function.apply(object));
         }
         return this;

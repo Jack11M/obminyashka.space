@@ -2,6 +2,8 @@ package space.obminyashka.items_exchange.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 public interface Size {
 
@@ -30,7 +32,16 @@ public interface Size {
         ONE_FIVE_NINE_2_ONE_SIX_FOUR("159 - 164"),
         ONE_SIX_FIVE_2_ONE_SEVEN_OUGHT("165 - 170");
 
-        public final String range;
+        private final String range;
+
+        public static Clothing fromValue(String value) {
+            for (Clothing clothing : Clothing.values()) {
+                if (clothing.range.equals(value)) {
+                    return clothing;
+                }
+            }
+            throw new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE));
+        }
     }
 
     @RequiredArgsConstructor
@@ -75,6 +86,15 @@ public interface Size {
         TWENTY_SEVEN_POINT_FIVE(27.5),
         TWENTY_EIGHT(28);
 
-        public final double length;
+        private final double length;
+
+        public static Shoes fromValue(Double value) {
+            for (Shoes shoes : Shoes.values()) {
+                if (shoes.length == value) {
+                    return shoes;
+                }
+            }
+            throw new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE));
         }
+    }
 }

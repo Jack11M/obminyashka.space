@@ -68,11 +68,11 @@ public interface AdvertisementService {
     Optional<AdvertisementDisplayDto> findDtoById(UUID id);
 
     /**
-     * Find first 10 matched advertisements by one of received parameters of the request DTO
-     * @param dto an object that contains all parameters to search
+     * Filter advertisements by search parameters from AdvertisementFilterRequest
+     * @param request an object that contains all parameters to search
      * @return result of the request
      */
-    Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterRequest dto);
+    Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request);
 
     /**
      * Check whenever user has an advertisement with selected id

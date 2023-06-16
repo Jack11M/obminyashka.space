@@ -2,6 +2,9 @@ package space.obminyashka.items_exchange.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
+
 
 @Getter
 @RequiredArgsConstructor
@@ -15,4 +18,13 @@ public enum AgeRange {
     OLDER_THAN_14("14+");
 
     private final String value;
+
+    public static AgeRange fromValue(String value) {
+        for (AgeRange ageRange : AgeRange.values()) {
+            if (ageRange.value.equals(value)) {
+                return ageRange;
+            }
+        }
+        throw new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE));
+    }
 }

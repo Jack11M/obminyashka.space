@@ -106,8 +106,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAdvertisementByFilter(AdvertisementFilterRequest dto) {
-        return advertisementRepository.findAll(dto.toPredicate(), PageRequest.of(dto.getPage(), dto.getSize()))
+    public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
+        return advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
 

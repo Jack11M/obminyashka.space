@@ -22,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFilter;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.*;
@@ -135,20 +134,14 @@ public class AdvertisementController {
     @Operation(summary = "Filter advertisements by multiple params")
     @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
-    public Page<AdvertisementTitleDto> findAdvertisementBySearchParameters(@Valid @ParameterObject AdvertisementFilterRequest filterDto) throws CategoryIdNotFoundException {
-        validateCategoryCombinationSize(filterDto.getSubcategorySearchRequest().getCategoryId(), filterDto.getAdvertisementFilter());
-        return advertisementService.findAdvertisementByFilter(filterDto);
-    }
-
-    private void validateCategoryCombinationSize(long categoryId, AdvertisementFilter filter) throws CategoryIdNotFoundException {
-        String categoryName = categoryService.findCategoryDtoById(categoryId)
-                .orElseThrow(() -> new CategoryIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId)))
-                .getName();
-        if ((categoryName.equals("Clothing") && !filter.getShoesSizes().isEmpty()) ||
-                (categoryName.equals("Shoes") && !filter.getClothingSizes().isEmpty()) ||
-                (!filter.getClothingSizes().isEmpty() && !filter.getShoesSizes().isEmpty())) {
-            throw new BadRequestException(getMessageSource(INVALID_SIZE_SUBCATEGORY_COMBINATION));
+    public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(
+            @Valid @ParameterObject AdvertisementFilterRequest filterRequest) {
+        var subcategorySearch = filterRequest.getSubcategorySearchRequest();
+        if (!subcategoryService.checkSubcategoriesCategory(subcategorySearch.getCategoryId(),
+                subcategorySearch.getSubcategoriesIdValues())) {
+            throw new BadRequestException(getMessageSource(getMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION)));
         }
+        return advertisementService.filterAdvertisementBySearchParameters(filterRequest);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

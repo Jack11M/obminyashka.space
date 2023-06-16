@@ -36,6 +36,11 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
+    public boolean checkSubcategoriesCategory(Long categoryId, List<Long> subcategoryIds) {
+        return subcategoryRepository.checkSubcategoriesCategory(categoryId, subcategoryIds);
+    }
+
+    @Override
     public List<Long> findAllSubcategoryIds() {
         return subcategoryRepository.findAll().stream()
                 .map(Subcategory::getId)

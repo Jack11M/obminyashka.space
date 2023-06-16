@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -23,6 +24,7 @@ import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -154,6 +156,7 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowInvalidDtoException() throws Exception {
+        LocaleContextHolder.setDefaultLocale(Locale.ENGLISH);
         MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
         assertThat(result.getResolvedException())
                 .isInstanceOf(CategoryIdNotFoundException.class)

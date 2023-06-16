@@ -194,7 +194,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         sendUriAndGetResultAction(get(ADV_FILTER)
                 .queryParam("subcategorySearchRequest.categoryId", "1")
                 .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
-                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.name()), status().isOk())
+                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()), status().isOk())
                 .andExpect(jsonPath("$.content.length()").value("3"));
     }
 
@@ -207,8 +207,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
                 .queryParam("advertisementFilter.locationId", "2c5467f3-b7ee-48b1-9451-7028255b757b")
                 .queryParam("advertisementFilter.gender", Gender.FEMALE.name())
-                .queryParam("advertisementFilter.age", AgeRange.FROM_10_TO_12.name(), AgeRange.FROM_6_TO_9.name())
-                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.name())
+                .queryParam("advertisementFilter.age", AgeRange.FROM_10_TO_12.getValue(), AgeRange.FROM_6_TO_9.getValue())
+                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange())
                 .queryParam("advertisementFilter.season", Season.SUMMER.name(), Season.WINTER.name()), status().isOk())
                 .andExpect(jsonPath("$.content.length()").value("2"));
     }
@@ -219,27 +219,28 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
         String subcategoryId = "1";
         String categoryId = "1";
-        String size = Size.Shoes.ELEVEN_POINT_FIVE.name();
+        String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
+        String sizeClothing = Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange();
 
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
                 .queryParam("subcategorySearchRequest.categoryId", categoryId)
                 .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
-                .queryParam("advertisementFilter.shoesSizes", size), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
+                .queryParam("advertisementFilter.shoesSizes", sizeShoes)
+                .queryParam("advertisementFilter.clothingSizes", sizeClothing), status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("Sizes are available only for the categories"));
     }
 
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategory() throws Exception {
+    void findAdvertisementBySearchParameters_shouldBeThrownBadRequestException_WhenSubcategoryNotBelongCategory() throws Exception {
         String categoryId = "2";
-        String subcategoryId = "14";
-        String size = Size.Clothing.EIGHTY_SEVEN_2_NINETY_TWO.name();
+        String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
                 .queryParam("subcategorySearchRequest.categoryId", categoryId)
-                .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
-                .queryParam("advertisementFilter.clothingSizes", size), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Invalid size and subcategory combination"));
+                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "14", "1", "3")
+                .queryParam("advertisementFilter.shoesSizes", sizeShoes), status().isBadRequest());
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("These subcategories do not belong to the given category"));
     }
 
     @Test

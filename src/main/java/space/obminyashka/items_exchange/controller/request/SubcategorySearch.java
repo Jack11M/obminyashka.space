@@ -4,8 +4,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,5 +13,5 @@ public class SubcategorySearch {
 
     @Positive
     private long categoryId;
-    private Set<@Positive Long> subcategoriesIdValues = new HashSet<>();
+    private List<@Positive Long> subcategoriesIdValues = new ArrayList<>();
 }
