@@ -47,6 +47,9 @@ public class ResponseMessagesHandler {
         public final String EMPTY_PASSWORD = "empty.password";
         public final String EMPTY_CONFIRM_PASS = "empty.confirm.password";
         public final String EMPTY_EMAIL = "empty.email";
+        public final String BLANK_TOPIC = "blank.topic";
+        public final String BLANK_DESCRIPTION = "blank.description";
+        public final String BLANK_WISHES_TO_EXCHANGE = "blank.wishes.to.exchange";
     }
 
     @UtilityClass
