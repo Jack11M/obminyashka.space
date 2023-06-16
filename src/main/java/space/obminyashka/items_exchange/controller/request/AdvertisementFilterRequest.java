@@ -40,7 +40,7 @@ public class AdvertisementFilterRequest {
     private AdvertisementFilter advertisementFilter = new AdvertisementFilter();
 
     public Predicate toPredicate() {
-        Predicate predicate = QPredicate.builder()
+        return QPredicate.builder()
                 .add(advertisementFilter.getGender(), QAdvertisement.advertisement.gender::eq)
                 .add(advertisementFilter.getLocationId(), QAdvertisement.advertisement.location.id::eq)
                 .add(advertisementFilter.getSeason(), QAdvertisement.advertisement.season::in)
@@ -51,7 +51,6 @@ public class AdvertisementFilterRequest {
                 .add(advertisementFilter.getAge(), QAdvertisement.advertisement.age::in)
                 .add(subcategorySearchRequest.getSubcategoriesIdValues(), QAdvertisement.advertisement.subcategory.id::in)
                 .buildAnd();
-        return predicate == null ? Expressions.asBoolean(true).isTrue() : predicate;
     }
 
     @AssertTrue(message = "{" + INVALID_CATEGORY_SIZES_ID + "}")

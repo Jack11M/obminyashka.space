@@ -227,7 +227,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
                 .queryParam("advertisementFilter.shoesSizes", sizeShoes)
                 .queryParam("advertisementFilter.clothingSizes", sizeClothing), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("Sizes are available only for the categories"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("You cannot specify sizes for different categories at the same time"));
     }
 
     @Test

@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.util;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.Expressions;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,8 @@ public class QPredicate {
     }
 
     public Predicate buildAnd() {
-        return ExpressionUtils.allOf(predicates);
+        Predicate predicate = ExpressionUtils.allOf(predicates);
+        return predicate == null ? Expressions.asBoolean(true).isTrue() : predicate;
     }
 
     public static QPredicate builder() {

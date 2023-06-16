@@ -22,7 +22,8 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 @Setter
 public class AdvertisementFilter {
 
-    @Parameter(description = "Location of clothes/shoes", allowEmptyValue = true, example = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10")
+    @Parameter(description = "Location of necessary staff", allowEmptyValue = true, example = "842f9ab1-95e8-4c81-" +
+            "a49b-fa4f6d0c3a10")
     private UUID locationId;
 
     @Parameter(description = "Gender of child", allowEmptyValue = true)
