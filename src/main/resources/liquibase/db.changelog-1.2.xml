@@ -68,4 +68,36 @@
             <column name="is_validated_email"/>
         </dropColumn>
     </changeSet>
+
+    <changeSet id="1.2.5: Create a table 'favorite_advertisement'" author="lavniuzhenkova">
+        <createTable tableName="favorite_advertisement">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="${type.uuid}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="advertisement_id" type="${type.uuid}">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="favorite_advertisement"
+                                 constraintName="fk_favorite_adv_to_user_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="advertisement_id"
+                                 baseTableName="favorite_advertisement"
+                                 constraintName="fk_favorite_adv_to_advertisement_id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="advertisement"/>
+    </changeSet>
 </databaseChangeLog>
