@@ -17,7 +17,7 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
 
     @Query(nativeQuery = true, value = "SELECT COUNT(*) = COUNT(CASE WHEN category_id = :categoryId THEN 1 END) " +
             "FROM subcategory WHERE id IN :subcategoryIds")
-    boolean checkSubcategoriesCategory(@Param("categoryId") Long categoryId, @Param("subcategoryIds") List<Long> subcategoryIds);
+    long checkSubcategoriesCategory(@Param("categoryId") Long categoryId, @Param("subcategoryIds") List<Long> subcategoryIds);
 
     Optional<Subcategory> findById(long id);
 }

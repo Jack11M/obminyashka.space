@@ -47,7 +47,6 @@ public class AdvertisementFilter {
     @JsonSetter(nulls = Nulls.SKIP)
     private Set<Season> season = new HashSet<>();
 
-
     public void setShoesSizes(Set<Double> value) {
         shoesSizes = value.stream().map(Size.Shoes::fromValue).collect(Collectors.toSet());
     }

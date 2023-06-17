@@ -1,14 +1,14 @@
 package space.obminyashka.items_exchange.model.enums;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.RequiredArgsConstructor;
+
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 public interface Size {
 
     @RequiredArgsConstructor
-    @Getter
     enum Clothing {
         FORTY_SIX_2_FIFTY("46 - 50"),
         FIFTY_ONE_2_FIFTY_SIX("51 - 56"),
@@ -34,6 +34,11 @@ public interface Size {
 
         private final String range;
 
+        @JsonValue
+        public String getRange() {
+            return range;
+        }
+
         public static Clothing fromValue(String value) {
             for (Clothing clothing : Clothing.values()) {
                 if (clothing.range.equals(value)) {
@@ -45,7 +50,6 @@ public interface Size {
     }
 
     @RequiredArgsConstructor
-    @Getter
     enum Shoes {
         NINE_POINT_FIVE(9.5),
         TEN(10),
@@ -87,6 +91,11 @@ public interface Size {
         TWENTY_EIGHT(28);
 
         private final double length;
+
+        @JsonValue
+        public double getLength() {
+            return length;
+        }
 
         public static Shoes fromValue(Double value) {
             for (Shoes shoes : Shoes.values()) {

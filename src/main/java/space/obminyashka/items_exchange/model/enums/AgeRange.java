@@ -1,12 +1,12 @@
 package space.obminyashka.items_exchange.model.enums;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.RequiredArgsConstructor;
+
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 
-@Getter
 @RequiredArgsConstructor
 public enum AgeRange {
     YOUNGER_THAN_1("0-1"),
@@ -18,6 +18,11 @@ public enum AgeRange {
     OLDER_THAN_14("14+");
 
     private final String value;
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
 
     public static AgeRange fromValue(String value) {
         for (AgeRange ageRange : AgeRange.values()) {

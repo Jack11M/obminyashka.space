@@ -29,7 +29,6 @@ import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
