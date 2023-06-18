@@ -82,7 +82,7 @@ public class User extends BaseEntity implements UserDetails {
     private List<User> blacklistedUsers;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "favorite_advertisement",
+    @JoinTable(name = "favorite_advertisements",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "advertisement_id", referencedColumnName = "id"))
     private List<Advertisement> favoriteAdvertisements;

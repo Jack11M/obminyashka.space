@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.service;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,13 +15,12 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @SpringBootTest
 @DBRider
 class FavoriteAdvertisementDBTest {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private AdvertisementRepository advertisementRepository;
+    private final UserRepository userRepository;
+    private final AdvertisementRepository advertisementRepository;
 
     @Test
     @DataSet("database_init.yml")

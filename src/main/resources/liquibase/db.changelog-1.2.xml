@@ -69,8 +69,8 @@
         </dropColumn>
     </changeSet>
 
-    <changeSet id="1.2.5: Create a table 'favorite_advertisement'" author="lavniuzhenkova">
-        <createTable tableName="favorite_advertisement">
+    <changeSet id="1.2.5: Create a table 'favorite_advertisements'" author="lavniuzhenkova">
+        <createTable tableName="favorite_advertisements">
             <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
@@ -81,12 +81,12 @@
         </createTable>
 
         <addPrimaryKey columnNames="user_id, advertisement_id"
-                       constraintName="CPK_FAVORITE_ADVERTISEMENT"
-                       tableName="favorite_advertisement"
+                       constraintName="CPK_FAVORITE_ADVERTISEMENTS"
+                       tableName="favorite_advertisements"
                        validate="true"/>
 
         <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="favorite_advertisement"
+                                 baseTableName="favorite_advertisements"
                                  constraintName="fk_favorite_adv_to_user_id"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
@@ -94,7 +94,7 @@
                                  referencedTableName="user"/>
 
         <addForeignKeyConstraint baseColumnNames="advertisement_id"
-                                 baseTableName="favorite_advertisement"
+                                 baseTableName="favorite_advertisements"
                                  constraintName="fk_favorite_adv_to_advertisement_id"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
