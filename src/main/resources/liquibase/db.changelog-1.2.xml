@@ -71,10 +71,6 @@
 
     <changeSet id="1.2.5: Create a table 'favorite_advertisement'" author="lavniuzhenkova">
         <createTable tableName="favorite_advertisement">
-            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
-                <constraints primaryKey="true" unique="true" nullable="false"/>
-            </column>
-
             <column name="user_id" type="${type.uuid}">
                 <constraints nullable="false"/>
             </column>
@@ -83,6 +79,11 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <addPrimaryKey columnNames="user_id, advertisement_id"
+                       constraintName="CPK_FAVORITE_ADVERTISEMENT"
+                       tableName="favorite_advertisement"
+                       validate="true"/>
 
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="favorite_advertisement"

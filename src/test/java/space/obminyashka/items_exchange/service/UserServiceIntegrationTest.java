@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
 
@@ -129,21 +128,6 @@ class UserServiceIntegrationTest {
         userService.updatePreferableLanguage("mocked token");
         verify(userRepository).saveAndFlush(userArgumentCaptor.capture());
         assertEquals(expectedLocale, userArgumentCaptor.getValue().getLanguage());
-    }
-
-    @Test
-    void addFavoriteAdvertisement_whenDataCorrect_successfully() {
-        final var advertisement = new Advertisement();
-
-        when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
-
-        final var savedUser = userRepository.findById(any()).orElse(null);
-
-        savedUser.setFavoriteAdvertisements(new ArrayList<>());
-        savedUser.getFavoriteAdvertisements().add(advertisement);
-
-        assertTrue(savedUser.getFavoriteAdvertisements().contains(advertisement));
-        assertEquals(1, savedUser.getFavoriteAdvertisements().size());
     }
 
     private static List<Locale> getTestLocales() {
