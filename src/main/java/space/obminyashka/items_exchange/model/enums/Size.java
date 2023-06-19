@@ -1,7 +1,10 @@
 package space.obminyashka.items_exchange.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
@@ -32,20 +35,15 @@ public interface Size {
         ONE_FIVE_NINE_2_ONE_SIX_FOUR("159 - 164"),
         ONE_SIX_FIVE_2_ONE_SEVEN_OUGHT("165 - 170");
 
+        @JsonValue
+        @Getter
         private final String range;
 
-        @JsonValue
-        public String getRange() {
-            return range;
-        }
-
-        public static Clothing fromValue(String value) {
-            for (Clothing clothing : Clothing.values()) {
-                if (clothing.range.equals(value)) {
-                    return clothing;
-                }
-            }
-            throw new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE));
+        public static Clothing fromValue(String range) {
+            return Arrays.stream(Clothing.values())
+                    .filter(clothing -> clothing.range.equals(range))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE)));
         }
     }
 
@@ -90,20 +88,15 @@ public interface Size {
         TWENTY_SEVEN_POINT_FIVE(27.5),
         TWENTY_EIGHT(28);
 
+        @JsonValue
+        @Getter
         private final double length;
 
-        @JsonValue
-        public double getLength() {
-            return length;
-        }
-
-        public static Shoes fromValue(Double value) {
-            for (Shoes shoes : Shoes.values()) {
-                if (shoes.length == value) {
-                    return shoes;
-                }
-            }
-            throw new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE));
+        public static Shoes fromValue(Double length) {
+            return Arrays.stream(Shoes.values())
+                    .filter(shoes -> shoes.length == length)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE)));
         }
     }
 }

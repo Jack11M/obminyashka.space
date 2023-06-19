@@ -36,8 +36,8 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public boolean checkSubcategoriesCategory(Long categoryId, List<Long> subcategoryIds) {
-        return subcategoryRepository.checkSubcategoriesCategory(categoryId, subcategoryIds) > 0;
+    public List<Long> findExistingIdForCategoryById(Long categoryId, List<Long> subcategoriesId) {
+        return subcategoryRepository.findExistingIdForCategoryById(categoryId, subcategoriesId);
     }
 
     @Override

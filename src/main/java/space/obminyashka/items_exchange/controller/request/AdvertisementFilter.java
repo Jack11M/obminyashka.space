@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,8 +23,8 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 @Setter
 public class AdvertisementFilter {
 
-    @Parameter(description = "Location of necessary staff", allowEmptyValue = true, example = "842f9ab1-95e8-4c81-" +
-            "a49b-fa4f6d0c3a10")
+    @Parameter(description = "Location of necessary staff", example = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10",
+            allowEmptyValue = true)
     private UUID locationId;
 
     @Parameter(description = "Gender of child", allowEmptyValue = true)
@@ -47,14 +48,17 @@ public class AdvertisementFilter {
     @JsonSetter(nulls = Nulls.SKIP)
     private Set<Season> season = new HashSet<>();
 
+    @JsonCreator
     public void setShoesSizes(Set<Double> value) {
         shoesSizes = value.stream().map(Size.Shoes::fromValue).collect(Collectors.toSet());
     }
 
+    @JsonCreator
     public void setClothingSizes(Set<String> value) {
         clothingSizes = value.stream().map(Size.Clothing::fromValue).collect(Collectors.toSet());
     }
 
+    @JsonCreator
     public void setAge(Set<String> value) {
         age = value.stream().map(AgeRange::fromValue).collect(Collectors.toSet());
     }

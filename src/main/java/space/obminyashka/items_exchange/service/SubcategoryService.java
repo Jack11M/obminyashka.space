@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.service;
 
 import space.obminyashka.items_exchange.model.Subcategory;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -38,13 +39,13 @@ public interface SubcategoryService {
     boolean isSubcategoryExistsById(long id);
 
     /**
-     * If subcategoryIds belong to categoryId, returns {@code true}, otherwise {@code false}.
+     * Find existing id for category by id
      *
-     * @param categoryId     is Category ID
-     * @param subcategoryIds is List of Subcategory ID
-     * @return true if subcategoryIds belong to categoryId
+     * @param categoryId      is Category ID
+     * @param subcategoriesId is list of Subcategory IDs
+     * @return list of existing id
      */
-    boolean checkSubcategoriesCategory(Long categoryId, List<Long> subcategoryIds);
+    List<Long> findExistingIdForCategoryById(Long categoryId, List<Long> subcategoriesId);
 
     /**
      * Returns all Subcategory identifiers.

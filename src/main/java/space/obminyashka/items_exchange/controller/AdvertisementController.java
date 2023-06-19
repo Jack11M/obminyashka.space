@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
+import space.obminyashka.items_exchange.controller.request.SubcategorySearch;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
@@ -138,12 +139,17 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(
             @Valid @ParameterObject AdvertisementFilterRequest filterRequest) {
-        var subcategorySearch = filterRequest.getSubcategorySearchRequest();
-        if (!subcategoryService.checkSubcategoriesCategory(subcategorySearch.getCategoryId(),
-                subcategorySearch.getSubcategoriesIdValues())) {
-            throw new BadRequestException(getMessageSource(getMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION)));
-        }
+        validateAllSubcategoriesExistsInCategory(filterRequest.getSubcategorySearchRequest());
         return advertisementService.filterAdvertisementBySearchParameters(filterRequest);
+    }
+
+    private void validateAllSubcategoriesExistsInCategory(SubcategorySearch subcategorySearch) {
+        List<Long> searchSubcategoriesIdValues = subcategorySearch.getSubcategoriesIdValues();
+        List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoryById(
+                subcategorySearch.getCategoryId(), searchSubcategoriesIdValues);
+        if (existingSubcategoriesId.size() != searchSubcategoriesIdValues.size()) {
+            throw new BadRequestException(getMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION));
+        }
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
