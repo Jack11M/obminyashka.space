@@ -9,6 +9,7 @@ import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import space.obminyashka.items_exchange.model.QAdvertisement;
 import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.QPredicate;
@@ -33,11 +34,18 @@ public class AdvertisementFilterRequest {
 
     @JsonUnwrapped
     @JsonSetter(nulls = Nulls.SKIP)
-    private SubcategorySearch subcategorySearchRequest = new SubcategorySearch();
+    private SubcategoryFilter subcategoryFilterRequest = new SubcategoryFilter();
 
     @JsonUnwrapped
     @JsonSetter(nulls = Nulls.SKIP)
     private AdvertisementFilter advertisementFilter = new AdvertisementFilter();
+
+    @SuppressWarnings("unused")
+    @AssertFalse(message = "{" + INVALID_CATEGORY_SIZES_ID + "}")
+    private boolean isValidCategorySizes() {
+        return CollectionUtils.isNotEmpty(advertisementFilter.getClothingSizes()) &&
+                CollectionUtils.isNotEmpty(advertisementFilter.getShoesSizes());
+    }
 
     public Predicate toPredicate() {
         return QPredicate.builder()
@@ -47,7 +55,7 @@ public class AdvertisementFilterRequest {
                 .add(extractClothingSizeRanges(advertisementFilter.getClothingSizes()), QAdvertisement.advertisement.size::in)
                 .add(extractShoesSizeLengths(advertisementFilter.getShoesSizes()), QAdvertisement.advertisement.size::in)
                 .add(advertisementFilter.getAge(), QAdvertisement.advertisement.age::in)
-                .add(subcategorySearchRequest.getSubcategoriesIdValues(), QAdvertisement.advertisement.subcategory.id::in)
+                .add(subcategoryFilterRequest.getSubcategoriesIdValues(), QAdvertisement.advertisement.subcategory.id::in)
                 .buildAnd();
     }
 
@@ -61,10 +69,5 @@ public class AdvertisementFilterRequest {
         return shoesSizes.stream().map(Size.Shoes::getLength)
                 .map(String::valueOf)
                 .collect(Collectors.toSet());
-    }
-
-    @AssertFalse(message = "{" + INVALID_CATEGORY_SIZES_ID + "}")
-    private boolean isValidCategorySizes() {
-        return !advertisementFilter.getClothingSizes().isEmpty() && !advertisementFilter.getShoesSizes().isEmpty();
     }
 }

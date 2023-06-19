@@ -28,7 +28,7 @@ public class CategoryTestUtil {
     public static final String INVALID_CATEGORY_NAME = "xx";
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String USERNAME_ADMIN = "admin";
-    public static final String CATEGORY_NAME_TOYS = "Toys";
+    public static final String CATEGORY_NAME_TOYS = "Children`S Furniture";
     public static final String SUBCATEGORY_NAME_WINTER_SHOES = "winter shoes";
     public static final String SUBCATEGORY_NAME_MEN_SHOES = "men shoes";
     public static final String SUBCATEGORY_NAME_DOLLS = "dolls";

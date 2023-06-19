@@ -5,6 +5,8 @@ category:
     name: 'Shoes'
   - id: 3
     name: 'Toys'
+  - id: 4
+    name: 'Children`S Furniture'
 
 subcategory:
   - id: 1
@@ -16,9 +18,12 @@ subcategory:
   - id: 3
     name: 'Pants, Jeans, Shorts'
     category_id: 1
-  - id: 4
+  - id: 14
+    name: 'Boots'
+    category_id: 2
+  - id: 15
     name: 'fairy tales'
-    category_id: 3
-  - id: 5
+    category_id: 4
+  - id: 16
     name: 'lego'
-    category_id: 3
+    category_id: 4

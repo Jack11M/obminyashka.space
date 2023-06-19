@@ -10,12 +10,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class SubcategorySearch {
+public class SubcategoryFilter {
 
-    @Parameter(description = "Id of necessary category(1 - Clothing; 2 - Shoes etc.)", example = "1")
+    @Parameter(description = "Category ID for advertisements filtering. See the full list of Categories in: /api/v1/category/all", example = "1")
     @Positive
     private long categoryId;
 
-    @Parameter(description = "Ids of necessary subcategory")
+    @Parameter(description = "Subcategories ID for advertisements filtering. Should belong to passed Category ID")
     private List<@Positive Long> subcategoriesIdValues = new ArrayList<>();
 }

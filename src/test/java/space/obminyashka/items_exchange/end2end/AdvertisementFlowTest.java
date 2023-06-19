@@ -23,6 +23,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
@@ -46,6 +47,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
@@ -204,8 +207,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByAllParameters() throws Exception {
         sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("subcategorySearchRequest.categoryId", "1")
-                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
+                .queryParam("subcategoryFilterRequest.categoryId", "1")
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1")
                 .queryParam("advertisementFilter.locationId", "2c5467f3-b7ee-48b1-9451-7028255b757b")
                 .queryParam("advertisementFilter.gender", Gender.FEMALE.name())
                 .queryParam("advertisementFilter.age", AgeRange.FROM_10_TO_12.getValue(), AgeRange.FROM_6_TO_9.getValue())
@@ -224,11 +227,13 @@ class AdvertisementFlowTest extends BasicControllerTest {
         String sizeClothing = Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange();
 
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
-                .queryParam("subcategorySearchRequest.categoryId", categoryId)
-                .queryParam("subcategorySearchRequest.subcategoriesIdValues", subcategoryId)
+                .queryParam("subcategoryFilterRequest.categoryId", categoryId)
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", subcategoryId)
                 .queryParam("advertisementFilter.shoesSizes", sizeShoes)
                 .queryParam("advertisementFilter.clothingSizes", sizeClothing), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("You cannot specify sizes for different categories at the same time"));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(MethodArgumentNotValidException.class)
+                .hasMessageContaining(getMessageSource(INVALID_CATEGORY_SIZES_ID));
     }
 
     @Test
@@ -238,10 +243,13 @@ class AdvertisementFlowTest extends BasicControllerTest {
         String categoryId = "2";
         String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
-                .queryParam("subcategorySearchRequest.categoryId", categoryId)
-                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "14", "1", "3")
+                .queryParam("subcategoryFilterRequest.categoryId", categoryId)
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "14", "1", "3")
                 .queryParam("advertisementFilter.shoesSizes", sizeShoes), status().isBadRequest());
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("These subcategories do not belong to the given category"));
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
+                        "[14]", categoryId));
     }
 
     @Test
@@ -268,9 +276,9 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
                 asJsonString(nonExistDto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
-        var blankTopicMessage = MessageSourceUtil.getMessageSource(BLANK_TOPIC);
-        var blankDescriptionMessage = MessageSourceUtil.getMessageSource(BLANK_DESCRIPTION);
-        var blankWishesToExchangeMessage = MessageSourceUtil.getMessageSource(BLANK_WISHES_TO_EXCHANGE);
+        var blankTopicMessage = getMessageSource(BLANK_TOPIC);
+        var blankDescriptionMessage = getMessageSource(BLANK_DESCRIPTION);
+        var blankWishesToExchangeMessage = getMessageSource(BLANK_WISHES_TO_EXCHANGE);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)
@@ -301,8 +309,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
 
-        var validationLocationIdMessage = MessageSourceUtil.getMessageSource(INVALID_LOCATION_ID);
-        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource(INVALID_SUBCATEGORY_ID);
+        var validationLocationIdMessage = getMessageSource(INVALID_LOCATION_ID);
+        var validationSubcategoryIdMessage = getMessageSource(INVALID_SUBCATEGORY_ID);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalIdentifierException.class)

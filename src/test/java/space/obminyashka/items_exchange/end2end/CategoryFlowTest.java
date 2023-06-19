@@ -129,7 +129,7 @@ class CategoryFlowTest extends BasicControllerTest {
 
         sendDtoAndGetResultAction(put(CATEGORY_ID, updatedCategoryDto.getId()), updatedCategoryDto, status().isAccepted())
                 .andExpect(jsonPath("$.name").value("footwear"))
-                .andExpect(jsonPath("$.subcategories", hasSize(2)));
+                .andExpect(jsonPath("$.subcategories", hasSize(3)));
     }
 
     @Test
@@ -167,9 +167,9 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnConflict() throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, EXISTING_ENTITY_ID), status().isConflict());
+        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, 3), status().isConflict());
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(DataConflictException.class)
-                .hasMessageContaining(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, EXISTING_ENTITY_ID));
+                .hasMessageContaining(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, 3));
     }
 }

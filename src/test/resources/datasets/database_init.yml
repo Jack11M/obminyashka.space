@@ -168,6 +168,8 @@ category:
     name: 'Clothing'
   - id: 2
     name: 'Shoes'
+  - id: 3
+    name: 'Toys'
 
 subcategory:
   - id: 1
@@ -179,6 +181,9 @@ subcategory:
   - id: 3
     name: 'Pants, Jeans, Shorts'
     category_id: 1
+  - id: 14
+    name: 'Boots'
+    category_id: 2
 
 phone:
   - id: 65e3ee49-5927-40be-aafd-0461ce45f200

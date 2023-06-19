@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
-import space.obminyashka.items_exchange.controller.request.SubcategorySearch;
+import space.obminyashka.items_exchange.controller.request.SubcategoryFilter;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
@@ -139,16 +139,17 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(
             @Valid @ParameterObject AdvertisementFilterRequest filterRequest) {
-        validateAllSubcategoriesExistsInCategory(filterRequest.getSubcategorySearchRequest());
+        validateAllSubcategoriesExistsInCategory(filterRequest.getSubcategoryFilterRequest());
         return advertisementService.filterAdvertisementBySearchParameters(filterRequest);
     }
 
-    private void validateAllSubcategoriesExistsInCategory(SubcategorySearch subcategorySearch) {
-        List<Long> searchSubcategoriesIdValues = subcategorySearch.getSubcategoriesIdValues();
+    private void validateAllSubcategoriesExistsInCategory(SubcategoryFilter subcategoryFilter) {
+        List<Long> searchSubcategoriesIdValues = subcategoryFilter.getSubcategoriesIdValues();
         List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoryById(
-                subcategorySearch.getCategoryId(), searchSubcategoriesIdValues);
+                subcategoryFilter.getCategoryId(), searchSubcategoriesIdValues);
         if (existingSubcategoriesId.size() != searchSubcategoriesIdValues.size()) {
-            throw new BadRequestException(getMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION));
+            throw new BadRequestException(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
+                    existingSubcategoriesId, subcategoryFilter.getCategoryId()));
         }
     }
 
