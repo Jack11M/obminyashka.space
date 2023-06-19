@@ -15,18 +15,12 @@ import java.util.UUID;
 public interface AdvertisementService {
 
     /**
-     * Find N random advertisements as thumbnails with filters
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return random 12 advertisement
+     * Find N random advertisements as thumbnails with filters or page of advertisements with same subcategory
+     * without request advertisement
+     * @param findAdvsRequest an object that contains all parameters to search
+     * @return random 12 advertisement or page of advertisements
      */
-    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest);
-
-    /**
-     * Find page of advertisements with same subcategory without request advertisement
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return page of advertisements
-     */
-    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest);
+    List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user
@@ -45,9 +39,8 @@ public interface AdvertisementService {
 
     /**
      * Find advertisements by category and return them by requested quantity (size) and page
-     *
      * @param categoryId - searched category id
-     * @param pageable   see {@link Pageable} for more details
+     * @param pageable see {@link Pageable} for more details
      * @return result of the request
      */
     Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable);
@@ -124,7 +117,6 @@ public interface AdvertisementService {
 
     /**
      * Returns whether an advertisement with the given id exists.
-     *
      * @param id must not be {@literal null}.
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
@@ -138,7 +130,6 @@ public interface AdvertisementService {
 
     /**
      * Checks if a subcategory with the given ID exists in DB and has advertisements.
-     *
      * @param id is Subcategory ID.
      * @return {@code true} if a subcategory with the given ID can not be deleted, {@code false} otherwise.
      */

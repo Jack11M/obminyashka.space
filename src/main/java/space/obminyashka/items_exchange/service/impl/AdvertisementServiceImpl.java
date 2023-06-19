@@ -51,16 +51,19 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
+    public List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
         final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
                 findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
         final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
-        findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+
+        if (findAdvsRequest.isEnableRandom()) {
+            findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        }
+
         return findAllThumbnails(findAdvsRequest).getContent();
     }
 
-    @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
+    private Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
         return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
                         findAdvsRequest.getSubcategoryId(),
                         PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
