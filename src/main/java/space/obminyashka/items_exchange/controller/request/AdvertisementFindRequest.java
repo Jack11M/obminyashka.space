@@ -31,5 +31,5 @@ public class AdvertisementFindRequest {
     private UUID excludeAdvertisementId;
 
     @Parameter(name = "enableRandom", description = "set true if you need random advertisement")
-    private boolean enableRandom = true;
+    private boolean enableRandom = false;
 }
