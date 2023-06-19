@@ -28,6 +28,7 @@ import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -61,7 +62,11 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public List<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
+    public List<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @RequestBody AdvertisementFindRequest findAdvsRequest) throws SubcategoryIdNotFoundException {
+        if (!subcategoryService.isSubcategoryExistsById(findAdvsRequest.getSubcategoryId())) {
+            throw new SubcategoryIdNotFoundException(getExceptionMessageSourceWithId(findAdvsRequest.getSubcategoryId(),
+                    ResponseMessagesHandler.ValidationMessage.INVALID_SUBCATEGORY_ID));
+        }
         return advertisementService.findThumbnails(findAdvsRequest);
     }
 
