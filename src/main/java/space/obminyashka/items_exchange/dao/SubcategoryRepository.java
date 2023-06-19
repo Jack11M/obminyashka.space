@@ -14,5 +14,9 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
     @Query(value = "SELECT name FROM subcategory WHERE category_id = ?", nativeQuery = true)
     List<String> findSubcategoriesNamesByCategory(Long categoryId);
 
+    @Query(value = "select s.id from subcategory s join category c on c.id = s.category_id " +
+            "where c.id = :categoryId and s.id in :subcategoriesId", nativeQuery = true)
+    List<Long> findExistingIdForCategoryById(Long categoryId, List<Long> subcategoriesId);
+
     Optional<Subcategory> findById(long id);
 }

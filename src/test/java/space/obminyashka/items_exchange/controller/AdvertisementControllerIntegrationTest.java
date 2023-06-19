@@ -1,9 +1,12 @@
 package space.obminyashka.items_exchange.controller;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,12 +18,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

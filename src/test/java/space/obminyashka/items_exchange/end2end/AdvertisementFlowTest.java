@@ -4,7 +4,6 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,15 +22,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
+import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.JsonConverter;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
@@ -42,12 +40,15 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
@@ -193,23 +194,62 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
-    void getAdvertisement_shouldReturnAdvertisementsIfAnyValueExists() throws Exception {
-        AdvertisementFilterDto dto = AdvertisementFilterDto.builder()
-                .season(Season.SUMMER)
-                .gender(Gender.FEMALE)
-                .age(AgeRange.FROM_10_TO_12)
-                .build();
+    void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByNecessaryParameters() throws Exception {
+        sendUriAndGetResultAction(get(ADV_FILTER)
+                .queryParam("subcategorySearchRequest.categoryId", "1")
+                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
+                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()), status().isOk())
+                .andExpect(jsonPath("$.content.length()").value("3"));
+    }
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), dto, status().isOk());
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByAllParameters() throws Exception {
+        sendUriAndGetResultAction(get(ADV_FILTER)
+                .queryParam("subcategoryFilterRequest.categoryId", "1")
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1")
+                .queryParam("advertisementFilter.locationId", "2c5467f3-b7ee-48b1-9451-7028255b757b")
+                .queryParam("advertisementFilter.gender", Gender.FEMALE.name())
+                .queryParam("advertisementFilter.age", AgeRange.FROM_10_TO_12.getValue(), AgeRange.FROM_6_TO_9.getValue())
+                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange())
+                .queryParam("advertisementFilter.season", Season.SUMMER.name(), Season.WINTER.name()), status().isOk())
+                .andExpect(jsonPath("$.content.length()").value("2"));
+    }
 
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        AdvertisementTitleDto[] advertisementDtos = JsonConverter.jsonToObject(contentAsString,
-                AdvertisementTitleDto[].class);
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
+        String subcategoryId = "1";
+        String categoryId = "1";
+        String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
+        String sizeClothing = Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange();
 
-        Assertions.assertAll(
-                () -> assertEquals(1, advertisementDtos.length),
-                () -> assertEquals(UUID.fromString("393f7bfb-cd0a-48e3-adb8-dd5b4c368f04"), advertisementDtos[0].getAdvertisementId())
-        );
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
+                .queryParam("subcategoryFilterRequest.categoryId", categoryId)
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", subcategoryId)
+                .queryParam("advertisementFilter.shoesSizes", sizeShoes)
+                .queryParam("advertisementFilter.clothingSizes", sizeClothing), status().isBadRequest());
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(MethodArgumentNotValidException.class)
+                .hasMessageContaining(getMessageSource(INVALID_CATEGORY_SIZES_ID));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findAdvertisementBySearchParameters_shouldBeThrownBadRequestException_WhenSubcategoryNotBelongCategory() throws Exception {
+        String categoryId = "2";
+        String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
+                .queryParam("subcategoryFilterRequest.categoryId", categoryId)
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "14", "1", "3")
+                .queryParam("advertisementFilter.shoesSizes", sizeShoes), status().isBadRequest());
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
+                        "[14]", categoryId));
     }
 
     @Test
@@ -236,9 +276,9 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
                 asJsonString(nonExistDto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
-        var blankTopicMessage = MessageSourceUtil.getMessageSource(BLANK_TOPIC);
-        var blankDescriptionMessage = MessageSourceUtil.getMessageSource(BLANK_DESCRIPTION);
-        var blankWishesToExchangeMessage = MessageSourceUtil.getMessageSource(BLANK_WISHES_TO_EXCHANGE);
+        var blankTopicMessage = getMessageSource(BLANK_TOPIC);
+        var blankDescriptionMessage = getMessageSource(BLANK_DESCRIPTION);
+        var blankWishesToExchangeMessage = getMessageSource(BLANK_WISHES_TO_EXCHANGE);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)
@@ -269,8 +309,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(dto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
 
-        var validationLocationIdMessage = MessageSourceUtil.getMessageSource(INVALID_LOCATION_ID);
-        var validationSubcategoryIdMessage = MessageSourceUtil.getMessageSource(INVALID_SUBCATEGORY_ID);
+        var validationLocationIdMessage = getMessageSource(INVALID_LOCATION_ID);
+        var validationSubcategoryIdMessage = getMessageSource(INVALID_SUBCATEGORY_ID);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalIdentifierException.class)

@@ -1,19 +1,24 @@
 category:
   - id: 1
-    name: 'footwear'
+    name: 'Clothing'
   - id: 2
+    name: 'footwear'
+  - id: 3
     name: 'Toys'
 
 subcategory:
   - id: 1
-    name: 'men shoes'
+    name: 'Outerwear'
     category_id: 1
   - id: 2
-    name: 'dolls'
+    name: 'men shoes'
     category_id: 2
   - id: 3
-    name: 'puzzles'
-    category_id: 2
-  - id: 4
-    name: 'winter shoes'
+    name: 'Pants, Jeans, Shorts'
     category_id: 1
+  - id: 14
+    name: 'Boots'
+    category_id: 2
+  - id: 15
+    name: 'winter shoes'
+    category_id: 2
