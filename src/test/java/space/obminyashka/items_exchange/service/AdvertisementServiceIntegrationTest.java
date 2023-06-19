@@ -30,7 +30,7 @@ class AdvertisementServiceIntegrationTest {
 
         assertAll("ValidationMessage of all parameters and mocks",
                 () -> assertFalse(firstTitlesGetAttempt.isEmpty()),
-                () -> assertEquals(repository.count(), firstTitlesGetAttempt.size())
+                () -> assertEquals(repository.count(), firstTitlesGetAttempt.getTotalElements())
         );
 
         final var secondTitlesGetAttempt = advertisementService.findThumbnails(findAdvsRequest);

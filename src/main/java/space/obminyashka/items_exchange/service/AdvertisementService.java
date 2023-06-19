@@ -20,7 +20,7 @@ public interface AdvertisementService {
      * @param findAdvsRequest an object that contains all parameters to search
      * @return random 12 advertisement or page of advertisements
      */
-    List<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest);
+    Page<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user

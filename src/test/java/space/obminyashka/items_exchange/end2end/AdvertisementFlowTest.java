@@ -1,9 +1,9 @@
 package space.obminyashka.items_exchange.end2end;
 
-
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,18 +19,19 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
+import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,15 +41,13 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
@@ -141,7 +140,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
                 .queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
 
-                .andExpect(jsonPath("$.size()").value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
+                .andExpect(jsonPath("$.content.length()")
+                        .value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
     }
 
     @Test
@@ -150,10 +150,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
 
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL)
+        ResultActions resultActions = sendUriAndGetResultAction(get(ADV_THUMBNAIL)
                 .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
-                .queryParam("subcategoryId", "4"), status().isOk())
-                .andExpect(jsonPath("$.size()").value(0));
+                .queryParam("subcategoryId", "4"), status().isNotFound());
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(SubcategoryIdNotFoundException.class)
+                .hasMessage(getExceptionMessageSourceWithId(4, INVALID_SUBCATEGORY_ID));
     }
 
     @Test
@@ -171,7 +173,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
         sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
-                .andExpect(jsonPath("$.length()").value(advertisementRepository.count()));
+                .andExpect(jsonPath("$.content.length()").value(advertisementRepository.count()));
     }
 
     @Test

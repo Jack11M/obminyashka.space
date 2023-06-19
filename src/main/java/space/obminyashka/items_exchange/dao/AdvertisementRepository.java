@@ -55,7 +55,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("SELECT a from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
-    Page<Advertisement> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
+    Page<AdvertisementTitleProjection> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
                                                        @Param("subcategoryId") Long subcategoryId,
                                                        Pageable pageable);
 
