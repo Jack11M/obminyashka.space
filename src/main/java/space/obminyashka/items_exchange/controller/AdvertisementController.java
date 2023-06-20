@@ -67,10 +67,10 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public List<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @RequestBody AdvertisementFindRequest findAdvsRequest) throws SubcategoryIdNotFoundException {
-        if (!subcategoryService.isSubcategoryExistsById(findAdvsRequest.getSubcategoryId())) {
-            throw new SubcategoryIdNotFoundException(getExceptionMessageSourceWithId(findAdvsRequest.getSubcategoryId(),
-                    ResponseMessagesHandler.ValidationMessage.INVALID_SUBCATEGORY_ID));
+    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) throws SubcategoryIdNotFoundException {
+        Long subcategoryId = findAdvsRequest.getSubcategoryId();
+        if (subcategoryId != null && !subcategoryService.isSubcategoryExistsById(subcategoryId)) {
+            throw new SubcategoryIdNotFoundException(getExceptionMessageSourceWithId(subcategoryId, INVALID_SUBCATEGORY_ID));
         }
         return advertisementService.findThumbnails(findAdvsRequest);
     }
