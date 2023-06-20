@@ -44,5 +44,6 @@ public interface AdvertisementMapper {
     AdvertisementTitleDto toAdvertisementTitleDto(AdvertisementTitleProjection projection);
 
     List<AdvertisementDisplayDto> toDtoList(List<Advertisement> modelList);
+
     List<Advertisement> toModelList(List<AdvertisementDisplayDto> dtoList);
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -23,6 +24,7 @@ import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -66,8 +68,8 @@ class CategoryFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void getCategoryById_shouldReturnCategoryByIdIfExists() throws Exception {
         sendUriAndGetResultAction(get(CATEGORY_ID, EXISTING_ENTITY_ID), status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("shoes"));
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.name").value("Shoes"));
     }
 
     @Test
@@ -127,7 +129,7 @@ class CategoryFlowTest extends BasicControllerTest {
 
         sendDtoAndGetResultAction(put(CATEGORY_ID, updatedCategoryDto.getId()), updatedCategoryDto, status().isAccepted())
                 .andExpect(jsonPath("$.name").value("footwear"))
-                .andExpect(jsonPath("$.subcategories", hasSize(2)));
+                .andExpect(jsonPath("$.subcategories", hasSize(3)));
     }
 
     @Test
@@ -146,7 +148,7 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategoryById_shouldDeleteExistedCategory() throws Exception {
-        sendUriAndGetResultAction(delete(CATEGORY_ID, 2L), status().isOk())
+        sendUriAndGetResultAction(delete(CATEGORY_ID, 1L), status().isOk())
                 .andExpect(jsonPath("$.id").doesNotExist());
     }
 
@@ -154,6 +156,7 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowInvalidDtoException() throws Exception {
+        LocaleContextHolder.setDefaultLocale(Locale.ENGLISH);
         MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
         assertThat(result.getResolvedException())
                 .isInstanceOf(CategoryIdNotFoundException.class)
@@ -164,9 +167,9 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnConflict() throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, EXISTING_ENTITY_ID), status().isConflict());
+        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, 3), status().isConflict());
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(DataConflictException.class)
-                .hasMessageContaining(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, EXISTING_ENTITY_ID));
+                .hasMessageContaining(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, 3));
     }
 }

@@ -82,7 +82,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public List<String> getCategorySizesById(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
-                                             @PathVariable("category_id") int id) throws CategorySizeNotFoundException {
+                                             @PathVariable("category_id") long id) throws CategorySizeNotFoundException {
         return Optional.of(categoryService.findSizesForCategory(id))
                 .filter(Predicate.not(List::isEmpty))
                 .orElseThrow(() -> new CategorySizeNotFoundException(

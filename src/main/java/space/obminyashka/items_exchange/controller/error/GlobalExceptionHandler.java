@@ -20,6 +20,7 @@ import space.obminyashka.items_exchange.exception.bad_request.BadRequestExceptio
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
 import space.obminyashka.items_exchange.exception.not_found.CategorySizeNotFoundException;
 import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -67,7 +68,8 @@ public class GlobalExceptionHandler {
             EntityNotFoundException.class,
             CategoryIdNotFoundException.class,
             CategorySizeNotFoundException.class,
-            EmailValidationCodeNotFoundException.class})
+            EmailValidationCodeNotFoundException.class,
+            SubcategoryIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorMessage handleNotFoundExceptions(Exception e, ServletWebRequest request) {
         return logAndGetErrorMessage(request, e, Level.WARN);

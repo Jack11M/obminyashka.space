@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.lang.Nullable;
 
 import jakarta.validation.constraints.PositiveOrZero;
+
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
@@ -16,7 +17,6 @@ public class AdvertisementFindRequest {
     @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
     private int page = 0;
-
 
     @Parameter(name = "size", description = "Number of records per page. Default value: 12")
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
@@ -30,4 +30,6 @@ public class AdvertisementFindRequest {
     @Nullable
     private UUID excludeAdvertisementId;
 
+    @Parameter(name = "enableRandom", description = "set true if you need random advertisement")
+    private boolean enableRandom = false;
 }

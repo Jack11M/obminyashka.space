@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.Advertisement;
@@ -14,18 +15,12 @@ import java.util.UUID;
 public interface AdvertisementService {
 
     /**
-     * Find N random advertisements as thumbnails with filters
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return random 12 advertisement
+     * Find N random advertisements as thumbnails with filters or page of advertisements with same subcategory
+     * without request advertisement
+     * @param findAdvsRequest an object that contains all parameters to search
+     * @return random 12 advertisement or page of advertisements
      */
-    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest);
-
-    /**
-     * Find page of advertisements with same subcategory without request advertisement
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return page of advertisements
-     */
-    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest);
+    Page<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user
@@ -44,9 +39,8 @@ public interface AdvertisementService {
 
     /**
      * Find advertisements by category and return them by requested quantity (size) and page
-     *
      * @param categoryId - searched category id
-     * @param pageable   see {@link Pageable} for more details
+     * @param pageable see {@link Pageable} for more details
      * @return result of the request
      */
     Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable);
@@ -67,11 +61,11 @@ public interface AdvertisementService {
     Optional<AdvertisementDisplayDto> findDtoById(UUID id);
 
     /**
-     * Find first 10 matched advertisements by one of received parameters of the request DTO
-     * @param dto an object that contains all parameters to search
+     * Filter advertisements by search parameters from AdvertisementFilterRequest
+     * @param request an object that contains all parameters to search
      * @return result of the request
      */
-    List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto);
+    Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request);
 
     /**
      * Check whenever user has an advertisement with selected id
@@ -123,7 +117,6 @@ public interface AdvertisementService {
 
     /**
      * Returns whether an advertisement with the given id exists.
-     *
      * @param id must not be {@literal null}.
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
@@ -137,7 +130,6 @@ public interface AdvertisementService {
 
     /**
      * Checks if a subcategory with the given ID exists in DB and has advertisements.
-     *
      * @param id is Subcategory ID.
      * @return {@code true} if a subcategory with the given ID can not be deleted, {@code false} otherwise.
      */

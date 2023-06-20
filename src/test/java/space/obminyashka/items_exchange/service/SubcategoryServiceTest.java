@@ -107,7 +107,7 @@ class SubcategoryServiceTest {
 
     @Test
     void findAllSubcategoryIds_whenSubcategoriesExist_shouldReturnListSubcategoryIds() {
-        final List<Subcategory> subcategories = List.of(existingSubcategory, createSubcategory(2L,
+        final List<Subcategory> subcategories = List.of(existingSubcategory, createSubcategory(1L,
                 SUBCATEGORY_NAME_WINTER_SHOES));
         when(subcategoryRepository.findAll()).thenReturn(subcategories);
 
@@ -115,7 +115,7 @@ class SubcategoryServiceTest {
         assertAll(DATA_EQUALS_CHECKING,
                 () -> assertEquals(2, allSubcategoriesIds.size()),
                 () -> assertEquals(EXISTING_ENTITY_ID, (long) allSubcategoriesIds.get(0)),
-                () -> assertEquals(CATEGORY_TOYS_ID, (long) allSubcategoriesIds.get(1)));
+                () -> assertEquals(CATEGORY_CLOTHING_ID, (long) allSubcategoriesIds.get(1)));
         verify(subcategoryRepository, times(1)).findAll();
     }
 

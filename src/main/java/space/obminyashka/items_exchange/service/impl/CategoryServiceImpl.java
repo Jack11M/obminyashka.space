@@ -75,8 +75,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<String> findSizesForCategory(int id) {
-        return switch (id) {
+    public List<String> findSizesForCategory(long id) {
+        return switch ((int) id) {
             case 1 -> Arrays.stream(Size.Clothing.values())
                     .map(Size.Clothing::getRange)
                     .toList();

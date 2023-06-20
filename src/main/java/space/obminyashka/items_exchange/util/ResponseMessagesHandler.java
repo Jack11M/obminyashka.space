@@ -35,6 +35,8 @@ public class ResponseMessagesHandler {
         public final String INVALID_CATEGORY_ID = "invalid.category.id";
         public final String INVALID_SUBCATEGORY_ID = "invalid.subcategory.id";
         public final String INVALID_CATEGORY_SIZES_ID = "invalid.category.sizes.id";
+        public final String INVALID_CATEGORY_SUBCATEGORY_COMBINATION = "invalid.category.subcategory.combination";
+        public final String INVALID_ENUM_VALUE = "invalid.enum.value";
         public final String INVALID_LOCATION_ID = "invalid.location.id";
         public final String INVALID_TOKEN = "invalid.token";
         public final String INVALID_REFRESH_TOKEN = "refresh.token.invalid";

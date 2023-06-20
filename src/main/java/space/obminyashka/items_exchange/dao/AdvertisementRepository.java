@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ import java.util.*;
 
 @Repository
 @Transactional
-public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID> {
+public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID>, QuerydslPredicateExecutor<Advertisement> {
 
     boolean existsAdvertisementByIdAndUser(UUID id, User user);
 
@@ -54,7 +55,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("SELECT a from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
-    Page<Advertisement> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
+    Page<AdvertisementTitleProjection> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
                                                        @Param("subcategoryId") Long subcategoryId,
                                                        Pageable pageable);
 
