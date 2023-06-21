@@ -46,7 +46,7 @@ class AuthServiceTest {
                 .setEmail("user@mail.ua")
                 .setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
 
-        when(userService.findByUsernameOrEmail(anyString())).thenReturn(Optional.of(user));
+        when(userService.findUserByUsernameOrEmailFormUserAuthProjection(anyString())).thenReturn(Optional.of(user));
         when(userMapper.toLoginResponseDto(user)).thenReturn(new UserLoginResponseDto());
         mockJwtTokenData();
         mockRefreshTokenData(user);

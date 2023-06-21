@@ -21,6 +21,7 @@ import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -67,6 +68,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
+    }
+
+    @Override
+    public Optional<User>  findUserByUsernameOrEmailFormUserAuthProjection(String usernameOrEmail) {
+        return userRepository.findUserAuthProjectionByEmailOrUsername(usernameOrEmail)
+                .map(userMapper::toUserWithIdFromAuthProjection);
     }
 
     @Override

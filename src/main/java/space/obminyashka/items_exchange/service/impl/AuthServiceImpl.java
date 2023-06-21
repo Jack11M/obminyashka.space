@@ -34,9 +34,9 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
 
     public UserLoginResponseDto createUserLoginResponseDto(String username) throws UsernameNotFoundException {
-        return userService.findByUsernameOrEmail(username)
+        return userService.findUserByUsernameOrEmailFormUserAuthProjection(username)
                 .map(this::populateUserLoginResponseDto)
-                .orElseThrow(() -> new UsernameNotFoundException("User" + username + " is not logged in"));
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " is not logged in"));
     }
 
     private UserLoginResponseDto populateUserLoginResponseDto(User user) {

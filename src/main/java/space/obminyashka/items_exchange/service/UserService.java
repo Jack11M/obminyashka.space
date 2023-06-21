@@ -3,9 +3,11 @@ package space.obminyashka.items_exchange.service;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,6 +21,13 @@ public interface UserService {
      * @return {@link Optional} with the user as the result
      */
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
+
+    /**
+     * Find a user into DB by checking gained param either username or email columns
+     * @param usernameOrEmail login or email of the user
+     * @return {@link Optional} with the user by user authorization projection as the result
+     */
+    Optional<User> findUserByUsernameOrEmailFormUserAuthProjection(String usernameOrEmail);
 
     /**
      * Find a user into DB by checking gained username and convert it into DTO
