@@ -2,18 +2,13 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
-import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.ZoneId;
@@ -31,33 +26,18 @@ public class AuthServiceImpl implements AuthService {
 
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenService jwtTokenService;
-    private final UserService userService;
-    private final UserMapper userMapper;
 
-    public UserLoginResponseDto createUserLoginResponseDto(String username) throws UsernameNotFoundException {
-        return userService.findUserAuthProjectionByUsernameOrEmail(username)
-                .map(this::populateUserLoginResponseDto)
-                .map(userMapper::toLoginResponseDtoFromUserAuthProjection)
-                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " is not logged in"));
-    }
+    public UserLoginResponseDto finalizeUserLoginResponseDto(UserLoginResponseDto userDto) {
+        userDto.setAccessToken(jwtTokenService.createAccessToken(userDto.getUsername(), userDto.getRole()));
+        userDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(userDto.getAccessToken()));
+        userDto.setRefreshToken(refreshTokenService.createRefreshToken(userDto.getRefreshToken(),
+                userDto.getUsername()).getToken());
+        var timezone = ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV));
+        userDto.setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(timezone));
 
-    private UserAuthProjection populateUserLoginResponseDto(UserAuthProjection projection) {
-        projection.setAccessToken(jwtTokenService.createAccessToken(projection.getUsername(), projection.getRole()));
-        projection.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(projection.getAccessToken()));
-        projection.setRefreshToken(refreshTokenService
-                .createRefreshToken(userForCreatingRefreshToken(projection)).getToken());
-        projection.setRefreshTokenExpirationDate(jwtTokenService
-                .getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
-        log.info("User {} is successfully logged in", projection.getUsername());
-        return projection;
-    }
+        log.info("User {} is successfully logged in", userDto.getUsername());
 
-    private User userForCreatingRefreshToken(UserAuthProjection projection) {
-        User user = new User();
-        user
-                .setUsername(projection.getUsername())
-                .setId(projection.getId());
-        return user;
+        return userDto;
     }
 
     @Override

@@ -2,18 +2,19 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import space.obminyashka.items_exchange.mapper.UserMapperImpl;
+import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.model.RefreshToken;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.service.impl.AuthServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,13 +27,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
     @Mock
-    private UserService userService;
-    @Mock
     private JwtTokenService jwtTokenService;
     @Mock
     private RefreshTokenService refreshTokenService;
-    @Spy
-    private UserMapperImpl userMapper;
     @Captor
     private ArgumentCaptor<String> usernameCaptor;
     @InjectMocks
@@ -42,18 +39,19 @@ class AuthServiceTest {
 
     @Test
     void createUserLoginResponseDto_shouldPopulateDtoAndCreateTokenWithUsername() {
-        final var projection = new UserAuthProjection(UUID.randomUUID(), "user@mail.ua", "user", "",
-                "", null, null, new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
-        final var userForRefreshToken = new User();
-        userForRefreshToken
-                .setUsername(projection.getUsername())
-                .setId(projection.getId());
+        var userLoginResponseDto = new UserLoginResponseDto();
+        userLoginResponseDto.setEmail("user@mail.ua");
+        userLoginResponseDto.setUsername("user");
+        userLoginResponseDto.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
 
-        when(userService.findUserAuthProjectionByUsernameOrEmail(anyString())).thenReturn(Optional.of(projection));
+        final var userForRefreshToken = new User()
+                .setUsername(userLoginResponseDto.getUsername())
+                .setRefreshToken(new RefreshToken());
+
         mockJwtTokenData();
         mockRefreshTokenData(userForRefreshToken);
 
-        final var userLoginResponseDto = authService.createUserLoginResponseDto("user");
+        userLoginResponseDto = authService.finalizeUserLoginResponseDto(userLoginResponseDto);
 
         assertThat(userLoginResponseDto)
                 .hasFieldOrPropertyWithValue("accessToken", jwtToken)
@@ -70,7 +68,8 @@ class AuthServiceTest {
     }
 
     private void mockRefreshTokenData(User user) {
-        when(refreshTokenService.createRefreshToken(user)).thenReturn(new RefreshToken(user, refreshToken, LocalDateTime.MAX));
+        when(refreshTokenService.createRefreshToken(user.getRefreshToken().getToken(), user.getUsername()))
+                .thenReturn(new RefreshToken(user, refreshToken, LocalDateTime.MAX));
         when(jwtTokenService.getRefreshTokenExpiration(any())).thenReturn(refreshToken);
     }
 }

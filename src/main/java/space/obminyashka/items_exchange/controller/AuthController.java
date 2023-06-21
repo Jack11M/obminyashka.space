@@ -63,7 +63,8 @@ public class AuthController {
 
         try {
             final var username = escapeHtml(userLoginDto.getUsernameOrEmail());
-            var userLoginResponseDto = authService.createUserLoginResponseDto(username);
+            var userLoginResponseDto = userService.findLoginResponseDtoByUsernameOrEmail(username);
+            userLoginResponseDto = authService.finalizeUserLoginResponseDto(userLoginResponseDto);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     userLoginResponseDto.getUsername(), userLoginDto.getPassword()));
             return userLoginResponseDto;
@@ -141,7 +142,8 @@ public class AuthController {
     })
     public UserLoginResponseDto loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
         try {
-            return authService.createUserLoginResponseDto(authentication.getName());
+            var userLoginResponseDto = userService.findLoginResponseDtoByUsernameOrEmail(authentication.getName());
+            return authService.finalizeUserLoginResponseDto(userLoginResponseDto);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.INVALID_OAUTH2_LOGIN));

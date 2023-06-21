@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,6 +13,7 @@ import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.impl.RefreshTokenServiceImpl;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,26 +32,49 @@ class RefreshTokenServiceTest {
     @InjectMocks
     private RefreshTokenServiceImpl refreshTokenService;
 
-    @ParameterizedTest
-    @MethodSource("testUsersWithRefreshTokens")
-    void createRefreshToken_shouldCreateOrUpdateToken(User testUser) {
+    @Test
+    void createRefreshToken_shouldCreateToken() {
+        User testUser = new User()
+                .setUsername("user_without_token")
+                .setRefreshToken(new RefreshToken().setToken(null));
         when(jwtTokenService.generateRefreshToken(anyString())).thenReturn("token_string");
         when(jwtTokenService.generateRefreshTokenExpirationTime()).thenReturn(LocalDateTime.MAX);
-        when(refreshTokenRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(refreshTokenRepository.findByUserUsername(any())).thenReturn(
+                new RefreshToken()
+                        .setToken("token")
+                        .setExpiryDate(LocalDateTime.now()));
 
-        final var refreshToken = refreshTokenService.createRefreshToken(testUser);
+        final var refreshToken = refreshTokenService.createRefreshToken(
+                testUser.getRefreshToken().getToken(), testUser.getUsername());
 
         assertAll(
                 () -> assertNotNull(refreshToken),
                 () -> assertNotNull(refreshToken.getToken()),
                 () -> assertNotNull(refreshToken.getExpiryDate()),
-                () -> verify(refreshTokenRepository).save(refreshToken)
+                () -> verify(refreshTokenRepository).createRefreshToken(any(), any(), any())
         );
     }
 
-    private static Stream<User> testUsersWithRefreshTokens() {
-        return Stream.of(
-                new User().setUsername("user_without_token"),
-                new User().setUsername("user_with_token").setRefreshToken(new RefreshToken()));
+    @Test
+    void createRefreshToken_shouldUpdateToken() {
+        User testUser = new User()
+                .setUsername("user_with_token")
+                .setRefreshToken(new RefreshToken().setToken(" "));
+        when(jwtTokenService.generateRefreshToken(anyString())).thenReturn("token_string");
+        when(jwtTokenService.generateRefreshTokenExpirationTime()).thenReturn(LocalDateTime.MAX);
+        when(refreshTokenRepository.findByUserUsername(any())).thenReturn(
+                new RefreshToken()
+                        .setToken("token")
+                        .setExpiryDate(LocalDateTime.now()));
+
+        final var refreshToken = refreshTokenService.createRefreshToken(
+                testUser.getRefreshToken().getToken(), testUser.getUsername());
+
+        assertAll(
+                () -> assertNotNull(refreshToken),
+                () -> assertNotNull(refreshToken.getToken()),
+                () -> assertNotNull(refreshToken.getExpiryDate()),
+                () -> verify(refreshTokenRepository).updateRefreshToken(any(), any(), any())
+        );
     }
 }

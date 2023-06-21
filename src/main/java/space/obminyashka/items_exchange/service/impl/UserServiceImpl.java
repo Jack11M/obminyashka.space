@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -71,8 +71,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserAuthProjection> findUserAuthProjectionByUsernameOrEmail(String usernameOrEmail) {
-        return userRepository.findUserAuthProjectionByEmailOrUsername(usernameOrEmail, usernameOrEmail);
+    public UserLoginResponseDto findLoginResponseDtoByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findUserAuthProjectionByEmailOrUsername(usernameOrEmail, usernameOrEmail)
+                .map(userMapper::toLoginResponseDtoFromUserAuthProjection)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + usernameOrEmail + " is not logged in"));
     }
 
     @Override

@@ -33,6 +33,8 @@ public interface UserMapper {
 
     UserDto toDto(User model);
 
+    @Mapping(target = "refreshToken", source = "refreshToken.token")
+    @Mapping(target = "refreshTokenExpirationDate", source = "refreshToken.expiryDate")
     UserLoginResponseDto toLoginResponseDtoFromUserAuthProjection(UserAuthProjection userAuthProjection);
 
     User toUserFromProjection(UserProjection userProjection);
