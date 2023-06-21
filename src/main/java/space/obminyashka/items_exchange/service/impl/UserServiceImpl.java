@@ -71,9 +71,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User>  findUserByUsernameOrEmailFormUserAuthProjection(String usernameOrEmail) {
-        return userRepository.findUserAuthProjectionByEmailOrUsername(usernameOrEmail)
-                .map(userMapper::toUserWithIdFromAuthProjection);
+    public Optional<UserAuthProjection> findUserAuthProjectionByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findUserAuthProjectionByEmailOrUsername(usernameOrEmail, usernameOrEmail);
     }
 
     @Override

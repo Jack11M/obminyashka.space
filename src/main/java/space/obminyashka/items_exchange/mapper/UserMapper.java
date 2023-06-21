@@ -33,21 +33,9 @@ public interface UserMapper {
 
     UserDto toDto(User model);
 
-    //Unmapped target properties: "accessToken, accessTokenExpirationDate, refreshTokenExpirationDate".
-    @Mapping(source = "refreshToken.token", target = "refreshToken")
-    UserLoginResponseDto toLoginResponseDto(User model);
+    UserLoginResponseDto toLoginResponseDtoFromUserAuthProjection(UserAuthProjection userAuthProjection);
 
     User toUserFromProjection(UserProjection userProjection);
-
-    User toUserFromAuthProjection(UserAuthProjection userAuthProjection);
-
-    default User toUserWithIdFromAuthProjection(UserAuthProjection userAuthProjection) {
-        User user = toUserFromAuthProjection(userAuthProjection);
-        user.setId(userAuthProjection.getId());
-        return user;
-    }
-
-    List<UserLoginResponseDto> toDtoList(List<User> modelList);
 
     List<User> toModelList(List<UserLoginResponseDto> dtoList);
 }

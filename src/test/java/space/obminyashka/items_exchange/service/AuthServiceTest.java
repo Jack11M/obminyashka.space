@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.mapper.UserMapper;
+import space.obminyashka.items_exchange.mapper.UserMapperImpl;
 import space.obminyashka.items_exchange.model.RefreshToken;
 import space.obminyashka.items_exchange.model.Role;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.service.impl.AuthServiceImpl;
 
 import java.time.LocalDateTime;
@@ -18,7 +18,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,8 +31,8 @@ class AuthServiceTest {
     private JwtTokenService jwtTokenService;
     @Mock
     private RefreshTokenService refreshTokenService;
-    @Mock
-    private UserMapper userMapper;
+    @Spy
+    private UserMapperImpl userMapper;
     @Captor
     private ArgumentCaptor<String> usernameCaptor;
     @InjectMocks
@@ -41,15 +42,16 @@ class AuthServiceTest {
 
     @Test
     void createUserLoginResponseDto_shouldPopulateDtoAndCreateTokenWithUsername() {
-        final var user = new User()
-                .setUsername("user")
-                .setEmail("user@mail.ua")
-                .setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
+        final var projection = new UserAuthProjection(UUID.randomUUID(), "user@mail.ua", "user", "",
+                "", null, null, new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
+        final var userForRefreshToken = new User();
+        userForRefreshToken
+                .setUsername(projection.getUsername())
+                .setId(projection.getId());
 
-        when(userService.findUserByUsernameOrEmailFormUserAuthProjection(anyString())).thenReturn(Optional.of(user));
-        when(userMapper.toLoginResponseDto(user)).thenReturn(new UserLoginResponseDto());
+        when(userService.findUserAuthProjectionByUsernameOrEmail(anyString())).thenReturn(Optional.of(projection));
         mockJwtTokenData();
-        mockRefreshTokenData(user);
+        mockRefreshTokenData(userForRefreshToken);
 
         final var userLoginResponseDto = authService.createUserLoginResponseDto("user");
 
