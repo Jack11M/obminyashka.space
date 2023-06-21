@@ -20,8 +20,6 @@ public interface UserAuthProjection {
 
     String getLanguage();
 
-    RefreshToken getRefreshToken();
-
     Role getRole();
 
     byte[] getAvatarImage();
