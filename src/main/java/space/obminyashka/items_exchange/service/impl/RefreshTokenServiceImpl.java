@@ -29,7 +29,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                         (refreshToken) -> refreshTokenRepository.updateRefreshToken(username, token, tokenExpirationTime),
                         () -> refreshTokenRepository.createRefreshToken(username, token, tokenExpirationTime));
 
-        return refreshTokenRepository.findByUserUsername(username);
+        return new RefreshToken(null, token, tokenExpirationTime);
     }
 
     private boolean isRefreshTokenExpired(RefreshToken refreshToken) {

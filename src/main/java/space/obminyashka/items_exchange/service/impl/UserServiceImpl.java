@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findAuthDataByEmailOrUsername(usernameOrEmail, usernameOrEmail)
-                .map(userMapper::toAuthDataFromUserAuthProjection)
+                .map(userMapper::toLoginResponseDto)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + usernameOrEmail + " is not logged in"));
     }
 

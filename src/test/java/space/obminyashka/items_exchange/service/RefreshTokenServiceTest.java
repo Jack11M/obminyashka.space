@@ -39,10 +39,6 @@ class RefreshTokenServiceTest {
                 .setRefreshToken(new RefreshToken().setToken(null));
         when(jwtTokenService.generateRefreshToken(anyString())).thenReturn("token_string");
         when(jwtTokenService.generateRefreshTokenExpirationTime()).thenReturn(LocalDateTime.MAX);
-        when(refreshTokenRepository.findByUserUsername(any())).thenReturn(
-                new RefreshToken()
-                        .setToken("token")
-                        .setExpiryDate(LocalDateTime.now()));
 
         final var refreshToken = refreshTokenService.createRefreshToken(
                 testUser.getRefreshToken().getToken(), testUser.getUsername());
@@ -62,10 +58,6 @@ class RefreshTokenServiceTest {
                 .setRefreshToken(new RefreshToken().setToken(" "));
         when(jwtTokenService.generateRefreshToken(anyString())).thenReturn("token_string");
         when(jwtTokenService.generateRefreshTokenExpirationTime()).thenReturn(LocalDateTime.MAX);
-        when(refreshTokenRepository.findByUserUsername(any())).thenReturn(
-                new RefreshToken()
-                        .setToken("token")
-                        .setExpiryDate(LocalDateTime.now()));
 
         final var refreshToken = refreshTokenService.createRefreshToken(
                 testUser.getRefreshToken().getToken(), testUser.getUsername());
