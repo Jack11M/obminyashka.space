@@ -27,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenService jwtTokenService;
 
-    public UserLoginResponseDto finalizeUserLoginResponseDto(UserLoginResponseDto userDto) {
+    public UserLoginResponseDto finalizeAuthData(UserLoginResponseDto userDto) {
         userDto.setAccessToken(jwtTokenService.createAccessToken(userDto.getUsername(), userDto.getRole()));
         userDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(userDto.getAccessToken()));
         userDto.setRefreshToken(refreshTokenService.createRefreshToken(userDto.getRefreshToken(),

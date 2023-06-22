@@ -9,9 +9,10 @@ public interface AuthService {
     /**
      * Creates {@link UserLoginResponseDto} from {@param username} is user exists in the database
      *
-     * @param userAuthDto@return response on /login endpoint represented as {@link UserLoginResponseDto}
+     * @param userAuthDto added access token and refresh token to it
+     * @return response on /login endpoint represented as {@link UserLoginResponseDto}
      */
-    UserLoginResponseDto finalizeUserLoginResponseDto(UserLoginResponseDto userAuthDto);
+    UserLoginResponseDto finalizeAuthData(UserLoginResponseDto userAuthDto);
 
     /**
      * Invalidate access and refresh tokens for selected user

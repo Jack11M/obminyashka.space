@@ -51,7 +51,7 @@ class AuthServiceTest {
         mockJwtTokenData();
         mockRefreshTokenData(userForRefreshToken);
 
-        userLoginResponseDto = authService.finalizeUserLoginResponseDto(userLoginResponseDto);
+        userLoginResponseDto = authService.finalizeAuthData(userLoginResponseDto);
 
         assertThat(userLoginResponseDto)
                 .hasFieldOrPropertyWithValue("accessToken", jwtToken)

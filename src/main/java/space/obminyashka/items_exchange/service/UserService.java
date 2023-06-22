@@ -27,7 +27,7 @@ public interface UserService {
      * @param usernameOrEmail login or email of the user
      * @return the user login response dto as the result
      */
-    UserLoginResponseDto findLoginResponseDtoByUsernameOrEmail(String usernameOrEmail);
+    UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail);
 
     /**
      * Find a user into DB by checking gained username and convert it into DTO
