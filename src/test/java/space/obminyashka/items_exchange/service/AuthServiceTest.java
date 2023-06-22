@@ -44,12 +44,8 @@ class AuthServiceTest {
         userLoginResponseDto.setUsername("user");
         userLoginResponseDto.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
 
-        final var userForRefreshToken = new User()
-                .setUsername(userLoginResponseDto.getUsername())
-                .setRefreshToken(new RefreshToken());
-
         mockJwtTokenData();
-        mockRefreshTokenData(userForRefreshToken);
+        mockRefreshTokenData(null, userLoginResponseDto.getUsername());
 
         userLoginResponseDto = authService.finalizeAuthData(userLoginResponseDto);
 
@@ -67,9 +63,9 @@ class AuthServiceTest {
         when(jwtTokenService.getAccessTokenExpiration(jwtToken)).thenReturn(LocalDateTime.MAX);
     }
 
-    private void mockRefreshTokenData(User user) {
-        when(refreshTokenService.createRefreshToken(user.getRefreshToken().getToken(), user.getUsername()))
-                .thenReturn(new RefreshToken(user, refreshToken, LocalDateTime.MAX));
+    private void mockRefreshTokenData(String token, String username) {
+        when(refreshTokenService.createRefreshToken(token, username))
+                .thenReturn(new RefreshToken(refreshToken, LocalDateTime.MAX));
         when(jwtTokenService.getRefreshTokenExpiration(any())).thenReturn(refreshToken);
     }
 }
