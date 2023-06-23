@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import space.obminyashka.items_exchange.model.Child;
 import space.obminyashka.items_exchange.model.RefreshToken;
 
 import java.time.LocalDateTime;
