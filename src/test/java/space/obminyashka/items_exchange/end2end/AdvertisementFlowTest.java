@@ -238,7 +238,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .queryParam("advertisementFilter.clothingSizes", sizeClothing), status().isBadRequest());
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)
-                .hasMessageContaining(getMessageSource(INVALID_CATEGORY_SIZES_ID));
+                .hasMessageContaining(getMessageSource(INVALID_SIZE_COMBINATION));
     }
 
     @Test
