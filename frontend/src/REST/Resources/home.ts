@@ -3,4 +3,4 @@
 // TODO: fix typescript
 import { obminyashkaApi } from '../Service/networkProvider';
 
-export const getCurrentOffers = () => obminyashkaApi.get('/adv/thumbnail/?enableRandom=true');
+export const getCurrentOffers = () => obminyashkaApi.get('/adv/thumbnail?enableRandom=true');
