@@ -34,6 +34,7 @@ public class ResponseMessagesHandler {
         public final String SUBCATEGORY_NOT_DELETABLE = "subcategory.not-deletable";
         public final String INVALID_CATEGORY_ID = "invalid.category.id";
         public final String INVALID_SUBCATEGORY_ID = "invalid.subcategory.id";
+        public final String INVALID_SIZE_COMBINATION = "invalid.size.combination";
         public final String INVALID_CATEGORY_SIZES_ID = "invalid.category.sizes.id";
         public final String INVALID_CATEGORY_SUBCATEGORY_COMBINATION = "invalid.category.subcategory.combination";
         public final String INVALID_ENUM_VALUE = "invalid.enum.value";
