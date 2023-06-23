@@ -41,7 +41,7 @@ public class AdvertisementFilterRequest {
     private AdvertisementFilter advertisementFilter = new AdvertisementFilter();
 
     @SuppressWarnings("unused")
-    @AssertFalse(message = "{" + INVALID_CATEGORY_SIZES_ID + "}")
+    @AssertFalse(message = "{" + INVALID_SIZE_COMBINATION + "}")
     private boolean isValidCategorySizes() {
         return CollectionUtils.isNotEmpty(advertisementFilter.getClothingSizes()) &&
                 CollectionUtils.isNotEmpty(advertisementFilter.getShoesSizes());
