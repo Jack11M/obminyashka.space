@@ -53,7 +53,6 @@ public class AdvertisementFilter {
         clothingSizes = value.stream().map(Size.Clothing::fromValue).collect(Collectors.toSet());
     }
 
-    @JsonCreator
     public void setAge(Set<String> value) {
         age = value.stream().map(AgeRange::fromValue).collect(Collectors.toSet());
     }
