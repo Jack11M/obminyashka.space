@@ -32,7 +32,7 @@ public enum AgeRange {
         try {
             return AgeRange.valueOf(value);
         } catch (IllegalArgumentException e) {
-            log.info("Received non-enum value for AgeRange: {value}");
+            log.info("Received non-enum value for AgeRange: {}", value);
             return Arrays.stream(AgeRange.values())
                     .filter(ageRange -> ageRange.value.equals(value))
                     .findFirst()
