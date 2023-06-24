@@ -73,7 +73,7 @@ public class JwtTokenService implements OAuth2TokenValidator<Jwt> {
         try {
             return Optional.ofNullable(tokenDecoder.decode(token).getExpiresAt());
         } catch (JwtException exception) {
-            log.error("Token parsing error {}", exception.getMessage());
+            log.error("[JwtTokenService] Token parsing error {}", exception.getMessage());
             return Optional.empty();
         }
     }

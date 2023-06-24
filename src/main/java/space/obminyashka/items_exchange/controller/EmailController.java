@@ -36,9 +36,9 @@ public class EmailController {
             @ApiResponse(responseCode = "406", description = "NOT ACCEPTABLE")})
     @ResponseStatus(HttpStatus.OK)
     public String validateEmail(@PathVariable UUID code) throws EmailValidationCodeNotFoundException {
-        log.info("receive the code {} for validation", code);
+        log.info("[EmailController] Received the code '{}' for validation", code);
         mailService.validateEmail(code);
-        log.info("the code {} was successfully validated", code);
+        log.info("[EmailController] The code '{}' was successfully validated", code);
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMED);
     }
 }

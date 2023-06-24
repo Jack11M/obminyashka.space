@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
                 .setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken))
                 .setRefreshToken(refreshTokenService.createRefreshToken(user).getToken())
                 .setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
-        log.info("User {} is successfully logged in", userLoginResponseDto.getUsername());
+        log.info("[AuthServiceImpl] User '{}' is successfully logged in", user.getId());
         return userLoginResponseDto;
     }
 

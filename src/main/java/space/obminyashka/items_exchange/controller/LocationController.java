@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.boot.model.naming.IllegalIdentifierException;
@@ -20,9 +21,7 @@ import space.obminyashka.items_exchange.dto.LocationDto;
 import space.obminyashka.items_exchange.dto.LocationsRequest;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.service.LocationService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -71,7 +70,7 @@ public class LocationController {
         try {
             return new ResponseEntity<>(locationService.save(locationDto), HttpStatus.CREATED);
         } catch (DataIntegrityViolationException e) {
-            log.warn("Attempt of creation an existing location: {} ", locationDto, e);
+            log.warn("[LocationController] Attempt of creation an existing location: {} ", locationDto, e);
             throw new DataConflictException(getMessageSource(LOCATION_ALREADY_EXIST));
         }
     }
@@ -105,9 +104,8 @@ public class LocationController {
         if (locationIds.size() != locations.size()) {
             final String strIds = getNonExistingLocationsIds(locationIds, locations);
 
-            log.warn("Received nonexistent IDs {}", strIds);
-            throw new IllegalIdentifierException(
-                    getExceptionMessageSourceWithAdditionalInfo(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_ID, strIds));
+            log.warn("[LocationController] Received non-existing IDs {}", strIds);
+            throw new IllegalIdentifierException(getExceptionMessageSourceWithAdditionalInfo(ILLEGAL_ID, strIds));
         }
         locationService.removeById(locationIds);
     }

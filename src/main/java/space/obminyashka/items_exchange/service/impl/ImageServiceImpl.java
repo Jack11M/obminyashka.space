@@ -164,7 +164,7 @@ public class ImageServiceImpl implements ImageService {
             }
             return baos.toByteArray();
         } catch (IOException e) {
-            log.error("An error occurred while scale an image", e);
+            log.error("[ImageServiceImpl] An error occurred while scale an image", e);
             return bytes;
         }
     }

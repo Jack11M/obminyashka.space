@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
         }
         var errorMessage = new ErrorMessage(message, request.getRequest().getRequestURI(), request.getHttpMethod().name());
         log.atLevel(level)
-                .setMessage(errorMessage.toString())
+                .setMessage("[GlobalExceptionHandler] ".concat(errorMessage.toString()))
                 .setCause(e)
                 .log();
         return errorMessage;
