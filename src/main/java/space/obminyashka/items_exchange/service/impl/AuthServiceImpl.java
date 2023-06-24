@@ -28,12 +28,12 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenService jwtTokenService;
 
     public UserLoginResponseDto finalizeAuthData(UserLoginResponseDto userDto) {
-        userDto.setAccessToken(jwtTokenService.createAccessToken(userDto.getUsername(), userDto.getRole()));
-        userDto.setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(userDto.getAccessToken()));
-        var refreshToken = refreshTokenService.createRefreshToken(userDto.getRefreshToken(), userDto.getUsername());
-        userDto.setRefreshToken(refreshToken.getToken());
-        var timezone = ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV));
-        userDto.setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(timezone));
+        userDto.setAccessToken(jwtTokenService.createAccessToken(userDto.getUsername(), userDto.getRole()))
+                .setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(userDto.getAccessToken()))
+                .setRefreshToken(refreshTokenService
+                        .createRefreshToken(userDto.getRefreshToken(), userDto.getUsername()).getToken())
+                .setRefreshTokenExpirationDate(jwtTokenService
+                        .getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
 
         log.info("User {} is successfully logged in", userDto.getUsername());
 

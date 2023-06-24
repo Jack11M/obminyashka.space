@@ -9,8 +9,8 @@ public interface RefreshTokenService {
     /**
      * Creates a {@link RefreshToken} by logged-in User`s username
      *
-     * @param refreshToken
-     * @param username
+     * @param refreshToken previous refresh token of user
+     * @param username is a username of user which wants to create or update refresh token
      * @return the created {@link RefreshToken}
      */
     RefreshToken createRefreshToken(String refreshToken, String username);

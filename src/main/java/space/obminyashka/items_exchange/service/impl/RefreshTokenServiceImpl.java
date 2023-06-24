@@ -24,10 +24,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         final String token = jwtTokenService.generateRefreshToken(username);
         final var tokenExpirationTime = jwtTokenService.generateRefreshTokenExpirationTime();
 
-        Optional.ofNullable(createdRefreshToken)
-                .ifPresentOrElse(
-                        (refreshToken) -> refreshTokenRepository.updateRefreshToken(username, token, tokenExpirationTime),
-                        () -> refreshTokenRepository.createRefreshToken(username, token, tokenExpirationTime));
+        if (createdRefreshToken != null) {
+            refreshTokenRepository.updateRefreshToken(username, token, tokenExpirationTime);
+        } else {
+            refreshTokenRepository.createRefreshToken(username, token, tokenExpirationTime);
+        }
 
         return new RefreshToken(token, tokenExpirationTime);
     }

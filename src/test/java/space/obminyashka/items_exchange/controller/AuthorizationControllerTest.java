@@ -106,18 +106,7 @@ class AuthorizationControllerTest {
                 () -> verify(authService).finalizeAuthData(authCaptor.capture()),
                 () -> assertEquals(prefinalizeUserLoginDto, authCaptor.getValue()),
                 () -> verify(authenticationManager).authenticate(any()),
-                () -> assertThat(actualUserLoginDto)
-                        .hasFieldOrPropertyWithValue("username", expectedUserLoginDto.getUsername())
-                        .hasFieldOrPropertyWithValue("email", expectedUserLoginDto.getEmail())
-                        .hasFieldOrPropertyWithValue("firstName", expectedUserLoginDto.getFirstName())
-                        .hasFieldOrPropertyWithValue("lastName", expectedUserLoginDto.getLastName())
-                        .hasFieldOrPropertyWithValue("language", expectedUserLoginDto.getLanguage())
-                        .hasFieldOrPropertyWithValue("role", expectedUserLoginDto.getRole())
-                        .hasFieldOrPropertyWithValue("accessToken", expectedUserLoginDto.getAccessToken())
-                        .hasFieldOrPropertyWithValue("accessTokenExpirationDate", expectedUserLoginDto.getAccessTokenExpirationDate())
-                        .hasFieldOrPropertyWithValue("refreshToken", expectedUserLoginDto.getRefreshToken())
-                        .hasFieldOrPropertyWithValue("refreshTokenExpirationDate", expectedUserLoginDto.getRefreshTokenExpirationDate())
-                        .hasFieldOrPropertyWithValue("avatarImage", expectedUserLoginDto.getAvatarImage())
+                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto)
         );
     }
 
@@ -158,18 +147,7 @@ class AuthorizationControllerTest {
                 () -> assertEquals(mockAuth.getName(), usernameCaptor.getValue()),
                 () -> verify(authService).finalizeAuthData(authCaptor.capture()),
                 () -> assertEquals(prefinalizeUserLoginDto, authCaptor.getValue()),
-                () -> assertThat(actualUserLoginDto)
-                        .hasFieldOrPropertyWithValue("username", expectedUserLoginDto.getUsername())
-                        .hasFieldOrPropertyWithValue("email", expectedUserLoginDto.getEmail())
-                        .hasFieldOrPropertyWithValue("firstName", expectedUserLoginDto.getFirstName())
-                        .hasFieldOrPropertyWithValue("lastName", expectedUserLoginDto.getLastName())
-                        .hasFieldOrPropertyWithValue("language", expectedUserLoginDto.getLanguage())
-                        .hasFieldOrPropertyWithValue("role", expectedUserLoginDto.getRole())
-                        .hasFieldOrPropertyWithValue("accessToken", expectedUserLoginDto.getAccessToken())
-                        .hasFieldOrPropertyWithValue("accessTokenExpirationDate", expectedUserLoginDto.getAccessTokenExpirationDate())
-                        .hasFieldOrPropertyWithValue("refreshToken", expectedUserLoginDto.getRefreshToken())
-                        .hasFieldOrPropertyWithValue("refreshTokenExpirationDate", expectedUserLoginDto.getRefreshTokenExpirationDate())
-                        .hasFieldOrPropertyWithValue("avatarImage", expectedUserLoginDto.getAvatarImage())
+                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto)
         );
     }
 
