@@ -155,26 +155,8 @@ class UserServiceTest {
                 () -> verify(userRepository).findAuthDataByEmailOrUsername(usernameCaptor.capture(), any()),
                 () -> assertEquals(expectedUsername, usernameCaptor.getValue()),
                 () -> verify(userMapper).toLoginResponseDto(projectionCaptor.capture()),
-                () -> assertThat(projectionCaptor.getValue())
-                        .hasFieldOrPropertyWithValue("id", expectedProjection.get().getId())
-                        .hasFieldOrPropertyWithValue("username", expectedProjection.get().getUsername())
-                        .hasFieldOrPropertyWithValue("email", expectedProjection.get().getEmail())
-                        .hasFieldOrPropertyWithValue("firstName", expectedProjection.get().getFirstName())
-                        .hasFieldOrPropertyWithValue("lastName", expectedProjection.get().getLastName())
-                        .hasFieldOrPropertyWithValue("language", expectedProjection.get().getLanguage())
-                        .hasFieldOrPropertyWithValue("role", expectedProjection.get().getRole())
-                        .hasFieldOrPropertyWithValue("refreshToken", expectedProjection.get().getRefreshToken())
-                        .hasFieldOrPropertyWithValue("avatarImage", expectedProjection.get().getAvatarImage()),
-                () -> assertThat(actualUserLoginDto)
-                        .hasFieldOrPropertyWithValue("username", expectedUserLoginDto.getUsername())
-                        .hasFieldOrPropertyWithValue("email", expectedUserLoginDto.getEmail())
-                        .hasFieldOrPropertyWithValue("firstName", expectedUserLoginDto.getFirstName())
-                        .hasFieldOrPropertyWithValue("lastName", expectedUserLoginDto.getLastName())
-                        .hasFieldOrPropertyWithValue("language", expectedUserLoginDto.getLanguage())
-                        .hasFieldOrPropertyWithValue("role", expectedUserLoginDto.getRole())
-                        .hasFieldOrPropertyWithValue("refreshToken", expectedUserLoginDto.getRefreshToken())
-                        .hasFieldOrPropertyWithValue("refreshTokenExpirationDate", expectedUserLoginDto.getRefreshTokenExpirationDate())
-                        .hasFieldOrPropertyWithValue("avatarImage", expectedUserLoginDto.getAvatarImage())
+                () -> assertEquals(expectedProjection.get(), projectionCaptor.getValue()),
+                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto)
         );
     }
 
