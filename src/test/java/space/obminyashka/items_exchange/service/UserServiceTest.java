@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.RefreshToken;
@@ -127,7 +125,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findAuthDataByUsernameOrEmail_shouldThrowUsernameNotFoundException() {
+    void findAuthDataByUsernameOrEmail_whenUserDoesNotExistInDB_shouldThrowUsernameNotFoundException() {
         var expectedUsername = "user";
         when(userRepository.findAuthDataByEmailOrUsername(any(), any())).thenReturn(Optional.empty());
 
@@ -142,7 +140,7 @@ class UserServiceTest {
     }
 
     @Test
-    void findAuthDataByUsernameOrEmail_shouldReturnUserLoginResponseDto() {
+    void findAuthDataByUsernameOrEmail_whenUserExistsInDB_shouldReturnUserLoginResponseDto() {
         var expectedUsername = "user";
         var expectedProjection = creatUserAuthProjection();
         var expectedUserLoginDto = createUserLoginDto(expectedProjection.get());

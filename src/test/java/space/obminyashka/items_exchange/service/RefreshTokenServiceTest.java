@@ -36,7 +36,7 @@ class RefreshTokenServiceTest {
 
 
     @Test
-    void createRefreshToken_shouldCreateToken() {
+    void createRefreshToken_whenRefreshTokenIsNullOrDoesNotExistInDB_shouldCreateToken() {
         var username = "user_without_token";
         var mockRefreshToken = new RefreshToken().setToken(null);
         var expectedRefreshToken = "token_string";
@@ -53,7 +53,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void createRefreshToken_shouldUpdateToken() {
+    void createRefreshToken_whenRefreshTokenExistsInDB_shouldUpdateToken() {
         var username = "user_with_token";
         var mockRefreshToken = new RefreshToken().setToken("");
         var expectedRefreshToken = "token_string";
@@ -75,7 +75,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void renewAccessTokenByRefreshToken_shouldRenewAccessToken() {
+    void renewAccessTokenByRefreshToken_whenAccessTokenExpires_shouldRenewAccessToken() {
         var expectedAccessToken = "some token";
         var expectedRenewStatus = true;
         var existRefreshToken = new RefreshToken().setExpiryDate(LocalDateTime.now().plusHours(1));
@@ -98,7 +98,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void renewAccessTokenByRefreshToken_shouldNotRenewAccessToken() {
+    void renewAccessTokenByRefreshToken_whenAccessTokenDoesNotExpiry_shouldNotRenewAccessToken() {
         var expectedRenewStatus = false;
         var existRefreshToken = new RefreshToken().setExpiryDate(LocalDateTime.now().minusHours(1));
         existRefreshToken.setUser(
@@ -119,7 +119,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void deleteByUsername_shouldDeleteRefreshToken() {
+    void deleteByUsername_whenUserWithUsernameExistsInDB_shouldDeleteRefreshToken() {
         var expectedUsername = "user";
 
         refreshTokenService.deleteByUsername(expectedUsername);

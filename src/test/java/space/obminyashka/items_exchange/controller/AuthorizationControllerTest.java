@@ -90,7 +90,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    void login_shouldLoginUser() {
+    void login_whenUserWihUserNameExistsInDB_shouldLoginUser() {
         var expectedUserDto = new UserLoginDto();
         expectedUserDto.setUsernameOrEmail("user");
         var prefinalizeUserLoginDto = createUserLoginDto();
@@ -111,7 +111,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    void login_shouldBadCredentialsException() {
+    void login_whenUserWihUserNameDoesNotExistInDB_shouldBadCredentialsException() {
         var expectedUserDto = new UserLoginDto();
         expectedUserDto.setUsernameOrEmail("user");
         var prefinalizelUserLoginDto = createUserLoginDto();
@@ -133,7 +133,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    void loginWithOAuth2_shouldLoginUser() {
+    void loginWithOAuth2_whenUserWihUserNameExistsInDB_shouldLoginUser() {
         var mockAuth = new UsernamePasswordAuthenticationToken("user", "1234");
         var prefinalizeUserLoginDto = createUserLoginDto();
         var expectedUserLoginDto = finalizeUserLoginDto(prefinalizeUserLoginDto);
@@ -152,7 +152,7 @@ class AuthorizationControllerTest {
     }
 
     @Test
-    void loginWithOAuth2_shouldBadCredentialsException() {
+    void loginWithOAuth2_whenUserWihUserNameDoesNotExistInDB_shouldBadCredentialsException() {
         var mockAuth = new UsernamePasswordAuthenticationToken("user", "1234");
         when(userService.findAuthDataByUsernameOrEmail(any())).thenThrow(new UsernameNotFoundException(""));
 

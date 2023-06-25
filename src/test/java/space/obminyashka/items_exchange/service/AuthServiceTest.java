@@ -84,7 +84,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void logout_shouldSuccessLogout() {
+    void logout_whenAccessTokenOfUserIsNotEmpty_shouldSuccessLogout() {
         var expectedAccessToken = "token";
         var expectedUsername = "user";
 
@@ -100,7 +100,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void logout_shouldWrongLogout() {
+    void logout_whenAccessTokenOfUserIsEmpty_shouldWrongLogout() {
         var expectedAccessToken = "";
         var expectedUsername = "user";
 
@@ -114,7 +114,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void renewAccessTokenByRefresh_shouldCreateNewRefreshToken() throws RefreshTokenException {
+    void renewAccessTokenByRefresh_whenRefreshTokenIsNotEmpty__shouldCreateNewAccessToken() throws RefreshTokenException {
         var expectedAccessToken = "access_token";
         var actualRefreshToken = "refresh_token";
         when(refreshTokenService.renewAccessTokenByRefresh(any())).thenReturn(Optional.ofNullable(expectedAccessToken));
@@ -136,7 +136,7 @@ class AuthServiceTest {
     }
 
     @Test
-    void renewAccessTokenByRefresh_shouldThrowRefreshTokenException() {
+    void renewAccessTokenByRefresh_whenRefreshTokenIsEmpty_shouldThrowRefreshTokenException() {
         var expectedAccessToken = "";
         var actualRefreshToken = "";
         when(refreshTokenService.renewAccessTokenByRefresh(any())).thenReturn(Optional.ofNullable(expectedAccessToken));
