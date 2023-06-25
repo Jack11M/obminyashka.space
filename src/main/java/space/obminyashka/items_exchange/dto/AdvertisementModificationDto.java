@@ -36,7 +36,6 @@ public class AdvertisementModificationDto {
     @Size(max = 255, message = "{" + INVALID_MAX_SIZE + "}")
     private String description;
 
-    @NotBlank(message = "{" + BLANK_WISHES_TO_EXCHANGE + "}")
     @Size(max = 210, message = "{" + INVALID_MAX_SIZE + "}")
     private String wishesToExchange;
 
