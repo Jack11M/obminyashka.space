@@ -1,24 +1,29 @@
 category:
   - id: 1
-    name: 'shoes'
+    name: 'Clothing'
   - id: 2
-    name: 'Toys'
+    name: 'Shoes'
   - id: 3
-    name: 'books'
+    name: 'Toys'
+  - id: 4
+    name: 'Children`S Furniture'
 
 subcategory:
   - id: 1
-    name: 'light_shoes'
+    name: 'Outerwear'
     category_id: 1
   - id: 2
-    name: 'dolls'
-    category_id: 2
+    name: 'Blouses, Shirts'
+    category_id: 1
   - id: 3
-    name: 'puzzles'
+    name: 'Pants, Jeans, Shorts'
+    category_id: 1
+  - id: 14
+    name: 'Boots'
     category_id: 2
-  - id: 4
+  - id: 15
     name: 'fairy tales'
-    category_id: 3
-  - id: 5
-    name: 'educational books'
-    category_id: 3
+    category_id: 4
+  - id: 16
+    name: 'lego'
+    category_id: 4

@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -24,23 +27,19 @@ import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
+import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.EmailType;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 
 import java.util.UUID;
 
 import static liquibase.util.StringUtil.escapeHtml;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Slf4j
 @RestController
@@ -70,8 +69,7 @@ public class AuthController {
             return userLoginResponseDto;
         } catch (AuthenticationException e) {
             log.warn("[AuthController] An exception occurred while authorization for '{}'", userLoginDto.getUsernameOrEmail(), e);
-            throw new BadCredentialsException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME_PASSWORD));
+            throw new BadCredentialsException(getMessageSource(INVALID_USERNAME_PASSWORD));
         }
     }
 
@@ -97,19 +95,17 @@ public class AuthController {
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto,
                                                @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) throws BadRequestException {
         if (userService.existsByUsernameOrEmail(escapeHtml(userRegistrationDto.getUsername()), escapeHtml(userRegistrationDto.getEmail()))) {
-            return new ResponseEntity<>(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE), HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(getMessageSource(USERNAME_EMAIL_DUPLICATE));
         }
 
         UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(userRegistrationDto.getEmail(), EmailType.REGISTRATION, host);
 
         if (userService.registerNewUser(userRegistrationDto, codeId)) {
-            log.info("User with email: {} successfully registered", escapeHtml(userRegistrationDto.getEmail()));
-            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED), HttpStatus.CREATED);
+            log.info("[AuthController] User with email validation code '{}' is successfully registered", codeId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(getMessageSource(USER_CREATED));
         }
 
-        throw new BadRequestException(getMessageSource(
-                ResponseMessagesHandler.ValidationMessage.USER_NOT_REGISTERED));
+        throw new BadRequestException(getMessageSource(USER_NOT_REGISTERED));
     }
 
     @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -141,8 +137,7 @@ public class AuthController {
             var userLoginResponseDto = userService.findAuthDataByUsernameOrEmail(authentication.getName());
             return authService.finalizeAuthData(userLoginResponseDto);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.INVALID_OAUTH2_LOGIN));
+            throw new BadCredentialsException(getMessageSource(INVALID_OAUTH2_LOGIN));
         }
     }
 }

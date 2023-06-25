@@ -1,12 +1,17 @@
 package space.obminyashka.items_exchange.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
+
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 public interface Size {
 
     @RequiredArgsConstructor
-    @Getter
     enum Clothing {
         FORTY_SIX_2_FIFTY("46 - 50"),
         FIFTY_ONE_2_FIFTY_SIX("51 - 56"),
@@ -30,11 +35,19 @@ public interface Size {
         ONE_FIVE_NINE_2_ONE_SIX_FOUR("159 - 164"),
         ONE_SIX_FIVE_2_ONE_SEVEN_OUGHT("165 - 170");
 
-        public final String range;
+        @JsonValue
+        @Getter
+        private final String range;
+
+        public static Clothing fromValue(String range) {
+            return Arrays.stream(Clothing.values())
+                    .filter(clothing -> clothing.range.equals(range))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE)));
+        }
     }
 
     @RequiredArgsConstructor
-    @Getter
     enum Shoes {
         NINE_POINT_FIVE(9.5),
         TEN(10),
@@ -75,6 +88,15 @@ public interface Size {
         TWENTY_SEVEN_POINT_FIVE(27.5),
         TWENTY_EIGHT(28);
 
-        public final double length;
+        @JsonValue
+        @Getter
+        private final double length;
+
+        public static Shoes fromValue(Double length) {
+            return Arrays.stream(Shoes.values())
+                    .filter(shoes -> shoes.length == length)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE)));
         }
+    }
 }

@@ -210,7 +210,7 @@ class CategoryServiceTest {
 
     private static Stream<Arguments> getTestCategories() {
         return Stream.of(
-                Arguments.of(false, createNonExistValidCategoryDto(), true, CATEGORY_NAME_BOOKS),
+                Arguments.of(false, createNonExistValidCategoryDto(), true, CATEGORY_NAME_TOYS),
                 Arguments.of(true, createCategoryDtoWithDuplicateName(), false, EXISTING_CATEGORY_NAME)
         );
     }

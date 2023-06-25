@@ -85,5 +85,5 @@ public interface CategoryService {
      * @see Size.Clothing
      * @see Size.Shoes
      */
-    List<String> findSizesForCategory(int id);
+    List<String> findSizesForCategory(long id);
 }

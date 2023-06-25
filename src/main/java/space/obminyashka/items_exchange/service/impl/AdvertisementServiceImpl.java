@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
@@ -27,6 +28,7 @@ import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import jakarta.persistence.EntityNotFoundException;
+
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -49,20 +51,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
-        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
-                findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
-        final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
-        findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
-        return findAllThumbnails(findAdvsRequest).getContent();
-    }
+    public Page<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
+        if (findAdvsRequest.isEnableRandom()) {
+            final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
+                    findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
+            final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
+            findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        }
 
-    @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
         return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
                         findAdvsRequest.getSubcategoryId(),
                         PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
-                .map(this::buildAdvertisementTitle);
+                .map(advertisementMapper::toAdvertisementTitleDto);
     }
 
     @Cacheable
@@ -104,17 +104,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
-        return advertisementRepository.findFirst10ByParams(
-                        dto.getAge(),
-                        dto.getGender(),
-                        dto.getSize(),
-                        dto.getSeason(),
-                        dto.getSubcategoryId(),
-                        dto.getCategoryId(),
-                        dto.getLocationId()).stream()
-                .map(this::buildAdvertisementTitle)
-                .toList();
+    public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
+        return advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
+                .map(this::buildAdvertisementTitle);
     }
 
     @Override
@@ -203,8 +195,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean areAdvertisementsExistWithSubcategory(long id)
-    {
+    public boolean areAdvertisementsExistWithSubcategory(long id) {
         return advertisementRepository.existsBySubcategoryId(id);
     }
 

@@ -26,15 +26,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
+import space.obminyashka.items_exchange.controller.request.SubcategoryFilter;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementFilterDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -43,6 +45,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -64,15 +67,12 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
-        return advertisementService.findAllThumbnails(findAdvsRequest);
-    }
-
-    @GetMapping(value = ApiKey.ADV_THUMBNAIL_RANDOM, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find N random advertisement as thumbnails and return them as a result with filters")
-    @ApiResponse(responseCode = "200", description = "OK")
-    public List<AdvertisementTitleDto> findRandom12Thumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) {
-        return advertisementService.findRandomNThumbnails(findAdvsRequest);
+    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) throws SubcategoryIdNotFoundException {
+        Long subcategoryId = findAdvsRequest.getSubcategoryId();
+        if (subcategoryId != null && !subcategoryService.isSubcategoryExistsById(subcategoryId)) {
+            throw new SubcategoryIdNotFoundException(getExceptionMessageSourceWithId(subcategoryId, INVALID_SUBCATEGORY_ID));
+        }
+        return advertisementService.findThumbnails(findAdvsRequest);
     }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -126,18 +126,29 @@ public class AdvertisementController {
             @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
         if (!categoryService.isCategoryExistsById(categoryId)) {
             throw new CategoryIdNotFoundException(
-                    getParametrizedMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID, categoryId));
+                    getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId));
         }
         return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
-    @PostMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Filter advertisements by multiple params and return up to 10 results.\n" +
-            "Fill only needed parameters.")
+    @GetMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Filter advertisements by multiple params")
     @ApiResponse(responseCode = "200", description = "OK")
     @ResponseStatus(HttpStatus.OK)
-    public List<AdvertisementTitleDto> getFirst10BySearchParameters(@Valid @RequestBody AdvertisementFilterDto filterDto) {
-        return advertisementService.findFirst10ByFilter(filterDto);
+    public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(
+            @Valid @ParameterObject AdvertisementFilterRequest filterRequest) {
+        validateAllSubcategoriesExistsInCategory(filterRequest.getSubcategoryFilterRequest());
+        return advertisementService.filterAdvertisementBySearchParameters(filterRequest);
+    }
+
+    private void validateAllSubcategoriesExistsInCategory(SubcategoryFilter subcategoryFilter) {
+        List<Long> searchSubcategoriesIdValues = subcategoryFilter.getSubcategoriesIdValues();
+        List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoryById(
+                subcategoryFilter.getCategoryId(), searchSubcategoriesIdValues);
+        if (existingSubcategoriesId.size() != searchSubcategoriesIdValues.size()) {
+            throw new BadRequestException(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
+                    existingSubcategoriesId, subcategoryFilter.getCategoryId()));
+        }
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
