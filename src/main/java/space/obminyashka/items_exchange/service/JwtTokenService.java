@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.authorization.jwt.InvalidatedTokensHolder;
 import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -20,8 +19,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 
 @Slf4j
 @Service
@@ -63,19 +60,8 @@ public class JwtTokenService implements OAuth2TokenValidator<Jwt> {
     }
 
     public void invalidateAccessToken(String token) {
-        final Instant expirationDate = getAccessTokenExpirationDate(token)
-                .orElseThrow(() -> new JwtException(getMessageSource(
-                        ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN)));
+        Instant expirationDate = tokenDecoder.decode(token).getExpiresAt();
         invalidatedTokensHolder.invalidate(token, Date.from(expirationDate));
-    }
-
-    public Optional<Instant> getAccessTokenExpirationDate(String token) {
-        try {
-            return Optional.ofNullable(tokenDecoder.decode(token).getExpiresAt());
-        } catch (JwtException exception) {
-            log.error("Token parsing error {}", exception.getMessage());
-            return Optional.empty();
-        }
     }
 
     public String generateRefreshToken(String username) {
