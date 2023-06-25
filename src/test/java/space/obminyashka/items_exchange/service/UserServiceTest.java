@@ -3,10 +3,9 @@ package space.obminyashka.items_exchange.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
@@ -35,13 +34,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
-    public static final String NEW_USER_EMAIL = "user@mail.ua";
+    private static final String NEW_USER_EMAIL = "user@mail.ua";
+    private static final String EXPECTED_USERNAME = "user";
+    private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+    private final Role role = new Role(null, "ROLE_USER", Collections.emptyList());
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -54,17 +57,15 @@ class UserServiceTest {
     private RoleService roleService;
     @Mock
     private UserMapper userMapper;
-    @Captor
-    private ArgumentCaptor<String> usernameCaptor;
-    @Captor
-    private ArgumentCaptor<UserAuthProjection> projectionCaptor;
-    private UserServiceImpl userService;
     @Value("${number.of.hours.to.keep.email.confirmation.code}")
     private int numberOfHoursToKeepEmailConformationToken;
+    private UserServiceImpl userService;
+
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(bCryptPasswordEncoder, userRepository, emailConfirmationCodeRepository, phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
+        userService = new UserServiceImpl(bCryptPasswordEncoder, userRepository, emailConfirmationCodeRepository,
+                phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test
@@ -86,9 +87,6 @@ class UserServiceTest {
     }
 
     private UserProjection creatUserProjection() {
-        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-        Role role = new Role();
-        role.setName("ROLE_USER");
         Map<String, Object> map = Map.of(
                 "username", "First",
                 "role", role
@@ -97,8 +95,6 @@ class UserServiceTest {
     }
 
     private User creatUser() {
-        Role role = new Role();
-        role.setName("ROLE_USER");
         User user = new User();
         user.setRole(role);
         user.setUsername("First");
@@ -106,7 +102,6 @@ class UserServiceTest {
     }
 
     private DefaultOidcUser createDefaultOidcUser() {
-        var roleUser = "ROLE_USER";
         String ID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6I";
 
         final var now = Instant.now();
@@ -114,58 +109,51 @@ class UserServiceTest {
                 ID_TOKEN,
                 now,
                 now.plusSeconds(60),
-                Map.of("groups", roleUser, "sub", 123));
+                Map.of("groups", role.getName(), "sub", 123));
 
         final var userInfo = new OidcUserInfo(Map.of(
                 "email", NEW_USER_EMAIL,
                 "given_name", "First",
                 "family_name", "Last"));
 
-        return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
+        return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(role.getName())), idToken, userInfo);
     }
 
     @Test
-    void findAuthDataByUsernameOrEmail_whenUserDoesNotExistInDB_shouldThrowUsernameNotFoundException() {
-        var expectedUsername = "user";
-        when(userRepository.findAuthDataByEmailOrUsername(any(), any())).thenReturn(Optional.empty());
+    void findAuthDataByUsernameOrEmail_whenUserDoesNotExistInDB_shouldThrowException() {
+        when(userRepository.findAuthDataByEmailOrUsername(anyString(), anyString())).thenReturn(Optional.empty());
 
         assertAll(
-                () -> assertThrows(
-                        UsernameNotFoundException.class,
-                        () -> userService.findAuthDataByUsernameOrEmail(expectedUsername)),
-                () -> verify(userRepository).findAuthDataByEmailOrUsername(usernameCaptor.capture(), any()),
-                () -> assertEquals(expectedUsername, usernameCaptor.getValue()),
-                () -> verify(userMapper, times(0)).toLoginResponseDto(any())
+                () -> assertThatThrownBy(() -> userService.findAuthDataByUsernameOrEmail(EXPECTED_USERNAME))
+                        .isInstanceOf(UsernameNotFoundException.class)
+                        .hasMessage("User " + EXPECTED_USERNAME + " is not logged in"),
+                () -> verify(userRepository).findAuthDataByEmailOrUsername(EXPECTED_USERNAME, EXPECTED_USERNAME),
+                () -> verifyNoInteractions(userMapper)
         );
     }
 
     @Test
     void findAuthDataByUsernameOrEmail_whenUserExistsInDB_shouldReturnUserLoginResponseDto() {
-        var expectedUsername = "user";
         var expectedProjection = creatUserAuthProjection();
-        var expectedUserLoginDto = createUserLoginDto(expectedProjection.get());
-        when(userRepository.findAuthDataByEmailOrUsername(any(), any())).thenReturn(expectedProjection);
-        when(userMapper.toLoginResponseDto(any())).thenReturn(expectedUserLoginDto);
+        var expectedUserLoginDto = createUserLoginDto(expectedProjection);
+        when(userRepository.findAuthDataByEmailOrUsername(anyString(), anyString()))
+                .thenReturn(Optional.of(expectedProjection));
+        when(userMapper.toLoginResponseDto(expectedProjection)).thenReturn(expectedUserLoginDto);
 
-        var actualUserLoginDto = userService.findAuthDataByUsernameOrEmail(expectedUsername);
+        var actualUserLoginDto = userService.findAuthDataByUsernameOrEmail(EXPECTED_USERNAME);
 
         assertAll(
-                () -> verify(userRepository).findAuthDataByEmailOrUsername(usernameCaptor.capture(), any()),
-                () -> assertEquals(expectedUsername, usernameCaptor.getValue()),
-                () -> verify(userMapper).toLoginResponseDto(projectionCaptor.capture()),
-                () -> assertEquals(expectedProjection.get(), projectionCaptor.getValue()),
+                () -> verify(userRepository).findAuthDataByEmailOrUsername(EXPECTED_USERNAME, EXPECTED_USERNAME),
+                () -> verify(userMapper).toLoginResponseDto(expectedProjection),
                 () -> assertEquals(expectedUserLoginDto, actualUserLoginDto)
         );
     }
 
-    private Optional<UserAuthProjection> creatUserAuthProjection() {
-        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-        Role role = new Role();
-        role.setName("ROLE_USER");
+    private UserAuthProjection creatUserAuthProjection() {
         RefreshToken refreshToken = new RefreshToken("token", LocalDateTime.now());
         Map<String, Object> map = Map.of(
                 "id", UUID.randomUUID(),
-                "username", "user",
+                "username", EXPECTED_USERNAME,
                 "email", "email",
                 "firstName", "name",
                 "lastName", "name",
@@ -174,20 +162,15 @@ class UserServiceTest {
                 "refreshToken", refreshToken,
                 "avatarImage", new byte[0]
         );
-        return Optional.ofNullable(factory.createProjection(UserAuthProjection.class, map));
+        return factory.createProjection(UserAuthProjection.class, map);
     }
 
     private UserLoginResponseDto createUserLoginDto(UserAuthProjection projection) {
-        var userLoginDto = new UserLoginResponseDto();
-        userLoginDto.setUsername(projection.getUsername());
-        userLoginDto.setEmail(projection.getEmail());
-        userLoginDto.setFirstName(projection.getFirstName());
-        userLoginDto.setLastName(projection.getLastName());
-        userLoginDto.setRole(projection.getRole());
-        userLoginDto.setLanguage(projection.getLanguage().toString());
-        userLoginDto.setRefreshToken(projection.getRefreshToken().getToken());
-        userLoginDto.setRefreshTokenExpirationDate(projection.getRefreshToken().getExpiryDate().toString());
-        userLoginDto.setAvatarImage(projection.getAvatarImage());
-        return userLoginDto;
+        var dto = new UserLoginResponseDto();
+        BeanUtils.copyProperties(projection, dto);
+        dto.setLanguage(projection.getLanguage().toString());
+        dto.setRefreshToken(projection.getRefreshToken().getToken());
+        dto.setRefreshTokenExpirationDate(projection.getRefreshToken().getExpiryDate().toString());
+        return dto;
     }
 }
