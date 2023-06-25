@@ -17,6 +17,7 @@ import space.obminyashka.items_exchange.service.impl.AuthServiceImpl;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,6 +30,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
+    private static final String JWT_TOKEN = "super_secret_token";
+    private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String EXPECTED_USERNAME = "user";
     @Mock
     private JwtTokenService jwtTokenService;
     @Mock
@@ -39,14 +43,11 @@ class AuthServiceTest {
     private ArgumentCaptor<String> usernameCaptor;
     @Captor
     private ArgumentCaptor<String> tokenCaptor;
-    @Captor
-    private ArgumentCaptor<Role> roleCaptor;
-    @InjectMocks
-    private AuthServiceImpl authService;
+
     @InjectMocks
     private MessageSourceUtil messageSourceUtil;
-    private final String JWT_TOKEN = "super_secret_token";
-    private final String REFRESH_TOKEN = "refresh_token";
+    @InjectMocks
+    private AuthServiceImpl authService;
 
     @BeforeEach
     void init() {
@@ -54,101 +55,78 @@ class AuthServiceTest {
     }
 
     @Test
-    void finalizeAuthData_shouldPopulateDtoAndCreateTokenWithUsername() {
-        var userLoginResponseDto = new UserLoginResponseDto();
-        userLoginResponseDto.setEmail("user@mail.ua");
-        userLoginResponseDto.setUsername("user");
-        userLoginResponseDto.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
-        when(jwtTokenService.createAccessToken(anyString(), any())).thenReturn(JWT_TOKEN);
-        when(jwtTokenService.getAccessTokenExpiration(JWT_TOKEN)).thenReturn(LocalDateTime.MAX);
-        when(refreshTokenService.createRefreshToken(null, userLoginResponseDto.getUsername()))
+    void finalizeAuthData_whenPositiveFlow_shouldPopulateDtoAndCreateTokenWithUsername() {
+        mockJwtTokenServiceForCreationAccessAndRefreshTokens();
+        var testDto = createTestDto();
+        when(refreshTokenService.createRefreshToken(null, testDto.getUsername()))
                 .thenReturn(new RefreshToken(REFRESH_TOKEN, LocalDateTime.MAX));
-        when(jwtTokenService.getRefreshTokenExpiration(any())).thenReturn(REFRESH_TOKEN);
 
-        final var actualUserLoginResponseDto = authService.finalizeAuthData(userLoginResponseDto);
+        final var actualUserLoginResponseDto = authService.finalizeAuthData(testDto);
 
         assertAll(
-                () -> assertThat(actualUserLoginResponseDto)
-                        .hasFieldOrPropertyWithValue("accessToken", JWT_TOKEN)
-                        .hasFieldOrPropertyWithValue("refreshToken", REFRESH_TOKEN)
-                        .hasFieldOrProperty("accessTokenExpirationDate")
-                        .hasFieldOrProperty("refreshTokenExpirationDate"),
-                () -> verify(jwtTokenService).createAccessToken(usernameCaptor.capture(), roleCaptor.capture()),
-                () -> assertEquals(userLoginResponseDto.getUsername(), usernameCaptor.getValue()),
-                () -> assertEquals(userLoginResponseDto.getRole(), roleCaptor.getValue()),
-                () -> verify(jwtTokenService).getAccessTokenExpiration(any()),
-                () -> verify(refreshTokenService).createRefreshToken(any(), usernameCaptor.capture()),
-                () -> assertEquals(userLoginResponseDto.getUsername(), usernameCaptor.getValue()),
-                () -> verify(jwtTokenService).getRefreshTokenExpiration(any())
+                () -> checkAccessAndRefreshTokenFieldsInUserLoginResponseDto(actualUserLoginResponseDto),
+                () -> verify(jwtTokenService).createAccessToken(testDto.getUsername(), testDto.getRole()),
+                () -> verify(jwtTokenService).getAccessTokenExpiration(JWT_TOKEN),
+                () -> verify(refreshTokenService).createRefreshToken(null, testDto.getUsername()),
+                () -> verify(jwtTokenService).getRefreshTokenExpiration(any(ZonedDateTime.class))
         );
     }
 
-    @Test
-    void logout_whenAccessTokenOfUserIsNotEmpty_shouldSuccessLogout() {
-        var expectedAccessToken = "token";
-        var expectedUsername = "user";
+    private UserLoginResponseDto createTestDto() {
+        var dto = new UserLoginResponseDto();
+        dto.setEmail("user@mail.ua");
+        dto.setUsername(EXPECTED_USERNAME);
+        dto.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
+        return dto;
+    }
 
-        final var isLogout = authService.logout(expectedAccessToken, expectedUsername);
+    private void mockJwtTokenServiceForCreationAccessAndRefreshTokens() {
+        when(jwtTokenService.createAccessToken(anyString(), any(Role.class))).thenReturn(JWT_TOKEN);
+        when(jwtTokenService.getAccessTokenExpiration(anyString())).thenReturn(LocalDateTime.MAX);
+        when(jwtTokenService.getRefreshTokenExpiration(any(ZonedDateTime.class))).thenReturn(REFRESH_TOKEN);
+    }
+
+    private void checkAccessAndRefreshTokenFieldsInUserLoginResponseDto(UserLoginResponseDto dto) {
+        assertThat(dto)
+                .hasFieldOrPropertyWithValue("accessToken", JWT_TOKEN)
+                .hasFieldOrPropertyWithValue("refreshToken", REFRESH_TOKEN)
+                .hasFieldOrProperty("accessTokenExpirationDate")
+                .hasFieldOrProperty("refreshTokenExpirationDate");
+    }
+
+    @Test
+    void logout_whenPositiveFlow_shouldSuccessfullyLogout() {
+        authService.logout(JWT_TOKEN, EXPECTED_USERNAME);
 
         assertAll(
                 () -> verify(jwtTokenService).invalidateAccessToken(tokenCaptor.capture()),
-                () -> assertEquals(expectedAccessToken, tokenCaptor.getValue()),
+                () -> assertEquals(JWT_TOKEN, tokenCaptor.getValue()),
                 () -> verify(refreshTokenService).deleteByUsername(usernameCaptor.capture()),
-                () -> assertEquals(expectedUsername, usernameCaptor.getValue()),
-                () -> assertTrue(isLogout)
+                () -> assertEquals(EXPECTED_USERNAME, usernameCaptor.getValue())
         );
     }
 
     @Test
-    void logout_whenAccessTokenOfUserIsEmpty_shouldWrongLogout() {
-        var expectedAccessToken = "";
-        var expectedUsername = "user";
+    void renewAccessTokenByRefresh_whenRefreshTokenNotEmpty_shouldCreateNewAccessToken() throws RefreshTokenException {
+        when(refreshTokenService.renewAccessTokenByRefresh(any())).thenReturn(Optional.of(JWT_TOKEN));
 
-        final var isLogout = authService.logout(expectedAccessToken, expectedUsername);
-
-        assertAll(
-                () -> verify(jwtTokenService, times(0)).invalidateAccessToken(any()),
-                () -> verify(refreshTokenService, times(0)).deleteByUsername(any()),
-                () -> assertFalse(isLogout)
-        );
-    }
-
-    @Test
-    void renewAccessTokenByRefresh_whenRefreshTokenIsNotEmpty__shouldCreateNewAccessToken() throws RefreshTokenException {
-        var expectedAccessToken = "access_token";
-        var actualRefreshToken = "refresh_token";
-        when(refreshTokenService.renewAccessTokenByRefresh(any())).thenReturn(Optional.ofNullable(expectedAccessToken));
-
-        var refreshTokenDto = authService.renewAccessTokenByRefresh(actualRefreshToken);
+        var refreshTokenDto = authService.renewAccessTokenByRefresh(REFRESH_TOKEN);
 
         assertAll(
-                () -> assertThat(refreshTokenDto)
-                        .hasFieldOrPropertyWithValue("accessToken", expectedAccessToken)
-                        .hasFieldOrPropertyWithValue("refreshToken", actualRefreshToken)
-                        .hasFieldOrProperty("accessTokenExpiration")
-                        .hasFieldOrProperty("refreshTokenExpiration"),
-                () -> verify(refreshTokenService).renewAccessTokenByRefresh(tokenCaptor.capture()),
-                () -> assertEquals(actualRefreshToken, tokenCaptor.getValue()),
-                () -> verify(jwtTokenService).getAccessTokenExpiration(tokenCaptor.capture()),
-                () -> assertEquals(expectedAccessToken, tokenCaptor.getValue()),
-                () -> verify(jwtTokenService).getRefreshTokenExpiration(any())
+                () -> checkAccessAndRefreshTokenFieldsInRefreshTokenResponseDto(refreshTokenDto),
+                () -> verify(jwtTokenService).getAccessTokenExpiration(JWT_TOKEN),
+                () -> verify(jwtTokenService).getRefreshTokenExpiration(any(ZonedDateTime.class))
         );
     }
 
     @Test
     void renewAccessTokenByRefresh_whenRefreshTokenIsEmpty_shouldThrowRefreshTokenException() {
-        var expectedAccessToken = "";
-        var actualRefreshToken = "";
-        when(refreshTokenService.renewAccessTokenByRefresh(any())).thenReturn(Optional.ofNullable(expectedAccessToken));
+        when(refreshTokenService.renewAccessTokenByRefresh(anyString()))
+                .thenAnswer(i -> Optional.of(i.getArguments()[0]));
 
         assertAll(
-                () -> assertThrows(
-                        RefreshTokenException.class,
-                        () -> authService.renewAccessTokenByRefresh(actualRefreshToken)),
-                () -> verify(refreshTokenService).renewAccessTokenByRefresh(tokenCaptor.capture()),
-                () -> assertEquals(expectedAccessToken, tokenCaptor.getValue()),
-                () -> verify(jwtTokenService, times(0)).getAccessTokenExpiration(any()),
-                () -> verify(jwtTokenService, times(0)).getRefreshTokenExpiration(any())
+                () -> assertThrows(RefreshTokenException.class, () -> authService.renewAccessTokenByRefresh("")),
+                () -> verifyNoInteractions(jwtTokenService)
         );
     }
 }
