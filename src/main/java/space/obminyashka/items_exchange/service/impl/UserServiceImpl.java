@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("IN UserDetailsService (loadUserByUsername): " +
                         "user with username: " + username + " not found"));
 
-        log.info("IN UserDetailsService (loadUserByUsername): user with username: {} successfully loaded", username);
+        log.info("[UserServiceImpl] Invoked from UserDetailsService: User '{}' successfully loaded", user.getId());
         return user;
     }
 
@@ -219,7 +219,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .ifPresent(user -> {
                     user.setLanguage(locale);
                     userRepository.saveAndFlush(user);
-                    log.info("Preferable language was successfully updated for User: {}", user.getUsername());
+                    log.info("[UserServiceImpl] Preferable language was successfully updated for User: {}", user.getId());
                 });
     }
 }
