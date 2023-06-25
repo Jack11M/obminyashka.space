@@ -44,10 +44,6 @@ class AuthorizationControllerTest {
     private AuthenticationManager authenticationManager;
     @Mock
     private MessageSource messageSource;
-    @Captor
-    private ArgumentCaptor<String> usernameCaptor;
-    @Captor
-    private ArgumentCaptor<UserLoginResponseDto> authCaptor;
     @InjectMocks
     private AuthController authController;
     @InjectMocks
