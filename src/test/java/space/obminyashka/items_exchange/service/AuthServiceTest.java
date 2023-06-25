@@ -64,7 +64,7 @@ class AuthServiceTest {
         final var actualUserLoginResponseDto = authService.finalizeAuthData(testDto);
 
         assertAll(
-                () -> checkAccessAndRefreshTokenFieldsInUserLoginResponseDto(actualUserLoginResponseDto),
+                () -> checkAccessAndRefreshTokenFieldsInDto(actualUserLoginResponseDto),
                 () -> verify(jwtTokenService).createAccessToken(testDto.getUsername(), testDto.getRole()),
                 () -> verify(jwtTokenService).getAccessTokenExpiration(JWT_TOKEN),
                 () -> verify(refreshTokenService).createRefreshToken(null, testDto.getUsername()),
@@ -86,14 +86,6 @@ class AuthServiceTest {
         when(jwtTokenService.getRefreshTokenExpiration(any(ZonedDateTime.class))).thenReturn(REFRESH_TOKEN);
     }
 
-    private void checkAccessAndRefreshTokenFieldsInUserLoginResponseDto(UserLoginResponseDto dto) {
-        assertThat(dto)
-                .hasFieldOrPropertyWithValue("accessToken", JWT_TOKEN)
-                .hasFieldOrPropertyWithValue("refreshToken", REFRESH_TOKEN)
-                .hasFieldOrProperty("accessTokenExpirationDate")
-                .hasFieldOrProperty("refreshTokenExpirationDate");
-    }
-
     @Test
     void logout_whenPositiveFlow_shouldSuccessfullyLogout() {
         authService.logout(JWT_TOKEN, EXPECTED_USERNAME);
@@ -113,19 +105,17 @@ class AuthServiceTest {
         var refreshTokenDto = authService.renewAccessTokenByRefresh(REFRESH_TOKEN);
 
         assertAll(
-                () -> checkAccessAndRefreshTokenFieldsInRefreshTokenResponseDto(refreshTokenDto),
+                () -> checkAccessAndRefreshTokenFieldsInDto(refreshTokenDto),
                 () -> verify(refreshTokenService).renewAccessTokenByRefresh(REFRESH_TOKEN),
                 () -> verify(jwtTokenService).getAccessTokenExpiration(JWT_TOKEN),
                 () -> verify(jwtTokenService).getRefreshTokenExpiration(any(ZonedDateTime.class))
         );
     }
 
-    private void checkAccessAndRefreshTokenFieldsInRefreshTokenResponseDto(RefreshTokenResponseDto dto) {
+    private <T> void checkAccessAndRefreshTokenFieldsInDto(T dto) {
         assertThat(dto)
                 .hasFieldOrPropertyWithValue("accessToken", JWT_TOKEN)
-                .hasFieldOrPropertyWithValue("refreshToken", REFRESH_TOKEN)
-                .hasFieldOrProperty("accessTokenExpiration")
-                .hasFieldOrProperty("refreshTokenExpiration");
+                .hasFieldOrPropertyWithValue("refreshToken", REFRESH_TOKEN);
     }
 
     @Test

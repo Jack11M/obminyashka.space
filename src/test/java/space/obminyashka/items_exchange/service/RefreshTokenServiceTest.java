@@ -26,6 +26,8 @@ class RefreshTokenServiceTest {
     private final static String EXPECTED_USERNAME = "user";
     private final static String EXPECTED_ACCESS_TOKEN = "access_token";
     private final static String EXPECTED_REFRESH_TOKEN = "refresh_token";
+    private final static int ADD_HOUR_TO_CURRENT_TIME = 1;
+    private final static int MINUS_HOUR_FROM_CURRENT_TIME= -1;
     @Mock
     private JwtTokenService jwtTokenService;
     @Mock
@@ -35,7 +37,7 @@ class RefreshTokenServiceTest {
 
 
     @Test
-    void createRefreshToken_whenRefreshTokenIsNullOrDoesNotExistInDB_shouldCreateToken() {
+    void createRefreshToken_whenRefreshTokenIsNullOrDoesNotExistInDB_shouldCreateToken(RefreshToken refreshToken) {
         var mockRefreshToken = new RefreshToken().setToken(null);
         mockJwtRefreshTokenData(EXPECTED_REFRESH_TOKEN);
 
@@ -74,7 +76,7 @@ class RefreshTokenServiceTest {
 
     @Test
     void renewAccessTokenByRefreshToken_whenAccessTokenExpires_shouldRenewAccessToken() {
-        var existRefreshToken = createRefreshToken(1);
+        var existRefreshToken = createRefreshToken(ADD_HOUR_TO_CURRENT_TIME);
         when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.of(existRefreshToken));
         when(jwtTokenService.createAccessToken(anyString(), any(Role.class))).thenReturn(EXPECTED_ACCESS_TOKEN);
 
@@ -91,7 +93,7 @@ class RefreshTokenServiceTest {
 
     @Test
     void renewAccessTokenByRefreshToken_whenAccessTokenDoesNotExpiry_shouldNotRenewAccessToken() {
-        var existRefreshToken = createRefreshToken(-1);
+        var existRefreshToken = createRefreshToken(MINUS_HOUR_FROM_CURRENT_TIME);
         when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.of(existRefreshToken));
 
         var actualAccessToken = refreshTokenService.renewAccessTokenByRefresh(existRefreshToken.getToken());
@@ -118,8 +120,6 @@ class RefreshTokenServiceTest {
     void deleteByUsername_whenUserWithUsernameExistsInDB_shouldDeleteRefreshToken() {
         refreshTokenService.deleteByUsername(EXPECTED_USERNAME);
 
-        assertAll(
-                () -> verify(refreshTokenRepository).deleteByUserUsername(EXPECTED_USERNAME)
-        );
+        verify(refreshTokenRepository).deleteByUserUsername(EXPECTED_USERNAME);
     }
 }
