@@ -20,7 +20,7 @@ public interface AuthService {
      * @param username name of the user which the token belongs
      * @return result of the tokens invalidation
      */
-    boolean logout(String accessToken, String username);
+    void logout(String accessToken, String username);
 
     /**
      * Create new access token using while refresh token is not expired

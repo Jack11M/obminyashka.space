@@ -41,14 +41,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean logout(String accessToken, String username) {
+    public void logout(String accessToken, String username) {
         final String token = JwtTokenService.resolveToken(accessToken);
-        if (!token.isEmpty()) {
-            jwtTokenService.invalidateAccessToken(token);
-            refreshTokenService.deleteByUsername(username);
-            return true;
-        }
-        return false;
+        jwtTokenService.invalidateAccessToken(token);
+        refreshTokenService.deleteByUsername(username);
     }
 
     @Override
