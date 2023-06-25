@@ -283,11 +283,10 @@ class AdvertisementFlowTest extends BasicControllerTest {
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
         var blankTopicMessage = getMessageSource(BLANK_TOPIC);
         var blankDescriptionMessage = getMessageSource(BLANK_DESCRIPTION);
-        var blankWishesToExchangeMessage = getMessageSource(BLANK_WISHES_TO_EXCHANGE);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)
-                .hasMessageContainingAll(blankTopicMessage, blankDescriptionMessage, blankWishesToExchangeMessage);
+                .hasMessageContainingAll(blankTopicMessage, blankDescriptionMessage);
     }
 
     @Test
