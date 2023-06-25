@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
+import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.model.RefreshToken;
@@ -117,6 +118,14 @@ class AuthServiceTest {
                 () -> verify(jwtTokenService).getAccessTokenExpiration(JWT_TOKEN),
                 () -> verify(jwtTokenService).getRefreshTokenExpiration(any(ZonedDateTime.class))
         );
+    }
+
+    private void checkAccessAndRefreshTokenFieldsInRefreshTokenResponseDto(RefreshTokenResponseDto dto) {
+        assertThat(dto)
+                .hasFieldOrPropertyWithValue("accessToken", JWT_TOKEN)
+                .hasFieldOrPropertyWithValue("refreshToken", REFRESH_TOKEN)
+                .hasFieldOrProperty("accessTokenExpiration")
+                .hasFieldOrProperty("refreshTokenExpiration");
     }
 
     @Test
