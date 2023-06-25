@@ -37,7 +37,7 @@ class RefreshTokenServiceTest {
 
 
     @Test
-    void createRefreshToken_whenRefreshTokenIsNullOrDoesNotExistInDB_shouldCreateToken(RefreshToken refreshToken) {
+    void createRefreshToken_whenRefreshTokenIsNullOrDoesNotExistInDB_shouldCreateToken() {
         var mockRefreshToken = new RefreshToken().setToken(null);
         mockJwtRefreshTokenData(EXPECTED_REFRESH_TOKEN);
 
