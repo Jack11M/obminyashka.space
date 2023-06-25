@@ -84,11 +84,7 @@ public class AuthController {
                        @Parameter(hidden = true) Authentication authentication,
                        @Parameter(hidden = true) @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         new SecurityContextLogoutHandler().logout(req, resp, authentication);
-        if (!authService.logout(token, authentication.getName())) {
-            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN);
-            log.error("Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
-            req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
-        }
+        authService.logout(token, authentication.getName());
     }
 
     @PostMapping(value = ApiKey.AUTH_REGISTER, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
