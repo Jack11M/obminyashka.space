@@ -44,7 +44,6 @@ class AuthServiceTest {
     private ArgumentCaptor<String> usernameCaptor;
     @Captor
     private ArgumentCaptor<String> tokenCaptor;
-
     @InjectMocks
     private MessageSourceUtil messageSourceUtil;
     @InjectMocks
@@ -115,6 +114,7 @@ class AuthServiceTest {
 
         assertAll(
                 () -> checkAccessAndRefreshTokenFieldsInRefreshTokenResponseDto(refreshTokenDto),
+                () -> verify(refreshTokenService).renewAccessTokenByRefresh(REFRESH_TOKEN),
                 () -> verify(jwtTokenService).getAccessTokenExpiration(JWT_TOKEN),
                 () -> verify(jwtTokenService).getRefreshTokenExpiration(any(ZonedDateTime.class))
         );

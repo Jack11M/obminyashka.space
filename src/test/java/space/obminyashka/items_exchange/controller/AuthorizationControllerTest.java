@@ -28,7 +28,6 @@ import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -91,82 +90,79 @@ class AuthorizationControllerTest {
 
     @Test
     void login_whenUserWihUserNameExistsInDB_shouldLoginUser() {
-        var expectedUserDto = new UserLoginDto();
-        expectedUserDto.setUsernameOrEmail("user");
-        var prefinalizeUserLoginDto = createUserLoginDto();
+        var expectedUserDto = createUserLoginDto();
+        var prefinalizeUserLoginDto = createUserLoginResponseDto();
         var expectedUserLoginDto = finalizeUserLoginDto(prefinalizeUserLoginDto);
-        when(userService.findAuthDataByUsernameOrEmail(any())).thenReturn(prefinalizeUserLoginDto);
-        when(authService.finalizeAuthData(any())).thenReturn(expectedUserLoginDto);
+        when(userService.findAuthDataByUsernameOrEmail(anyString())).thenReturn(prefinalizeUserLoginDto);
+        when(authService.finalizeAuthData(any(UserLoginResponseDto.class))).thenReturn(expectedUserLoginDto);
 
         var actualUserLoginDto = authController.login(expectedUserDto);
 
         assertAll(
-                () -> verify(userService).findAuthDataByUsernameOrEmail(usernameCaptor.capture()),
-                () -> assertEquals(expectedUserLoginDto.getUsername(), usernameCaptor.getValue()),
-                () -> verify(authService).finalizeAuthData(authCaptor.capture()),
-                () -> assertEquals(prefinalizeUserLoginDto, authCaptor.getValue()),
-                () -> verify(authenticationManager).authenticate(any()),
-                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto)
+                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto),
+                () -> verify(userService).findAuthDataByUsernameOrEmail(expectedUserDto.getUsernameOrEmail()),
+                () -> verify(authService).finalizeAuthData(prefinalizeUserLoginDto),
+                () -> verify(authenticationManager).authenticate(any())
         );
     }
 
     @Test
     void login_whenUserWihUserNameDoesNotExistInDB_shouldBadCredentialsException() {
-        var expectedUserDto = new UserLoginDto();
-        expectedUserDto.setUsernameOrEmail("user");
-        var prefinalizelUserLoginDto = createUserLoginDto();
-        var expectedUserLoginDto = finalizeUserLoginDto(prefinalizelUserLoginDto);
-        when(userService.findAuthDataByUsernameOrEmail(any())).thenReturn(prefinalizelUserLoginDto);
-        when(authService.finalizeAuthData(any())).thenReturn(expectedUserLoginDto);
+        var expectedUserDto = createUserLoginDto();
+        var prefinalizelUserLoginDto = createUserLoginResponseDto();
+        when(userService.findAuthDataByUsernameOrEmail(anyString())).thenReturn(prefinalizelUserLoginDto);
+        when(authService.finalizeAuthData(any(UserLoginResponseDto.class)))
+                .thenReturn(finalizeUserLoginDto(prefinalizelUserLoginDto));
         when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException(""));
 
         assertAll(
                 () -> assertThrows(
                         BadCredentialsException.class,
                         () -> authController.login(expectedUserDto)),
-                () -> verify(userService).findAuthDataByUsernameOrEmail(usernameCaptor.capture()),
-                () -> assertEquals(expectedUserLoginDto.getUsername(), usernameCaptor.getValue()),
-                () -> verify(authService).finalizeAuthData(authCaptor.capture()),
-                () -> assertEquals(expectedUserLoginDto, authCaptor.getValue()),
+                () -> verify(userService).findAuthDataByUsernameOrEmail(expectedUserDto.getUsernameOrEmail()),
+                () -> verify(authService).finalizeAuthData(prefinalizelUserLoginDto),
                 () -> verify(authenticationManager).authenticate(any())
         );
+    }
+
+    private UserLoginDto createUserLoginDto() {
+        var dto = new UserLoginDto();
+        dto.setUsernameOrEmail("user");
+        return dto;
     }
 
     @Test
     void loginWithOAuth2_whenUserWihUserNameExistsInDB_shouldLoginUser() {
         var mockAuth = new UsernamePasswordAuthenticationToken("user", "1234");
-        var prefinalizeUserLoginDto = createUserLoginDto();
+        var prefinalizeUserLoginDto = createUserLoginResponseDto();
         var expectedUserLoginDto = finalizeUserLoginDto(prefinalizeUserLoginDto);
-        when(userService.findAuthDataByUsernameOrEmail(any())).thenReturn(prefinalizeUserLoginDto);
-        when(authService.finalizeAuthData(any())).thenReturn(expectedUserLoginDto);
+        when(userService.findAuthDataByUsernameOrEmail(anyString())).thenReturn(prefinalizeUserLoginDto);
+        when(authService.finalizeAuthData(any(UserLoginResponseDto.class))).thenReturn(expectedUserLoginDto);
 
         var actualUserLoginDto = authController.loginWithOAuth2(mockAuth);
 
         assertAll(
-                () -> verify(userService).findAuthDataByUsernameOrEmail(usernameCaptor.capture()),
-                () -> assertEquals(mockAuth.getName(), usernameCaptor.getValue()),
-                () -> verify(authService).finalizeAuthData(authCaptor.capture()),
-                () -> assertEquals(prefinalizeUserLoginDto, authCaptor.getValue()),
-                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto)
+                () -> assertEquals(expectedUserLoginDto, actualUserLoginDto),
+                () -> verify(userService).findAuthDataByUsernameOrEmail(mockAuth.getName()),
+                () -> verify(authService).finalizeAuthData(prefinalizeUserLoginDto)
         );
     }
 
     @Test
     void loginWithOAuth2_whenUserWihUserNameDoesNotExistInDB_shouldBadCredentialsException() {
         var mockAuth = new UsernamePasswordAuthenticationToken("user", "1234");
-        when(userService.findAuthDataByUsernameOrEmail(any())).thenThrow(new UsernameNotFoundException(""));
+        when(userService.findAuthDataByUsernameOrEmail(anyString())).thenThrow(new UsernameNotFoundException(""));
 
         assertAll(
                 () -> assertThrows(
                         BadCredentialsException.class,
                         () -> authController.loginWithOAuth2(mockAuth)),
-                () -> verify(userService).findAuthDataByUsernameOrEmail(usernameCaptor.capture()),
-                () -> assertEquals(mockAuth.getName(), usernameCaptor.getValue()),
-                () -> verify(authService, times(0)).finalizeAuthData(any())
+                () -> verify(userService).findAuthDataByUsernameOrEmail(mockAuth.getName()),
+                () -> verifyNoInteractions(authService)
         );
     }
 
-    private UserLoginResponseDto createUserLoginDto() {
+    private UserLoginResponseDto createUserLoginResponseDto() {
         var role = new Role();
         role.setName("ROLE_USER");
         var userLoginDto = new UserLoginResponseDto();

@@ -2,8 +2,6 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,108 +23,103 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RefreshTokenServiceTest {
+    private final static String EXPECTED_USERNAME = "user";
+    private final static String EXPECTED_ACCESS_TOKEN = "access_token";
+    private final static String EXPECTED_REFRESH_TOKEN = "refresh_token";
     @Mock
     private JwtTokenService jwtTokenService;
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
-    @Captor
-    private ArgumentCaptor<String> usernameCaptor;
     @InjectMocks
     private RefreshTokenServiceImpl refreshTokenService;
 
 
     @Test
     void createRefreshToken_whenRefreshTokenIsNullOrDoesNotExistInDB_shouldCreateToken() {
-        var username = "user_without_token";
         var mockRefreshToken = new RefreshToken().setToken(null);
-        var expectedRefreshToken = "token_string";
-        mockJwtRefreshTokenData(expectedRefreshToken, LocalDateTime.MAX);
+        mockJwtRefreshTokenData(EXPECTED_REFRESH_TOKEN);
 
-        final var actualRefreshToken = refreshTokenService.createRefreshToken(mockRefreshToken.getToken(), username);
+        final var actualRefreshToken = refreshTokenService.createRefreshToken(mockRefreshToken.getToken(), EXPECTED_USERNAME);
 
         assertAll(
-                () -> assertNotNull(actualRefreshToken),
-                () -> assertEquals(expectedRefreshToken, actualRefreshToken.getToken()),
-                () -> assertEquals(LocalDateTime.MAX, actualRefreshToken.getExpiryDate()),
-                () -> verify(refreshTokenRepository).createRefreshToken(any(), any(), any())
+                () -> assertEquals(EXPECTED_REFRESH_TOKEN, actualRefreshToken.getToken()),
+                () -> verify(jwtTokenService).generateRefreshToken(EXPECTED_USERNAME),
+                () -> verify(jwtTokenService).generateRefreshTokenExpirationTime(),
+                () -> verify(refreshTokenRepository)
+                        .createRefreshToken(eq(EXPECTED_USERNAME), eq(EXPECTED_REFRESH_TOKEN), any())
         );
     }
 
     @Test
     void createRefreshToken_whenRefreshTokenExistsInDB_shouldUpdateToken() {
-        var username = "user_with_token";
-        var mockRefreshToken = new RefreshToken().setToken("");
-        var expectedRefreshToken = "token_string";
-        mockJwtRefreshTokenData(expectedRefreshToken, LocalDateTime.MAX);
+        var expectedRefreshToken = new RefreshToken().setToken("");
+        mockJwtRefreshTokenData(expectedRefreshToken.getToken());
 
-        final var actualRefreshToken = refreshTokenService.createRefreshToken(mockRefreshToken.getToken(), username);
+        final var actualRefreshToken = refreshTokenService
+                .createRefreshToken(expectedRefreshToken.getToken(), EXPECTED_USERNAME);
 
         assertAll(
-                () -> assertNotNull(actualRefreshToken),
-                () -> assertEquals(expectedRefreshToken, actualRefreshToken.getToken()),
-                () -> assertEquals(LocalDateTime.MAX, actualRefreshToken.getExpiryDate()),
-                () -> verify(refreshTokenRepository).updateRefreshToken(any(), any(), any())
+                () -> assertEquals(expectedRefreshToken.getToken(), actualRefreshToken.getToken()),
+                () -> verify(jwtTokenService).generateRefreshToken(EXPECTED_USERNAME),
+                () -> verify(jwtTokenService).generateRefreshTokenExpirationTime(),
+                () -> verify(refreshTokenRepository)
+                        .updateRefreshToken(eq(EXPECTED_USERNAME), eq(expectedRefreshToken.getToken()), any())
         );
     }
 
-    private void mockJwtRefreshTokenData(String token, LocalDateTime expiryDate) {
-        when(jwtTokenService.generateRefreshToken(anyString())).thenReturn(token);
-        when(jwtTokenService.generateRefreshTokenExpirationTime()).thenReturn(expiryDate);
+    private void mockJwtRefreshTokenData(String refreshToken) {
+        when(jwtTokenService.generateRefreshToken(anyString())).thenReturn(refreshToken);
+        when(jwtTokenService.generateRefreshTokenExpirationTime()).thenReturn(LocalDateTime.MAX);
     }
 
     @Test
     void renewAccessTokenByRefreshToken_whenAccessTokenExpires_shouldRenewAccessToken() {
-        var expectedAccessToken = "some token";
-        var expectedRenewStatus = true;
-        var existRefreshToken = new RefreshToken().setExpiryDate(LocalDateTime.now().plusHours(1));
-        existRefreshToken.setUser(
-                new User()
-                        .setUsername("user")
-                        .setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()))
-        );
-        when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.ofNullable(existRefreshToken));
-        when(jwtTokenService.createAccessToken(any(), any())).thenReturn(expectedAccessToken);
+        var existRefreshToken = createRefreshToken(1);
+        when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.of(existRefreshToken));
+        when(jwtTokenService.createAccessToken(anyString(), any(Role.class))).thenReturn(EXPECTED_ACCESS_TOKEN);
 
         var actualAccessToken = refreshTokenService.renewAccessTokenByRefresh(existRefreshToken.getToken());
 
         assertAll(
-                () -> assertEquals(expectedRenewStatus, actualAccessToken.isPresent()),
-                () -> assertEquals(expectedAccessToken, actualAccessToken.get()),
-                () -> verify(refreshTokenRepository).findByToken(any()),
-                () -> verify(jwtTokenService).createAccessToken(any(), any())
+                () -> assertTrue(actualAccessToken.isPresent()),
+                () -> assertEquals(Optional.of(EXPECTED_ACCESS_TOKEN), actualAccessToken),
+                () -> verify(refreshTokenRepository).findByToken(existRefreshToken.getToken()),
+                () -> verify(jwtTokenService)
+                        .createAccessToken(EXPECTED_USERNAME, existRefreshToken.getUser().getRole())
         );
     }
 
     @Test
     void renewAccessTokenByRefreshToken_whenAccessTokenDoesNotExpiry_shouldNotRenewAccessToken() {
-        var expectedRenewStatus = false;
-        var existRefreshToken = new RefreshToken().setExpiryDate(LocalDateTime.now().minusHours(1));
-        existRefreshToken.setUser(
-                new User()
-                        .setUsername("user")
-                        .setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()))
-        );
-        when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.ofNullable(existRefreshToken));
+        var existRefreshToken = createRefreshToken(-1);
+        when(refreshTokenRepository.findByToken(any())).thenReturn(Optional.of(existRefreshToken));
 
         var actualAccessToken = refreshTokenService.renewAccessTokenByRefresh(existRefreshToken.getToken());
 
         assertAll(
-                () -> assertEquals(expectedRenewStatus, actualAccessToken.isPresent()),
+                () -> assertFalse(actualAccessToken.isPresent()),
                 () -> assertTrue(actualAccessToken.isEmpty()),
-                () -> verify(refreshTokenRepository).findByToken(any()),
-                () -> verify(jwtTokenService, times(0)).createAccessToken(any(), any())
+                () -> verify(refreshTokenRepository).findByToken(existRefreshToken.getToken()),
+                () -> verifyNoInteractions(jwtTokenService)
         );
+    }
+
+    private User createUser() {
+        return new User().setUsername("user").setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));
+    }
+
+    private RefreshToken createRefreshToken(int hours) {
+        var refreshToken = new RefreshToken().setExpiryDate(LocalDateTime.now().plusHours(hours));
+        refreshToken.setUser(createUser());
+        return refreshToken;
     }
 
     @Test
     void deleteByUsername_whenUserWithUsernameExistsInDB_shouldDeleteRefreshToken() {
-        var expectedUsername = "user";
-
-        refreshTokenService.deleteByUsername(expectedUsername);
+        refreshTokenService.deleteByUsername(EXPECTED_USERNAME);
 
         assertAll(
-                () -> verify(refreshTokenRepository).deleteByUserUsername(usernameCaptor.capture()),
-                () -> assertEquals(expectedUsername, usernameCaptor.getValue())
+                () -> verify(refreshTokenRepository).deleteByUserUsername(EXPECTED_USERNAME)
         );
     }
 }
