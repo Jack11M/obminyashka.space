@@ -62,7 +62,8 @@ public class AuthController {
 
         try {
             final var username = escapeHtml(userLoginDto.getUsernameOrEmail());
-            var userLoginResponseDto = authService.createUserLoginResponseDto(username);
+            var userLoginResponseDto = userService.findAuthDataByUsernameOrEmail(username);
+            userLoginResponseDto = authService.finalizeAuthData(userLoginResponseDto);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     userLoginResponseDto.getUsername(), userLoginDto.getPassword()));
             return userLoginResponseDto;
@@ -81,11 +82,7 @@ public class AuthController {
                        @Parameter(hidden = true) Authentication authentication,
                        @Parameter(hidden = true) @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         new SecurityContextLogoutHandler().logout(req, resp, authentication);
-        if (!authService.logout(token, authentication.getName())) {
-            String errorMessageTokenNotStartWithBearerPrefix = getMessageSource(INVALID_TOKEN);
-            log.error("[AuthController] Unauthorized: {}", errorMessageTokenNotStartWithBearerPrefix);
-            req.setAttribute("detailedError", errorMessageTokenNotStartWithBearerPrefix);
-        }
+        authService.logout(token, authentication.getName());
     }
 
     @PostMapping(value = ApiKey.AUTH_REGISTER, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
@@ -137,7 +134,8 @@ public class AuthController {
     })
     public UserLoginResponseDto loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
         try {
-            return authService.createUserLoginResponseDto(authentication.getName());
+            var userLoginResponseDto = userService.findAuthDataByUsernameOrEmail(authentication.getName());
+            return authService.finalizeAuthData(userLoginResponseDto);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource(INVALID_OAUTH2_LOGIN));
         }

@@ -2,17 +2,13 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
-import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.ZoneId;
@@ -30,36 +26,25 @@ public class AuthServiceImpl implements AuthService {
 
     private final RefreshTokenService refreshTokenService;
     private final JwtTokenService jwtTokenService;
-    private final UserService userService;
-    private final UserMapper userMapper;
 
-    public UserLoginResponseDto createUserLoginResponseDto(String username) throws UsernameNotFoundException {
-        return userService.findByUsernameOrEmail(username)
-                .map(this::populateUserLoginResponseDto)
-                .orElseThrow(() -> new UsernameNotFoundException("User" + username + " is not logged in"));
-    }
+    public UserLoginResponseDto finalizeAuthData(UserLoginResponseDto userDto) {
+        userDto.setAccessToken(jwtTokenService.createAccessToken(userDto.getUsername(), userDto.getRole()))
+                .setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(userDto.getAccessToken()))
+                .setRefreshToken(refreshTokenService
+                        .createRefreshToken(userDto.getRefreshToken(), userDto.getUsername()).getToken())
+                .setRefreshTokenExpirationDate(jwtTokenService
+                        .getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
 
-    private UserLoginResponseDto populateUserLoginResponseDto(User user) {
-        final var userLoginResponseDto = userMapper.toLoginResponseDto(user);
-        final var accessToken = jwtTokenService.createAccessToken(user.getUsername(), user.getRole());
-        userLoginResponseDto
-                .setAccessToken(accessToken)
-                .setAccessTokenExpirationDate(jwtTokenService.getAccessTokenExpiration(accessToken))
-                .setRefreshToken(refreshTokenService.createRefreshToken(user).getToken())
-                .setRefreshTokenExpirationDate(jwtTokenService.getRefreshTokenExpiration(ZonedDateTime.now(ZoneId.of(TIMEZONE_KIEV))));
-        log.info("[AuthServiceImpl] User '{}' is successfully logged in", user.getId());
-        return userLoginResponseDto;
+        log.info("[AuthServiceImpl] User '{}' is successfully logged in", userDto.getUsername());
+
+        return userDto;
     }
 
     @Override
-    public boolean logout(String accessToken, String username) {
+    public void logout(String accessToken, String username) {
         final String token = JwtTokenService.resolveToken(accessToken);
-        if (!token.isEmpty()) {
-            jwtTokenService.invalidateAccessToken(token);
-            refreshTokenService.deleteByUsername(username);
-            return true;
-        }
-        return false;
+        jwtTokenService.invalidateAccessToken(token);
+        refreshTokenService.deleteByUsername(username);
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.mapstruct.ReportingPolicy;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.model.projection.UserProjection;
 
 import java.util.List;
@@ -29,13 +30,14 @@ public interface UserMapper {
     //Unmapped target properties: "id, created, updated, status, password, online, lastOnlineTime, role, advertisements, deals, phones, children, blacklistedUsers, authorities".
     @Mapping(target = "refreshToken", ignore = true)
     User toModel(UserLoginResponseDto dto);
+
     UserDto toDto(User model);
 
-    //Unmapped target properties: "accessToken, accessTokenExpirationDate, refreshTokenExpirationDate".
-    @Mapping(source = "refreshToken.token", target = "refreshToken")
-    UserLoginResponseDto toLoginResponseDto(User model);
+    @Mapping(target = "refreshToken", source = "refreshToken.token")
+    @Mapping(target = "refreshTokenExpirationDate", source = "refreshToken.expiryDate")
+    UserLoginResponseDto toLoginResponseDto(UserAuthProjection userAuthProjection);
 
     User toUserFromProjection(UserProjection userProjection);
-    List<UserLoginResponseDto> toDtoList(List<User> modelList);
+
     List<User> toModelList(List<UserLoginResponseDto> dtoList);
 }

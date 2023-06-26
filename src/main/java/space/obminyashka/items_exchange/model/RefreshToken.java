@@ -39,8 +39,7 @@ public class RefreshToken {
     @Accessors(chain = true)
     private LocalDateTime created;
 
-    public RefreshToken(User user, String token, LocalDateTime expiryDate) {
-        this.user = user;
+    public RefreshToken(String token, LocalDateTime expiryDate) {
         this.token = token;
         this.expiryDate = expiryDate;
     }

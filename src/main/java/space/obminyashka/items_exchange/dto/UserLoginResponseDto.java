@@ -1,12 +1,14 @@
 package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import space.obminyashka.items_exchange.model.Role;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +24,8 @@ public class UserLoginResponseDto {
     private String lastName;
     @JsonProperty(HttpHeaders.ACCEPT_LANGUAGE)
     private String language;
+    @JsonIgnore
+    private Role role;
     @Accessors(chain = true)
     @JsonProperty(OAuth2ParameterNames.ACCESS_TOKEN)
     private String accessToken;

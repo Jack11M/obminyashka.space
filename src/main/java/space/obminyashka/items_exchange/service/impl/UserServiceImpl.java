@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.UserDto;
+import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
 import space.obminyashka.items_exchange.dto.UserRegistrationDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
@@ -67,6 +68,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
+    }
+
+    @Override
+    public UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findAuthDataByEmailOrUsername(usernameOrEmail, usernameOrEmail)
+                .map(userMapper::toLoginResponseDto)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + usernameOrEmail + " is not logged in"));
     }
 
     @Override

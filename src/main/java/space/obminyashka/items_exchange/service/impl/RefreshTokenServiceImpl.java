@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.RefreshTokenRepository;
 import space.obminyashka.items_exchange.model.RefreshToken;
-import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 
@@ -21,14 +20,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public RefreshToken createRefreshToken(User user) {
-        final String token = jwtTokenService.generateRefreshToken(user.getUsername());
+    public RefreshToken createRefreshToken(String createdRefreshToken, String username) {
+        final String token = jwtTokenService.generateRefreshToken(username);
         final var tokenExpirationTime = jwtTokenService.generateRefreshTokenExpirationTime();
-        return refreshTokenRepository.save(Optional.ofNullable(user.getRefreshToken())
-                .map(refreshToken -> refreshToken.setToken(token)
-                        .setCreated(LocalDateTime.now())
-                        .setExpiryDate(tokenExpirationTime))
-                .orElseGet(() -> new RefreshToken(user, token, tokenExpirationTime)));
+
+        if (createdRefreshToken != null) {
+            refreshTokenRepository.updateRefreshToken(username, token, tokenExpirationTime);
+        } else {
+            refreshTokenRepository.createRefreshToken(username, token, tokenExpirationTime);
+        }
+
+        return new RefreshToken(token, tokenExpirationTime);
     }
 
     private boolean isRefreshTokenExpired(RefreshToken refreshToken) {
