@@ -65,7 +65,7 @@ public class AdvertisementModificationDto {
     private UUID locationId;
 
     @AssertTrue(message = "{" + BLANK_WISHES_TO_EXCHANGE + "}")
-    private boolean isNotBlankWishesToExchange() {
+    private boolean isWishesToExchangeNotBlankInComparisonWithReadyForOffers() {
         return (readyForOffers && wishesToExchange.isBlank()) || !wishesToExchange.isBlank();
     }
 }

@@ -27,6 +27,21 @@ public class AdvertisementDtoCreatingUtil {
                 AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
     }
 
+    public static AdvertisementModificationDto createNonExistAdvDtoWithBlankWishAndTrueReadyForOffer() {
+        return getBuild(null,"     ", "     ", "     ",true, DealType.GIVEAWAY,
+                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
+    }
+
+    public static AdvertisementModificationDto createNonExistAdvDtoWithNotBlankWishAndTrueReadyForOffer() {
+        return getBuild(null,"     ", "     ", "some",true, DealType.GIVEAWAY,
+                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
+    }
+
+    public static AdvertisementModificationDto createNonExistAdvDtoWithNotBlankWishAndFalseReadyForOffer() {
+        return getBuild(null,"     ", "     ", "some",false, DealType.GIVEAWAY,
+                AgeRange.YOUNGER_THAN_1, Season.DEMI_SEASON, Gender.MALE, "M", 1L);
+    }
+
     public static AdvertisementModificationDto createExistAdvertisementModificationDto() {
         return getBuild(existedAdvertisementId, "topic", "description", "shoes", true, DealType.EXCHANGE,
                 AgeRange.OLDER_THAN_14, Season.SUMMER, Gender.MALE, "57 - 62", 2L);
