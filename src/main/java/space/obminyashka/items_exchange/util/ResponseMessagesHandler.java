@@ -51,7 +51,6 @@ public class ResponseMessagesHandler {
         public final String BLANK_TOPIC = "blank.topic";
         public final String BLANK_DESCRIPTION = "blank.description";
         public final String BLANK_WISHES_TO_EXCHANGE = "blank.wishes.to.exchange";
-        public final String EMPTY_WISHES_TO_EXCHANGE = "empty.wishes.to.exchange";
     }
 
     @UtilityClass
