@@ -2,10 +2,12 @@ package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.DealType;
 import space.obminyashka.items_exchange.model.enums.Gender;
@@ -13,6 +15,7 @@ import space.obminyashka.items_exchange.model.enums.Season;
 
 import java.util.UUID;
 
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 @Getter
@@ -62,4 +65,9 @@ public class AdvertisementModificationDto {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID locationId;
+
+    @AssertTrue(message = "{" + BLANK_WISHES_TO_EXCHANGE + "}")
+    private boolean validateEmptyWishesToExchange() {
+        return (readyForOffers && wishesToExchange.isBlank()) || !wishesToExchange.isBlank();
+    }
 }

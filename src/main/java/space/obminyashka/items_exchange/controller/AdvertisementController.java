@@ -170,7 +170,6 @@ public class AdvertisementController {
             @Parameter(hidden = true) Authentication authentication) throws IllegalIdentifierException {
 
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
-        validateWishesToExchange(dto.getWishesToExchange(), dto.isReadyForOffers());
         final var owner = getUser(authentication.getName());
         final var compressedImages = images.parallelStream()
                 .map(imageService::compress)
@@ -256,16 +255,6 @@ public class AdvertisementController {
         }
         if (!exceptionMessage.isEmpty()) {
             throw new IllegalIdentifierException(exceptionMessage);
-        }
-    }
-
-    private void validateWishesToExchange(String wishesToExchange, boolean readyForOffers) {
-        if (readyForOffers && !wishesToExchange.isEmpty()) {
-            throw new BadRequestException(getMessageSource(EMPTY_WISHES_TO_EXCHANGE));
-        }
-
-        if (!readyForOffers && wishesToExchange.isBlank()) {
-            throw new BadRequestException(getMessageSource(BLANK_WISHES_TO_EXCHANGE));
         }
     }
 
