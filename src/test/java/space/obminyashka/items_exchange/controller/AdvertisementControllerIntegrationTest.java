@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import com.github.database.rider.core.api.dataset.DataSet;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
-import space.obminyashka.items_exchange.model.enums.Size;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -33,8 +33,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_ID;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 
 @SpringBootTest
@@ -125,5 +127,30 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
         final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertEquals("Користувача не знайдено", new JSONObject(errorMessage).get("error"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideAdvertisementModificationDto")
+    @WithMockUser(username = "admin")
+    void createAdvertisement_shouldReturn400WhenBlankFieldsButWithoutBlankWish(AdvertisementModificationDto dto) throws Exception {
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
+                asJsonString(dto).getBytes());
+        final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(dtoJson), status().isBadRequest());
+        var blankTopicMessage = getMessageSource(BLANK_TOPIC);
+        var blankDescriptionMessage = getMessageSource(BLANK_DESCRIPTION);
+        var blankWishesToExchangeMessage = getMessageSource(BLANK_WISHES_TO_EXCHANGE);
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(MethodArgumentNotValidException.class)
+                .hasMessageContainingAll(blankTopicMessage, blankDescriptionMessage)
+                .hasMessageNotContaining(blankWishesToExchangeMessage);
+    }
+
+    private static Stream<Arguments> provideAdvertisementModificationDto() {
+        return Stream.of(
+                Arguments.of(AdvertisementDtoCreatingUtil.createNonExistAdvDtoWithBlankWishAndTrueReadyForOffer()),
+                Arguments.of(AdvertisementDtoCreatingUtil.createNonExistAdvDtoWithNotBlankWishAndTrueReadyForOffer()),
+                Arguments.of(AdvertisementDtoCreatingUtil.createNonExistAdvDtoWithNotBlankWishAndFalseReadyForOffer())
+        );
     }
 }

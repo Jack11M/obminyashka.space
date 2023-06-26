@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -36,7 +37,6 @@ public class AdvertisementModificationDto {
     @Size(max = 255, message = "{" + INVALID_MAX_SIZE + "}")
     private String description;
 
-    @NotBlank(message = "{" + BLANK_WISHES_TO_EXCHANGE + "}")
     @Size(max = 210, message = "{" + INVALID_MAX_SIZE + "}")
     private String wishesToExchange;
 
@@ -63,4 +63,9 @@ public class AdvertisementModificationDto {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID locationId;
+
+    @AssertTrue(message = "{" + BLANK_WISHES_TO_EXCHANGE + "}")
+    private boolean isWishesToExchangeNotBlankInComparisonWithReadyForOffers() {
+        return (readyForOffers && wishesToExchange.isBlank()) || !wishesToExchange.isBlank();
+    }
 }
