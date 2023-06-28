@@ -34,22 +34,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     Optional<Advertisement> findAdvertisementByIdAndUserUsername(UUID id, String username);
 
-    @Query("SELECT a from Advertisement a where " +
-            "(:age is null or a.age = :age) and " +
-            "(:gender is null or a.gender = :gender) and " +
-            "(:size is null or a.size = :size) and" +
-            "(:season is null or a.season = :season) and " +
-            "(:subcategoryId is null or a.subcategory.id = :subcategoryId) and " +
-            "(:categoryId is null or a.subcategory.category.id = :categoryId) and " +
-            "(:locationId is null or a.location.id = :locationId)")
-    Collection<Advertisement> findFirst10ByParams(@Param("age") AgeRange age,
-                                                @Param("gender") Gender gender,
-                                                @Param("size") String size,
-                                                @Param("season") Season season,
-                                                @Param("subcategoryId") Long subcategoryId,
-                                                @Param("categoryId") Long categoryId,
-                                                @Param("locationId") UUID locationId);
-
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 
     @Query("SELECT a from Advertisement a where " +

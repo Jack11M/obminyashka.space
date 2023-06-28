@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,10 +17,8 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserDto;
-import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.EmailConfirmationCode;
@@ -48,6 +49,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
     private final UserMapper userMapper;
+    private final AdvertisementMapper advertisementMapper;
+
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -75,6 +78,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAuthDataByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .map(userMapper::toLoginResponseDto)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + usernameOrEmail + " is not logged in"));
+    }
+
+    @Override
+    public Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable) {
+        var titleDtos = userRepository.findUserFavoriteAdvProjectionByUsername(username).getFavoriteAdvertisements()
+                .stream()
+                .map(advertisementMapper::toAdvertisementTitleDto)
+                .toList();
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), titleDtos.size());
+        final Page<AdvertisementTitleDto> page = new PageImpl<>(titleDtos.subList(start, end), pageable, titleDtos.size());
+        return page;
     }
 
     @Override

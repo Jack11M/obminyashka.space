@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
+import space.obminyashka.items_exchange.model.projection.UserFavoriteAdvProjection;
 import space.obminyashka.items_exchange.model.projection.UserProjection;
 
 import java.time.LocalDateTime;
@@ -18,9 +19,12 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<UserAuthProjection> findAuthDataByEmailOrUsername(String email, String username);
+
     Optional<User> findByEmailOrUsername(String username, String email);
 
     Optional<UserProjection> findUserProjectionByEmail(String email);
+
+    UserFavoriteAdvProjection findUserFavoriteAdvProjectionByUsername(String username);
 
     @Query("select u.updated from User u where u.username = :username")
     LocalDateTime selectLastUpdatedTimeFromUserByUsername(String username);

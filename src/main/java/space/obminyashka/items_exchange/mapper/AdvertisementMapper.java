@@ -43,6 +43,11 @@ public interface AdvertisementMapper {
     @Mapping(source = "topic", target = "title")
     AdvertisementTitleDto toAdvertisementTitleDto(AdvertisementTitleProjection projection);
 
+    @Mapping(source = "id", target = "advertisementId")
+    @Mapping(source = "defaultPhoto", target = "image")
+    @Mapping(source = "topic", target = "title")
+    AdvertisementTitleDto toAdvertisementTitleDto(Advertisement advertisement);
+
     List<AdvertisementDisplayDto> toDtoList(List<Advertisement> modelList);
 
     List<Advertisement> toModelList(List<AdvertisementDisplayDto> dtoList);

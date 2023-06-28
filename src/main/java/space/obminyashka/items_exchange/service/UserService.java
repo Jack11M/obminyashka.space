@@ -1,11 +1,10 @@
 package space.obminyashka.items_exchange.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dto.UserDto;
-import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.model.User;
 
 import java.time.LocalDateTime;
@@ -28,6 +27,14 @@ public interface UserService {
      * @return the user login response dto as the result
      */
     UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail);
+
+    /**
+     * Find all favorites advertisement by username
+     *
+     * @param username login of the user
+     * @return all favorites advertisement by username
+     */
+    Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable);
 
     /**
      * Find a user into DB by checking gained username and convert it into DTO

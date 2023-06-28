@@ -7,8 +7,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -84,6 +87,22 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<AdvertisementTitleDto> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
         return advService.findAllByUsername(authentication.getName());
+    }
+
+    @GetMapping(value = ApiKey.USER_MY_FAVORITE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Find user's favorite advertisements")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+    @ResponseStatus(HttpStatus.OK)
+    public Page<AdvertisementTitleDto> getFavoriteAdvertisements(
+            @Parameter(hidden = true) Authentication authentication,
+            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
+            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
+            @Parameter(name = "size", description = "Number of records per page. Default value: 8")
+            @RequestParam(value = "size", required = false, defaultValue = "8") @PositiveOrZero int size) {
+        return userService.findAllFavorite(authentication.getName(), PageRequest.of(page, size));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
