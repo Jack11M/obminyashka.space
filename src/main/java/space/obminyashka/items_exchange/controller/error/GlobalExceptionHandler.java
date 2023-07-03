@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.Level;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -71,8 +72,11 @@ public class GlobalExceptionHandler {
             EmailValidationCodeNotFoundException.class,
             SubcategoryIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorMessage handleNotFoundExceptions(Exception e, ServletWebRequest request) {
-        return logAndGetErrorMessage(request, e, Level.WARN);
+    public ResponseEntity<ErrorMessage> handleNotFoundExceptions(Exception e, ServletWebRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(logAndGetErrorMessage(request, e, Level.WARN));
     }
 
     @ExceptionHandler({ElementsNumberExceedException.class, IOException.class})
