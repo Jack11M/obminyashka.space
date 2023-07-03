@@ -29,14 +29,6 @@ public interface UserService {
     UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail);
 
     /**
-     * Find all favorites advertisement by username
-     *
-     * @param username login of the user
-     * @return all favorites advertisement by username
-     */
-    Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable);
-
-    /**
      * Find a user into DB by checking gained username and convert it into DTO
      * @param username login of the user
      * @return {@link Optional} with the converted user as the result

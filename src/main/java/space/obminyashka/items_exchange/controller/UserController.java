@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,10 +100,10 @@ public class UserController {
     public Page<AdvertisementTitleDto> getFavoriteAdvertisements(
             @Parameter(hidden = true) Authentication authentication,
             @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "size", description = "Number of records per page. Default value: 8")
-            @RequestParam(value = "size", required = false, defaultValue = "8") @PositiveOrZero int size) {
-        return userService.findAllFavorite(authentication.getName(), PageRequest.of(page, size));
+            @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int page,
+            @Parameter(name = "size", description = "Number of records per page. Default value: 6")
+            @RequestParam(required = false, defaultValue = "6") @Positive int size) {
+        return advService.findAllFavorite(authentication.getName(), PageRequest.of(page, size));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

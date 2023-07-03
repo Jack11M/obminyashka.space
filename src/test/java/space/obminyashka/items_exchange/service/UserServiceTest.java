@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.dao.UserRepository;
 import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.mapper.UserMapper;
 import space.obminyashka.items_exchange.model.RefreshToken;
@@ -57,8 +56,6 @@ class UserServiceTest {
     @Mock
     private RoleService roleService;
     @Mock
-    private AdvertisementMapper advertisementMapper;
-    @Mock
     private UserMapper userMapper;
     @Value("${number.of.hours.to.keep.email.confirmation.code}")
     private int numberOfHoursToKeepEmailConformationToken;
@@ -68,7 +65,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userService = new UserServiceImpl(bCryptPasswordEncoder, userRepository, emailConfirmationCodeRepository,
-                phoneMapper, roleService, userMapper, advertisementMapper, numberOfHoursToKeepEmailConformationToken);
+                phoneMapper, roleService, userMapper, numberOfHoursToKeepEmailConformationToken);
     }
 
     @Test

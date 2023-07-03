@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.AgeRange;
-import space.obminyashka.items_exchange.model.enums.Gender;
-import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
 import java.util.*;
@@ -40,8 +37,11 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
             "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
     Page<AdvertisementTitleProjection> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
-                                                       @Param("subcategoryId") Long subcategoryId,
-                                                       Pageable pageable);
+                                                                      @Param("subcategoryId") Long subcategoryId,
+                                                                      Pageable pageable);
+
+    @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
+    Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
 
     @Query("SELECT count(a) from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +
