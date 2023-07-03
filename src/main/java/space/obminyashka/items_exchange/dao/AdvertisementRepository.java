@@ -10,9 +10,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.AgeRange;
-import space.obminyashka.items_exchange.model.enums.Gender;
-import space.obminyashka.items_exchange.model.enums.Season;
 import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
 import java.util.*;
@@ -34,30 +31,17 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     Optional<Advertisement> findAdvertisementByIdAndUserUsername(UUID id, String username);
 
-    @Query("SELECT a from Advertisement a where " +
-            "(:age is null or a.age = :age) and " +
-            "(:gender is null or a.gender = :gender) and " +
-            "(:size is null or a.size = :size) and" +
-            "(:season is null or a.season = :season) and " +
-            "(:subcategoryId is null or a.subcategory.id = :subcategoryId) and " +
-            "(:categoryId is null or a.subcategory.category.id = :categoryId) and " +
-            "(:locationId is null or a.location.id = :locationId)")
-    Collection<Advertisement> findFirst10ByParams(@Param("age") AgeRange age,
-                                                @Param("gender") Gender gender,
-                                                @Param("size") String size,
-                                                @Param("season") Season season,
-                                                @Param("subcategoryId") Long subcategoryId,
-                                                @Param("categoryId") Long categoryId,
-                                                @Param("locationId") UUID locationId);
-
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 
     @Query("SELECT a from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +
             "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
     Page<AdvertisementTitleProjection> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
-                                                       @Param("subcategoryId") Long subcategoryId,
-                                                       Pageable pageable);
+                                                                      @Param("subcategoryId") Long subcategoryId,
+                                                                      Pageable pageable);
+
+    @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
+    Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
 
     @Query("SELECT count(a) from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +

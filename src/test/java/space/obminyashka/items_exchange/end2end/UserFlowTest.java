@@ -118,6 +118,27 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
+    void getFavoriteAdvertisements_shouldReturnPage_WhenPageAndSizeDefault() throws Exception {
+        sendUriAndGetResultAction(get(USER_MY_FAVORITE), status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].title").value("topic"))
+                .andExpect(jsonPath("$.content[1].title").value("Blouses"));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    void getFavoriteAdvertisements_shouldReturnPage_WhenHaveSpecialPageAndSize() throws Exception {
+        sendUriAndGetResultAction(get(USER_MY_FAVORITE)
+                .queryParam("page", "1")
+                .queryParam("size", "1"), status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].title").value("Blouses"));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
             ignoreCols = {"password", "email", "lastOnlineTime", "updated"})
     void updateUserPassword_shouldGetResponseOK_whenDataValid()

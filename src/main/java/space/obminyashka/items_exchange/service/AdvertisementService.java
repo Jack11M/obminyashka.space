@@ -30,6 +30,14 @@ public interface AdvertisementService {
     List<AdvertisementTitleDto> findAllByUsername(String username);
 
     /**
+     * Find all favorites advertisement by username
+     *
+     * @param username login of the user
+     * @return all favorites advertisement by username
+     */
+    Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable);
+
+    /**
      * Find advertisements having requested keyword
      * @param keyword - searched word
      * @param pageable see {@link Pageable} for more details

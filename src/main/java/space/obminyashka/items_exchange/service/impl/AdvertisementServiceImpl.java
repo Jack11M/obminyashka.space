@@ -64,7 +64,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                         PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
                 .map(advertisementMapper::toAdvertisementTitleDto);
     }
-
+    @Override
+    public Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable) {
+        return advertisementRepository.findFavoriteAdvertisementsByUsername(username, pageable)
+                .map(advertisementMapper::toAdvertisementTitleDto);
+    }
     @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
