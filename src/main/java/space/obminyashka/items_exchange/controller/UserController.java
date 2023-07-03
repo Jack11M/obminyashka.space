@@ -94,8 +94,7 @@ public class UserController {
     @Operation(summary = "Find user's favorite advertisements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementTitleDto> getFavoriteAdvertisements(
             @Parameter(hidden = true) Authentication authentication,
