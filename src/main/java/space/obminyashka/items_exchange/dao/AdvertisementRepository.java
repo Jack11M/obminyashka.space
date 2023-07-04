@@ -52,7 +52,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query(nativeQuery = true, value = "DELETE FROM favorite_advertisements a " +
             "WHERE a.user_id = (select id from user where username = :username) " +
             "and a.advertisement_id = :advertisementId")
-    boolean deleteFavoriteAdvertisementByAdvIdAndUsername(UUID advertisementId, String username);
+    int deleteFavoriteAdvertisementByAdvIdAndUsername(UUID advertisementId, String username);
 
     @Query("SELECT count(a) from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +

@@ -78,7 +78,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public void deleteFavorite(UUID advertisementId, String username) {
-        if (!advertisementRepository.deleteFavoriteAdvertisementByAdvIdAndUsername(advertisementId, username)) {
+        if (advertisementRepository.deleteFavoriteAdvertisementByAdvIdAndUsername(advertisementId, username) == 0) {
             throw new BadRequestException(getParametrizedMessageSource(
                     ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId));
         }
