@@ -4,7 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 
@@ -36,6 +38,14 @@ public interface AdvertisementService {
      * @return all favorites advertisement by username
      */
     Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable);
+
+    /**
+     * Delete favorite advertisement by username and advertisementId
+     *
+     * @param advertisementId id of existence advertisement
+     * @param username login of the user
+     */
+    void deleteFavorite(UUID advertisementId, String username);
 
     /**
      * Find advertisements having requested keyword

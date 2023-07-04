@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.dao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +13,10 @@ import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Repository
 @Transactional
@@ -42,6 +46,13 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
     Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM favorite_advertisements a " +
+            "WHERE a.user_id = (select id from user where username = :username) " +
+            "and a.advertisement_id = :advertisementId")
+    boolean deleteFavoriteAdvertisementByAdvIdAndUsername(UUID advertisementId, String username);
 
     @Query("SELECT count(a) from Advertisement a where " +
             "(:id is null or a.id <> :id) and " +

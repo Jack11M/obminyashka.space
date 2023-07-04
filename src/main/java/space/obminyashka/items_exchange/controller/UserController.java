@@ -106,6 +106,21 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @DeleteMapping(value = ApiKey.USER_DELETE_MY_FAVORITE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Delete user's favorite advertisement")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteFavoriteAdvertisement(
+            @Parameter(hidden = true) Authentication authentication,
+            @Parameter(name = "advertisement_id", description = "Id of advertisement for deleting from favorite adv")
+            @PathVariable(name = "advertisement_id") UUID advertisementId) {
+        advService.deleteFavorite(advertisementId, authentication.getName());
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_PASSWORD, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Update a user password")
     @ApiResponses(value = {

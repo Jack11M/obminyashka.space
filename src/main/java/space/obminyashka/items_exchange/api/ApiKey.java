@@ -52,6 +52,7 @@ public class ApiKey {
     public static final String USER_MY_INFO = USER + "/my-info";
     public static final String USER_MY_ADV = USER + "/my-adv";
     public static final String USER_MY_FAVORITE = USER_MY_ADV + "/favorite";
+    public static final String USER_DELETE_MY_FAVORITE = USER_MY_FAVORITE + "/{advertisement_id}";
     public static final String USER_CHILD = USER + "/child";
     public static final String USER_SERVICE = USER + "/service";
     public static final String USER_SERVICE_CHANGE_PASSWORD = USER_SERVICE + "/pass";
