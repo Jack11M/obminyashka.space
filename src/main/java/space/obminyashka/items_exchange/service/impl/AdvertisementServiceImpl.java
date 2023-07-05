@@ -96,8 +96,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
             final var bound = (int) (totalRecordsSize / request.getSize());
             request.setPage(bound > 0 ? random.nextInt(bound) : 0);
         }
-        var a = advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
-                .map(this::buildAdvertisementTitle);
         return advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
