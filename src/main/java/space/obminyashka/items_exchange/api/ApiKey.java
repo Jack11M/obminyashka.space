@@ -59,6 +59,7 @@ public class ApiKey {
     public static final String USER_SERVICE_CHANGE_AVATAR = USER_SERVICE + "/avatar";
     public static final String USER_SERVICE_DELETE = USER_SERVICE + "/delete";
     public static final String USER_SERVICE_RESTORE = USER_SERVICE + "/restore";
+    public static final String USER_SERVICE_RESET_PASSWORD = USER_SERVICE_CHANGE_PASSWORD + "/reset";
     // OAuth2 API
     public static final String OAUTH2 = "/oauth2/**";
     public static final String OAUTH2_LOGIN = "/login" + OAUTH2;

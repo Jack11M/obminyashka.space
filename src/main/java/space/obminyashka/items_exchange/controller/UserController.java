@@ -127,6 +127,23 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @PutMapping(value = ApiKey.USER_SERVICE_RESET_PASSWORD, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Operation(summary = "Reset a user password by email")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+    public ResponseEntity<String> resetUserPassword(@Valid @RequestBody ChangeEmailRequest email) {
+        var emailForFinding = email.email();
+        if (!userService.findEmailInRegisteredUsers(emailForFinding)) {
+            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND), HttpStatus.NOT_FOUND);
+        }
+
+        mailService.resetPassword(emailForFinding);
+        return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.PASSWORD_RESET), HttpStatus.ACCEPTED);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_EMAIL, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Update a user email")
     @ApiResponses(value = {
