@@ -17,7 +17,7 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.exception.not_found.AdvertisementIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.mapper.LocationMapper;
@@ -78,12 +78,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public void deleteFavorite(UUID advertisementId, String username) {
-        boolean isNotDeletedAdvertisement =
-                advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username) == 0;
+        final var numberOfDeletedAdv =
+                advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username);
 
-        if (isNotDeletedAdvertisement) {
-            throw new AdvertisementIdNotFoundException(getParametrizedMessageSource(
-                    FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId));
+        if (numberOfDeletedAdv == 0) {
+            final var message = getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId);
+            throw new EntityIdNotFoundException(message);
         }
     }
 

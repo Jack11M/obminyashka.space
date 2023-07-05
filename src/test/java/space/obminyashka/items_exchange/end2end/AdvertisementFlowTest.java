@@ -26,7 +26,7 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
@@ -154,7 +154,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
                 .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
                 .queryParam("subcategoryId", "4"), status().isNotFound());
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
-                .isInstanceOf(SubcategoryIdNotFoundException.class)
+                .isInstanceOf(EntityIdNotFoundException.class)
                 .hasMessage(getExceptionMessageSourceWithId(4, INVALID_SUBCATEGORY_ID));
     }
 

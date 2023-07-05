@@ -30,7 +30,7 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.not_found.AdvertisementIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -157,7 +157,7 @@ class UserFlowTest extends BasicControllerTest {
                 status().isNotFound());
 
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
-                .isInstanceOf(AdvertisementIdNotFoundException.class)
+                .isInstanceOf(EntityIdNotFoundException.class)
                 .hasMessage(getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, INVALID_ADV_ID));
     }
 

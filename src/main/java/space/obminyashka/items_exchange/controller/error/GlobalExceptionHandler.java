@@ -64,11 +64,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             UsernameNotFoundException.class,
             EntityNotFoundException.class,
-            CategoryIdNotFoundException.class,
             CategorySizeNotFoundException.class,
             EmailValidationCodeNotFoundException.class,
-            SubcategoryIdNotFoundException.class,
-            AdvertisementIdNotFoundException.class})
+            EntityIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorMessage> handleNotFoundExceptions(Exception e, ServletWebRequest request) {
         return ResponseEntity

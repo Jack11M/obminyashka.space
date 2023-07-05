@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.CategoryDto;
 import space.obminyashka.items_exchange.exception.DataConflictException;
-import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.util.Locale;
@@ -159,7 +159,7 @@ class CategoryFlowTest extends BasicControllerTest {
         LocaleContextHolder.setDefaultLocale(Locale.ENGLISH);
         MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
         assertThat(result.getResolvedException())
-                .isInstanceOf(CategoryIdNotFoundException.class)
+                .isInstanceOf(EntityIdNotFoundException.class)
                 .hasMessage(getParametrizedMessageSource(INVALID_CATEGORY_ID, NONEXISTENT_ENTITY_ID));
     }
 
