@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.controller.request.SubcategoryFilter;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -34,7 +33,6 @@ import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -56,22 +54,7 @@ public class AdvertisementController {
     private final ImageService imageService;
     private final UserService userService;
     private final SubcategoryService subcategoryService;
-    private final CategoryService categoryService;
     private final LocationService locationService;
-
-    @GetMapping(value = ApiKey.ADV_THUMBNAIL, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result with filters")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) throws SubcategoryIdNotFoundException {
-        Long subcategoryId = findAdvsRequest.getSubcategoryId();
-        if (subcategoryId != null && !subcategoryService.isSubcategoryExistsById(subcategoryId)) {
-            throw new SubcategoryIdNotFoundException(getExceptionMessageSourceWithId(subcategoryId, INVALID_SUBCATEGORY_ID));
-        }
-        return advertisementService.findThumbnails(findAdvsRequest);
-    }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Count existed advertisements and return total records amount number")

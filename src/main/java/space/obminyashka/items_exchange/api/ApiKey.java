@@ -12,8 +12,6 @@ public class ApiKey {
     public static final String ADV_DEFAULT_IMAGE = ADV + "/default-image/{advertisementId}/{imageId}";
     public static final String ADV_ID = ADV + "/{advertisement_id}";
     public static final String ADV_FILTER = ADV + "/filter";
-    public static final String ADV_THUMBNAIL = ADV + "/thumbnail";
-    public static final String ADV_THUMBNAIL_PARAMS = ADV_THUMBNAIL + "?page={page}&size={size}";
     public static final String ADV_TOTAL = ADV + "/total-amount";
     // Authorization API
     public static final String AUTH = API + "/auth";

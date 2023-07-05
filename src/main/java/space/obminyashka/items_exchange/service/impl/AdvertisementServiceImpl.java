@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.*;
 import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
@@ -51,24 +50,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public Page<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest) {
-        if (findAdvsRequest.isEnableRandom()) {
-            final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
-                    findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
-            final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
-            findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
-        }
-
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
-                        findAdvsRequest.getSubcategoryId(),
-                        PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
-                .map(advertisementMapper::toAdvertisementTitleDto);
-    }
-    @Override
     public Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable) {
         return advertisementRepository.findFavoriteAdvertisementsByUsername(username, pageable)
                 .map(advertisementMapper::toAdvertisementTitleDto);
     }
+
     @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
@@ -103,6 +89,15 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
+        if (request.isEnableRandom()) {
+            final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
+                    request.getAdvertisementFilter().getExcludeAdvertisementId(),
+                    request.getSubcategoryFilterRequest().getSubcategoriesIdValues());
+            final var bound = (int) (totalRecordsSize / request.getSize());
+            request.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        }
+        var a = advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
+                .map(this::buildAdvertisementTitle);
         return advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
                 .map(this::buildAdvertisementTitle);
     }
