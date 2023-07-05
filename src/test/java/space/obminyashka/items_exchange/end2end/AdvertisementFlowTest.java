@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -97,15 +96,6 @@ class AdvertisementFlowTest extends BasicControllerTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {0, -2})
-    @DataSet("database_init.yml")
-    void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
-        int page = 0;
-        int size = 12;
-        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isBadRequest());
-    }
-
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
@@ -115,18 +105,6 @@ class AdvertisementFlowTest extends BasicControllerTest {
         sendUriAndGetResultAction(get(ADV_THUMBNAIL_PARAMS, page, size), status().isOk())
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
                 .andExpect(jsonPath("$.content[0].title").value("Dresses"));
-    }
-
-    @Test
-    @WithMockUser(username = "user")
-    @DataSet("database_init.yml")
-    void findPaginatedByCategoryId_shouldReturnPageResponse() throws Exception {
-        long id = 1;
-        int page = 0;
-        int size = 12;
-        sendUriAndGetResultAction(get(ADV_BY_CATEGORY_ID, id, page, size), status().isOk())
-                .andExpect(jsonPath("$.content[0].advertisementId").value(VALID_ADV_ID))
-                .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
     }
 
     @Test

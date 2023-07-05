@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -109,25 +108,6 @@ public class AdvertisementController {
         return allByKeyword.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allByKeyword, HttpStatus.OK);
-    }
-
-    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
-            @PathVariable("category_id") @Positive Long categoryId,
-            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        if (!categoryService.isCategoryExistsById(categoryId)) {
-            throw new EntityIdNotFoundException(
-                    getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId));
-        }
-        return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
     @GetMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)

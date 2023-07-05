@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -35,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 
 
@@ -53,17 +51,6 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         int size = -12;
         MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_REQUEST_PARAMS, "KEYWORD", page, size), status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
-    }
-
-    @Test
-    void findAdvertisementsHavingCategory_shouldReturnNotFound_whenCategoryIdDoesNotExist() throws Exception {
-        long id = 999;
-        int page = 0;
-        int size = 12;
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, id, page, size), status().isNotFound());
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(EntityIdNotFoundException.class)
-                .hasMessage(getParametrizedMessageSource(INVALID_CATEGORY_ID, id));
     }
 
     @Test

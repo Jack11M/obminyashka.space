@@ -29,9 +29,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) IN :topics")
     Page<Advertisement> search(@Param("topics") Set<String> topics, Pageable pageable);
 
-    @Query("SELECT a FROM Advertisement a WHERE a.subcategory.category.id = :categoryId")
-    Page<Advertisement> findAdvertisementByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
-
     Optional<Advertisement> findAdvertisementByIdAndUserUsername(UUID id, String username);
 
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
