@@ -30,7 +30,7 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.exception.not_found.AdvertisementIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -51,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
@@ -145,7 +146,7 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/deleteFavorite.yml")
     void deleteFavoriteAdvertisement_shouldDeleteFavoriteAdvertisement_whenAdvertisementIsFavorite() throws Exception {
-        sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, VALID_ADV_ID), status().isAccepted());
+        sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, VALID_ADV_ID), status().isNoContent());
     }
 
     @Test
@@ -153,12 +154,11 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void deleteFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFavorite() throws Exception {
         var resultActions = sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, INVALID_ADV_ID),
-                status().isBadRequest());
+                status().isNotFound());
 
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
-                .isInstanceOf(BadRequestException.class)
-                .hasMessage(getParametrizedMessageSource(
-                        ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND, INVALID_ADV_ID));
+                .isInstanceOf(AdvertisementIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, INVALID_ADV_ID));
     }
 
     @Test

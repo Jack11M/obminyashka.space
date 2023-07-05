@@ -17,7 +17,7 @@ import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.exception.not_found.AdvertisementIdNotFoundException;
 import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.mapper.LocationMapper;
@@ -30,12 +30,12 @@ import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -78,9 +78,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public void deleteFavorite(UUID advertisementId, String username) {
-        if (advertisementRepository.deleteFavoriteAdvertisementByAdvIdAndUsername(advertisementId, username) == 0) {
-            throw new BadRequestException(getParametrizedMessageSource(
-                    ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId));
+        boolean isNotDeletedAdvertisement =
+                advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username) == 0;
+
+        if (isNotDeletedAdvertisement) {
+            throw new AdvertisementIdNotFoundException(getParametrizedMessageSource(
+                    FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId));
         }
     }
 

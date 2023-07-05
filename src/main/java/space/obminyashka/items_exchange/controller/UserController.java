@@ -106,17 +106,17 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @DeleteMapping(value = ApiKey.USER_DELETE_MY_FAVORITE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = ApiKey.USER_DELETE_MY_FAVORITE)
     @Operation(summary = "Delete user's favorite advertisement")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
-    @ResponseStatus(HttpStatus.ACCEPTED)
+            @ApiResponse(responseCode = "204", description = "NO_CONTENT"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
+            @ApiResponse(responseCode = "404", description = "NOT_FOUND")})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFavoriteAdvertisement(
             @Parameter(hidden = true) Authentication authentication,
-            @Parameter(name = "advertisement_id", description = "Id of advertisement for deleting from favorite adv")
-            @PathVariable(name = "advertisement_id") UUID advertisementId) {
+            @Parameter(name = "advertisementId", description = "Id of advertisement for deleting from favorite adv")
+            @PathVariable UUID advertisementId) {
         advService.deleteFavorite(advertisementId, authentication.getName());
     }
 

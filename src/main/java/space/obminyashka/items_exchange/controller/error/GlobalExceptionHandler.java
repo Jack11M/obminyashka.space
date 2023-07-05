@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
-import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.CategorySizeNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.*;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -70,7 +67,8 @@ public class GlobalExceptionHandler {
             CategoryIdNotFoundException.class,
             CategorySizeNotFoundException.class,
             EmailValidationCodeNotFoundException.class,
-            SubcategoryIdNotFoundException.class})
+            SubcategoryIdNotFoundException.class,
+            AdvertisementIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorMessage> handleNotFoundExceptions(Exception e, ServletWebRequest request) {
         return ResponseEntity
