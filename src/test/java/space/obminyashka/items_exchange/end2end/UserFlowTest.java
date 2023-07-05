@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
