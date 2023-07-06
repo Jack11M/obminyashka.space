@@ -60,6 +60,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .map(advertisementMapper::toAdvertisementTitleDto);
     }
 
+    @Override
+    public void deleteFavorite(UUID advertisementId, String username) {
+        final var numberOfDeletedAdv =
+                advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username);
+
+        if (numberOfDeletedAdv == 0) {
+            final var message = getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId);
+            throw new EntityIdNotFoundException(message);
+        }
+    }
+
     @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
