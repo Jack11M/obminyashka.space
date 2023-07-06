@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.mapper.LocationMapper;
@@ -27,10 +31,11 @@ import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -64,11 +69,24 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                         PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
                 .map(advertisementMapper::toAdvertisementTitleDto);
     }
+
     @Override
     public Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable) {
         return advertisementRepository.findFavoriteAdvertisementsByUsername(username, pageable)
                 .map(advertisementMapper::toAdvertisementTitleDto);
     }
+
+    @Override
+    public void deleteFavorite(UUID advertisementId, String username) {
+        final var numberOfDeletedAdv =
+                advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username);
+
+        if (numberOfDeletedAdv == 0) {
+            final var message = getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId);
+            throw new EntityIdNotFoundException(message);
+        }
+    }
+
     @Cacheable
     @Override
     public List<AdvertisementTitleDto> findAllByUsername(String username) {
