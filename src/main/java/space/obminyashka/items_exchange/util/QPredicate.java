@@ -15,15 +15,15 @@ public class QPredicate {
     private final Set<Predicate> predicates = new HashSet<>();
 
     public <T> QPredicate add(T object, Function<T, Predicate> function) {
-        if (object instanceof Collection && !((Collection<?>) object).isEmpty()) {
-            predicates.add(function.apply(object));
-        }
+        Optional.ofNullable(object)
+                .filter(java.util.function.Predicate.not(o -> o instanceof Collection && ((Collection<?>) object).isEmpty()))
+                .ifPresent(o -> predicates.add(function.apply(o)));
         return this;
     }
 
     public Predicate buildAnd() {
-        Predicate predicate = ExpressionUtils.allOf(predicates);
-        return predicate == null ? Expressions.asBoolean(true).isTrue() : predicate;
+        return Optional.ofNullable(ExpressionUtils.allOf(predicates))
+                .orElseGet(() -> Expressions.asBoolean(true).isTrue());
     }
 
     public static QPredicate builder() {

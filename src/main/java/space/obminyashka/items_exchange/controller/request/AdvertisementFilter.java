@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
 @Setter
 public class AdvertisementFilter {
 
+    @Parameter(name = "excludeAdvertisementId", description = "ID of excluded advertisement", allowEmptyValue = true)
+    private UUID excludeAdvertisementId;
+
     @Parameter(description = "Location ID for advertisements filtering", example = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10",
             allowEmptyValue = true)
     private UUID locationId;

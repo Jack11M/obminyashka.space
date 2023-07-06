@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailSendingException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorMessage handleEmailException(Exception ex, ServletWebRequest request){
+    public ErrorMessage handleEmailException(Exception ex, ServletWebRequest request) {
         return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 

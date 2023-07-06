@@ -12,10 +12,7 @@ import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 @Transactional
@@ -33,22 +30,15 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 
-    @Query("SELECT a from Advertisement a where " +
-            "(:id is null or a.id <> :id) and " +
-            "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
-    Page<AdvertisementTitleProjection> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
-                                                                      @Param("subcategoryId") Long subcategoryId,
-                                                                      Pageable pageable);
-
     @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
     Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
 
     int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
 
-    @Query("SELECT count(a) from Advertisement a where " +
-            "(:id is null or a.id <> :id) and " +
-            "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
-    Long countByIdNotAndSubcategoryId(@Param("id") UUID id, @Param("subcategoryId") Long subcategoryId);
+    @Query("SELECT COUNT(a) FROM Advertisement a WHERE " +
+            "(:id IS NULL OR a.id <> :id) AND " +
+            "(a.subcategory.id IN :subcategoryIds)")
+    Long countByIdNotAndSubcategoryId(UUID id, List<Long> subcategoryIds);
 
     boolean existsBySubcategoryId(long id);
 }
