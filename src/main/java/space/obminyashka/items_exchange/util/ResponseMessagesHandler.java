@@ -63,6 +63,7 @@ public class ResponseMessagesHandler {
         public final String ADVERTISEMENT_IMAGE_ID_NOT_FOUND = "exception.advertisement-image.id.not-found";
         public final String IMAGE_NOT_EXISTED_ID = "exception.image.not-existed-id";
         public final String ADVERTISEMENT_NOT_EXISTED_ID = "exception.advertisement.not-existed-id";
+        public final String FAVORITE_ADVERTISEMENT_NOT_FOUND = "exception.favorite.advertisement.not-found";
         public final String EMAIL_SENDING = "exception.email.sending";
         public final String EMAIL_OLD = "exception.email.old";
         public final String LOCATION_ALREADY_EXIST = "exception.location.exist";

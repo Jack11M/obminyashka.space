@@ -12,7 +12,10 @@ import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.projection.AdvertisementTitleProjection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Repository
 @Transactional
@@ -33,11 +36,12 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
     Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
 
+    int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
+
     @Query("SELECT COUNT(a) FROM Advertisement a WHERE " +
             "(:id IS NULL OR a.id <> :id) AND " +
             "(a.subcategory.id IN :subcategoryIds)")
     Long countByIdNotAndSubcategoryId(UUID id, List<Long> subcategoryIds);
-
 
     boolean existsBySubcategoryId(long id);
 }
