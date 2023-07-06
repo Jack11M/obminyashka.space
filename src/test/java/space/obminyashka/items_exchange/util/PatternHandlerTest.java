@@ -128,6 +128,7 @@ class PatternHandlerTest {
     private static List<String> createWrongPhoneNumbers() {
 
         return List.of(
+                "+1(234)567-89-10)",
                 "+1-345-678-90-12",
                 "++12-345-678-90-12",
                 "-13.345.678.90.13",
