@@ -125,8 +125,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         );
     }
 
-
-
     @Test
     @WithMockUser(username = "user")
     void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException() throws Exception {

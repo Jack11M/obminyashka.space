@@ -29,6 +29,7 @@ import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
@@ -103,6 +104,26 @@ public class UserController {
             @Parameter(name = "size", description = "Number of records per page. Default value: 6")
             @RequestParam(required = false, defaultValue = "6") @Positive int size) {
         return advService.findAllFavorite(authentication.getName(), PageRequest.of(page, size));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @PostMapping(value = ApiKey.USER_ADD_MY_FAVORITE)
+    @Operation(summary = "Add user's favorite advertisement")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
+            @ApiResponse(responseCode = "404", description = "NOT_FOUND")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void addFavoriteAdvertisement(
+            @Parameter(hidden = true) Authentication authentication,
+            @Parameter(name = "advertisementId", description = "Id of advertisement for to add an favorite adv")
+            @PathVariable UUID advertisementId) {
+        var username = authentication.getName();
+        if (!advService.existById(advertisementId)) {
+            throw new EntityIdNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
+        }
+        var list = advService.addFavorite(advertisementId, username);
+        advService.saveFavorite(list, username);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

@@ -144,6 +144,17 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
+    void addFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFound() throws Exception {
+        var resultActions = sendUriAndGetResultAction(post(USER_ADD_MY_FAVORITE, INVALID_ADV_ID), status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/deleteFavorite.yml")
     void deleteFavoriteAdvertisement_shouldDeleteFavoriteAdvertisement_whenAdvertisementIsFavorite() throws Exception {
         sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, VALID_ADV_ID), status().isNoContent());

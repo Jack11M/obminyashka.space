@@ -11,9 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.service.impl.AdvertisementServiceImpl;
 import space.obminyashka.items_exchange.util.MessageSourceUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,6 +50,29 @@ class AdvertisementServiceTest {
         final boolean result = advertisementService.areAdvertisementsExistWithSubcategory(NONEXISTENT_ENTITY_ID);
         assertEquals(expectedResult, result);
         verify(advertisementRepository).existsBySubcategoryId(NONEXISTENT_ENTITY_ID);
+    }
+
+    @Test
+    void addFavorite_WhenDataCorrect_Successfully() {
+        final var exceptedSizeOfListAdv = 1;
+        final var existedAdvId = UUID.randomUUID();
+        final var existedUsername = "user";
+        var list = advertisementService.addFavorite(existedAdvId, existedUsername);
+
+        assertAll(
+                () -> assertEquals(list.size(), exceptedSizeOfListAdv),
+                () -> advertisementRepository.getFavoriteAdvertisementsByUsername(existedUsername),
+                () -> advertisementRepository.getAdvertisementById(existedAdvId)
+        );
+    }
+
+    @Test
+    void saveFavorite_WhenDataCorrect_Successfully() {
+        final List<Advertisement> existedList = new ArrayList<>();
+        final var existedUsername = "user";
+        advertisementService.saveFavorite(existedList, existedUsername);
+
+        verify(advertisementRepository).saveFavoriteAdvertisementsByUsername(existedList, existedUsername);
     }
 
     @Test
