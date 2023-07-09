@@ -37,6 +37,8 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("select u.favoriteAdvertisements from User u where u.username = :username")
     List<Advertisement> getFavoriteAdvertisementsByUsername(String username);
 
+    @Transactional
+    @Modifying
     @Query("update User u set u.favoriteAdvertisements = :list where u.username = :username")
     void saveFavoriteAdvertisementsByUsername(List<Advertisement> list, String username);
 
