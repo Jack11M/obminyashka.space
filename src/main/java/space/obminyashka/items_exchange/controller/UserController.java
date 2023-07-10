@@ -118,12 +118,10 @@ public class UserController {
             @Parameter(hidden = true) Authentication authentication,
             @Parameter(name = "advertisementId", description = "Id of advertisement for to add an favorite adv")
             @PathVariable UUID advertisementId) {
-        var username = authentication.getName();
         if (!advService.existById(advertisementId)) {
             throw new EntityIdNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
         }
-        var list = advService.addFavorite(advertisementId, username);
-        advService.saveFavorite(list, username);
+        advService.addFavorite(advertisementId, authentication.getName());
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

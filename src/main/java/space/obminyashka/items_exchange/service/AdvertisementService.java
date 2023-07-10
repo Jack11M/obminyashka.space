@@ -36,15 +36,7 @@ public interface AdvertisementService {
      * @param advertisementId id of existence advertisement
      * @param username login of the user
      */
-    List<Advertisement> addFavorite(UUID advertisementId, String username);
-
-    /**
-     * Save favorite advertisement by username
-     *
-     * @param list list of favorite advertisement
-     * @param username login of the user
-     */
-    void saveFavorite(List<Advertisement> list, String username);
+    void addFavorite(UUID advertisementId, String username);
 
     /**
      * Delete favorite advertisement by username and advertisementId

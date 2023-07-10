@@ -61,16 +61,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public List<Advertisement> addFavorite(UUID advertisementId, String username) {
-        var favoriteList = advertisementRepository.getFavoriteAdvertisementsByUsername(username);
-        favoriteList.add(advertisementRepository.getAdvertisementById(advertisementId));
-
-        return favoriteList;
-    }
-
-    @Override
-    public void saveFavorite(List<Advertisement> list, String username) {
-        advertisementRepository.saveFavoriteAdvertisementsByUsername(list, username);
+    public void addFavorite(UUID advertisementId, String username) {
+        advertisementRepository.addFavoriteAdvertisementsByUsername(username, advertisementId);
     }
 
     @Override
