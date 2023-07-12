@@ -43,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -99,29 +100,17 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     private static Stream<Arguments> listInvalidFields() {
         var userWithInvalidFirstAndLastName = createUserUpdateDtoWithInvalidFirstAndLastName();
 
+        var invalidPhoneAmount = getErrorMessageForInvalidField(INVALID_PHONES_AMOUNT, "{max}", maxPhonesAmount);
+        var invalidFirstName = getErrorMessageForInvalidField(INVALID_FIRST_LAST_NAME, "${validatedValue}", userWithInvalidFirstAndLastName.getFirstName());
+        var invalidLastName = getErrorMessageForInvalidField(INVALID_FIRST_LAST_NAME, "${validatedValue}", userWithInvalidFirstAndLastName.getLastName());
+        var invalidNotNull = getErrorMessageForInvalidField(INVALID_NOT_NULL, "${validatedValue}", "");
+
         return Stream.of(
-                Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(),
-                        getErrorMessageForInvalidField(
-                                ResponseMessagesHandler.ValidationMessage.INVALID_PHONES_AMOUNT,
-                                "{max}",
-                                maxPhonesAmount)),
-                Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(),
-                        getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_PHONE_NUMBER)),
-                Arguments.of(userWithInvalidFirstAndLastName,
-                        getErrorMessageForInvalidField(
-                                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME,
-                                "${validatedValue}",
-                                userWithInvalidFirstAndLastName.getFirstName())),
-                Arguments.of(userWithInvalidFirstAndLastName,
-                        getErrorMessageForInvalidField(
-                                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME,
-                                "${validatedValue}",
-                                userWithInvalidFirstAndLastName.getLastName())),
-                Arguments.of(createUserUpdateDtoWithInvalidNullPhone(),
-                        getErrorMessageForInvalidField(
-                                ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL,
-                                "${validatedValue}",
-                                ""))
+                Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(), invalidPhoneAmount),
+                Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(), getMessageSource(INVALID_PHONE_NUMBER)),
+                Arguments.of(userWithInvalidFirstAndLastName, invalidFirstName),
+                Arguments.of(userWithInvalidFirstAndLastName, invalidLastName),
+                Arguments.of(createUserUpdateDtoWithInvalidNullPhone(), invalidNotNull)
         );
     }
 
