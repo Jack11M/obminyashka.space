@@ -144,6 +144,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addFavorite.yml")
     void addFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFound() throws Exception {
         var resultActions = sendUriAndGetResultAction(post(USER_ADD_MY_FAVORITE, INVALID_ADV_ID), status().isNotFound());
 

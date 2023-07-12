@@ -53,6 +53,7 @@ class AdvertisementServiceTest {
     void addFavorite_WhenDataCorrect_Successfully() {
         final var existedAdvId = UUID.randomUUID();
         final var existedUsername = "user";
+        
         advertisementService.addFavorite(existedAdvId, existedUsername);
 
         verify(advertisementRepository).addFavoriteAdvertisementsByUsername(existedUsername, existedAdvId);
