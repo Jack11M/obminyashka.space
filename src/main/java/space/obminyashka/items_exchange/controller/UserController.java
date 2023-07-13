@@ -45,6 +45,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 @RestController
 @Tag(name = "User")
@@ -107,7 +108,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PostMapping(value = ApiKey.USER_ADD_MY_FAVORITE)
+    @PostMapping(value = ApiKey.USER_MY_FAVORITE_ADV)
     @Operation(summary = "Add user's favorite advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
@@ -119,13 +120,13 @@ public class UserController {
             @Parameter(name = "advertisementId", description = "Id of advertisement for to add an favorite adv")
             @PathVariable UUID advertisementId) {
         if (!advService.existById(advertisementId)) {
-            throw new EntityIdNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID));
+            throw new EntityIdNotFoundException(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
         }
         advService.addFavorite(advertisementId, authentication.getName());
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @DeleteMapping(value = ApiKey.USER_DELETE_MY_FAVORITE)
+    @DeleteMapping(value = ApiKey.USER_MY_FAVORITE_ADV)
     @Operation(summary = "Delete user's favorite advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "NO_CONTENT"),

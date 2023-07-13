@@ -146,7 +146,7 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/addFavorite.yml")
     void addFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFound() throws Exception {
-        var resultActions = sendUriAndGetResultAction(post(USER_ADD_MY_FAVORITE, INVALID_ADV_ID), status().isNotFound());
+        var resultActions = sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, INVALID_ADV_ID), status().isNotFound());
 
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
                 .isInstanceOf(EntityIdNotFoundException.class)
@@ -158,14 +158,14 @@ class UserFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/deleteFavorite.yml")
     void deleteFavoriteAdvertisement_shouldDeleteFavoriteAdvertisement_whenAdvertisementIsFavorite() throws Exception {
-        sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, VALID_ADV_ID), status().isNoContent());
+        sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, VALID_ADV_ID), status().isNoContent());
     }
 
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     void deleteFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFavorite() throws Exception {
-        var resultActions = sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, INVALID_ADV_ID),
+        var resultActions = sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, INVALID_ADV_ID),
                 status().isNotFound());
 
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
