@@ -9,10 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.repository.AdvertisementRepository;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.service.impl.AdvertisementServiceImpl;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
+import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
 
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static space.obminyashka.items_exchange.util.CategoryTestUtil.NONEXISTENT_ENTITY_ID;
+import static space.obminyashka.items_exchange.util.data_producer.CategoriesDataProducer.NONEXISTENT_ENTITY_ID;
 
 @ExtendWith(MockitoExtension.class)
 class AdvertisementServiceTest {
@@ -30,13 +30,13 @@ class AdvertisementServiceTest {
     @Mock
     private AdvertisementRepository advertisementRepository;
     @InjectMocks
-    private MessageSourceUtil messageSourceUtil;
+    private MessageSourceProxy messageSourceProxy;
     @InjectMocks
     private AdvertisementServiceImpl advertisementService;
 
     @BeforeEach
     void init() {
-        messageSourceUtil.setMSource(messageSource);
+        messageSourceProxy.setMSource(messageSource);
     }
 
     @ParameterizedTest

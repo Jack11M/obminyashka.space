@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.dao.ImageRepository;
-import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
-import space.obminyashka.items_exchange.mapper.ImageMapper;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Image;
+import space.obminyashka.items_exchange.repository.ImageRepository;
+import space.obminyashka.items_exchange.rest.response.ImageView;
+import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.rest.mapper.ImageMapper;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
-import space.obminyashka.items_exchange.service.SupportedMediaTypes;
+import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -56,7 +56,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
+    public List<ImageView> getByAdvertisementId(UUID advertisementId) {
         return imageMapper.toDtoList(imageRepository.findByAdvertisementId(advertisementId));
     }
 

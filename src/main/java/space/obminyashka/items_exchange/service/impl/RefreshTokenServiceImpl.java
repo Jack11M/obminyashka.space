@@ -3,8 +3,8 @@ package space.obminyashka.items_exchange.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.RefreshTokenRepository;
-import space.obminyashka.items_exchange.model.RefreshToken;
+import space.obminyashka.items_exchange.repository.RefreshTokenRepository;
+import space.obminyashka.items_exchange.repository.model.RefreshToken;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.RefreshTokenService;
 

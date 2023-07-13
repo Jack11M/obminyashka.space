@@ -2,12 +2,12 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.CategoryRepository;
-import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.dto.SubcategoryDto;
-import space.obminyashka.items_exchange.mapper.CategoryMapper;
-import space.obminyashka.items_exchange.model.Category;
-import space.obminyashka.items_exchange.model.enums.Size;
+import space.obminyashka.items_exchange.repository.CategoryRepository;
+import space.obminyashka.items_exchange.rest.dto.CategoryDto;
+import space.obminyashka.items_exchange.rest.response.SubcategoryView;
+import space.obminyashka.items_exchange.rest.mapper.CategoryMapper;
+import space.obminyashka.items_exchange.repository.model.Category;
+import space.obminyashka.items_exchange.repository.enums.Size;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
@@ -88,8 +88,8 @@ public class CategoryServiceImpl implements CategoryService {
         };
     }
 
-    private boolean isSubcategoryIdEqualsZero(SubcategoryDto subcategoryDto) {
-        return subcategoryDto.getId() == 0L;
+    private boolean isSubcategoryIdEqualsZero(SubcategoryView subcategoryView) {
+        return subcategoryView.getId() == 0L;
     }
 
     private boolean isCategoryNameHasNotDuplicate(String name) {

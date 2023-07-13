@@ -14,8 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import space.obminyashka.items_exchange.service.impl.SendGridService;
-import space.obminyashka.items_exchange.util.EmailType;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
+import space.obminyashka.items_exchange.service.util.EmailType;
+import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class MailServiceTest {
     @InjectMocks
-    private MessageSourceUtil messageSourceUtil;
+    private MessageSourceProxy messageSourceProxy;
     @Mock
     private SendGrid sendGrid;
     @Captor
@@ -36,7 +36,7 @@ class MailServiceTest {
 
     @BeforeEach
     void setUp() {
-        messageSourceUtil.setMSource(mock(MessageSource.class));
+        messageSourceProxy.setMSource(mock(MessageSource.class));
     }
 
     @Test

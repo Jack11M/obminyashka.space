@@ -17,9 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.repository.model.Role;
+import space.obminyashka.items_exchange.repository.model.User;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -26,14 +26,14 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
-import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,13 +48,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
-import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
+import static space.obminyashka.items_exchange.util.data_producer.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @DBRider

@@ -2,12 +2,12 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public interface AdvertisementService {
      * @param username login of the user
      * @return all advertisements created by the user
      */
-    List<AdvertisementTitleDto> findAllByUsername(String username);
+    List<AdvertisementTitleView> findAllByUsername(String username);
 
     /**
      * Find all favorites advertisement by username
@@ -28,7 +28,7 @@ public interface AdvertisementService {
      * @param username login of the user
      * @return all favorites advertisement by username
      */
-    Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable);
+    Page<AdvertisementTitleView> findAllFavorite(String username, Pageable pageable);
 
     /**
      * Delete favorite advertisement by username and advertisementId
@@ -44,7 +44,7 @@ public interface AdvertisementService {
      * @param pageable see {@link Pageable} for more details
      * @return result of the request
      */
-    Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
+    Page<AdvertisementTitleView> findByKeyword(String keyword, Pageable pageable);
 
     /**
      * Find an advertisement with additional owner check
@@ -59,14 +59,14 @@ public interface AdvertisementService {
      * @param id advertisement id
      * @return {@link Optional} as result
      */
-    Optional<AdvertisementDisplayDto> findDtoById(UUID id);
+    Optional<AdvertisementDisplayView> findDtoById(UUID id);
 
     /**
      * Filter advertisements by search parameters from AdvertisementFilterRequest
      * @param request an object that contains all parameters to search
      * @return result of the request
      */
-    Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request);
+    Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request);
 
     /**
      * Check whenever user has an advertisement with selected id

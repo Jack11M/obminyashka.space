@@ -18,7 +18,7 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 
 @SpringBootTest
 @DBRider

@@ -15,16 +15,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.mapper.PhoneMapper;
-import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.RefreshToken;
-import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.projection.UserAuthProjection;
-import space.obminyashka.items_exchange.model.projection.UserProjection;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
+import space.obminyashka.items_exchange.rest.mapper.PhoneMapper;
+import space.obminyashka.items_exchange.rest.mapper.UserMapper;
+import space.obminyashka.items_exchange.repository.model.RefreshToken;
+import space.obminyashka.items_exchange.repository.model.Role;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.repository.projection.UserAuthProjection;
+import space.obminyashka.items_exchange.repository.projection.UserProjection;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 
 import java.time.Instant;
@@ -165,8 +165,8 @@ class UserServiceTest {
         return factory.createProjection(UserAuthProjection.class, map);
     }
 
-    private UserLoginResponseDto createUserLoginDto(UserAuthProjection projection) {
-        var dto = new UserLoginResponseDto();
+    private UserLoginResponse createUserLoginDto(UserAuthProjection projection) {
+        var dto = new UserLoginResponse();
         BeanUtils.copyProperties(projection, dto);
         dto.setLanguage(projection.getLanguage().toString());
         dto.setRefreshToken(projection.getRefreshToken().getToken());

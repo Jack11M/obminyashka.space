@@ -1,8 +1,8 @@
 package space.obminyashka.items_exchange.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
-import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.util.EmailType;
+import space.obminyashka.items_exchange.rest.exception.not_found.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.service.util.EmailType;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.model.RefreshToken;
+import space.obminyashka.items_exchange.repository.model.RefreshToken;
 
 import java.util.Optional;
 

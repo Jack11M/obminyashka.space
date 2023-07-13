@@ -10,15 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
-import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.USER_CHILD;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.USER_CHILD;
+import static space.obminyashka.items_exchange.util.data_producer.ChildDtoProducer.getTestChildren;
 
 @SpringBootTest
 @DBRider

@@ -18,17 +18,16 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
-import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.model.enums.AgeRange;
-import space.obminyashka.items_exchange.model.enums.Gender;
-import space.obminyashka.items_exchange.model.enums.Season;
-import space.obminyashka.items_exchange.model.enums.Size;
-import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.repository.AdvertisementRepository;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
+import space.obminyashka.items_exchange.repository.enums.AgeRange;
+import space.obminyashka.items_exchange.repository.enums.Gender;
+import space.obminyashka.items_exchange.repository.enums.Season;
+import space.obminyashka.items_exchange.repository.enums.Size;
+import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,11 +41,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
 @DBRider
@@ -226,7 +225,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "advertisement/create.yml", orderBy = {"created", "name"},
             ignoreCols = {"id", "default_photo", "created", "updated", "advertisement_id", "resource"})
     void createAdvertisement_shouldCreateValidAdvertisement() throws Exception {
-        var nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        var nonExistDto = AdvertisementModificationDtoProducer.createNonExistAdvertisementModificationDto();
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE, asJsonString(nonExistDto).getBytes());
         final var contentJson = sendUriAndGetResultAction(multipart(ADV).file(jpeg).file(dtoJson), status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
@@ -240,7 +239,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "database_init.yml", orderBy = {"created", "name", "resource", "birth_date"})
     void createAdvertisement_shouldReturn400WhenBlankFields() throws Exception {
-        var nonExistDto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDtoWithBlankFields();
+        var nonExistDto = AdvertisementModificationDtoProducer.createNonExistAdvertisementModificationDtoWithBlankFields();
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
                 asJsonString(nonExistDto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
@@ -259,7 +258,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @ExpectedDataSet(value = "advertisement/update.yml", orderBy = {"created", "name", "resource"}, ignoreCols = "updated")
     void updateAdvertisement_shouldUpdateExistedAdvertisement() throws Exception {
         AdvertisementModificationDto existDtoForUpdate =
-                AdvertisementDtoCreatingUtil.createExistAdvertisementModificationDtoForUpdate();
+                AdvertisementModificationDtoProducer.createExistAdvertisementModificationDtoForUpdate();
         sendDtoAndGetResultAction(put(ADV_ID, existDtoForUpdate.getId()), existDtoForUpdate, status().isAccepted())
                 .andExpect(jsonPath("$.description").value("new description"))
                 .andExpect(jsonPath("$.topic").value("new topic"))
@@ -270,7 +269,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void createAdvertisement_shouldReturn400WhenInvalidLocationAndSubcategoryId() throws Exception {
-        final var dto = AdvertisementDtoCreatingUtil.createNonExistAdvertisementModificationDto();
+        final var dto = AdvertisementModificationDtoProducer.createNonExistAdvertisementModificationDto();
 
         dto.setLocationId(INVALID_ID);
         dto.setSubcategoryId(99L);

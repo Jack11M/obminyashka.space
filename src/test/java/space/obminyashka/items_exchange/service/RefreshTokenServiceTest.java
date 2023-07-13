@@ -5,10 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import space.obminyashka.items_exchange.dao.RefreshTokenRepository;
-import space.obminyashka.items_exchange.model.RefreshToken;
-import space.obminyashka.items_exchange.model.Role;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.RefreshTokenRepository;
+import space.obminyashka.items_exchange.repository.model.RefreshToken;
+import space.obminyashka.items_exchange.repository.model.Role;
+import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.service.impl.RefreshTokenServiceImpl;
 
 import java.time.LocalDateTime;
