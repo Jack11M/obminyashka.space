@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import space.obminyashka.items_exchange.util.PatternHandler;
@@ -14,6 +15,7 @@ import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.Vali
 @EqualsAndHashCode
 public class PhoneDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "+381234567890")
+    @NotNull(message = "{" + INVALID_NOT_NULL + "}")
     @Pattern(regexp = PatternHandler.PHONE_NUMBER, message = "{" + INVALID_PHONE_NUMBER + "}")
     private String phoneNumber;
 

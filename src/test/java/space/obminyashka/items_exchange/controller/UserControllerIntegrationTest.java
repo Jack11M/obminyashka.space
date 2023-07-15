@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,20 +22,18 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.model.Phone;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -46,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -58,22 +56,15 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @SpyBean
     private ImageServiceImpl imageService;
 
-    private User user;
-
     @Captor
     private ArgumentCaptor<MultipartFile> captor;
 
-    @Value("${max.phones.amount}")
-    private String maxPhonesAmount;
+    private static String maxPhonesAmount;
 
     @Autowired
-    public UserControllerIntegrationTest(MockMvc mockMvc) {
+    public UserControllerIntegrationTest(MockMvc mockMvc, @Value("${max.phones.amount}") String maxPhonesAmount) {
         super(mockMvc);
-    }
-
-    @BeforeEach
-    void setUp() {
-        user = createUser();
+        UserControllerIntegrationTest.maxPhonesAmount = maxPhonesAmount;
     }
 
     @Test
@@ -96,36 +87,32 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_badAmountPhones_shouldReturnHttpStatusBadRequest() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDtoWithInvalidAmountOfPhones(), status().isBadRequest());
-        var responseContentAsString = getResponseContentAsString(mvcResult);
-        var expectedErrorMessage = getErrorMessageForInvalidField(
-                ResponseMessagesHandler.ValidationMessage.INVALID_PHONES_AMOUNT, "{max}", maxPhonesAmount);
-        assertTrue(responseContentAsString.contains(expectedErrorMessage));
+    @ParameterizedTest
+    @WithMockUser
+    @MethodSource("listInvalidFields")
+    void updateUserInfo_invalidFields_shouldReturnHttpStatusBadRequest(UserUpdateDto userDto,
+                                                                       String message) throws Exception {
+        var mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), userDto, status().isBadRequest());
+
+        assertTrue(getResponseContentAsString(mvcResult).contains(message));
     }
 
-    @Test
-    @WithMockUser(username = "admin")
-    void updateUserInfo_invalidFirstAndLastName_shouldReturnHttpStatusBadRequest() throws Exception {
-        UserUpdateDto dto = createUserUpdateDtoWithInvalidFirstAndLastName();
+    private static Stream<Arguments> listInvalidFields() {
+        var userWithInvalidFirstAndLastName = createUserUpdateDtoWithInvalidFirstAndLastName();
 
-        final var errorMessageForInvalidFirstName = getErrorMessageForInvalidField(
-                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME, "${validatedValue}", dto.getFirstName());
-        final var errorMessageForInvalidLastName = getErrorMessageForInvalidField(
-                ResponseMessagesHandler.ValidationMessage.INVALID_FIRST_LAST_NAME, "${validatedValue}", dto.getLastName());
+        var invalidPhoneAmount = getErrorMessageForInvalidField(INVALID_PHONES_AMOUNT, "{max}", maxPhonesAmount);
+        var invalidFirstName = getErrorMessageForInvalidField(INVALID_FIRST_LAST_NAME, "${validatedValue}", userWithInvalidFirstAndLastName.getFirstName());
+        var invalidLastName = getErrorMessageForInvalidField(INVALID_FIRST_LAST_NAME, "${validatedValue}", userWithInvalidFirstAndLastName.getLastName());
+        var invalidNotNull = getErrorMessageForInvalidField(INVALID_NOT_NULL, "${validatedValue}", "");
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), dto, status().isBadRequest());
-        String responseContentAsString = getResponseContentAsString(mvcResult);
-        assertAll(
-                () -> assertTrue(responseContentAsString.contains(errorMessageForInvalidFirstName)),
-                () -> assertTrue(responseContentAsString.contains(errorMessageForInvalidLastName))
+        return Stream.of(
+                Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(), invalidPhoneAmount),
+                Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(), getMessageSource(INVALID_PHONE_NUMBER)),
+                Arguments.of(userWithInvalidFirstAndLastName, invalidFirstName),
+                Arguments.of(userWithInvalidFirstAndLastName, invalidLastName),
+                Arguments.of(createUserUpdateDtoWithInvalidNullPhone(), invalidNotNull)
         );
     }
-
-
 
     @Test
     @WithMockUser(username = "user")
@@ -160,7 +147,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = "admin")
     void setUserAvatar_whenReceivedBMPImage_shouldThrowUnsupportedMediaTypeException() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         MockMultipartFile bmp = new MockMultipartFile("image", "image-bmp.bmp", "image/bmp", "image bmp".getBytes());
         sendUriAndGetMvcResult(multipart(new URI(USER_SERVICE_CHANGE_AVATAR)).file(bmp), status().isUnsupportedMediaType());
@@ -183,7 +169,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @Test
     @WithMockUser("admin")
     void makeAccountActiveAgain_whenUserHasNotStatusDeleted_shouldThrowAccessDenied() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(user));
 
         MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_RESTORE), status().isForbidden());
 
@@ -195,19 +180,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         return mvcResult.getResponse().getContentAsString();
     }
 
-    private String getErrorMessageForInvalidField(String messageFromSource, String replacementValue, String valueToReplace) {
+    private static String getErrorMessageForInvalidField(String messageFromSource, String replacementValue, String valueToReplace) {
         return getMessageSource(messageFromSource).replace(replacementValue, valueToReplace);
-    }
-
-    private User createUser() {
-        User user = new User();
-        user.setUsername("admin");
-        user.setEmail(OLD_USER_VALID_EMAIL);
-        user.setStatus(Status.ACTIVE);
-        user.setLastOnlineTime(LocalDateTime.now());
-        user.setChildren(Collections.emptyList());
-        user.setPhones(Set.of(new Phone(UUID.randomUUID(), +381234567890L, true, user)));
-
-        return user;
     }
 }
