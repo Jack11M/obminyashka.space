@@ -23,6 +23,7 @@ public class UserDtoCreatingUtil {
     public static final String WRONG_NEW_PASSWORD_CONFIRMATION = "123456qQ";
     private static final int MAX_AMOUNT_OF_PHONES = 3;
     public static final Set<PhoneDto> NEW_INVALID_PHONES = createWithInvalidSizeListOfPhones();
+    public static final Set<PhoneDto> NEW_INVALID_PHONE = Set.of(new PhoneDto(null, true));
 
     public static MyUserInfoUpdateRequest createUserUpdateDto() {
         return new MyUserInfoUpdateRequest(NEW_VALID_NAME_WITH_APOSTROPHE, NEW_VALID_NAME_WITH_HYPHEN_MINUS, NEW_PHONES );
@@ -34,6 +35,10 @@ public class UserDtoCreatingUtil {
 
     public static MyUserInfoUpdateRequest createUserUpdateDtoWithInvalidFirstAndLastName() {
         return new MyUserInfoUpdateRequest(NEW_INVALID_SHORT_NAME, NEW_INVALID_TWO_WORDS_NAME, NEW_PHONES );
+    }
+
+    public static UserUpdateDto createUserUpdateDtoWithInvalidNullPhone() {
+        return new UserUpdateDto(NEW_VALID_NAME_WITH_APOSTROPHE, NEW_VALID_NAME_WITH_HYPHEN_MINUS, NEW_INVALID_PHONE );
     }
 
     private static Set<PhoneDto> createWithInvalidSizeListOfPhones() {
