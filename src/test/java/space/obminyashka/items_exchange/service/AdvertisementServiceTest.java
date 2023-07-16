@@ -50,6 +50,16 @@ class AdvertisementServiceTest {
     }
 
     @Test
+    void addFavorite_WhenDataCorrect_Successfully() {
+        final var existedAdvId = UUID.randomUUID();
+        final var existedUsername = "user";
+        
+        advertisementService.addFavorite(existedAdvId, existedUsername);
+
+        verify(advertisementRepository).addFavoriteAdvertisementsByUsername(existedUsername, existedAdvId);
+    }
+
+    @Test
     void deleteFavorite_whenAdvertisementIsDeleted_shouldSuccessfullyEnd() {
         final var exceptedNumberOfDeletedAdv = 1;
         final var existedAdvId = UUID.randomUUID();

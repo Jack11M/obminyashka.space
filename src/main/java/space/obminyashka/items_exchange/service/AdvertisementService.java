@@ -31,6 +31,14 @@ public interface AdvertisementService {
     Page<AdvertisementTitleView> findAllFavorite(String username, Pageable pageable);
 
     /**
+     * Add favorite advertisement by username and advertisementId
+     *
+     * @param advertisementId id of existence advertisement
+     * @param username login of the user
+     */
+    void addFavorite(UUID advertisementId, String username);
+
+    /**
      * Delete favorite advertisement by username and advertisementId
      *
      * @param advertisementId id of existence advertisement

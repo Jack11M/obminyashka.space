@@ -61,6 +61,11 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
+    public void addFavorite(UUID advertisementId, String username) {
+        advertisementRepository.addFavoriteAdvertisementsByUsername(username, advertisementId);
+    }
+
+    @Override
     public void deleteFavorite(UUID advertisementId, String username) {
         final var numberOfDeletedAdv =
                 advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username);

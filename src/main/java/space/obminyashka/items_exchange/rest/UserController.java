@@ -29,6 +29,7 @@ import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
@@ -44,6 +45,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 
 @RestController
 @Tag(name = "User")
@@ -106,7 +108,25 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @DeleteMapping(value = ApiKey.USER_DELETE_MY_FAVORITE)
+    @PostMapping(value = ApiKey.USER_MY_FAVORITE_ADV)
+    @Operation(summary = "Add user's favorite advertisement")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
+            @ApiResponse(responseCode = "404", description = "NOT_FOUND")})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void addFavoriteAdvertisement(
+            @Parameter(hidden = true) Authentication authentication,
+            @Parameter(name = "advertisementId", description = "Id of advertisement for to add an favorite adv")
+            @PathVariable UUID advertisementId) {
+        if (!advService.existById(advertisementId)) {
+            throw new EntityIdNotFoundException(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+        }
+        advService.addFavorite(advertisementId, authentication.getName());
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @DeleteMapping(value = ApiKey.USER_MY_FAVORITE_ADV)
     @Operation(summary = "Delete user's favorite advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "NO_CONTENT"),

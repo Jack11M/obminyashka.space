@@ -70,6 +70,7 @@ class UserFlowTest extends BasicControllerTest {
     private static final String DOMAIN_URL = "https://obminyashka.space";
     private static final String INVALID_ADV_ID = "61731cc8-8104-49f0-b2c3-5a52e576ab28";
     private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
+    private static final String SECOND_VALID_ADV_ID = "4bd38c87-0f00-4375-bd8f-cd853f0eb9bd";
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -144,16 +145,36 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addNewFavorite.yml")
+    void addFavoriteAdvertisement_shouldAddFavoriteAdvertisement_whenAdvertisementIsNotFavorite() throws Exception {
+        sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, SECOND_VALID_ADV_ID), status().isAccepted());
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addFavorite.yml")
+    void addFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFound() throws Exception {
+        var resultActions = sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, INVALID_ADV_ID), status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
     @ExpectedDataSet(value = "advertisement/deleteFavorite.yml")
     void deleteFavoriteAdvertisement_shouldDeleteFavoriteAdvertisement_whenAdvertisementIsFavorite() throws Exception {
-        sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, VALID_ADV_ID), status().isNoContent());
+        sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, VALID_ADV_ID), status().isNoContent());
     }
 
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     void deleteFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFavorite() throws Exception {
-        var resultActions = sendUriAndGetResultAction(delete(USER_DELETE_MY_FAVORITE, INVALID_ADV_ID),
+        var resultActions = sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, INVALID_ADV_ID),
                 status().isNotFound());
 
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
