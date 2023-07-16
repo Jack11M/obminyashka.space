@@ -12,7 +12,6 @@ public class UserDtoCreatingUtil {
     public static final String NEW_VALID_EMAIL = "new.admin@gmail.com";
     public static final String INVALID_EMAIL_WITHOUT_POINT = "username@domain";
     public static final String INVALID_EMAIL_WITHOUT_DOMAIN_NAME = "username@.com";
-    public static final String OLD_USER_VALID_EMAIL = "user@gmail.com";
     public static final String OLD_ADMIN_VALID_EMAIL = "admin@gmail.com";
     public static final String NEW_VALID_NAME_WITH_APOSTROPHE = "Мар'яна";
     public static final String NEW_VALID_NAME_WITH_HYPHEN_MINUS = "Квітка-Основ'яненко";
@@ -37,8 +36,8 @@ public class UserDtoCreatingUtil {
         return new MyUserInfoUpdateRequest(NEW_INVALID_SHORT_NAME, NEW_INVALID_TWO_WORDS_NAME, NEW_PHONES );
     }
 
-    public static UserUpdateDto createUserUpdateDtoWithInvalidNullPhone() {
-        return new UserUpdateDto(NEW_VALID_NAME_WITH_APOSTROPHE, NEW_VALID_NAME_WITH_HYPHEN_MINUS, NEW_INVALID_PHONE );
+    public static MyUserInfoUpdateRequest createUserUpdateDtoWithInvalidNullPhone() {
+        return new MyUserInfoUpdateRequest(NEW_VALID_NAME_WITH_APOSTROPHE, NEW_VALID_NAME_WITH_HYPHEN_MINUS, NEW_INVALID_PHONE );
     }
 
     private static Set<PhoneDto> createWithInvalidSizeListOfPhones() {

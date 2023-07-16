@@ -22,12 +22,9 @@ import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
-import space.obminyashka.items_exchange.repository.model.Phone;
-import space.obminyashka.items_exchange.repository.model.User;
-import space.obminyashka.items_exchange.repository.enums.Status;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
-import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -46,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.data_producer.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -93,9 +90,9 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @ParameterizedTest
     @WithMockUser
     @MethodSource("listInvalidFields")
-    void updateUserInfo_invalidFields_shouldReturnHttpStatusBadRequest(UserUpdateDto userDto,
+    void updateUserInfo_invalidFields_shouldReturnHttpStatusBadRequest(MyUserInfoUpdateRequest userInfoUpdateRequest,
                                                                        String message) throws Exception {
-        var mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), userDto, status().isBadRequest());
+        var mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), userInfoUpdateRequest, status().isBadRequest());
 
         assertTrue(getResponseContentAsString(mvcResult).contains(message));
     }
