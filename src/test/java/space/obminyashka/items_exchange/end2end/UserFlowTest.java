@@ -70,6 +70,7 @@ class UserFlowTest extends BasicControllerTest {
     private static final String DOMAIN_URL = "https://obminyashka.space";
     private static final String INVALID_ADV_ID = "61731cc8-8104-49f0-b2c3-5a52e576ab28";
     private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
+    private static final String SECOND_VALID_ADV_ID = "4bd38c87-0f00-4375-bd8f-cd853f0eb9bd";
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -139,6 +140,14 @@ class UserFlowTest extends BasicControllerTest {
                 .queryParam("size", "1"), status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)))
                 .andExpect(jsonPath("$.content[0].title").value("Blouses"));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addNewFavorite.yml")
+    void addFavoriteAdvertisement_shouldAddFavoriteAdvertisement_whenAdvertisementIsNotFavorite() throws Exception {
+        sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, SECOND_VALID_ADV_ID), status().isAccepted());
     }
 
     @Test
