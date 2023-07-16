@@ -23,20 +23,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
-import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.service.util.EmailType;
-import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,7 +45,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 @RestController
 @Tag(name = "User")
