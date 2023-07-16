@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.dao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -32,6 +33,12 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
     Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "insert into favorite_advertisements(user_id, advertisement_id) " +
+            "values((select id from user where username = :username), :advertisementId)")
+    void addFavoriteAdvertisementsByUsername(String username, UUID advertisementId);
 
     int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
 
