@@ -117,6 +117,11 @@ public class SendGridService implements MailService {
                 .forEach(emailRepository::delete);
     }
 
+    @Override
+    public void sendMessagesToEmailForResetPassword(String email) {
+        //TODO create logic for reset password if we found the email in the list of registered users
+    }
+
     private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationCode email) {
         Duration duration = Duration.between(email.getExpiryDate(), LocalDateTime.now());
 
