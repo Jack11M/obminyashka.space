@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
+import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.dao.UserRepository;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -49,6 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.api.ApiKey.*;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
 import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
@@ -65,6 +68,9 @@ class UserFlowTest extends BasicControllerTest {
     private static final String USER_LAST_NAME = "Last";
     private static final String ADMIN_USERNAME = "admin";
     private static final String DOMAIN_URL = "https://obminyashka.space";
+    private static final String INVALID_ADV_ID = "61731cc8-8104-49f0-b2c3-5a52e576ab28";
+    private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
+    private static final String SECOND_VALID_ADV_ID = "4bd38c87-0f00-4375-bd8f-cd853f0eb9bd";
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -134,6 +140,46 @@ class UserFlowTest extends BasicControllerTest {
                 .queryParam("size", "1"), status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)))
                 .andExpect(jsonPath("$.content[0].title").value("Blouses"));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addNewFavorite.yml")
+    void addFavoriteAdvertisement_shouldAddFavoriteAdvertisement_whenAdvertisementIsNotFavorite() throws Exception {
+        sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, SECOND_VALID_ADV_ID), status().isAccepted());
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addFavorite.yml")
+    void addFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFound() throws Exception {
+        var resultActions = sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, INVALID_ADV_ID), status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/deleteFavorite.yml")
+    void deleteFavoriteAdvertisement_shouldDeleteFavoriteAdvertisement_whenAdvertisementIsFavorite() throws Exception {
+        sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, VALID_ADV_ID), status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    void deleteFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFavorite() throws Exception {
+        var resultActions = sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, INVALID_ADV_ID),
+                status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, INVALID_ADV_ID));
     }
 
     @Test

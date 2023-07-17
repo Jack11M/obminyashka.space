@@ -16,10 +16,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
 import space.obminyashka.items_exchange.exception.not_found.CategorySizeNotFoundException;
 import space.obminyashka.items_exchange.exception.DataConflictException;
 import space.obminyashka.items_exchange.exception.bad_request.InvalidDtoException;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.service.CategoryService;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
@@ -135,9 +135,9 @@ public class CategoryController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategoryById(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
-                                   @PathVariable("category_id") long id) throws DataConflictException, CategoryIdNotFoundException {
+                                   @PathVariable("category_id") long id) throws DataConflictException {
         if (!categoryService.isCategoryExistsById(id)) {
-            throw new CategoryIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, id));
+            throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, id));
         }
         if (!categoryService.isCategoryDeletable(id)) {
             throw new DataConflictException(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, id));

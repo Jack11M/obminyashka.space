@@ -3,13 +3,11 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,14 +17,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.dao.AdvertisementRepository;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.model.enums.AgeRange;
 import space.obminyashka.items_exchange.model.enums.Gender;
 import space.obminyashka.items_exchange.model.enums.Season;
@@ -36,6 +33,7 @@ import space.obminyashka.items_exchange.util.AdvertisementDtoCreatingUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -97,36 +95,15 @@ class AdvertisementFlowTest extends BasicControllerTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {0, -2})
-    @DataSet("database_init.yml")
-    void isOdd_ShouldReturnTrueForOddNumbers(long categorId) throws Exception {
-        int page = 0;
-        int size = 12;
-        sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, categorId, page, size), status().isBadRequest());
-    }
-
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnSpecificAdvertisementTitleDto() throws Exception {
-        int page = 2;
-        int size = 1;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL_PARAMS, page, size), status().isOk())
+        sendUriAndGetResultAction(get(ADV_FILTER)
+                .queryParam("page", "2")
+                .queryParam("size", "1"), status().isOk())
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
                 .andExpect(jsonPath("$.content[0].title").value("Dresses"));
-    }
-
-    @Test
-    @WithMockUser(username = "user")
-    @DataSet("database_init.yml")
-    void findPaginatedByCategoryId_shouldReturnPageResponse() throws Exception {
-        long id = 1;
-        int page = 0;
-        int size = 12;
-        sendUriAndGetResultAction(get(ADV_BY_CATEGORY_ID, id, page, size), status().isOk())
-                .andExpect(jsonPath("$.content[0].advertisementId").value(VALID_ADV_ID))
-                .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
     }
 
     @Test
@@ -135,27 +112,13 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
 
-        Long subcategoryId = 1L;
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL)
-                .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
-                .queryParam("subcategoryId", subcategoryId.toString()), status().isOk())
+        sendUriAndGetResultAction(get(ADV_FILTER)
+                .queryParam("advertisementFilter.excludeAdvertisementId", excludeAdvertisementId.toString())
+                .queryParam("subcategoryFilterRequest.categoryId", "1")
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1"), status().isOk())
 
                 .andExpect(jsonPath("$.content.length()")
-                        .value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, subcategoryId)));
-    }
-
-    @Test
-    @WithMockUser(username = "user")
-    @DataSet("database_init.yml")
-    void findPaginatedAsThumbnails_shouldReturnEmptyPage() throws Exception {
-        UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f000");
-
-        ResultActions resultActions = sendUriAndGetResultAction(get(ADV_THUMBNAIL)
-                .queryParam("excludeAdvertisementId", excludeAdvertisementId.toString())
-                .queryParam("subcategoryId", "4"), status().isNotFound());
-        Assertions.assertThat(resultActions.andReturn().getResolvedException())
-                .isInstanceOf(SubcategoryIdNotFoundException.class)
-                .hasMessage(getExceptionMessageSourceWithId(4, INVALID_SUBCATEGORY_ID));
+                        .value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, List.of(1L))));
     }
 
     @Test
@@ -163,7 +126,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnPageThumbnailsResponse() throws Exception {
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
+        sendUriAndGetResultAction(get(ADV_FILTER), status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
     }
 
@@ -172,7 +135,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
-        sendUriAndGetResultAction(get(ADV_THUMBNAIL), status().isOk())
+        sendUriAndGetResultAction(get(ADV_FILTER), status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(advertisementRepository.count()));
     }
 
@@ -201,8 +164,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByNecessaryParameters() throws Exception {
         sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("subcategorySearchRequest.categoryId", "1")
-                .queryParam("subcategorySearchRequest.subcategoriesIdValues", "1")
+                .queryParam("subcategoryFilterRequest.categoryId", "1")
+                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1")
                 .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()), status().isOk())
                 .andExpect(jsonPath("$.content.length()").value("3"));
     }

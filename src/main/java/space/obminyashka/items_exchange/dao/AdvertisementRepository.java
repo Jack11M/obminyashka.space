@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.dao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -26,27 +27,25 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) IN :topics")
     Page<Advertisement> search(@Param("topics") Set<String> topics, Pageable pageable);
 
-    @Query("SELECT a FROM Advertisement a WHERE a.subcategory.category.id = :categoryId")
-    Page<Advertisement> findAdvertisementByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
-
     Optional<Advertisement> findAdvertisementByIdAndUserUsername(UUID id, String username);
 
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 
-    @Query("SELECT a from Advertisement a where " +
-            "(:id is null or a.id <> :id) and " +
-            "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
-    Page<AdvertisementTitleProjection> findAllByIdNotAndSubcategoryId(@Param("id") UUID id,
-                                                                      @Param("subcategoryId") Long subcategoryId,
-                                                                      Pageable pageable);
-
     @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
     Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
 
-    @Query("SELECT count(a) from Advertisement a where " +
-            "(:id is null or a.id <> :id) and " +
-            "(:subcategoryId is null or a.subcategory.id = :subcategoryId)")
-    Long countByIdNotAndSubcategoryId(@Param("id") UUID id, @Param("subcategoryId") Long subcategoryId);
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "insert into favorite_advertisements(user_id, advertisement_id) " +
+            "values((select id from user where username = :username), :advertisementId)")
+    void addFavoriteAdvertisementsByUsername(String username, UUID advertisementId);
+
+    int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
+
+    @Query("SELECT COUNT(a) FROM Advertisement a WHERE " +
+            "(:id IS NULL OR a.id <> :id) AND " +
+            "(a.subcategory.id IN :subcategoryIds)")
+    Long countByIdNotAndSubcategoryId(UUID id, List<Long> subcategoryIds);
 
     boolean existsBySubcategoryId(long id);
 }

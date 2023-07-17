@@ -3,8 +3,9 @@ package space.obminyashka.items_exchange.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
-import space.obminyashka.items_exchange.dto.*;
+import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
+import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.model.Advertisement;
 import space.obminyashka.items_exchange.model.User;
 
@@ -13,14 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AdvertisementService {
-
-    /**
-     * Find N random advertisements as thumbnails with filters or page of advertisements with same subcategory
-     * without request advertisement
-     * @param findAdvsRequest an object that contains all parameters to search
-     * @return random 12 advertisement or page of advertisements
-     */
-    Page<AdvertisementTitleDto> findThumbnails(AdvertisementFindRequest findAdvsRequest);
 
     /**
      * Find all advertisements as thumbnails for specific user
@@ -38,20 +31,28 @@ public interface AdvertisementService {
     Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable);
 
     /**
+     * Add favorite advertisement by username and advertisementId
+     *
+     * @param advertisementId id of existence advertisement
+     * @param username login of the user
+     */
+    void addFavorite(UUID advertisementId, String username);
+
+    /**
+     * Delete favorite advertisement by username and advertisementId
+     *
+     * @param advertisementId id of existence advertisement
+     * @param username login of the user
+     */
+    void deleteFavorite(UUID advertisementId, String username);
+
+    /**
      * Find advertisements having requested keyword
      * @param keyword - searched word
      * @param pageable see {@link Pageable} for more details
      * @return result of the request
      */
     Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
-
-    /**
-     * Find advertisements by category and return them by requested quantity (size) and page
-     * @param categoryId - searched category id
-     * @param pageable see {@link Pageable} for more details
-     * @return result of the request
-     */
-    Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable);
 
     /**
      * Find an advertisement with additional owner check

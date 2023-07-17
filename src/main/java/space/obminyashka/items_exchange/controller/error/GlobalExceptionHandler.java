@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import space.obminyashka.items_exchange.exception.*;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
-import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.CategorySizeNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
+import space.obminyashka.items_exchange.exception.not_found.*;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -67,10 +64,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             UsernameNotFoundException.class,
             EntityNotFoundException.class,
-            CategoryIdNotFoundException.class,
             CategorySizeNotFoundException.class,
             EmailValidationCodeNotFoundException.class,
-            SubcategoryIdNotFoundException.class})
+            EntityIdNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorMessage> handleNotFoundExceptions(Exception e, ServletWebRequest request) {
         return ResponseEntity
@@ -93,7 +89,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailSendingException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    public ErrorMessage handleEmailException(Exception ex, ServletWebRequest request){
+    public ErrorMessage handleEmailException(Exception ex, ServletWebRequest request) {
         return logAndGetErrorMessage(request, ex, Level.ERROR);
     }
 

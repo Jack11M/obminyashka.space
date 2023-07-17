@@ -32,6 +32,9 @@ public class AdvertisementFilterRequest {
     @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
     private int size = 12;
 
+    @Parameter(name = "enableRandom", description = "set true if you need random advertisement")
+    private boolean enableRandom = false;
+
     @JsonUnwrapped
     @JsonSetter(nulls = Nulls.SKIP)
     private SubcategoryFilter subcategoryFilterRequest = new SubcategoryFilter();
@@ -50,6 +53,7 @@ public class AdvertisementFilterRequest {
     public Predicate toPredicate() {
         return QPredicate.builder()
                 .add(advertisementFilter.getGender(), QAdvertisement.advertisement.gender::eq)
+                .add(advertisementFilter.getExcludeAdvertisementId(), QAdvertisement.advertisement.id::ne)
                 .add(advertisementFilter.getLocationId(), QAdvertisement.advertisement.location.id::eq)
                 .add(advertisementFilter.getSeason(), QAdvertisement.advertisement.season::in)
                 .add(extractClothingSizeRanges(advertisementFilter.getClothingSizes()), QAdvertisement.advertisement.size::in)

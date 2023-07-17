@@ -12,10 +12,6 @@ public class ApiKey {
     public static final String ADV_DEFAULT_IMAGE = ADV + "/default-image/{advertisementId}/{imageId}";
     public static final String ADV_ID = ADV + "/{advertisement_id}";
     public static final String ADV_FILTER = ADV + "/filter";
-    public static final String ADV_THUMBNAIL = ADV + "/thumbnail";
-    public static final String ADV_SEARCH_PAGINATED_BY_CATEGORY_ID = ADV + "/category/{category_id}";
-    public static final String ADV_BY_CATEGORY_ID = ADV_SEARCH_PAGINATED_BY_CATEGORY_ID + "?page={page}&size={size}";
-    public static final String ADV_THUMBNAIL_PARAMS = ADV_THUMBNAIL + "?page={page}&size={size}";
     public static final String ADV_TOTAL = ADV + "/total-amount";
     // Authorization API
     public static final String AUTH = API + "/auth";
@@ -52,6 +48,7 @@ public class ApiKey {
     public static final String USER_MY_INFO = USER + "/my-info";
     public static final String USER_MY_ADV = USER + "/my-adv";
     public static final String USER_MY_FAVORITE = USER_MY_ADV + "/favorite";
+    public static final String USER_MY_FAVORITE_ADV = USER_MY_FAVORITE + "/{advertisementId}";
     public static final String USER_CHILD = USER + "/child";
     public static final String USER_SERVICE = USER + "/service";
     public static final String USER_SERVICE_CHANGE_PASSWORD = USER_SERVICE + "/pass";

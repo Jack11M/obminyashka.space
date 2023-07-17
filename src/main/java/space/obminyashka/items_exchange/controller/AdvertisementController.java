@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
 import space.obminyashka.items_exchange.controller.request.SubcategoryFilter;
 import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
 import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
@@ -35,8 +33,6 @@ import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.exception.not_found.CategoryIdNotFoundException;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.service.*;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
@@ -58,22 +54,7 @@ public class AdvertisementController {
     private final ImageService imageService;
     private final UserService userService;
     private final SubcategoryService subcategoryService;
-    private final CategoryService categoryService;
     private final LocationService locationService;
-
-    @GetMapping(value = ApiKey.ADV_THUMBNAIL, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find requested quantity of the advertisement as thumbnails and return them as a page result with filters")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findPaginatedAsThumbnails(@Valid @ParameterObject AdvertisementFindRequest findAdvsRequest) throws SubcategoryIdNotFoundException {
-        Long subcategoryId = findAdvsRequest.getSubcategoryId();
-        if (subcategoryId != null && !subcategoryService.isSubcategoryExistsById(subcategoryId)) {
-            throw new SubcategoryIdNotFoundException(getExceptionMessageSourceWithId(subcategoryId, INVALID_SUBCATEGORY_ID));
-        }
-        return advertisementService.findThumbnails(findAdvsRequest);
-    }
 
     @GetMapping(value = ApiKey.ADV_TOTAL, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Count existed advertisements and return total records amount number")
@@ -110,25 +91,6 @@ public class AdvertisementController {
         return allByKeyword.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(allByKeyword, HttpStatus.OK);
-    }
-
-    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED_BY_CATEGORY_ID, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find the required number of advertisements for the selected category and return it as a page result")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public Page<AdvertisementTitleDto> findAdvertisementsHavingCategory(
-            @PathVariable("category_id") @Positive Long categoryId,
-            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) throws CategoryIdNotFoundException {
-        if (!categoryService.isCategoryExistsById(categoryId)) {
-            throw new CategoryIdNotFoundException(
-                    getParametrizedMessageSource(INVALID_CATEGORY_ID, categoryId));
-        }
-        return advertisementService.findByCategoryId(categoryId, PageRequest.of(page, size));
     }
 
     @GetMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
