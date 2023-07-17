@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.controller;
+package space.obminyashka.items_exchange.rest;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,14 +19,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
-import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.controller.request.ValidationEmailRequest;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.ValidationEmailRequest;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -42,13 +42,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
 
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
-
-import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.*;
+import static space.obminyashka.items_exchange.util.data_producer.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -94,9 +94,9 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @ParameterizedTest
     @WithMockUser
     @MethodSource("listInvalidFields")
-    void updateUserInfo_invalidFields_shouldReturnHttpStatusBadRequest(UserUpdateDto userDto,
+    void updateUserInfo_invalidFields_shouldReturnHttpStatusBadRequest(MyUserInfoUpdateRequest userInfoUpdateRequest,
                                                                        String message) throws Exception {
-        var mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), userDto, status().isBadRequest());
+        var mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), userInfoUpdateRequest, status().isBadRequest());
 
         assertTrue(getResponseContentAsString(mvcResult).contains(message));
     }
@@ -155,8 +155,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         var email = new ValidationEmailRequest("email@gmail.com");
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), email, status().isOk());
 
-        Assertions.assertThat(mvcResult.getResponse().getContentAsString())
-                .isEqualTo(getMessageSource(PASSWORD_RESET));
+        Assertions.assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo(getMessageSource(PASSWORD_RESET));
     }
 
     @Test

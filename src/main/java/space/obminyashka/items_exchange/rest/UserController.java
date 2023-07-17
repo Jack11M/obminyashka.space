@@ -1,4 +1,4 @@
-package space.obminyashka.items_exchange.controller;
+package space.obminyashka.items_exchange.rest;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,33 +23,31 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
-import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.controller.request.ValidationEmailRequest;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.dto.UserDto;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.api.ApiKey;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.ValidationEmailRequest;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
+import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.EmailType;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.service.util.EmailType;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
-
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.*;
 
 @RestController
 @Tag(name = "User")
@@ -68,7 +66,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
-    public ResponseEntity<UserDto> getPersonalInfo(@Parameter(hidden = true) Authentication authentication) {
+    public ResponseEntity<MyUserInfoView> getPersonalInfo(@Parameter(hidden = true) Authentication authentication) {
         return ResponseEntity.of(userService.findByUsername(authentication.getName()));
     }
 
@@ -81,8 +79,8 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public String updateUserInfo(@Valid @RequestBody UserUpdateDto userUpdateDto, @Parameter(hidden = true) Authentication authentication) {
-        return userService.update(userUpdateDto, getUser(authentication.getName()));
+    public String updateUserInfo(@Valid @RequestBody MyUserInfoUpdateRequest myUserInfoUpdateRequest, @Parameter(hidden = true) Authentication authentication) {
+        return userService.update(myUserInfoUpdateRequest, getUser(authentication.getName()));
     }
 
     @GetMapping(value = ApiKey.USER_MY_ADV, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -92,7 +90,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
-    public List<AdvertisementTitleDto> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
+    public List<AdvertisementTitleView> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
         return advService.findAllByUsername(authentication.getName());
     }
 
@@ -102,7 +100,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
     @ResponseStatus(HttpStatus.OK)
-    public Page<AdvertisementTitleDto> getFavoriteAdvertisements(
+    public Page<AdvertisementTitleView> getFavoriteAdvertisements(
             @Parameter(hidden = true) Authentication authentication,
             @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int page,
