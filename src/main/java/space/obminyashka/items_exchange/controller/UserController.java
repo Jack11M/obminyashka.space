@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.api.ApiKey;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.controller.request.ValidationEmailRequest;
 import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
 import space.obminyashka.items_exchange.dto.UserDto;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
@@ -44,6 +45,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
 import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.PASSWORD_RESET;
 
 @RestController
 @Tag(name = "User")
@@ -126,21 +128,14 @@ public class UserController {
         return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), HttpStatus.ACCEPTED);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @PutMapping(value = ApiKey.USER_SERVICE_RESET_PASSWORD, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @PostMapping(value = ApiKey.USER_SERVICE_RESET_PASSWORD)
     @Operation(summary = "Reset a user password by email")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public ResponseEntity<String> resetUserPassword(@Valid @RequestBody ChangeEmailRequest email) {
-        var emailForFinding = email.email();
-        if (!userService.findEmailInRegisteredUsers(emailForFinding)) {
-            return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_FOUND), HttpStatus.NOT_FOUND);
-        }
-
-        mailService.resetPassword(emailForFinding);
-        return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.PASSWORD_RESET), HttpStatus.ACCEPTED);
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    public String resetUserPassword(@Valid @RequestBody ValidationEmailRequest validationEmailRequest) {
+        mailService.sendMessagesToEmailForResetPassword(validationEmailRequest.email());
+        return getMessageSource(PASSWORD_RESET);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.BasicControllerTest;
 import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.controller.request.ValidationEmailRequest;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
+import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
 import space.obminyashka.items_exchange.model.Phone;
 import space.obminyashka.items_exchange.model.User;
 import space.obminyashka.items_exchange.model.enums.Status;
@@ -44,8 +47,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.util.MessageSourceUtil.*;
+import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
 import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
 
 @SpringBootTest
@@ -126,7 +129,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
 
-
     @Test
     @WithMockUser(username = "user")
     void updateUserPassword_whenDataIncorrect_shouldThrowIllegalArgumentException() throws Exception {
@@ -155,6 +157,16 @@ class UserControllerIntegrationTest extends BasicControllerTest {
                 Arguments.of(INVALID_EMAIL_WITHOUT_POINT),
                 Arguments.of(INVALID_EMAIL_WITHOUT_DOMAIN_NAME)
         );
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    void resetUserPassword_whenPasswordResetSuccessfully_shouldSendMessage() throws Exception {
+        var email = new ValidationEmailRequest("email@gmail.com");
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), email, status().isOk());
+
+        Assertions.assertThat(mvcResult.getResponse().getContentAsString())
+                .isEqualTo(getMessageSource(PASSWORD_RESET));
     }
 
     @Test
