@@ -1,8 +1,6 @@
 package space.obminyashka.items_exchange.controller;
 
-
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,10 +24,6 @@ import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.controller.request.ValidationEmailRequest;
 import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.exception.not_found.SubcategoryIdNotFoundException;
-import space.obminyashka.items_exchange.model.Phone;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.Status;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
