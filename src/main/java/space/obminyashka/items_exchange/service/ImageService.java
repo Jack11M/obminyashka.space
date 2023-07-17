@@ -2,10 +2,11 @@ package space.obminyashka.items_exchange.service;
 
 import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Image;
+import space.obminyashka.items_exchange.rest.response.ImageView;
+import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.Image;
+import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +25,7 @@ public interface ImageService {
      * @param advertisementId Advertisement ID
      * @return list of ImageDTO that are linked
      */
-    List<ImageDto> getByAdvertisementId(UUID advertisementId);
+    List<ImageView> getByAdvertisementId(UUID advertisementId);
 
     /**
      * Make in-memory compressing (30% of basic quality) only for supported types of images

@@ -1,11 +1,12 @@
 package space.obminyashka.items_exchange.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
+import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -26,30 +27,30 @@ public interface UserService {
      * @param usernameOrEmail login or email of the user
      * @return the user login response dto as the result
      */
-    UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail);
+    UserLoginResponse findAuthDataByUsernameOrEmail(String usernameOrEmail);
 
     /**
      * Find a user into DB by checking gained username and convert it into DTO
      * @param username login of the user
      * @return {@link Optional} with the converted user as the result
      */
-    Optional<UserDto> findByUsername(String username);
+    Optional<MyUserInfoView> findByUsername(String username);
 
     /**
      * Register new user and create email confirmation code
-     * @param userRegistrationDto DTO which contains all required data for registration the user
+     * @param userRegistrationRequest DTO which contains all required data for registration the user
      * @param codeId UIID for confirmation email
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId);
+    boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId);
 
     /**
      * Update an existed user with new data
-     * @param newUserUpdateDto new data for update
+     * @param newMyUserInfoUpdateRequest new data for update
      * @param user existed user to update
      * @return a message as the result of the operation
      */
-    String update(UserUpdateDto newUserUpdateDto, User user);
+    String update(MyUserInfoUpdateRequest newMyUserInfoUpdateRequest, User user);
 
     /**
      * Update the user in the database.

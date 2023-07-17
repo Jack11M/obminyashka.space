@@ -3,6 +3,12 @@ name: "CodeQL"
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'src/**'
+      - '!target/**'
+      - 'frontend/**'
+      - '!frontend/dist'
+      - '!frontend/node_modules'
   pull_request:
     branches: [ master ]
     paths:

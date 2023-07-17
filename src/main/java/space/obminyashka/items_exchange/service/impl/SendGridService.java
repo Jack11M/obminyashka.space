@@ -11,14 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.EmailSendingException;
-import space.obminyashka.items_exchange.exception.not_found.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.model.EmailConfirmationCode;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.rest.exception.EmailSendingException;
+import space.obminyashka.items_exchange.rest.exception.not_found.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.MailService;
-import space.obminyashka.items_exchange.util.EmailType;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.service.util.EmailType;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -26,8 +26,8 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
 @Service
 @RequiredArgsConstructor

@@ -27,9 +27,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import space.obminyashka.items_exchange.api.ApiKey;
-import space.obminyashka.items_exchange.authorization.jwt.TokenAuthenticator;
-import space.obminyashka.items_exchange.authorization.oauth2.OAuthLoginSuccessHandler;
+import space.obminyashka.items_exchange.rest.api.ApiKey;
+import space.obminyashka.items_exchange.rest.exception.handler.TokenAuthenticator;
+import space.obminyashka.items_exchange.rest.exception.handler.OAuthLoginSuccessHandler;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 
 import javax.crypto.spec.SecretKeySpec;

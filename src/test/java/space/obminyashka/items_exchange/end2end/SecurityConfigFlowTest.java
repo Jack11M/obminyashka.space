@@ -14,9 +14,9 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.UserLoginDto;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.request.UserLoginRequest;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,8 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
 @SpringBootTest
 @DBRider
@@ -121,7 +121,7 @@ class SecurityConfigFlowTest extends BasicControllerTest {
         assertTrue(mvcResult.getResponse().getContentAsString().contains(getRefreshTokenStartExceptionMessage()));
     }
 
-    private String obtainToken(UserLoginDto loginDto) throws Exception {
+    private String obtainToken(UserLoginRequest loginDto) throws Exception {
         final var mvcResult = sendDtoAndGetMvcResult(post(AUTH_LOGIN), loginDto, status().isOk());
         return JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.access_token");
     }
@@ -142,12 +142,12 @@ class SecurityConfigFlowTest extends BasicControllerTest {
         return objectMapper.readTree(content).get(OAuth2ParameterNames.REFRESH_TOKEN).textValue();
     }
 
-    private UserLoginDto createValidUserLoginDto() {
-        return new UserLoginDto(VALID_USERNAME, VALID_PASSWORD);
+    private UserLoginRequest createValidUserLoginDto() {
+        return new UserLoginRequest(VALID_USERNAME, VALID_PASSWORD);
     }
 
-    private UserLoginDto createNotValidUserLoginDto() {
-        return new UserLoginDto(NOT_VALID_USERNAME, NOT_VALID_PASSWORD);
+    private UserLoginRequest createNotValidUserLoginDto() {
+        return new UserLoginRequest(NOT_VALID_USERNAME, NOT_VALID_PASSWORD);
     }
 
     private String getRefreshTokenStartExceptionMessage() {

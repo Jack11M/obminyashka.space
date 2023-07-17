@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.dto.ChildDto;
+import space.obminyashka.items_exchange.rest.dto.ChildDto;
 
 import java.util.List;
 

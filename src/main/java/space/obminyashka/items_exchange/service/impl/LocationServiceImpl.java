@@ -3,11 +3,11 @@ package space.obminyashka.items_exchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.LocationRepository;
-import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.dto.RawLocation;
-import space.obminyashka.items_exchange.mapper.LocationMapper;
-import space.obminyashka.items_exchange.model.Location;
+import space.obminyashka.items_exchange.repository.LocationRepository;
+import space.obminyashka.items_exchange.rest.dto.LocationDto;
+import space.obminyashka.items_exchange.rest.request.RawLocation;
+import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
+import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.service.LocationService;
 
 import java.io.BufferedWriter;

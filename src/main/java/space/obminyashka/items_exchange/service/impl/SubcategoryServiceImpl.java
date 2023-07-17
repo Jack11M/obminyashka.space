@@ -2,8 +2,8 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.SubcategoryRepository;
-import space.obminyashka.items_exchange.model.Subcategory;
+import space.obminyashka.items_exchange.repository.SubcategoryRepository;
+import space.obminyashka.items_exchange.repository.model.Subcategory;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import java.util.List;

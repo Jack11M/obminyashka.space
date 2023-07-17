@@ -13,7 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 
 import java.util.stream.Stream;
 
@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.SUBCATEGORY_ID;
-import static space.obminyashka.items_exchange.api.ApiKey.SUBCATEGORY_NAMES;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.SUBCATEGORY_ID;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.SUBCATEGORY_NAMES;
 
 @SpringBootTest
 @DBRider

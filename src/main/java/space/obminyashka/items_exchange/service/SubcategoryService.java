@@ -1,6 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.model.Subcategory;
+import space.obminyashka.items_exchange.repository.model.Subcategory;
 
 import java.util.List;
 import java.util.Optional;

@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import space.obminyashka.items_exchange.dao.ChildRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.enums.Gender;
+import space.obminyashka.items_exchange.repository.ChildRepository;
+import space.obminyashka.items_exchange.rest.dto.ChildDto;
+import space.obminyashka.items_exchange.rest.mapper.ChildMapper;
+import space.obminyashka.items_exchange.repository.model.Child;
+import space.obminyashka.items_exchange.repository.enums.Gender;
 import space.obminyashka.items_exchange.service.impl.ChildServiceImpl;
 
 import java.time.LocalDate;

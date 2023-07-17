@@ -11,20 +11,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.AdvertisementDisplayDto;
-import space.obminyashka.items_exchange.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.dto.AdvertisementTitleDto;
-import space.obminyashka.items_exchange.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
-import space.obminyashka.items_exchange.mapper.CategoryMapper;
-import space.obminyashka.items_exchange.mapper.LocationMapper;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Image;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.AgeRange;
-import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.repository.AdvertisementRepository;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.rest.mapper.AdvertisementMapper;
+import space.obminyashka.items_exchange.rest.mapper.CategoryMapper;
+import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.Image;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.repository.enums.AgeRange;
+import space.obminyashka.items_exchange.repository.enums.Status;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
@@ -33,8 +33,8 @@ import space.obminyashka.items_exchange.service.SubcategoryService;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -55,7 +55,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public Page<AdvertisementTitleDto> findAllFavorite(String username, Pageable pageable) {
+    public Page<AdvertisementTitleView> findAllFavorite(String username, Pageable pageable) {
         return advertisementRepository.findFavoriteAdvertisementsByUsername(username, pageable)
                 .map(advertisementMapper::toAdvertisementTitleDto);
     }
@@ -78,7 +78,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Cacheable
     @Override
-    public List<AdvertisementTitleDto> findAllByUsername(String username) {
+    public List<AdvertisementTitleView> findAllByUsername(String username) {
         return advertisementRepository.findAllByUserUsername(username).stream()
                 .map(advertisementMapper::toAdvertisementTitleDto)
                 .toList();
@@ -86,7 +86,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     // @Cacheable(key = "#keyword")
     @Override
-    public Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable) {
+    public Page<AdvertisementTitleView> findByKeyword(String keyword, Pageable pageable) {
         final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
         if (!wholeStringSearchResult.isEmpty()) {
             return wholeStringSearchResult.map(this::buildAdvertisementTitle);
@@ -104,12 +104,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Optional<AdvertisementDisplayDto> findDtoById(UUID id) {
+    public Optional<AdvertisementDisplayView> findDtoById(UUID id) {
         return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }
 
     @Override
-    public Page<AdvertisementTitleDto> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
+    public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
         if (request.isEnableRandom()) {
             final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
                     request.getAdvertisementFilter().getExcludeAdvertisementId(),
@@ -211,8 +211,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return advertisementRepository.existsBySubcategoryId(id);
     }
 
-    private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
-        return AdvertisementTitleDto.builder()
+    private AdvertisementTitleView buildAdvertisementTitle(Advertisement advertisement) {
+        return AdvertisementTitleView.builder()
                 .advertisementId(advertisement.getId())
                 .image(getImage(advertisement))
                 .title(advertisement.getTopic())
@@ -220,10 +220,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .build();
     }
 
-    private AdvertisementDisplayDto buildAdvertisementDisplayDto(Advertisement advertisement) {
+    private AdvertisementDisplayView buildAdvertisementDisplayDto(Advertisement advertisement) {
         String createdDate = advertisement.getCreated().format(DateTimeFormatter.ofPattern(dateFormat));
         String age = Optional.ofNullable(advertisement.getAge()).map(AgeRange::getValue).orElse("");
-        AdvertisementDisplayDto displayDto = AdvertisementDisplayDto.builder()
+        AdvertisementDisplayView displayDto = AdvertisementDisplayView.builder()
                 .advertisementId(advertisement.getId())
                 .ownerName(getOwnerFullName(advertisement.getUser()))
                 .ownerAvatar(advertisement.getUser().getAvatarImage())
@@ -233,7 +233,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .createdDate(createdDate)
                 .build();
 
-        AdvertisementDisplayDto mappedDto = advertisementMapper.toDto(advertisement);
+        AdvertisementDisplayView mappedDto = advertisementMapper.toDto(advertisement);
         BeanUtils.copyProperties(mappedDto, displayDto, "createdDate", "phone", "age", "ownerName",
                 "category");
         return displayDto;

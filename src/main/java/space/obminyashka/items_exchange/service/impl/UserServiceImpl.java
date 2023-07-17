@@ -12,16 +12,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.mapper.PhoneMapper;
-import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.EmailConfirmationCode;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.mapper.PhoneMapper;
+import space.obminyashka.items_exchange.rest.mapper.UserMapper;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
+import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -30,13 +33,14 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static space.obminyashka.items_exchange.model.enums.Status.UPDATED;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.repository.enums.Status.UPDATED;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
+    private static final String EMAIL_SUFFIX = "(?<=.{3}).(?=.*@)";
     private static final String ROLE_USER = "ROLE_USER";
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -69,25 +73,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserLoginResponseDto findAuthDataByUsernameOrEmail(String usernameOrEmail) {
+    public UserLoginResponse findAuthDataByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findAuthDataByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .map(userMapper::toLoginResponseDto)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + usernameOrEmail + " is not logged in"));
     }
 
     @Override
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
-        User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
+    public boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId) {
+        User userToRegister = userRegistrationDtoToUser(userRegistrationRequest);
         EmailConfirmationCode confirmationCode = new EmailConfirmationCode(codeId, userToRegister,
                 numberOfHoursToKeepEmailConformationCode);
         return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
-    private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
+    private User userRegistrationDtoToUser(UserRegistrationRequest userRegistrationRequest) {
         return User.builder()
-                .username(userRegistrationDto.getUsername())
-                .email(userRegistrationDto.getEmail())
-                .password(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()))
+                .username(userRegistrationRequest.getUsername())
+                .email(userRegistrationRequest.getEmail())
+                .password(bCryptPasswordEncoder.encode(userRegistrationRequest.getPassword()))
                 .role(roleService.getRole(ROLE_USER).orElse(null))
                 .build();
     }
@@ -117,9 +121,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String update(UserUpdateDto newUserUpdateDto, User user) {
-        BeanUtils.copyProperties(newUserUpdateDto, user, "phones");
-        final var phonesToUpdate = phoneMapper.toModelSet(newUserUpdateDto.getPhones());
+    public String update(MyUserInfoUpdateRequest newMyUserInfoUpdateRequest, User user) {
+        BeanUtils.copyProperties(newMyUserInfoUpdateRequest, user, "phones");
+        final var phonesToUpdate = phoneMapper.toModelSet(newMyUserInfoUpdateRequest.getPhones());
         final var userPhones = user.getPhones();
         userPhones.clear();
         userPhones.addAll(phonesToUpdate);
@@ -150,7 +154,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void selfDeleteRequest(String username) {
         userRepository.updateUserByUsernameWithRole(username, "ROLE_SELF_REMOVING");
-        log.info("[UserServiceImpl] User '{}' is now in SELF REMOVING role", username);
+        log.info("[UserServiceImpl] User '{}' is now in SELF REMOVING role", username.replaceAll(EMAIL_SUFFIX, "*"));
     }
 
     @Override
@@ -175,7 +179,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void makeAccountActiveAgain(String username) {
         roleService.setUserRoleToUserByUsername(username);
-        log.info("[UserServiceImpl] User '{}' is active once again", username);
+        log.info("[UserServiceImpl] User '{}' is active once again", username.replaceAll(EMAIL_SUFFIX, "*"));
     }
 
     @Override
@@ -189,7 +193,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserDto> findByUsername(String username) {
+    public Optional<MyUserInfoView> findByUsername(String username) {
         return userRepository.findByUsername(username).map(this::mapUserToDto);
     }
 
@@ -203,7 +207,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.getUserEmailByUsername(username).equals(email);
     }
 
-    private UserDto mapUserToDto(User user) {
+    private MyUserInfoView mapUserToDto(User user) {
         return userMapper.toDto(user);
     }
 

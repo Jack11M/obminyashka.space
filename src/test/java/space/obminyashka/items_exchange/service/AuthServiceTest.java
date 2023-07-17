@@ -9,13 +9,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
-import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.exception.RefreshTokenException;
-import space.obminyashka.items_exchange.model.RefreshToken;
-import space.obminyashka.items_exchange.model.Role;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
+import space.obminyashka.items_exchange.rest.exception.RefreshTokenException;
+import space.obminyashka.items_exchange.repository.model.RefreshToken;
+import space.obminyashka.items_exchange.repository.model.Role;
 import space.obminyashka.items_exchange.service.impl.AuthServiceImpl;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
+import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -45,13 +44,13 @@ class AuthServiceTest {
     @Captor
     private ArgumentCaptor<String> tokenCaptor;
     @InjectMocks
-    private MessageSourceUtil messageSourceUtil;
+    private MessageSourceProxy messageSourceProxy;
     @InjectMocks
     private AuthServiceImpl authService;
 
     @BeforeEach
     void init() {
-        messageSourceUtil.setMSource(messageSource);
+        messageSourceProxy.setMSource(messageSource);
     }
 
     @Test
@@ -72,8 +71,8 @@ class AuthServiceTest {
         );
     }
 
-    private UserLoginResponseDto createTestDto() {
-        var dto = new UserLoginResponseDto();
+    private UserLoginResponse createTestDto() {
+        var dto = new UserLoginResponse();
         dto.setEmail("user@mail.ua");
         dto.setUsername(EXPECTED_USERNAME);
         dto.setRole(new Role(UUID.randomUUID(), "ROLE_USER", List.of()));

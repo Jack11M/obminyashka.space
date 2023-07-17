@@ -2,9 +2,9 @@ package space.obminyashka.items_exchange.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.ChildRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
+import space.obminyashka.items_exchange.repository.ChildRepository;
+import space.obminyashka.items_exchange.rest.dto.ChildDto;
+import space.obminyashka.items_exchange.rest.mapper.ChildMapper;
 import space.obminyashka.items_exchange.service.ChildService;
 
 import java.util.List;
