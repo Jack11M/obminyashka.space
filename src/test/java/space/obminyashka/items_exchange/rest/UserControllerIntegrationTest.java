@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.rest;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -22,6 +23,7 @@ import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.ValidatedEmailRequest;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
@@ -142,6 +144,17 @@ class UserControllerIntegrationTest extends BasicControllerTest {
                 Arguments.of(INVALID_EMAIL_WITHOUT_POINT),
                 Arguments.of(INVALID_EMAIL_WITHOUT_DOMAIN_NAME)
         );
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    void resetUserPassword_whenPasswordResetSuccessfully_shouldSendMessage() throws Exception {
+        var validatedEmailRequest = new ValidatedEmailRequest("email@gmail.com");
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isOk());
+
+        Assertions.assertThat(mvcResult.getResponse().getContentAsString())
+                .isEqualTo(getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD));;
     }
 
     @Test
