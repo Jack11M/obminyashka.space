@@ -168,8 +168,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")
     })
-    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest email){
-        mailService.sendMessagesToEmailForResetPassword(email.email());
+    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest){
+        mailService.sendMessagesToEmailForResetPassword(validatedEmailRequest.email());
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }
 
