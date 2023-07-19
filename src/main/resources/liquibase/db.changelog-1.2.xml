@@ -101,4 +101,55 @@
                                  referencedColumnNames="id"
                                  referencedTableName="advertisement"/>
     </changeSet>
+    <changeSet id="1.2.6: Create a table 'area'" author="ennnbaev">
+        <createTable tableName="area">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="name_en" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_ua" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.2.7: Create a table 'district'" author="ennnbaev">
+        <createTable tableName="district">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="area_id" type="${type.uuid}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_en" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_ua" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="district" baseColumnNames="area_id"
+                                 constraintName="fk_district_area" referencedTableName="area"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="1.2.8: Create a table 'city'" author="ennnbaev">
+        <createTable tableName="city">
+            <column name="id" type="${type.uuid}" valueComputed="${uuid_function}">
+                <constraints primaryKey="true" unique="true" nullable="false"/>
+            </column>
+            <column name="district_id" type="${type.uuid}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_en" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_ua" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="city" baseColumnNames="district_id"
+                                 constraintName="fk_city_district" referencedTableName="district"
+                                 referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>
