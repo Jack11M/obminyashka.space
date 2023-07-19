@@ -4,7 +4,21 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-const SearchContext = createContext();
+interface IProvider {
+  search: string;
+  isFetch: boolean;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  setIsFetch: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const initialContext = {
+  search: '',
+  isFetch: false,
+  setSearch: () => {},
+  setIsFetch: () => {},
+};
+
+const SearchContext = createContext<IProvider>(initialContext);
 
 const SearchProvider = ({ children }) => {
   const [searchParams] = useSearchParams();
