@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.rest.regexp.PatternHandler;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
@@ -155,6 +157,14 @@ class UserControllerIntegrationTest extends BasicControllerTest {
 
         Assertions.assertThat(mvcResult.getResponse().getContentAsString())
                 .isEqualTo(getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD));;
+    }
+
+    @Test
+    @WithMockUser(username = "user")
+    void resetUserPassword_whenEmailNotValid_shouldSendMessage() throws Exception {
+        var validatedEmailRequest = new ValidatedEmailRequest("emailgmail.com");
+
+        sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isBadRequest());
     }
 
     @Test
