@@ -47,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.*;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.data_producer.UserDtoCreatingUtil.*;
 
@@ -84,8 +85,8 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isForbidden());
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = new StringJoiner(". ")
-                .add(getMessageSource(ResponseMessagesHandler.ExceptionMessage.ILLEGAL_OPERATION))
-                .add(getParametrizedMessageSource(ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT, 7L))
+                .add(getMessageSource(ExceptionMessage.ILLEGAL_OPERATION))
+                .add(getParametrizedMessageSource(PositiveMessage.DELETE_ACCOUNT, 7L))
                 .toString();
 
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
@@ -126,7 +127,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_PASSWORD), request, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS)));
+        assertTrue(message.contains(getMessageSource(ValidationMessage.DIFFERENT_PASSWORDS)));
     }
 
     @ParameterizedTest
@@ -138,7 +139,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_SERVICE_CHANGE_EMAIL), changeEmailRequest, status().isBadRequest());
         String message = Objects.requireNonNull(mvcResult.getResolvedException()).getMessage();
 
-        assertTrue(message.contains(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL)));
+        assertTrue(message.contains(getMessageSource(ValidationMessage.INVALID_EMAIL)));
     }
 
     private static Stream<Arguments> listInvalidEmail() {
@@ -149,14 +150,14 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user")
+    @WithMockUser
     void resetUserPassword_whenPasswordResetSuccessfully_shouldSendMessage() throws Exception {
         var validatedEmailRequest = new ValidatedEmailRequest("email@gmail.com");
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isOk());
 
         Assertions.assertThat(mvcResult.getResponse().getContentAsString())
-                .isEqualTo(getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD));
+                .isEqualTo(getMessageSource(PositiveMessage.RESET_PASSWORD));
 
     }
 
@@ -199,7 +200,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendUriAndGetMvcResult(put(USER_SERVICE_RESTORE), status().isForbidden());
 
         String message = mvcResult.getResponse().getContentAsString().trim();
-        assertEquals(getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_TOKEN), message);
+        assertEquals(getMessageSource(ValidationMessage.INVALID_TOKEN), message);
     }
 
     private String getResponseContentAsString(MvcResult mvcResult) throws UnsupportedEncodingException {
