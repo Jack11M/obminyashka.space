@@ -20,13 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
-import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
-import space.obminyashka.items_exchange.rest.regexp.PatternHandler;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
 import space.obminyashka.items_exchange.rest.request.ValidatedEmailRequest;
-import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
 

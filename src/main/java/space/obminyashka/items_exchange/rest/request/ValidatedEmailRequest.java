@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.rest.request;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import space.obminyashka.items_exchange.rest.regexp.PatternHandler;
