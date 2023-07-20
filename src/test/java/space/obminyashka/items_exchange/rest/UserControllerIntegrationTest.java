@@ -156,15 +156,18 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isOk());
 
         Assertions.assertThat(mvcResult.getResponse().getContentAsString())
-                .isEqualTo(getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD));;
+                .isEqualTo(getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD));
+
     }
 
     @Test
-    @WithMockUser(username = "user")
+    @WithMockUser
     void resetUserPassword_whenEmailNotValid_shouldSendMessage() throws Exception {
         var validatedEmailRequest = new ValidatedEmailRequest("emailgmail.com");
 
-        sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isBadRequest());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isBadRequest());
+
+        Assertions.assertThat(mvcResult.getResolvedException()).hasMessageContaining(getMessageSource(INVALID_EMAIL));
     }
 
     @Test
