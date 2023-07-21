@@ -1,5 +1,5 @@
 import { getTranslatedText } from '../local';
-import { route } from './../../routes/routeConstants';
+import { route } from 'src/routes/routeConstants';
 
 export const categories = [
   {

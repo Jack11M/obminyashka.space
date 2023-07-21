@@ -10,7 +10,7 @@ import { ModalProvider, SearchProvider } from 'src/components/common';
 
 import Routes from 'src/routes/routes';
 import Footer from 'src/components/footer';
-import { HeaderR } from 'src/components/new_header';
+import { Header } from 'src/components/header';
 
 import { Page } from './styles';
 
@@ -25,7 +25,7 @@ const App = () => {
             <ModalProvider>
               <SearchProvider>
                 <Page>
-                  <HeaderR />
+                  <Header />
                   <Routes />
                   <Footer />
                   <Toast limit={5} />
