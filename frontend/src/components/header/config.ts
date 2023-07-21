@@ -37,8 +37,8 @@ export const categories = [
 ];
 
 export const burgerLinks = [
-  { to: '/', text: getTranslatedText('header.account') },
-  { to: '/', text: getTranslatedText('button.addAdv'), mobile: true },
-  { to: '/', text: getTranslatedText('header.goodness'), icon: true },
-  { to: '/', text: getTranslatedText('header.about') },
+  { to: route.home, text: getTranslatedText('header.account') },
+  { to: route.home, text: getTranslatedText('button.addAdv'), mobile: true },
+  { to: route.home, text: getTranslatedText('header.goodness'), icon: true },
+  { to: route.home, text: getTranslatedText('header.about') },
 ];
