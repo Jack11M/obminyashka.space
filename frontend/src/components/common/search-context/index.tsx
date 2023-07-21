@@ -4,12 +4,7 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-interface IProvider {
-  search: string;
-  isFetch: boolean;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
-  setIsFetch: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { IProvider } from './types';
 
 const initialContext = {
   search: '',
