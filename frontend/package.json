@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "optionalDependencies": {
-    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#fixed-component-for-header"
+    "obminyashka-components": "github:Wolshebnik/Obminyashka-components#develop"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.1",
