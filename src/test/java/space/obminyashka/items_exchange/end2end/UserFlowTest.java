@@ -338,7 +338,7 @@ class UserFlowTest extends BasicControllerTest {
     @ExpectedDataSet(
             value = "database_init.yml",
             orderBy = {"created", "name", "birth_date"},
-            ignoreCols = {"id", "password", "created", "updated", "last_online_time", "resource"})
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time", "resource","name_ua","name_en"})
     void permanentlyDeleteUsers_whenTimeComes_shouldRemoveUsers() {
         assertEquals(4, userRepository.count());
 

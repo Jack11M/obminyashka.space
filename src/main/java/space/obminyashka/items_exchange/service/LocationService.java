@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.service;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.repository.model.Location;
+import space.obminyashka.items_exchange.rest.response.LocationNameView;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,12 @@ public interface LocationService {
      * @return list of location entities from DB that are represented as {@link LocationDto}
      */
     List<LocationDto> findAll();
+
+    /**
+     * Returns all Location Name View of Area.
+     * @return list of areas name from DB that are represented as {@link LocationNameView}
+     */
+    List<LocationNameView> findAllAreas();
 
     /**
      * Retrieves a location by its id.

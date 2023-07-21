@@ -3,11 +3,13 @@ package space.obminyashka.items_exchange.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import space.obminyashka.items_exchange.repository.AreaRepository;
 import space.obminyashka.items_exchange.repository.LocationRepository;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
 import space.obminyashka.items_exchange.repository.model.Location;
+import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
 
 import java.io.BufferedWriter;
@@ -32,6 +34,7 @@ public class LocationServiceImpl implements LocationService {
             "Ukraine,area Zakarpatska,district Mukachivskyi,city Mukacheve"
     );
     private final LocationRepository locationRepository;
+    private final AreaRepository areaRepository;
     private final LocationMapper locationMapper;
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
@@ -40,6 +43,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationDto> findAll() {
         return locationMapper.toDtoList(locationRepository.findAll());
+    }
+
+    @Override
+    public List<LocationNameView> findAllAreas() {
+        return locationMapper.toNameViewList(areaRepository.findAll());
     }
 
     @Override
