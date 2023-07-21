@@ -29,6 +29,7 @@ import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoun
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.ValidatedEmailRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
@@ -159,6 +160,17 @@ public class UserController {
 
         userService.updateUserPassword(username, password);
         return new ResponseEntity<>(getMessageSource(ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping(value = ApiKey.USER_SERVICE_RESET_PASSWORD)
+    @Operation(summary = "reset user password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
+    })
+    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest){
+        mailService.sendMessagesToEmailForResetPassword(validatedEmailRequest.email());
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
