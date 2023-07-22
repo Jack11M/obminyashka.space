@@ -156,7 +156,7 @@ public class AdvertisementController {
                                                             @Parameter(hidden = true) Authentication authentication)
             throws IllegalIdentifierException, IllegalOperationException {
 
-        validateAdvertisementOwner(id, getUser(authentication.getName()));
+        validateAdvertisementOwner(id, authentication.getName());
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         dto.setId(id);
         return advertisementService.updateAdvertisement(dto);
@@ -172,8 +172,7 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable("advertisement_id") UUID id,
                                     @Parameter(hidden = true) Authentication authentication) throws IllegalOperationException {
-        User owner = getUser(authentication.getName());
-        validateAdvertisementOwner(id, owner);
+        validateAdvertisementOwner(id, authentication.getName());
         advertisementService.remove(id);
     }
 
@@ -200,8 +199,8 @@ public class AdvertisementController {
                 .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId));
     }
 
-    private void validateAdvertisementOwner(UUID advertisementId, User owner) throws IllegalOperationException {
-        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, owner)) {
+    private void validateAdvertisementOwner(UUID advertisementId, String username) throws IllegalOperationException {
+        if (advertisementService.isUserHasAdvertisementWithId(advertisementId, username) == null) {
             throw new IllegalOperationException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
         }
