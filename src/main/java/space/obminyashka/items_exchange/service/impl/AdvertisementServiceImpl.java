@@ -122,8 +122,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean isUserHasAdvertisementWithId(UUID id, User user) {
-        return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
+    public UUID isUserHasAdvertisementWithId(UUID id, String username) {
+        return advertisementRepository.existsAdvertisementByIdAndUser_Username(id, username);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     @CacheEvict(key = "#id")
     public void remove(UUID id) {
-        advertisementRepository.deleteById(id);
+        advertisementRepository.deleteAdvertisementById(id);
         advertisementRepository.flush();
     }
 
