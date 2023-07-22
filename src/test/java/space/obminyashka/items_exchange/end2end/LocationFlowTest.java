@@ -63,7 +63,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$[0].districtEN").value("Kharkivska district"));
     }
     @Test
-    @DataSet("database_init.yml")
+    @DataSet("location/location_init.yml")
     void getAllAreas_shouldReturnAllAreas() throws Exception {
         sendUriAndGetResultAction(get(LOCATION_AREA), status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))

@@ -5,15 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import space.obminyashka.items_exchange.repository.AreaRepository;
 import space.obminyashka.items_exchange.repository.LocationRepository;
+import space.obminyashka.items_exchange.repository.model.Area;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
 import space.obminyashka.items_exchange.repository.model.Location;
+import space.obminyashka.items_exchange.rest.response.LocationNameView;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,15 +23,21 @@ import static org.mockito.Mockito.*;
 class LocationServiceIntegrationTest {
     @MockBean
     private LocationRepository locationRepository;
+    @MockBean
+    private AreaRepository areaRepository;
     @Autowired
     private LocationService locationService;
-    @Autowired
+    @SpyBean
     private LocationMapper locationMapper;
     private Location location;
+    private Area area;
+    private LocationNameView areaNameView;
     private LocationDto locationDto;
 
     @BeforeEach
     void setUp() {
+        area = new Area(UUID.randomUUID(), "Одеська", "Odeska");
+        areaNameView = locationMapper.toNameView(area);
         location = new Location(UUID.randomUUID(), "Харківська", "Харківська область", "Харків", "Kharkivska", "Kharkivska district", "Kharkiv", Collections.emptyList());
         locationDto = locationMapper.toDto(location);
     }
@@ -50,6 +57,20 @@ class LocationServiceIntegrationTest {
                 () -> assertEquals(location.getDistrictEN(), all.get(0).getDistrictEN()),
                 () -> assertEquals(location.getAreaEN(), all.get(0).getAreaEN()));
         verify(locationRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findAll_shouldReturnAllLocationNameViewOfAreas() {
+        var expectedAllAreasName = List.of(areaNameView);
+        var expectedAllAreas = List.of(area);
+        when(areaRepository.findAll()).thenReturn(expectedAllAreas);
+
+        List<LocationNameView> actualAreas = locationService.findAllAreas();
+
+        assertAll("Checking objects' data equal",
+                () -> assertArrayEquals(expectedAllAreasName.toArray(), actualAreas.toArray()),
+                () -> verify(locationMapper).toNameViewList(expectedAllAreas),
+                () -> verify(areaRepository).findAll());
     }
 
     @Test
