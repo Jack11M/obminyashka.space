@@ -105,7 +105,7 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"ua", "ua-UA"})
-    @WithMockUser(username = "test")
+    @WithMockUser("test")
     void testUkrainianLocalizationWithAccept_LanguageHeaderIsUA(String locale) throws Exception {
         MvcResult mvcResult = mockMvc.perform(post(ADV_DEFAULT_IMAGE, VALID_ADV_ID, VALID_IMAGE_ID)
                         .header("Accept-Language", locale)
