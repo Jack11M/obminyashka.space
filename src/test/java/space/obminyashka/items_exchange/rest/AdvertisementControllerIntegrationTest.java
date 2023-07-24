@@ -23,7 +23,6 @@ import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +39,8 @@ import static space.obminyashka.items_exchange.rest.response.message.ResponseMes
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdvertisementControllerIntegrationTest extends BasicControllerTest {
+    private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
+    private static final String VALID_IMAGE_ID = "ebad2511-97c6-4221-a39f-a1b24a7d3251";
     @Autowired
     public AdvertisementControllerIntegrationTest(MockMvc mockMvc) {
         super(mockMvc);
@@ -92,7 +93,7 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
     @ValueSource(strings = {"notExisted", ""})
     @WithMockUser("test")
     void testDefaultLocalizationAccordingToLanguageHeader(String languageHeader) throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, UUID.randomUUID())
+        MvcResult mvcResult = mockMvc.perform(post(ADV_DEFAULT_IMAGE, VALID_ADV_ID, VALID_IMAGE_ID)
                         .header("Accept-Language", languageHeader)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -104,9 +105,9 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"ua", "ua-UA"})
-    @WithMockUser("test")
+    @WithMockUser(username = "test")
     void testUkrainianLocalizationWithAccept_LanguageHeaderIsUA(String locale) throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, UUID.randomUUID())
+        MvcResult mvcResult = mockMvc.perform(post(ADV_DEFAULT_IMAGE, VALID_ADV_ID, VALID_IMAGE_ID)
                         .header("Accept-Language", locale)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
