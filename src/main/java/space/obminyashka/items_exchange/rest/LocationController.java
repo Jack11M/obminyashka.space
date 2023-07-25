@@ -20,6 +20,7 @@ import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.request.LocationsRequest;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
+import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
 
 import java.io.IOException;
@@ -46,6 +47,13 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     public List<LocationDto> getAllLocations() {
         return locationService.findAll();
+    }
+
+    @GetMapping(value = ApiKey.LOCATION_AREA, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get all of existed areas.")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LocationNameView> getAllAreas() {
+        return locationService.findAllAreas();
     }
 
     @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)

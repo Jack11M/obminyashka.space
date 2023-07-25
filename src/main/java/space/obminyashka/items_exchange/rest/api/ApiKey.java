@@ -38,6 +38,7 @@ public class ApiKey {
     public static final String LOCATION = API + "/location";
     public static final String LOCATION_ID = LOCATION + "/{location_id}";
     public static final String LOCATION_ALL = LOCATION + "/all";
+    public static final String LOCATION_AREA = LOCATION + "/area";
     public static final String LOCATIONS_INIT = LOCATION + "/locations-init";
     // Subcategory API
     public static final String SUBCATEGORY = API + "/subcategory";
