@@ -82,7 +82,7 @@ public interface AdvertisementService {
      * @param username for checking authority
      * @return result of the check
      */
-    UUID isUserHasAdvertisementWithId(UUID id, String username);
+    boolean isUserHasAdvertisementWithId(UUID id, String username);
 
     /**
      * Create a new advertisement

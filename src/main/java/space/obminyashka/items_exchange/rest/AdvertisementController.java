@@ -200,7 +200,7 @@ public class AdvertisementController {
     }
 
     private void validateAdvertisementOwner(UUID advertisementId, String username) throws IllegalOperationException {
-        if (advertisementService.isUserHasAdvertisementWithId(advertisementId, username) == null) {
+        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, username)) {
             throw new IllegalOperationException(getMessageSource(
                     ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
         }
