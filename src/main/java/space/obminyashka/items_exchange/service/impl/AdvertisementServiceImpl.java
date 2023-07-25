@@ -123,7 +123,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public boolean isUserHasAdvertisementWithId(UUID id, String username) {
-        return advertisementRepository.existsAdvertisementByIdAndUser_Username(id, username);
+        return advertisementRepository.existsAdvertisementByIdAndUserUsername(id, username);
     }
 
     @Override

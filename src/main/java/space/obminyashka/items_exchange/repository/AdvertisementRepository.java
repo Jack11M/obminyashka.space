@@ -19,7 +19,7 @@ import java.util.*;
 @Transactional
 public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID>, QuerydslPredicateExecutor<Advertisement> {
 
-    boolean existsAdvertisementByIdAndUser_Username(UUID id, String username);
+    boolean existsAdvertisementByIdAndUserUsername(UUID id, String username);
 
     @Modifying
     @Query("delete FROM Advertisement a where a.id=:id")
