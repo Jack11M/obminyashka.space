@@ -40,6 +40,7 @@ import static space.obminyashka.items_exchange.rest.response.message.ResponseMes
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdvertisementControllerIntegrationTest extends BasicControllerTest {
+  
     @Autowired
     public AdvertisementControllerIntegrationTest(MockMvc mockMvc) {
         super(mockMvc);
@@ -95,11 +96,11 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, UUID.randomUUID())
                         .header("Accept-Language", languageHeader)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertEquals("User not found", new JSONObject(errorMessage).get("error"));
+        assertEquals("User don't own gained advertisement:", new JSONObject(errorMessage).get("error"));
     }
 
     @ParameterizedTest
@@ -109,11 +110,11 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, UUID.randomUUID())
                         .header("Accept-Language", locale)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isForbidden())
                 .andReturn();
 
         final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertEquals("Користувача не знайдено", new JSONObject(errorMessage).get("error"));
+        assertEquals("Ви не є власником отриманого оголошення:", new JSONObject(errorMessage).get("error"));
     }
 
     @ParameterizedTest

@@ -79,10 +79,10 @@ public interface AdvertisementService {
     /**
      * Check whenever user has an advertisement with selected id
      * @param id advertisement id
-     * @param user for checking authority
+     * @param username for checking authority
      * @return result of the check
      */
-    boolean isUserHasAdvertisementWithId(UUID id, User user);
+    boolean isUserHasAdvertisementWithId(UUID id, String username);
 
     /**
      * Create a new advertisement

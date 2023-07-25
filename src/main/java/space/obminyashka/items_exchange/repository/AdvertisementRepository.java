@@ -19,7 +19,11 @@ import java.util.*;
 @Transactional
 public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID>, QuerydslPredicateExecutor<Advertisement> {
 
-    boolean existsAdvertisementByIdAndUser(UUID id, User user);
+    boolean existsAdvertisementByIdAndUserUsername(UUID id, String username);
+
+    @Modifying
+    @Query("delete FROM Advertisement a where a.id=:id")
+    void deleteAdvertisementById(UUID id);
 
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) LIKE %?1% OR LOWER(a.description) LIKE %?1%")
     Page<Advertisement> search(String keyword, Pageable pageable);
@@ -48,4 +52,5 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     Long countByIdNotAndSubcategoryId(UUID id, List<Long> subcategoryIds);
 
     boolean existsBySubcategoryId(long id);
+
 }
