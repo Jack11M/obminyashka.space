@@ -35,6 +35,8 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Image")
@@ -115,7 +117,7 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND);
         }
         final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
-                .orElseThrow(() -> new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER)));
+                .orElseThrow(() -> new IllegalOperationException(getMessageSource(USER_NOT_OWNER)));
         if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
             throw new ElementsNumberExceedException(
                     getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.EXCEED_IMAGES_NUMBER, maxImagesAmount));
@@ -143,15 +145,14 @@ public class ImageController {
             throws IllegalOperationException, IllegalIdentifierException {
 
         if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, authentication.getName())) {
-            throw new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
+            throw new IllegalOperationException(getMessageSource(USER_NOT_OWNER));
         }
 
         if (imageService.existAllById(imageIdList, advertisementId)) {
             imageService.removeById(imageIdList);
         } else {
             imageIdList.removeAll(imageService.getImagesIdByAdvertisementId(advertisementId));
-            throw new IllegalIdentifierException(getParametrizedMessageSource(
-                    ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID, imageIdList));
+            throw new IllegalIdentifierException(getParametrizedMessageSource(IMAGE_NOT_EXISTED_ID, imageIdList));
         }
     }
 }
