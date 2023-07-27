@@ -24,7 +24,6 @@ import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedExcep
 import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
-import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
@@ -143,17 +142,14 @@ public class ImageController {
                              @Parameter(hidden = true) Authentication authentication)
             throws IllegalOperationException, IllegalIdentifierException {
 
-        final var existedAdvertisement = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
-                .orElseThrow(() -> new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER)));
+        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, authentication.getName())) {
+            throw new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
+        }
 
-        final var isAllImageExistInAdvertisement = imageService.existAllById(imageIdList, advertisementId);
-        if (isAllImageExistInAdvertisement) {
+        if (imageService.existAllById(imageIdList, advertisementId)) {
             imageService.removeById(imageIdList);
         } else {
-            final var existedImageIds = existedAdvertisement.getImages().stream()
-                    .map(Image::getId)
-                    .toList();
-            imageIdList.removeAll(existedImageIds);
+            imageIdList.removeAll(imageService.getImagesIdByAdvertisementId(advertisementId));
             throw new IllegalIdentifierException(getParametrizedMessageSource(
                     ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID, imageIdList));
         }
