@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.repository.ImageRepository;
+import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.rest.mapper.ImageMapper;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
 
 import static java.awt.Image.SCALE_REPLICATE;
 import static java.awt.Image.SCALE_SMOOTH;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 @Slf4j
 @Service
@@ -47,6 +50,8 @@ public class ImageServiceImpl implements ImageService {
             .collect(Collectors.toSet());
     @Value("${app.image.thumbnail.edge.px}")
     private int thumbnailEdge;
+    @Value("${max.images.amount}")
+    private int maxImagesAmount;
 
     @Override
     public List<byte[]> getImagesResourceByAdvertisementId(UUID advertisementId) {
@@ -95,17 +100,17 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveToAdvertisement(Advertisement advertisement, List<byte[]> images) {
-        List<Image> imagesToSave = images.stream()
+    public void saveToAdvertisement(UUID advertisementId, List<MultipartFile> images)
+            throws UnsupportedMediaTypeException, ElementsNumberExceedException {
+        validateMaxImagesAmount(advertisementId, images.size());
+
+        Advertisement advertisement = new Advertisement();
+        advertisement.setId(advertisementId);
+        List<Image> imagesToSave = images.parallelStream()
+                .map(this::compress)
                 .map(populateNewImage(advertisement))
                 .toList();
         imageRepository.saveAll(imagesToSave);
-    }
-
-    @Override
-    public void saveToAdvertisement(Advertisement advertisement, byte[] image) {
-        Image toSave = populateNewImage(advertisement).apply(image);
-        imageRepository.save(toSave);
     }
 
     private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
@@ -114,7 +119,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public boolean existAllById(List<UUID> ids, UUID advertisementId) {
-        return imageRepository.existsAllByIdInAndAdvertisement_Id(ids, advertisementId);
+        return imageRepository.existsAllByIdInAndAdvertisementId(ids, advertisementId);
     }
 
     @Override
@@ -131,6 +136,12 @@ public class ImageServiceImpl implements ImageService {
         final Set<String> unsupportedTypes = findUnsupportedType(images);
         if (!unsupportedTypes.isEmpty()) {
             throw new UnsupportedMediaTypeException("Received unsupported image types: " + String.join(" ,", unsupportedTypes));
+        }
+    }
+
+    private void validateMaxImagesAmount(UUID advertisementId, int addableImagesAmount) throws ElementsNumberExceedException {
+        if (countImagesForAdvertisement(advertisementId) + addableImagesAmount > maxImagesAmount) {
+            throw new ElementsNumberExceedException(getParametrizedMessageSource(EXCEED_IMAGES_NUMBER, maxImagesAmount));
         }
     }
 
@@ -171,7 +182,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public int countImagesForAdvertisement(UUID id) {
-        return imageRepository.countImageByAdvertisement_Id(id);
+        return imageRepository.countImageByAdvertisementId(id);
     }
 
     private BufferedImage getScaled(Dimension d, BufferedImage originImage) {

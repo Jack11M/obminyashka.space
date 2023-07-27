@@ -2,9 +2,9 @@ package space.obminyashka.items_exchange.service;
 
 import lombok.SneakyThrows;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
-import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
 
@@ -40,18 +40,12 @@ public interface ImageService {
 
     /**
      * Create new entity for each received image, link them to the Advertisement using its ID and store them to the DB
+     *
+     * @param advertisementId to link images with
+     * @param images          list of images that need to be linked with the Advertisement and saved to the DB
      * @see Image entity as representation of all images
-     * @param advertisement to link images with
-     * @param images list of images that need to be linked with the Advertisement and saved to the DB
      */
-    void saveToAdvertisement(Advertisement advertisement, List<byte[]> images);
-
-    /**
-     * Create new entity for received image, link to the Advertisement using its ID and store it to the DB
-     * @param advertisement advertisement to link images with
-     * @param image image that needs to be linked with the Advertisement and saved to the DB
-     */
-    void saveToAdvertisement(Advertisement advertisement, byte[] image);
+    void saveToAdvertisement(UUID advertisementId, List<MultipartFile> images) throws UnsupportedMediaTypeException, ElementsNumberExceedException;
 
     /**
      * Check whether all images with gained IDs received into an advertisement
