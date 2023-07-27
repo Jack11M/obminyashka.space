@@ -104,13 +104,9 @@ public class ImageServiceImpl implements ImageService {
             throws UnsupportedMediaTypeException, ElementsNumberExceedException {
         validateMaxImagesAmount(advertisementId, images.size());
 
-        Advertisement advertisement = new Advertisement();
-        advertisement.setId(advertisementId);
-        List<Image> imagesToSave = images.parallelStream()
+        images.parallelStream()
                 .map(this::compress)
-                .map(populateNewImage(advertisement))
-                .toList();
-        imageRepository.saveAll(imagesToSave);
+                .forEach(compress -> imageRepository.createImage(UUID.randomUUID(), advertisementId, compress));
     }
 
     private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
