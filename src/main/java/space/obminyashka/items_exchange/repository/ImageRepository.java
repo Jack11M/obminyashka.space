@@ -14,7 +14,7 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     void deleteAllByIdIn(List<UUID> id);
 
-    boolean existsAllByIdInAndAdvertisement_Id(List<UUID> id, UUID advertisementId);
+    boolean existsAllByIdInAndAdvertisementId(List<UUID> id, UUID advertisementId);
 
-    int countImageByAdvertisement_Id(UUID id);
+    int countImageByAdvertisementId(UUID id);
 }
