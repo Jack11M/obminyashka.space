@@ -146,12 +146,15 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser("admin")
     @Test
     void deleteImages_shouldThrow400WhenImageIdNotExist() throws Exception {
+        when(advertisementService.isUserHasAdvertisementWithId(any(UUID.class), eq("admin")))
+                .thenReturn(true);
+
         final var randomID = UUID.randomUUID();
         final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, advertisementId)
                         .param("ids", randomID.toString()),
                 status().isBadRequest());
 
-        verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("admin"));
+        verify(advertisementService).isUserHasAdvertisementWithId(any(UUID.class), eq("admin"));
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalIdentifierException.class)
                 .hasMessage(getParametrizedMessageSource(IMAGE_NOT_EXISTED_ID, "[%s]".formatted(randomID)));
@@ -164,7 +167,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                         .param("ids", UUID.randomUUID().toString()),
                 status().isForbidden());
 
-        verify(advertisementService).findByIdAndOwnerUsername(any(UUID.class), eq("user"));
+        verify(advertisementService).isUserHasAdvertisementWithId(any(UUID.class), eq("user"));
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalOperationException.class)
                 .hasMessage(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));

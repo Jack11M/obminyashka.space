@@ -24,7 +24,6 @@ import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedExcep
 import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
-import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
@@ -36,6 +35,8 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Image")
@@ -116,7 +117,7 @@ public class ImageController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND.getReasonPhrase(), HttpStatus.NOT_FOUND);
         }
         final Advertisement advToSaveImages = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
-                .orElseThrow(() -> new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER)));
+                .orElseThrow(() -> new IllegalOperationException(getMessageSource(USER_NOT_OWNER)));
         if (advToSaveImages.getImages().size() + images.size() > maxImagesAmount) {
             throw new ElementsNumberExceedException(
                     getParametrizedMessageSource(ResponseMessagesHandler.ExceptionMessage.EXCEED_IMAGES_NUMBER, maxImagesAmount));
@@ -143,19 +144,15 @@ public class ImageController {
                              @Parameter(hidden = true) Authentication authentication)
             throws IllegalOperationException, IllegalIdentifierException {
 
-        final var existedAdvertisement = advertisementService.findByIdAndOwnerUsername(advertisementId, authentication.getName())
-                .orElseThrow(() -> new IllegalOperationException(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER)));
+        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, authentication.getName())) {
+            throw new IllegalOperationException(getMessageSource(USER_NOT_OWNER));
+        }
 
-        final var isAllImageExistInAdvertisement = imageService.existAllById(imageIdList, advertisementId);
-        if (isAllImageExistInAdvertisement) {
+        if (imageService.existAllById(imageIdList, advertisementId)) {
             imageService.removeById(imageIdList);
         } else {
-            final var existedImageIds = existedAdvertisement.getImages().stream()
-                    .map(Image::getId)
-                    .toList();
-            imageIdList.removeAll(existedImageIds);
-            throw new IllegalIdentifierException(getParametrizedMessageSource(
-                    ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID, imageIdList));
+            imageIdList.removeAll(imageService.getImagesIdByAdvertisementId(advertisementId));
+            throw new IllegalIdentifierException(getParametrizedMessageSource(IMAGE_NOT_EXISTED_ID, imageIdList));
         }
     }
 }
