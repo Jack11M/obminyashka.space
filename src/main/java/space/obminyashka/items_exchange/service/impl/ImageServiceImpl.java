@@ -181,6 +181,11 @@ public class ImageServiceImpl implements ImageService {
         return imageRepository.countImageByAdvertisementId(id);
     }
 
+    @Override
+    public List<UUID> getImagesIdByAdvertisementId(UUID advertisementId) {
+        return imageRepository.getImagesIdByAdvertisementId(advertisementId);
+    }
+
     private BufferedImage getScaled(Dimension d, BufferedImage originImage) {
         java.awt.Image scaledInstance = originImage.getScaledInstance(d.width, d.height, SCALE_SMOOTH);
         BufferedImage resizedImage = new BufferedImage(d.width, d.height, SCALE_REPLICATE);

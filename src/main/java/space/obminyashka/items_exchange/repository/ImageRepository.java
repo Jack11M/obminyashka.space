@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.repository.model.Image;
 
@@ -20,6 +21,10 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     boolean existsAllByIdInAndAdvertisementId(List<UUID> id, UUID advertisementId);
 
+    int countImageByAdvertisement_Id(UUID id);
+
+    @Query("select i.id from Image i where i.advertisement.id =:advertisementId")
+    List<UUID> getImagesIdByAdvertisementId(UUID advertisementId);
     int countImageByAdvertisementId(UUID id);
 
     @Transactional

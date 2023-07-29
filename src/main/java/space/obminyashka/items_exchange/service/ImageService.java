@@ -87,4 +87,11 @@ public interface ImageService {
      * @return total quantity of images already stored for selected advertisement
      */
     int countImagesForAdvertisement(UUID id);
+
+    /**
+     * getting images id by advertisement Id
+     * @param advertisementId advertisement ID
+     * @return all image's id
+     */
+    List<UUID> getImagesIdByAdvertisementId(UUID advertisementId);
 }
