@@ -8,9 +8,3 @@ area:
   - id: c974c9a6-93e3-4660-826d-3dfbb42f7d43
     name_en: 'Vinnytska'
     name_ua: 'Вінницька'
-
-district:
-  - id: 5c5467f3-b7ee-48b1-9451-7028255b757b
-    area_id: 842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10
-    name_ua: 'Лиманський район'
-    name_en: 'Limanskii district'

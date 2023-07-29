@@ -56,13 +56,6 @@ public class LocationController {
         return locationService.findAllAreas();
     }
 
-    @GetMapping(value = ApiKey.LOCATION_DISTRICT, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all of existed districts by area id.")
-    @ResponseStatus(HttpStatus.OK)
-    public List<LocationNameView> getAllDistricts(@RequestParam("area_id") UUID areaId) {
-        return locationService.findAllDistrictsByAreaId(areaId);
-    }
-
     @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get an existed location by its ID.")
     @ApiResponses(value = {

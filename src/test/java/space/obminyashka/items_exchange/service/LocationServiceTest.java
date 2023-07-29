@@ -7,9 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import space.obminyashka.items_exchange.repository.AreaRepository;
-import space.obminyashka.items_exchange.repository.DistrictRepository;
 import space.obminyashka.items_exchange.repository.model.Area;
-import space.obminyashka.items_exchange.repository.model.District;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.impl.LocationServiceImpl;
@@ -26,23 +24,17 @@ import static org.mockito.Mockito.when;
 class LocationServiceTest {
     @Mock
     private AreaRepository areaRepository;
-    @Mock
-    private DistrictRepository districtRepository;
     @InjectMocks
     private LocationServiceImpl locationService;
     @Mock
     private LocationMapper locationMapper;
     private Area area;
-    private District district;
     private LocationNameView areaNameView;
-    private LocationNameView districtNameView;
 
     @BeforeEach
     void setUp() {
         area = new Area(UUID.randomUUID(), "Одеська", "Odeska");
         areaNameView = new LocationNameView(area.getId(), area.getNameUa(), area.getNameEn());
-        district = new District(UUID.randomUUID(), area, "Лиманський район", "Limanskii district");
-        districtNameView = new LocationNameView(district.getId(), district.getNameUa(), district.getNameEn());
     }
 
     @Test
@@ -58,22 +50,5 @@ class LocationServiceTest {
                 () -> assertArrayEquals(expectedAllAreasName.toArray(), actualAreas.toArray()),
                 () -> verify(locationMapper).toNameViewList(expectedAllAreas),
                 () -> verify(areaRepository).findAll());
-    }
-
-    @Test
-    void findAllDistricts_shouldReturnAllDistrictsLocationNameViewByAreaId() {
-        var expectedAllDistrictsName = List.of(districtNameView);
-        var expectedAllDistricts = List.of(district);
-        var expectedAreaId = area.getId();
-        when(districtRepository.findAllByAreaId(expectedAreaId)).thenReturn(expectedAllDistricts);
-        when(locationMapper.toDistrictNameViewList(expectedAllDistricts)).thenReturn(expectedAllDistrictsName);
-
-        List<LocationNameView> actualDistricts = locationService.findAllDistrictsByAreaId(expectedAreaId);
-
-        assertAll(
-                () -> assertArrayEquals(expectedAllDistrictsName.toArray(), actualDistricts.toArray()),
-                () -> verify(locationMapper).toDistrictNameViewList(expectedAllDistricts),
-                () -> verify(districtRepository).findAllByAreaId(expectedAreaId)
-        );
     }
 }
