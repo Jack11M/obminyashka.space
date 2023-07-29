@@ -12,7 +12,6 @@ import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedExcep
 import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.rest.mapper.ImageMapper;
-import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
@@ -29,7 +28,6 @@ import java.io.*;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -107,10 +105,6 @@ public class ImageServiceImpl implements ImageService {
         images.parallelStream()
                 .map(this::compress)
                 .forEach(compress -> imageRepository.createImage(UUID.randomUUID(), advertisementId, compress));
-    }
-
-    private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
-        return bytes -> new Image(bytes, ownerAdvertisement);
     }
 
     @Override

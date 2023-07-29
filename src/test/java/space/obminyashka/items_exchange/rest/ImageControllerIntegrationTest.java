@@ -31,7 +31,6 @@ import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHa
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -79,8 +78,6 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
 
     private void mocksInit() throws IOException {
         when(advertisementService.existById(advertisementId)).thenReturn(true);
-        when(advertisementService.findByIdAndOwnerUsername(advertisementId, "admin"))
-                .thenReturn(Optional.of(advertisement));
         when(advertisementService.isUserHasAdvertisementWithId(advertisementId, "admin"))
                 .thenReturn(true);
         testImages = IntStream.range(0, 10)
@@ -147,9 +144,6 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser("admin")
     @Test
     void deleteImages_shouldThrow400WhenImageIdNotExist() throws Exception {
-        when(advertisementService.isUserHasAdvertisementWithId(any(UUID.class), eq("admin")))
-                .thenReturn(true);
-
         final var randomID = UUID.randomUUID();
         final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, advertisementId)
                         .param("ids", randomID.toString()),
