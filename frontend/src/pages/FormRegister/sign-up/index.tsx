@@ -1,17 +1,25 @@
 /* eslint-disable */
 // @ts-nocheck
 // TODO: fix typescript
-import { useState } from 'react';
-import { Form, Formik } from 'formik';
-import { useNavigate } from 'react-router-dom';
-import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
+import { useState } from "react";
+import { Form, Formik } from "formik";
+import { useNavigate } from "react-router-dom";
+import {
+  Icon,
+  Images,
+  CheckBox,
+  ButtonNew,
+  InputField,
+  Responsive,
+} from "obminyashka-components";
 
-import api from 'src/REST/Resources';
-import { route } from 'src/routes/routeConstants';
-import { getTranslatedText } from 'src/components/local/localization';
+import api from "src/REST/Resources";
+import { route } from "src/routes/routeConstants";
+import { getTranslatedText } from "src/components/local/localization";
 
-import * as Styles from '../sign-in/styles';
-import { validationSchema } from './config';
+import * as StylesNative from "./styles";
+import * as Styles from "../sign-in/styles";
+import { validationSchema } from "./config";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -45,79 +53,92 @@ const SignUp = () => {
       >
         {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
           <Form>
-            <Styles.WrapperInputSingUp>
-              <InputField
-                type='text'
-                name='email'
-                inputGap='3px'
-                inputHeight='50px'
-                label={getTranslatedText('auth.regEmail')}
+            <StylesNative.WrapperInputSingUp>
+              <StylesNative.InputEmail
+                type="text"
+                name="email"
+                inputGap="3px"
+                inputHeight="50px"
+                label={getTranslatedText("auth.regEmail")}
               />
 
-              <InputField
-                type='text'
-                inputGap='3px'
-                name='username'
-                inputHeight='50px'
-                label={getTranslatedText('auth.regLogin')}
+              <StylesNative.InputName
+                type="text"
+                inputGap="3px"
+                name="username"
+                inputHeight="50px"
+                label={getTranslatedText("auth.regLogin")}
               />
 
-              <InputField
-                inputGap='3px'
-                name='password'
-                type='password'
-                inputHeight='50px'
-                label={getTranslatedText('auth.regPassword')}
+              <StylesNative.InputPass
+                inputGap="3px"
+                name="password"
+                type="password"
+                inputHeight="50px"
+                label={getTranslatedText("auth.regPassword")}
               />
 
-              <InputField
-                inputGap='3px'
-                type='password'
-                inputHeight='50px'
-                name='confirmPassword'
-                label={getTranslatedText('auth.regConfirm')}
+              <StylesNative.InputSecPass
+                inputGap="3px"
+                type="password"
+                inputHeight="50px"
+                name="confirmPassword"
+                label={getTranslatedText("auth.regConfirm")}
               />
-            </Styles.WrapperInputSingUp>
+
+              <Responsive.Desktop>
+                <StylesNative.SunRegistration
+                  src={Images.sunToys}
+                  alt="sun-registration"
+                />
+              </Responsive.Desktop>
+            </StylesNative.WrapperInputSingUp>
 
             <Styles.Extra>
               <CheckBox
                 gap={22}
                 fontSize={14}
-                name='agreement'
-                margin='0 0 44px 0'
+                name="agreement"
+                margin="0 0 44px 0"
                 checked={values.agreement}
-                style={{ paddingRight: '10px' }}
-                text={getTranslatedText('auth.agreement')}
-                onChange={() => setFieldValue('agreement', !values.agreement)}
+                style={{ paddingRight: "10px" }}
+                text={getTranslatedText("auth.agreement")}
+                onChange={() => setFieldValue("agreement", !values.agreement)}
               />
             </Styles.Extra>
 
-            <Styles.WrapperButton>
-              <Button
+            <Styles.WrapperButtons>
+              <ButtonNew
                 bold
-                width={222}
-                height={48}
-                lHeight={24}
-                type='submit'
+                type="submit"
+                animated="true"
                 isLoading={loading}
-                style={{ marginBottom: 44 }}
-                text={getTranslatedText('auth.signUp')}
-                disabling={!dirty || !isValid || isSubmitting}
+                disabled={!isValid && !dirty}
+                text={getTranslatedText("button.enter")}
               />
 
-              <Button
-                bold
-                height={48}
-                width={222}
-                lHeight={24}
-                type='button'
-                nativeIcon={false}
-                icon={<Icon.Google />}
-                style={{ marginBottom: 64 }}
-                text={getTranslatedText('auth.signUp')}
-                onClick={() => window.location.assign('/oauth2/authorization/google')}
-              />
-            </Styles.WrapperButton>
+              <Styles.FirstText>АБО</Styles.FirstText>
+
+              <Styles.SecondText>Войти через соц сети</Styles.SecondText>
+
+              <Styles.ButtonsRegistration>
+                <ButtonNew
+                  square="true"
+                  styleType="outline"
+                  icon={<Icon.FbRegistration />}
+                />
+                <ButtonNew
+                  square="true"
+                  styleType="outline"
+                  icon={<Icon.AppleRegistration />}
+                />
+                <ButtonNew
+                  square="true"
+                  styleType="outline"
+                  icon={<Icon.GoogleRegistration />}
+                />
+              </Styles.ButtonsRegistration>
+            </Styles.WrapperButtons>
           </Form>
         )}
       </Formik>
