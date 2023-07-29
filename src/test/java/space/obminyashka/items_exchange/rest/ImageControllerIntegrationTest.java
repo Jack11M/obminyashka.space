@@ -31,7 +31,6 @@ import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHa
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -59,7 +58,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     @Mock
     private User user;
     @Captor
-    private ArgumentCaptor<List<byte[]>> listArgumentCaptor;
+    private ArgumentCaptor<List<MultipartFile>> listArgumentCaptor;
     private ArrayList<Image> testImages;
     private MockMultipartFile jpeg;
     private final UUID advertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
@@ -78,20 +77,20 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     }
 
     private void mocksInit() throws IOException {
-
         when(advertisementService.existById(advertisementId)).thenReturn(true);
-        when(advertisementService.findByIdAndOwnerUsername(advertisementId, "admin"))
-                .thenReturn(Optional.of(advertisement));
+        when(advertisementService.isUserHasAdvertisementWithId(advertisementId, "admin"))
+                .thenReturn(true);
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
         when(advertisement.getImages()).thenReturn(testImages);
         when(advertisement.getUser()).thenReturn(user);
-        when(imageService.compress(jpeg)).thenReturn(jpeg.getBytes());
     }
 
     @WithMockUser("admin")
     @Test
     void saveImages_shouldThrowExceptionWhenTotalAmountMoreThan10() throws Exception {
+        doThrow(new ElementsNumberExceedException("")).when(imageService).saveToAdvertisement(any(), anyList());
+
         MvcResult mvcResult = mockMvc.perform(multipart(IMAGE_BY_ADV_ID, advertisementId)
                         .file(jpeg)
                         .accept(MediaType.APPLICATION_JSON))
@@ -99,7 +98,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 .andReturn();
 
         verify(advertisementService).existById(any());
-        verify(advertisementService).findByIdAndOwnerUsername(any(), anyString());
+        verify(advertisementService).isUserHasAdvertisementWithId(any(), anyString());
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(ElementsNumberExceedException.class);
     }
@@ -120,10 +119,9 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
 
         sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, advertisementId).file(jpeg), status().isOk());
 
-        verify(imageService).compress(any(MultipartFile.class));
         verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
-        verify(advertisementService).findByIdAndOwnerUsername(any(), anyString());
-        assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0));
+        verify(advertisementService).isUserHasAdvertisementWithId(any(), anyString());
+        assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0).getBytes());
     }
 
     @WithMockUser("admin")
@@ -146,9 +144,6 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser("admin")
     @Test
     void deleteImages_shouldThrow400WhenImageIdNotExist() throws Exception {
-        when(advertisementService.isUserHasAdvertisementWithId(any(UUID.class), eq("admin")))
-                .thenReturn(true);
-
         final var randomID = UUID.randomUUID();
         final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, advertisementId)
                         .param("ids", randomID.toString()),

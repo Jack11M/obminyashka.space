@@ -2,14 +2,15 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.repository.ImageRepository;
+import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
+import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.Image;
@@ -33,11 +34,6 @@ class ImageServiceIntegrationTest extends BasicImageCreator{
     private MockMultipartFile testJpg;
     private MockMultipartFile testPng;
     private MockMultipartFile testTxt;
-
-    @Captor
-    private ArgumentCaptor<List<Image>> imageListCaptor;
-    @Captor
-    private ArgumentCaptor<Image> imageCaptor;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -79,21 +75,11 @@ class ImageServiceIntegrationTest extends BasicImageCreator{
     }
 
     @Test
-    void saveToAdvertisement_shouldSaveImageBytes_whenAdvertisementExists() throws IOException {
-        List<byte[]> testImages = List.of(testJpg.getBytes(), testPng.getBytes());
+    void saveToAdvertisement_shouldSaveImageBytes_whenAdvertisementExists() throws ElementsNumberExceedException, UnsupportedMediaTypeException {
+        List<MultipartFile> testImages = List.of(testJpg, testPng);
 
-        imageService.saveToAdvertisement(new Advertisement(), testImages);
-        verify(imageRepository).saveAll(imageListCaptor.capture());
-        assertTrue(imageListCaptor.getValue().stream()
-                .map(Image::getResource)
-                .allMatch(testImages::contains));
-    }
-
-    @Test
-    void saveToAdvertisement_shouldSaveOneImageBytes_whenAdvertisementExists() throws IOException {
-        imageService.saveToAdvertisement(new Advertisement(), testJpg.getBytes());
-        verify(imageRepository).save(imageCaptor.capture());
-        assertArrayEquals(imageCaptor.getValue().getResource(), testJpg.getBytes());
+        imageService.saveToAdvertisement(UUID.randomUUID(), testImages);
+        verify(imageRepository, times(testImages.size())).createImage(any(), any(), any());
     }
 
     @Test

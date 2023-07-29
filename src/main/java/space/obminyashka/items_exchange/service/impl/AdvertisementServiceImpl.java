@@ -98,11 +98,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName) {
-        return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
-    }
-
-    @Override
     public Optional<AdvertisementDisplayView> findDtoById(UUID id) {
         return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }

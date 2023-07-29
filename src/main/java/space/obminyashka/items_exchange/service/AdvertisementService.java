@@ -55,14 +55,6 @@ public interface AdvertisementService {
     Page<AdvertisementTitleView> findByKeyword(String keyword, Pageable pageable);
 
     /**
-     * Find an advertisement with additional owner check
-     * @param advertisementId ID of an advertisement
-     * @param ownerName login or email of the advertisement's owner
-     * @return {@link Optional} as result
-     */
-    Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName);
-
-    /**
      * Find an advertisement Display DTO by id
      * @param id advertisement id
      * @return {@link Optional} as result
