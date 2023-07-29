@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.repository.AreaRepository;
+import space.obminyashka.items_exchange.repository.DistrictRepository;
 import space.obminyashka.items_exchange.repository.LocationRepository;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
@@ -35,6 +36,7 @@ public class LocationServiceImpl implements LocationService {
     );
     private final LocationRepository locationRepository;
     private final AreaRepository areaRepository;
+    private final DistrictRepository districtRepository;
     private final LocationMapper locationMapper;
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
@@ -48,6 +50,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationNameView> findAllAreas() {
         return locationMapper.toNameViewList(areaRepository.findAll());
+    }
+
+    @Override
+    public List<LocationNameView> findAllDistrictsByAreaId(UUID areaId) {
+        return locationMapper.toDistrictNameViewList(districtRepository.findAllByAreaId(areaId));
     }
 
     @Override

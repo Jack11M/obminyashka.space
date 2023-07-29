@@ -48,6 +48,7 @@ class LocationFlowTest extends BasicControllerTest {
     private String pathToCreateLocationsInitFile;
 
     private final String existedLocationId = "2c5467f3-b7ee-48b1-9451-7028255b757b";
+    private final String existedAreaId = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10";
     @Autowired
     public LocationFlowTest(MockMvc mockMvc) {
         super(mockMvc);
@@ -69,6 +70,15 @@ class LocationFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].nameEn").value("Odeska"))
                 .andExpect(jsonPath("$[0].nameUa").value("Одеська"));
+    }
+
+    @Test
+    @DataSet("location/location_init.yml")
+    void getAllDistricts_shouldReturnAllDistrictsByAreaId() throws Exception {
+        sendUriAndGetResultAction(get(LOCATION_DISTRICT).param("area_id", existedAreaId), status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].nameEn").value("Limanskii district"))
+                .andExpect(jsonPath("$[0].nameUa").value( "Лиманський район"));
     }
 
     @Test
