@@ -50,9 +50,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public List<byte[]> getImagesResourceByAdvertisementId(UUID advertisementId) {
-        return imageRepository.findByAdvertisementId(advertisementId).stream()
-                .map(Image::getResource)
-                .toList();
+        return imageRepository.getImagesResourceByAdvertisementId(advertisementId);
     }
 
     @Override
