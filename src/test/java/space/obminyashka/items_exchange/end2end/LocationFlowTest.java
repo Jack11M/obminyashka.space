@@ -77,7 +77,7 @@ class LocationFlowTest extends BasicControllerTest {
     @Test
     @DataSet("location/location_init.yml")
     void getAllDistricts_shouldReturnAllDistrictsByAreaId() throws Exception {
-        sendUriAndGetResultAction(get(LOCATION_DISTRICT).param("area_id", existedAreaId), status().isOk())
+        sendUriAndGetResultAction(get(LOCATION_DISTRICT).param("areaId", existedAreaId), status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].nameEn").value("Limanskii district"))
                 .andExpect(jsonPath("$[0].nameUa").value("Лиманський район"));

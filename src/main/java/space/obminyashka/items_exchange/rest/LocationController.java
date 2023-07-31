@@ -59,7 +59,7 @@ public class LocationController {
     @GetMapping(value = ApiKey.LOCATION_DISTRICT, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get all of existed districts by area id.")
     @ResponseStatus(HttpStatus.OK)
-    public List<LocationNameView> getAllDistricts(@RequestParam("area_id") UUID areaId) {
+    public List<LocationNameView> getAllDistricts(@RequestParam UUID areaId) {
         return locationService.findAllDistrictsByAreaId(areaId);
     }
 
