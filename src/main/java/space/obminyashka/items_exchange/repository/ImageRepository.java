@@ -15,6 +15,9 @@ public interface ImageRepository extends JpaRepository<Image, UUID> {
 
     List<Image> findByAdvertisementId(UUID id);
 
+    @Query("select i.resource from Image i where i.advertisement.id=:id")
+    List<byte[]> getImagesResourceByAdvertisementId(UUID id);
+
     void deleteAllByIdIn(List<UUID> id);
 
     boolean existsAllByIdInAndAdvertisementId(List<UUID> id, UUID advertisementId);

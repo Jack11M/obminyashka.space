@@ -18,6 +18,7 @@ import space.obminyashka.items_exchange.util.BasicImageCreator;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,11 +46,12 @@ class ImageServiceIntegrationTest extends BasicImageCreator{
 
     @Test
     void getImagesResourceByAdvertisementId_shouldReturnAllImagesLinkedToAdvertisement_whenAdvertisementExistsAndContainsImages() {
-        when(imageRepository.findByAdvertisementId(any())).thenReturn(List.of(jpeg));
+        when(imageRepository.getImagesResourceByAdvertisementId(any()))
+                .thenReturn(Collections.singletonList(jpeg.getResource()));
 
         List<byte[]> result = imageService.getImagesResourceByAdvertisementId(UUID.randomUUID());
         assertEquals(jpeg.getResource(), result.get(0), "Images' resources should be equal");
-        verify(imageRepository).findByAdvertisementId(any());
+        verify(imageRepository).getImagesResourceByAdvertisementId(any());
     }
 
     @Test
