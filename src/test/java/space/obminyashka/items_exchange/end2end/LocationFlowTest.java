@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,9 +34,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.data_producer.LocationDtoProducer.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 @SpringBootTest
 @DBRider
@@ -47,8 +51,9 @@ class LocationFlowTest extends BasicControllerTest {
     @Value("${location.init.file.path}")
     private String pathToCreateLocationsInitFile;
 
-    private final String existedLocationId = "2c5467f3-b7ee-48b1-9451-7028255b757b";
-    private final String existedAreaId = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10";
+    private static final String existedLocationId = "2c5467f3-b7ee-48b1-9451-7028255b757b";
+    private static final String existedAreaId = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10";
+    private static final String invalidLocationId = "61731cc8-8104-49f0-b2c3-5a52e576ab28";
 
     @Autowired
     public LocationFlowTest(MockMvc mockMvc) {
@@ -81,6 +86,16 @@ class LocationFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].nameEn").value("Limanskii district"))
                 .andExpect(jsonPath("$[0].nameUa").value("Лиманський район"));
+    }
+
+    @Test
+    @DataSet("location/location_init.yml")
+    void getAllDistricts_shouldReturnException_whenDistrictsIsNotFound() throws Exception {
+        var resultActions = sendUriAndGetResultAction(get(LOCATION_DISTRICT).param("areaId", invalidLocationId), status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(INVALID_LOCATION_ID, invalidLocationId));
     }
 
     @Test
