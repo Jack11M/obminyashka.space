@@ -44,105 +44,107 @@ const SignUp = () => {
   };
 
   return (
-    <Styles.Wrapper>
-      <Formik
-        validateOnBlur
-        onSubmit={onSubmit}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-      >
-        {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
-          <Form>
-            <StylesNative.WrapperInputSingUp>
-              <StylesNative.InputEmail
-                type="text"
-                name="email"
-                inputGap="3px"
-                inputHeight="50px"
-                label={getTranslatedText("auth.regEmail")}
-              />
+    <StylesNative.Wrapper>
+      <Responsive.Desktop>
+        <StylesNative.SunRegistration
+          src={Images.sunToys}
+          alt="sun-registration"
+        />
+      </Responsive.Desktop>
 
-              <StylesNative.InputName
-                type="text"
-                inputGap="3px"
-                name="username"
-                inputHeight="50px"
-                label={getTranslatedText("auth.regLogin")}
-              />
-
-              <StylesNative.InputPass
-                inputGap="3px"
-                name="password"
-                type="password"
-                inputHeight="50px"
-                label={getTranslatedText("auth.regPassword")}
-              />
-
-              <StylesNative.InputSecPass
-                inputGap="3px"
-                type="password"
-                inputHeight="50px"
-                name="confirmPassword"
-                label={getTranslatedText("auth.regConfirm")}
-              />
-
-              <Responsive.Desktop>
-                <StylesNative.SunRegistration
-                  src={Images.sunToys}
-                  alt="sun-registration"
+      <StylesNative.FormikContainer>
+        <Formik
+          validateOnBlur
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+        >
+          {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
+            <Form>
+              <StylesNative.WrapperInputSingUp>
+                <InputField
+                  type="text"
+                  name="email"
+                  inputGap="3px"
+                  inputHeight="50px"
+                  label={getTranslatedText("auth.regEmail")}
                 />
-              </Responsive.Desktop>
-            </StylesNative.WrapperInputSingUp>
 
-            <Styles.Extra>
-              <CheckBox
-                gap={22}
-                fontSize={14}
-                name="agreement"
-                margin="0 0 44px 0"
-                checked={values.agreement}
-                style={{ paddingRight: "10px" }}
-                text={getTranslatedText("auth.agreement")}
-                onChange={() => setFieldValue("agreement", !values.agreement)}
-              />
-            </Styles.Extra>
+                <InputField
+                  type="text"
+                  inputGap="3px"
+                  name="username"
+                  inputHeight="50px"
+                  label={getTranslatedText("auth.regLogin")}
+                />
 
-            <Styles.WrapperButtons>
-              <ButtonNew
-                bold
-                type="submit"
-                animated="true"
-                isLoading={loading}
-                disabled={!isValid && !dirty}
-                text={getTranslatedText("button.enter")}
-              />
+                <InputField
+                  inputGap="3px"
+                  name="password"
+                  type="password"
+                  inputHeight="50px"
+                  label={getTranslatedText("auth.regPassword")}
+                />
 
-              <Styles.FirstText>АБО</Styles.FirstText>
+                <InputField
+                  inputGap="3px"
+                  type="password"
+                  inputHeight="50px"
+                  name="confirmPassword"
+                  label={getTranslatedText("auth.regConfirm")}
+                />
+              </StylesNative.WrapperInputSingUp>
 
-              <Styles.SecondText>Войти через соц сети</Styles.SecondText>
+              <Styles.Extra>
+                <CheckBox
+                  gap={22}
+                  fontSize={14}
+                  name="agreement"
+                  margin="0 0 44px 0"
+                  checked={values.agreement}
+                  style={{ paddingRight: "10px" }}
+                  text={getTranslatedText("auth.agreement")}
+                  onChange={() => setFieldValue("agreement", !values.agreement)}
+                />
+              </Styles.Extra>
 
-              <Styles.ButtonsRegistration>
+              <Styles.WrapperButtons>
                 <ButtonNew
-                  square="true"
-                  styleType="outline"
-                  icon={<Icon.FbRegistration />}
+                  bold
+                  type="submit"
+                  animated="true"
+                  isLoading={loading}
+                  disabled={!isValid && !dirty}
+                  text={getTranslatedText("button.enter")}
                 />
-                <ButtonNew
-                  square="true"
-                  styleType="outline"
-                  icon={<Icon.AppleRegistration />}
-                />
-                <ButtonNew
-                  square="true"
-                  styleType="outline"
-                  icon={<Icon.GoogleRegistration />}
-                />
-              </Styles.ButtonsRegistration>
-            </Styles.WrapperButtons>
-          </Form>
-        )}
-      </Formik>
-    </Styles.Wrapper>
+
+                <Styles.FirstText>АБО</Styles.FirstText>
+
+                <Styles.SecondText>Войти через соц сети</Styles.SecondText>
+
+                <Styles.ButtonsRegistration>
+                  <ButtonNew
+                    square="true"
+                    styleType="outline"
+                    icon={<Icon.FbRegistration />}
+                  />
+                  <ButtonNew
+                    square="true"
+                    styleType="outline"
+                    icon={<Icon.AppleRegistration />}
+                  />
+                  <ButtonNew
+                    square="true"
+                    styleType="outline"
+                    icon={<Icon.GoogleRegistration />}
+                  />
+                </Styles.ButtonsRegistration>
+              </Styles.WrapperButtons>
+            </Form>
+          )}
+        </Formik>
+      </StylesNative.FormikContainer>
+    </StylesNative.Wrapper>
   );
 };
 

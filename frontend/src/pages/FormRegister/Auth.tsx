@@ -19,9 +19,18 @@ const Auth = () => {
       </Responsive.Desktop>
 
       <Styles.Form variant={variant}>
-        <Styles.NavBarContainer>
-          <NavBar setVariant={setVariant} />
-        </Styles.NavBarContainer>
+        {/* <Responsive.Desktop>
+          {variant === 1 && (
+            <Styles.SunRegistration
+              src={Images.sunToys}
+              alt="sun-registration"
+            />
+          )}
+        </Responsive.Desktop> */}
+
+        {/* <Styles.NavBarContainer> */}
+        <NavBar setVariant={setVariant} />
+        {/* </Styles.NavBarContainer> */}
       </Styles.Form>
     </Styles.Main>
   );

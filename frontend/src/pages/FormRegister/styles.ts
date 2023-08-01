@@ -23,6 +23,7 @@ export const Main = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background: linear-gradient(135deg, #97d7e3 18.83%, #39a5cf 100%);
 `;
 
 export const Form = styled.div<{ variant?: number }>`
@@ -66,7 +67,6 @@ export const NavBarContainer = styled.div`
   position: relative;
   background-color: ${({ theme }) => theme.colors.colorPopup};
   border-radius: 22px;
-  z-index: 2;
 `;
 
 export const SunLogin = styled.img`
