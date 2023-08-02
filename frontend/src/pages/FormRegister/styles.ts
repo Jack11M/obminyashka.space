@@ -2,6 +2,8 @@ import styled, { css } from "styled-components";
 
 import * as Animation from "./animation";
 
+const timeAnimation = 100;
+
 export const Main = styled.div`
   position: relative;
   display: flex;
@@ -63,7 +65,7 @@ export const CloudOne = styled.img`
   bottom: 4%;
   width: 212px;
   height: 109px;
-  animation: ${Animation.cloudOne} 30s linear infinite;
+  animation: ${Animation.cloudOne} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudTwo = styled.img`
@@ -72,7 +74,7 @@ export const CloudTwo = styled.img`
   bottom: 29%;
   width: 164px;
   height: 94px;
-  animation: ${Animation.cloudTwo} 30s linear infinite;
+  animation: ${Animation.cloudTwo} ${timeAnimation}s linear infinite;
 `;
 export const CloudThree = styled.img`
   position: absolute;
@@ -80,7 +82,7 @@ export const CloudThree = styled.img`
   bottom: 12%;
   width: 120px;
   height: 62px;
-  animation: ${Animation.cloudThree} 30s linear infinite;
+  animation: ${Animation.cloudThree} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudFour = styled.img`
@@ -90,7 +92,7 @@ export const CloudFour = styled.img`
   width: 226px;
   height: 137px;
   transform: scale(-1, 1) rotate(360deg);
-  animation: ${Animation.cloudFour} 30s linear infinite;
+  animation: ${Animation.cloudFour} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudFive = styled.img`
@@ -99,7 +101,7 @@ export const CloudFive = styled.img`
   bottom: 48%;
   width: 139px;
   height: 72px;
-  animation: ${Animation.cloudFive} 30s linear infinite;
+  animation: ${Animation.cloudFive} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudSix = styled.img`
@@ -108,7 +110,7 @@ export const CloudSix = styled.img`
   bottom: 65%;
   width: 209px;
   height: 104px;
-  animation: ${Animation.cloudSix} 30s linear infinite;
+  animation: ${Animation.cloudSix} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudSeven = styled.img`
@@ -117,7 +119,7 @@ export const CloudSeven = styled.img`
   left: 11%;
   width: 225px;
   height: 116px;
-  animation: ${Animation.cloudSeven} 35s linear infinite;
+  animation: ${Animation.cloudSeven} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudEight = styled.img`
@@ -126,7 +128,7 @@ export const CloudEight = styled.img`
   right: 28%;
   width: 200px;
   height: 100px;
-  animation: ${Animation.cloudEight} 30s linear infinite;
+  animation: ${Animation.cloudEight} ${timeAnimation}s linear infinite;
 `;
 
 export const CloudNine = styled.img`
@@ -135,5 +137,5 @@ export const CloudNine = styled.img`
   right: 42%;
   width: 170px;
   height: 90px;
-  animation: ${Animation.cloudNine} 30s linear infinite;
+  animation: ${Animation.cloudNine} ${timeAnimation}s linear infinite;
 `;
