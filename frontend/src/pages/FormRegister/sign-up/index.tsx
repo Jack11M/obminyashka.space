@@ -43,8 +43,6 @@ const SignUp = () => {
     }
   };
 
-  console.log(Images);
-
   return (
     <StylesNative.Wrapper>
       <Responsive.Desktop>

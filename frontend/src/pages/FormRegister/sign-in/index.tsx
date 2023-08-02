@@ -5,7 +5,13 @@ import { useState } from "react";
 import { Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ButtonNew, CheckBox, Icon, InputField } from "obminyashka-components";
+import {
+  Button,
+  ButtonNew,
+  CheckBox,
+  Icon,
+  InputField,
+} from "obminyashka-components";
 
 import { route } from "src/routes/routeConstants";
 import { putUserThunk } from "src/store/auth/thunk";
@@ -98,9 +104,13 @@ const Login = () => {
                 text={getTranslatedText("button.enter")}
               />
 
-              <Styles.FirstText>АБО</Styles.FirstText>
+              <Styles.FirstText>
+                {getTranslatedText("auth.or")}
+              </Styles.FirstText>
 
-              <Styles.SecondText>Войти через соц сети</Styles.SecondText>
+              <Styles.SecondText>
+                {getTranslatedText("auth.socialNetwork")}
+              </Styles.SecondText>
 
               <Styles.ButtonsRegistration>
                 <ButtonNew
@@ -117,6 +127,9 @@ const Login = () => {
                   square="true"
                   styleType="outline"
                   icon={<Icon.GoogleRegistration />}
+                  onClick={() =>
+                    window.location.assign("/oauth2/authorization/google")
+                  }
                 />
               </Styles.ButtonsRegistration>
             </Styles.WrapperButtons>
