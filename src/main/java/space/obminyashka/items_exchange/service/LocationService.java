@@ -24,6 +24,12 @@ public interface LocationService {
     List<LocationNameView> findAllAreas();
 
     /**
+     * Returns all Location Name View of District by Area id.
+     * @return list of districts name from DB that are represented as {@link LocationNameView}
+     */
+    List<LocationNameView> findAllDistrictsByAreaId(UUID areaId);
+
+    /**
      * Retrieves a location by its id.
      * @param id Location ID.
      * @return the location with the given id or {@link Optional#empty()} if none found.
