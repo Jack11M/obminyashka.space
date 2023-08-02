@@ -1,15 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
-
-import { sunMove } from "../styles";
-
-const moveSun = keyframes`
-  0% {
-    transform: translate(0);
-  }
-  100% {
-    transform: translate(100px);
-  }
-`;
+import styled, { css } from "styled-components";
 
 export const SunRegistration = styled.img`
   position: absolute;
@@ -17,7 +6,7 @@ export const SunRegistration = styled.img`
   right: -37%;
   width: 240px;
   height: 240px;
-  animation: ${sunMove} 2.5s infinite;
+  transform: rotate(-28deg);
   transition: all 1s;
 `;
 
@@ -26,30 +15,30 @@ export const Wrapper = styled.div`
 
   &:has(input[name="email"]:focus) {
     ${SunRegistration} {
-      top: -3%;
-      right: -24%;
-      animation: ${moveSun} 1s forwards, ${sunMove} 2.5s infinite;
+      top: -1%;
+      right: -23%;
+      transform: rotate(-1deg);
     }
   }
   &:has(input[name="username"]:focus) {
     ${SunRegistration} {
-      top: 11%;
-      right: -34%;
-      animation: ${moveSun} 1s forwards, ${sunMove} 2.5s infinite;
+      top: 15%;
+      right: -23%;
+      transform: rotate(-9deg);
     }
   }
   &:has(input[name="password"]:focus) {
     ${SunRegistration} {
-      top: 43%;
-      right: -34%;
-      animation: ${moveSun} 1s forwards, ${sunMove} 2.5s infinite;
+      top: 25%;
+      right: -23%;
+      transform: rotate(-22deg);
     }
   }
   &:has(input[name="confirmPassword"]:focus) {
     ${SunRegistration} {
-      top: 70%;
-      right: -34%;
-      animation: ${moveSun} 1s forwards, ${sunMove} 2.5s infinite;
+      top: 35%;
+      right: -23%;
+      transform: rotate(-35deg);
     }
   }
 `;

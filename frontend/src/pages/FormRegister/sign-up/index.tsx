@@ -43,11 +43,13 @@ const SignUp = () => {
     }
   };
 
+  console.log(Images);
+
   return (
     <StylesNative.Wrapper>
       <Responsive.Desktop>
         <StylesNative.SunRegistration
-          src={Images.sunToys}
+          src={Images.sunRegistration}
           alt="sun-registration"
         />
       </Responsive.Desktop>

@@ -1,22 +1,6 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 
-export const sunMove = keyframes`
-  0% {
-    transform: rotate(0) translate(0,0);
-  }
-
-  33% {
-    transform: rotate(-2deg) translate(0,-5px);
-  }
-
-  66% {
-    transform: rotate(2deg) translate(5px,-5px);
-  }
-
-  100% {
-    transform: rotate(0) translate(0,0);
-  }
-`;
+import * as Animation from "./animation";
 
 export const Main = styled.div`
   position: relative;
@@ -35,6 +19,7 @@ export const Form = styled.div<{ variant?: number }>`
   max-width: 806px;
   background-color: ${({ theme }) => theme.colors.colorPopup};
   border-radius: 22px;
+  z-index: 2;
 
   ${({ theme, variant }) => css`
     ${theme.responsive.isTablet &&
@@ -63,17 +48,92 @@ export const Form = styled.div<{ variant?: number }>`
   `}
 `;
 
-export const NavBarContainer = styled.div`
-  position: relative;
-  background-color: ${({ theme }) => theme.colors.colorPopup};
-  border-radius: 22px;
-`;
-
 export const SunLogin = styled.img`
   position: absolute;
   top: 12%;
   width: 240px;
   height: 240px;
-  transform: translate(-50%, -5%);
-  animation: ${sunMove} 2.5s infinite;
+  animation: ${Animation.sunMove} 2.5s infinite;
+  z-index: 1;
+`;
+
+export const CloudOne = styled.img`
+  position: absolute;
+  right: 29%;
+  bottom: 4%;
+  width: 212px;
+  height: 109px;
+  animation: ${Animation.cloudOne} 30s linear infinite;
+`;
+
+export const CloudTwo = styled.img`
+  position: absolute;
+  right: 7%;
+  bottom: 29%;
+  width: 164px;
+  height: 94px;
+  animation: ${Animation.cloudTwo} 30s linear infinite;
+`;
+export const CloudThree = styled.img`
+  position: absolute;
+  left: 9%;
+  bottom: 12%;
+  width: 120px;
+  height: 62px;
+  animation: ${Animation.cloudThree} 30s linear infinite;
+`;
+
+export const CloudFour = styled.img`
+  position: absolute;
+  left: 35%;
+  bottom: 22%;
+  width: 226px;
+  height: 137px;
+  transform: scale(-1, 1) rotate(360deg);
+  animation: ${Animation.cloudFour} 30s linear infinite;
+`;
+
+export const CloudFive = styled.img`
+  position: absolute;
+  left: 18%;
+  bottom: 48%;
+  width: 139px;
+  height: 72px;
+  animation: ${Animation.cloudFive} 30s linear infinite;
+`;
+
+export const CloudSix = styled.img`
+  position: absolute;
+  right: 0%;
+  bottom: 65%;
+  width: 209px;
+  height: 104px;
+  animation: ${Animation.cloudSix} 30s linear infinite;
+`;
+
+export const CloudSeven = styled.img`
+  position: absolute;
+  top: 17%;
+  left: 11%;
+  width: 225px;
+  height: 116px;
+  animation: ${Animation.cloudSeven} 35s linear infinite;
+`;
+
+export const CloudEight = styled.img`
+  position: absolute;
+  top: 44%;
+  right: 28%;
+  width: 200px;
+  height: 100px;
+  animation: ${Animation.cloudEight} 30s linear infinite;
+`;
+
+export const CloudNine = styled.img`
+  position: absolute;
+  top: 21%;
+  right: 42%;
+  width: 170px;
+  height: 90px;
+  animation: ${Animation.cloudNine} 30s linear infinite;
 `;
