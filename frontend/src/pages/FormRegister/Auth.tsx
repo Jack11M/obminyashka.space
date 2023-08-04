@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Images, Responsive } from "obminyashka-components";
 
-import * as Styles from "./styles";
 import NavBar from "./nav-bar";
+import * as Styles from "./styles";
+import { Login } from "./sign-in";
+import { SignUp } from "./sign-up";
 
 const Auth = () => {
-  const [variant, setVariant] = useState<number>(0);
+  const [tab, setTab] = useState<number>(0);
+  const isLogin = tab === 0;
 
   return (
-    <Styles.Main>
+    <Styles.Wrapper>
       <Responsive.Desktop>
-        {variant === 0 && (
+        {tab === 0 && (
           <Styles.SunLogin
             alt="sun-login"
             src={Images.sunTransportForChildren}
@@ -28,10 +31,12 @@ const Auth = () => {
       <Styles.CloudEight alt="cloud-8" src={Images.cloud} />
       <Styles.CloudNine alt="cloud-9" src={Images.cloud} />
 
-      <Styles.Form variant={variant}>
-        <NavBar setVariant={setVariant} />
-      </Styles.Form>
-    </Styles.Main>
+      <Styles.FormWrapper variant={tab}>
+        <NavBar tab={tab} setTab={setTab} />
+        {isLogin && <Login setTab={setTab} />}
+        {!isLogin && <SignUp setTab={setTab} />}
+      </Styles.FormWrapper>
+    </Styles.Wrapper>
   );
 };
 

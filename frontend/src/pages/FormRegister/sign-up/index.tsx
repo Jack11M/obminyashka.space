@@ -1,42 +1,42 @@
-/* eslint-disable */
-// @ts-nocheck
-// TODO: fix typescript
+import axios from "axios";
 import { useState } from "react";
-import { Form, Formik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Form, Formik, FormikValues, FormikHelpers } from "formik";
 import {
-  Icon,
   Images,
   CheckBox,
-  ButtonNew,
   InputField,
   Responsive,
 } from "obminyashka-components";
 
 import api from "src/REST/Resources";
-import { route } from "src/routes/routeConstants";
 import { getTranslatedText } from "src/components/local/localization";
 
 import * as StylesNative from "./styles";
+import { FormikBagType } from "../types";
 import * as Styles from "../sign-in/styles";
 import { validationSchema } from "./config";
+import { ButtonsWrapper } from "../buttons-registration";
 
-const SignUp = () => {
-  const navigate = useNavigate();
+const SignUp = ({ setTab }: { setTab: (num: number) => void }) => {
   const [loading, setLoading] = useState(false);
 
   const initialValues = validationSchema.cast({});
 
-  const onSubmit = async (values, onSubmitProps) => {
+  const onSubmit = async (
+    values: FormikValues,
+    onSubmitProps: FormikBagType
+  ) => {
     setLoading(true);
     delete values.agreement;
 
     try {
       await api.auth.postAuthRegister(values);
-      navigate(route.login);
+      setTab(0);
     } catch (err) {
-      if (err.response.status === 409) {
-        onSubmitProps.setErrors({ username: err.response.data });
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 409) {
+          onSubmitProps.setErrors({ username: err.response.data });
+        }
       }
     } finally {
       setLoading(false);
@@ -47,8 +47,8 @@ const SignUp = () => {
     <StylesNative.Wrapper>
       <Responsive.Desktop>
         <StylesNative.SunRegistration
-          src={Images.sunRegistration}
           alt="sun-registration"
+          src={Images.sunRegistration}
         />
       </Responsive.Desktop>
 
@@ -74,6 +74,7 @@ const SignUp = () => {
                   type="text"
                   inputGap="3px"
                   name="username"
+                  autoComplete="off"
                   inputHeight="50px"
                   label={getTranslatedText("auth.regLogin")}
                 />
@@ -100,7 +101,6 @@ const SignUp = () => {
                   gap={22}
                   fontSize={14}
                   name="agreement"
-                  margin="0 0 44px 0"
                   checked={values.agreement}
                   style={{ paddingRight: "10px" }}
                   text={getTranslatedText("auth.agreement")}
@@ -108,38 +108,7 @@ const SignUp = () => {
                 />
               </Styles.Extra>
 
-              <Styles.WrapperButtons>
-                <ButtonNew
-                  bold
-                  type="submit"
-                  animated="true"
-                  isLoading={loading}
-                  disabled={!isValid && !dirty}
-                  text={getTranslatedText("button.enter")}
-                />
-
-                <Styles.FirstText>АБО</Styles.FirstText>
-
-                <Styles.SecondText>Войти через соц сети</Styles.SecondText>
-
-                <Styles.ButtonsRegistration>
-                  <ButtonNew
-                    square="true"
-                    styleType="outline"
-                    icon={<Icon.FbRegistration />}
-                  />
-                  <ButtonNew
-                    square="true"
-                    styleType="outline"
-                    icon={<Icon.AppleRegistration />}
-                  />
-                  <ButtonNew
-                    square="true"
-                    styleType="outline"
-                    icon={<Icon.GoogleRegistration />}
-                  />
-                </Styles.ButtonsRegistration>
-              </Styles.WrapperButtons>
+              <ButtonsWrapper register />
             </Form>
           )}
         </Formik>

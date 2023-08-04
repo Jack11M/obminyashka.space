@@ -1,33 +1,25 @@
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from "styled-components";
 
-export const StyledLink = styled(Link)`
-  padding-top: 14px;
-  padding-bottom: 10px;
-  width: 50%;
+export const NavBarWrapper = styled.div`
+  display: flex;
+  margin-bottom: 36px;
 
-  text-decoration: none;
-  list-style-type: none;
-  text-align: center;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
-  text-transform: uppercase;
-  border-bottom: 2px solid #8e8e8e;
-  color: #8e8e8e;
-  cursor: pointer;
-
-  &.active-link {
-    border-bottom: 2px solid #00c0ff;
-    font-weight: bold;
-    color: #00c0ff;
-  }
+  ${({ theme }) => css`
+    ${theme.responsive.isTablet &&
+    css`
+      margin-bottom: 44px;
+    `}
+  `}
 `;
 
-export const Tabs = styled.div`
+export const Tab = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 44px;
+  height: 46px;
+  width: 50%;
+
+  &.focus {
+    border-bottom: 2px solid ${({ theme }) => theme.colors.auth.titleBottomLine};
+  }
 `;

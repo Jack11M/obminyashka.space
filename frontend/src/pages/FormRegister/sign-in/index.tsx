@@ -1,26 +1,19 @@
-/* eslint-disable */
-// @ts-nocheck
-// TODO: fix typescript
+import axios from "axios";
 import { useState } from "react";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikValues } from "formik";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Button,
-  ButtonNew,
-  CheckBox,
-  Icon,
-  InputField,
-} from "obminyashka-components";
+import { CheckBox, InputField } from "obminyashka-components";
 
-import { route } from "src/routes/routeConstants";
 import { putUserThunk } from "src/store/auth/thunk";
 import { getTranslatedText } from "src/components/local/localization";
 
 import * as Styles from "./styles";
+import { FormikBagType } from "../types";
 import { validationSchema } from "./config";
+import { ButtonsWrapper } from "../buttons-registration";
 
-const Login = () => {
+const Login = ({ setTab }: { setTab: (num: number) => void }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +23,10 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (values, onSubmitProps) => {
+  const onSubmit = async (
+    values: FormikValues,
+    onSubmitProps: FormikBagType
+  ) => {
     if (loading) return;
     setLoading(true);
 
@@ -39,11 +35,12 @@ const Login = () => {
       navigate(fromPage, { replace: true });
     } catch (err) {
       setLoading(false);
-
-      if (err.response.status === 400) {
-        onSubmitProps.setErrors({
-          usernameOrEmail: err.response.data.error,
-        });
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 400) {
+          onSubmitProps.setErrors({
+            usernameOrEmail: err.response.data.error,
+          });
+        }
       }
     }
   };
@@ -89,50 +86,12 @@ const Login = () => {
                 }
               />
 
-              <Styles.ExtraLink to={`${route.login}/${route.signUp}`}>
+              <Styles.ExtraButton type="button" onClick={() => setTab(1)}>
                 {getTranslatedText("auth.noLogin")}
-              </Styles.ExtraLink>
+              </Styles.ExtraButton>
             </Styles.Extra>
 
-            <Styles.WrapperButtons>
-              <ButtonNew
-                bold
-                type="submit"
-                animated="true"
-                isLoading={loading}
-                disabled={!isValid && !dirty}
-                text={getTranslatedText("button.enter")}
-              />
-
-              <Styles.FirstText>
-                {getTranslatedText("auth.or")}
-              </Styles.FirstText>
-
-              <Styles.SecondText>
-                {getTranslatedText("auth.socialNetwork")}
-              </Styles.SecondText>
-
-              <Styles.ButtonsRegistration>
-                <ButtonNew
-                  square="true"
-                  styleType="outline"
-                  icon={<Icon.FbRegistration />}
-                />
-                <ButtonNew
-                  square="true"
-                  styleType="outline"
-                  icon={<Icon.AppleRegistration />}
-                />
-                <ButtonNew
-                  square="true"
-                  styleType="outline"
-                  icon={<Icon.GoogleRegistration />}
-                  onClick={() =>
-                    window.location.assign("/oauth2/authorization/google")
-                  }
-                />
-              </Styles.ButtonsRegistration>
-            </Styles.WrapperButtons>
+            <ButtonsWrapper />
           </Form>
         )}
       </Formik>

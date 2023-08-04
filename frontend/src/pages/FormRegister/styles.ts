@@ -3,16 +3,17 @@ import styled, { css } from "styled-components";
 import * as Animation from "./animation";
 
 const timeAnimation = 100;
+const timeAnimationFast = 50;
 
-export const Main = styled.div`
+export const Wrapper = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #97d7e3 18.83%, #39a5cf 100%);
+  background: ${({ theme }) => theme.colors.auth.bg};
 `;
 
-export const Form = styled.div<{ variant?: number }>`
+export const FormWrapper = styled.div<{ variant?: number }>`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -65,7 +66,7 @@ export const CloudOne = styled.img`
   bottom: 4%;
   width: 212px;
   height: 109px;
-  animation: ${Animation.cloudOne} ${timeAnimation}s linear infinite;
+  animation: ${Animation.cloudOne} ${timeAnimationFast}s linear infinite;
 `;
 
 export const CloudTwo = styled.img`
@@ -74,7 +75,7 @@ export const CloudTwo = styled.img`
   bottom: 29%;
   width: 164px;
   height: 94px;
-  animation: ${Animation.cloudTwo} ${timeAnimation}s linear infinite;
+  animation: ${Animation.cloudTwo} ${timeAnimationFast}s linear infinite;
 `;
 export const CloudThree = styled.img`
   position: absolute;
@@ -82,7 +83,7 @@ export const CloudThree = styled.img`
   bottom: 12%;
   width: 120px;
   height: 62px;
-  animation: ${Animation.cloudThree} ${timeAnimation}s linear infinite;
+  animation: ${Animation.cloudThree} ${timeAnimationFast}s linear infinite;
 `;
 
 export const CloudFour = styled.img`
@@ -92,7 +93,7 @@ export const CloudFour = styled.img`
   width: 226px;
   height: 137px;
   transform: scale(-1, 1) rotate(360deg);
-  animation: ${Animation.cloudFour} ${timeAnimation}s linear infinite;
+  animation: ${Animation.cloudFour} ${timeAnimationFast}s linear infinite;
 `;
 
 export const CloudFive = styled.img`
