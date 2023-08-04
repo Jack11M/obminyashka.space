@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Form, Formik, FormikValues, FormikHelpers } from "formik";
+import { Form, Formik, FormikValues } from "formik";
 import {
   Images,
   CheckBox,
@@ -59,7 +59,7 @@ const SignUp = ({ setTab }: { setTab: (num: number) => void }) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
         >
-          {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
+          {({ values, setFieldValue }) => (
             <Form>
               <StylesNative.WrapperInputSingUp>
                 <InputField
@@ -83,6 +83,7 @@ const SignUp = ({ setTab }: { setTab: (num: number) => void }) => {
                   inputGap="3px"
                   name="password"
                   type="password"
+                  autoComplete="off"
                   inputHeight="50px"
                   label={getTranslatedText("auth.regPassword")}
                 />
@@ -102,13 +103,13 @@ const SignUp = ({ setTab }: { setTab: (num: number) => void }) => {
                   fontSize={14}
                   name="agreement"
                   checked={values.agreement}
-                  style={{ paddingRight: "10px" }}
+                  style={{ alignItems: "center" }}
                   text={getTranslatedText("auth.agreement")}
                   onChange={() => setFieldValue("agreement", !values.agreement)}
                 />
               </Styles.Extra>
 
-              <ButtonsWrapper register />
+              <ButtonsWrapper register isLoading={loading} />
             </Form>
           )}
         </Formik>

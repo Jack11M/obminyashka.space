@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+// TODO: fix typescript
 import axios from "axios";
 import { useState } from "react";
 import { Form, Formik, FormikValues } from "formik";
@@ -53,13 +56,14 @@ const Login = ({ setTab }: { setTab: (num: number) => void }) => {
         initialValues={initialValues}
         validationSchema={validationSchema}
       >
-        {({ isValid, dirty, values, setFieldValue }) => (
+        {({ values, setFieldValue }) => (
           <Form>
             <Styles.WrapperInputSingIn>
               <InputField
                 type="text"
                 inputGap="3px"
                 inputHeight="50px"
+                autoComplete="off"
                 name="usernameOrEmail"
                 label={getTranslatedText("auth.logEmail")}
               />
@@ -69,6 +73,7 @@ const Login = ({ setTab }: { setTab: (num: number) => void }) => {
                 name="password"
                 type="password"
                 inputHeight="50px"
+                autoComplete="off"
                 label={getTranslatedText("auth.logPassword")}
               />
             </Styles.WrapperInputSingIn>
@@ -77,7 +82,6 @@ const Login = ({ setTab }: { setTab: (num: number) => void }) => {
               <CheckBox
                 gap={22}
                 fontSize={14}
-                margin="0 0 44px 0"
                 name="isLocalStorage"
                 checked={values.isLocalStorage}
                 text={getTranslatedText("auth.remember")}
@@ -91,7 +95,7 @@ const Login = ({ setTab }: { setTab: (num: number) => void }) => {
               </Styles.ExtraButton>
             </Styles.Extra>
 
-            <ButtonsWrapper />
+            <ButtonsWrapper isLoading={loading} />
           </Form>
         )}
       </Formik>

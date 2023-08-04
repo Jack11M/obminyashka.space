@@ -3,12 +3,9 @@ import { ButtonNew, Icon } from "obminyashka-components";
 import { getTranslatedText } from "src/components/local";
 
 import * as Styles from "./styles";
+import { IButtonsWrapper } from "../types";
 
-interface IButtonsWrapper {
-  register: boolean;
-}
-
-export const ButtonsWrapper = ({ register }: IButtonsWrapper) => {
+export const ButtonsWrapper = ({ register, isLoading }: IButtonsWrapper) => {
   return (
     <Styles.WrapperButtons>
       <ButtonNew
@@ -16,6 +13,7 @@ export const ButtonsWrapper = ({ register }: IButtonsWrapper) => {
         animated={true}
         colorType="blue"
         styleType="default"
+        disabled={isLoading}
         text={
           register
             ? getTranslatedText("auth.signUp")
@@ -34,18 +32,21 @@ export const ButtonsWrapper = ({ register }: IButtonsWrapper) => {
           square={true}
           colorType="blue"
           styleType="outline"
+          disabled={isLoading}
           icon={<Icon.FbRegistration />}
         />
         <ButtonNew
           square={true}
           colorType="blue"
           styleType="outline"
+          disabled={isLoading}
           icon={<Icon.AppleRegistration />}
         />
         <ButtonNew
           square={true}
           colorType="blue"
           styleType="outline"
+          disabled={isLoading}
           icon={<Icon.GoogleRegistration />}
           onClick={() => window.location.assign("/oauth2/authorization/google")}
         />

@@ -1,3 +1,4 @@
+import { theme } from "./../../../styledTheme/index";
 import styled, { css } from "styled-components";
 
 export const NavBarWrapper = styled.div`
@@ -18,8 +19,13 @@ export const Tab = styled.div`
   align-items: center;
   height: 46px;
   width: 50%;
+  cursor: pointer;
 
-  &.focus {
-    border-bottom: 2px solid ${({ theme }) => theme.colors.auth.titleBottomLine};
-  }
+  ${({ theme }) => css`
+    border-bottom: 2px solid ${theme.colors.auth.tabBottomLine};
+
+    &.focus {
+      border-color: ${theme.colors.auth.tabBottomLineActive};
+    }
+  `}
 `;
