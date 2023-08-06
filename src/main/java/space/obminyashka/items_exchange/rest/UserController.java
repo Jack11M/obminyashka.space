@@ -86,8 +86,7 @@ public class UserController {
     @Operation(summary = "Find user's created advertisements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
     @ResponseStatus(HttpStatus.OK)
     public List<AdvertisementTitleView> getCreatedAdvertisements(@Parameter(hidden = true) Authentication authentication) {
         return advService.findAllByUsername(authentication.getName());
