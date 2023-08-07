@@ -36,7 +36,7 @@ export const SecondText = styled.div`
 
 export const ButtonsRegistration = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin: 0 auto 45px;
   width: 245px;
 

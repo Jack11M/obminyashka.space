@@ -33,20 +33,6 @@ export const ButtonsWrapper = ({ register, isLoading }: IButtonsWrapper) => {
           colorType="blue"
           styleType="outline"
           disabled={isLoading}
-          icon={<Icon.FbRegistration />}
-        />
-        <ButtonNew
-          square={true}
-          colorType="blue"
-          styleType="outline"
-          disabled={isLoading}
-          icon={<Icon.AppleRegistration />}
-        />
-        <ButtonNew
-          square={true}
-          colorType="blue"
-          styleType="outline"
-          disabled={isLoading}
           icon={<Icon.GoogleRegistration />}
           onClick={() => window.location.assign("/oauth2/authorization/google")}
         />

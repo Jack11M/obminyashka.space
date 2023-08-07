@@ -23,17 +23,17 @@ export const cloudOne = keyframes`
     right: 29%;
   }
   70% {
-    right: 100%; 
     opacity: 1;
-    transform: scale(1);
+    display: block;  
   }
   70.1% {
+    display: none;  
+    right: 100%; 
     opacity: 0;
-    transform: scale(0);
   }
   70.2% {
+    display: block;  
     right: -10%;
-    transform: scale(1);
   }
   71.3% {
     opacity: 1;
@@ -48,17 +48,17 @@ export const cloudTwo = keyframes`
     right: 7%;
   }
   85% {
-    right: 100%; 
+    display: block; 
     opacity: 1;
-    transform: scale(1);
   }
   85.1% {
+    display: none; 
+    right: 100%; 
     opacity: 0;
-    transform: scale(0);
   }
   85.2% {
+    display: block; 
     right: -8%;
-    transform: scale(1);
   }
   86.3% {
     opacity: 1;
@@ -73,17 +73,17 @@ export const cloudThree = keyframes`
     left: 9%;
   }
   9% {
-    left: -8%; 
+    display: block; 
     opacity: 1;
-    transform: scale(1);
   }
   9.1% {
+    display: none; 
+    left: -8%; 
     opacity: 0;
-    transform: scale(0);
   }
   9.2% {
+    display: block; 
     left: 100%;
-    transform: scale(1);
   }
   10.3% {
     opacity: 1;
@@ -98,20 +98,20 @@ export const cloudFour = keyframes`
     left: 30%;
   }
   30% {
-    left: -10%; 
     opacity: 1;
-    visibility: visible;
+    display: block;  
   }
   30.1% {
+    left: -10%; 
     opacity: 0;
-    visibility: hidden;
+    display: none;  
   }
   30.2% {
+    display: block;  
     left: 100%;
   }
   31.3% {
     opacity: 1;
-    visibility: visible;
   }
   100% {
     left: 30%;
@@ -123,20 +123,20 @@ export const cloudFive = keyframes`
     left: 18%;
   }
   18% {
-    left: -10%; 
+    display: block;
     opacity: 1;
-    transform: scale(1);
   }
   18.1% {
+    display: none;
+    left: -10%; 
     opacity: 0;
-    transform: scale(0);
   }
   18.2% {
+    display: block;
     left: 100%;
   }
   19.3% {
     opacity: 1;
-    transform: scale(1);
   }
   100% {
     left: 18%;
@@ -148,17 +148,17 @@ export const cloudSix = keyframes`
     right: 0%;
   }
   96% {
-    right: 100%; 
+    display: block;
     opacity: 1;
-    transform: scale(1);  
   }
   96.1% {
+    display: none;
+    right: 100%; 
     opacity: 0;
-    transform: scale(0);
   }
   96.2% {
+    display: block;
     right: -10%;
-    transform: scale(1);
   }
   97.3% {
     opacity: 1;
@@ -173,17 +173,17 @@ export const cloudSeven = keyframes`
     left: 11%;
   }
   11% {
-    left: -10%; 
+    display: block;
     opacity: 1;
-    transform: scale(1);
   }
   11.1% {
+    display: none;
+    left: -10%; 
     opacity: 0;
-    transform: scale(0);
   }
   11.2% {
+    display: block;
     left: 100%;
-    transform: scale(1);
   }
   12.3% {
     opacity: 1;
@@ -198,20 +198,20 @@ export const cloudEight = keyframes`
     right: 28%;
   }
   72% {
-    right: 100%; 
+    display: block;
     opacity: 1;
-    visibility: visible;
   }
   72.1% {
+    display: none;
+    right: 100%; 
     opacity: 0;
-    visibility: hidden;
   }
   72.2% {
+    display: block;
     right: -10%;
   }
   73.3% {
     opacity: 1;
-    visibility: visible;
   }
   100% {
     right: 28%;
@@ -223,17 +223,17 @@ export const cloudNine = keyframes`
     right: 42%;
   }
   58% {
-    right: 100%; 
+    display: block;
     opacity: 1;
-    transform: scale(1); 
   }
   58.1% {
+    display: none;
+    right: 100%; 
     opacity: 0;
-    transform: scale(0); 
   }
   58.2% {
+    display: block;
     right: -10%;
-    transform: scale(1); 
   }
   59.3% {
     opacity: 1;
