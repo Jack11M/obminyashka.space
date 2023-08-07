@@ -10,6 +10,7 @@ public class ResponseMessagesHandler {
         public final String INVALID_NOT_POSITIVE_ID = "invalid.not-positive.id";
         public final String INVALID_NOT_EMPTY = "invalid.not-empty";
         public final String INVALID_NOT_NULL = "invalid.not-null";
+        public final String INVALID_NOT_NULL_PHONE = "invalid.not-null-phone";
         public final String INVALID_SIZE = "invalid.size";
         public final String INVALID_MAX_SIZE = "invalid.max-size";
         public final String INVALID_EMAIL = "invalid.email";
