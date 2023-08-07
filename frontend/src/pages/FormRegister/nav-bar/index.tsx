@@ -5,6 +5,7 @@ interface INavBar {
   tab: number;
   setTab: (num: number) => void;
 }
+
 const NavBar = ({ tab, setTab }: INavBar) => {
   return (
     <Styles.NavBarWrapper>

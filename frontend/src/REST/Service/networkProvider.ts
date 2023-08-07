@@ -19,7 +19,7 @@ const isProvideToken = ({ method, url }) =>
   method === "get" && !endPointsAllowed.includes(url);
 
 function initObminyashka({ onAuthError }) {
-  axios.defaults.baseURL = "https://localhost/api/v1";
+  axios.defaults.baseURL = "/api/v1";
   axios.defaults.headers = {
     "Content-Type": "application/json",
   };

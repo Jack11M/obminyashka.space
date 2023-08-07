@@ -1,4 +1,3 @@
-import { theme } from "./../../../styledTheme/index";
 import styled, { css } from "styled-components";
 
 export const NavBarWrapper = styled.div`
