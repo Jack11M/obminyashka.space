@@ -10,20 +10,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
-import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
-import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.repository.AdvertisementRepository;
+import space.obminyashka.items_exchange.repository.enums.AgeRange;
+import space.obminyashka.items_exchange.repository.enums.Status;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.Image;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.rest.mapper.CategoryMapper;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
-import space.obminyashka.items_exchange.repository.model.Advertisement;
-import space.obminyashka.items_exchange.repository.model.Image;
-import space.obminyashka.items_exchange.repository.model.User;
-import space.obminyashka.items_exchange.repository.enums.AgeRange;
-import space.obminyashka.items_exchange.repository.enums.Status;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
@@ -33,7 +34,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -75,7 +77,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
     }
 
-    // @Cacheable
     @Override
     public List<AdvertisementTitleView> findAllByUsername(String username) {
         return advertisementRepository.findAllByUserUsername(username).stream()
@@ -83,7 +84,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .toList();
     }
 
-    // @Cacheable(key = "#keyword")
     @Override
     public Page<AdvertisementTitleView> findByKeyword(String keyword, Pageable pageable) {
         final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
@@ -116,8 +116,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean isUserHasAdvertisementWithId(UUID id, String username) {
-        return advertisementRepository.existsAdvertisementByIdAndUserUsername(id, username);
+    public void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException {
+        if (!advertisementRepository.existsAdvertisementByIdAndUserUsername(id, username)) {
+            throw new IllegalOperationException(getParametrizedMessageSource(USER_NOT_OWNER, id));
+        }
     }
 
     @Override

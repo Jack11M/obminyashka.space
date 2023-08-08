@@ -2,12 +2,13 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
-import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
-import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,11 +71,12 @@ public interface AdvertisementService {
 
     /**
      * Check whenever user has an advertisement with selected id
-     * @param id advertisement id
+     *
+     * @param id       advertisement id
      * @param username for checking authority
-     * @return result of the check
+     * @throws IllegalOperationException when user is not owner of the advertisement
      */
-    boolean isUserHasAdvertisementWithId(UUID id, String username);
+    void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException;
 
     /**
      * Create a new advertisement

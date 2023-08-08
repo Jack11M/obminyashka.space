@@ -24,24 +24,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
-import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
-import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.rest.request.SubcategoryFilter;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.repository.model.User;
-import space.obminyashka.items_exchange.service.*;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.rest.request.SubcategoryFilter;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.service.*;
 
 import java.util.List;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SUBCATEGORY_COMBINATION;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -156,7 +156,7 @@ public class AdvertisementController {
                                                             @Parameter(hidden = true) Authentication authentication)
             throws IllegalIdentifierException, IllegalOperationException {
 
-        validateAdvertisementOwner(id, authentication.getName());
+        advertisementService.validateUserAsAdvertisementOwner(id, authentication.getName());
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         dto.setId(id);
         return advertisementService.updateAdvertisement(dto);
@@ -172,7 +172,7 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable("advertisement_id") UUID id,
                                     @Parameter(hidden = true) Authentication authentication) throws IllegalOperationException {
-        validateAdvertisementOwner(id, authentication.getName());
+        advertisementService.validateUserAsAdvertisementOwner(id, authentication.getName());
         advertisementService.remove(id);
     }
 
@@ -197,13 +197,6 @@ public class AdvertisementController {
                 .filter(advertisement -> advertisement.getId().equals(advertisementId))
                 .findFirst()
                 .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId));
-    }
-
-    private void validateAdvertisementOwner(UUID advertisementId, String username) throws IllegalOperationException {
-        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, username)) {
-            throw new IllegalOperationException(getMessageSource(
-                    ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
-        }
     }
 
     private void validateInternalEntityIds(long subcategoryId, UUID locationId) throws IllegalIdentifierException {
