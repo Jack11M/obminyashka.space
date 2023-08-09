@@ -93,11 +93,10 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser("test")
     void testForbiddenAccessErrorMessageResponseAccordingToLanguageHeader(String languageHeader, Locale expectedMessageLocale) throws Exception {
         final var advertisementId = UUID.randomUUID();
-        MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, advertisementId)
-                        .header(HttpHeaders.ACCEPT_LANGUAGE, languageHeader)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
-                .andReturn();
+        final var httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.ACCEPT_LANGUAGE, languageHeader);
+
+        MvcResult mvcResult = sendUriWithHeadersAndGetMvcResult(delete(ADV_ID, advertisementId), status().isForbidden(), httpHeaders);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalOperationException.class)
