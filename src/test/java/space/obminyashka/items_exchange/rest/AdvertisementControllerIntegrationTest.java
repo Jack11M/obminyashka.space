@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -18,11 +17,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
 
 import java.util.Locale;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,30 +83,6 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         return messageSource.getMessage(INVALID_MAX_SIZE, null, Locale.ENGLISH)
                 .replace("${validatedValue}", dtoFieldValue)
                 .replace("{max}", maxValidValue);
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideLocalizationTestData")
-    @WithMockUser("test")
-    void testForbiddenAccessErrorMessageResponseAccordingToLanguageHeader(String languageHeader, Locale expectedMessageLocale) throws Exception {
-        final var advertisementId = UUID.randomUUID();
-        final var httpHeaders = new HttpHeaders();
-        httpHeaders.add(HttpHeaders.ACCEPT_LANGUAGE, languageHeader);
-
-        MvcResult mvcResult = sendUriWithHeadersAndGetMvcResult(delete(ADV_ID, advertisementId), status().isForbidden(), httpHeaders);
-
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(IllegalOperationException.class)
-                .hasMessage(messageSource.getMessage(USER_NOT_OWNER, new UUID[]{advertisementId}, expectedMessageLocale));
-    }
-
-    private static Stream<Arguments> provideLocalizationTestData() {
-        return Stream.of(
-                Arguments.of("notExisted", Locale.ENGLISH),
-                Arguments.of("", Locale.ENGLISH),
-                Arguments.of("ua", Locale.of("UA")),
-                Arguments.of("ua-UA", Locale.of("UA"))
-        );
     }
 
     @ParameterizedTest

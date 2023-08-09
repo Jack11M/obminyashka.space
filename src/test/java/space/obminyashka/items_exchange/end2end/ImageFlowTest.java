@@ -11,6 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -24,6 +26,7 @@ import space.obminyashka.items_exchange.rest.exception.IllegalOperationException
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -103,15 +106,28 @@ class ImageFlowTest extends BasicControllerTest {
     }
 
     @WithMockUser
-    @Test
-    void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideLocalizationTestData")
+    void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement(String languageHeader, Locale userLocale) throws Exception {
         final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
+                .header(HttpHeaders.ACCEPT_LANGUAGE, languageHeader)
                         .param("ids", UUID.randomUUID().toString()),
                 status().isForbidden());
+
+        LocaleContextHolder.setLocale(userLocale);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalOperationException.class)
                 .hasMessage(getParametrizedMessageSource(USER_NOT_OWNER, EXISTED_ADV_ID));
+    }
+
+    private static Stream<Arguments> provideLocalizationTestData() {
+        return Stream.of(
+                Arguments.of("notExisted", Locale.ENGLISH),
+                Arguments.of("", Locale.ENGLISH),
+                Arguments.of("ua", Locale.of("UA")),
+                Arguments.of("ua-UA", Locale.of("UA"))
+        );
     }
 
     @WithMockUser("admin")
