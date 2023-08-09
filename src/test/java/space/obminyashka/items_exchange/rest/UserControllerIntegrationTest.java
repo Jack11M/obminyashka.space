@@ -44,7 +44,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.data_producer.UserDtoCreatingUtil.*;
 
@@ -83,7 +86,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         var responseContentAsString = getResponseContentAsString(mvcResult);
         var expectedErrorMessage = new StringJoiner(". ")
                 .add(getMessageSource(ExceptionMessage.ILLEGAL_OPERATION))
-                .add(getParametrizedMessageSource(PositiveMessage.DELETE_ACCOUNT, 7L))
+                .add(getParametrizedMessageSource(DELETE_ACCOUNT, 7L))
                 .toString();
 
         assertTrue(responseContentAsString.contains(expectedErrorMessage));
@@ -154,7 +157,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isOk());
 
         Assertions.assertThat(mvcResult.getResponse().getContentAsString())
-                .isEqualTo(getMessageSource(PositiveMessage.RESET_PASSWORD));
+                .isEqualTo(getMessageSource(RESET_PASSWORD));
 
     }
 

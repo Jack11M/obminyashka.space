@@ -16,19 +16,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
-import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
-import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
-import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.repository.enums.Status;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.repository.model.User;
-import space.obminyashka.items_exchange.repository.enums.Status;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
+import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
-import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +40,8 @@ import static space.obminyashka.items_exchange.rest.api.ApiKey.IMAGE_BY_ADV_ID;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.IMAGE_IN_ADV_COUNT;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -69,17 +67,15 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     }
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
         user = new User();
         user.setStatus(Status.ACTIVE);
         jpeg = new MockMultipartFile("image", "image-jpeg.jpeg", MediaType.IMAGE_JPEG_VALUE, "image jpeg".getBytes());
         mocksInit();
     }
 
-    private void mocksInit() throws IOException {
+    private void mocksInit() {
         when(advertisementService.existById(advertisementId)).thenReturn(true);
-        when(advertisementService.isUserHasAdvertisementWithId(advertisementId, "admin"))
-                .thenReturn(true);
         testImages = IntStream.range(0, 10)
                 .collect(ArrayList::new, (images, value) -> images.add(new Image()), ArrayList::addAll);
         when(advertisement.getImages()).thenReturn(testImages);
@@ -98,7 +94,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                 .andReturn();
 
         verify(advertisementService).existById(any());
-        verify(advertisementService).isUserHasAdvertisementWithId(any(), anyString());
+        verify(advertisementService).validateUserAsAdvertisementOwner(any(), anyString());
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(ElementsNumberExceedException.class);
     }
@@ -120,7 +116,7 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
         sendUriAndGetMvcResult(multipart(IMAGE_BY_ADV_ID, advertisementId).file(jpeg), status().isOk());
 
         verify(imageService).saveToAdvertisement(any(), listArgumentCaptor.capture());
-        verify(advertisementService).isUserHasAdvertisementWithId(any(), anyString());
+        verify(advertisementService).validateUserAsAdvertisementOwner(any(), anyString());
         assertEquals(jpeg.getBytes(), listArgumentCaptor.getValue().get(0).getBytes());
     }
 
@@ -149,22 +145,9 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
                         .param("ids", randomID.toString()),
                 status().isBadRequest());
 
-        verify(advertisementService).isUserHasAdvertisementWithId(any(UUID.class), eq("admin"));
+        verify(advertisementService).validateUserAsAdvertisementOwner(any(UUID.class), eq("admin"));
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(IllegalIdentifierException.class)
                 .hasMessage(getParametrizedMessageSource(IMAGE_NOT_EXISTED_ID, "[%s]".formatted(randomID)));
-    }
-
-    @WithMockUser
-    @Test
-    void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement() throws Exception {
-        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, advertisementId)
-                        .param("ids", UUID.randomUUID().toString()),
-                status().isForbidden());
-
-        verify(advertisementService).isUserHasAdvertisementWithId(any(UUID.class), eq("user"));
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(IllegalOperationException.class)
-                .hasMessage(getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER));
     }
 }

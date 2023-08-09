@@ -10,10 +10,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
-import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.repository.projection.AdvertisementTitleProjection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Repository
 @Transactional
@@ -30,8 +32,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
 
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) IN :topics")
     Page<Advertisement> search(@Param("topics") Set<String> topics, Pageable pageable);
-
-    Optional<Advertisement> findAdvertisementByIdAndUserUsername(UUID id, String username);
 
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 

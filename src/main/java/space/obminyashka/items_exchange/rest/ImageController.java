@@ -33,8 +33,8 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID;
 
 @RestController
 @Tag(name = "Image")
@@ -113,10 +113,7 @@ public class ImageController {
             throw new EntityIdNotFoundException(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
         }
 
-        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, authentication.getName())) {
-            throw new IllegalOperationException(getMessageSource(USER_NOT_OWNER));
-        }
-
+        advertisementService.validateUserAsAdvertisementOwner(advertisementId, authentication.getName());
         imageService.saveToAdvertisement(advertisementId, images);
     }
 
@@ -135,9 +132,7 @@ public class ImageController {
                              @Parameter(hidden = true) Authentication authentication)
             throws IllegalOperationException, IllegalIdentifierException {
 
-        if (!advertisementService.isUserHasAdvertisementWithId(advertisementId, authentication.getName())) {
-            throw new IllegalOperationException(getMessageSource(USER_NOT_OWNER));
-        }
+        advertisementService.validateUserAsAdvertisementOwner(advertisementId, authentication.getName());
 
         if (imageService.existAllById(imageIdList, advertisementId)) {
             imageService.removeById(imageIdList);
