@@ -12,7 +12,7 @@ public class ResponseMessagesHandler {
         public static final String INVALID_NOT_EMPTY = "invalid.not-empty";
         public static final String INVALID_NOT_NULL = "invalid.not-null";
         public static final String INVALID_NOT_NULL_PHONE = "invalid.not-null-phone";
-        public final String INVALID_SIZE = "invalid.size";
+        public static final String INVALID_SIZE = "invalid.size";
         public static final String INVALID_MAX_SIZE = "invalid.max-size";
         public static final String INVALID_EMAIL = "invalid.email";
         public static final String DUPLICATE_EMAIL = "email.duplicate";
