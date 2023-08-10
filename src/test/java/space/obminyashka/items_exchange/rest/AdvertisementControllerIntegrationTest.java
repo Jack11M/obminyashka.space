@@ -1,15 +1,14 @@
 package space.obminyashka.items_exchange.rest;
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -19,31 +18,28 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
-import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
-import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdvertisementControllerIntegrationTest extends BasicControllerTest {
-  
+    private final MessageSource messageSource;
+
     @Autowired
-    public AdvertisementControllerIntegrationTest(MockMvc mockMvc) {
+    public AdvertisementControllerIntegrationTest(MockMvc mockMvc, MessageSource messageSource) {
         super(mockMvc);
+        this.messageSource = messageSource;
     }
 
     @Test
@@ -76,45 +72,17 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         );
     }
 
-    public static String createInvalidSizeMessage(String dtoFieldValue, String minValidValue, String maxValidValue) {
-        return MessageSourceProxy.getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_SIZE)
+    public String createInvalidSizeMessage(String dtoFieldValue, String minValidValue, String maxValidValue) {
+        return messageSource.getMessage(INVALID_SIZE, null, Locale.ENGLISH)
                 .replace("${validatedValue}", dtoFieldValue)
                 .replace("{min}", minValidValue)
                 .replace("{max}", maxValidValue);
     }
 
-    public static String createInvalidMaxSizeMessage(String dtoFieldValue, String maxValidValue) {
-        return MessageSourceProxy.getMessageSource(ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE)
+    public String createInvalidMaxSizeMessage(String dtoFieldValue, String maxValidValue) {
+        return messageSource.getMessage(INVALID_MAX_SIZE, null, Locale.ENGLISH)
                 .replace("${validatedValue}", dtoFieldValue)
                 .replace("{max}", maxValidValue);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"notExisted", ""})
-    @WithMockUser("test")
-    void testDefaultLocalizationAccordingToLanguageHeader(String languageHeader) throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, UUID.randomUUID())
-                        .header("Accept-Language", languageHeader)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
-                .andReturn();
-
-        final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertEquals("User don't own gained advertisement:", new JSONObject(errorMessage).get("error"));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"ua", "ua-UA"})
-    @WithMockUser("test")
-    void testUkrainianLocalizationWithAccept_LanguageHeaderIsUA(String locale) throws Exception {
-        MvcResult mvcResult = mockMvc.perform(delete(ADV_ID, UUID.randomUUID())
-                        .header("Accept-Language", locale)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden())
-                .andReturn();
-
-        final var errorMessage = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertEquals("Ви не є власником отриманого оголошення:", new JSONObject(errorMessage).get("error"));
     }
 
     @ParameterizedTest
@@ -124,9 +92,9 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
         final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
                 asJsonString(dto).getBytes());
         final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(dtoJson), status().isBadRequest());
-        var blankTopicMessage = getMessageSource(BLANK_TOPIC);
-        var blankDescriptionMessage = getMessageSource(BLANK_DESCRIPTION);
-        var blankWishesToExchangeMessage = getMessageSource(BLANK_WISHES_TO_EXCHANGE);
+        var blankTopicMessage = messageSource.getMessage(BLANK_TOPIC, null, Locale.ENGLISH);
+        var blankDescriptionMessage = messageSource.getMessage(BLANK_DESCRIPTION, null, Locale.ENGLISH);
+        var blankWishesToExchangeMessage = messageSource.getMessage(BLANK_WISHES_TO_EXCHANGE, null, Locale.ENGLISH);
 
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)

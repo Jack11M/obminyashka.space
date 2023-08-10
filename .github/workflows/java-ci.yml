@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '20'
-          distribution: 'oracle'
+          distribution: 'temurin'
           check-latest: true
       - name: Run build with Maven
         run: mvn --batch-mode --update-snapshots package

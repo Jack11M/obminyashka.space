@@ -47,7 +47,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '20'
-        distribution: 'oracle'
+        distribution: 'temurin'
         check-latest: true
         cache: maven
     - if: matrix.language == 'java'

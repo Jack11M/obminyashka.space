@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.request.LocationsRequest;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
@@ -30,9 +31,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getExceptionMessageSourceWithAdditionalInfo;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Location")
@@ -54,6 +55,21 @@ public class LocationController {
     @ResponseStatus(HttpStatus.OK)
     public List<LocationNameView> getAllAreas() {
         return locationService.findAllAreas();
+    }
+
+    @GetMapping(value = ApiKey.LOCATION_DISTRICT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get all of existed districts by area id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+    @ResponseStatus(HttpStatus.OK)
+    public List<LocationNameView> getAllDistricts(@RequestParam UUID areaId) throws EntityIdNotFoundException {
+        List<LocationNameView> locationNameViewList = locationService.findAllDistrictsByAreaId(areaId);
+        if (locationNameViewList.isEmpty()) {
+            throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_LOCATION_ID, areaId));
+        }
+        return locationNameViewList;
     }
 
     @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)

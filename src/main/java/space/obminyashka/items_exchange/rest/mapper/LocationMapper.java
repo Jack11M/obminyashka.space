@@ -4,6 +4,7 @@ package space.obminyashka.items_exchange.rest.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import space.obminyashka.items_exchange.repository.model.Area;
+import space.obminyashka.items_exchange.repository.model.District;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
@@ -20,6 +21,8 @@ public interface LocationMapper {
     Location toModel(LocationDto dto);
 
     List<LocationNameView> toNameViewList(List<Area> areas);
+
+    List<LocationNameView> toDistrictNameViewList(List<District> list);
 
     List<LocationDto> toDtoList(List<Location> modelList);
 
