@@ -15,7 +15,7 @@ import static space.obminyashka.items_exchange.rest.response.message.ResponseMes
 @EqualsAndHashCode
 public class PhoneDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, example = "+381234567890")
-    @NotNull(message = "{" + INVALID_NOT_NULL_PHONE + "}")
+    @NotNull(message = "{" + INVALID_NOT_NULL_PROPERTY + "}")
     @Pattern(regexp = PatternHandler.PHONE_NUMBER, message = "{" + INVALID_PHONE_NUMBER + "}")
     private String phoneNumber;
 

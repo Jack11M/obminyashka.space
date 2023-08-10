@@ -108,14 +108,14 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         var invalidPhoneAmount = getErrorMessageForInvalidField(INVALID_PHONES_AMOUNT, "{max}", maxPhonesAmount);
         var invalidFirstName = getErrorMessageForInvalidField(INVALID_FIRST_LAST_NAME, "${validatedValue}", userWithInvalidFirstAndLastName.getFirstName());
         var invalidLastName = getErrorMessageForInvalidField(INVALID_FIRST_LAST_NAME, "${validatedValue}", userWithInvalidFirstAndLastName.getLastName());
-        var invalidNotNullPhone = getErrorMessageForInvalidField(INVALID_NOT_NULL_PHONE, "", "");
+        var invalidNotNullProperty = getErrorMessageForInvalidField(INVALID_NOT_NULL_PROPERTY, "", "");
 
         return Stream.of(
                 Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(), invalidPhoneAmount),
                 Arguments.of(createUserUpdateDtoWithInvalidAmountOfPhones(), getMessageSource(INVALID_PHONE_NUMBER)),
                 Arguments.of(userWithInvalidFirstAndLastName, invalidFirstName),
                 Arguments.of(userWithInvalidFirstAndLastName, invalidLastName),
-                Arguments.of(createUserUpdateDtoWithInvalidNullPhone(), invalidNotNullPhone)
+                Arguments.of(createUserUpdateDtoWithInvalidNullPhone(), invalidNotNullProperty)
         );
     }
 
