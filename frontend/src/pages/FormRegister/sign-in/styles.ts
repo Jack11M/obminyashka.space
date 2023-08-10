@@ -49,5 +49,5 @@ export const ExtraButton = styled.button`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  color: ${({ theme }) => theme.colors.auth.titleBottomLine};
+  color: ${({ theme }) => theme.colors.auth.tabBottomLineActive};
 `;
