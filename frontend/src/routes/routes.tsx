@@ -1,18 +1,18 @@
-import { Route, Routes as Switch } from 'react-router-dom';
+import { Route, Routes as Switch } from "react-router-dom";
 
-import { Auth } from 'src/pages/FormRegister/Auth';
-import HomePage from 'src/pages/homepage/HomePage';
-import UserInfo from 'src/pages/UserInfo/UserInfo';
-import AddGoods from 'src/pages/AddGoods/AddGoods';
-import { OAuthSuccess } from 'src/pages/OAuthSuccess';
-import { Login } from 'src/pages/FormRegister/sign-in';
-import { SignUp } from 'src/pages/FormRegister/sign-up';
-import { SearchResults } from 'src/pages/SearchResults';
-import { ProductPage } from 'src/pages/ProductPage/ProductPage';
-import FourOhFourPage from 'src/pages/ErrorPages/FourOhFourPage';
+import { Auth } from "src/pages/FormRegister/Auth";
+import HomePage from "src/pages/homepage/HomePage";
+import UserInfo from "src/pages/UserInfo/UserInfo";
+import AddGoods from "src/pages/AddGoods/AddGoods";
+import { OAuthSuccess } from "src/pages/OAuthSuccess";
+import { Login } from "src/pages/FormRegister/sign-in";
+import { SignUp } from "src/pages/FormRegister/sign-up";
+import { SearchResults } from "src/pages/SearchResults";
+import { ProductPage } from "src/pages/ProductPage/ProductPage";
+import FourOhFourPage from "src/pages/ErrorPages/FourOhFourPage";
 
-import { route } from './routeConstants';
-import { AuthorizedRoute, UnauthorizedRoute } from './protectedRoute';
+import { route } from "./routeConstants";
+import { AuthorizedRoute, UnauthorizedRoute } from "./protectedRoute";
 
 const Routes = () => (
   <div>
