@@ -44,6 +44,10 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
             "values((select id from user where username = :username), :advertisementId)")
     void addFavoriteAdvertisementsByUsername(String username, UUID advertisementId);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "delete from favorite_advertisements " +
+        "where user_id = (select id from user where username = :username) and advertisement_id = :advertisementId")
     int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
 
     @Query("SELECT COUNT(a) FROM Advertisement a WHERE " +
