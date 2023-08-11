@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorMessageResponse handleValidationExceptions(MethodArgumentNotValidException e, ServletWebRequest request) {
         final var validationErrors = e.getBindingResult().getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(fieldError -> "[%s] - %s".formatted(fieldError.getField(), fieldError.getDefaultMessage()))
                 .collect(Collectors.joining(System.lineSeparator(), "Validation error(s): ", ""));
 
         final var errorMessage = new ErrorMessageResponse(validationErrors, request.getRequest().getRequestURI(), request.getHttpMethod().name());
