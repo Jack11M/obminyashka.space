@@ -72,6 +72,20 @@ public class LocationController {
         return locationNameViewList;
     }
 
+    @GetMapping(value = ApiKey.LOCATION_CITY, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get all city by district id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
+    @ResponseStatus(HttpStatus.OK)
+    public List<LocationNameView> getAllCityByDistrictId(@RequestParam UUID districtId) throws EntityIdNotFoundException {
+        if (!locationService.existDistricts(districtId)) {
+            throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_LOCATION_ID, districtId));
+        }
+        return locationService.getAllCityByDistrictId(districtId);
+    }
+
     @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get an existed location by its ID.")
     @ApiResponses(value = {

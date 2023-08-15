@@ -91,4 +91,13 @@ public interface LocationService {
      * @throws IOException when there is error of writing data to newly created locations file.
      */
     String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException;
+
+    List<LocationNameView> getAllCityByDistrictId(UUID id);
+
+    /**
+     * checking the existence of a district by ID
+     * @param id district ID
+     * @return true if district exist or false if not
+     */
+    boolean existDistricts(UUID id);
 }
