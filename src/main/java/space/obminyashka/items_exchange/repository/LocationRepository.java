@@ -2,7 +2,6 @@ package space.obminyashka.items_exchange.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import space.obminyashka.items_exchange.repository.model.City;
 import space.obminyashka.items_exchange.repository.model.Location;
 
 import java.util.List;
