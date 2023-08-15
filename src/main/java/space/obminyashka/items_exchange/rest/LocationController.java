@@ -79,12 +79,11 @@ public class LocationController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
-    public List<LocationNameView> getAllCityByDistrictId(@RequestParam UUID districtId) throws EntityIdNotFoundException{
-        List<LocationNameView> locationNameViewList = locationService.getAllCityByDistrictId(districtId);
-        if (locationNameViewList.isEmpty()) {
+    public List<LocationNameView> getAllCityByDistrictId(@RequestParam UUID districtId) throws EntityIdNotFoundException {
+        if (!locationService.existDistricts(districtId)) {
             throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_LOCATION_ID, districtId));
         }
-        return locationNameViewList;
+        return locationService.getAllCityByDistrictId(districtId);
     }
 
     @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)

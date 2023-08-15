@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.repository.AreaRepository;
 import space.obminyashka.items_exchange.repository.CityRepository;
 import space.obminyashka.items_exchange.repository.DistrictRepository;
-import space.obminyashka.items_exchange.repository.DistrictRepository;
 import space.obminyashka.items_exchange.repository.LocationRepository;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
@@ -127,6 +126,11 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationNameView> getAllCityByDistrictId(UUID id) {
         return locationMapper.toCityNameViewList(cityRepository.findAllByDistrictId(id));
+    }
+
+    @Override
+    public boolean existDistricts(UUID id) {
+        return districtRepository.existsById(id);
     }
 
     private List<Location> mapCreatingDataToLocations(List<RawLocation> creatingData) {
