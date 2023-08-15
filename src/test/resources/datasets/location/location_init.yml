@@ -16,8 +16,9 @@ district:
     name_ua: 'Лиманський район'
     name_en: 'Limanskii district'
 
+
 city:
-  - id: 3r56687e3-b7ee-48b1-9451-7073455b757b
+  - id: c7bcf076-2f8a-4f76-b727-d79e84629b0b
     district_id: 5c5467f3-b7ee-48b1-9451-7028255b757b
     name_ua: 'Одеса'
     name_en: 'Odesa'

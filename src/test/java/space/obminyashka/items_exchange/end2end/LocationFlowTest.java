@@ -111,8 +111,9 @@ class LocationFlowTest extends BasicControllerTest {
     @Test
     @DataSet("location/location_init.yml")
     void CityByDistrictId_shouldReturnException_whenCityIsNotFound() throws Exception {
+        String wrongDistrictId = "f93c84bf-ba42-4577-b7e7-5cda1547c371";
         var resultActions = sendUriAndGetResultAction(get(LOCATION_CITY)
-                .param("districtId", existedDistrictId), status().isNotFound());
+                .param("districtId", wrongDistrictId), status().isNotFound());
 
         Assertions.assertThat(resultActions.andReturn().getResolvedException())
                 .isInstanceOf(EntityIdNotFoundException.class)
