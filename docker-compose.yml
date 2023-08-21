@@ -26,9 +26,12 @@ services:
     ports:
       - "8443:8443"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/evo_exchange?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/evo_exchange?useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-db:27017/chat
+      SPRING_DATA_MONGODB_USERNAME: mongo
+      SPRING_DATA_MONGODB_PASSWORD: mongo
       SERVER_SSL_KEY_STORE_PASSWORD: root
       SERVER_SSL_KEY_STORE: /etc/ssl/certs/keystore.p12
       APP_JWT_SECRET: super_secret_256_bit_phrase_jwt_key
@@ -36,12 +39,13 @@ services:
     volumes:
       - ssl:/etc/ssl/certs/
     depends_on:
-      - database
+      - mysql
+      - mongo-db
       - nginx-openssl
     networks:
       - containers-network
 
-  database:
+  mysql:
     image: mysql:latest
     command: 'mysqld --default-authentication-plugin=mysql_native_password'
     environment:
@@ -49,6 +53,18 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"
+    restart: always
+    networks:
+      - containers-network
+
+  mongo-db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: chat
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    ports:
+      - "27016:27017"
     restart: always
     networks:
       - containers-network
