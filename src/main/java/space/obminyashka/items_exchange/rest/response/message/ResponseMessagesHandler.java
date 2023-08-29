@@ -52,6 +52,7 @@ public class ResponseMessagesHandler {
         public static final String BLANK_TOPIC = "blank.topic";
         public static final String BLANK_DESCRIPTION = "blank.description";
         public static final String BLANK_WISHES_TO_EXCHANGE = "blank.wishes.to.exchange";
+        public static final String EMAIL_NOT_EXIST = "exception.email.exist";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

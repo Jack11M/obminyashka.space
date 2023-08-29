@@ -54,4 +54,20 @@ class MailServiceTest {
                         capturedRequest.getBody().contains(emailTo)));
         assertNotNull(confirmationCode);
     }
+
+    @Test
+    void sendMailForResetPassword_shouldPassTheFlow() throws IOException {
+        when(sendGrid.api(any())).thenReturn(new Response());
+
+        final var emailTo = "test@mail.ua";
+        var expectedHost = "https://obminyashka.space";
+        mailService.sendMessagesToEmailForResetPassword(emailTo, EmailType.CHANGING, expectedHost);
+
+        verify(sendGrid).api(requestCapture.capture());
+        Request capturedRequest = requestCapture.getValue();
+        verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
+                capturedRequest.getEndpoint().equals("mail/send") &&
+                capturedRequest.getBody().contains(emailTo)));
+
+    }
 }

@@ -35,5 +35,5 @@ public interface MailService {
      * Reset user password by email
      * @param email for finding user by email
      */
-    void sendMessagesToEmailForResetPassword(String email);
+    UUID sendMessagesToEmailForResetPassword(String email, EmailType emailType, String host);
 }

@@ -167,9 +167,17 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")
     })
-    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest){
-        mailService.sendMessagesToEmailForResetPassword(validatedEmailRequest.email());
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
+    @ResponseStatus(HttpStatus.OK)
+    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest,
+                                @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
+        var email = validatedEmailRequest.email();
+        var user = getUser(email);
+        if (userService.existsByEmail(email)) {
+            UUID codeId = mailService.sendMessagesToEmailForResetPassword(email, EmailType.CHANGING, host);
+            userService.saveCodeForResetPassword(user, codeId);
+            return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
+        }
+        return getMessageSource(ResponseMessagesHandler.ValidationMessage.EMAIL_NOT_EXIST);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

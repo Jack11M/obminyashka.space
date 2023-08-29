@@ -66,6 +66,8 @@ public interface UserService {
      */
     void updateUserPassword(String  username, String password);
 
+    void saveCodeForResetPassword(User user, UUID codeId);
+
     /**
      * Update the email for the user with the given username.
      * @param username The username of the user whose email you want to update.
