@@ -30,10 +30,4 @@ public interface MailService {
      */
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     void permanentlyDeleteEmailConfirmationCode();
-
-    /**
-     * Reset user password by email
-     * @param email for finding user by email
-     */
-    UUID sendMessagesToEmailForResetPassword(String email, EmailType emailType, String host);
 }

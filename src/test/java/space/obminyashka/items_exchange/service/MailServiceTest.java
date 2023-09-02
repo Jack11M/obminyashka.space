@@ -61,7 +61,7 @@ class MailServiceTest {
 
         final var emailTo = "test@mail.ua";
         var expectedHost = "https://obminyashka.space";
-        mailService.sendMessagesToEmailForResetPassword(emailTo, EmailType.CHANGING, expectedHost);
+        mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.RESET, expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();

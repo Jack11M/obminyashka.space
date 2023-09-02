@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -165,19 +166,19 @@ public class UserController {
     @Operation(summary = "reset user password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-    })
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT_FOUND")})
     @ResponseStatus(HttpStatus.OK)
     public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest,
                                 @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var email = validatedEmailRequest.email();
         var user = getUser(email);
         if (userService.existsByEmail(email)) {
-            UUID codeId = mailService.sendMessagesToEmailForResetPassword(email, EmailType.CHANGING, host);
+            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
             userService.saveCodeForResetPassword(user, codeId);
             return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
         }
-        return getMessageSource(ResponseMessagesHandler.ValidationMessage.EMAIL_NOT_EXIST);
+            throw new EntityNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_EXIST));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

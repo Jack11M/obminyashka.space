@@ -39,7 +39,7 @@ public interface UserService {
     /**
      * Register new user and create email confirmation code
      * @param userRegistrationRequest DTO which contains all required data for registration the user
-     * @param codeId UIID for confirmation email
+     * @param codeId UUID for confirmation email
      * @return result of registration
      */
     boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId);
@@ -66,6 +66,11 @@ public interface UserService {
      */
     void updateUserPassword(String  username, String password);
 
+    /**
+     * Save new record for request reset user password.
+     * @param user User whose password you want to reset.
+     * @param codeId UUID for confirmation email.
+     */
     void saveCodeForResetPassword(User user, UUID codeId);
 
     /**

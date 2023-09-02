@@ -52,7 +52,7 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host){
+    public UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host) {
         var mail2send = new Mail();
         mail2send.setFrom(sender);
         mail2send.setTemplateId(emailType.template);
@@ -62,14 +62,8 @@ public class SendGridService implements MailService {
         personalization.addTo(new Email(emailTo));
         mail2send.addPersonalization(personalization);
 
-        createRequest(mail2send, emailType);
-
-        return codeId;
-    }
-
-    private void createRequest(Mail mail2send, EmailType emailType) {
         try {
-            Request request  = createMailRequest(mail2send);
+            Request request = createMailRequest(mail2send);
             final var response = sendGrid.api(request);
             final var statusCode = response.getStatusCode();
 
@@ -78,17 +72,24 @@ public class SendGridService implements MailService {
             log.error("[SendGridService] Error while sending {} email", emailType.name(), e);
             throw new EmailSendingException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_SENDING));
         }
+
+        return codeId;
     }
+
 
     private static Personalization createPersonalizationAndSetParameters(EmailType emailType, UUID codeId, String host) {
         var personalization = new Personalization();
 
-        EMAIL_TEMPLATE_KEYS.forEach((key, value)->{
+        EMAIL_TEMPLATE_KEYS.forEach((key, value) -> {
             var parameterSource = emailType.name().toLowerCase().concat(".").concat(value);
             personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
         });
 
-        personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+        if (emailType.equals(EmailType.CHANGING)) {
+            personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+        } else if (emailType.equals(EmailType.RESET)) {
+            personalization.addDynamicTemplateData("url", host.concat(USER_SERVICE_PASSWORD_CONFIRM));
+        }
 
         return personalization;
     }
@@ -119,35 +120,6 @@ public class SendGridService implements MailService {
         emailRepository.findAll().stream()
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedEmail)
                 .forEach(emailRepository::delete);
-    }
-
-    @Override
-    public UUID sendMessagesToEmailForResetPassword(String email, EmailType emailType, String host) {
-        var mail2send = new Mail();
-        mail2send.setFrom(sender);
-        mail2send.setTemplateId(emailType.template);
-
-        UUID codeId = UUID.randomUUID();
-        final var personalization = createPersonalizationForEmailForResetPassword(emailType, host);
-        personalization.addTo(new Email(email));
-        mail2send.addPersonalization(personalization);
-
-        createRequest(mail2send, emailType);
-
-        return codeId;
-    }
-
-    private static Personalization createPersonalizationForEmailForResetPassword(EmailType emailType, String host) {
-        var personalization = new Personalization();
-
-        EMAIL_TEMPLATE_KEYS.forEach((key, value) -> {
-            var parameterSource = emailType.name().toLowerCase().concat(".password.").concat(value);
-            personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
-        });
-
-        personalization.addDynamicTemplateData("url", host.concat(USER_SERVICE_PASSWORD_CONFIRM));
-
-        return personalization;
     }
 
     private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationCode email) {
