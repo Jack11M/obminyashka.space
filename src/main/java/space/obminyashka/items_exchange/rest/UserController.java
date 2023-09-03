@@ -173,12 +173,10 @@ public class UserController {
                                 @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var email = validatedEmailRequest.email();
         var user = getUser(email);
-        if (userService.existsByEmail(email)) {
-            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
-            userService.saveCodeForResetPassword(user, codeId);
-            return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
-        }
-            throw new EntityNotFoundException(getMessageSource(ResponseMessagesHandler.ExceptionMessage.EMAIL_NOT_EXIST));
+        UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
+        userService.saveCodeForResetPassword(user, codeId);
+
+        return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

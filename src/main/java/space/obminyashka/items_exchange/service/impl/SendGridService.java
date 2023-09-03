@@ -85,11 +85,8 @@ public class SendGridService implements MailService {
             personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
         });
 
-        if (emailType.equals(EmailType.CHANGING)) {
-            personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
-        } else if (emailType.equals(EmailType.RESET)) {
-            personalization.addDynamicTemplateData("url", host.concat(USER_SERVICE_PASSWORD_CONFIRM));
-        }
+        personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+        personalization.addDynamicTemplateData("reset", host.concat(USER_SERVICE_PASSWORD_CONFIRM));
 
         return personalization;
     }

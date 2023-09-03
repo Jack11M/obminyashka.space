@@ -69,7 +69,6 @@ public class ResponseMessagesHandler {
         public static final String EMAIL_OLD = "exception.email.old";
         public static final String LOCATION_ALREADY_EXIST = "exception.location.exist";
         public static final String EMAIL_NOT_FOUND_OR_EXPIRED = "exception.email.validation-code";
-        public static final String EMAIL_NOT_EXIST = "exception.email.exist";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
