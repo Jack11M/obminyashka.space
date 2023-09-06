@@ -8,12 +8,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Range;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,8 +40,10 @@ import space.obminyashka.items_exchange.service.*;
 import java.util.List;
 import java.util.UUID;
 
+import static space.obminyashka.items_exchange.repository.enums.Size.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SUBCATEGORY_COMBINATION;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -128,9 +130,10 @@ public class AdvertisementController {
     @ResponseStatus(HttpStatus.CREATED)
     public AdvertisementModificationDto createAdvertisement(
             @Valid @RequestPart AdvertisementModificationDto dto,
-            @RequestPart(value = "image") @Size(min = 1, max = 10) List<MultipartFile> images,
+            @RequestPart(value = "image") @jakarta.validation.constraints.Size(min = 1, max = 10) List<MultipartFile> images,
             @Parameter(hidden = true) Authentication authentication) throws IllegalIdentifierException {
 
+        isValidSize(dto.getSubcategoryId(), dto.getSize());
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         final var owner = getUser(authentication.getName());
         final var compressedImages = images.parallelStream()
@@ -140,6 +143,21 @@ public class AdvertisementController {
                 .map(imageService::scale)
                 .orElse(compressedImages.get(0));
         return advertisementService.createAdvertisement(dto, owner, compressedImages, scaledTitleImage);
+    }
+
+    private void isValidSize(long subcategoryId, String size) {
+        Range<Long> clothingSubcategory = Range.closed(1L, 12L);
+        Range<Long> shoesSubcategory = Range.closed(13L, 17L);
+
+        if (clothingSubcategory.contains(subcategoryId)) { // subcategories ID for Clothing
+            Clothing.fromValue(size);
+        } else if (shoesSubcategory.contains(subcategoryId)) { // subcategories ID for Shoes
+            try {
+                Shoes.fromValue(Double.parseDouble(size));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(getParametrizedMessageSource(INVALID_ENUM_VALUE, size));
+            }
+        }
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
@@ -156,6 +174,7 @@ public class AdvertisementController {
                                                             @Parameter(hidden = true) Authentication authentication)
             throws IllegalIdentifierException, IllegalOperationException {
 
+        isValidSize(dto.getSubcategoryId(), dto.getSize());
         advertisementService.validateUserAsAdvertisementOwner(id, authentication.getName());
         validateInternalEntityIds(dto.getSubcategoryId(), dto.getLocationId());
         dto.setId(id);

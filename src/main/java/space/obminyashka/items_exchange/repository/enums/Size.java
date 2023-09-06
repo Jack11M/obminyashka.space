@@ -5,11 +5,19 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 public interface Size {
+
+    static <T, U> T fromValue(T[] values, Predicate<T> filtering, U value) {
+        return Arrays.stream(values)
+                .filter(filtering)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(getParametrizedMessageSource(INVALID_ENUM_VALUE, value)));
+    }
 
     @RequiredArgsConstructor
     enum Clothing {
@@ -40,10 +48,7 @@ public interface Size {
         private final String range;
 
         public static Clothing fromValue(String range) {
-            return Arrays.stream(Clothing.values())
-                    .filter(clothing -> clothing.range.equals(range))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE)));
+            return Size.fromValue(Clothing.values(), clothing -> clothing.range.equals(range), range);
         }
     }
 
@@ -93,10 +98,7 @@ public interface Size {
         private final double length;
 
         public static Shoes fromValue(Double length) {
-            return Arrays.stream(Shoes.values())
-                    .filter(shoes -> shoes.length == length)
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException(getMessageSource(INVALID_ENUM_VALUE)));
+            return Size.fromValue(Shoes.values(), shoes -> shoes.length == length, length);
         }
     }
 }
