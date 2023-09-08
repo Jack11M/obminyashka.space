@@ -17,6 +17,7 @@ import static space.obminyashka.items_exchange.rest.response.message.ResponseMes
 @RequiredArgsConstructor
 public enum EmailUrls {
 
+    REGISTRATION(EMAIL_VALIDATE_CODE),
     CHANGING(EMAIL_VALIDATE_CODE),
     RESET(USER_SERVICE_PASSWORD_CONFIRM);
 
