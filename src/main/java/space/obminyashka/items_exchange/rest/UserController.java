@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -172,9 +171,8 @@ public class UserController {
     public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest,
                                 @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var email = validatedEmailRequest.email();
-        var user = getUser(email);
         UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
-        userService.saveCodeForResetPassword(user, codeId);
+        userService.saveCodeForResetPassword(email, codeId);
 
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }

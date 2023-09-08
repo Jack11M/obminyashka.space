@@ -68,10 +68,10 @@ public interface UserService {
 
     /**
      * Save new record for request reset user password.
-     * @param user User whose password you want to reset.
+     * @param email requested email address to reset your password.
      * @param codeId UUID for confirmation email.
      */
-    void saveCodeForResetPassword(User user, UUID codeId);
+    void saveCodeForResetPassword(String email, UUID codeId);
 
     /**
      * Update the email for the user with the given username.
