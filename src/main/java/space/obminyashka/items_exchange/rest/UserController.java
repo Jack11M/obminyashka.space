@@ -165,15 +165,15 @@ public class UserController {
     @Operation(summary = "reset user password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT_FOUND")})
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
     public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest,
                                 @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var email = validatedEmailRequest.email();
-        UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
-        userService.saveCodeForResetPassword(email, codeId);
-
+        if (userService.existsByEmail(email)) {
+            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
+            userService.saveCodeForResetPassword(email, codeId);
+        }
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }
 

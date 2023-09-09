@@ -49,7 +49,6 @@ import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.DELETE_ACCOUNT;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage;
@@ -162,6 +161,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @WithMockUser
     void resetUserPassword_whenPasswordResetSuccessfully_shouldSendMessage() throws Exception {
         when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(new User()));
+        when(userService.existsByEmail(any())).thenReturn(true);
         var validatedEmailRequest = new ValidatedEmailRequest("email@gmail.com");
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD)
@@ -172,17 +172,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
                 () -> verify(mailService).sendEmailTemplateAndGenerateConfrimationCode(eq(validatedEmailRequest.email()),
                         eq(EmailType.RESET), any())
         );
-    }
-
-    @Test
-    @WithMockUser
-    void resetUserPassword_whenEmailNotFound_shouldReturn404Exception() throws Exception {
-        var validatedEmailRequest = new ValidatedEmailRequest("email@gmail.com");
-
-        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD)
-                .header(HttpHeaders.HOST, DOMAIN_URL), validatedEmailRequest, status().isNotFound());
-
-        Assertions.assertThat(mvcResult.getResolvedException()).hasMessageContaining(getMessageSource(USER_NOT_FOUND));
     }
 
     @Test
