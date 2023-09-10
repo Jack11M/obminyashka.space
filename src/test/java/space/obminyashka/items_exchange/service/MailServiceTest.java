@@ -5,8 +5,10 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -18,6 +20,7 @@ import space.obminyashka.items_exchange.service.util.EmailType;
 import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -39,35 +42,27 @@ class MailServiceTest {
         messageSourceProxy.setMSource(mock(MessageSource.class));
     }
 
-    @Test
-    void sendMail_shouldPassTheFlow() throws IOException {
+    @ParameterizedTest
+    @MethodSource("listEmailType")
+    void sendMail_shouldPassTheFlow(EmailType emailType) throws IOException {
         when(sendGrid.api(any())).thenReturn(new Response());
 
         final var emailTo = "test@mail.ua";
         var expectedHost = "https://obminyashka.space";
-        var confirmationCode = mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.REGISTRATION, expectedHost);
-
-        verify(sendGrid).api(requestCapture.capture());
-        Request capturedRequest = requestCapture.getValue();
-        verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
-                        capturedRequest.getEndpoint().equals("mail/send") &&
-                        capturedRequest.getBody().contains(emailTo)));
-        assertNotNull(confirmationCode);
-    }
-
-    @Test
-    void sendMailForResetPassword_shouldPassTheFlow() throws IOException {
-        when(sendGrid.api(any())).thenReturn(new Response());
-
-        final var emailTo = "test@mail.ua";
-        var expectedHost = "https://obminyashka.space";
-        mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, EmailType.RESET, expectedHost);
+        var confirmationCode = mailService.sendEmailTemplateAndGenerateConfrimationCode(emailTo, emailType, expectedHost);
 
         verify(sendGrid).api(requestCapture.capture());
         Request capturedRequest = requestCapture.getValue();
         verify(sendGrid).api(argThat(request -> capturedRequest.getMethod() == Method.POST &&
                 capturedRequest.getEndpoint().equals("mail/send") &&
                 capturedRequest.getBody().contains(emailTo)));
+        assertNotNull(confirmationCode);
+    }
 
+    private static Stream<Arguments> listEmailType() {
+        return Stream.of(
+                Arguments.of(EmailType.REGISTRATION),
+                Arguments.of(EmailType.RESET)
+        );
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.repository.UserRepository;
-import space.obminyashka.items_exchange.repository.enums.EmailUrls;
 import space.obminyashka.items_exchange.rest.exception.EmailSendingException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EmailValidationCodeNotFoundException;
 import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
@@ -85,8 +84,7 @@ public class SendGridService implements MailService {
             personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
         });
 
-        personalization.addDynamicTemplateData("url", host.concat(
-                EmailUrls.valueOf(emailType.name()).getValue().replace("{code}", codeId.toString())));
+        personalization.addDynamicTemplateData("url", host.concat(emailType.callbackEndpoint.replace("{code}", codeId.toString())));
 
         return personalization;
     }

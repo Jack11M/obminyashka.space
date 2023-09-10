@@ -20,12 +20,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
-import space.obminyashka.items_exchange.rest.request.ValidatedEmailRequest;
+import space.obminyashka.items_exchange.rest.request.VerifyEmailRequest;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.impl.ImageServiceImpl;
 import space.obminyashka.items_exchange.service.impl.UserServiceImpl;
@@ -34,13 +33,11 @@ import space.obminyashka.items_exchange.service.util.EmailType;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -72,7 +69,6 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     private ArgumentCaptor<MultipartFile> captor;
 
     private static String maxPhonesAmount;
-    private static final String DOMAIN_URL = "https://obminyashka.space";
 
     @Autowired
     public UserControllerIntegrationTest(MockMvc mockMvc, @Value("${max.phones.amount}") String maxPhonesAmount) {
@@ -160,16 +156,15 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @Test
     @WithMockUser
     void resetUserPassword_whenPasswordResetSuccessfully_shouldSendMessage() throws Exception {
-        when(userService.findByUsernameOrEmail(any())).thenReturn(Optional.of(new User()));
         when(userService.existsByEmail(any())).thenReturn(true);
-        var validatedEmailRequest = new ValidatedEmailRequest("email@gmail.com");
+        var verifyEmailRequest = new VerifyEmailRequest("email@gmail.com");
 
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD)
-                .header(HttpHeaders.HOST, DOMAIN_URL), validatedEmailRequest, status().isOk());
+                .header(HttpHeaders.HOST, anyString()), verifyEmailRequest, status().isOk());
 
         assertAll(
                 () -> assertEquals(mvcResult.getResponse().getContentAsString(), getMessageSource(RESET_PASSWORD)),
-                () -> verify(mailService).sendEmailTemplateAndGenerateConfrimationCode(eq(validatedEmailRequest.email()),
+                () -> verify(mailService).sendEmailTemplateAndGenerateConfrimationCode(eq(verifyEmailRequest.email()),
                         eq(EmailType.RESET), any())
         );
     }
@@ -177,9 +172,9 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     @Test
     @WithMockUser
     void resetUserPassword_whenEmailNotValid_shouldSendMessage() throws Exception {
-        var validatedEmailRequest = new ValidatedEmailRequest("emailgmail.com");
+        var verifyEmailRequest = new VerifyEmailRequest("emailgmail.com");
 
-        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), validatedEmailRequest, status().isBadRequest());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), verifyEmailRequest, status().isBadRequest());
 
         Assertions.assertThat(mvcResult.getResolvedException()).hasMessageContaining(getMessageSource(INVALID_EMAIL));
     }
