@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
 @Service
@@ -52,7 +51,7 @@ public class SendGridService implements MailService {
     private int numberOfDaysToKeepDeletedEmails;
 
     @Override
-    public UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host){
+    public UUID sendEmailTemplateAndGenerateConfrimationCode(String emailTo, EmailType emailType, String host) {
         var mail2send = new Mail();
         mail2send.setFrom(sender);
         mail2send.setTemplateId(emailType.template);
@@ -63,7 +62,7 @@ public class SendGridService implements MailService {
         mail2send.addPersonalization(personalization);
 
         try {
-            Request request  = createMailRequest(mail2send);
+            Request request = createMailRequest(mail2send);
             final var response = sendGrid.api(request);
             final var statusCode = response.getStatusCode();
 
@@ -76,15 +75,16 @@ public class SendGridService implements MailService {
         return codeId;
     }
 
+
     private static Personalization createPersonalizationAndSetParameters(EmailType emailType, UUID codeId, String host) {
         var personalization = new Personalization();
 
-        EMAIL_TEMPLATE_KEYS.forEach((key, value)->{
+        EMAIL_TEMPLATE_KEYS.forEach((key, value) -> {
             var parameterSource = emailType.name().toLowerCase().concat(".").concat(value);
             personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
         });
 
-        personalization.addDynamicTemplateData("url", host.concat(EMAIL_VALIDATE_CODE.replace("{code}", codeId.toString())));
+        personalization.addDynamicTemplateData("url", host.concat(emailType.callbackEndpoint.replace("{code}", codeId.toString())));
 
         return personalization;
     }
@@ -115,11 +115,6 @@ public class SendGridService implements MailService {
         emailRepository.findAll().stream()
                 .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedEmail)
                 .forEach(emailRepository::delete);
-    }
-
-    @Override
-    public void sendMessagesToEmailForResetPassword(String email) {
-        //TODO create logic for reset password if we found the email in the list of registered users
     }
 
     private boolean isDurationMoreThanNumberOfDaysToKeepDeletedEmail(EmailConfirmationCode email) {

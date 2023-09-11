@@ -29,7 +29,7 @@ import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoun
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
-import space.obminyashka.items_exchange.rest.request.ValidatedEmailRequest;
+import space.obminyashka.items_exchange.rest.request.VerifyEmailRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
@@ -165,10 +165,15 @@ public class UserController {
     @Operation(summary = "reset user password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-    })
-    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest){
-        mailService.sendMessagesToEmailForResetPassword(validatedEmailRequest.email());
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.OK)
+    public String resetPassword(@Valid @RequestBody VerifyEmailRequest verifyEmailRequest,
+                                @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
+        var email = verifyEmailRequest.email();
+        if (userService.existsByEmail(email)) {
+            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
+            userService.saveCodeForResetPassword(email, codeId);
+        }
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }
 
