@@ -146,12 +146,12 @@ public class AdvertisementController {
     }
 
     private void isValidSize(long subcategoryId, String size) {
-        Range<Long> clothingSubcategory = Range.closed(1L, 12L);
-        Range<Long> shoesSubcategory = Range.closed(13L, 17L);
+        Range<Long> clothingSubcategory = Range.closed(1L, 12L); // subcategories ID for Clothing
+        Range<Long> shoesSubcategory = Range.closed(13L, 17L); // subcategories ID for Shoes
 
-        if (clothingSubcategory.contains(subcategoryId)) { // subcategories ID for Clothing
+        if (clothingSubcategory.contains(subcategoryId)) {
             Clothing.fromValue(size);
-        } else if (shoesSubcategory.contains(subcategoryId)) { // subcategories ID for Shoes
+        } else if (shoesSubcategory.contains(subcategoryId)) {
             try {
                 Shoes.fromValue(Double.parseDouble(size));
             } catch (NumberFormatException e) {
