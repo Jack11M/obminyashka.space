@@ -14,6 +14,7 @@ import java.util.UUID;
 public class AdvertisementTitleView {
     private UUID advertisementId;
     private byte[] image;
+    private boolean isFavorite;
     private String title;
     private LocationDto location;
 }
