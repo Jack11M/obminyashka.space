@@ -33,9 +33,16 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Query("SELECT a FROM Advertisement a WHERE LOWER(a.topic) IN :topics")
     Page<Advertisement> search(@Param("topics") Set<String> topics, Pageable pageable);
 
+    @Query("SELECT a.id AS id, a.defaultPhoto AS defaultPhoto, " +
+            "fa.user.id AS userId, a.topic AS topic, a.location AS location " +
+            "FROM User u JOIN Advertisement a LEFT JOIN u.favoriteAdvertisements fa on a.id = fa.id and u.id = fa.user.id " +
+            "WHERE u.username = :username")
     Collection<AdvertisementTitleProjection> findAllByUserUsername(String username);
 
-    @Query("SELECT a FROM User u JOIN u.favoriteAdvertisements a WHERE u.username = :username")
+    @Query("SELECT a.id AS id, a.defaultPhoto AS defaultPhoto, " +
+            "a.user.id AS userId, a.topic AS topic, a.location AS location " +
+            "FROM User u JOIN u.favoriteAdvertisements a " +
+            "WHERE u.username = :username")
     Page<AdvertisementTitleProjection> findFavoriteAdvertisementsByUsername(String username, Pageable pageable);
 
     @Transactional
