@@ -153,6 +153,12 @@ public interface UserService {
     void setUserAvatar(String username, byte[] newAvatarImage);
 
     /**
+     * Set to existed user validated email as true
+     * @param usernameOrEmail email or username of existed user
+     */
+    void setValidatedEmailByUsernameOrEmail(String usernameOrEmail);
+
+    /**
      * Remove avatar of selected user
      * @param username login of existing user
      */
