@@ -37,7 +37,9 @@ public class SendGridService implements MailService {
         "subject", "topic",
             "header", "email.header",
             "greetings", "email.greetings",
-            "information", "email.action.information",
+            "information1", "email.action.information1",
+            "host", "email.action.host",
+            "information2", "email.action.information2",
             "benefits", "email.benefits",
             "confirm", "email.confirm.button",
             "footer", "email.footer"
@@ -84,7 +86,7 @@ public class SendGridService implements MailService {
             personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
         });
 
-        personalization.addDynamicTemplateData("url", host.concat(emailType.callbackEndpoint.replace("{code}", codeId.toString())));
+        personalization.addDynamicTemplateData("url", "https://" + host.concat(emailType.callbackEndpoint.replace("{code}", codeId.toString())));
 
         return personalization;
     }
