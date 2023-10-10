@@ -223,6 +223,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void setValidatedEmailByUsernameOrEmail(String usernameOrEmail) {
+        userRepository.setValidatedEmailByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
+    }
+
+    @Override
     public void removeUserAvatarFor(String username) {
         userRepository.cleanAvatarForUserByName(username);
     }

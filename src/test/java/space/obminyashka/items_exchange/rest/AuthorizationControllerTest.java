@@ -138,7 +138,8 @@ class AuthorizationControllerTest {
         assertAll(
                 () -> assertEquals(expectedUserLoginDto, actualUserLoginDto),
                 () -> verify(userService).findAuthDataByUsernameOrEmail(mockAuth.getName()),
-                () -> verify(authService).finalizeAuthData(prefinalizeUserLoginDto)
+                () -> verify(authService).finalizeAuthData(prefinalizeUserLoginDto),
+                () -> verify(userService).setValidatedEmailByUsernameOrEmail(mockAuth.getName())
         );
     }
 

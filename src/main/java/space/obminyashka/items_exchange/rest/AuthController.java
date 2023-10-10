@@ -135,7 +135,9 @@ public class AuthController {
     public UserLoginResponse loginWithOAuth2(@Parameter(hidden = true) Authentication authentication) {
         try {
             var userLoginResponseDto = userService.findAuthDataByUsernameOrEmail(authentication.getName());
-            return authService.finalizeAuthData(userLoginResponseDto);
+            var finalizedAuthData = authService.finalizeAuthData(userLoginResponseDto);
+            userService.setValidatedEmailByUsernameOrEmail(authentication.getName());
+            return finalizedAuthData;
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(getMessageSource(INVALID_OAUTH2_LOGIN));
         }
