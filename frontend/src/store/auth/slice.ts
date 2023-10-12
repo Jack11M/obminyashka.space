@@ -4,7 +4,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { showMessage } from 'obminyashka-components';
 
-import { getStorageLang, getStorageUser, setStorageUser } from 'src/Utils';
+import { getStorageLang, getStorageUser, addDataToUserInStorage } from 'src/Utils';
 
 const authInitialState = {
   isFetchingAuth: false,
@@ -19,7 +19,7 @@ const authSlice = createSlice({
   reducers: {
     setLanguage: (state, { payload }) => {
       try {
-        setStorageUser({ 'Accept-Language': payload });
+        addDataToUserInStorage({ 'Accept-Language': payload });
         localStorage.setItem('lang', payload);
         state.lang = payload;
       } catch (e) {
@@ -27,7 +27,7 @@ const authSlice = createSlice({
       }
     },
     putEmail: (state, { payload }) => {
-      setStorageUser({ email: payload });
+      addDataToUserInStorage({ email: payload });
       state.profile.email = payload;
     },
     setAuthed: (state, { payload }) => {
