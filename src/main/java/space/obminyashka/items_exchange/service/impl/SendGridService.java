@@ -34,10 +34,12 @@ import static space.obminyashka.items_exchange.rest.response.message.MessageSour
 public class SendGridService implements MailService {
 
     public static final Map<String, String> EMAIL_TEMPLATE_KEYS = Map.of(
-        "subject", "topic",
+            "subject", "topic",
             "header", "email.header",
             "greetings", "email.greetings",
-            "information", "email.action.information",
+            "event", "email.event",
+            "host", "email.host",
+            "action", "email.action",
             "benefits", "email.benefits",
             "confirm", "email.confirm.button",
             "footer", "email.footer"
@@ -84,7 +86,7 @@ public class SendGridService implements MailService {
             personalization.addDynamicTemplateData(key, getMessageSource(parameterSource));
         });
 
-        personalization.addDynamicTemplateData("url", host.concat(emailType.callbackEndpoint.replace("{code}", codeId.toString())));
+        personalization.addDynamicTemplateData("url", "https://" + host.concat(emailType.callbackEndpoint.replace("{code}", codeId.toString())));
 
         return personalization;
     }
