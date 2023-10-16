@@ -34,12 +34,12 @@ import static space.obminyashka.items_exchange.rest.response.message.MessageSour
 public class SendGridService implements MailService {
 
     public static final Map<String, String> EMAIL_TEMPLATE_KEYS = Map.of(
-        "subject", "topic",
+            "subject", "topic",
             "header", "email.header",
             "greetings", "email.greetings",
-            "information1", "email.action.information1",
-            "host", "email.action.host",
-            "information2", "email.action.information2",
+            "event", "email.event",
+            "host", "email.host",
+            "action", "email.action",
             "benefits", "email.benefits",
             "confirm", "email.confirm.button",
             "footer", "email.footer"
