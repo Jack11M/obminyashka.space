@@ -178,7 +178,6 @@ public class UserController {
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
     }
 
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @GetMapping(value = ApiKey.USER_SERVICE_PASSWORD_CONFIRM)
     @Operation(summary = "Confirm user password")
     @ApiResponses(value = {
