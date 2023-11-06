@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
+import space.obminyashka.items_exchange.rest.exception.NotImplementedException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
@@ -162,7 +163,7 @@ public class UserController {
     }
 
     @PostMapping(value = ApiKey.USER_SERVICE_RESET_PASSWORD)
-    @Operation(summary = "reset user password")
+    @Operation(summary = "Reset user password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
@@ -256,6 +257,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void removeAvatar(@Parameter(hidden = true) Authentication authentication) {
         userService.removeUserAvatarFor(authentication.getName());
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @GetMapping(value = ApiKey.NOT_IMPLEMENTED)
+    @Operation(summary = "Get 501 status not implemented")
+    @ApiResponse(responseCode = "501", description = "NOT IMPLEMENTED")
+    public void methodNotImplemented() {
+        throw new NotImplementedException(getMessageSource(NOT_IMPLEMENTED));
     }
 
     private User getUser(String username) {

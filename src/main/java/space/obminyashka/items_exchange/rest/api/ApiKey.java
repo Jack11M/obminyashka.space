@@ -65,7 +65,8 @@ public class ApiKey {
     public static final String OAUTH2 = "/oauth2/**";
     public static final String OAUTH2_LOGIN = "/login" + OAUTH2;
     public static final String OAUTH2_SUCCESS = "/oauth-success";
-
+    // Util API
+    public static final String NOT_IMPLEMENTED = API + "/not_implemented";
     // Front API from routeConstants
     public static final String FRONT_ADV_ADD = "/add-good/**";
     public static final String FRONT_LOGIN = "/login";

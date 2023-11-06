@@ -117,6 +117,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
                 .requestMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER,
                         ApiKey.AUTH_REFRESH_TOKEN, ApiKey.USER_SERVICE_RESET_PASSWORD).permitAll()
+                .requestMatchers(HttpMethod.GET, ApiKey.NOT_IMPLEMENTED).permitAll()
                 .requestMatchers(HttpMethod.GET,
                         ApiKey.FRONT_LOGIN,
                         ApiKey.FRONT_SIGN,
