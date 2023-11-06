@@ -115,7 +115,9 @@ public class SecurityConfig {
                         "/**/*.ttf").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/error", "/manage/**").permitAll()
                 .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
-                .requestMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
+                .requestMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER,
+                        ApiKey.AUTH_REFRESH_TOKEN, ApiKey.USER_SERVICE_RESET_PASSWORD).permitAll()
+                .requestMatchers(HttpMethod.GET, ApiKey.USER_SERVICE_PASSWORD_CONFIRM).permitAll()
                 .requestMatchers(HttpMethod.GET,
                         ApiKey.FRONT_LOGIN,
                         ApiKey.FRONT_SIGN,

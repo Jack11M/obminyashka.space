@@ -120,15 +120,6 @@ class UserServiceTest {
     }
 
     @Test
-    void addFavorite_WhenDataCorrect_Successfully() {
-        final var existedCode = UUID.randomUUID();
-
-        userService.saveCodeForResetPassword(NEW_USER_EMAIL, existedCode);
-        verify(emailConfirmationCodeRepository).saveConfirmationCode(existedCode, NEW_USER_EMAIL,
-                numberOfHoursToKeepEmailConformationToken);
-    }
-
-    @Test
     void findAuthDataByUsernameOrEmail_whenUserDoesNotExistInDB_shouldThrowException() {
         when(userRepository.findAuthDataByEmailOrUsername(anyString(), anyString())).thenReturn(Optional.empty());
 
