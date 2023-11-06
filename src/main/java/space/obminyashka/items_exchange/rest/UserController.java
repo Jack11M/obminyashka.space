@@ -179,6 +179,15 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
+    @GetMapping(value = ApiKey.USER_SERVICE_PASSWORD_CONFIRM)
+    @Operation(summary = "Confirm user password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "501", description = "NOT IMPLEMENTED")})
+    public void confirmPassword(@PathVariable UUID code) {
+        throw new NotImplementedException(getMessageSource(NOT_IMPLEMENTED));
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
     @PutMapping(value = ApiKey.USER_SERVICE_CHANGE_EMAIL, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Update a user email")
     @ApiResponses(value = {
@@ -257,14 +266,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public void removeAvatar(@Parameter(hidden = true) Authentication authentication) {
         userService.removeUserAvatarFor(authentication.getName());
-    }
-
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
-    @GetMapping(value = ApiKey.NOT_IMPLEMENTED)
-    @Operation(summary = "Get 501 status not implemented")
-    @ApiResponse(responseCode = "501", description = "NOT IMPLEMENTED")
-    public void methodNotImplemented() {
-        throw new NotImplementedException(getMessageSource(NOT_IMPLEMENTED));
     }
 
     private User getUser(String username) {

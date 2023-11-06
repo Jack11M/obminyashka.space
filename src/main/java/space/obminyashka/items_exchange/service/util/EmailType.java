@@ -7,7 +7,7 @@ import space.obminyashka.items_exchange.rest.api.ApiKey;
 public enum EmailType {
     REGISTRATION("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.EMAIL_VALIDATE_CODE),
     CHANGING("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.EMAIL_VALIDATE_CODE),
-    RESET("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.NOT_IMPLEMENTED);
+    RESET("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.USER_SERVICE_PASSWORD_CONFIRM);
 
     public final String template;
     public final String callbackEndpoint;
