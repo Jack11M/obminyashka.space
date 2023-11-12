@@ -225,6 +225,16 @@
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>test-frontend</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run test</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
