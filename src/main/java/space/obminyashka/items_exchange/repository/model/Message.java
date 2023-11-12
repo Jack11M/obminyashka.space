@@ -6,12 +6,13 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Accessors(chain = true)
 public class Message {
     @Id
-    private String id;
+    private UUID id;
     private String chatId;
     private String authorId;
     private String text;
