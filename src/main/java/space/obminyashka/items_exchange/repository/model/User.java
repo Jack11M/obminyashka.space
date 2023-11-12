@@ -7,6 +7,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import space.obminyashka.items_exchange.config.AppConfig;
 import space.obminyashka.items_exchange.repository.enums.Status;
 import space.obminyashka.items_exchange.repository.model.base.BaseEntity;
 
@@ -46,7 +47,7 @@ public class User extends BaseEntity implements UserDetails {
     @Builder.Default
     private String lastName = "";
 
-    @Column(name = "avatar_image")
+    @Column(name = "avatar_image", length = AppConfig.COLUMN_MAX_LENGTH)
     @Builder.Default
     private byte[] avatarImage = new byte[0];
 
