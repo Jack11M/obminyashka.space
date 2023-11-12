@@ -2,6 +2,7 @@ package space.obminyashka.items_exchange.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Disabled("needs an in-memory mongo solution")
 class MongoDBTest {
 
     private final ChatRepository chatRepository;
