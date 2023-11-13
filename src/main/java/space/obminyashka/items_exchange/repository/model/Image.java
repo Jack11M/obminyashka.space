@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
+import space.obminyashka.items_exchange.config.AppConfig;
 
 import java.sql.Types;
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class Image {
 
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
+    @Column(length = AppConfig.COLUMN_MAX_LENGTH)
     private byte[] resource;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
