@@ -58,11 +58,7 @@ services:
       - containers-network
 
   mongo:
-    image: mongo:latest
-    environment:
-      MONGO_INITDB_DATABASE: chat
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
+    image: mongo:4.4.25-focal
     ports:
       - "27016:27017"
     restart: always
