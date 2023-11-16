@@ -11,11 +11,11 @@ import space.obminyashka.items_exchange.repository.DistrictRepository;
 import space.obminyashka.items_exchange.repository.model.Area;
 import space.obminyashka.items_exchange.repository.model.District;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
+import space.obminyashka.items_exchange.rest.request.LocationRaw;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.impl.LocationServiceImpl;
 
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -39,12 +39,16 @@ class LocationServiceTest {
 
     @BeforeEach
     void setUp() {
-        area = new Area(UUID.randomUUID(), "Одеська", "Odeska");
+        LocationRaw locationRaw = new LocationRaw();
+        locationRaw.setAreaEn("Odeska");
+        locationRaw.setAreaUa("Одеська");
+        locationRaw.setDistrictEn("Limanskii district");
+        locationRaw.setDistrictUa("Лиманський район");
+        area = new Area(locationRaw);
         areaNameView = new LocationNameView(area.getId(), area.getNameUa(), area.getNameEn());
-        district = new District(UUID.randomUUID(), area, "Лиманський район", "Limanskii district");
+        district = new District(locationRaw,area);
         districtNameView = new LocationNameView(district.getId(), district.getNameUa(), district.getNameEn());
     }
-
     @Test
     void findAll_shouldReturnAllLocationNameViewOfAreas() {
         var expectedAllAreasName = List.of(areaNameView);

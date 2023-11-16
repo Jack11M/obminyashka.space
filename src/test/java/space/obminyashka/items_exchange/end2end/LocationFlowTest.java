@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,6 +41,7 @@ import static space.obminyashka.items_exchange.util.data_producer.LocationDtoPro
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
@@ -48,6 +50,13 @@ class LocationFlowTest extends BasicControllerTest {
 
     @Value("${test.data.location.init.file.path}")
     private String pathToFileParseLocationsFrom;
+
+    @Value("${test.data.loc.init.file.path}")
+    private String pathToFileParseLocFrom;
+
+    @Value("${locs.init.file.path}")
+    private String locsInitFilePath;
+
     @Value("${location.init.file.path}")
     private String pathToCreateLocationsInitFile;
 
@@ -276,6 +285,32 @@ class LocationFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(LOCATIONS_INIT),
+                "NOT VALID DATA",
+                status().isBadRequest());
+
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot construct"));
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DataSet("database_init.yml")
+    void createAreasInitFile_whenDataIsValid_shouldCreateFileAndReturnItsContent() throws Exception {
+        MvcResult response = mockMvc.perform(post(LOCATIONS_INIT_LOCS)
+                        .content(Files.readString(Path.of(pathToFileParseLocFrom), StandardCharsets.UTF_8))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        final var responseContent = response.getResponse().getContentAsString();
+        int parsedLocationsQuantity = (responseContent.length() - responseContent.replaceAll("(UUID_TO_BIN)", "").length()) / "UUID_TO_BIN".length();
+        assertEquals(2716, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertTrue(Files.size(Path.of(locsInitFilePath)) > 0);
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DataSet("database_init.yml")
+    void createAreasInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(LOCATIONS_INIT_LOCS),
                 "NOT VALID DATA",
                 status().isBadRequest());
 
