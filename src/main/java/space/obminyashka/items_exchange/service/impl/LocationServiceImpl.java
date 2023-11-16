@@ -7,22 +7,23 @@ import space.obminyashka.items_exchange.repository.AreaRepository;
 import space.obminyashka.items_exchange.repository.CityRepository;
 import space.obminyashka.items_exchange.repository.DistrictRepository;
 import space.obminyashka.items_exchange.repository.LocationRepository;
+import space.obminyashka.items_exchange.repository.model.Area;
+import space.obminyashka.items_exchange.repository.model.City;
+import space.obminyashka.items_exchange.repository.model.District;
+import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
+import space.obminyashka.items_exchange.rest.request.LocationRaw;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
 import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Service
@@ -35,6 +36,13 @@ public class LocationServiceImpl implements LocationService {
             "Ukraine,area Odeska,district Ovidiopolskyi,village Limanka",
             "Ukraine,area Zakarpatska,district Mukachivskyi,city Mukacheve"
     );
+
+    private static final Map<Class<? extends BaseLocation>, String> LOCATION_STRING_MAP = Map.of(
+            Area.class, "INSERT INTO area (id, name_en, name_ua) VALUES ",
+            District.class, "INSERT INTO district (id, area_id, name_en, name_ua) VALUES ",
+            City.class, "INSERT INTO city (id, district_id, name_en, name_ua) VALUES "
+    );
+
     private final LocationRepository locationRepository;
     private final AreaRepository areaRepository;
     private final DistrictRepository districtRepository;
@@ -45,6 +53,8 @@ public class LocationServiceImpl implements LocationService {
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
 
+    @Value("${locs.init.file.path}")
+    private String locsInitFilePath;
 
     @Override
     public List<LocationDto> findAll() {
@@ -109,7 +119,6 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException {
-
         List<Location> locations = mapCreatingDataToLocations(creatingData);
         String initString = "INSERT INTO location (id, city_ua, district_ua, area_ua, city_en, district_en, area_en) VALUES";
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locationInitFilePath), StandardCharsets.UTF_8)) {
@@ -122,6 +131,54 @@ public class LocationServiceImpl implements LocationService {
         }
         return Files.readString(Path.of(locationInitFilePath).toAbsolutePath(), StandardCharsets.UTF_8);
     }
+
+    @Override
+    public String createParsedLocsFile(List<LocationRaw> creatingData) throws IOException {
+        creatingData.sort(Comparator.comparing(LocationRaw::getAreaEn));
+
+        Set<Area> areas = new HashSet<>();
+        Set<District> districts = new HashSet<>();
+        Set<City> cities = new HashSet<>();
+
+        for (LocationRaw location : creatingData) {
+            Area area = new Area(location);
+            List<LocationRaw> locationsWithDistrictInSelectedArea = creatingData.stream()
+                    .sorted(Comparator.comparing(LocationRaw::getDistrictEn))
+                    .filter(locationRaw -> locationRaw.equalsTo(area))
+                    .toList();
+
+            locationsWithDistrictInSelectedArea.stream()
+                    .map(locationRaw -> new District(locationRaw, area))
+                    .forEach(district -> {
+                        districts.add(district);
+                        cities.addAll(getCities(locationsWithDistrictInSelectedArea, district));
+                    });
+            areas.add(area);
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locsInitFilePath), StandardCharsets.UTF_8)) {
+            writeLocationsToWriter(writer, areas, Area.class);
+            writeLocationsToWriter(writer, districts, District.class);
+            writeLocationsToWriter(writer, cities, City.class);
+        }
+
+        return Files.readString(Path.of(locsInitFilePath), StandardCharsets.UTF_8);
+    }
+
+    private List<City> getCities(List<LocationRaw> locationsCities, District district) {
+        return locationsCities.stream()
+                .filter(locationRaw -> locationRaw.equalsTo(district))
+                .map(locationCity -> new City(locationCity, district))
+                .toList();
+    }
+
+    private <T extends BaseLocation> void writeLocationsToWriter(BufferedWriter writer, Set<T> locations, Class<T> locationClass) throws IOException {
+        StringJoiner stringJoiner = new StringJoiner(",", LOCATION_STRING_MAP.get(locationClass), "");
+        locations.forEach(location -> stringJoiner.add(location.formatForSQL()));
+        writer.append(stringJoiner.toString());
+        writer.append(";");
+    }
+
 
     @Override
     public List<LocationNameView> getAllCityByDistrictId(UUID id) {
