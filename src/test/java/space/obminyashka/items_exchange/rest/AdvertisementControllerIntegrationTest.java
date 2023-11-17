@@ -19,6 +19,8 @@ import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.stream.Stream;
 
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
@@ -100,6 +103,26 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
                 .isInstanceOf(MethodArgumentNotValidException.class)
                 .hasMessageContainingAll(blankTopicMessage, blankDescriptionMessage)
                 .hasMessageNotContaining(blankWishesToExchangeMessage);
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    void createAdvertisement_shouldReturn400WhenInvalidSizeForCategory() throws Exception {
+        final var dto = AdvertisementModificationDtoProducer.createNonExistAdvertisementModificationDto();
+        dto.setSize("invalidSize");
+
+        final var dtoJson = new MockMultipartFile("dto", "json", MediaType.APPLICATION_JSON_VALUE,
+                asJsonString(dto).getBytes());
+        final var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
+                Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
+
+        final var mvcResult = sendUriAndGetMvcResult(multipart(ADV).file(jpeg).file(dtoJson), status().isBadRequest());
+
+        var validationSizeMessage = getParametrizedMessageSource(INVALID_ENUM_VALUE, dto.getSize());
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(validationSizeMessage);
     }
 
     private static Stream<Arguments> provideAdvertisementModificationDto() {

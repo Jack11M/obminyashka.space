@@ -145,6 +145,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void saveCodeForResetPassword(String email, UUID codeId) {
+        emailConfirmationCodeRepository.saveConfirmationCode(codeId, email,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+    }
+
+    @Override
     public void updateUserEmail(String username, String email, UUID codeId) {
         userRepository.updateUserEmailConfirmationCodeByUsername(username, codeId,
                 LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
@@ -214,6 +220,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void setUserAvatar(String username, byte[] newAvatarImage) {
         userRepository.updateAvatarByUsername(username, newAvatarImage);
+    }
+
+    @Override
+    public void setValidatedEmailByUsernameOrEmail(String usernameOrEmail) {
+        userRepository.setValidatedEmailByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
     }
 
     @Override

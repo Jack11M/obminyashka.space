@@ -41,7 +41,12 @@ public interface AdvertisementMapper {
     @Mapping(source = "id", target = "advertisementId")
     @Mapping(source = "defaultPhoto", target = "image")
     @Mapping(source = "topic", target = "title")
+    @Mapping(source = ".", target = "isFavorite", conditionExpression = "java(isFavoriteByUserId(projection))")
     AdvertisementTitleView toAdvertisementTitleDto(AdvertisementTitleProjection projection);
+
+    default boolean isFavoriteByUserId(AdvertisementTitleProjection projection) {
+        return projection.getUserId() != null;
+    }
 
     List<AdvertisementDisplayView> toDtoList(List<Advertisement> modelList);
 

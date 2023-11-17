@@ -39,7 +39,7 @@ public interface UserService {
     /**
      * Register new user and create email confirmation code
      * @param userRegistrationRequest DTO which contains all required data for registration the user
-     * @param codeId UIID for confirmation email
+     * @param codeId UUID for confirmation email
      * @return result of registration
      */
     boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId);
@@ -65,6 +65,13 @@ public interface UserService {
      * @param password The new password for the user.
      */
     void updateUserPassword(String  username, String password);
+
+    /**
+     * Save new record for request reset user password.
+     * @param email requested email address to reset your password.
+     * @param codeId UUID for confirmation email.
+     */
+    void saveCodeForResetPassword(String email, UUID codeId);
 
     /**
      * Update the email for the user with the given username.
@@ -144,6 +151,12 @@ public interface UserService {
      * @param username whom the image has to be set as new avatar image
      */
     void setUserAvatar(String username, byte[] newAvatarImage);
+
+    /**
+     * Set to existed user validated email as true
+     * @param usernameOrEmail email or username of existed user
+     */
+    void setValidatedEmailByUsernameOrEmail(String usernameOrEmail);
 
     /**
      * Remove avatar of selected user

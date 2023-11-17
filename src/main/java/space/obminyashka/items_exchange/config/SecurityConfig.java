@@ -11,11 +11,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,8 +29,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
-import space.obminyashka.items_exchange.rest.exception.handler.TokenAuthenticator;
 import space.obminyashka.items_exchange.rest.exception.handler.OAuthLoginSuccessHandler;
+import space.obminyashka.items_exchange.rest.exception.handler.TokenAuthenticator;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -92,54 +93,56 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers(
-                        "/",
-                        "/favicon.ico",
-                        "/static/css/**",
-                        "/static/js/**",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/**/*.ttf").permitAll()
-                .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/error", "/manage/**").permitAll()
-                .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
-                .requestMatchers(HttpMethod.POST, ApiKey.AUTH_LOGIN, ApiKey.AUTH_REGISTER, ApiKey.AUTH_REFRESH_TOKEN).permitAll()
-                .requestMatchers(HttpMethod.GET,
-                        ApiKey.FRONT_LOGIN,
-                        ApiKey.FRONT_SIGN,
-                        ApiKey.FRONT_USER,
-                        ApiKey.FRONT_ADV_ADD,
-                        ApiKey.FRONT_PRODUCT,
-                        ApiKey.FRONT_FILTER).permitAll()
-                .requestMatchers(HttpMethod.GET,
-                        ApiKey.OAUTH2_SUCCESS,
-                        ApiKey.ADV + "/**",
-                        ApiKey.EMAIL + "/**",
-                        ApiKey.IMAGE + "/**",
-                        ApiKey.CATEGORY + "/**",
-                        ApiKey.SUBCATEGORY + "/**",
-                        ApiKey.LOCATION + "/**").permitAll()
-                .requestMatchers(ApiKey.AUTH_OAUTH2_SUCCESS, ApiKey.AUTH_LOGOUT, ApiKey.USER_MY_INFO, ApiKey.USER_MY_ADV).authenticated()
-                .anyRequest().authenticated()
-                .and()
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .oauth2Login().successHandler(oauthLoginSuccessHandler)
-                .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(tokenAuthenticator)
-                .and()
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(configurer -> configurer.requestMatchers(
+                                "/",
+                                "/favicon.ico",
+                                "/static/css/**",
+                                "/static/js/**",
+                                "/**/*.png",
+                                "/**/*.gif",
+                                "/**/*.svg",
+                                "/**/*.jpg",
+                                "/**/*.html",
+                                "/**/*.css",
+                                "/**/*.js",
+                                "/**/*.ttf").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/error", "/manage/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                ApiKey.AUTH_LOGIN,
+                                ApiKey.AUTH_REGISTER,
+                                ApiKey.AUTH_REFRESH_TOKEN,
+                                ApiKey.USER_SERVICE_RESET_PASSWORD).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                ApiKey.FRONT_LOGIN,
+                                ApiKey.FRONT_SIGN,
+                                ApiKey.FRONT_USER,
+                                ApiKey.FRONT_ADV_ADD,
+                                ApiKey.FRONT_PRODUCT,
+                                ApiKey.FRONT_FILTER).permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                ApiKey.OAUTH2_SUCCESS,
+                                ApiKey.ADV + "/**",
+                                ApiKey.EMAIL + "/**",
+                                ApiKey.IMAGE + "/**",
+                                ApiKey.CATEGORY + "/**",
+                                ApiKey.SUBCATEGORY + "/**",
+                                ApiKey.LOCATION + "/**",
+                                ApiKey.USER_SERVICE_PASSWORD_CONFIRM + "/**").permitAll()
+                        .requestMatchers(
+                                ApiKey.AUTH_OAUTH2_SUCCESS,
+                                ApiKey.AUTH_LOGOUT,
+                                ApiKey.USER_MY_INFO,
+                                ApiKey.USER_MY_ADV).authenticated()
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2Configurer -> oauth2Configurer.jwt(Customizer.withDefaults()))
+                .oauth2Login(oauth2Configurer -> oauth2Configurer.successHandler(oauthLoginSuccessHandler))
+                .exceptionHandling(configurer -> configurer
+                        .accessDeniedHandler(accessDeniedHandler)
+                        .authenticationEntryPoint(tokenAuthenticator))
                 .build();
     }
 }

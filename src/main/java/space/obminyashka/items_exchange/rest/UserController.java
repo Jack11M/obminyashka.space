@@ -25,11 +25,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
+import space.obminyashka.items_exchange.rest.exception.NotImplementedException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
 import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
-import space.obminyashka.items_exchange.rest.request.ValidatedEmailRequest;
+import space.obminyashka.items_exchange.rest.request.VerifyEmailRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
@@ -162,14 +163,27 @@ public class UserController {
     }
 
     @PostMapping(value = ApiKey.USER_SERVICE_RESET_PASSWORD)
-    @Operation(summary = "reset user password")
+    @Operation(summary = "Reset user password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-    })
-    public String resetPassword(@Valid @RequestBody ValidatedEmailRequest validatedEmailRequest){
-        mailService.sendMessagesToEmailForResetPassword(validatedEmailRequest.email());
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.OK)
+    public String resetPassword(@Valid @RequestBody VerifyEmailRequest verifyEmailRequest,
+                                @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
+        var email = verifyEmailRequest.email();
+        if (userService.existsByEmail(email)) {
+            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
+            userService.saveCodeForResetPassword(email, codeId);
+        }
         return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
+    }
+
+    @GetMapping(value = ApiKey.USER_SERVICE_PASSWORD_CONFIRM)
+    @Operation(summary = "Confirm user password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "501", description = "NOT IMPLEMENTED")})
+    public void confirmPassword(@PathVariable UUID code) {
+        throw new NotImplementedException(getMessageSource(NOT_IMPLEMENTED));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")

@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.repository.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import space.obminyashka.items_exchange.config.AppConfig;
 import space.obminyashka.items_exchange.repository.enums.AgeRange;
 import space.obminyashka.items_exchange.repository.enums.DealType;
 import space.obminyashka.items_exchange.repository.enums.Gender;
@@ -48,7 +49,7 @@ public class Advertisement extends BaseEntity {
 
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
-    @Column(name = "default_photo")
+    @Column(name = "default_photo", length = AppConfig.COLUMN_MAX_LENGTH)
     private byte[] defaultPhoto;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

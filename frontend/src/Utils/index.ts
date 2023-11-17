@@ -1,35 +1,10 @@
 export {
-  addChild,
-  addPhone,
-  getArray,
-  deleteItem,
-  getMinDate,
-  putChildren,
-  fillUserInfo,
-  genderChange,
-  dateValidation,
-  getCurrentDate,
-  deleteLastPhone,
-  deleteReceivedChildren,
-  changePhoneInputOrChildren,
-} from './profileUtils';
-export {
-  setStorageUser,
+  addDataToUserInStorage,
   getStorageUser,
   getStorageLang,
-  removeTokenFromStorage,
 } from './storage';
-export {
-  errorHandling,
-  translateErrors,
-  permissionToSendProfile,
-  permissionToSendChildren,
-} from './error';
 
 export { city, district, area } from './getLocationProperties';
 
 export { useDelay } from './delay';
-export * as constants from './constants';
-export { convertToMB, options, isRightExtension } from './convertToMB';
-
-export { authError, isErrorArray, translateErrorsAuth } from './errorAuth';
+export { convertToUnitOfDigitalInformation, options, isImageExtensionSupported } from './convertToUnitOfDigitalInformation.ts';

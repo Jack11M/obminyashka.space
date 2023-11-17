@@ -12,23 +12,23 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.7</version>
+        <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
-        <java.version>20</java.version>
+        <java.version>21</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <swagger.version>2.1.0</swagger.version>
-        <liquibase.version>4.20.0</liquibase.version>
-        <db-rider.version>1.37.1</db-rider.version>
+        <swagger.version>2.2.0</swagger.version>
+        <liquibase.version>4.24.0</liquibase.version>
+        <db-rider.version>1.41.0</db-rider.version>
         <log4j2.version>2.20.0</log4j2.version>
-        <snakeyaml.version>2.0</snakeyaml.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
         <frontend-src-dir>${project.basedir}/frontend</frontend-src-dir>
         <node.version>v18.16.0</node.version>
-        <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
+        <frontend-maven-plugin.version>1.14.0</frontend-maven-plugin.version>
         <querydsl.version>5.0.0</querydsl.version>
     </properties>
 
@@ -223,6 +223,16 @@
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>test-frontend</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run test</arguments>
                         </configuration>
                     </execution>
                 </executions>
