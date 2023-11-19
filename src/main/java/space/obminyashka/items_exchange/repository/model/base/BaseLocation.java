@@ -33,11 +33,11 @@ public abstract class BaseLocation {
     @Column(name = "name_en", nullable = false)
     protected String nameEn;
 
-    public BaseLocation() {
+    protected BaseLocation() {
         this.id = UUID.randomUUID();
     }
 
-    public BaseLocation(String nameUa, String nameEn) {
+    protected BaseLocation(String nameUa, String nameEn) {
         this();
         this.nameUa = decoratePossibleApostropheChars(nameUa);
         this.nameEn = decoratePossibleApostropheChars(nameEn);

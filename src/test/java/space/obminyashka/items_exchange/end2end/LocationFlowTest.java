@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,13 +34,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
-import static space.obminyashka.items_exchange.util.data_producer.LocationDtoProducer.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID;
+import static space.obminyashka.items_exchange.util.data_producer.LocationDtoProducer.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @DBRider
 @AutoConfigureMockMvc
@@ -276,7 +274,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .andReturn();
         final var responseContent = response.getResponse().getContentAsString();
         int parsedLocationsQuantity = (responseContent.length() - responseContent.replaceAll("(UUID_TO_BIN)", "").length()) / "UUID_TO_BIN".length();
-        assertEquals(901, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertEquals(900, parsedLocationsQuantity, "Comparing unique locations number with result");
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
@@ -288,7 +286,7 @@ class LocationFlowTest extends BasicControllerTest {
                 "NOT VALID DATA",
                 status().isBadRequest());
 
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot construct"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot deserialize value"));
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
@@ -302,7 +300,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .andReturn();
         final var responseContent = response.getResponse().getContentAsString();
         int parsedLocationsQuantity = (responseContent.length() - responseContent.replaceAll("(UUID_TO_BIN)", "").length()) / "UUID_TO_BIN".length();
-        assertEquals(2716, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertEquals(2572, parsedLocationsQuantity, "Comparing unique locations number with result");
         assertTrue(Files.size(Path.of(locsInitFilePath)) > 0);
     }
 

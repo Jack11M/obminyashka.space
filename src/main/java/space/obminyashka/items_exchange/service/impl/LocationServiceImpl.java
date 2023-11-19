@@ -10,33 +10,25 @@ import space.obminyashka.items_exchange.repository.LocationRepository;
 import space.obminyashka.items_exchange.repository.model.Area;
 import space.obminyashka.items_exchange.repository.model.City;
 import space.obminyashka.items_exchange.repository.model.District;
+import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
+import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
 import space.obminyashka.items_exchange.rest.request.LocationRaw;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
-import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
-import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
-    private static final Set<String> INVALID_LOCATIONS_UA = Set.of(
-            "Україна,область Київська,місто Ірпінь,Селище міського типу Ворзель",
-            "Україна,область Київська,місто Буча");
-    private static final Set<String> INVALID_LOCATIONS_EN = Set.of(
-            "Ukraine,area Odeska,district Ovidiopolskyi,village Limanka",
-            "Ukraine,area Zakarpatska,district Mukachivskyi,city Mukacheve"
-    );
-
     private static final Map<Class<? extends BaseLocation>, String> LOCATION_STRING_MAP = Map.of(
             Area.class, "INSERT INTO area (id, name_en, name_ua) VALUES ",
             District.class, "INSERT INTO district (id, area_id, name_en, name_ua) VALUES ",
@@ -119,7 +111,11 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException {
-        List<Location> locations = mapCreatingDataToLocations(creatingData);
+        List<Location> locations = creatingData.stream()
+                .map(this::parseRawLocation)
+                .distinct()
+                .toList();
+
         String initString = "INSERT INTO location (id, city_ua, district_ua, area_ua, city_en, district_en, area_en) VALUES";
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locationInitFilePath), StandardCharsets.UTF_8)) {
             writer.append(initString);
@@ -134,26 +130,24 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public String createParsedLocsFile(List<LocationRaw> creatingData) throws IOException {
-        creatingData.sort(Comparator.comparing(LocationRaw::getAreaEn));
-
         Set<Area> areas = new HashSet<>();
         Set<District> districts = new HashSet<>();
         Set<City> cities = new HashSet<>();
 
         for (LocationRaw location : creatingData) {
-            Area area = new Area(location);
-            List<LocationRaw> locationsWithDistrictInSelectedArea = creatingData.stream()
-                    .sorted(Comparator.comparing(LocationRaw::getDistrictEn))
-                    .filter(locationRaw -> locationRaw.equalsTo(area))
-                    .toList();
+            if (!location.getAreaUa().isBlank() && !location.getAreaEn().isBlank()) {
+                Area area = new Area(location);
+                areas.add(area);
 
-            locationsWithDistrictInSelectedArea.stream()
-                    .map(locationRaw -> new District(locationRaw, area))
-                    .forEach(district -> {
-                        districts.add(district);
-                        cities.addAll(getCities(locationsWithDistrictInSelectedArea, district));
-                    });
-            areas.add(area);
+                if (!location.getDistrictUa().isBlank() && !location.getDistrictEn().isBlank()) {
+                    District district = new District(location, area);
+                    districts.add(district);
+
+                    if (!location.getCityUa().isBlank() && !location.getCityEn().isBlank()) {
+                        cities.add(new City(location, district));
+                    }
+                }
+            }
         }
 
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locsInitFilePath), StandardCharsets.UTF_8)) {
@@ -165,20 +159,12 @@ public class LocationServiceImpl implements LocationService {
         return Files.readString(Path.of(locsInitFilePath), StandardCharsets.UTF_8);
     }
 
-    private List<City> getCities(List<LocationRaw> locationsCities, District district) {
-        return locationsCities.stream()
-                .filter(locationRaw -> locationRaw.equalsTo(district))
-                .map(locationCity -> new City(locationCity, district))
-                .toList();
-    }
-
     private <T extends BaseLocation> void writeLocationsToWriter(BufferedWriter writer, Set<T> locations, Class<T> locationClass) throws IOException {
         StringJoiner stringJoiner = new StringJoiner(",", LOCATION_STRING_MAP.get(locationClass), "");
         locations.forEach(location -> stringJoiner.add(location.formatForSQL()));
         writer.append(stringJoiner.toString());
         writer.append(";");
     }
-
 
     @Override
     public List<LocationNameView> getAllCityByDistrictId(UUID id) {
@@ -188,23 +174,6 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public boolean existDistricts(UUID id) {
         return districtRepository.existsById(id);
-    }
-
-    private List<Location> mapCreatingDataToLocations(List<RawLocation> creatingData) {
-        return creatingData.stream()
-                .filter(Predicate.not(LocationServiceImpl::isLocationInvalid))
-                .map(this::parseRawLocation)
-                .distinct()
-                .toList();
-    }
-
-    private static boolean isLocationInvalid(RawLocation rawLocation) {
-        if (rawLocation.getFullAddressEn().isBlank()) {
-            return true;
-        }
-        final var isInvalidEnglish = INVALID_LOCATIONS_EN.stream().anyMatch(it -> rawLocation.getFullAddressEn().startsWith(it));
-        final var isInvalidUkrainian = INVALID_LOCATIONS_UA.stream().anyMatch(it -> rawLocation.getFullAddressUa().startsWith(it));
-        return isInvalidEnglish || isInvalidUkrainian;
     }
 
     /**
@@ -227,7 +196,7 @@ public class LocationServiceImpl implements LocationService {
         final var blankLocation = new Location(UUID.randomUUID(), "", "", "", "", "", "", null);
         int cityIndexCounter = 1;
 
-        if (enSplit[1].contains("area") || enSplit[1].contains("region")) {
+        if (enSplit[1].contains("area")) {
             blankLocation.setAreaEN(extractLocationPart(enSplit[1]));
             blankLocation.setAreaUA(extractLocationPart(uaSplit[1]));
             cityIndexCounter++;
@@ -250,19 +219,18 @@ public class LocationServiceImpl implements LocationService {
      * @return capital part of the string without prefix. Example: 'Kyivska'
      */
     private String extractLocationPart(String unparsedLocation) {
-        final var pgtPrefixLength = "PGT".length();
-        return unparsedLocation.chars().skip(pgtPrefixLength)
+        return unparsedLocation.chars()
                 .filter(Character::isUpperCase)
                 .findFirst()
                 .stream()
-                .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter, pgtPrefixLength)))
+                .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter)))
                 .map(this::decoratePossibleApostropheChars)
                 .findFirst()
                 .orElse("");
     }
 
     private String decoratePossibleApostropheChars(String stringToDecorate) {
-        return stringToDecorate.replace("’", "'").replace("'", "\\'");
+        return stringToDecorate.replace("'", "\\'");
     }
 
     private static String locationToFormatterString(Location location) {
