@@ -168,14 +168,16 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
-    public String resetPassword(@Valid @RequestBody VerifyEmailRequest verifyEmailRequest,
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody VerifyEmailRequest verifyEmailRequest,
                                 @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var email = verifyEmailRequest.email();
+        var resultMessage = getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
         if (userService.existsByEmail(email)) {
             UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
             userService.saveCodeForResetPassword(email, codeId);
+            return new ResponseEntity<>(resultMessage, HttpStatus.OK);
         }
-        return getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
+        return new ResponseEntity<>(resultMessage, HttpStatus.OK);
     }
 
     @GetMapping(value = ApiKey.USER_SERVICE_PASSWORD_CONFIRM)
