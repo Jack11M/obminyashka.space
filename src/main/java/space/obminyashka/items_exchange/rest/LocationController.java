@@ -189,7 +189,7 @@ public class LocationController {
                 .filter(Predicate.not(locationRaw -> locationRaw.getAreaEn().isEmpty()))
                 .toList();
         try {
-            return new ResponseEntity<>(locationService.createParsedLocsFile(locations), HttpStatus.OK);
+            return new ResponseEntity<>((locationService.createParsedLocsFile(locations)), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

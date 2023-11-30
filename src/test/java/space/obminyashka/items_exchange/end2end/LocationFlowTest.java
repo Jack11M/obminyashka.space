@@ -298,9 +298,7 @@ class LocationFlowTest extends BasicControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        final var responseContent = response.getResponse().getContentAsString();
-        int parsedLocationsQuantity = (responseContent.length() - responseContent.replaceAll("(UUID_TO_BIN)", "").length()) / "UUID_TO_BIN".length();
-        assertEquals(2572, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertEquals("1384", response.getResponse().getContentAsString(), "number of locations in the file");
         assertTrue(Files.size(Path.of(locsInitFilePath)) > 0);
     }
 

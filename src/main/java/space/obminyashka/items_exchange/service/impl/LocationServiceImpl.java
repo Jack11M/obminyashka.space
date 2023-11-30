@@ -130,33 +130,31 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public String createParsedLocsFile(List<LocationRaw> creatingData) throws IOException {
-        Set<Area> areas = new HashSet<>();
-        Set<District> districts = new HashSet<>();
-        Set<City> cities = new HashSet<>();
+        Map<String, Area> areas = new HashMap<>();
+        Map<String, District> districts = new HashMap<>();
+        Map<String, City> cities = new HashMap<>();
 
         for (LocationRaw location : creatingData) {
             if (!location.getAreaUa().isBlank() && !location.getAreaEn().isBlank()) {
-                Area area = new Area(location);
-                areas.add(area);
+                Area area = areas.computeIfAbsent(location.getAreaEn(), key -> new Area(location));
 
                 if (!location.getDistrictUa().isBlank() && !location.getDistrictEn().isBlank()) {
-                    District district = new District(location, area);
-                    districts.add(district);
+                    District district = districts.computeIfAbsent(location.getDistrictEn(), key -> new District(location, area));
 
                     if (!location.getCityUa().isBlank() && !location.getCityEn().isBlank()) {
-                        cities.add(new City(location, district));
+                        cities.computeIfAbsent(location.getCityEn(), key -> new City(location, district));
                     }
                 }
             }
         }
 
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locsInitFilePath), StandardCharsets.UTF_8)) {
-            writeLocationsToWriter(writer, areas, Area.class);
-            writeLocationsToWriter(writer, districts, District.class);
-            writeLocationsToWriter(writer, cities, City.class);
+            writeLocationsToWriter(writer, new HashSet<>(areas.values()), Area.class);
+            writeLocationsToWriter(writer, new HashSet<>(districts.values()), District.class);
+            writeLocationsToWriter(writer, new HashSet<>(cities.values()), City.class);
         }
 
-        return Files.readString(Path.of(locsInitFilePath), StandardCharsets.UTF_8);
+        return String.valueOf(areas.values().size() + districts.values().size() + cities.values().size());
     }
 
     private <T extends BaseLocation> void writeLocationsToWriter(BufferedWriter writer, Set<T> locations, Class<T> locationClass) throws IOException {
