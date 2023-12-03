@@ -174,7 +174,6 @@ public class LocationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
     @PreAuthorize(HAS_ROLE_ADMIN)
     @PostMapping(value = ApiKey.LOCATIONS_INIT_LOCS, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Setting up areas from request", description = "ADMIN ONLY")
@@ -189,10 +188,9 @@ public class LocationController {
                 .filter(Predicate.not(locationRaw -> locationRaw.getAreaEn().isEmpty()))
                 .toList();
         try {
-            return new ResponseEntity<>((locationService.createParsedLocsFile(locations)), HttpStatus.OK);
+            return new ResponseEntity<>(locationService.createParsedLocsFile(locations), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
 }
