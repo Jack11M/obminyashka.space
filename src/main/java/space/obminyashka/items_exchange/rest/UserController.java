@@ -103,8 +103,8 @@ public class UserController {
             @Parameter(hidden = true) Authentication authentication,
             @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
             @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "size", description = "Number of records per page. Default value: 6")
-            @RequestParam(required = false, defaultValue = "6") @Positive int size) {
+            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
+            @RequestParam(required = false, defaultValue = "12") @Positive int size) {
         return advService.findAllFavorite(authentication.getName(), PageRequest.of(page, size));
     }
 
