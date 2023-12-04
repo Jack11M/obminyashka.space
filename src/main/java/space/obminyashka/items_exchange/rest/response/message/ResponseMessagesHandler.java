@@ -70,6 +70,7 @@ public class ResponseMessagesHandler {
         public static final String LOCATION_ALREADY_EXIST = "exception.location.exist";
         public static final String EMAIL_NOT_FOUND_OR_EXPIRED = "exception.email.validation-code";
         public static final String NOT_IMPLEMENTED = "exception.not-implemented";
+        public static final String IMAGE_BY_ADV_NOT_FOUND = "exception.image.not-found-by-existed-adv";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

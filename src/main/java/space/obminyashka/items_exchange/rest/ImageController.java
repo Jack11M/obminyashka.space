@@ -33,8 +33,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 @RestController
 @Tag(name = "Image")
@@ -70,7 +69,7 @@ public class ImageController {
             @PathVariable("advertisement_id") UUID id) throws EntityNotFoundException {
         List<ImageView> listImagesByAdvertisement = imageService.getByAdvertisementId(id);
         if (listImagesByAdvertisement.isEmpty()) {
-            throw new EntityNotFoundException(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+            throw new EntityNotFoundException(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
         }
         return listImagesByAdvertisement;
     }
