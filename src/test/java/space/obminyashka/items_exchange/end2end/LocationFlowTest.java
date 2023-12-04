@@ -298,7 +298,7 @@ class LocationFlowTest extends BasicControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertEquals("1384", response.getResponse().getContentAsString(), "number of locations in the file");
+        assertEquals("1438", response.getResponse().getContentAsString(), "number of locations in the file");
         assertTrue(Files.size(Path.of(locsInitFilePath)) > 0);
     }
 

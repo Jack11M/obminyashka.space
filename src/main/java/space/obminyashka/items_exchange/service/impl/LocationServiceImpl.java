@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -130,22 +131,17 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public String createParsedLocsFile(List<LocationRaw> creatingData) throws IOException {
-        Map<String, Area> areas = new HashMap<>();
-        Map<String, District> districts = new HashMap<>();
-        Map<String, City> cities = new HashMap<>();
+        Map<Area, Area> areas = new HashMap<>();
+        Map<District, District> districts = new HashMap<>();
+        Map<City, City> cities = new HashMap<>();
 
         for (LocationRaw location : creatingData) {
-            if (!location.getAreaUa().isBlank() && !location.getAreaEn().isBlank()) {
-                Area area = areas.computeIfAbsent(location.getAreaEn(), key -> new Area(location));
+            Area area = areas.computeIfAbsent(new Area(location), Function.identity());
 
-                if (!location.getDistrictUa().isBlank() && !location.getDistrictEn().isBlank()) {
-                    District district = districts.computeIfAbsent(location.getDistrictEn(), key -> new District(location, area));
+            District district = districts.computeIfAbsent(new District(location, area), Function.identity());
 
-                    if (!location.getCityUa().isBlank() && !location.getCityEn().isBlank()) {
-                        cities.computeIfAbsent(location.getCityEn(), key -> new City(location, district));
-                    }
-                }
-            }
+            cities.computeIfAbsent(new City(location, district), Function.identity());
+
         }
 
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locsInitFilePath), StandardCharsets.UTF_8)) {
@@ -154,8 +150,9 @@ public class LocationServiceImpl implements LocationService {
             writeLocationsToWriter(writer, new HashSet<>(cities.values()), City.class);
         }
 
-        return String.valueOf(areas.values().size() + districts.values().size() + cities.values().size());
+        return String.valueOf(areas.size() + districts.size() + cities.size());
     }
+
 
     private <T extends BaseLocation> void writeLocationsToWriter(BufferedWriter writer, Set<T> locations, Class<T> locationClass) throws IOException {
         StringJoiner stringJoiner = new StringJoiner(",", LOCATION_STRING_MAP.get(locationClass), "");

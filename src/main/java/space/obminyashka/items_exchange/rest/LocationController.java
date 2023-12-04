@@ -185,7 +185,6 @@ public class LocationController {
     public ResponseEntity<String> createLocsInitFile(@RequestBody RequestLocation requestLocation) {
         final var locations = requestLocation.getLocationRaws().parallelStream()
                 .distinct()
-                .filter(Predicate.not(locationRaw -> locationRaw.getAreaEn().isEmpty()))
                 .toList();
         try {
             return new ResponseEntity<>(locationService.createParsedLocsFile(locations), HttpStatus.OK);
