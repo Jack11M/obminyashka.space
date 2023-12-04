@@ -113,8 +113,10 @@ public class UserController {
     @Operation(summary = "Add user's favorite advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "ACCEPTED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
-            @ApiResponse(responseCode = "404", description = "NOT_FOUND")})
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void addFavoriteAdvertisement(
             @Parameter(hidden = true) Authentication authentication,
