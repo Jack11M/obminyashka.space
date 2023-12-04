@@ -40,8 +40,7 @@ import static space.obminyashka.items_exchange.rest.api.ApiKey.IMAGE_BY_ADV_ID;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.IMAGE_IN_ADV_COUNT;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.IMAGE_NOT_EXISTED_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -129,12 +128,12 @@ class ImageControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
-    void getByAdvertisementId_shouldReturn404WhenAdvertisementIsNotExist() throws Exception {
+    void getByAdvertisementId_shouldReturn404WhenImageIsNotExist() throws Exception {
         when(imageService.getByAdvertisementId(advertisementId)).thenReturn(new ArrayList<>());
 
         final var mvcResult = sendUriAndGetMvcResult(get(IMAGE_BY_ADV_ID, advertisementId), status().isNotFound());
         assertThat(mvcResult.getResolvedException()).isInstanceOf(EntityNotFoundException.class)
-                .hasMessage(getMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+                .hasMessage(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
     }
 
     @WithMockUser("admin")
