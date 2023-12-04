@@ -183,11 +183,8 @@ public class LocationController {
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> createLocsInitFile(@RequestBody RequestLocation requestLocation) {
-        final var locations = requestLocation.getLocationRaws().parallelStream()
-                .distinct()
-                .toList();
         try {
-            return new ResponseEntity<>(locationService.createParsedLocsFile(locations), HttpStatus.OK);
+            return new ResponseEntity<>(locationService.createParsedLocsFile(requestLocation.getLocationRaws()), HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
