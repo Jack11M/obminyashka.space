@@ -3,18 +3,14 @@ package space.obminyashka.items_exchange.repository.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
 import space.obminyashka.items_exchange.rest.request.LocationRaw;
 
 @Entity
-@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class City extends BaseLocation {

@@ -4,10 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
@@ -15,21 +13,17 @@ import java.util.UUID;
 
 @MappedSuperclass
 @SuperBuilder
-@AllArgsConstructor
 @Getter
 @Setter
 public abstract class BaseLocation {
 
-    @Accessors(chain = true)
     @Id
     @GeneratedValue
     protected UUID id;
 
-    @Accessors(chain = true)
     @Column(name = "name_ua", nullable = false)
     protected String nameUa;
 
-    @Accessors(chain = true)
     @Column(name = "name_en", nullable = false)
     protected String nameEn;
 

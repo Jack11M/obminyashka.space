@@ -6,12 +6,10 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
 import space.obminyashka.items_exchange.rest.request.LocationRaw;
 
 @Entity
-@SuperBuilder
 @NoArgsConstructor
 @Getter
 @Setter
