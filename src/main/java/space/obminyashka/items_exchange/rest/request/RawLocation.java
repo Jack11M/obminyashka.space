@@ -11,7 +11,15 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class RawLocation {
     @JsonSetter(nulls = Nulls.SKIP)
-    private String fullAddressUa = "";
+    private String areaUa = "";
     @JsonSetter(nulls = Nulls.SKIP)
-    private String fullAddressEn = "";
+    private String districtUa = "";
+    @JsonSetter(nulls = Nulls.SKIP)
+    private String cityUa = "";
+    @JsonSetter(nulls = Nulls.SKIP)
+    private String areaEn = "";
+    @JsonSetter(nulls = Nulls.SKIP)
+    private String districtEn = "";
+    @JsonSetter(nulls = Nulls.SKIP)
+    private String cityEn = "";
 }

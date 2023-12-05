@@ -167,26 +167,11 @@ public class LocationController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestBody List<RawLocation> rawLocations) {
+    public ResponseEntity<String> createLocationsInitFile(@RequestBody RequestLocation requestLocations) {
         try {
-            return new ResponseEntity<>(locationService.createParsedLocationsFile(rawLocations), HttpStatus.OK);
+            return new ResponseEntity<>(locationService.createParsedLocationsFile(requestLocations.getRawLocations()), HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-    @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping(value = ApiKey.LOCATIONS_INIT_LOCS, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    @Operation(summary = "Setting up areas from request", description = "ADMIN ONLY")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocsInitFile(@RequestBody RequestLocation requestLocation) {
-        try {
-            return new ResponseEntity<>(locationService.createParsedLocsFile(requestLocation.getLocationRaws()), HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

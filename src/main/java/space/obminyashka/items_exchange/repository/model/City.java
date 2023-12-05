@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
-import space.obminyashka.items_exchange.rest.request.LocationRaw;
+import space.obminyashka.items_exchange.rest.request.RawLocation;
 
 @Entity
 @NoArgsConstructor
@@ -19,8 +19,8 @@ public class City extends BaseLocation {
     @JoinColumn(name = "district_id")
     private District district;
 
-    public City(LocationRaw locationRaw, District district) {
-        super(locationRaw.getCityUa(), locationRaw.getCityEn());
+    public City(RawLocation rawLocation, District district) {
+        super(rawLocation.getCityUa(), rawLocation.getCityEn());
         this.district = district;
     }
 

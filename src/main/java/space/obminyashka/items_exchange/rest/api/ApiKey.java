@@ -42,7 +42,6 @@ public class ApiKey {
     public static final String LOCATION_DISTRICT = LOCATION + "/district";
     public static final String LOCATION_CITY = LOCATION + "/city";
     public static final String LOCATIONS_INIT = LOCATION + "/locations-init";
-    public static final String LOCATIONS_INIT_LOCS = LOCATION + "/locs";
     // Subcategory API
     public static final String SUBCATEGORY = API + "/subcategory";
     public static final String SUBCATEGORY_ID = SUBCATEGORY + "/{subcategory_id}";

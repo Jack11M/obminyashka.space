@@ -49,12 +49,6 @@ class LocationFlowTest extends BasicControllerTest {
     @Value("${test.data.location.init.file.path}")
     private String pathToFileParseLocationsFrom;
 
-    @Value("${test.data.loc.init.file.path}")
-    private String pathToFileParseLocFrom;
-
-    @Value("${locs.init.file.path}")
-    private String locsInitFilePath;
-
     @Value("${location.init.file.path}")
     private String pathToCreateLocationsInitFile;
 
@@ -272,9 +266,7 @@ class LocationFlowTest extends BasicControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        final var responseContent = response.getResponse().getContentAsString();
-        int parsedLocationsQuantity = (responseContent.length() - responseContent.replaceAll("(UUID_TO_BIN)", "").length()) / "UUID_TO_BIN".length();
-        assertEquals(900, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertEquals("1438", response.getResponse().getContentAsString(), "number of locations in the file");
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
@@ -285,31 +277,6 @@ class LocationFlowTest extends BasicControllerTest {
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(LOCATIONS_INIT),
                 "NOT VALID DATA",
                 status().isBadRequest());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot deserialize value"));
-    }
-
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Test
-    @DataSet("database_init.yml")
-    void createAreasInitFile_whenDataIsValid_shouldCreateFileAndReturnItsContent() throws Exception {
-        MvcResult response = mockMvc.perform(post(LOCATIONS_INIT_LOCS)
-                        .content(Files.readString(Path.of(pathToFileParseLocFrom), StandardCharsets.UTF_8))
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-        assertEquals("1438", response.getResponse().getContentAsString(), "number of locations in the file");
-        assertTrue(Files.size(Path.of(locsInitFilePath)) > 0);
-    }
-
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    @Test
-    @DataSet("database_init.yml")
-    void createAreasInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
-        MvcResult mvcResult = sendDtoAndGetMvcResult(post(LOCATIONS_INIT_LOCS),
-                "NOT VALID DATA",
-                status().isBadRequest());
-
-        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot construct"));
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot construct instance"));
     }
 }

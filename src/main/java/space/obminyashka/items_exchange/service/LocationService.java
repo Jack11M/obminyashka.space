@@ -1,7 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
-import space.obminyashka.items_exchange.rest.request.LocationRaw;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
@@ -86,20 +85,13 @@ public interface LocationService {
     LocationDto update(LocationDto locationDto);
 
     /**
-     * Creates file to initialize locations in database.
+     * Creates file to initialize areas in database.
      * @param creatingData must match the regular expression for creating of initialization file.
      * @return content of newly created file.
      * @throws IOException when there is error of writing data to newly created locations file.
      */
     String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException;
 
-    /**
-     * Creates file to initialize areas in database.
-     * @param creatingData must match the regular expression for creating of initialization file.
-     * @return content of newly created file.
-     * @throws IOException when there is error of writing data to newly created locations file.
-     */
-    String createParsedLocsFile(List<LocationRaw> creatingData) throws IOException;
 
     List<LocationNameView> getAllCityByDistrictId(UUID id);
 
