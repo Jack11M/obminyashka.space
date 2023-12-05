@@ -1,29 +1,21 @@
 package space.obminyashka.items_exchange.repository.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.UUID;
+import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
+import space.obminyashka.items_exchange.rest.request.LocationRaw;
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class Area {
-    @Id
-    @GeneratedValue
-    private UUID id;
+public class Area extends BaseLocation {
 
-    @Column(name = "name_ua", nullable = false)
-    private String nameUa;
+    public Area(LocationRaw locationRaw) {
+        super(locationRaw.getAreaUa(), locationRaw.getAreaEn());
+    }
 
-    @Column(name = "name_en", nullable = false)
-    private String nameEn;
+    @Override
+    public String formatForSQL() {
+        return "(UUID_TO_BIN('%s'),'%s','%s') ".formatted(id, nameEn, nameUa);
+    }
+
 }

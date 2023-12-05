@@ -34,11 +34,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
-import static space.obminyashka.items_exchange.util.data_producer.LocationDtoProducer.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID;
+import static space.obminyashka.items_exchange.util.data_producer.LocationDtoProducer.*;
 
 @SpringBootTest
 @DBRider
@@ -48,6 +48,13 @@ class LocationFlowTest extends BasicControllerTest {
 
     @Value("${test.data.location.init.file.path}")
     private String pathToFileParseLocationsFrom;
+
+    @Value("${test.data.loc.init.file.path}")
+    private String pathToFileParseLocFrom;
+
+    @Value("${locs.init.file.path}")
+    private String locsInitFilePath;
+
     @Value("${location.init.file.path}")
     private String pathToCreateLocationsInitFile;
 
@@ -267,7 +274,7 @@ class LocationFlowTest extends BasicControllerTest {
                 .andReturn();
         final var responseContent = response.getResponse().getContentAsString();
         int parsedLocationsQuantity = (responseContent.length() - responseContent.replaceAll("(UUID_TO_BIN)", "").length()) / "UUID_TO_BIN".length();
-        assertEquals(901, parsedLocationsQuantity, "Comparing unique locations number with result");
+        assertEquals(900, parsedLocationsQuantity, "Comparing unique locations number with result");
         assertTrue(Files.size(Path.of(pathToCreateLocationsInitFile)) > 0);
     }
 
@@ -276,6 +283,30 @@ class LocationFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void createLocationsInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(post(LOCATIONS_INIT),
+                "NOT VALID DATA",
+                status().isBadRequest());
+
+        assertTrue(mvcResult.getResponse().getContentAsString().contains("JSON parse error: Cannot deserialize value"));
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DataSet("database_init.yml")
+    void createAreasInitFile_whenDataIsValid_shouldCreateFileAndReturnItsContent() throws Exception {
+        MvcResult response = mockMvc.perform(post(LOCATIONS_INIT_LOCS)
+                        .content(Files.readString(Path.of(pathToFileParseLocFrom), StandardCharsets.UTF_8))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        assertEquals("1438", response.getResponse().getContentAsString(), "number of locations in the file");
+        assertTrue(Files.size(Path.of(locsInitFilePath)) > 0);
+    }
+
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Test
+    @DataSet("database_init.yml")
+    void createAreasInitFile_whenDataIsNotValid_shouldReturnBadRequestAndProperMessage() throws Exception {
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(LOCATIONS_INIT_LOCS),
                 "NOT VALID DATA",
                 status().isBadRequest());
 

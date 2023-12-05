@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.rest;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,13 +17,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
-import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.rest.request.LocationsRequest;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.rest.request.RawLocation;
+import space.obminyashka.items_exchange.rest.request.RequestLocation;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -32,8 +31,9 @@ import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ILLEGAL_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID;
 
 @RestController
 @Tag(name = "Location")
@@ -167,10 +167,25 @@ public class LocationController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestBody LocationsRequest locationsRequest) {
+    public ResponseEntity<String> createLocationsInitFile(@RequestBody List<RawLocation> rawLocations) {
         try {
-            return new ResponseEntity<>(locationService.createParsedLocationsFile(locationsRequest.rawLocations), HttpStatus.OK);
-        } catch (IOException e) {
+            return new ResponseEntity<>(locationService.createParsedLocationsFile(rawLocations), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @PreAuthorize(HAS_ROLE_ADMIN)
+    @PostMapping(value = ApiKey.LOCATIONS_INIT_LOCS, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Operation(summary = "Setting up areas from request", description = "ADMIN ONLY")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> createLocsInitFile(@RequestBody RequestLocation requestLocation) {
+        try {
+            return new ResponseEntity<>(locationService.createParsedLocsFile(requestLocation.getLocationRaws()), HttpStatus.OK);
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
