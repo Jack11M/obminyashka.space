@@ -11,7 +11,7 @@ import space.obminyashka.items_exchange.repository.DistrictRepository;
 import space.obminyashka.items_exchange.repository.model.Area;
 import space.obminyashka.items_exchange.repository.model.District;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
-import space.obminyashka.items_exchange.rest.request.LocationRaw;
+import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.impl.LocationServiceImpl;
 
@@ -39,14 +39,14 @@ class LocationServiceTest {
 
     @BeforeEach
     void setUp() {
-        LocationRaw locationRaw = new LocationRaw();
-        locationRaw.setAreaEn("Odeska");
-        locationRaw.setAreaUa("Одеська");
-        locationRaw.setDistrictEn("Limanskii district");
-        locationRaw.setDistrictUa("Лиманський район");
-        area = new Area(locationRaw);
+        RawLocation rawLocation = new RawLocation();
+        rawLocation.setAreaEn("Odeska");
+        rawLocation.setAreaUa("Одеська");
+        rawLocation.setDistrictEn("Limanskii district");
+        rawLocation.setDistrictUa("Лиманський район");
+        area = new Area(rawLocation);
         areaNameView = new LocationNameView(area.getId(), area.getNameUa(), area.getNameEn());
-        district = new District(locationRaw,area);
+        district = new District(rawLocation,area);
         districtNameView = new LocationNameView(district.getId(), district.getNameUa(), district.getNameEn());
     }
     @Test

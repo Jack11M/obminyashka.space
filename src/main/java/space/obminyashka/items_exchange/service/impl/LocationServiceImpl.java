@@ -14,7 +14,6 @@ import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.repository.model.base.BaseLocation;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
-import space.obminyashka.items_exchange.rest.request.LocationRaw;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
@@ -43,11 +42,9 @@ public class LocationServiceImpl implements LocationService {
     private final CityRepository cityRepository;
 
     private final LocationMapper locationMapper;
+
     @Value("${location.init.file.path}")
     private String locationInitFilePath;
-
-    @Value("${locs.init.file.path}")
-    private String locsInitFilePath;
 
     @Override
     public List<LocationDto> findAll() {
@@ -112,39 +109,19 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public String createParsedLocationsFile(List<RawLocation> creatingData) throws IOException {
-        List<Location> locations = creatingData.stream()
-                .map(this::parseRawLocation)
-                .distinct()
-                .toList();
-
-        String initString = "INSERT INTO location (id, city_ua, district_ua, area_ua, city_en, district_en, area_en) VALUES";
-        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locationInitFilePath), StandardCharsets.UTF_8)) {
-            writer.append(initString);
-            for (int i = 0; i < locations.size(); i++) {
-                Location location = locations.get(i);
-                writer.append(locationToFormatterString(location));
-                if (i < locations.size() - 1) writer.append(",");
-            }
-        }
-        return Files.readString(Path.of(locationInitFilePath).toAbsolutePath(), StandardCharsets.UTF_8);
-    }
-
-    @Override
-    public String createParsedLocsFile(List<LocationRaw> creatingData) throws IOException {
         Map<Area, Area> areas = new HashMap<>();
         Map<District, District> districts = new HashMap<>();
         Map<City, City> cities = new HashMap<>();
 
-        for (LocationRaw location : creatingData) {
+        for (RawLocation location : creatingData) {
             Area area = areas.computeIfAbsent(new Area(location), Function.identity());
 
             District district = districts.computeIfAbsent(new District(location, area), Function.identity());
 
             cities.computeIfAbsent(new City(location, district), Function.identity());
-
         }
 
-        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locsInitFilePath), StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(locationInitFilePath), StandardCharsets.UTF_8)) {
             writeLocationsToWriter(writer, new HashSet<>(areas.values()), Area.class);
             writeLocationsToWriter(writer, new HashSet<>(districts.values()), District.class);
             writeLocationsToWriter(writer, new HashSet<>(cities.values()), City.class);
@@ -152,7 +129,6 @@ public class LocationServiceImpl implements LocationService {
 
         return String.valueOf(areas.size() + districts.size() + cities.size());
     }
-
 
     private <T extends BaseLocation> void writeLocationsToWriter(BufferedWriter writer, Set<T> locations, Class<T> locationClass) throws IOException {
         StringJoiner stringJoiner = new StringJoiner(",", LOCATION_STRING_MAP.get(locationClass), "");
@@ -171,71 +147,4 @@ public class LocationServiceImpl implements LocationService {
         return districtRepository.existsById(id);
     }
 
-    /**
-     * The method extracts names of Area, District and City from three possible ways of full address incoming data
-     * and populate a new Location object with it
-     * <p>
-     * Incoming data possible examples:
-     * <p><h3>Full data (Area, District, City):</h3> Ukraine,region Luhanska,district Starobilskyi,city Starobilsk,street Tsentralna,building 1</p>
-     * <p><h3>Partial data (Area, City):</h3> Ukraine,region Khersonska,city Kherson,street Potomkinska,building 2</p>
-     * <p><h3>Minimal data (City):</h3> Ukraine,city Kyiv,street Danyla Shcherbakivskoho,building 3</p>
-     * </p>
-     *
-     * @param rawLocation location in EN and UA locale full addresses
-     * @return new Location populated with data
-     */
-    private Location parseRawLocation(RawLocation rawLocation) {
-        var enSplit = rawLocation.getFullAddressEn().split(",");
-        var uaSplit = rawLocation.getFullAddressUa().split(",");
-
-        final var blankLocation = new Location(UUID.randomUUID(), "", "", "", "", "", "", null);
-        int cityIndexCounter = 1;
-
-        if (enSplit[1].contains("area")) {
-            blankLocation.setAreaEN(extractLocationPart(enSplit[1]));
-            blankLocation.setAreaUA(extractLocationPart(uaSplit[1]));
-            cityIndexCounter++;
-
-            if (enSplit[2].contains("district")) {
-                blankLocation.setDistrictEN(extractLocationPart(enSplit[2]));
-                blankLocation.setDistrictUA(extractLocationPart(uaSplit[2]));
-                cityIndexCounter++;
-            }
-        }
-        blankLocation.setCityEN(extractLocationPart(enSplit[cityIndexCounter]));
-        blankLocation.setCityUA(extractLocationPart(uaSplit[cityIndexCounter]));
-        return blankLocation;
-    }
-
-    /**
-     * Extracts a string part that starts from capital letter
-     *
-     * @param unparsedLocation string with a prefix object type and its name. Example: 'region Kyivska'
-     * @return capital part of the string without prefix. Example: 'Kyivska'
-     */
-    private String extractLocationPart(String unparsedLocation) {
-        return unparsedLocation.chars()
-                .filter(Character::isUpperCase)
-                .findFirst()
-                .stream()
-                .mapToObj(firstCapitalLetter -> unparsedLocation.substring(unparsedLocation.indexOf(firstCapitalLetter)))
-                .map(this::decoratePossibleApostropheChars)
-                .findFirst()
-                .orElse("");
-    }
-
-    private String decoratePossibleApostropheChars(String stringToDecorate) {
-        return stringToDecorate.replace("'", "\\'");
-    }
-
-    private static String locationToFormatterString(Location location) {
-        return String.format(" (UUID_TO_BIN('%s'),'%s','%s','%s','%s','%s','%s')",
-                location.getId(),
-                location.getCityUA(),
-                location.getDistrictUA(),
-                location.getAreaUA(),
-                location.getCityEN(),
-                location.getDistrictEN(),
-                location.getAreaEN());
-    }
 }

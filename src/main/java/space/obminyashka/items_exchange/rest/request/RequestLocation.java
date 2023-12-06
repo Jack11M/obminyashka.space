@@ -10,5 +10,5 @@ import java.util.List;
 @Setter
 public class RequestLocation {
     @JsonProperty("location")
-    private List<LocationRaw> locationRaws;
+    private List<RawLocation> rawLocations;
 }
