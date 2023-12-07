@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -187,11 +188,13 @@ public class AdvertisementController {
     @Operation(summary = "Delete an existed advertisement")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteAdvertisement(@PathVariable("advertisement_id") UUID id,
-                                    @Parameter(hidden = true) Authentication authentication) throws IllegalOperationException {
+                                    @Parameter(hidden = true) Authentication authentication)
+            throws IllegalOperationException, EntityNotFoundException {
+
         advertisementService.validateUserAsAdvertisementOwner(id, authentication.getName());
         advertisementService.remove(id);
     }
