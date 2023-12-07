@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import space.obminyashka.items_exchange.repository.AdvertisementRepository;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.service.impl.AdvertisementServiceImpl;
 import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
@@ -53,7 +55,7 @@ class AdvertisementServiceTest {
     void addFavorite_WhenDataCorrect_Successfully() {
         final var existedAdvId = UUID.randomUUID();
         final var existedUsername = "user";
-        
+
         advertisementService.addFavorite(existedAdvId, existedUsername);
 
         verify(advertisementRepository).addFavoriteAdvertisementsByUsername(existedUsername, existedAdvId);
@@ -81,8 +83,38 @@ class AdvertisementServiceTest {
                 .thenReturn(exceptedNumberOfDeletedAdv);
 
         assertAll(
-                () -> assertThrows(EntityIdNotFoundException.class, () -> advertisementService.deleteFavorite(existedAdvId, existedUsername)),
-                () -> verify(advertisementRepository).removeFavoriteAdvertisementsByIdAndUserUsername(existedAdvId, existedUsername)
+                () -> assertThrows(EntityIdNotFoundException.class,
+                        () -> advertisementService.deleteFavorite(existedAdvId, existedUsername)),
+                () -> verify(advertisementRepository)
+                        .removeFavoriteAdvertisementsByIdAndUserUsername(existedAdvId, existedUsername)
+        );
+    }
+
+    @Test
+    void deleteAdvertisement_whenIncorrectId_shouldThrowException() {
+        UUID nonExistentId = UUID.randomUUID();
+
+        when(advertisementRepository.existsAdvertisementById(nonExistentId)).thenReturn(false);
+
+        assertAll(
+                () -> assertThrows(EntityNotFoundException.class,
+                        () -> advertisementService.validateUserAsAdvertisementOwner(nonExistentId, anyString())),
+                () -> verify(advertisementRepository).existsAdvertisementById(nonExistentId)
+        );
+    }
+
+    @Test
+    void deleteAdvertisement_whenIncorrectOwner_shouldThrowException() {
+        UUID nonExistentId = UUID.randomUUID();
+        String nameOwner = "nameOwner";
+
+        when(advertisementRepository.existsAdvertisementById(nonExistentId)).thenReturn(true);
+        when(advertisementRepository.existsAdvertisementByIdAndUserUsername(nonExistentId,nameOwner)).thenReturn(false);
+
+        assertAll(
+                () -> assertThrows(IllegalOperationException.class,
+                        () -> advertisementService.validateUserAsAdvertisementOwner(nonExistentId, nameOwner)),
+                () -> verify(advertisementRepository).existsAdvertisementByIdAndUserUsername(nonExistentId,nameOwner)
         );
     }
 }
