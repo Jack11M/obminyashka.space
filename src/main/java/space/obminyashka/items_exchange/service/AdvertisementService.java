@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
@@ -76,7 +77,7 @@ public interface AdvertisementService {
      * @param username for checking authority
      * @throws IllegalOperationException when user is not owner of the advertisement
      */
-    void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException;
+    void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException, EntityNotFoundException;
 
     /**
      * Create a new advertisement

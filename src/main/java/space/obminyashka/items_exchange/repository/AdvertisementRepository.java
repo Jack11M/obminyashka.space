@@ -22,6 +22,7 @@ import java.util.UUID;
 public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID>, QuerydslPredicateExecutor<Advertisement> {
 
     boolean existsAdvertisementByIdAndUserUsername(UUID id, String username);
+    boolean existsAdvertisementById(UUID id);
 
     @Modifying
     @Query("delete FROM Advertisement a where a.id=:id")

@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,10 +18,12 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.repository.AdvertisementRepository;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.repository.enums.AgeRange;
@@ -42,6 +45,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
@@ -292,6 +296,36 @@ class AdvertisementFlowTest extends BasicControllerTest {
         sendUriAndGetMvcResult(delete(ADV_ID, VALID_ADV_ID), status().isOk());
     }
 
+    @ParameterizedTest
+    @WithMockUser(username = "user")
+    @DataSet("database_init.yml")
+    @MethodSource("provideDeleteAdvertisementTestData")
+    void deleteAdvertisement_whenIncorrectId_shouldThrowException(String uuid,
+                                                                  String message,
+                                                                  Exception exception,
+                                                                  ResultMatcher resultMatcher) throws Exception {
+        var validationLocationIdMessage = getParametrizedMessageSource(message, uuid);
+        var mvcResult = sendUriAndGetMvcResult(delete(ADV_ID, uuid), resultMatcher);
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(exception.getClass())
+                .hasMessageContaining(validationLocationIdMessage);
+    }
+
+    private static Stream<Arguments> provideDeleteAdvertisementTestData() {
+        return Stream.of(
+                Arguments.of(String.valueOf(INVALID_ID),
+                        ADVERTISEMENT_NOT_EXISTED_ID,
+                        new EntityNotFoundException(ADVERTISEMENT_NOT_EXISTED_ID),
+                        status().isNotFound()),
+
+                Arguments.of(VALID_ADV_ID,
+                        USER_NOT_OWNER,
+                        new IllegalOperationException(USER_NOT_OWNER),
+                        status().isForbidden())
+        );
+    }
+
     @Test
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
@@ -300,7 +334,6 @@ class AdvertisementFlowTest extends BasicControllerTest {
     void setDefaultImage_success() throws Exception {
         sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, VALID_ADV_ID, VALID_IMAGE_ID), status().isOk());
     }
-
 
     @ParameterizedTest
     @WithMockUser(username = "admin")

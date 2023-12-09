@@ -34,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 
@@ -116,7 +117,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException {
+    public void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException, EntityNotFoundException {
+        if (!advertisementRepository.existsAdvertisementById(id)) {
+            throw new EntityNotFoundException(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID, id));
+        }
         if (!advertisementRepository.existsAdvertisementByIdAndUserUsername(id, username)) {
             throw new IllegalOperationException(getParametrizedMessageSource(USER_NOT_OWNER, id));
         }
