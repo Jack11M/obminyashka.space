@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import jakarta.persistence.EntityNotFoundException;
 import org.dbunit.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +38,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.IMAGE_BY_ADV_NOT_FOUND;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 
 @SpringBootTest
@@ -62,6 +65,16 @@ class ImageFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0]").value(Base64.encodeString(TEST_JPEG)))
                 .andExpect(jsonPath("$[1]").value(Base64.encodeString(TEST_PNG)));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    void getByAdvertisementId_shouldReturnAllImage() throws Exception {
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(IMAGE_RESOURCE, UUID.randomUUID()), status().isNotFound());
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
     }
 
     @Test
@@ -110,7 +123,7 @@ class ImageFlowTest extends BasicControllerTest {
     @MethodSource("provideLocalizationTestData")
     void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement(String languageHeader, Locale userLocale) throws Exception {
         final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
-                .header(HttpHeaders.ACCEPT_LANGUAGE, languageHeader)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, languageHeader)
                         .param("ids", UUID.randomUUID().toString()),
                 status().isForbidden());
 
@@ -136,8 +149,8 @@ class ImageFlowTest extends BasicControllerTest {
         var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
                 Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
-                .file(jpeg)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                        .file(jpeg)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isOk());
     }
 }

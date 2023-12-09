@@ -53,8 +53,13 @@ public class ImageController {
     @ResponseStatus(HttpStatus.OK)
     public List<byte[]> getImagesResource(
             @Parameter(name = "advertisement_id", description = "ID of the Advertisement for getting all the images", required = true)
-            @PathVariable("advertisement_id") UUID id) {
-        return imageService.getImagesResourceByAdvertisementId(id);
+            @PathVariable("advertisement_id") UUID id) throws EntityNotFoundException {
+
+        List<byte[]> imagesResourceByAdvertisementId = imageService.getImagesResourceByAdvertisementId(id);
+        if(imagesResourceByAdvertisementId.isEmpty()){
+            throw new EntityNotFoundException(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
+        }
+        return imagesResourceByAdvertisementId;
     }
 
     @GetMapping(value = ApiKey.IMAGE_BY_ADV_ID, produces = MediaType.APPLICATION_JSON_VALUE)

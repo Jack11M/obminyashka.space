@@ -12,7 +12,6 @@ import space.obminyashka.items_exchange.repository.ImageRepository;
 import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
 import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.rest.response.ImageView;
-import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.util.BasicImageCreator;
 
@@ -50,7 +49,7 @@ class ImageServiceIntegrationTest extends BasicImageCreator{
                 .thenReturn(Collections.singletonList(jpeg.getResource()));
 
         List<byte[]> result = imageService.getImagesResourceByAdvertisementId(UUID.randomUUID());
-        assertEquals(jpeg.getResource(), result.get(0), "Images' resources should be equal");
+        assertEquals(jpeg.getResource(), result.getFirst(), "Images' resources should be equal");
         verify(imageRepository).getImagesResourceByAdvertisementId(any());
     }
 
@@ -58,7 +57,7 @@ class ImageServiceIntegrationTest extends BasicImageCreator{
     void getByAdvertisementId_shouldReturnPopulatedImageDto_whenAdvertisementExistsAndContainsImage() {
         when(imageRepository.findByAdvertisementId(any())).thenReturn(List.of(jpeg));
 
-        ImageView imageView = imageService.getByAdvertisementId(UUID.randomUUID()).get(0);
+        ImageView imageView = imageService.getByAdvertisementId(UUID.randomUUID()).getFirst();
         assertAll("Checking objects' data equal",
                 () -> assertEquals(jpeg.getId(), imageView.getId()),
                 () -> assertArrayEquals(jpeg.getResource(), imageView.getResource()));
