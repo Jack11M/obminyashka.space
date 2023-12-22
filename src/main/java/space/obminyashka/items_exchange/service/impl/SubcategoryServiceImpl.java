@@ -36,8 +36,8 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
-    public List<Long> findExistingIdForCategoryById(Long categoryId, List<Long> subcategoriesId) {
-        return subcategoryRepository.findExistingIdForCategoryById(categoryId, subcategoriesId);
+    public List<Long> findExistingIdForCategoriesId(List<Long> categoriesId, List<Long> subcategoriesId) {
+        return subcategoryRepository.findExistingIdByCategoriesId(categoriesId, subcategoriesId);
     }
 
     @Override

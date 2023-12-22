@@ -7,15 +7,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Range;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +27,6 @@ import space.obminyashka.items_exchange.rest.exception.IllegalOperationException
 import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
-import space.obminyashka.items_exchange.rest.request.SubcategoryFilter;
 import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
@@ -43,8 +37,7 @@ import java.util.UUID;
 
 import static space.obminyashka.items_exchange.repository.enums.Size.*;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SUBCATEGORY_COMBINATION;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @RestController
 @Tag(name = "Advertisement")
@@ -78,41 +71,36 @@ public class AdvertisementController {
         return ResponseEntity.of(advertisementService.findDtoById(id));
     }
 
-    @GetMapping(value = ApiKey.ADV_SEARCH_PAGINATED, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Find advertisements by keyword")
+    @PostMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Find advertisements by multiple params")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public ResponseEntity<Page<AdvertisementTitleView>> getPageOfAdvertisementsByKeyword(
-            @PathVariable @NotEmpty String keyword,
-            @Parameter(name = "page", description = "Results page you want to retrieve (0..N). Default value: 0")
-            @RequestParam(value = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
-            @Parameter(name = "size", description = "Number of records per page. Default value: 12")
-            @RequestParam(value = "size", required = false, defaultValue = "12") @PositiveOrZero int size) {
-        Page<AdvertisementTitleView> allByKeyword = advertisementService.findByKeyword(keyword, PageRequest.of(page, size, Sort.by("topic")));
-        return allByKeyword.isEmpty() ?
+    public ResponseEntity<Page<AdvertisementTitleView>> filterAdvertisementBySearchParameters(@Valid @RequestBody AdvertisementFilterRequest advertisementFilterRequest) {
+        log.info("[filter] {}", advertisementFilterRequest);
+        validateAllSubcategoriesExistsInCategoryList(advertisementFilterRequest.getCategoryIdValues(), advertisementFilterRequest.getSubcategoriesIdValues());
+
+        Page<AdvertisementTitleView> advertisements = advertisementService.filterAdvertisementBySearchParameters(advertisementFilterRequest);
+        log.info("[filter] Response count: {}", advertisements.stream().count());
+        return advertisements.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(allByKeyword, HttpStatus.OK);
+                new ResponseEntity<>(advertisements, HttpStatus.OK);
     }
 
-    @GetMapping(value = ApiKey.ADV_FILTER, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Filter advertisements by multiple params")
-    @ApiResponse(responseCode = "200", description = "OK")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(
-            @Valid @ParameterObject AdvertisementFilterRequest filterRequest) {
-        validateAllSubcategoriesExistsInCategory(filterRequest.getSubcategoryFilterRequest());
-        return advertisementService.filterAdvertisementBySearchParameters(filterRequest);
-    }
+    private void validateAllSubcategoriesExistsInCategoryList(List<Long> categoryIdValues, List<Long> subcategoriesIdValues) {
+        if (categoryIdValues.isEmpty() && !subcategoriesIdValues.isEmpty()) {
+            throw new BadRequestException(getMessageSource(EMPTY_CATEGORY));
+        }
+        List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoriesId(
+                categoryIdValues, subcategoriesIdValues);
+        List<Long> notIncludedSubcategories = subcategoriesIdValues.stream()
+                .filter(subcategory -> !existingSubcategoriesId.contains(subcategory))
+                .toList();
 
-    private void validateAllSubcategoriesExistsInCategory(SubcategoryFilter subcategoryFilter) {
-        List<Long> searchSubcategoriesIdValues = subcategoryFilter.getSubcategoriesIdValues();
-        List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoryById(
-                subcategoryFilter.getCategoryId(), searchSubcategoriesIdValues);
-        if (existingSubcategoriesId.size() != searchSubcategoriesIdValues.size()) {
+        if (!notIncludedSubcategories.isEmpty()) {
             throw new BadRequestException(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
-                    existingSubcategoriesId, subcategoryFilter.getCategoryId()));
+                    notIncludedSubcategories, categoryIdValues));
         }
     }
 
@@ -143,7 +131,7 @@ public class AdvertisementController {
                 .toList();
         byte[] scaledTitleImage = images.stream().findFirst()
                 .map(imageService::scale)
-                .orElse(compressedImages.get(0));
+                .orElse(compressedImages.getFirst());
         return advertisementService.createAdvertisement(dto, owner, compressedImages, scaledTitleImage);
     }
 

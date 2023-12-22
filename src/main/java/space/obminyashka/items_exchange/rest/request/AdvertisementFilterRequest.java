@@ -1,66 +1,119 @@
 package space.obminyashka.items_exchange.rest.request;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.querydsl.core.types.Predicate;
-import io.swagger.v3.oas.annotations.Parameter;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.apache.commons.collections4.CollectionUtils;
+import space.obminyashka.items_exchange.repository.enums.AgeRange;
+import space.obminyashka.items_exchange.repository.enums.Gender;
+import space.obminyashka.items_exchange.repository.enums.Season;
 import space.obminyashka.items_exchange.repository.enums.Size;
 import space.obminyashka.items_exchange.repository.model.QAdvertisement;
 import space.obminyashka.items_exchange.rest.request.predicate.QPredicate;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE_COMBINATION;
 
-
-@Getter
-@Setter
+@Data
+@Accessors(chain = true)
 public class AdvertisementFilterRequest {
-
-    @Parameter(description = "Results page you want to retrieve (0..N). Default value: 0")
-    @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
+    @PositiveOrZero
+    @Schema(description = "Results page you want to retrieve (0..N)", defaultValue = "0")
     private int page = 0;
 
-    @Parameter(description = "Number of records per page. Default value: 12")
-    @PositiveOrZero(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
+    @PositiveOrZero
+    @Schema(description = "Number of records per page", defaultValue = "12")
     private int size = 12;
 
-    @Parameter(name = "enableRandom", description = "set true if you need random advertisement")
+    @Schema(description = "Set true if you need random advertisement", defaultValue = "false")
     private boolean enableRandom = false;
 
-    @JsonUnwrapped
-    @JsonSetter(nulls = Nulls.SKIP)
-    private SubcategoryFilter subcategoryFilterRequest = new SubcategoryFilter();
+    @Schema(description = "Keyword for search", minLength = 3)
+    private String keyword;
 
-    @JsonUnwrapped
-    @JsonSetter(nulls = Nulls.SKIP)
-    private AdvertisementFilter advertisementFilter = new AdvertisementFilter();
+    @ArraySchema(arraySchema = @Schema(description = "Category ID for advertisements filtering. See the full list of Categories in: /api/v1/category/all", example = "[1, 2]"))
+    private List<Long> categoryIdValues = new ArrayList<>();
+
+    @ArraySchema(arraySchema = @Schema(description = "Subcategories ID for advertisements filtering. Should belong to passed Category ID", example = "[1, 17]"))
+    private List<Long> subcategoriesIdValues = new ArrayList<>();
+
+    @Schema(description = "ID of excluded advertisement", example = "f587e494-ace2-44f6-b20d-38d43e9bc060")
+    private UUID excludeAdvertisementId;
+
+    @Schema(description = "Location ID for advertisements filtering", example = "842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10")
+    private UUID locationId;
+
+    @Schema(description = "Gender of a child for advertisements filtering")
+    private Gender gender;
+
+    @ArraySchema(arraySchema = @Schema(description = "Multiple ages of a child for advertisements filtering"))
+    private Set<AgeRange> age = new HashSet<>();
+
+    @ArraySchema(arraySchema = @Schema(description = "Multiple clothes sizes for advertisements filtering. Applicable ONLY when the Category ID is 1 (clothing)"))
+    private Set<Size.Clothing> clothingSizes = new HashSet<>();
+
+    @ArraySchema(arraySchema = @Schema(description = "Multiple shoe sizes for advertisements filtering. Applicable ONLY when the Category ID is 2 (shoes)"))
+    private Set<Size.Shoes> shoesSizes = new HashSet<>();
+
+    @ArraySchema(arraySchema = @Schema(description = "Clothing or Shoes season for advertisements filtering"))
+    private Set<Season> season = new HashSet<>();
+
+    @JsonCreator
+    public void setShoesSizes(Set<Double> value) {
+        shoesSizes = value.stream().map(Size.Shoes::fromValue).collect(Collectors.toSet());
+    }
+
+    @JsonCreator
+    public void setClothingSizes(Set<String> value) {
+        clothingSizes = value.stream().map(Size.Clothing::fromValue).collect(Collectors.toSet());
+    }
+
+    public void setAge(Set<String> value) {
+        age = value.stream().map(AgeRange::fromValue).collect(Collectors.toSet());
+    }
 
     @SuppressWarnings("unused")
     @AssertFalse(message = "{" + INVALID_SIZE_COMBINATION + "}")
     private boolean isValidCategorySizes() {
-        return CollectionUtils.isNotEmpty(advertisementFilter.getClothingSizes()) &&
-                CollectionUtils.isNotEmpty(advertisementFilter.getShoesSizes());
+        return CollectionUtils.isNotEmpty(clothingSizes) &&
+                CollectionUtils.isNotEmpty(shoesSizes);
     }
 
     public Predicate toPredicate() {
+
         return QPredicate.builder()
-                .add(advertisementFilter.getGender(), QAdvertisement.advertisement.gender::eq)
-                .add(advertisementFilter.getExcludeAdvertisementId(), QAdvertisement.advertisement.id::ne)
-                .add(advertisementFilter.getLocationId(), QAdvertisement.advertisement.location.id::eq)
-                .add(advertisementFilter.getSeason(), QAdvertisement.advertisement.season::in)
-                .add(extractClothingSizeRanges(advertisementFilter.getClothingSizes()), QAdvertisement.advertisement.size::in)
-                .add(extractShoesSizeLengths(advertisementFilter.getShoesSizes()), QAdvertisement.advertisement.size::in)
-                .add(advertisementFilter.getAge(), QAdvertisement.advertisement.age::in)
-                .add(subcategoryFilterRequest.getSubcategoriesIdValues(), QAdvertisement.advertisement.subcategory.id::in)
+                .add(gender, QAdvertisement.advertisement.gender::eq)
+                .add(excludeAdvertisementId, QAdvertisement.advertisement.id::ne)
+                .add(locationId, QAdvertisement.advertisement.location.id::eq)
+                .add(season, QAdvertisement.advertisement.season::in)
+                .add(extractClothingSizeRanges(clothingSizes), QAdvertisement.advertisement.size::in)
+                .add(extractShoesSizeLengths(shoesSizes), QAdvertisement.advertisement.size::in)
+                .add(age, QAdvertisement.advertisement.age::in)
+                .add(subcategoriesIdValues, QAdvertisement.advertisement.subcategory.id::in)
+                .add(keyword, this::createKeywordCondition)
                 .buildAnd();
+    }
+
+    private BooleanExpression createKeywordCondition(String keyword) {
+        keyword = keyword.trim();
+        String[] keywords = keyword.split("\\s+");
+
+        BooleanExpression keywordCondition = Expressions.asBoolean(false).isTrue();
+        for (String kw : keywords) {
+            keywordCondition = keywordCondition.or(QAdvertisement.advertisement.topic.likeIgnoreCase("%" + kw + "%"));
+            keywordCondition = keywordCondition.or(QAdvertisement.advertisement.description.likeIgnoreCase("%" + kw + "%"));
+        }
+
+        return keywordCondition;
     }
 
     private Set<String> extractClothingSizeRanges(Set<Size.Clothing> clothingSizes) {

@@ -38,6 +38,7 @@ public class ResponseMessagesHandler {
         public static final String INVALID_SIZE_COMBINATION = "invalid.size.combination";
         public static final String INVALID_CATEGORY_SIZES_ID = "invalid.category.sizes.id";
         public static final String INVALID_CATEGORY_SUBCATEGORY_COMBINATION = "invalid.category.subcategory.combination";
+        public static final String EMPTY_CATEGORY = "subcategory-for-empty-category";
         public static final String INVALID_ENUM_VALUE = "invalid.enum.value";
         public static final String INVALID_LOCATION_ID = "invalid.location.id";
         public static final String INVALID_TOKEN = "invalid.token";

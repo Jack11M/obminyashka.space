@@ -86,19 +86,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Page<AdvertisementTitleView> findByKeyword(String keyword, Pageable pageable) {
-        final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
-        if (!wholeStringSearchResult.isEmpty()) {
-            return wholeStringSearchResult.map(this::buildAdvertisementTitle);
-        }
-        final var keywords = Set.of(keyword.split(" "));
-        if (!keywords.isEmpty()) {
-            return advertisementRepository.search(keywords, pageable).map(this::buildAdvertisementTitle);
-        }
-        return Page.empty();
-    }
-
-    @Override
     public Optional<AdvertisementDisplayView> findDtoById(UUID id) {
         return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }
@@ -106,9 +93,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
         if (request.isEnableRandom()) {
+            List<Long> subcategoriesIdValues = request.getSubcategoriesIdValues();
+            if (subcategoriesIdValues.isEmpty()) subcategoriesIdValues = null;
+
             final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
-                    request.getAdvertisementFilter().getExcludeAdvertisementId(),
-                    request.getSubcategoryFilterRequest().getSubcategoriesIdValues());
+                    request.getExcludeAdvertisementId(),
+                    subcategoriesIdValues);
             final var bound = (int) (totalRecordsSize / request.getSize());
             request.setPage(bound > 0 ? random.nextInt(bound) : 0);
         }
