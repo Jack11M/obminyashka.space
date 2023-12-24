@@ -40,9 +40,6 @@ public class AdvertisementFilterRequest {
     @Schema(description = "Keyword for search", minLength = 3)
     private String keyword;
 
-    @ArraySchema(arraySchema = @Schema(description = "Category ID for advertisements filtering. See the full list of Categories in: /api/v1/category/all", example = "[1, 2]"))
-    private List<Long> categoryIdValues = new ArrayList<>();
-
     @ArraySchema(arraySchema = @Schema(description = "Subcategories ID for advertisements filtering. Should belong to passed Category ID", example = "[1, 17]"))
     private List<Long> subcategoriesIdValues = new ArrayList<>();
 

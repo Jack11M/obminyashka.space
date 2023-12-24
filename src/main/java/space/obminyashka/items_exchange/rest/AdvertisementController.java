@@ -78,30 +78,11 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     public ResponseEntity<Page<AdvertisementTitleView>> filterAdvertisementBySearchParameters(@Valid @RequestBody AdvertisementFilterRequest advertisementFilterRequest) {
-        log.info("[filter] {}", advertisementFilterRequest);
-        validateAllSubcategoriesExistsInCategoryList(advertisementFilterRequest.getCategoryIdValues(), advertisementFilterRequest.getSubcategoriesIdValues());
-
         Page<AdvertisementTitleView> advertisements = advertisementService.filterAdvertisementBySearchParameters(advertisementFilterRequest);
         log.info("[filter] Response count: {}", advertisements.stream().count());
         return advertisements.isEmpty() ?
                 new ResponseEntity<>(HttpStatus.NOT_FOUND) :
                 new ResponseEntity<>(advertisements, HttpStatus.OK);
-    }
-
-    private void validateAllSubcategoriesExistsInCategoryList(List<Long> categoryIdValues, List<Long> subcategoriesIdValues) {
-        if (categoryIdValues.isEmpty() && !subcategoriesIdValues.isEmpty()) {
-            throw new BadRequestException(getMessageSource(EMPTY_CATEGORY));
-        }
-        List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoriesId(
-                categoryIdValues, subcategoriesIdValues);
-        List<Long> notIncludedSubcategories = subcategoriesIdValues.stream()
-                .filter(subcategory -> !existingSubcategoriesId.contains(subcategory))
-                .toList();
-
-        if (!notIncludedSubcategories.isEmpty()) {
-            throw new BadRequestException(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
-                    notIncludedSubcategories, categoryIdValues));
-        }
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
