@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
 
 import java.nio.file.Files;
@@ -47,9 +48,10 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     void findPaginated_shouldBeThrownValidationException() throws Exception {
-        int page = 0;
-        int size = -12;
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_REQUEST_PARAMS, "KEYWORD", page, size), status().isBadRequest());
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setPage(0)
+                .setSize(-12);
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), advertisementFilterRequest, status().isBadRequest());
         assertTrue(mvcResult.getResponse().getContentAsString().contains("must be greater than or equal to 0"));
     }
 

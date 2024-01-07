@@ -24,18 +24,19 @@ import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.repository.AdvertisementRepository;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.repository.enums.AgeRange;
 import space.obminyashka.items_exchange.repository.enums.Gender;
 import space.obminyashka.items_exchange.repository.enums.Season;
 import space.obminyashka.items_exchange.repository.enums.Size;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -75,10 +76,12 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @MethodSource("getSearchKeywords")
     @DataSet("database_init.yml")
     void findPaginated_shouldReturnSearchResults(String keyword, int expectedResultQuantity) throws Exception {
-        int page = 0;
-        int size = 12;
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setPage(0)
+                .setSize(12)
+                .setKeyword(keyword);
 
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_SEARCH_PAGINATED_REQUEST_PARAMS, keyword, page, size), status().isOk());
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), advertisementFilterRequest, status().isOk());
         final var totalElements = Stream.of(mvcResult.getResponse().getContentAsString().split(","))
                 .filter(s -> s.startsWith("\"totalElements"))
                 .map(s -> s.substring(s.length() - 1))
@@ -91,7 +94,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> getSearchKeywords() {
         return Stream.of(
-                Arguments.of("blouses description", 1), // full description matching
+                Arguments.of("blouses description", 5), // full description matching
                 Arguments.of("pajamas", 1), // full topic matching
                 Arguments.of("description", 5), // partial description matching
                 Arguments.of("ses", 2) // partial topic matching
@@ -102,9 +105,11 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnSpecificAdvertisementTitleDto() throws Exception {
-        sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("page", "2")
-                .queryParam("size", "1"), status().isOk())
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setPage(2)
+                .setSize(1);
+
+        sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
                 .andExpect(jsonPath("$.content[0].advertisementId").value("4bd38c87-0f00-4375-bd8f-cd853f0eb9bd"))
                 .andExpect(jsonPath("$.content[0].title").value("Dresses"));
     }
@@ -114,12 +119,11 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnPageProperQuantityOfAdvertisementWithoutRequestAdvertisement() throws Exception {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setExcludeAdvertisementId(excludeAdvertisementId)
+                .setSubcategoriesIdValues(List.of(1L));
 
-        sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("advertisementFilter.excludeAdvertisementId", excludeAdvertisementId.toString())
-                .queryParam("subcategoryFilterRequest.categoryId", "1")
-                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1"), status().isOk())
-
+        sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
                 .andExpect(jsonPath("$.content.length()")
                         .value(advertisementRepository.countByIdNotAndSubcategoryId(excludeAdvertisementId, List.of(1L))));
     }
@@ -129,7 +133,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnPageThumbnailsResponse() throws Exception {
-        sendUriAndGetResultAction(get(ADV_FILTER), status().isOk())
+        final var advertisementFilterRequest = new AdvertisementFilterRequest();
+        sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
                 .andExpect(jsonPath("$.numberOfElements").value(advertisementRepository.count()));
     }
 
@@ -138,7 +143,8 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findPaginatedAsThumbnails_shouldReturnProperQuantityOfAdvertisementsThumbnails() throws Exception {
-        sendUriAndGetResultAction(get(ADV_FILTER), status().isOk())
+        final var advertisementFilterRequest = new AdvertisementFilterRequest();
+        sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(advertisementRepository.count()));
     }
 
@@ -166,10 +172,11 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByNecessaryParameters() throws Exception {
-        sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("subcategoryFilterRequest.categoryId", "1")
-                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1")
-                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()), status().isOk())
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setSubcategoriesIdValues(List.of(1L));
+        advertisementFilterRequest.setClothingSizes(Set.of(Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()));
+
+        sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
                 .andExpect(jsonPath("$.content.length()").value("3"));
     }
 
@@ -177,14 +184,16 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByAllParameters() throws Exception {
-        sendUriAndGetResultAction(get(ADV_FILTER)
-                .queryParam("subcategoryFilterRequest.categoryId", "1")
-                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "1")
-                .queryParam("advertisementFilter.locationId", "2c5467f3-b7ee-48b1-9451-7028255b757b")
-                .queryParam("advertisementFilter.gender", Gender.FEMALE.name())
-                .queryParam("advertisementFilter.age", AgeRange.FROM_10_TO_12.getValue(), AgeRange.FROM_6_TO_9.getValue())
-                .queryParam("advertisementFilter.clothingSizes", Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange())
-                .queryParam("advertisementFilter.season", Season.SUMMER.name(), Season.WINTER.name()), status().isOk())
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setSubcategoriesIdValues(List.of(1L))
+                .setLocationId(UUID.fromString("2c5467f3-b7ee-48b1-9451-7028255b757b"))
+                .setGender(Gender.FEMALE)
+                .setSeason(Set.of(Season.SUMMER, Season.WINTER));
+
+        advertisementFilterRequest.setClothingSizes(Set.of(Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()));
+        advertisementFilterRequest.setAge(Set.of(AgeRange.FROM_10_TO_12.getValue(), AgeRange.FROM_6_TO_9.getValue()));
+
+        sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
                 .andExpect(jsonPath("$.content.length()").value("2"));
     }
 
@@ -192,35 +201,16 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @WithMockUser(username = "admin")
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
-        String subcategoryId = "1";
-        String categoryId = "1";
-        String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
-        String sizeClothing = Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange();
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setSubcategoriesIdValues(List.of(1L));
 
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
-                .queryParam("subcategoryFilterRequest.categoryId", categoryId)
-                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", subcategoryId)
-                .queryParam("advertisementFilter.shoesSizes", sizeShoes)
-                .queryParam("advertisementFilter.clothingSizes", sizeClothing), status().isBadRequest());
+        advertisementFilterRequest.setShoesSizes(Set.of(Size.Shoes.ELEVEN_POINT_FIVE.getLength()));
+        advertisementFilterRequest.setClothingSizes(Set.of(Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()));
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), advertisementFilterRequest, status().isBadRequest());
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)
                 .hasMessageContaining(getMessageSource(INVALID_SIZE_COMBINATION));
-    }
-
-    @Test
-    @WithMockUser(username = "admin")
-    @DataSet("database_init.yml")
-    void findAdvertisementBySearchParameters_shouldBeThrownBadRequestException_WhenSubcategoryNotBelongCategory() throws Exception {
-        String categoryId = "2";
-        String sizeShoes = String.valueOf(Size.Shoes.ELEVEN_POINT_FIVE.getLength());
-        MvcResult mvcResult = sendUriAndGetMvcResult(get(ADV_FILTER)
-                .queryParam("subcategoryFilterRequest.categoryId", categoryId)
-                .queryParam("subcategoryFilterRequest.subcategoriesIdValues", "14", "1", "3")
-                .queryParam("advertisementFilter.shoesSizes", sizeShoes), status().isBadRequest());
-        assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
-                        "[14]", categoryId));
     }
 
     @Test

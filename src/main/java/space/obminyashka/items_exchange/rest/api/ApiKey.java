@@ -7,8 +7,6 @@ public class ApiKey {
     public static final String API = "/api/v1";
     // Advertisement API
     public static final String ADV = API + "/adv";
-    public static final String ADV_SEARCH_PAGINATED = ADV + "/search/{keyword}";
-    public static final String ADV_SEARCH_PAGINATED_REQUEST_PARAMS = ADV_SEARCH_PAGINATED + "?page={page}&size={size}";
     public static final String ADV_DEFAULT_IMAGE = ADV + "/default-image/{advertisementId}/{imageId}";
     public static final String ADV_ID = ADV + "/{advertisement_id}";
     public static final String ADV_FILTER = ADV + "/filter";

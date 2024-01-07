@@ -115,7 +115,8 @@ public class SecurityConfig {
                                 ApiKey.AUTH_LOGIN,
                                 ApiKey.AUTH_REGISTER,
                                 ApiKey.AUTH_REFRESH_TOKEN,
-                                ApiKey.USER_SERVICE_RESET_PASSWORD).permitAll()
+                                ApiKey.USER_SERVICE_RESET_PASSWORD,
+                                ApiKey.ADV_FILTER).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 ApiKey.FRONT_LOGIN,
                                 ApiKey.FRONT_SIGN,

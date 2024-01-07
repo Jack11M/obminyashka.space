@@ -59,8 +59,8 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
 
     @Query("SELECT COUNT(a) FROM Advertisement a WHERE " +
-            "(:id IS NULL OR a.id <> :id) AND " +
-            "(a.subcategory.id IN :subcategoryIds)")
+            "(:id IS NULL OR a.id <> :id) AND" +
+            "(:subcategoryIds is null OR a.subcategory.id IN (:subcategoryIds))")
     Long countByIdNotAndSubcategoryId(UUID id, List<Long> subcategoryIds);
 
     boolean existsBySubcategoryId(long id);

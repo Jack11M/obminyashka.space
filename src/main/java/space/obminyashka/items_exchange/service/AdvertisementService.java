@@ -49,14 +49,6 @@ public interface AdvertisementService {
     void deleteFavorite(UUID advertisementId, String username);
 
     /**
-     * Find advertisements having requested keyword
-     * @param keyword - searched word
-     * @param pageable see {@link Pageable} for more details
-     * @return result of the request
-     */
-    Page<AdvertisementTitleView> findByKeyword(String keyword, Pageable pageable);
-
-    /**
      * Find an advertisement Display DTO by id
      * @param id advertisement id
      * @return {@link Optional} as result

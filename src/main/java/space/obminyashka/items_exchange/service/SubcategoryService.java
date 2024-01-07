@@ -39,15 +39,6 @@ public interface SubcategoryService {
     boolean isSubcategoryExistsById(long id);
 
     /**
-     * Find existing id for category by id
-     *
-     * @param categoryId      is Category ID
-     * @param subcategoriesId is list of Subcategory IDs
-     * @return list of existing id
-     */
-    List<Long> findExistingIdForCategoryById(Long categoryId, List<Long> subcategoriesId);
-
-    /**
      * Returns all Subcategory identifiers.
      *
      * @return list of all subcategory identifiers from DB
