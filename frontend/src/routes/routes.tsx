@@ -1,4 +1,5 @@
 import { Route, Routes as Switch } from "react-router-dom";
+import {Success} from 'obminyashka-components'
 
 import { Auth } from "src/pages/FormRegister/Auth";
 import HomePage from "src/pages/homepage/HomePage";
@@ -10,6 +11,7 @@ import { SignUp } from "src/pages/FormRegister/sign-up";
 import { SearchResults } from "src/pages/SearchResults";
 import { ProductPage } from "src/pages/ProductPage/ProductPage";
 import FourOhFourPage from "src/pages/ErrorPages/FourOhFourPage";
+import { getTranslatedText } from '../components/local';
 
 import { route } from "./routeConstants";
 import { AuthorizedRoute, UnauthorizedRoute } from "./protectedRoute";
@@ -57,6 +59,9 @@ const Routes = () => (
       <Route path={route.noMatch} element={<FourOhFourPage />} />
 
       <Route path={route.SearchResults} element={<SearchResults />} />
+
+      <Route path={route.successVerification} element={<Success title={getTranslatedText('success.welcome')} nameWebsite="Obminyashka" text={getTranslatedText('success.verification')} textButton={getTranslatedText('success.home')} href="#" />} />
+
     </Switch>
   </div>
 );

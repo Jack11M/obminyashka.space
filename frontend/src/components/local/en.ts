@@ -1,3 +1,4 @@
+import { HomePage } from 'src/pages/homepage/HomePage';
 const en = {
   auth: {
     login: "log In",
@@ -337,6 +338,11 @@ const en = {
     locationArea: "Region:",
     locationCity: "City:",
   },
+  success: {
+    welcome: "Welcome to the site",
+    verification: "The verification was successful.",
+    home: "Home page",
+  }
 };
 
 export default en;
