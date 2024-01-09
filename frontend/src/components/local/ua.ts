@@ -1,4 +1,13 @@
 const ua = {
+  mainAnimationText: {
+    regText: "Просто ",
+    regTextLink: "зарееструйся ",
+    regTextTwo: "та розмісти оголошення! ",
+    thingsText: "Накопичилося багато ",
+    thingsTextLink: "дитячих речей? ",
+    tradeText: "з іншими користувачами на шось кльове та корисне!",
+    tradeTextLink: "Обміняйтесь ",
+  },
   auth: {
     login: "Вхід",
     signUp: "Реєстрація",
