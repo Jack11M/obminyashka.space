@@ -1,5 +1,5 @@
 import { Route, Routes as Switch } from "react-router-dom";
-import {Success} from 'obminyashka-components'
+import { Success } from 'obminyashka-components'
 
 import { Auth } from "src/pages/FormRegister/Auth";
 import HomePage from "src/pages/homepage/HomePage";
