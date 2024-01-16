@@ -1,4 +1,13 @@
 const en = {
+  mainAnimationText: {
+    regText: "Just ",
+    regTextLink: "register ",
+    regTextTwo: "and post an ad! ",
+    thingsText: "Have you a lot of ",
+    thingsTextLink: "children's clothes? ",
+    tradeText: "something cool and useful with other users!",
+    tradeTextLink: "Share ",
+  },
   auth: {
     login: "log In",
     signUp: "Sign Up",
