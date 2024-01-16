@@ -11,10 +11,10 @@ import { SignUp } from "src/pages/FormRegister/sign-up";
 import { SearchResults } from "src/pages/SearchResults";
 import { ProductPage } from "src/pages/ProductPage/ProductPage";
 import FourOhFourPage from "src/pages/ErrorPages/FourOhFourPage";
-import { getTranslatedText } from '../components/local';
 
 import { route } from "./routeConstants";
 import { AuthorizedRoute, UnauthorizedRoute } from "./protectedRoute";
+import { getTranslatedText } from '../components/local';
 
 const Routes = () => (
   <div>
