@@ -1,3 +1,4 @@
+import { HomePage } from 'src/pages/homepage/HomePage';
 const en = {
   mainAnimationText: {
     regText: "Just ",
@@ -346,6 +347,11 @@ const en = {
     locationArea: "Region:",
     locationCity: "City:",
   },
+  success: {
+    welcome: "Welcome to the site",
+    verification: "The verification was successful.",
+    home: "Home page",
+  }
 };
 
 export default en;

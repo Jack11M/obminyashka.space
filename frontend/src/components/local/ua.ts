@@ -346,6 +346,11 @@ const ua = {
     locationArea: "Область:",
     locationCity: "Місто:",
   },
+  success: {
+    welcome: "Ласкаво просимо на сайт",
+    verification: "Верифікація пройшла успішно.",
+    home: "Головна сторінка",
+  }
 };
 
 export default ua;
