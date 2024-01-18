@@ -8,10 +8,12 @@ import org.springframework.web.util.HtmlUtils;
 import space.obminyashka.items_exchange.repository.model.chat.Greeting;
 import space.obminyashka.items_exchange.repository.model.chat.HelloMessage;
 
+import static space.obminyashka.items_exchange.rest.api.ApiKey.CHAT_ID;
+
 @Controller
 public class ChatController {
 
-    @MessageMapping("/hello/{chatId}")
+    @MessageMapping(CHAT_ID)
     @SendTo("/topic/greetings/{chatId}")
     public Greeting greet(@DestinationVariable String chatId, HelloMessage message) {
         return new Greeting("Hello, " +

@@ -1,4 +1,4 @@
-var stompClient = null;
+let stompClient = null;
 
 function setConnected(connected) {
     $("#connect").prop("disabled", connected);
@@ -13,9 +13,9 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var chatId = $("#chatId").val();
+    const chatId = $("#chatId").val();
     console.log(chatId)
-    var socket = new SockJS('/stomp-endpoint/');
+    const socket = new SockJS('/stomp-endpoint/');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
@@ -35,7 +35,7 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send("/app/hello/"+$("#chatId").val(), {}, JSON.stringify({'name': $("#name").val()}));
+    stompClient.send("/app/api/v1/chat/hello/{chatId}"+$("#chatId").val(), {}, JSON.stringify({'name': $("#name").val()}));
 }
 
 function showGreeting(message) {
