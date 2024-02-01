@@ -13,5 +13,6 @@ export const route = {
   oauthSuccess: '/oauth-success',
   SearchResults: 'filter',
   noMatch: '*',
-  successVerification: 'successVerification'
+  successVerification: 'successVerification',
+  confirmation: 'confirmation'
 };

@@ -1,5 +1,5 @@
 import { Route, Routes as Switch } from "react-router-dom";
-import { Success } from 'obminyashka-components'
+import { Success, Confirmation } from "obminyashka-components";
 
 import { Auth } from "src/pages/FormRegister/Auth";
 import HomePage from "src/pages/homepage/HomePage";
@@ -60,8 +60,25 @@ const Routes = () => (
 
       <Route path={route.SearchResults} element={<SearchResults />} />
 
-      <Route path={route.successVerification} element={<Success title={getTranslatedText('success.welcome')} nameWebsite="Obminyashka" text={getTranslatedText('success.verification')} textButton={getTranslatedText('success.home')} href="#" />} />
+      <Route
+        path={route.successVerification}
+        element={
+          <Success
+            title={getTranslatedText("success.welcome")}
+            nameWebsite="Obminyashka"
+            text={getTranslatedText("success.verification")}
+            textButton={getTranslatedText("success.home")}
+            href="#"
+          />
+        }
+      />
 
+      <Route
+        path={route.confirmation}
+        element={<Confirmation title={getTranslatedText("success.welcome")} 
+        text={getTranslatedText("success.verification")}
+        //path={route.home}
+      />} />
     </Switch>
   </div>
 );
