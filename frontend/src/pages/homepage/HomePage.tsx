@@ -1,11 +1,12 @@
-import { HelpChildren, SitePurpose } from "obminyashka-components";
+import { HelpChildren, SitePurpose, Swiper } from "obminyashka-components";
 
 import { route } from "src/routes/routeConstants";
 import { getTranslatedText } from "src/components/local";
 
-import Sliders from "./slider";
+import { slidesData } from "./mock";
 import { CurrentOffers } from "./currentOffers";
 
+import "swiper/css";
 import * as Styles from "./styles";
 
 const HomePage = () => {
@@ -26,7 +27,8 @@ const HomePage = () => {
 
       <Styles.Container>
         <CurrentOffers />
-        <Sliders />
+
+        <Swiper data={slidesData} />
 
         <HelpChildren
           name={getTranslatedText("mainPage.helpName")}
