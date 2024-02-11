@@ -1,14 +1,13 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const ProductSection = styled.section`
-  margin-top: 90px;
+  margin-top: 10px;
 `;
 
 export const ProductHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 50px;
 `;
 
 export const ProductListUl = styled.ul`
