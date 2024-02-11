@@ -5,7 +5,6 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,12 +22,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.dto.UserLoginDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.exception.EmailSendingException;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.rest.request.UserLoginRequest;
+import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
+import space.obminyashka.items_exchange.rest.exception.EmailSendingException;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -41,8 +40,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
 @SpringBootTest
 @DBRider
@@ -63,7 +62,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     private static final String DOMAIN_URL = "https://obminyashka.space";
     @MockBean
     private SendGrid sendGrid;
-    private final UserRegistrationDto userRegistrationDto = new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
+    private final UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD);
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
 
     @Autowired
@@ -81,7 +80,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void register_shouldCreateValidNewUserAndReturnCreated() throws Exception {
         when(sendGrid.api(any())).thenReturn(new Response(200, null, null));
         long codesCountBeforeRegister = emailConfirmationCodeRepository.count();
-        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationDto, status().isCreated());
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationRequest, status().isCreated());
         long codesCountAfterRegister = emailConfirmationCodeRepository.count();
 
         String seekingResponse = getMessageSource(ResponseMessagesHandler.ValidationMessage.USER_CREATED);
@@ -93,7 +92,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     void register_shouldCreateNewUserAndSendMail() throws Exception {
         when(sendGrid.api(any())).thenReturn(new Response(200, null, null));
 
-        sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationDto, status().isCreated());
+        sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationRequest, status().isCreated());
 
         verify(sendGrid).api(any());
         Response sendGridApi = sendGrid.api(any());
@@ -103,7 +102,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
     @Test
     void register_whenSendGridFailed_shouldReturnServiceUnavailable() throws Exception {
         doThrow(new IOException("Expected exception!")).when(sendGrid).api(any());
-        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationDto, status().isServiceUnavailable());
+        final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), userRegistrationRequest, status().isServiceUnavailable());
 
         verify(sendGrid).api(any());
 
@@ -120,7 +119,7 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     @ParameterizedTest
     @MethodSource("userRegistrationConflictData")
-    void register_whenUserRegistrationDtoIsEmpty_shouldReturnConflictRequest(UserRegistrationDto dto, String errorMessage) throws Exception {
+    void register_whenUserRegistrationDtoIsEmpty_shouldReturnConflictRequest(UserRegistrationRequest dto, String errorMessage) throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), dto, status().isConflict());
 
         assertTrue(result.getResponse().getContentAsString().contains(getMessageSource(errorMessage)));
@@ -128,16 +127,16 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> userRegistrationConflictData() {
         return Stream.of(
-                Arguments.of(new UserRegistrationDto(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                Arguments.of(new UserRegistrationRequest(EXISTENT_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
                         ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                Arguments.of(new UserRegistrationRequest(VALID_USERNAME, EXISTENT_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
                         ResponseMessagesHandler.ValidationMessage.USERNAME_EMAIL_DUPLICATE)
         );
     }
 
     @ParameterizedTest
     @MethodSource("userRegistrationData")
-    void register_whenUserDataInvalid_shouldThrowException(UserRegistrationDto dto, ResultMatcher expectedStatus, String errorMessage, Class<Exception> resolvedException) throws Exception {
+    void register_whenUserDataInvalid_shouldThrowException(UserRegistrationRequest dto, ResultMatcher expectedStatus, String errorMessage, Class<Exception> resolvedException) throws Exception {
         final var result = sendDtoAndGetMvcResult(post(AUTH_REGISTER).header(HttpHeaders.HOST, DOMAIN_URL), dto, expectedStatus);
 
         assertThat(result.getResolvedException())
@@ -147,21 +146,29 @@ class AuthorizationFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> userRegistrationData() {
         return Stream.of(
-                Arguments.of(new UserRegistrationDto(INVALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                Arguments.of(new UserRegistrationRequest(INVALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_USERNAME, MethodArgumentNotValidException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
+                Arguments.of(new UserRegistrationRequest(VALID_USERNAME, INVALID_EMAIL, VALID_PASSWORD, VALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_EMAIL, MethodArgumentNotValidException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, INVALID_PASSWORD),
+                Arguments.of(new UserRegistrationRequest(VALID_USERNAME, VALID_EMAIL, VALID_PASSWORD, INVALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.DIFFERENT_PASSWORDS, MethodArgumentNotValidException.class),
-                Arguments.of(new UserRegistrationDto(VALID_USERNAME, VALID_EMAIL, INVALID_PASSWORD, INVALID_PASSWORD),
+                Arguments.of(new UserRegistrationRequest(VALID_USERNAME, VALID_EMAIL, INVALID_PASSWORD, INVALID_PASSWORD),
                         status().isBadRequest(), ResponseMessagesHandler.ValidationMessage.INVALID_PASSWORD, MethodArgumentNotValidException.class)
         );
     }
 
     @Test
     @DataSet(value = "auth/login.yml")
+    void login_whenUserLoginViaEmail_shouldReturnHttpOk() throws Exception {
+        sendDtoAndGetResultAction(post(AUTH_LOGIN), new UserLoginRequest(VALID_EMAIL, VALID_PASSWORD), status().isOk())
+                .andExpect(content().json("{\"username\": \"test\"}"));
+
+    }
+
+    @Test
+    @DataSet(value = "auth/login.yml")
     void login_Success_shouldReturnHttpOk() throws Exception {
-        sendDtoAndGetResultAction(post(AUTH_LOGIN), new UserLoginDto(VALID_USERNAME, VALID_PASSWORD), status().isOk())
+        sendDtoAndGetResultAction(post(AUTH_LOGIN), new UserLoginRequest(VALID_USERNAME, VALID_PASSWORD), status().isOk())
                 .andExpect(content().json("{\"firstname\":\"firstname\"}"))
                 .andExpect(content().json("{\"lastname\":\"lastname\"}"))
                 .andExpect(content().json("{\"email\":\"test@test.com\"}"))

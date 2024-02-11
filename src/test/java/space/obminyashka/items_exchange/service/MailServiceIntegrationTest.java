@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.model.EmailConfirmationCode;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 
 import java.time.LocalDateTime;
 import java.util.*;

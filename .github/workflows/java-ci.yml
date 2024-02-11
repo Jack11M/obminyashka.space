@@ -12,18 +12,18 @@ on:
           - info
           - debug
   schedule:
-    # every Monday at 10 AM
-    - cron: '0 10 * * Mon'
+    # every Monday at 3 PM UTC (20:00 Kyiv Time)
+    - cron: '0 15 * * MON'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 20
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '20'
+          java-version: '21'
           distribution: 'temurin'
           check-latest: true
       - name: Run build with Maven
@@ -84,8 +84,6 @@ jobs:
             export GOOGLE_CLIENT_SECRET='${{ env.GOOGLE_CLIENT_SECRET }}'
             export SENDGRID_API_KEY='${{ env.SENDGRID_API_KEY }}'
             kill -9 $(lsof -t -i:8443) || echo "Process was not running."
-            systemctl stop cge || echo "Process was not running."
-            cp target/*.jar CGE-service/cge.jar
             echo "java -jar ./target/*.jar" | at now + 1 minutes
 
   inform:
@@ -101,7 +99,7 @@ jobs:
             🤖 GitHub Actions 🤖 ⏲️ scheduled deployed is 🏁COMPLETED🏁 🎉
             
             🛫 LAST DEPLOYED COMMIT 🛫
-            👩‍💻 Author: ${{ github.actor }}
+            👩‍💻 Author: ${{ github.event.commits[0].author.name}}
             🗨️ Message: ${{ github.event.commits[0].message }}
             📃 Changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
             

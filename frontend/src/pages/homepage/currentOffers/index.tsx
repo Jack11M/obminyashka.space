@@ -22,7 +22,7 @@ const CurrentOffers = () => {
     api.home
       .getCurrentOffers()
       .then(({ data }) => {
-        if (Array.isArray(data)) setOffers(data);
+        if (Array.isArray(data.content)) setOffers(data.content);
       })
       .catch((e) => {
         showMessage.error(getErrorMessage(e));

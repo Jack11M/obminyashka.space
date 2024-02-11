@@ -1,7 +1,7 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.model.enums.Size;
+import space.obminyashka.items_exchange.rest.dto.CategoryDto;
+import space.obminyashka.items_exchange.repository.enums.Size;
 
 import java.util.List;
 import java.util.Optional;
@@ -55,12 +55,12 @@ public interface CategoryService {
     boolean isCategoryExistsById(long id);
 
     /**
-     * Checks if a category with the given ID exists in DB and internal subcategories have not advertisements.
+     * Checks if a category with the given ID exists in DB and internal subcategories have no advertisements.
      *
      * @param categoryId is Category ID.
      * @return {@code true} if a category with the given ID can be deleted, {@code false} otherwise.
      */
-    boolean isCategoryDtoDeletable(long categoryId);
+    boolean isCategoryDeletable(long categoryId);
 
     /**
      * Checks if the category DTO ID exists in DB, updated category name has not duplicates and internal subcategories exist or have IDs equals zero.
@@ -85,5 +85,5 @@ public interface CategoryService {
      * @see Size.Clothing
      * @see Size.Shoes
      */
-    List<String> findSizesForCategory(int id);
+    List<String> findSizesForCategory(long id);
 }

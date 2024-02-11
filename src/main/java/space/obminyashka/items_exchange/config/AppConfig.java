@@ -21,6 +21,7 @@ import java.util.List;
 @EnableCaching
 @EnableScheduling
 public class AppConfig {
+    public static final int COLUMN_MAX_LENGTH = 16_777_215;
 
     @Bean
     public LocaleResolver localeResolver() {

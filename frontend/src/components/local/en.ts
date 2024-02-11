@@ -1,4 +1,3 @@
-import { HomePage } from 'src/pages/homepage/HomePage';
 const en = {
   mainAnimationText: {
     regText: "Just ",
@@ -60,7 +59,7 @@ const en = {
     max50: "Maximum 50 characters",
     max70: "Maximum 70 characters",
     max129: "Maximum 129 characters",
-    max200: "Maximum 200 characters",
+    max210: "Maximum 210 characters",
     max255: "Maximum 255 characters",
     altCodeMatch: "Shouldn't have Alt code",
     passwordMatch: "Large and small Latin letters and numbers",
@@ -351,7 +350,7 @@ const en = {
     welcome: "Welcome to the site",
     verification: "The verification was successful.",
     home: "Home page",
-  }
+  },
 };
 
 export default en;

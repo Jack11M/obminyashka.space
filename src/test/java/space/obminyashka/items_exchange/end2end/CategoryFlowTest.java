@@ -11,17 +11,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.dto.CategoryDto;
-import space.obminyashka.items_exchange.exception.InvalidDtoException;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.dto.CategoryDto;
+import space.obminyashka.items_exchange.rest.exception.DataConflictException;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -31,10 +34,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.CategoryTestUtil.*;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.INVALID_UPDATED_CATEGORY_DTO;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.util.data_producer.CategoriesDataProducer.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
 @DBRider
@@ -64,8 +68,8 @@ class CategoryFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void getCategoryById_shouldReturnCategoryByIdIfExists() throws Exception {
         sendUriAndGetResultAction(get(CATEGORY_ID, EXISTING_ENTITY_ID), status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("shoes"));
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.name").value("Shoes"));
     }
 
     @Test
@@ -125,7 +129,7 @@ class CategoryFlowTest extends BasicControllerTest {
 
         sendDtoAndGetResultAction(put(CATEGORY_ID, updatedCategoryDto.getId()), updatedCategoryDto, status().isAccepted())
                 .andExpect(jsonPath("$.name").value("footwear"))
-                .andExpect(jsonPath("$.subcategories", hasSize(2)));
+                .andExpect(jsonPath("$.subcategories", hasSize(3)));
     }
 
     @Test
@@ -144,7 +148,7 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategoryById_shouldDeleteExistedCategory() throws Exception {
-        sendUriAndGetResultAction(delete(CATEGORY_ID, 2L), status().isOk())
+        sendUriAndGetResultAction(delete(CATEGORY_ID, 1L), status().isOk())
                 .andExpect(jsonPath("$.id").doesNotExist());
     }
 
@@ -152,18 +156,20 @@ class CategoryFlowTest extends BasicControllerTest {
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
     void deleteCategory_whenCategoryIdDoesNotExist_shouldReturnBadRequestAndThrowInvalidDtoException() throws Exception {
-        MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isBadRequest());
+        LocaleContextHolder.setDefaultLocale(Locale.ENGLISH);
+        MvcResult result = sendUriAndGetMvcResult(delete(CATEGORY_ID, NONEXISTENT_ENTITY_ID), status().isNotFound());
         assertThat(result.getResolvedException())
-                .isInstanceOf(InvalidDtoException.class);
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(INVALID_CATEGORY_ID, NONEXISTENT_ENTITY_ID));
     }
 
     @Test
     @WithMockUser(username = USERNAME_ADMIN, roles = {ROLE_ADMIN})
     @DataSet("database_init.yml")
-    void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnBadRequest() throws Exception {
-        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, EXISTING_ENTITY_ID), status().isBadRequest());
+    void deleteCategory_whenInternalSubcategoryHasAdvertisements_shouldReturnConflict() throws Exception {
+        final var mvcResult = sendUriAndGetMvcResult(delete(CATEGORY_ID, 3), status().isConflict());
         assertThat(mvcResult.getResolvedException())
-                .isInstanceOf(InvalidDtoException.class)
-                .hasMessageContaining("The category can not be deleted by this id, because it has to exist by id");
+                .isInstanceOf(DataConflictException.class)
+                .hasMessageContaining(getParametrizedMessageSource(CATEGORY_NOT_DELETABLE, 3));
     }
 }

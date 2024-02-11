@@ -1,20 +1,18 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.dto.RefreshTokenResponseDto;
-import space.obminyashka.items_exchange.dto.UserLoginResponseDto;
-import space.obminyashka.items_exchange.exception.RefreshTokenException;
-
-import java.util.Optional;
+import space.obminyashka.items_exchange.rest.response.RefreshTokenResponse;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
+import space.obminyashka.items_exchange.rest.exception.RefreshTokenException;
 
 public interface AuthService {
 
     /**
-     * Creates {@link UserLoginResponseDto} from {@param username} is user exists in the database
+     * Creates {@link UserLoginResponse} from {@param username} is user exists in the database
      *
-     * @param username user for children update
-     * @return response on /login endpoint represented as {@link UserLoginResponseDto}
+     * @param userAuthDto added access token and refresh token to it
+     * @return response on /login endpoint represented as {@link UserLoginResponse}
      */
-    Optional<UserLoginResponseDto> createUserLoginResponseDto(String username);
+    UserLoginResponse finalizeAuthData(UserLoginResponse userAuthDto);
 
     /**
      * Invalidate access and refresh tokens for selected user
@@ -22,7 +20,7 @@ public interface AuthService {
      * @param username name of the user which the token belongs
      * @return result of the tokens invalidation
      */
-    boolean logout(String accessToken, String username);
+    void logout(String accessToken, String username);
 
     /**
      * Create new access token using while refresh token is not expired
@@ -30,5 +28,5 @@ public interface AuthService {
      * @return DTO containing tokens and their expiration time
      * @throws RefreshTokenException when token wasn't found
      */
-    RefreshTokenResponseDto renewAccessTokenByRefresh(String refreshToken) throws RefreshTokenException;
+    RefreshTokenResponse renewAccessTokenByRefresh(String refreshToken) throws RefreshTokenException;
 }
