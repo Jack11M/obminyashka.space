@@ -12,12 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.exception.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.model.EmailConfirmationCode;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.rest.exception.not_found.EmailValidationCodeNotFoundException;
+import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.service.impl.SendGridService;
-import space.obminyashka.items_exchange.util.MessageSourceUtil;
+import space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -43,11 +43,11 @@ class EmailServiceTest {
     @InjectMocks
     private SendGridService sendGridService;
     @InjectMocks
-    private MessageSourceUtil messageSourceUtil;
+    private MessageSourceProxy messageSourceProxy;
 
     @BeforeEach
     void init() {
-        messageSourceUtil.setMSource(messageSource);
+        messageSourceProxy.setMSource(messageSource);
     }
 
     @Test

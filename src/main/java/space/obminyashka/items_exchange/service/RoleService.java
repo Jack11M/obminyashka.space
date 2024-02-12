@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-import space.obminyashka.items_exchange.dao.RoleRepository;
-import space.obminyashka.items_exchange.model.Role;
+import space.obminyashka.items_exchange.repository.RoleRepository;
+import space.obminyashka.items_exchange.repository.model.Role;
 
 @Service
 @RequiredArgsConstructor

@@ -2,14 +2,13 @@ package space.obminyashka.items_exchange.service;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.dto.UserDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
+import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,27 +22,35 @@ public interface UserService {
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
 
     /**
+     * Find a user into DB by checking gained param either username or email columns
+     *
+     * @param usernameOrEmail login or email of the user
+     * @return the user login response dto as the result
+     */
+    UserLoginResponse findAuthDataByUsernameOrEmail(String usernameOrEmail);
+
+    /**
      * Find a user into DB by checking gained username and convert it into DTO
      * @param username login of the user
      * @return {@link Optional} with the converted user as the result
      */
-    Optional<UserDto> findByUsername(String username);
+    Optional<MyUserInfoView> findByUsername(String username);
 
     /**
      * Register new user and create email confirmation code
-     * @param userRegistrationDto DTO which contains all required data for registration the user
-     * @param codeId UIID for confirmation email
+     * @param userRegistrationRequest DTO which contains all required data for registration the user
+     * @param codeId UUID for confirmation email
      * @return result of registration
      */
-    boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId);
+    boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId);
 
     /**
      * Update an existed user with new data
-     * @param newUserUpdateDto new data for update
+     * @param newMyUserInfoUpdateRequest new data for update
      * @param user existed user to update
      * @return a message as the result of the operation
      */
-    String update(UserUpdateDto newUserUpdateDto, User user);
+    String update(MyUserInfoUpdateRequest newMyUserInfoUpdateRequest, User user);
 
     /**
      * Update the user in the database.
@@ -58,6 +65,13 @@ public interface UserService {
      * @param password The new password for the user.
      */
     void updateUserPassword(String  username, String password);
+
+    /**
+     * Save new record for request reset user password.
+     * @param email requested email address to reset your password.
+     * @param codeId UUID for confirmation email.
+     */
+    void saveCodeForResetPassword(String email, UUID codeId);
 
     /**
      * Update the email for the user with the given username.
@@ -132,26 +146,17 @@ public interface UserService {
     boolean isUserEmailMatches(String username, String email);
 
     /**
-     * Get all children from gained user
-     * @param parent the user which is requested for getting all the children
-     * @return all existed children for provided user
-     */
-    List<ChildDto> getChildren(User parent);
-
-    /**
-     * Update existed children of gained user
-     * @param username for children update
-     * @param childrenDtoToUpdate updated children data
-     * @return children which were updated
-     */
-    List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate);
-
-    /**
      * Set received image to existed username as the avatar image
      * @param newAvatarImage image represented into array of bytes
-     * @param usernameOrEmail whom the image has to be set as new avatar image
+     * @param username whom the image has to be set as new avatar image
      */
-    void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage);
+    void setUserAvatar(String username, byte[] newAvatarImage);
+
+    /**
+     * Set to existed user validated email as true
+     * @param usernameOrEmail email or username of existed user
+     */
+    void setValidatedEmailByUsernameOrEmail(String usernameOrEmail);
 
     /**
      * Remove avatar of selected user

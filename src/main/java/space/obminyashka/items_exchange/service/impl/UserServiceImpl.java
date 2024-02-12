@@ -12,48 +12,44 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.dao.EmailConfirmationCodeRepository;
-import space.obminyashka.items_exchange.dao.UserRepository;
-import space.obminyashka.items_exchange.dto.ChildDto;
-import space.obminyashka.items_exchange.dto.UserDto;
-import space.obminyashka.items_exchange.dto.UserRegistrationDto;
-import space.obminyashka.items_exchange.dto.UserUpdateDto;
-import space.obminyashka.items_exchange.mapper.ChildMapper;
-import space.obminyashka.items_exchange.mapper.PhoneMapper;
-import space.obminyashka.items_exchange.mapper.UserMapper;
-import space.obminyashka.items_exchange.model.Child;
-import space.obminyashka.items_exchange.model.EmailConfirmationCode;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.mapper.PhoneMapper;
+import space.obminyashka.items_exchange.rest.mapper.UserMapper;
+import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
+import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
+import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static space.obminyashka.items_exchange.model.enums.Status.UPDATED;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
+import static space.obminyashka.items_exchange.repository.enums.Status.UPDATED;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
-
+    private static final String EMAIL_SUFFIX = "(?<=.{3}).(?=.*@)";
     private static final String ROLE_USER = "ROLE_USER";
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
     private final EmailConfirmationCodeRepository emailConfirmationCodeRepository;
-    private final ChildMapper childMapper;
     private final PhoneMapper phoneMapper;
     private final RoleService roleService;
     private final UserMapper userMapper;
+
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -67,7 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("IN UserDetailsService (loadUserByUsername): " +
                         "user with username: " + username + " not found"));
 
-        log.info("IN UserDetailsService (loadUserByUsername): user with username: {} successfully loaded", username);
+        log.info("[UserServiceImpl] Invoked from UserDetailsService: User '{}' successfully loaded", user.getId());
         return user;
     }
 
@@ -77,35 +73,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean registerNewUser(UserRegistrationDto userRegistrationDto, UUID codeId) {
-        User userToRegister = userRegistrationDtoToUser(userRegistrationDto);
+    public UserLoginResponse findAuthDataByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findAuthDataByEmailOrUsername(usernameOrEmail, usernameOrEmail)
+                .map(userMapper::toLoginResponseDto)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + usernameOrEmail + " is not logged in"));
+    }
+
+    @Override
+    public boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId) {
+        User userToRegister = userRegistrationDtoToUser(userRegistrationRequest);
         EmailConfirmationCode confirmationCode = new EmailConfirmationCode(codeId, userToRegister,
                 numberOfHoursToKeepEmailConformationCode);
         return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
-    private User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto) {
+    private User userRegistrationDtoToUser(UserRegistrationRequest userRegistrationRequest) {
         return User.builder()
-                .username(userRegistrationDto.getUsername())
-                .email(userRegistrationDto.getEmail())
-                .password(bCryptPasswordEncoder.encode(userRegistrationDto.getPassword()))
+                .username(userRegistrationRequest.getUsername())
+                .email(userRegistrationRequest.getEmail())
+                .password(bCryptPasswordEncoder.encode(userRegistrationRequest.getPassword()))
                 .role(roleService.getRole(ROLE_USER).orElse(null))
                 .build();
     }
 
     @Override
     public User loginUserWithOAuth2(DefaultOidcUser oauth2User) {
-        var optionalUser = findByUsernameOrEmail(oauth2User.getEmail());
-        optionalUser.filter(Predicate.not(this::isUserHasNoOAuthOrValidatedEmail))
-                .map(User::getEmail)
-                .ifPresent(userRepository::setOAuth2LoginToUserByEmail);
-
-        return optionalUser.orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
-    }
-
-    private boolean isUserHasNoOAuthOrValidatedEmail(User user) {
-        return Objects.requireNonNullElse(user.getOauth2Login(), false)
-                || Objects.requireNonNullElse(user.isValidatedEmail(), false);
+        return userRepository.findUserProjectionByEmail(oauth2User.getEmail())
+                .map(userMapper::toUserFromProjection)
+                .orElseGet(() -> userRepository.save(mapOAuth2UserToUser(oauth2User)));
     }
 
     private User mapOAuth2UserToUser(DefaultOidcUser oAuth2User) {
@@ -126,9 +121,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String update(UserUpdateDto newUserUpdateDto, User user) {
-        BeanUtils.copyProperties(newUserUpdateDto, user, "phones");
-        final var phonesToUpdate = phoneMapper.toModelSet(newUserUpdateDto.getPhones());
+    public String update(MyUserInfoUpdateRequest newMyUserInfoUpdateRequest, User user) {
+        BeanUtils.copyProperties(newMyUserInfoUpdateRequest, user, "phones");
+        final var phonesToUpdate = phoneMapper.toModelSet(newMyUserInfoUpdateRequest.getPhones());
         final var userPhones = user.getPhones();
         userPhones.clear();
         userPhones.addAll(phonesToUpdate);
@@ -150,8 +145,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void saveCodeForResetPassword(String email, UUID codeId) {
+        emailConfirmationCodeRepository.saveConfirmationCode(codeId, email,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+    }
+
+    @Override
     public void updateUserEmail(String username, String email, UUID codeId) {
-        userRepository.saveUserEmailConfirmationCodeByUsername(username, codeId,
+        userRepository.updateUserEmailConfirmationCodeByUsername(username, codeId,
                 LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
         userRepository.updateUserEmailAndConfirmationCodeByUsername(username, email);
     }
@@ -159,7 +160,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void selfDeleteRequest(String username) {
         userRepository.updateUserByUsernameWithRole(username, "ROLE_SELF_REMOVING");
-        log.info("[UserServiceImpl] User '{}' is now in SELF REMOVING role", username);
+        log.info("[UserServiceImpl] User '{}' is now in SELF REMOVING role", username.replaceAll(EMAIL_SUFFIX, "*"));
     }
 
     @Override
@@ -176,21 +177,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Scheduled(cron = "${cron.expression.once_per_day_at_3am}")
     public void permanentlyDeleteUsers() {
-        userRepository.findByRole_Name("ROLE_SELF_REMOVING").stream()
-                .filter(this::isDurationMoreThanNumberOfDaysToKeepDeletedUser)
-                .forEach(userRepository::delete);
-    }
-
-    private boolean isDurationMoreThanNumberOfDaysToKeepDeletedUser(User user) {
-        Duration duration = Duration.between(user.getUpdated(), LocalDateTime.now());
-
-        return duration.toDays() > numberOfDaysToKeepDeletedUsers;
+        final var selfRemovingNearestDate = LocalDateTime.now().minusDays(numberOfDaysToKeepDeletedUsers);
+        userRepository.deleteAll(
+                userRepository.findAllByUpdatedLessThanEqualAndRoleName(selfRemovingNearestDate, "ROLE_SELF_REMOVING"));
     }
 
     @Override
     public void makeAccountActiveAgain(String username) {
         roleService.setUserRoleToUserByUsername(username);
-        log.info("[UserServiceImpl] User '{}' is active once again", username);
+        log.info("[UserServiceImpl] User '{}' is active once again", username.replaceAll(EMAIL_SUFFIX, "*"));
     }
 
     @Override
@@ -204,7 +199,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserDto> findByUsername(String username) {
+    public Optional<MyUserInfoView> findByUsername(String username) {
         return userRepository.findByUsername(username).map(this::mapUserToDto);
     }
 
@@ -218,28 +213,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.getUserEmailByUsername(username).equals(email);
     }
 
-    private UserDto mapUserToDto(User user) {
+    private MyUserInfoView mapUserToDto(User user) {
         return userMapper.toDto(user);
     }
 
     @Override
-    public List<ChildDto> getChildren(User parent) {
-        return childMapper.toDtoList(parent.getChildren());
+    public void setUserAvatar(String username, byte[] newAvatarImage) {
+        userRepository.updateAvatarByUsername(username, newAvatarImage);
     }
 
     @Override
-    public List<ChildDto> updateChildren(String username, List<ChildDto> childrenDtoToUpdate) {
-        final var childrenToSave = childMapper.toModelList(childrenDtoToUpdate);
-        userRepository.deleteAllChildrenByUsername(username);
-        for (Child child : childrenToSave) {
-            userRepository.createChildrenByUsername(UUID.randomUUID(), username, child.getBirthDate(), child.getSex().name());
-        }
-        return childrenDtoToUpdate;
-    }
-
-    @Override
-    public void setUserAvatar(String usernameOrEmail, byte[] newAvatarImage) {
-        userRepository.updateAvatarByUsername(usernameOrEmail, newAvatarImage);
+    public void setValidatedEmailByUsernameOrEmail(String usernameOrEmail) {
+        userRepository.setValidatedEmailByUsernameOrEmail(usernameOrEmail, usernameOrEmail);
     }
 
     @Override
@@ -255,7 +240,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .ifPresent(user -> {
                     user.setLanguage(locale);
                     userRepository.saveAndFlush(user);
-                    log.info("Preferable language was successfully updated for User: {}", user.getUsername());
+                    log.info("[UserServiceImpl] Preferable language was successfully updated for User: {}", user.getId());
                 });
     }
 }

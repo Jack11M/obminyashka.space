@@ -1,7 +1,6 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.model.RefreshToken;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.model.RefreshToken;
 
 import java.util.Optional;
 
@@ -10,10 +9,11 @@ public interface RefreshTokenService {
     /**
      * Creates a {@link RefreshToken} by logged-in User`s username
      *
-     * @param user is a logged-in User
+     * @param refreshToken previous refresh token of user
+     * @param username is a username of user which wants to create or update refresh token
      * @return the created {@link RefreshToken}
      */
-    RefreshToken createRefreshToken(User user);
+    RefreshToken createRefreshToken(String refreshToken, String username);
 
     /**
      * Removes a {@link RefreshToken} by logged-in User`s username

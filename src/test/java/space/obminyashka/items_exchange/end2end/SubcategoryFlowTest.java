@@ -13,7 +13,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 
 import java.util.stream.Stream;
 
@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.SUBCATEGORY_ID;
-import static space.obminyashka.items_exchange.api.ApiKey.SUBCATEGORY_NAMES;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.SUBCATEGORY_ID;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.SUBCATEGORY_NAMES;
 
 @SpringBootTest
 @DBRider
@@ -32,6 +32,7 @@ class SubcategoryFlowTest extends BasicControllerTest {
 
     public static final long SUBCATEGORY_ID_FOR_DELETING = 1L;
     public static final long EXISTENT_SUBCATEGORY_ID = 2L;
+    public static final long EXISTENT_CATEGORY_ID = 1L;
     public static final long NONEXISTENT_CATEGORY_ID = 22222L;
 
     @Autowired
@@ -48,7 +49,7 @@ class SubcategoryFlowTest extends BasicControllerTest {
 
     private static Stream<Arguments> subcategoryNameTestData() {
         return Stream.of(
-                Arguments.of(EXISTENT_SUBCATEGORY_ID, status().isOk()),
+                Arguments.of(EXISTENT_CATEGORY_ID, status().isOk()),
                 Arguments.of(NONEXISTENT_CATEGORY_ID, status().isNotFound())
         );
     }

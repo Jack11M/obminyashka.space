@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import space.obminyashka.items_exchange.dao.ImageRepository;
-import space.obminyashka.items_exchange.dto.ImageDto;
-import space.obminyashka.items_exchange.exception.UnsupportedMediaTypeException;
-import space.obminyashka.items_exchange.mapper.ImageMapper;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Image;
+import space.obminyashka.items_exchange.repository.ImageRepository;
+import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
+import space.obminyashka.items_exchange.rest.response.ImageView;
+import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
+import space.obminyashka.items_exchange.rest.mapper.ImageMapper;
+import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
-import space.obminyashka.items_exchange.service.SupportedMediaTypes;
+import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -28,12 +28,13 @@ import java.io.*;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.awt.Image.SCALE_REPLICATE;
 import static java.awt.Image.SCALE_SMOOTH;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
 
 @Slf4j
 @Service
@@ -47,16 +48,16 @@ public class ImageServiceImpl implements ImageService {
             .collect(Collectors.toSet());
     @Value("${app.image.thumbnail.edge.px}")
     private int thumbnailEdge;
+    @Value("${max.images.amount}")
+    private int maxImagesAmount;
 
     @Override
     public List<byte[]> getImagesResourceByAdvertisementId(UUID advertisementId) {
-        return imageRepository.findByAdvertisementId(advertisementId).stream()
-                .map(Image::getResource)
-                .toList();
+        return imageRepository.getImagesResourceByAdvertisementId(advertisementId);
     }
 
     @Override
-    public List<ImageDto> getByAdvertisementId(UUID advertisementId) {
+    public List<ImageView> getByAdvertisementId(UUID advertisementId) {
         return imageMapper.toDtoList(imageRepository.findByAdvertisementId(advertisementId));
     }
 
@@ -95,26 +96,18 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void saveToAdvertisement(Advertisement advertisement, List<byte[]> images) {
-        List<Image> imagesToSave = images.stream()
-                .map(populateNewImage(advertisement))
-                .toList();
-        imageRepository.saveAll(imagesToSave);
-    }
+    public void saveToAdvertisement(UUID advertisementId, List<MultipartFile> images)
+            throws UnsupportedMediaTypeException, ElementsNumberExceedException {
+        validateMaxImagesAmount(advertisementId, images.size());
 
-    @Override
-    public void saveToAdvertisement(Advertisement advertisement, byte[] image) {
-        Image toSave = populateNewImage(advertisement).apply(image);
-        imageRepository.save(toSave);
-    }
-
-    private Function<byte[], Image> populateNewImage(Advertisement ownerAdvertisement) {
-        return bytes -> new Image(bytes, ownerAdvertisement);
+        images.parallelStream()
+                .map(this::compress)
+                .forEach(compress -> imageRepository.createImage(UUID.randomUUID(), advertisementId, compress));
     }
 
     @Override
     public boolean existAllById(List<UUID> ids, UUID advertisementId) {
-        return imageRepository.existsAllByIdInAndAdvertisement_Id(ids, advertisementId);
+        return imageRepository.existsAllByIdInAndAdvertisementId(ids, advertisementId);
     }
 
     @Override
@@ -131,6 +124,12 @@ public class ImageServiceImpl implements ImageService {
         final Set<String> unsupportedTypes = findUnsupportedType(images);
         if (!unsupportedTypes.isEmpty()) {
             throw new UnsupportedMediaTypeException("Received unsupported image types: " + String.join(" ,", unsupportedTypes));
+        }
+    }
+
+    private void validateMaxImagesAmount(UUID advertisementId, int addableImagesAmount) throws ElementsNumberExceedException {
+        if (countImagesForAdvertisement(advertisementId) + addableImagesAmount > maxImagesAmount) {
+            throw new ElementsNumberExceedException(getParametrizedMessageSource(EXCEED_IMAGES_NUMBER, maxImagesAmount));
         }
     }
 
@@ -164,14 +163,19 @@ public class ImageServiceImpl implements ImageService {
             }
             return baos.toByteArray();
         } catch (IOException e) {
-            log.error("An error occurred while scale an image", e);
+            log.error("[ImageServiceImpl] An error occurred while scale an image", e);
             return bytes;
         }
     }
 
     @Override
     public int countImagesForAdvertisement(UUID id) {
-        return imageRepository.countImageByAdvertisement_Id(id);
+        return imageRepository.countImageByAdvertisementId(id);
+    }
+
+    @Override
+    public List<UUID> getImagesIdByAdvertisementId(UUID advertisementId) {
+        return imageRepository.getImagesIdByAdvertisementId(advertisementId);
     }
 
     private BufferedImage getScaled(Dimension d, BufferedImage originImage) {

@@ -7,9 +7,10 @@ import imageCompression from 'browser-image-compression';
 
 import { getTranslatedText } from 'src/components/local';
 import { Crop, ModalContext } from 'src/components/common';
-import { options, useDelay, constants, convertToMB, isRightExtension } from 'src/Utils';
+import { options, useDelay, convertToUnitOfDigitalInformation, isImageExtensionSupported } from 'src/Utils';
 
 import * as Styles from './styles';
+import { MAX_SIZE_PHOTO } from "src/Utils/convertToUnitOfDigitalInformation.ts";
 
 const CropImage = ({ avatarImage }) => {
   const { openModal } = useContext(ModalContext);
@@ -33,9 +34,9 @@ const CropImage = ({ avatarImage }) => {
   };
   const changeFile = async (event) => {
     const file = event.target.files[0];
-    const { value, valueString } = convertToMB(file.size);
+    const { value, valueString } = convertToUnitOfDigitalInformation(file.size);
 
-    if (value >= constants.MAX_SIZE_PHOTO && valueString.includes('MB')) {
+    if (value >= MAX_SIZE_PHOTO && valueString.includes('MB')) {
       openModal({
         title: getTranslatedText('popup.errorTitle'),
         children: (
@@ -53,7 +54,7 @@ const CropImage = ({ avatarImage }) => {
       return;
     }
 
-    if (isRightExtension(file?.type)) {
+    if (!isImageExtensionSupported(file?.type)) {
       openModal({
         title: getTranslatedText('popup.errorTitle'),
         children: (
