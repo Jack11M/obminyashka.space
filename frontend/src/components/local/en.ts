@@ -351,6 +351,22 @@ const en = {
     verification: "The verification was successful.",
     home: "Home page",
   },
+  swiperText: {
+    toysTitle: "Toys",
+    toysSubTitle: "Huge selection of",
+    clothesTitle: "Clothes",
+    clothesSubTitle: "Variety for children and teenagers of",
+    infantsTitle: "Infants",
+    infantsSubTitle: "Everything for",
+    furnitureTitle: "Furniture",
+    furnitureSubTitle: "Lots of children's",
+    shoesTitle: "Shoes",
+    shoesSubTitle: "Variety for children and teenagers of",
+    title: "Transport",
+    subTitle: "Children's",
+    transportTitle: "Books",
+    transportSubTitle: "Educational and children's",
+  },
 };
 
 export default en;

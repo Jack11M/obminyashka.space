@@ -1,52 +1,54 @@
 import { Images } from "obminyashka-components";
 
+import { getTranslatedText } from "src/components/local";
+
 export const slidesData = [
   {
     href: "#",
-    title: "Toys",
+    title: getTranslatedText("swiperText.toysTitle"),
     src: Images.toySlider,
-    subtitle: "Huge selection of",
+    subtitle: getTranslatedText("swiperText.toysSubTitle"),
   },
 
   {
     href: "#",
-    title: "Clothes",
+    title: getTranslatedText("swiperText.clothesTitle"),
     src: Images.clothesSlider,
-    subtitle: "Variety for children and teenagers of",
+    subtitle: getTranslatedText("swiperText.clothesSubTitle"),
   },
 
   {
     href: "#",
-    title: "Infants",
+    title: getTranslatedText("swiperText.infantsTitle"),
     src: Images.childSlider,
-    subtitle: "Everything for",
+    subtitle: getTranslatedText("swiperText.infantsSubTitle"),
   },
 
   {
     href: "#",
-    title: "Furniture",
+    title: getTranslatedText("swiperText.furnitureTitle"),
     src: Images.furnitureSlider,
-    subtitle: "Lots of children's",
+    subtitle: getTranslatedText("swiperText.furnitureSubTitle"),
   },
 
   {
     href: "#",
-    title: "Shoes",
+    title: getTranslatedText("swiperText.shoesTitle"),
     src: Images.shoesSlider,
-    subtitle: "Variety for children and teenagers of",
+    subtitle: getTranslatedText("swiperText.shoesSubTitle"),
   },
 
   {
     href: "#",
-    title: "Transport",
+    title: getTranslatedText("swiperText.transportTitle"),
     src: Images.strollersSlider,
-    subtitle: "Children's",
+    subtitle: getTranslatedText("swiperText.transportSubTitle"),
   },
 
   {
     href: "#",
-    title: "Books",
+    title: getTranslatedText("swiperText.booksTitle"),
     src: Images.booksSlider,
-    subtitle: "Educational and children's",
+    subtitle: getTranslatedText("swiperText.booksSubTitle"),
   },
 ];
