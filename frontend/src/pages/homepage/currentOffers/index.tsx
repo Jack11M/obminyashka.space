@@ -11,6 +11,7 @@ import { getErrorMessage } from "src/Utils/error";
 import { getCity } from "src/Utils/getLocationProperties";
 import { getTranslatedText } from "src/components/local/localization";
 
+// import { data } from "./mock";
 import * as Styles from "./styles";
 
 const CurrentOffers = () => {
@@ -41,9 +42,9 @@ const CurrentOffers = () => {
 
       <Styles.ProductListUl>
         {offers.map((offer) => (
-          <li key={offer.advertisementId}>
+          <Styles.ProductListLI key={offer.advertisementId}>
             <ProductCard
-              margin="10px 8px"
+              margin="10px 0"
               text={offer.title}
               isFavorite={false}
               city={getCity(offer.location)}
@@ -57,7 +58,7 @@ const CurrentOffers = () => {
                 )
               }
             />
-          </li>
+          </Styles.ProductListLI>
         ))}
       </Styles.ProductListUl>
     </Styles.ProductSection>

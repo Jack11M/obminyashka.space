@@ -12,7 +12,6 @@ export const Container = styled.div`
   margin: 0 auto;
   max-width: 1845px;
   background-color: #f2f2f2;
-  overflow: hidden;
 
   ${({ theme }) => css`
     ${theme.responsive.isTablet &&
