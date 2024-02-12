@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.repository.model.Category;
@@ -17,4 +18,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByIdAndNameIgnoreCase(long categoryId, String categoryName);
 
     boolean existsBySubcategoriesAdvertisementsEmptyAndId(long categoryId);
+
+    @Modifying
+    @Query("delete FROM Category c where c.id=:id")
+    void deleteById(long id);
 }
