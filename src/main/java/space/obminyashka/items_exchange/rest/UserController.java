@@ -97,6 +97,7 @@ public class UserController {
     @Operation(summary = "Find user's favorite advertisements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")})
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementTitleView> getFavoriteAdvertisements(
@@ -175,7 +176,7 @@ public class UserController {
         var email = verifyEmailRequest.email();
         var resultMessage = getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
         if (userService.existsByEmail(email)) {
-            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
+            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET_PASSWORD, host);
             userService.saveCodeForResetPassword(email, codeId);
             return new ResponseEntity<>(resultMessage, HttpStatus.OK);
         }

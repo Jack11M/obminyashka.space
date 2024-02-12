@@ -93,8 +93,8 @@ public class User extends BaseEntity implements UserDetails {
     @Accessors(chain = true)
     private RefreshToken refreshToken;
 
-    @OneToOne(mappedBy = "user")
-    private EmailConfirmationCode emailConfirmationCode;
+    @OneToMany(mappedBy = "user")
+    private Set<EmailConfirmationCode> emailConfirmationCode;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
