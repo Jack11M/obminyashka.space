@@ -359,7 +359,7 @@ const ua = {
     welcome: "Ласкаво просимо на сайт",
     verification: "Верифікація пройшла успішно.",
     home: "Головна сторінка",
-  }
+  },
 };
 
 export default ua;
