@@ -1,34 +1,42 @@
-/* eslint-disable */
-// @ts-nocheck
-// TODO: fix typescript
-import { useState } from 'react';
-import { Form, Formik } from 'formik';
-import { useNavigate } from 'react-router-dom';
-import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
+import axios from "axios";
+import { useState } from "react";
+import { Form, Formik, FormikValues } from "formik";
+import {
+  Images,
+  CheckBox,
+  InputField,
+  Responsive,
+} from "obminyashka-components";
 
-import api from 'src/REST/Resources';
-import { route } from 'src/routes/routeConstants';
-import { getTranslatedText } from 'src/components/local/localization';
+import api from "src/REST/Resources";
+import { getTranslatedText } from "src/components/local/localization";
 
-import * as Styles from '../sign-in/styles';
-import { validationSchema } from './config';
+import * as StylesNative from "./styles";
+import { FormikBagType } from "../types";
+import * as Styles from "../sign-in/styles";
+import { validationSchema } from "./config";
+import { ButtonsWrapper } from "../buttons-registration";
 
-const SignUp = () => {
-  const navigate = useNavigate();
+const SignUp = ({ setTab }: { setTab: (num: number) => void }) => {
   const [loading, setLoading] = useState(false);
 
   const initialValues = validationSchema.cast({});
 
-  const onSubmit = async (values, onSubmitProps) => {
+  const onSubmit = async (
+    values: FormikValues,
+    onSubmitProps: FormikBagType
+  ) => {
     setLoading(true);
     delete values.agreement;
 
     try {
       await api.auth.postAuthRegister(values);
-      navigate(route.login);
+      setTab(0);
     } catch (err) {
-      if (err.response.status === 409) {
-        onSubmitProps.setErrors({ username: err.response.data });
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 409) {
+          onSubmitProps.setErrors({ username: err.response.data });
+        }
       }
     } finally {
       setLoading(false);
@@ -36,92 +44,77 @@ const SignUp = () => {
   };
 
   return (
-    <Styles.Wrapper>
-      <Formik
-        validateOnBlur
-        onSubmit={onSubmit}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-      >
-        {({ dirty, values, isValid, isSubmitting, setFieldValue }) => (
-          <Form>
-            <Styles.WrapperInputSingUp>
-              <InputField
-                type='text'
-                name='email'
-                inputGap='3px'
-                inputHeight='50px'
-                label={getTranslatedText('auth.regEmail')}
-              />
+    <StylesNative.Wrapper>
+      <Responsive.Desktop>
+        <StylesNative.SunRegistration
+          alt="sun-registration"
+          src={Images.sunRegistration}
+        />
+      </Responsive.Desktop>
 
-              <InputField
-                type='text'
-                inputGap='3px'
-                name='username'
-                inputHeight='50px'
-                label={getTranslatedText('auth.regLogin')}
-              />
+      <StylesNative.FormikContainer>
+        <Formik
+          validateOnBlur
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+        >
+          {({ values, setFieldValue }) => (
+            <Form>
+              <StylesNative.WrapperInputSingUp>
+                <InputField
+                  type="text"
+                  name="email"
+                  inputGap="3px"
+                  inputHeight="50px"
+                  label={getTranslatedText("auth.regEmail")}
+                />
 
-              <InputField
-                inputGap='3px'
-                name='password'
-                type='password'
-                inputHeight='50px'
-                label={getTranslatedText('auth.regPassword')}
-              />
+                <InputField
+                  type="text"
+                  inputGap="3px"
+                  name="username"
+                  autoComplete="off"
+                  inputHeight="50px"
+                  label={getTranslatedText("auth.regLogin")}
+                />
 
-              <InputField
-                inputGap='3px'
-                type='password'
-                inputHeight='50px'
-                name='confirmPassword'
-                label={getTranslatedText('auth.regConfirm')}
-              />
-            </Styles.WrapperInputSingUp>
+                <InputField
+                  inputGap="3px"
+                  name="password"
+                  type="password"
+                  autoComplete="off"
+                  inputHeight="50px"
+                  label={getTranslatedText("auth.regPassword")}
+                />
 
-            <Styles.Extra>
-              <CheckBox
-                gap={22}
-                fontSize={14}
-                name='agreement'
-                margin='0 0 44px 0'
-                checked={values.agreement}
-                style={{ paddingRight: '10px' }}
-                text={getTranslatedText('auth.agreement')}
-                onChange={() => setFieldValue('agreement', !values.agreement)}
-              />
-            </Styles.Extra>
+                <InputField
+                  inputGap="3px"
+                  type="password"
+                  inputHeight="50px"
+                  name="confirmPassword"
+                  label={getTranslatedText("auth.regConfirm")}
+                />
+              </StylesNative.WrapperInputSingUp>
 
-            <Styles.WrapperButton>
-              <Button
-                bold
-                width={222}
-                height={48}
-                lHeight={24}
-                type='submit'
-                isLoading={loading}
-                style={{ marginBottom: 44 }}
-                text={getTranslatedText('auth.signUp')}
-                disabling={!dirty || !isValid || isSubmitting}
-              />
+              <Styles.Extra>
+                <CheckBox
+                  gap={22}
+                  fontSize={14}
+                  name="agreement"
+                  checked={values.agreement}
+                  style={{ alignItems: "center" }}
+                  text={getTranslatedText("auth.agreement")}
+                  onChange={() => setFieldValue("agreement", !values.agreement)}
+                />
+              </Styles.Extra>
 
-              <Button
-                bold
-                height={48}
-                width={222}
-                lHeight={24}
-                type='button'
-                nativeIcon={false}
-                icon={<Icon.Google />}
-                style={{ marginBottom: 64 }}
-                text={getTranslatedText('auth.signUp')}
-                onClick={() => window.location.assign('/oauth2/authorization/google')}
-              />
-            </Styles.WrapperButton>
-          </Form>
-        )}
-      </Formik>
-    </Styles.Wrapper>
+              <ButtonsWrapper register isLoading={loading} />
+            </Form>
+          )}
+        </Formik>
+      </StylesNative.FormikContainer>
+    </StylesNative.Wrapper>
   );
 };
 

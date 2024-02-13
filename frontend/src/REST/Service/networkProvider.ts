@@ -1,33 +1,41 @@
 /* eslint-disable */
 // @ts-nocheck
 // TODO: fix typescript
-import axios from 'axios';
+import axios from "axios";
 
-import { store } from 'src/store';
-import { logOutUser } from 'src/store/auth/slice';
-import { addDataToUserInStorage, getStorageUser, getStorageLang } from 'src/Utils';
+import { store } from "src/store";
+import { logOutUser } from "src/store/auth/slice";
+import {
+  addDataToUserInStorage,
+  getStorageUser,
+  getStorageLang,
+} from "src/Utils";
 
-const refreshUrl = '/auth/refresh/token';
-const endPointsAllowed = ['/user/my-info', '/user/child', '/user/my-adv'];
+const refreshUrl = "/auth/refresh/token";
+const endPointsAllowed = ["/user/my-info", "/user/child", "/user/my-adv"];
 
 function handleAuthError(error, onAuthError) {
   if (onAuthError) onAuthError();
   return Promise.reject(error);
 }
 
-const isProvideToken = ({ method, url }) => method === 'get' && !endPointsAllowed.includes(url);
+const isProvideToken = ({ method, url }) =>
+  method === "get" && !endPointsAllowed.includes(url);
 
 function initObminyashka({ onAuthError }) {
-  axios.defaults.baseURL = '/api/v1';
+  axios.defaults.baseURL = "https://localhost/api/v1";
   axios.defaults.headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   axios.interceptors.request.use((config) => {
-    const token = getStorageUser('user').access_token || sessionStorage.getItem('code') || '';
+    const token =
+      getStorageUser("user").access_token ||
+      sessionStorage.getItem("code") ||
+      "";
 
     const newConfig = { ...config };
-    newConfig.headers['accept-language'] = getStorageLang();
+    newConfig.headers["accept-language"] = getStorageLang();
 
     if (token) {
       newConfig.headers.Authorization = `Bearer ${token}`;
@@ -50,7 +58,7 @@ function initObminyashka({ onAuthError }) {
 
     async (error) => {
       const originalRequest = error.config;
-      const refreshToken = getStorageUser('user').refresh_token;
+      const refreshToken = getStorageUser("user").refresh_token;
 
       if (!refreshToken && error?.response?.status === 401) {
         return handleAuthError(error, onAuthError);

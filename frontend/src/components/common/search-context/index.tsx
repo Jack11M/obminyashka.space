@@ -4,7 +4,16 @@
 import { createContext, useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-const SearchContext = createContext();
+import { IProvider } from './types';
+
+const initialContext = {
+  search: '',
+  isFetch: false,
+  setSearch: () => {},
+  setIsFetch: () => {},
+};
+
+const SearchContext = createContext<IProvider>(initialContext);
 
 const SearchProvider = ({ children }) => {
   const [searchParams] = useSearchParams();

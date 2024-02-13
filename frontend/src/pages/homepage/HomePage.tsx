@@ -1,27 +1,40 @@
-import { HelpChildren } from 'obminyashka-components';
+import { HelpChildren, SitePurpose, Swiper } from "obminyashka-components";
 
-import { getTranslatedText } from 'src/components/local';
+import { route } from "src/routes/routeConstants";
+import { getTranslatedText } from "src/components/local";
 
-import Sliders from './slider';
-import HeaderInMain from './headerInMain';
-import { CurrentOffers } from './currentOffers';
+import { slidesData } from "./mock";
+import { CurrentOffers } from "./currentOffers";
 
-import * as Styles from './styles';
+import "swiper/css";
+import * as Styles from "./styles";
 
 const HomePage = () => {
   return (
     <Styles.Main>
-      <HeaderInMain />
+      <SitePurpose
+        regTextRoute={route.addAdv}
+        tradeTextRoute={route.addAdv}
+        thingsTextRoute={route.addAdv}
+        regText={getTranslatedText("mainAnimationText.regText")}
+        tradeText={getTranslatedText("mainAnimationText.tradeText")}
+        thingsText={getTranslatedText("mainAnimationText.thingsText")}
+        regTextTwo={getTranslatedText("mainAnimationText.regTextTwo")}
+        regTextLink={getTranslatedText("mainAnimationText.regTextLink")}
+        tradeTextLink={getTranslatedText("mainAnimationText.tradeTextLink")}
+        thingsTextLink={getTranslatedText("mainAnimationText.thingsTextLink")}
+      />
 
       <Styles.Container>
         <CurrentOffers />
-        <Sliders />
+
+        <Swiper data={slidesData} />
 
         <HelpChildren
-          name={getTranslatedText('mainPage.helpName')}
-          text={getTranslatedText('mainPage.helpText')}
-          title={getTranslatedText('mainPage.helpTitle')}
-          buttonText={getTranslatedText('mainPage.helpButton')}
+          name={getTranslatedText("mainPage.helpName")}
+          text={getTranslatedText("mainPage.helpText")}
+          title={getTranslatedText("mainPage.helpTitle")}
+          buttonText={getTranslatedText("mainPage.helpButton")}
         />
       </Styles.Container>
     </Styles.Main>

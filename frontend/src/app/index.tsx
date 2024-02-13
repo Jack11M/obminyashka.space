@@ -1,18 +1,18 @@
-import { Provider } from 'react-redux';
-import { ThemeWrap, Toast } from 'obminyashka-components';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from "react-redux";
+import { ThemeWrap, Toast } from "obminyashka-components";
+import { BrowserRouter as Router } from "react-router-dom";
 
-import { store } from 'src/store';
-import ScrollToTop from 'src/components/scrollToTop';
-import ErrorBoundary from 'src/components/errorBoundary';
-import { GlobalStyles } from 'src/styledTheme/globalStyles';
-import { ModalProvider, SearchProvider } from 'src/components/common';
+import { store } from "src/store";
+import ScrollToTop from "src/components/scrollToTop";
+import ErrorBoundary from "src/components/errorBoundary";
+import { GlobalStyles } from "src/styledTheme/globalStyles";
+import { ModalProvider, SearchProvider } from "src/components/common";
 
-import Routes from 'src/routes/routes';
-import Footer from 'src/components/footer';
-import Header from 'src/components/header';
+import Routes from "src/routes/routes";
+import { Header } from "src/components/header";
+import { Footer } from "src/components/footerNew";
 
-import { Page } from './styles';
+import { Page } from "./styles";
 
 const App = () => {
   return (
