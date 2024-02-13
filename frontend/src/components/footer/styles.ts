@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
-import { Images } from 'obminyashka-components';
+import { Link } from "react-router-dom";
+import styled, { css } from "styled-components";
+import { Images } from "obminyashka-components";
 
 export const Container = styled.div`
   position: relative;
   margin-top: auto;
-  background-image: url(${Images.footerBg});
+  background-image: url(${Images.footer});
   background-size: cover;
   background-position: top;
   background-repeat: no-repeat;
@@ -73,7 +73,7 @@ export const FootLink = styled(Link)`
 `;
 
 export const FootLinkWrapper = styled.div<{ rules: boolean }>`
-  margin-bottom: ${({ rules }) => (rules ? '10px' : '0')};
+  margin-bottom: ${({ rules }) => (rules ? "10px" : "0")};
 `;
 
 export const Img = styled.img`
