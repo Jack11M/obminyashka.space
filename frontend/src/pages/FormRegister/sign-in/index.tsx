@@ -1,30 +1,35 @@
 /* eslint-disable */
 // @ts-nocheck
 // TODO: fix typescript
-import { useState } from 'react';
-import { Form, Formik } from 'formik';
-import { useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, CheckBox, Icon, InputField } from 'obminyashka-components';
+import axios from "axios";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Form, Formik, FormikValues } from "formik";
+import { useLocation, useNavigate } from "react-router-dom";
+import { CheckBox, InputField } from "obminyashka-components";
 
-import { route } from 'src/routes/routeConstants';
-import { putUserThunk } from 'src/store/auth/thunk';
-import { getTranslatedText } from 'src/components/local/localization';
+import { putUserThunk } from "src/store/auth/thunk";
+import { getTranslatedText } from "src/components/local/localization";
 
-import * as Styles from './styles';
-import { validationSchema } from './config';
+import * as Styles from "./styles";
+import { FormikBagType } from "../types";
+import { validationSchema } from "./config";
+import { ButtonsWrapper } from "../buttons-registration";
 
-const Login = () => {
+const Login = ({ setTab }: { setTab: (num: number) => void }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const initialValues = validationSchema.cast({});
-  const fromPage = location.state?.from?.pathname || '/';
+  const fromPage = location.state?.from?.pathname || "/";
 
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (values, onSubmitProps) => {
+  const onSubmit = async (
+    values: FormikValues,
+    onSubmitProps: FormikBagType
+  ) => {
     if (loading) return;
     setLoading(true);
 
@@ -33,11 +38,12 @@ const Login = () => {
       navigate(fromPage, { replace: true });
     } catch (err) {
       setLoading(false);
-
-      if (err.response.status === 400) {
-        onSubmitProps.setErrors({
-          usernameOrEmail: err.response.data.error,
-        });
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 400) {
+          onSubmitProps.setErrors({
+            usernameOrEmail: err.response.data.error,
+          });
+        }
       }
     }
   };
@@ -50,23 +56,25 @@ const Login = () => {
         initialValues={initialValues}
         validationSchema={validationSchema}
       >
-        {({ isValid, dirty, values, setFieldValue }) => (
+        {({ values, setFieldValue }) => (
           <Form>
             <Styles.WrapperInputSingIn>
               <InputField
-                type='text'
-                inputGap='3px'
-                inputHeight='50px'
-                name='usernameOrEmail'
-                label={getTranslatedText('auth.logEmail')}
+                type="text"
+                inputGap="3px"
+                inputHeight="50px"
+                autoComplete="off"
+                name="usernameOrEmail"
+                label={getTranslatedText("auth.logEmail")}
               />
 
               <InputField
-                inputGap='3px'
-                name='password'
-                type='password'
-                inputHeight='50px'
-                label={getTranslatedText('auth.logPassword')}
+                inputGap="3px"
+                name="password"
+                type="password"
+                inputHeight="50px"
+                autoComplete="off"
+                label={getTranslatedText("auth.logPassword")}
               />
             </Styles.WrapperInputSingIn>
 
@@ -74,42 +82,20 @@ const Login = () => {
               <CheckBox
                 gap={22}
                 fontSize={14}
-                margin='0 0 44px 0'
-                name='isLocalStorage'
+                name="isLocalStorage"
                 checked={values.isLocalStorage}
-                text={getTranslatedText('auth.remember')}
-                onChange={() => setFieldValue('isLocalStorage', !values.isLocalStorage)}
+                text={getTranslatedText("auth.remember")}
+                onChange={() =>
+                  setFieldValue("isLocalStorage", !values.isLocalStorage)
+                }
               />
 
-              <Styles.ExtraLink to={`${route.login}/${route.signUp}`}>
-                {getTranslatedText('auth.noLogin')}
-              </Styles.ExtraLink>
+              <Styles.ExtraButton type="button" onClick={() => setTab(1)}>
+                {getTranslatedText("auth.noLogin")}
+              </Styles.ExtraButton>
             </Styles.Extra>
 
-            <Styles.WrapperButton>
-              <Button
-                bold
-                width={222}
-                lHeight={24}
-                type='submit'
-                isLoading={loading}
-                style={{ marginBottom: 64 }}
-                disabled={!isValid && !dirty}
-                text={getTranslatedText('button.enter')}
-              />
-
-              <Button
-                bold
-                width={175}
-                lHeight={24}
-                type='button'
-                nativeIcon={false}
-                icon={<Icon.Google />}
-                style={{ marginBottom: 64, height: 48 }}
-                text={getTranslatedText('button.googleOAuth')}
-                onClick={() => window.location.assign('/oauth2/authorization/google')}
-              />
-            </Styles.WrapperButton>
+            <ButtonsWrapper isLoading={loading} />
           </Form>
         )}
       </Formik>

@@ -1,4 +1,13 @@
 const en = {
+  mainAnimationText: {
+    regText: "Just ",
+    regTextLink: "register ",
+    regTextTwo: "and post an ad! ",
+    thingsText: "Have you a lot of ",
+    thingsTextLink: "children's clothes? ",
+    tradeText: "something cool and useful with other users!",
+    tradeTextLink: "Share ",
+  },
   auth: {
     login: "log In",
     signUp: "Sign Up",
@@ -10,6 +19,8 @@ const en = {
     regConfirm: "Confirm password",
     remember: "Remember me",
     noLogin: "Can't login?",
+    or: "OR",
+    socialNetwork: "Sign in via social network",
     agreement:
       "* I agree to the terms of use of the service, as well as to the transfer and processing of my data. I confirm that I am of legal age and responsible for posting ads.",
   },
@@ -334,6 +345,27 @@ const en = {
     location: "Location",
     locationArea: "Region:",
     locationCity: "City:",
+  },
+  success: {
+    welcome: "Welcome to the site",
+    verification: "The verification was successful.",
+    home: "Home page",
+  },
+  swiperText: {
+    toysTitle: "Toys",
+    toysSubTitle: "Huge selection of",
+    clothesTitle: "Clothes",
+    clothesSubTitle: "Variety for children and teenagers of",
+    infantsTitle: "Infants",
+    infantsSubTitle: "Everything for",
+    furnitureTitle: "Furniture",
+    furnitureSubTitle: "Lots of children's",
+    shoesTitle: "Shoes",
+    shoesSubTitle: "Variety for children and teenagers of",
+    title: "Transport",
+    subTitle: "Children's",
+    transportTitle: "Books",
+    transportSubTitle: "Educational and children's",
   },
 };
 
