@@ -136,6 +136,7 @@ const en = {
     rotate: "Rotate",
   },
   header: {
+    account: "Account",
     about: "About the project",
     goodness: "Good deal",
     myOffice: "Personal area",

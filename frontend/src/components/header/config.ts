@@ -1,44 +1,45 @@
-import { getTranslatedText } from '../local';
-import { route } from 'src/routes/routeConstants';
+import { route } from "src/routes/routeConstants";
+
+import { getTranslatedText } from "../local";
 
 export const categories = [
   {
     link: route.home,
-    text: getTranslatedText('header.clothes'),
+    text: getTranslatedText("header.clothes"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.shoes'),
+    text: getTranslatedText("header.shoes"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.toys'),
+    text: getTranslatedText("header.toys"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.vehicles'),
+    text: getTranslatedText("header.vehicles"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.furniture'),
+    text: getTranslatedText("header.furniture"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.babies'),
+    text: getTranslatedText("header.babies"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.books'),
+    text: getTranslatedText("header.books"),
   },
   {
     link: route.home,
-    text: getTranslatedText('header.another'),
+    text: getTranslatedText("header.another"),
   },
 ];
 
 export const burgerLinks = [
-  { to: route.home, text: getTranslatedText('header.account') },
-  { to: route.home, text: getTranslatedText('button.addAdv'), mobile: true },
-  { to: route.home, text: getTranslatedText('header.goodness'), icon: true },
-  { to: route.home, text: getTranslatedText('header.about') },
+  { to: route.userInfo, text: getTranslatedText("header.account") },
+  { to: route.addAdv, text: getTranslatedText("button.addAdv"), mobile: true },
+  { to: route.home, text: getTranslatedText("header.goodness"), icon: true },
+  { to: route.home, text: getTranslatedText("header.about") },
 ];
