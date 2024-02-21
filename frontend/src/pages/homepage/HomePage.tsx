@@ -14,7 +14,7 @@ const HomePage = () => {
     <Styles.Main>
       <SitePurpose
         regTextRoute={route.addAdv}
-        tradeTextRoute={route.addAdv}
+        tradeTextRoute={route.login}
         thingsTextRoute={route.addAdv}
         regText={getTranslatedText("mainAnimationText.regText")}
         tradeText={getTranslatedText("mainAnimationText.tradeText")}

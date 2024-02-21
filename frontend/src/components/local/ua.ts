@@ -136,6 +136,7 @@ const ua = {
     rotate: "Обертати",
   },
   header: {
+    account: "Аккаунт",
     about: "Про проект",
     goodness: "Добра справа",
     myOffice: "Мій кабінет",
