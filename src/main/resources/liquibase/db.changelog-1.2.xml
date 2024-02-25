@@ -152,4 +152,10 @@
                                  constraintName="fk_city_district" referencedTableName="district"
                                  referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="1.2.9: add new column" author="lavniuzhenkova">
+        <addColumn tableName="email_confirmation_code">
+            <column name="type" type="varchar(100)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

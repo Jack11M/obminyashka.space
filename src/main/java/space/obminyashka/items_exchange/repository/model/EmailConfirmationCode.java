@@ -19,7 +19,9 @@ public class EmailConfirmationCode {
     @Id
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private String type;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
@@ -30,9 +32,10 @@ public class EmailConfirmationCode {
     @CreatedDate
     private LocalDateTime created;
 
-    public EmailConfirmationCode(UUID id, User user, int expirationHours) {
+    public EmailConfirmationCode(UUID id, User user, int expirationHours, String type) {
         this.id = id;
         this.user = user;
         this.expiryDate = LocalDateTime.now().plusHours(expirationHours);
+        this.type = type;
     }
 }

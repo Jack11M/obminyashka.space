@@ -25,6 +25,7 @@ import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.RoleService;
 import space.obminyashka.items_exchange.service.UserService;
+import space.obminyashka.items_exchange.service.util.EmailType;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId) {
         User userToRegister = userRegistrationDtoToUser(userRegistrationRequest);
         EmailConfirmationCode confirmationCode = new EmailConfirmationCode(codeId, userToRegister,
-                numberOfHoursToKeepEmailConformationCode);
+                numberOfHoursToKeepEmailConformationCode, EmailType.REGISTRATION.name());
         return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
@@ -147,7 +148,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void saveCodeForResetPassword(String email, UUID codeId) {
         emailConfirmationCodeRepository.saveConfirmationCode(codeId, email,
-                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode));
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode), EmailType.RESET_PASSWORD.name());
     }
 
     @Override

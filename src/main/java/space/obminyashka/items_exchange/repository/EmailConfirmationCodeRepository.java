@@ -16,7 +16,7 @@ public interface EmailConfirmationCodeRepository extends JpaRepository<EmailConf
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "insert into email_confirmation_code(id, user_id, expiry_date)" +
-            "values(:codeId, (select u.id from User u where u.email = :email), :expiryData)")
-    void saveConfirmationCode(UUID codeId, String email, LocalDateTime expiryData);
+    @Query(nativeQuery = true, value = "insert into email_confirmation_code(id, user_id, expiry_date, type)" +
+            "values(:codeId, (select u.id from User u where u.email = :email), :expiryData, :type)")
+    void saveConfirmationCode(UUID codeId, String email, LocalDateTime expiryData, String type);
 }
