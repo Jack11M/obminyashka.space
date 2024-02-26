@@ -29,9 +29,7 @@ const SearchResults = () => {
       const response = await api.search.postFilter({keyword: searchResults, page: currentPage - 1});
       setAdv(response.content);
     } catch (err) {
-      if (err?.response?.status !== 404) {
-        showMessage.error(err.response?.data ?? err.message);
-      }
+      log.error(err)
     } finally {
       setIsFetch(false);
     }
