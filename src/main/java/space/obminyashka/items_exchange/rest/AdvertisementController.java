@@ -75,14 +75,12 @@ public class AdvertisementController {
     @Operation(summary = "Find advertisements by multiple params")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    public ResponseEntity<Page<AdvertisementTitleView>> filterAdvertisementBySearchParameters(@Valid @RequestBody AdvertisementFilterRequest advertisementFilterRequest) {
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
+    @ResponseStatus(HttpStatus.OK)
+    public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(@Valid @RequestBody AdvertisementFilterRequest advertisementFilterRequest) {
         Page<AdvertisementTitleView> advertisements = advertisementService.filterAdvertisementBySearchParameters(advertisementFilterRequest);
-        log.info("[filter] Response count: {}", advertisements.stream().count());
-        return advertisements.isEmpty() ?
-                new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-                new ResponseEntity<>(advertisements, HttpStatus.OK);
+        log.info("[filter] Response count: {}", advertisements.getTotalElements());
+        return advertisements;
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'MODERATOR')")
