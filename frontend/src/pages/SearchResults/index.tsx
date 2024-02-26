@@ -27,7 +27,7 @@ const SearchResults = () => {
 
     try {
       const response = await api.search.postFilter({keyword: searchResults, page: currentPage - 1});
-      setAdv(response.content);
+      setAdv(response);
     } catch (err) {
       log.error(err)
     } finally {
