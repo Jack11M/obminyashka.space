@@ -1,34 +1,42 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
-import space.obminyashka.items_exchange.dao.AdvertisementRepository;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.mapper.AdvertisementMapper;
-import space.obminyashka.items_exchange.mapper.CategoryMapper;
-import space.obminyashka.items_exchange.mapper.LocationMapper;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.Image;
-import space.obminyashka.items_exchange.model.User;
-import space.obminyashka.items_exchange.model.enums.AgeRange;
-import space.obminyashka.items_exchange.model.enums.Status;
+import space.obminyashka.items_exchange.repository.AdvertisementRepository;
+import space.obminyashka.items_exchange.repository.enums.AgeRange;
+import space.obminyashka.items_exchange.repository.enums.Status;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.Image;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.rest.mapper.AdvertisementMapper;
+import space.obminyashka.items_exchange.rest.mapper.CategoryMapper;
+import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 
 
 @CacheConfig(cacheNames = "titles")
@@ -49,77 +57,63 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private String dateFormat;
 
     @Override
-    public List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest) {
-        final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
-                findAdvsRequest.getExcludeAdvertisementId(), findAdvsRequest.getSubcategoryId());
-        final var bound = (int) (totalRecordsSize / findAdvsRequest.getSize());
-        findAdvsRequest.setPage(bound > 0 ? random.nextInt(bound) : 0);
-        return findAllThumbnails(findAdvsRequest).getContent();
+    public Page<AdvertisementTitleView> findAllFavorite(String username, Pageable pageable) {
+        return advertisementRepository.findFavoriteAdvertisementsByUsername(username, pageable)
+                .map(advertisementMapper::toAdvertisementTitleDto);
     }
 
     @Override
-    public Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest) {
-        return advertisementRepository.findAllByIdNotAndSubcategoryId(findAdvsRequest.getExcludeAdvertisementId(),
-                        findAdvsRequest.getSubcategoryId(),
-                        PageRequest.of(findAdvsRequest.getPage(), findAdvsRequest.getSize()))
-                .map(this::buildAdvertisementTitle);
+    public void addFavorite(UUID advertisementId, String username) {
+        advertisementRepository.addFavoriteAdvertisementsByUsername(username, advertisementId);
     }
 
-    @Cacheable
     @Override
-    public List<AdvertisementTitleDto> findAllByUsername(String username) {
+    public void deleteFavorite(UUID advertisementId, String username) {
+        final var numberOfDeletedAdv =
+                advertisementRepository.removeFavoriteAdvertisementsByIdAndUserUsername(advertisementId, username);
+
+        if (numberOfDeletedAdv == 0) {
+            final var message = getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, advertisementId);
+            throw new EntityIdNotFoundException(message);
+        }
+    }
+
+    @Override
+    public List<AdvertisementTitleView> findAllByUsername(String username) {
         return advertisementRepository.findAllByUserUsername(username).stream()
-                .map(this::buildAdvertisementTitle)
+                .map(advertisementMapper::toAdvertisementTitleDto)
                 .toList();
     }
 
-    // @Cacheable(key = "#keyword")
     @Override
-    public Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable) {
-        final var wholeStringSearchResult = advertisementRepository.search(keyword, pageable);
-        if (!wholeStringSearchResult.isEmpty()) {
-            return wholeStringSearchResult.map(this::buildAdvertisementTitle);
-        }
-        final var keywords = Set.of(keyword.split(" "));
-        if (!keywords.isEmpty()) {
-            return advertisementRepository.search(keywords, pageable).map(this::buildAdvertisementTitle);
-        }
-        return Page.empty();
-    }
-
-    @Override
-    public Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable) {
-        return advertisementRepository.findAdvertisementByCategoryId(categoryId, pageable)
-                .map(this::buildAdvertisementTitle);
-    }
-
-    @Override
-    public Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName) {
-        return advertisementRepository.findAdvertisementByIdAndUserUsername(advertisementId, ownerName);
-    }
-
-    @Override
-    public Optional<AdvertisementDisplayDto> findDtoById(UUID id) {
+    public Optional<AdvertisementDisplayView> findDtoById(UUID id) {
         return advertisementRepository.findById(id).map(this::buildAdvertisementDisplayDto);
     }
 
     @Override
-    public List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto) {
-        return advertisementRepository.findFirst10ByParams(
-                        dto.getAge(),
-                        dto.getGender(),
-                        dto.getSize(),
-                        dto.getSeason(),
-                        dto.getSubcategoryId(),
-                        dto.getCategoryId(),
-                        dto.getLocationId()).stream()
-                .map(this::buildAdvertisementTitle)
-                .toList();
+    public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
+        if (request.isEnableRandom()) {
+            List<Long> subcategoriesIdValues = request.getSubcategoriesIdValues();
+            if (subcategoriesIdValues.isEmpty()) subcategoriesIdValues = null;
+
+            final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
+                    request.getExcludeAdvertisementId(),
+                    subcategoriesIdValues);
+            final var bound = (int) (totalRecordsSize / request.getSize());
+            request.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        }
+        return advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
+                .map(this::buildAdvertisementTitle);
     }
 
     @Override
-    public boolean isUserHasAdvertisementWithId(UUID id, User user) {
-        return advertisementRepository.existsAdvertisementByIdAndUser(id, user);
+    public void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException, EntityNotFoundException {
+        if (!advertisementRepository.existsAdvertisementById(id)) {
+            throw new EntityNotFoundException(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID, id));
+        }
+        if (!advertisementRepository.existsAdvertisementByIdAndUserUsername(id, username)) {
+            throw new IllegalOperationException(getParametrizedMessageSource(USER_NOT_OWNER, id));
+        }
     }
 
     @Override
@@ -155,7 +149,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     private void updateAdvertisement(Advertisement toUpdate, Advertisement fromDB) {
         if (!fromDB.equals(toUpdate)) {
-            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images", "chats");
+            BeanUtils.copyProperties(toUpdate, fromDB, "created", "updated", "status", "location", "user", "subcategory", "images");
         }
     }
 
@@ -172,7 +166,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     @CacheEvict(key = "#id")
     public void remove(UUID id) {
-        advertisementRepository.deleteById(id);
+        advertisementRepository.deleteAdvertisementById(id);
         advertisementRepository.flush();
     }
 
@@ -202,21 +196,24 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return advertisementRepository.count();
     }
 
-    private AdvertisementTitleDto buildAdvertisementTitle(Advertisement advertisement) {
-        return AdvertisementTitleDto.builder()
+    @Override
+    public boolean areAdvertisementsExistWithSubcategory(long id) {
+        return advertisementRepository.existsBySubcategoryId(id);
+    }
+
+    private AdvertisementTitleView buildAdvertisementTitle(Advertisement advertisement) {
+        return AdvertisementTitleView.builder()
                 .advertisementId(advertisement.getId())
                 .image(getImage(advertisement))
                 .title(advertisement.getTopic())
                 .location(locationMapper.toDto(advertisement.getLocation()))
-                .ownerName(advertisement.getUser().getUsername())
-                .ownerAvatar(advertisement.getUser().getAvatarImage())
                 .build();
     }
 
-    private AdvertisementDisplayDto buildAdvertisementDisplayDto(Advertisement advertisement) {
+    private AdvertisementDisplayView buildAdvertisementDisplayDto(Advertisement advertisement) {
         String createdDate = advertisement.getCreated().format(DateTimeFormatter.ofPattern(dateFormat));
         String age = Optional.ofNullable(advertisement.getAge()).map(AgeRange::getValue).orElse("");
-        AdvertisementDisplayDto displayDto = AdvertisementDisplayDto.builder()
+        AdvertisementDisplayView displayDto = AdvertisementDisplayView.builder()
                 .advertisementId(advertisement.getId())
                 .ownerName(getOwnerFullName(advertisement.getUser()))
                 .ownerAvatar(advertisement.getUser().getAvatarImage())
@@ -226,7 +223,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                 .createdDate(createdDate)
                 .build();
 
-        AdvertisementDisplayDto mappedDto = advertisementMapper.toDto(advertisement);
+        AdvertisementDisplayView mappedDto = advertisementMapper.toDto(advertisement);
         BeanUtils.copyProperties(mappedDto, displayDto, "createdDate", "phone", "age", "ownerName",
                 "category");
         return displayDto;

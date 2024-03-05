@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
+import org.assertj.core.api.Assertions;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,14 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import space.obminyashka.items_exchange.BasicControllerTest;
-import space.obminyashka.items_exchange.controller.request.ChangeEmailRequest;
-import space.obminyashka.items_exchange.controller.request.ChangePasswordRequest;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.request.ChangeEmailRequest;
+import space.obminyashka.items_exchange.rest.request.ChangePasswordRequest;
+import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
+import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.service.UserService;
-import space.obminyashka.items_exchange.util.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,13 +48,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
-import static space.obminyashka.items_exchange.util.ChildDtoCreatingUtil.getTestChildren;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getMessageSource;
-import static space.obminyashka.items_exchange.util.MessageSourceUtil.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.PositiveMessage.*;
-import static space.obminyashka.items_exchange.util.ResponseMessagesHandler.ValidationMessage.*;
-import static space.obminyashka.items_exchange.util.UserDtoCreatingUtil.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.CHANGED_USER_PASSWORD;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.SAME_PASSWORDS;
+import static space.obminyashka.items_exchange.util.data_producer.UserDtoCreatingUtil.*;
 
 @SpringBootTest
 @DBRider
@@ -65,6 +68,9 @@ class UserFlowTest extends BasicControllerTest {
     private static final String USER_LAST_NAME = "Last";
     private static final String ADMIN_USERNAME = "admin";
     private static final String DOMAIN_URL = "https://obminyashka.space";
+    private static final String INVALID_ADV_ID = "61731cc8-8104-49f0-b2c3-5a52e576ab28";
+    private static final String VALID_ADV_ID = "65e3ee49-5927-40be-aafd-0461ce45f295";
+    private static final String SECOND_VALID_ADV_ID = "4bd38c87-0f00-4375-bd8f-cd853f0eb9bd";
 
     @Value("${number.of.days.to.keep.deleted.users}")
     private int numberOfDaysToKeepDeletedUsers;
@@ -73,6 +79,8 @@ class UserFlowTest extends BasicControllerTest {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
     @MockBean
     private SendGrid sendGrid;
 
@@ -92,7 +100,7 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email"})
+    @ExpectedDataSet(value = "user/update.yml", orderBy = {"created", "name"}, ignoreCols = {"last_online_time", "updated", "email", "id"})
     void updateUserInfo_shouldUpdateUserData() throws Exception {
         MvcResult mvcResult = sendDtoAndGetMvcResult(put(USER_MY_INFO), createUserUpdateDto(), status().isAccepted());
 
@@ -116,24 +124,65 @@ class UserFlowTest extends BasicControllerTest {
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    void getChildren_success_shouldReturnUsersChildren() throws Exception {
-        sendUriAndGetResultAction(get(USER_CHILD), status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].sex").value("MALE"))
-                .andExpect(jsonPath("$[1].sex").value("FEMALE"));
+    void getFavoriteAdvertisements_shouldReturnPage_WhenPageAndSizeDefault() throws Exception {
+        sendUriAndGetResultAction(get(USER_MY_FAVORITE), status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.content[0].title").value("topic"))
+                .andExpect(jsonPath("$.content[1].title").value("Blouses"));
     }
 
     @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
-    @ExpectedDataSet(value = "children/update.yml", orderBy = {"created", "name", "birth_date"}, ignoreCols = "id")
-    void updateChild_success_shouldReturnHttpStatusOk() throws Exception {
-        var validUpdatingChildDtoJson = getTestChildren(2018);
-
-        sendDtoAndGetResultAction(put(USER_CHILD), validUpdatingChildDtoJson, status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+    void getFavoriteAdvertisements_shouldReturnPage_WhenHaveSpecialPageAndSize() throws Exception {
+        sendUriAndGetResultAction(get(USER_MY_FAVORITE)
+                .queryParam("page", "1")
+                .queryParam("size", "1"), status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].title").value("Blouses"));
     }
 
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addNewFavorite.yml")
+    void addFavoriteAdvertisement_shouldAddFavoriteAdvertisement_whenAdvertisementIsNotFavorite() throws Exception {
+        sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, SECOND_VALID_ADV_ID), status().isAccepted());
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/addFavorite.yml")
+    void addFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFound() throws Exception {
+        var resultActions = sendUriAndGetResultAction(post(USER_MY_FAVORITE_ADV, INVALID_ADV_ID), status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    @ExpectedDataSet(value = "advertisement/deleteFavorite.yml")
+    void deleteFavoriteAdvertisement_shouldDeleteFavoriteAdvertisement_whenAdvertisementIsFavorite() throws Exception {
+        sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, VALID_ADV_ID), status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = ADMIN_USERNAME)
+    @DataSet("database_init.yml")
+    void deleteFavoriteAdvertisement_shouldReturnException_whenAdvertisementIsNotFavorite() throws Exception {
+        var resultActions = sendUriAndGetResultAction(delete(USER_MY_FAVORITE_ADV, INVALID_ADV_ID),
+                status().isNotFound());
+
+        Assertions.assertThat(resultActions.andReturn().getResolvedException())
+                .isInstanceOf(EntityIdNotFoundException.class)
+                .hasMessage(getParametrizedMessageSource(FAVORITE_ADVERTISEMENT_NOT_FOUND, INVALID_ADV_ID));
+    }
+
+    @Test
     @WithMockUser(username = ADMIN_USERNAME)
     @DataSet("database_init.yml")
     @ExpectedDataSet(value = "user/changing_password_or_email_expected.yml", orderBy = "created",
@@ -258,9 +307,9 @@ class UserFlowTest extends BasicControllerTest {
         return new DefaultOidcUser(Collections.singletonList(new SimpleGrantedAuthority(roleUser)), idToken, userInfo);
     }
 
+    @Test
     @WithMockUser
     @DataSet("database_init.yml")
-    @Test
     void updateUserAvatar_shouldSetNewImage_whenFormatAndContentValid() throws Exception {
         var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
                 Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
@@ -282,5 +331,19 @@ class UserFlowTest extends BasicControllerTest {
             ignoreCols = {"id", "password", "created", "updated", "last_online_time"})
     void removeUserAvatar_whenAuthorized_shouldRemoveAvatar() throws Exception {
         sendUriAndGetMvcResult(delete(USER_SERVICE_CHANGE_AVATAR), status().isOk());
+    }
+
+    @Test
+    @DataSet(value = {"database_init.yml", "user/delete_self-removing-users_init.yml"})
+    @ExpectedDataSet(
+            value = "database_init.yml",
+            orderBy = {"created", "name", "birth_date"},
+            ignoreCols = {"id", "password", "created", "updated", "last_online_time", "resource"})
+    void permanentlyDeleteUsers_whenTimeComes_shouldRemoveUsers() {
+        assertEquals(4, userRepository.count());
+
+        userService.permanentlyDeleteUsers();
+
+        assertEquals(2, userRepository.count());
     }
 }

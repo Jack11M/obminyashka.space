@@ -1,4 +1,13 @@
 const ua = {
+  mainAnimationText: {
+    regText: "Просто ",
+    regTextLink: "зарееструйся ",
+    regTextTwo: "та розмісти оголошення! ",
+    thingsText: "Накопичилося багато ",
+    thingsTextLink: "дитячих речей? ",
+    tradeText: "з іншими користувачами на шось кльове та корисне!",
+    tradeTextLink: "Обміняйтесь ",
+  },
   auth: {
     login: "Вхід",
     signUp: "Реєстрація",
@@ -49,7 +58,7 @@ const ua = {
     max50: "Повинно бути не більше 50 символів",
     max70: "Повинно бути не більше 70 символів",
     max129: "Повинно бути не більше 129 символів",
-    max200: "Повинно бути не більше 200 символів",
+    max210: "Повинно бути не більше 210 символів",
     max255: "Повинно бути не більше 255 символів",
     altCodeMatch: "Не повинно бути Alt code",
     passwordMatch: "Великі та малі латинські букви та цифри",
@@ -127,6 +136,7 @@ const ua = {
     rotate: "Обертати",
   },
   header: {
+    account: "Аккаунт",
     about: "Про проект",
     goodness: "Добра справа",
     myOffice: "Мій кабінет",
@@ -336,6 +346,27 @@ const ua = {
     location: "Локація",
     locationArea: "Область:",
     locationCity: "Місто:",
+  },
+  success: {
+    welcome: "Ласкаво просимо на сайт",
+    verification: "Верифікація пройшла успішно.",
+    home: "Головна сторінка",
+  },
+  swiperText: {
+    toysTitle: "ІГРАШОК",
+    toysSubTitle: "Величезний вибір",
+    clothesTitle: "РЕЧЕЙ",
+    clothesSubTitle: "Разнообразие для детей и подростков з",
+    infantsTitle: "НЕМОВЛЯТ",
+    infantsSubTitle: "Все для",
+    furnitureTitle: "МЕБЛІВ",
+    furnitureSubTitle: "Багато дитячих",
+    shoesTitle: "ВЗУТТЯ",
+    shoesSubTitle: "Різноманітність для дітей і підлітків з",
+    transportTitle: "ТРАНСПОРТ",
+    transportSubTitle: "Дитячий",
+    booksTitle: "КНИГИ",
+    booksSubTitle: "Освітні та дитячі",
   },
 };
 

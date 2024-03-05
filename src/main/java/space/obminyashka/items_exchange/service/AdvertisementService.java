@@ -1,11 +1,15 @@
 package space.obminyashka.items_exchange.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import space.obminyashka.items_exchange.controller.request.AdvertisementFindRequest;
-import space.obminyashka.items_exchange.dto.*;
-import space.obminyashka.items_exchange.model.Advertisement;
-import space.obminyashka.items_exchange.model.User;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
+import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
+import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,72 +18,58 @@ import java.util.UUID;
 public interface AdvertisementService {
 
     /**
-     * Find N random advertisements as thumbnails with filters
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return random 12 advertisement
-     */
-    List<AdvertisementTitleDto> findRandomNThumbnails(AdvertisementFindRequest findAdvsRequest);
-
-    /**
-     * Find page of advertisements with same subcategory without request advertisement
-     * @param findAdvsRequest  an object that contains all parameters to search
-     * @return page of advertisements
-     */
-    Page<AdvertisementTitleDto> findAllThumbnails(AdvertisementFindRequest findAdvsRequest);
-
-    /**
      * Find all advertisements as thumbnails for specific user
      * @param username login of the user
      * @return all advertisements created by the user
      */
-    List<AdvertisementTitleDto> findAllByUsername(String username);
+    List<AdvertisementTitleView> findAllByUsername(String username);
 
     /**
-     * Find advertisements having requested keyword
-     * @param keyword - searched word
-     * @param pageable see {@link Pageable} for more details
-     * @return result of the request
-     */
-    Page<AdvertisementTitleDto> findByKeyword(String keyword, Pageable pageable);
-
-    /**
-     * Find advertisements by category and return them by requested quantity (size) and page
+     * Find all favorites advertisement by username
      *
-     * @param categoryId - searched category id
-     * @param pageable   see {@link Pageable} for more details
-     * @return result of the request
+     * @param username login of the user
+     * @return all favorites advertisement by username
      */
-    Page<AdvertisementTitleDto> findByCategoryId(Long categoryId, Pageable pageable);
+    Page<AdvertisementTitleView> findAllFavorite(String username, Pageable pageable);
 
     /**
-     * Find an advertisement with additional owner check
-     * @param advertisementId ID of an advertisement
-     * @param ownerName login or email of the advertisement's owner
-     * @return {@link Optional} as result
+     * Add favorite advertisement by username and advertisementId
+     *
+     * @param advertisementId id of existence advertisement
+     * @param username login of the user
      */
-    Optional<Advertisement> findByIdAndOwnerUsername(UUID advertisementId, String ownerName);
+    void addFavorite(UUID advertisementId, String username);
+
+    /**
+     * Delete favorite advertisement by username and advertisementId
+     *
+     * @param advertisementId id of existence advertisement
+     * @param username login of the user
+     */
+    void deleteFavorite(UUID advertisementId, String username);
 
     /**
      * Find an advertisement Display DTO by id
      * @param id advertisement id
      * @return {@link Optional} as result
      */
-    Optional<AdvertisementDisplayDto> findDtoById(UUID id);
+    Optional<AdvertisementDisplayView> findDtoById(UUID id);
 
     /**
-     * Find first 10 matched advertisements by one of received parameters of the request DTO
-     * @param dto an object that contains all parameters to search
+     * Filter advertisements by search parameters from AdvertisementFilterRequest
+     * @param request an object that contains all parameters to search
      * @return result of the request
      */
-    List<AdvertisementTitleDto> findFirst10ByFilter(AdvertisementFilterDto dto);
+    Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request);
 
     /**
      * Check whenever user has an advertisement with selected id
-     * @param id advertisement id
-     * @param user for checking authority
-     * @return result of the check
+     *
+     * @param id       advertisement id
+     * @param username for checking authority
+     * @throws IllegalOperationException when user is not owner of the advertisement
      */
-    boolean isUserHasAdvertisementWithId(UUID id, User user);
+    void validateUserAsAdvertisementOwner(UUID id, String username) throws IllegalOperationException, EntityNotFoundException;
 
     /**
      * Create a new advertisement
@@ -123,7 +113,6 @@ public interface AdvertisementService {
 
     /**
      * Returns whether an advertisement with the given id exists.
-     *
      * @param id must not be {@literal null}.
      * @return {@literal true} if an advertisement with the given id exists, {@literal false} otherwise.
      */
@@ -134,4 +123,11 @@ public interface AdvertisementService {
      * @return quantity of saved advertisements
      */
     long count();
+
+    /**
+     * Checks if a subcategory with the given ID exists in DB and has advertisements.
+     * @param id is Subcategory ID.
+     * @return {@code true} if a subcategory with the given ID can not be deleted, {@code false} otherwise.
+     */
+    boolean areAdvertisementsExistWithSubcategory(long id);
 }

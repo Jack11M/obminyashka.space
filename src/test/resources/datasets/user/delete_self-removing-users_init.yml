@@ -1,0 +1,30 @@
+user:
+  - id: a59b9231-a792-4b78-89ce-e7ba31c97961
+    username: 'self-removing-admin'
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'remove-admin@gmail.com'
+    online: 'false'
+    first_name: 'super'
+    last_name: 'admin'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-03 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    role_id: 53c59620-37bb-4a8c-9b90-2965619496ec
+  - id: ea77cee7-cb3d-41c4-8282-d81e695c53d8
+    username: 'self-removing-user'
+    password: '$2a$10$mdTVPX.45ozJhwrHXTi/0Ozn8sihqL.U1vtzQN0BGBcIgKeYY4Dz6'
+    email: 'remove-user@gmail.com'
+    online: 'false'
+    first_name: 'plain'
+    last_name: 'user'
+    # Encoded to byte array with Base64.encodeString("test image png")
+    avatar_image: "dGVzdCBpbWFnZSBwbmc="
+    last_online_time: '2019-01-01 00:00:01'
+    created: '2019-01-04 00:00:01'
+    updated: '2019-01-01 00:00:01'
+    status: 'ACTIVE'
+    role_id: 53c59620-37bb-4a8c-9b90-2965619496ec
+

@@ -21,17 +21,15 @@ const SearchResults = () => {
 
   const searchResults = search || searchParams.get('search');
 
-  const getAdv = async (page) => {
+  const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
     setSearchParams({ search: searchResults });
 
     try {
-      const response = await api.search.getSearch(searchResults, currentPage - 1);
+      const response = await api.search.postFilter({keyword: searchResults, page: currentPage - 1});
       setAdv(response);
     } catch (err) {
-      if (err?.response?.status !== 404) {
-        showMessage.error(err.response?.data ?? err.message);
-      }
+      log.error(err)
     } finally {
       setIsFetch(false);
     }

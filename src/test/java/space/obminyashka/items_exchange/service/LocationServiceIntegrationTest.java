@@ -2,20 +2,15 @@ package space.obminyashka.items_exchange.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import space.obminyashka.items_exchange.dao.LocationRepository;
-import space.obminyashka.items_exchange.dto.LocationDto;
-import space.obminyashka.items_exchange.mapper.LocationMapper;
-import space.obminyashka.items_exchange.model.Location;
+import space.obminyashka.items_exchange.repository.LocationRepository;
+import space.obminyashka.items_exchange.rest.dto.LocationDto;
+import space.obminyashka.items_exchange.rest.mapper.LocationMapper;
+import space.obminyashka.items_exchange.repository.model.Location;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,9 +25,6 @@ class LocationServiceIntegrationTest {
     private LocationMapper locationMapper;
     private Location location;
     private LocationDto locationDto;
-
-    @Captor
-    private ArgumentCaptor<Location> locationCaptor;
 
     @BeforeEach
     void setUp() {
@@ -80,26 +72,6 @@ class LocationServiceIntegrationTest {
         Optional<LocationDto> optionalLocationDto = locationService.getById(id);
         assertTrue(optionalLocationDto.isEmpty());
         verify(locationRepository, times(1)).findById(id);
-    }
-
-    @Test
-    void save_shouldSaveLocation_WithLocationParameter() {
-        saveLocationBasicTest();
-    }
-
-    private void saveLocationBasicTest() {
-        locationService.save(location);
-        verify(locationRepository, times(1)).save(locationCaptor.capture());
-        assertAll("Checking objects' data equal",
-                () -> assertEquals(locationCaptor.getValue().getCityUA(), location.getCityUA()),
-                () -> assertEquals(locationCaptor.getValue().getDistrictUA(), location.getDistrictUA()));
-    }
-
-    @Test
-    void save_shouldSaveLocation_WithLocationDtoParameter() {
-        when(locationRepository.saveAndFlush(any())).thenReturn(location);
-
-        saveLocationBasicTest();
     }
 
     @Test

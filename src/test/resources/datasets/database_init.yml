@@ -12,7 +12,7 @@ advertisement:
     location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'OLDER_THAN_14'
     gender: 'MALE'
-    size: '40'
+    size: '63 - 68'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
@@ -29,7 +29,7 @@ advertisement:
     location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_3_TO_5'
     gender: 'FEMALE'
-    size: '28'
+    size: '63 - 68'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
@@ -46,7 +46,7 @@ advertisement:
     location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_6_TO_9'
     gender: 'FEMALE'
-    size: '40'
+    size: '57 - 62'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
@@ -63,7 +63,7 @@ advertisement:
     location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_10_TO_12'
     gender: 'FEMALE'
-    size: 'M'
+    size: '57 - 62'
     season: 'SUMMER'
     subcategory_id: 1
     default_photo: null
@@ -80,7 +80,7 @@ advertisement:
     location_id: 2c5467f3-b7ee-48b1-9451-7028255b757b
     age: 'FROM_12_TO_14'
     gender: 'UNSELECTED'
-    size: 'XS'
+    size: '57 - 62'
     season: 'WINTER'
     subcategory_id: 1
     default_photo: null
@@ -165,42 +165,34 @@ image:
 
 category:
   - id: 1
-    name: 'shoes'
+    name: 'Clothing'
   - id: 2
+    name: 'Shoes'
+  - id: 3
     name: 'Toys'
 
 subcategory:
   - id: 1
-    name: 'light_shoes'
+    name: 'Outerwear'
     category_id: 1
   - id: 2
-    name: 'dolls'
-    category_id: 2
+    name: 'Blouses, Shirts'
+    category_id: 1
   - id: 3
-    name: 'puzzles'
+    name: 'Pants, Jeans, Shorts'
+    category_id: 1
+  - id: 14
+    name: 'Boots'
     category_id: 2
 
-chat:
-  - id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
-    hash: 'ChatHash'
+phone:
+  - id: 65e3ee49-5927-40be-aafd-0461ce45f200
+    phone_number: 380994556243
+    default_phone: true
+    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+
+favorite_advertisements:
+  - user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    advertisement_id: 65e3ee49-5927-40be-aafd-0461ce45f295
+  - user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
     advertisement_id: 7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7
-
-user_chat:
-  - id: 4e2e6676-cb15-4de1-a0f5-7280d810c5b0
-    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
-    chat_id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
-
-message:
-  - id: 4fb0be36-6d3a-4041-80e8-f764ce95ed8a
-    chat_id: b59d288d-ffaf-4e80-bbcb-65466b449e4d
-    user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
-    text: 'message text'
-    status: 'NEW'
-    created: '2019-01-01 00:00:01'
-    updated: '2019-01-01 00:00:01'
-
-attachment:
-  - id: 6d88550e-c785-4cef-8672-bf0654496b67
-    message_id: 4fb0be36-6d3a-4041-80e8-f764ce95ed8a
-    type: 'jpg'
-    file_content: 'YWJj'

@@ -1,4 +1,13 @@
 const en = {
+  mainAnimationText: {
+    regText: "Just ",
+    regTextLink: "register ",
+    regTextTwo: "and post an ad! ",
+    thingsText: "Have you a lot of ",
+    thingsTextLink: "children's clothes? ",
+    tradeText: "something cool and useful with other users!",
+    tradeTextLink: "Share ",
+  },
   auth: {
     login: "log In",
     signUp: "Sign Up",
@@ -50,7 +59,7 @@ const en = {
     max50: "Maximum 50 characters",
     max70: "Maximum 70 characters",
     max129: "Maximum 129 characters",
-    max200: "Maximum 200 characters",
+    max210: "Maximum 210 characters",
     max255: "Maximum 255 characters",
     altCodeMatch: "Shouldn't have Alt code",
     passwordMatch: "Large and small Latin letters and numbers",
@@ -127,6 +136,7 @@ const en = {
     rotate: "Rotate",
   },
   header: {
+    account: "Account",
     about: "About the project",
     goodness: "Good deal",
     myOffice: "Personal area",
@@ -336,6 +346,27 @@ const en = {
     location: "Location",
     locationArea: "Region:",
     locationCity: "City:",
+  },
+  success: {
+    welcome: "Welcome to the site",
+    verification: "The verification was successful.",
+    home: "Home page",
+  },
+  swiperText: {
+    toysTitle: "Toys",
+    toysSubTitle: "Huge selection of",
+    clothesTitle: "Clothes",
+    clothesSubTitle: "Variety for children and teenagers of",
+    infantsTitle: "Infants",
+    infantsSubTitle: "Everything for",
+    furnitureTitle: "Furniture",
+    furnitureSubTitle: "Lots of children's",
+    shoesTitle: "Shoes",
+    shoesSubTitle: "Variety for children and teenagers of",
+    title: "Transport",
+    subTitle: "Children's",
+    transportTitle: "Books",
+    transportSubTitle: "Educational and children's",
   },
 };
 

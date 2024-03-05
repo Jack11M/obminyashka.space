@@ -11,7 +11,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import space.obminyashka.items_exchange.api.ApiKey;
+import space.obminyashka.items_exchange.rest.api.ApiKey;
 
 @Configuration
 public class SwaggerConfig {

@@ -1,0 +1,10 @@
+favorite_advertisements:
+  - user_id: 61731cc8-8104-49f0-b2c3-5a52e576ab28
+    advertisement_id: 7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7
+
+advertisement:
+  - id: 393f7bfb-cd0a-48e3-adb8-dd5b4c368f04
+  - id: 4bd38c87-0f00-4375-bd8f-cd853f0eb9bd
+  - id: 65e3ee49-5927-40be-aafd-0461ce45f295
+  - id: 69ea344f-d5ef-4f3a-8772-163a7694da3d
+  - id: 7de4e6bb-fc91-439b-9a3e-0cc5e707b4c7

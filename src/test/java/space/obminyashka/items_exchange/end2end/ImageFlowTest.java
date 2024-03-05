@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.end2end;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
 import com.github.database.rider.junit5.api.DBRider;
+import jakarta.persistence.EntityNotFoundException;
 import org.dbunit.util.Base64;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,26 +12,36 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
-import space.obminyashka.items_exchange.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.IMAGE_BY_ADV_NOT_FOUND;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 
 @SpringBootTest
 @DBRider
@@ -54,6 +65,16 @@ class ImageFlowTest extends BasicControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0]").value(Base64.encodeString(TEST_JPEG)))
                 .andExpect(jsonPath("$[1]").value(Base64.encodeString(TEST_PNG)));
+    }
+
+    @Test
+    @DataSet("database_init.yml")
+    void getByAdvertisementId_shouldReturnAllImage() throws Exception {
+        MvcResult mvcResult = sendUriAndGetMvcResult(get(IMAGE_RESOURCE, UUID.randomUUID()), status().isNotFound());
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
     }
 
     @Test
@@ -97,14 +118,39 @@ class ImageFlowTest extends BasicControllerTest {
                 status().isOk());
     }
 
+    @WithMockUser
+    @ParameterizedTest
+    @MethodSource("provideLocalizationTestData")
+    void deleteImages_shouldThrow403WhenUserNotOwnAdvertisement(String languageHeader, Locale userLocale) throws Exception {
+        final MvcResult mvcResult = sendUriAndGetMvcResult(delete(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, languageHeader)
+                        .param("ids", UUID.randomUUID().toString()),
+                status().isForbidden());
+
+        LocaleContextHolder.setLocale(userLocale);
+
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(IllegalOperationException.class)
+                .hasMessage(getParametrizedMessageSource(USER_NOT_OWNER, EXISTED_ADV_ID));
+    }
+
+    private static Stream<Arguments> provideLocalizationTestData() {
+        return Stream.of(
+                Arguments.of("notExisted", Locale.ENGLISH),
+                Arguments.of("", Locale.ENGLISH),
+                Arguments.of("ua", Locale.of("UA")),
+                Arguments.of("ua-UA", Locale.of("UA"))
+        );
+    }
+
     @WithMockUser("admin")
     @Test
     void saveImages_shouldSaveImage() throws Exception {
         var jpeg = new MockMultipartFile("image", "test-image.jpeg", MediaType.IMAGE_JPEG_VALUE,
                 Files.readAllBytes(Path.of("src/test/resources/image/test-image.jpeg")));
         mockMvc.perform(multipart(IMAGE_BY_ADV_ID, EXISTED_ADV_ID)
-                .file(jpeg)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
+                        .file(jpeg)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isOk());
     }
 }

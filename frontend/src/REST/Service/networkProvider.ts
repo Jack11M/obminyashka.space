@@ -5,7 +5,11 @@ import axios from "axios";
 
 import { store } from "src/store";
 import { logOutUser } from "src/store/auth/slice";
-import { setStorageUser, getStorageUser, getStorageLang } from "src/Utils";
+import {
+  addDataToUserInStorage,
+  getStorageUser,
+  getStorageLang,
+} from "src/Utils";
 
 const refreshUrl = "/auth/refresh/token";
 const endPointsAllowed = ["/user/my-info", "/user/child", "/user/my-adv"];
@@ -80,7 +84,7 @@ function initObminyashka({ onAuthError }) {
           )
           .then((res) => {
             if (res.status === 200) {
-              setStorageUser(res.data);
+              addDataToUserInStorage(res.data);
               return axios(originalRequest);
             }
 

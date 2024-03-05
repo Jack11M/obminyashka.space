@@ -1,6 +1,7 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.model.Subcategory;
+import space.obminyashka.items_exchange.repository.model.Subcategory;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -36,14 +37,6 @@ public interface SubcategoryService {
      * @return true if a subcategory with the given id exists, false otherwise.
      */
     boolean isSubcategoryExistsById(long id);
-
-    /**
-     * Checks if a subcategory with the given ID exists in DB and has not advertisements.
-     *
-     * @param id is Subcategory ID.
-     * @return {@code true} if a subcategory with the given ID can be deleted, {@code false} otherwise.
-     */
-    boolean isSubcategoryDeletable(long id);
 
     /**
      * Returns all Subcategory identifiers.
