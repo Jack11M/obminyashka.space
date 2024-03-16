@@ -176,7 +176,7 @@ public class UserController {
         var email = verifyEmailRequest.email();
         var resultMessage = getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
         if (userService.existsByEmail(email)) {
-            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET_PASSWORD, host);
+            UUID codeId = mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.RESET, host);
             userService.saveCodeForResetPassword(email, codeId);
             return new ResponseEntity<>(resultMessage, HttpStatus.OK);
         }

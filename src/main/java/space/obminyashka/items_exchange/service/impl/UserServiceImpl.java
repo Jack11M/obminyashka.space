@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void saveCodeForResetPassword(String email, UUID codeId) {
         emailConfirmationCodeRepository.saveConfirmationCode(codeId, email,
-                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode), EmailType.RESET_PASSWORD.name());
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode), EmailType.RESET.name());
     }
 
     @Override

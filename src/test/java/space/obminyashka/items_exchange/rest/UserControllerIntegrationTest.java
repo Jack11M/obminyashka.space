@@ -165,7 +165,7 @@ class UserControllerIntegrationTest extends BasicControllerTest {
         assertAll(
                 () -> assertEquals(mvcResult.getResponse().getContentAsString(), getMessageSource(RESET_PASSWORD)),
                 () -> verify(mailService).sendEmailTemplateAndGenerateConfrimationCode(eq(verifyEmailRequest.email()),
-                        eq(EmailType.RESET_PASSWORD), any())
+                        eq(EmailType.RESET), any())
         );
     }
 
