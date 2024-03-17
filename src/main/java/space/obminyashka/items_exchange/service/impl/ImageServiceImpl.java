@@ -12,7 +12,6 @@ import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedExcep
 import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.rest.mapper.ImageMapper;
-import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
 
@@ -21,7 +20,9 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+
 import jakarta.transaction.Transactional;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -97,7 +98,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void saveToAdvertisement(UUID advertisementId, List<MultipartFile> images)
-            throws UnsupportedMediaTypeException, ElementsNumberExceedException {
+            throws ElementsNumberExceedException {
         validateMaxImagesAmount(advertisementId, images.size());
 
         images.parallelStream()

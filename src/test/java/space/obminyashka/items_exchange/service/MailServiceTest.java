@@ -62,7 +62,7 @@ class MailServiceTest {
     private static Stream<Arguments> listEmailType() {
         return Stream.of(
                 Arguments.of(EmailType.REGISTRATION),
-                Arguments.of(EmailType.RESET_PASSWORD)
+                Arguments.of(EmailType.RESET)
         );
     }
 }

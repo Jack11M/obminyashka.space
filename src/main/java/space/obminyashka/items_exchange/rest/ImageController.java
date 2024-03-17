@@ -56,7 +56,7 @@ public class ImageController {
             @PathVariable("advertisement_id") UUID id) throws EntityNotFoundException {
 
         List<byte[]> imagesResourceByAdvertisementId = imageService.getImagesResourceByAdvertisementId(id);
-        if(imagesResourceByAdvertisementId.isEmpty()){
+        if (imagesResourceByAdvertisementId.isEmpty()) {
             throw new EntityNotFoundException(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
         }
         return imagesResourceByAdvertisementId;
@@ -72,6 +72,9 @@ public class ImageController {
     public List<ImageView> getByAdvertisementId(
             @Parameter(name = "advertisement_id", description = "ID of the Advertisement for getting all the images representation", required = true)
             @PathVariable("advertisement_id") UUID id) throws EntityNotFoundException {
+        if (!advertisementService.existById(id)) {
+            throw new EntityIdNotFoundException(getParametrizedMessageSource(ADVERTISEMENT_NOT_EXISTED_ID));
+        }
         List<ImageView> listImagesByAdvertisement = imageService.getByAdvertisementId(id);
         if (listImagesByAdvertisement.isEmpty()) {
             throw new EntityNotFoundException(getMessageSource(IMAGE_BY_ADV_NOT_FOUND));
