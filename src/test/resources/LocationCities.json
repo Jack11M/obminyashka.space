@@ -986,7 +986,7 @@
       },
       {
          "areaUa": "Дніпропетровська",
-         "districtUa": "Никопольский",
+         "districtUa": "Нікопольський",
          "cityUa": "Покров",
          "areaEn": "Dnipropetrovska",
          "districtEn": "Nikopolskyi",
@@ -1005,7 +1005,7 @@
          "districtUa": "Кам'янський",
          "cityUa": "Кам'янське",
          "areaEn": "Dnipropetrovska",
-         "districtEn": "Kamyansky",
+         "districtEn": "Kamianskyi",
          "cityEn": "Kamianske"
       },
       {
@@ -1109,7 +1109,7 @@
          "districtUa": "Павлоградський",
          "cityUa": "Тернівка",
          "areaEn": "Dnipropetrovska",
-         "districtEn": "Pavlogradskyi",
+         "districtEn": "Pavlohradskyi",
          "cityEn": "Ternivka"
       },
       {
@@ -1650,7 +1650,7 @@
       },
       {
          "areaUa": "Донецька",
-         "districtUa": "Олександрівський",
+         "districtUa": "Олександрійський",
          "cityUa": "Олександрівка",
          "areaEn": "Donetska",
          "districtEn": "Oleksandrivskyi",
@@ -1790,7 +1790,7 @@
          "cityUa": "Родинське",
          "areaEn": "Donetska",
          "districtEn": "Pokrovskyi",
-         "cityEn": "Rodinske"
+         "cityEn": "Rodynske"
       },
       {
          "areaUa": "Донецька",
@@ -2213,7 +2213,7 @@
          "districtUa": "Ужгородський",
          "cityUa": "Чоп",
          "areaEn": "Zakarpatska",
-         "districtEn": "Uzhgorodskyi",
+         "districtEn": "Uzhhorodskyi",
          "cityEn": "Chop"
       },
       {
@@ -2581,7 +2581,7 @@
          "districtUa": "Василівський",
          "cityUa": "Енергодар",
          "areaEn": "Zaporizka",
-         "districtEn": "Vasylovskyi",
+         "districtEn": "Vasylivskyi",
          "cityEn": "Enerhodar"
       },
       {
@@ -2781,7 +2781,7 @@
          "districtUa": "Вишгородський",
          "cityUa": "Славутич",
          "areaEn": "Kyivska",
-         "districtEn": "Vyshgorodsky",
+         "districtEn": "Vyshhorodskyi",
          "cityEn": "Slavutych"
       },
       {
@@ -3245,7 +3245,7 @@
          "districtUa": "Олександрійський",
          "cityUa": "Олександрія",
          "areaEn": "Kirovohradska",
-         "districtEn": "Oleksandriiskyi",
+         "districtEn": "Oleksandrivskyi",
          "cityEn": "Oleksandriia"
       },
       {
@@ -3370,7 +3370,7 @@
       },
       {
          "areaUa": "Кіровоградська",
-         "districtUa": "Олександрівський",
+         "districtUa": "Олександрійський",
          "cityUa": "Олександрівка",
          "areaEn": "Kirovohradska",
          "districtEn": "Oleksandrivskyi",
@@ -3413,7 +3413,7 @@
          "districtUa": "Олександрійський",
          "cityUa": "Нова Прага",
          "areaEn": "Kirovohradska",
-         "districtEn": "Oleksandriiskyi",
+         "districtEn": "Oleksandrivskyi",
          "cityEn": "Nova Praha"
       },
       {
@@ -3477,7 +3477,7 @@
          "districtUa": "Олександрійський",
          "cityUa": "Приютівка",
          "areaEn": "Kirovohradska",
-         "districtEn": "Oleksandriiskyi",
+         "districtEn": "Oleksandrivskyi",
          "cityEn": "Pryiutivka"
       },
       {
@@ -4794,15 +4794,15 @@
       },
       {
          "areaUa": "Полтавська",
-         "districtUa": "Полта́вський",
+         "districtUa": "Полтавський",
          "cityUa": "Полтава",
          "areaEn": "Poltavska",
-         "districtEn": "Poltava",
+         "districtEn": "Poltavskyi",
          "cityEn": "Poltava"
       },
       {
          "areaUa": "Полтавська",
-         "districtUa": "Кременчу́цький",
+         "districtUa": "Кременчуцький",
          "cityUa": "Кременчук",
          "areaEn": "Poltavska",
          "districtEn": "Kremenchutskyi",
@@ -6318,7 +6318,7 @@
          "cityUa": "Приморське",
          "areaEn": "Khersonska",
          "districtEn": "Holoprystanskyi",
-         "cityEn": "Primorske"
+         "cityEn": "Prymorske"
       },
       {
          "areaUa": "Херсонська",
@@ -6690,10 +6690,10 @@
       },
       {
          "areaUa": "Черкаська",
-         "districtUa": "У́манський",
+         "districtUa": "Уманський",
          "cityUa": "Умань",
          "areaEn": "Cherkaska",
-         "districtEn": "Umansky",
+         "districtEn": "Umanskyi",
          "cityEn": "Uman"
       },
       {
@@ -6909,7 +6909,7 @@
          "districtUa": "Звенигородський",
          "cityUa": "Ватутіне",
          "areaEn": "Cherkaska",
-         "districtEn": "Zvenigorodskyi",
+         "districtEn": "Zvenyhorodskyi",
          "cityEn": "Vatutine"
       },
       {
