@@ -1,26 +1,23 @@
-// import { en } from "src/components/local";
 import { getTranslatedText } from "src/components/local";
 
-// import { lang } from ".";
-
 export const regions = [
-  { id: "90", name: "Kyivska" },
-  { id: "91", name: "Dneprovska" },
-  { id: "92", name: "Kharkivska" },
-  { id: "93", name: "Odesska" },
-  { id: "94", name: "Lvivska" },
-  { id: "95", name: "Poltavska" },
-  { id: "96", name: "Zaporizska" },
+  { value: "90", name: "Kyivska" },
+  { value: "91", name: "Dneprovska" },
+  { value: "92", name: "Kharkivska" },
+  { value: "93", name: "Odesska" },
+  { value: "94", name: "Lvivska" },
+  { value: "95", name: "Poltavska" },
+  { value: "96", name: "Zaporizska" },
 ];
 
 export const cities = [
-  { id: "97", name: "Kyiv" },
-  { id: "98", name: "Dnepr" },
-  { id: "99", name: "Kharkiv" },
-  { id: "100", name: "Odessa" },
-  { id: "101", name: "Lviv" },
-  { id: "102", name: "Poltava" },
-  { id: "103", name: "Zaporizia" },
+  { value: "97", name: "Kyiv" },
+  { value: "98", name: "Dnepr" },
+  { value: "99", name: "Kharkiv" },
+  { value: "100", name: "Odessa" },
+  { value: "101", name: "Lviv" },
+  { value: "102", name: "Poltava" },
+  { value: "103", name: "Zaporizia" },
 ];
 
 export const generateCategoriesData = (
@@ -32,14 +29,16 @@ export const generateCategoriesData = (
 ) => {
   return data.map(({ id, name, subcategories }) => {
     return {
-      id: id.toString(),
-      name: "category",
+      value: id.toString(),
       title: getTranslatedText(`categories.${name}`),
-      hiddenCheckbox: true,
-      subCategories: subcategories.map(({ id, name }) => {
+      multiple: true,
+      notCheckbox: true,
+      deleteOnClose: true,
+      paramToSetTitle: name.toLowerCase(),
+      options: subcategories.map(({ id, name }) => {
         return {
-          id: id.toString(),
-          name: getTranslatedText(`categories.${name}`),
+          value: id.toString(),
+          text: getTranslatedText(`categories.${name}`),
         };
       }),
     };
@@ -47,73 +46,54 @@ export const generateCategoriesData = (
 };
 
 export const generateFilterData = (
-  ages: string[],
+  lang: string,
   sex: string[],
+  ages: string[],
   seasons: string[],
   sizeShoes: string[],
-  sizeClothes: string[],
-  lang: string
+  sizeClothes: string[]
 ) => {
   return [
     {
-      id: "9",
-      name: "location",
-      title: "location",
-      type: "input",
-      subCategories: [
-        {
-          id: "52",
-          name: "region",
-          containerName: "city",
-        },
-        {
-          id: "53",
-          name: "city",
-        },
-      ],
-    },
-    {
-      name: "sex",
       title: "sex",
-      type: "radio",
-      subCategories: sex.map((gender: string) => ({
-        name: getTranslatedText(`genderEnum.${gender}`),
-        paramToSet: gender,
+      paramToSetTitle: "sex",
+      options: sex.map((gender: string) => ({
+        text: getTranslatedText(`genderEnum.${gender}`),
       })),
     },
     {
-      name: "age",
       title: "age",
-      type: "checkbox",
-      subCategories: ages.map((age: string) => ({
-        name: age,
+      multiple: true,
+      paramToSetTitle: "age",
+      options: ages.map((age: string) => ({
+        text: age,
       })),
     },
     {
-      name: "size(clothes)",
       title: "size(clothes)",
-      type: "checkbox",
-      subCategories: sizeClothes.map((size) => ({
-        name: size + (lang === "en" ? " cm" : " см"),
-        paramToSet: size,
+      disabled: 0,
+      multiple: true,
+      paramToSetTitle: "size(clothes)",
+      options: sizeClothes.map((size) => ({
+        text: size + (lang === "en" ? " cm" : " см"),
       })),
     },
     {
-      name: "size(shoes)",
       title: "size(shoes)",
-      type: "checkbox",
-      subCategories: sizeShoes.map((size) => ({
-        name: size + (lang === "en" ? " cm" : " см"),
-        paramToSet: size,
+      disabled: 1,
+      multiple: true,
+
+      paramToSetTitle: "size(shoes)",
+      options: sizeShoes.map((size) => ({
+        text: size + (lang === "en" ? " cm" : " см"),
       })),
     },
     {
-      name: "season",
       title: "season",
-      type: "checkbox",
-      subCategories: seasons.map((season: string) => ({
-        name: getTranslatedText(`seasonEnum.${season}`),
-        paramToSet: season,
+      multiple: true,
+      paramToSetTitle: "season",
+      options: seasons.map((season: string) => ({
+        text: getTranslatedText(`seasonEnum.${season}`),
       })),
     },
   ];

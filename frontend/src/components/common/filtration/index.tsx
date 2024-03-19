@@ -1,27 +1,43 @@
 /* eslint-disable */
 // @ts-nocheck
 // TODO: fix typescript
-import { Formik, Form, FormikValues } from "formik";
-import { useMemo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { showMessage, FilterBlock, ButtonNew } from "obminyashka-components";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { showMessage, Select, ButtonNew } from "obminyashka-components";
 
 import api from "src/REST/Resources";
-import { initialValues } from "./config";
 import { enumAge } from "src/config/ENUM";
 import { en, ua } from "src/components/local";
 import { getAuthLang } from "src/store/auth/slice";
-import { getTranslatedText } from "src/components/local";
 import {
-  filterData,
-  categoryData,
+  cities,
+  regions,
   generateFilterData,
   generateCategoriesData,
 } from "./mock";
 
+import * as Styles from "./styles";
+
+export interface ISelectOption {
+  text: string;
+  value?: string;
+  [key: string]: any;
+}
+
+export interface IOnChangeValue {
+  value: string;
+  paramToSetTitle: string;
+  chosenOptions: ISelectOption[] | [];
+}
+
 const Filtration = () => {
   const lang = useSelector(getAuthLang);
 
+  const [open, setOpen] = useState<number>(-1);
+  const [isOpenLocation, setIsOpenLocation] = useState<boolean>(false);
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const [receivedShoeSizes, setReceivedShoeSize] = useState([]);
   const [receivedCategories, setReceivedCategories] = useState([]);
   const [receivedClothingSizes, setReceivedClothingSize] = useState([]);
@@ -31,6 +47,63 @@ const Filtration = () => {
   const agesShow = Object.values(enumAge);
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
+
+  const setOpenCategory = (id: number) => {
+    if (open === id) {
+      return;
+    }
+
+    setOpen(id);
+  };
+
+  const onChange = (values: IOnChangeValue) => {
+    const chosenOptions = values.chosenOptions.map((el) => el.value);
+    const paramName = values.paramToSetTitle;
+
+    // Получаем текущую строку запроса
+    const searchParams = new URLSearchParams(window.location.search);
+
+    // Создаем объект для хранения параметров в порядке их добавления
+    const paramsMap: { [key: string]: string[] } = {};
+
+    // Заполняем объект параметров из текущей строки запроса
+    searchParams.forEach((value, key) => {
+      if (!paramsMap[key]) {
+        paramsMap[key] = [];
+      }
+      paramsMap[key].push(value);
+    });
+
+    // Если chosenOptions пуст, удаляем параметр из объекта
+    if (chosenOptions.length === 0) {
+      delete paramsMap[paramName];
+    } else {
+      // Обновляем или добавляем новые значения параметра
+      paramsMap[paramName] = chosenOptions;
+    }
+
+    // Преобразуем объект параметров в строку запроса с сохранением порядка
+    let queryString = "";
+    Object.keys(paramsMap).forEach((key, index) => {
+      if (paramsMap[key].length > 0) {
+        if (index !== 0) {
+          queryString += "&";
+        }
+        queryString += `${key}=${paramsMap[key].join(",")}`;
+      }
+    });
+
+    // console.log(values);
+
+    // Обновляем URL с новой строкой запроса
+    window.history.replaceState(
+      {},
+      "",
+      `${window.location.pathname}?${queryString}`
+    );
+
+    // Если необходимо обновить состояние компонента, добавьте здесь необходимый код
+  };
 
   useEffect(() => {
     (async () => {
@@ -56,68 +129,97 @@ const Filtration = () => {
     })();
   }, []);
 
-  // const currentType = useMemo(() => {
-  //   return lang === "en" ? "cm" : "см";
-  // }, [lang]);
-
-  const getCities = async (id: string) => {
-    alert(`пошел запрос с id ${id}`);
-    await setTimeout(() => {
-      alert(`ответ по id ${id}`);
-    }, 300);
-
-    return cities;
-  };
-
-  const onSubmit = async (values: FormikValues) => {
-    const params = new URLSearchParams();
-    params.append("subcategoryFilterRequest.categoryId", +values.category.id);
-    params.append(
-      "subcategoryFilterRequest.subcategoriesIdValues",
-      values.category.subcategories[0]
-    );
-
-    // console.log(values);
-    const sendData = await api.filter.getFilter(params);
-  };
+  // console.log(receivedCategories);
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
-      <Form>
-        <div style={{ margin: "10px" }}></div>
+    <div>
+      <div style={{ marginBottom: "20px" }}>
+        <h1>Categories</h1>
 
-        <FilterBlock
-          categoryBlock
-          categoryActive="2"
-          title={"Categories"}
-          categoryFilterData={
-            receivedCategories && generateCategoriesData(receivedCategories)
-          }
-        />
+        {receivedCategories &&
+          generateCategoriesData(receivedCategories).map((category, index) => {
+            return (
+              <Select
+                {...category}
+                disabled={false}
+                key={"category" + index}
+                isActive={open === index}
+                options={category.options}
+                multiple={category.multiple}
+                notCheckbox={category.notCheckbox}
+                deleteOnClose={category.deleteOnClose}
+                onChange={(values) => onChange(values)}
+                setIsActive={() => setOpenCategory(index)}
+              />
+            );
+          })}
+      </div>
 
-        <div style={{ margin: "10px" }}></div>
+      <div style={{ marginBottom: "20px" }}>
+        <h1>Filter</h1>
 
-        <FilterBlock
-          title={"Filter"}
-          getCities={getCities}
-          categoryFilterData={
-            agesShow &&
-            generateFilterData(
-              agesShow,
-              sexShow,
-              seasonShow,
-              receivedShoeSizes,
-              receivedClothingSizes,
-              lang
-            )
-          }
-        />
+        <Styles.TitleContainer>
+          <Styles.Title
+            readOnly
+            value={"location"}
+            onClick={() => setIsOpenLocation(!isOpenLocation)}
+          />
 
-        <div style={{ margin: "10px 0", width: "334px" }}>
-          <ButtonNew colorType={"blue"} styleType={"default"} text="submit" />
-        </div>
-      </Form>
-    </Formik>
+          <Styles.Triangle isOpen={isOpenLocation} />
+        </Styles.TitleContainer>
+
+        <Styles.ScrollWrapper filtration>
+          <Styles.SubCategories filtration isOpen={isOpenLocation}>
+            <Styles.SubCategory filtration>
+              <Select
+                value="99"
+                filtration
+                title="region"
+                options={regions}
+                onChange={(values) => console.log(values)}
+              />
+            </Styles.SubCategory>
+
+            <Styles.SubCategory filtration>
+              <Select
+                value="100"
+                filtration
+                title="city"
+                options={cities}
+                onChange={(values) => console.log(values)}
+              />
+            </Styles.SubCategory>
+          </Styles.SubCategories>
+        </Styles.ScrollWrapper>
+
+        {generateFilterData(
+          lang,
+          sexShow,
+          agesShow,
+          seasonShow,
+          receivedShoeSizes,
+          receivedClothingSizes
+        ).map((category, index) => {
+          return (
+            <Select
+              {...category}
+              key={"filter" + index}
+              multiple={category.multiple}
+              onChange={(values) => onChange(values)}
+              disabled={
+                category.disabled === undefined
+                  ? undefined
+                  : !(open === category.disabled)
+              }
+            />
+          );
+        })}
+      </div>
+
+      <div style={{ margin: "10px 0", width: "334px" }}>
+        <ButtonNew colorType={"blue"} styleType={"default"} text="submit" />
+      </div>
+    </div>
   );
 };
 
