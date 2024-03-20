@@ -57,13 +57,7 @@ const Filtration = () => {
   };
 
   const onChange = (values: IOnChangeValue) => {
-    const chosenOptions = values.chosenOptions.map((el) => el.value);
-    const paramName = values.paramToSetTitle;
-
-    // Получаем текущую строку запроса
     const searchParams = new URLSearchParams(window.location.search);
-
-    // Создаем объект для хранения параметров в порядке их добавления
     const paramsMap: { [key: string]: string[] } = {};
 
     // Заполняем объект параметров из текущей строки запроса
@@ -71,29 +65,43 @@ const Filtration = () => {
       if (!paramsMap[key]) {
         paramsMap[key] = [];
       }
-      paramsMap[key].push(value);
+
+      if (value.includes(",")) {
+        paramsMap[key] = value.split(","); // Если значение содержит запятую, разделяем его на массив строк
+      } else {
+        paramsMap[key].push(value);
+      }
     });
 
-    // Если chosenOptions пуст, удаляем параметр из объекта
+    // Обновляем или добавляем значения для параметра
+    const paramName = values.paramToSetTitle;
+    const chosenOptions = values.chosenOptions.map((el) =>
+      el.value ? el.value : el.text.replace(/'/g, "").trim()
+    );
+
     if (chosenOptions.length === 0) {
-      delete paramsMap[paramName];
+      delete paramsMap[paramName]; // Удаляем параметр, если нет выбранных опций
     } else {
-      // Обновляем или добавляем новые значения параметра
-      paramsMap[paramName] = chosenOptions;
+      if (!paramsMap[paramName]) {
+        paramsMap[paramName] = [];
+      }
+      chosenOptions.forEach((option) => {
+        if (!paramsMap[paramName].includes(option)) {
+          paramsMap[paramName].push(option);
+        }
+      });
     }
 
     // Преобразуем объект параметров в строку запроса с сохранением порядка
     let queryString = "";
     Object.keys(paramsMap).forEach((key, index) => {
       if (paramsMap[key].length > 0) {
-        if (index !== 0) {
+        if (queryString.length > 0) {
           queryString += "&";
         }
         queryString += `${key}=${paramsMap[key].join(",")}`;
       }
     });
-
-    // console.log(values);
 
     // Обновляем URL с новой строкой запроса
     window.history.replaceState(
@@ -102,8 +110,57 @@ const Filtration = () => {
       `${window.location.pathname}?${queryString}`
     );
 
-    // Если необходимо обновить состояние компонента, добавьте здесь необходимый код
+    console.log(paramsMap);
   };
+
+  // const onChange = (values: IOnChangeValue) => {
+  //   const paramName = values.paramToSetTitle;
+  //   const chosenOptions = values.chosenOptions.map((el) =>
+  //     el.value ? el.value : el.text.replace(/'/g, "").trim()
+  //   );
+
+  //   // Получаем текущую строку запроса
+  //   const searchParams = new URLSearchParams(window.location.search);
+
+  //   // Создаем объект для хранения параметров в порядке их добавления
+  //   const paramsMap: { [key: string]: string[] } = {};
+
+  //   // Заполняем объект параметров из текущей строки запроса
+  //   searchParams.forEach((value, key) => {
+  //     if (!paramsMap[key]) {
+  //       paramsMap[key] = [];
+  //     }
+  //     paramsMap[key].push(value);
+  //   });
+
+  //   // Если chosenOptions пуст, удаляем параметр из объекта
+  //   if (chosenOptions.length === 0) {
+  //     delete paramsMap[paramName];
+  //   } else {
+  //     // Обновляем или добавляем новые значения параметра
+  //     paramsMap[paramName] = chosenOptions;
+  //   }
+
+  //   // Преобразуем объект параметров в строку запроса с сохранением порядка
+  //   let queryString = "";
+  //   Object.keys(paramsMap).forEach((key, index) => {
+  //     if (paramsMap[key].length > 0) {
+  //       if (index !== 0) {
+  //         queryString += "&";
+  //       }
+  //       queryString += `${key}=${paramsMap[key].join(",")}`;
+  //     }
+  //   });
+
+  //   // Обновляем URL с новой строкой запроса
+  //   window.history.replaceState(
+  //     {},
+  //     "",
+  //     `${window.location.pathname}?${queryString}`
+  //   );
+
+  //   console.log(paramsMap);
+  // };
 
   useEffect(() => {
     (async () => {
