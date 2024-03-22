@@ -57,110 +57,39 @@ const Filtration = () => {
   };
 
   const onChange = (values: IOnChangeValue) => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const paramsMap: { [key: string]: string[] } = {};
-
-    // Заполняем объект параметров из текущей строки запроса
-    searchParams.forEach((value, key) => {
-      if (!paramsMap[key]) {
-        paramsMap[key] = [];
-      }
-
-      if (value.includes(",")) {
-        paramsMap[key] = value.split(","); // Если значение содержит запятую, разделяем его на массив строк
-      } else {
-        paramsMap[key].push(value);
-      }
-    });
-
-    // Обновляем или добавляем значения для параметра
     const paramName = values.paramToSetTitle;
+    const paramsMap: { [key: string]: string[] } = {};
     const chosenOptions = values.chosenOptions.map((el) =>
-      el.value ? el.value : el.text.replace(/'/g, "").trim()
+      el.value ? el.value.trim() : el.text
     );
 
+    searchParams.forEach((value, key) => {
+      paramsMap[key] = /\d\s-\s\d/.test(value)
+        ? value.split(",")
+        : value.split(/,(?=[A-Z])/).map((val) => val.trim());
+    });
+
     if (chosenOptions.length === 0) {
-      delete paramsMap[paramName]; // Удаляем параметр, если нет выбранных опций
+      delete paramsMap[paramName];
     } else {
-      if (!paramsMap[paramName]) {
-        paramsMap[paramName] = [];
-      }
-      chosenOptions.forEach((option) => {
-        if (!paramsMap[paramName].includes(option)) {
-          paramsMap[paramName].push(option);
-        }
-      });
+      paramsMap[paramName] = chosenOptions;
     }
 
-    // Преобразуем объект параметров в строку запроса с сохранением порядка
     let queryString = "";
     Object.keys(paramsMap).forEach((key, index) => {
       if (paramsMap[key].length > 0) {
         if (queryString.length > 0) {
           queryString += "&";
         }
+
         queryString += `${key}=${paramsMap[key].join(",")}`;
       }
     });
 
-    // Обновляем URL с новой строкой запроса
-    window.history.replaceState(
-      {},
-      "",
-      `${window.location.pathname}?${queryString}`
-    );
+    setSearchParams(queryString);
 
     console.log(paramsMap);
   };
-
-  // const onChange = (values: IOnChangeValue) => {
-  //   const paramName = values.paramToSetTitle;
-  //   const chosenOptions = values.chosenOptions.map((el) =>
-  //     el.value ? el.value : el.text.replace(/'/g, "").trim()
-  //   );
-
-  //   // Получаем текущую строку запроса
-  //   const searchParams = new URLSearchParams(window.location.search);
-
-  //   // Создаем объект для хранения параметров в порядке их добавления
-  //   const paramsMap: { [key: string]: string[] } = {};
-
-  //   // Заполняем объект параметров из текущей строки запроса
-  //   searchParams.forEach((value, key) => {
-  //     if (!paramsMap[key]) {
-  //       paramsMap[key] = [];
-  //     }
-  //     paramsMap[key].push(value);
-  //   });
-
-  //   // Если chosenOptions пуст, удаляем параметр из объекта
-  //   if (chosenOptions.length === 0) {
-  //     delete paramsMap[paramName];
-  //   } else {
-  //     // Обновляем или добавляем новые значения параметра
-  //     paramsMap[paramName] = chosenOptions;
-  //   }
-
-  //   // Преобразуем объект параметров в строку запроса с сохранением порядка
-  //   let queryString = "";
-  //   Object.keys(paramsMap).forEach((key, index) => {
-  //     if (paramsMap[key].length > 0) {
-  //       if (index !== 0) {
-  //         queryString += "&";
-  //       }
-  //       queryString += `${key}=${paramsMap[key].join(",")}`;
-  //     }
-  //   });
-
-  //   // Обновляем URL с новой строкой запроса
-  //   window.history.replaceState(
-  //     {},
-  //     "",
-  //     `${window.location.pathname}?${queryString}`
-  //   );
-
-  //   console.log(paramsMap);
-  // };
 
   useEffect(() => {
     (async () => {
@@ -185,8 +114,6 @@ const Filtration = () => {
       }
     })();
   }, []);
-
-  // console.log(receivedCategories);
 
   return (
     <div>
