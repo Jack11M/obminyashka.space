@@ -58,15 +58,16 @@ const Filtration = () => {
 
   const onChange = (values: IOnChangeValue) => {
     const paramName = values.paramToSetTitle;
-    const paramsMap: { [key: string]: string[] } = {};
-    const chosenOptions = values.chosenOptions.map((el) =>
-      el.value ? el.value.trim() : el.text
-    );
+    const localSearchParams = new URLSearchParams(window.location.search);
 
-    searchParams.forEach((value, key) => {
-      paramsMap[key] = /\d\s-\s\d/.test(value)
-        ? value.split(",")
-        : value.split(/,(?=[A-Z])/).map((val) => val.trim());
+    const paramsMap: { [key: string]: string[] } = {};
+    const chosenOptions = values.chosenOptions.map((el) => el.text);
+
+    localSearchParams.forEach((value, key) => {
+      paramsMap[key] =
+        /(?:\d+\s*-\s*\d+)|(?:\d+\s*\.\s*\d+)|(?:\d+\s*,\s*\d+)/.test(value)
+          ? value.split(",")
+          : value.split(/,(?=[A-Z])/).map((val) => val.trim());
     });
 
     if (chosenOptions.length === 0) {
@@ -82,11 +83,17 @@ const Filtration = () => {
           queryString += "&";
         }
 
-        queryString += `${key}=${paramsMap[key].join(",")}`;
+        queryString += `${key}=${paramsMap[key].join(",").replace(/ /g, "+")}`;
       }
     });
 
-    setSearchParams(queryString);
+    window.history.replaceState(
+      {},
+      "",
+      `${window.location.pathname}?${queryString}`
+    );
+
+    // setSearchParams(queryString);
 
     console.log(paramsMap);
   };
