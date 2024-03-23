@@ -1,23 +1,23 @@
 import { getTranslatedText } from "src/components/local";
 
 export const regions = [
-  { value: "90", name: "Kyivska" },
-  { value: "91", name: "Dneprovska" },
-  { value: "92", name: "Kharkivska" },
-  { value: "93", name: "Odesska" },
-  { value: "94", name: "Lvivska" },
-  { value: "95", name: "Poltavska" },
-  { value: "96", name: "Zaporizska" },
+  { value: "90", text: "Kyivska" },
+  { value: "91", text: "Dneprovska" },
+  { value: "92", text: "Kharkivska" },
+  { value: "93", text: "Odesska" },
+  { value: "94", text: "Lvivska" },
+  { value: "95", text: "Poltavska" },
+  { value: "96", text: "Zaporizska" },
 ];
 
 export const cities = [
-  { value: "97", name: "Kyiv" },
-  { value: "98", name: "Dnepr" },
-  { value: "99", name: "Kharkiv" },
-  { value: "100", name: "Odessa" },
-  { value: "101", name: "Lviv" },
-  { value: "102", name: "Poltava" },
-  { value: "103", name: "Zaporizia" },
+  { value: "97", text: "Kyiv" },
+  { value: "98", text: "Dnepr" },
+  { value: "99", text: "Kharkiv" },
+  { value: "100", text: "Odessa" },
+  { value: "101", text: "Lviv" },
+  { value: "102", text: "Poltava" },
+  { value: "103", text: "Zaporizia" },
 ];
 
 export const generateCategoriesData = (
