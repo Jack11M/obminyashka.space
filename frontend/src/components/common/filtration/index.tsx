@@ -61,20 +61,25 @@ const Filtration = () => {
     const paramsObject = Object.fromEntries(searchParams);
     const subCategories = values.chosenOptions.map(({ value }) => value);
 
-    const isClothes = searchParams.get("category") === 1;
-    const isShoes = searchParams.get("shoes") === 2;
-    const isClothingSizes = searchParams.get("clothingSizes");
-    const isShoesSizes = searchParams.get("shoesSizes");
-
     if (isCategory) {
       paramsObject.category = values.value;
 
       if (subCategories.length > 0) {
-        paramsObject.subCategories = JSON.stringify(subCategories);
+        paramsObject.subCategories = JSON.stringify(
+          subCategories.map((category) => +category)
+        );
       }
 
       if (subCategories.length === 0) {
         delete paramsObject.subCategories;
+      }
+
+      if (values.value === "2") {
+        delete paramsObject.clothingSizes;
+      }
+
+      if (values.value === "1") {
+        delete paramsObject.shoesSizes;
       }
     }
 
@@ -92,14 +97,6 @@ const Filtration = () => {
       }
     }
 
-    if (!isClothes && isClothingSizes) {
-      delete paramsObject.clothingSizes;
-    }
-
-    if (!isShoes && isShoesSizes) {
-      delete paramsObject.shoesSizes;
-    }
-
     setSearchParams(paramsObject);
   };
 
@@ -107,11 +104,15 @@ const Filtration = () => {
     const paramsMap: { [key: string]: string[] } = {};
 
     searchParams.forEach((value, key) => {
-      paramsMap[key] = /^\[.*\]$/.test(value) ? JSON.parse(value) : value;
+      paramsMap[key] = JSON.parse(value);
     });
-
-    console.log(paramsMap);
   }, [searchParams]);
+
+  useEffect(() => {
+    const openCategory = searchParams.get("category");
+
+    setOpenCategory(+openCategory - 1);
+  }, []);
 
   useEffect(() => {
     (async () => {
