@@ -34,7 +34,6 @@ export const generateCategoriesData = (
       multiple: true,
       notCheckbox: true,
       deleteOnClose: true,
-      paramToSetTitle: name.toLowerCase(),
       options: subcategories.map(({ id, name }) => {
         return {
           value: id.toString(),
@@ -55,44 +54,48 @@ export const generateFilterData = (
 ) => {
   return [
     {
+      value: "gender",
       title: "sex",
-      paramToSetTitle: "sex",
       options: sex.map((gender: string) => ({
+        value: gender,
         text: getTranslatedText(`genderEnum.${gender}`),
       })),
     },
     {
+      value: "age",
       title: "age",
       multiple: true,
-      paramToSetTitle: "age",
       options: ages.map((age: string) => ({
+        value: age,
         text: age,
       })),
     },
     {
+      value: "clothingSizes",
       title: "size(clothes)",
       disabled: 0,
       multiple: true,
-      paramToSetTitle: "size(clothes)",
       options: sizeClothes.map((size) => ({
+        value: size,
         text: size + (lang === "en" ? " cm" : " см"),
       })),
     },
     {
+      value: "shoesSizes",
       title: "size(shoes)",
       disabled: 1,
       multiple: true,
-
-      paramToSetTitle: "size(shoes)",
       options: sizeShoes.map((size) => ({
+        value: size,
         text: size + (lang === "en" ? " cm" : " см"),
       })),
     },
     {
+      value: "season",
       title: "season",
       multiple: true,
-      paramToSetTitle: "season",
       options: seasons.map((season: string) => ({
+        value: season,
         text: getTranslatedText(`seasonEnum.${season}`),
       })),
     },

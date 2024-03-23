@@ -18,6 +18,7 @@ import {
 } from "./mock";
 
 import * as Styles from "./styles";
+import { sub } from "date-fns";
 
 export interface ISelectOption {
   text: string;
@@ -56,47 +57,61 @@ const Filtration = () => {
     setOpen(id);
   };
 
-  const onChange = (values: IOnChangeValue) => {
-    const paramName = values.paramToSetTitle;
-    const localSearchParams = new URLSearchParams(window.location.search);
+  const onChange = (values: IOnChangeValue, isCategory?: boolean) => {
+    const paramsObject = Object.fromEntries(searchParams);
+    const subCategories = values.chosenOptions.map(({ value }) => value);
 
-    const paramsMap: { [key: string]: string[] } = {};
-    const chosenOptions = values.chosenOptions.map((el) => el.text);
+    const isClothes = searchParams.get("category") === 1;
+    const isShoes = searchParams.get("shoes") === 2;
+    const isClothingSizes = searchParams.get("clothingSizes");
+    const isShoesSizes = searchParams.get("shoesSizes");
 
-    localSearchParams.forEach((value, key) => {
-      paramsMap[key] =
-        /(?:\d+\s*-\s*\d+)|(?:\d+\s*\.\s*\d+)|(?:\d+\s*,\s*\d+)/.test(value)
-          ? value.split(",")
-          : value.split(/,(?=[A-Z])/).map((val) => val.trim());
-    });
+    if (isCategory) {
+      paramsObject.category = values.value;
 
-    if (chosenOptions.length === 0) {
-      delete paramsMap[paramName];
-    } else {
-      paramsMap[paramName] = chosenOptions;
+      if (subCategories.length > 0) {
+        paramsObject.subCategories = JSON.stringify(subCategories);
+      }
+
+      if (subCategories.length === 0) {
+        delete paramsObject.subCategories;
+      }
     }
 
-    let queryString = "";
-    Object.keys(paramsMap).forEach((key, index) => {
-      if (paramsMap[key].length > 0) {
-        if (queryString.length > 0) {
-          queryString += "&";
-        }
-
-        queryString += `${key}=${paramsMap[key].join(",").replace(/ /g, "+")}`;
+    if (!isCategory) {
+      if (values.value === "gender") {
+        paramsObject[values.value] = subCategories[0];
       }
+
+      if (values.value !== "gender") {
+        paramsObject[values.value] = JSON.stringify(subCategories);
+      }
+
+      if (subCategories.length === 0) {
+        delete paramsObject[values.value];
+      }
+    }
+
+    if (!isClothes && isClothingSizes) {
+      delete paramsObject.clothingSizes;
+    }
+
+    if (!isShoes && isShoesSizes) {
+      delete paramsObject.shoesSizes;
+    }
+
+    setSearchParams(paramsObject);
+  };
+
+  useEffect(() => {
+    const paramsMap: { [key: string]: string[] } = {};
+
+    searchParams.forEach((value, key) => {
+      paramsMap[key] = /^\[.*\]$/.test(value) ? JSON.parse(value) : value;
     });
 
-    window.history.replaceState(
-      {},
-      "",
-      `${window.location.pathname}?${queryString}`
-    );
-
-    // setSearchParams(queryString);
-
     console.log(paramsMap);
-  };
+  }, [searchParams]);
 
   useEffect(() => {
     (async () => {
@@ -139,8 +154,8 @@ const Filtration = () => {
                 multiple={category.multiple}
                 notCheckbox={category.notCheckbox}
                 deleteOnClose={category.deleteOnClose}
-                onChange={(values) => onChange(values)}
                 setIsActive={() => setOpenCategory(index)}
+                onChange={(values) => onChange(values, true)}
               />
             );
           })}
@@ -197,6 +212,8 @@ const Filtration = () => {
               key={"filter" + index}
               multiple={category.multiple}
               onChange={(values) => onChange(values)}
+              // disabled={false}
+              // disabled={open === category.disabled}
               disabled={
                 category.disabled === undefined
                   ? undefined
