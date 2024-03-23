@@ -97,7 +97,23 @@ const Filtration = () => {
       }
     }
 
-    setSearchParams(paramsObject);
+    let queryString = `category=${paramsObject["category"]}`;
+
+    if (paramsObject.hasOwnProperty("subCategories")) {
+      queryString += `&subCategories=${paramsObject["subCategories"]}`;
+    }
+
+    for (let key in paramsObject) {
+      if (
+        paramsObject.hasOwnProperty(key) &&
+        key !== "category" &&
+        key !== "subCategories"
+      ) {
+        queryString += `&${key}=${paramsObject[key]}`;
+      }
+    }
+
+    setSearchParams(queryString);
   };
 
   useEffect(() => {
@@ -106,6 +122,8 @@ const Filtration = () => {
     searchParams.forEach((value, key) => {
       paramsMap[key] = JSON.parse(value);
     });
+
+    console.log(paramsMap);
   }, [searchParams]);
 
   useEffect(() => {
