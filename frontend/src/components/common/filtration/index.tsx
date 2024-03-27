@@ -18,7 +18,6 @@ import {
 } from "./mock";
 
 import * as Styles from "./styles";
-import { sub } from "date-fns";
 
 export interface ISelectOption {
   text: string;
@@ -39,6 +38,10 @@ const Filtration = () => {
   const [isOpenLocation, setIsOpenLocation] = useState<boolean>(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
+  const [params, setParams] = useState<{
+    [key: string]: string[] | number[] | string;
+  }>({});
+
   const [receivedShoeSizes, setReceivedShoeSize] = useState([]);
   const [receivedCategories, setReceivedCategories] = useState([]);
   const [receivedClothingSizes, setReceivedClothingSize] = useState([]);
@@ -74,18 +77,18 @@ const Filtration = () => {
         delete paramsObject.subCategories;
       }
 
-      if (values.value === "2") {
-        delete paramsObject.clothingSizes;
-      }
-
       if (values.value === "1") {
         delete paramsObject.shoesSizes;
+      }
+
+      if (values.value === "2") {
+        delete paramsObject.clothingSizes;
       }
     }
 
     if (!isCategory) {
       if (values.value === "gender") {
-        paramsObject[values.value] = subCategories[0];
+        paramsObject[values.value] = JSON.stringify(subCategories[0]);
       }
 
       if (values.value !== "gender") {
@@ -97,33 +100,17 @@ const Filtration = () => {
       }
     }
 
-    let queryString = `category=${paramsObject["category"]}`;
-
-    if (paramsObject.hasOwnProperty("subCategories")) {
-      queryString += `&subCategories=${paramsObject["subCategories"]}`;
-    }
-
-    for (let key in paramsObject) {
-      if (
-        paramsObject.hasOwnProperty(key) &&
-        key !== "category" &&
-        key !== "subCategories"
-      ) {
-        queryString += `&${key}=${paramsObject[key]}`;
-      }
-    }
-
-    setSearchParams(queryString);
+    setSearchParams(paramsObject);
   };
 
   useEffect(() => {
-    const paramsMap: { [key: string]: string[] } = {};
+    const paramsMap: { [key: string]: string[] | number[] | string } = {};
 
     searchParams.forEach((value, key) => {
       paramsMap[key] = JSON.parse(value);
     });
 
-    console.log(paramsMap);
+    setParams(paramsMap);
   }, [searchParams]);
 
   useEffect(() => {
@@ -163,6 +150,16 @@ const Filtration = () => {
 
         {receivedCategories &&
           generateCategoriesData(receivedCategories).map((category, index) => {
+            let filteredParameterOptions = [];
+
+            if (params.subCategories) {
+              category.options.filter((option) => {
+                if (params.subCategories.includes(+option.value)) {
+                  filteredParameterOptions.push(option);
+                }
+              });
+            }
+
             return (
               <Select
                 {...category}
@@ -175,6 +172,7 @@ const Filtration = () => {
                 deleteOnClose={category.deleteOnClose}
                 setIsActive={() => setOpenCategory(index)}
                 onChange={(values) => onChange(values, true)}
+                filteredParameterOptions={filteredParameterOptions}
               />
             );
           })}
@@ -225,14 +223,23 @@ const Filtration = () => {
           receivedShoeSizes,
           receivedClothingSizes
         ).map((category, index) => {
+          let filteredParameterOptions = [];
+
+          if (params[category.value]) {
+            category.options.filter((option) => {
+              if (params[category.value].includes(option.value)) {
+                filteredParameterOptions.push(option);
+              }
+            });
+          }
+
           return (
             <Select
               {...category}
               key={"filter" + index}
               multiple={category.multiple}
               onChange={(values) => onChange(values)}
-              // disabled={false}
-              // disabled={open === category.disabled}
+              filteredParameterOptions={filteredParameterOptions}
               disabled={
                 category.disabled === undefined
                   ? undefined
