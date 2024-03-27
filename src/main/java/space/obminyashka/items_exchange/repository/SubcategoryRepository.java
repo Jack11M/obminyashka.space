@@ -1,5 +1,7 @@
 package space.obminyashka.items_exchange.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
 import space.obminyashka.items_exchange.repository.model.Subcategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +21,8 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
     List<Long> findExistingIdByCategoriesId(List<Long> categoriesId, List<Long> subcategoriesId);
 
     Optional<Subcategory> findById(long id);
+
+    @Modifying
+    @Query("delete FROM Subcategory s WHERE s.id=:id")
+    void deleteById(Long id);
 }
