@@ -1,6 +1,4 @@
 /* eslint-disable */
-// @ts-nocheck
-// TODO: fix typescript
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -10,6 +8,8 @@ import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
 import { en, ua } from "src/components/local";
 import { getAuthLang } from "src/store/auth/slice";
+
+import { ICategories, IOnChangeValue } from "./types";
 import {
   cities,
   regions,
@@ -18,18 +18,6 @@ import {
 } from "./mock";
 
 import * as Styles from "./styles";
-
-export interface ISelectOption {
-  text: string;
-  value?: string;
-  [key: string]: any;
-}
-
-export interface IOnChangeValue {
-  value: string;
-  paramToSetTitle: string;
-  chosenOptions: ISelectOption[] | [];
-}
 
 const Filtration = () => {
   const lang = useSelector(getAuthLang);
@@ -42,9 +30,13 @@ const Filtration = () => {
     [key: string]: string[] | number[] | string;
   }>({});
 
-  const [receivedShoeSizes, setReceivedShoeSize] = useState([]);
-  const [receivedCategories, setReceivedCategories] = useState([]);
-  const [receivedClothingSizes, setReceivedClothingSize] = useState([]);
+  const [receivedShoeSizes, setReceivedShoeSize] = useState<string[]>([]);
+  const [receivedClothingSizes, setReceivedClothingSize] = useState<string[]>(
+    []
+  );
+  const [receivedCategories, setReceivedCategories] = useState<ICategories[]>(
+    []
+  );
 
   const { seasonEnum, genderEnum } = lang === "en" ? en : ua;
 
@@ -69,7 +61,7 @@ const Filtration = () => {
 
       if (subCategories.length > 0) {
         paramsObject.subCategories = JSON.stringify(
-          subCategories.map((category) => +category)
+          subCategories.map((category) => Number(category))
         );
       }
 
@@ -116,7 +108,9 @@ const Filtration = () => {
   useEffect(() => {
     const openCategory = searchParams.get("category");
 
-    setOpenCategory(+openCategory - 1);
+    if (openCategory) {
+      setOpenCategory(+openCategory - 1);
+    }
   }, []);
 
   useEffect(() => {
@@ -150,11 +144,12 @@ const Filtration = () => {
 
         {receivedCategories &&
           generateCategoriesData(receivedCategories).map((category, index) => {
-            let filteredParameterOptions = [];
+            let filteredParameterOptions: { value: string; text: any }[] = [];
+            const subCategories: number[] = params.subCategories as number[];
 
-            if (params.subCategories) {
+            if (subCategories) {
               category.options.filter((option) => {
-                if (params.subCategories.includes(+option.value)) {
+                if (subCategories.includes(+option.value)) {
                   filteredParameterOptions.push(option);
                 }
               });
@@ -223,15 +218,17 @@ const Filtration = () => {
           receivedShoeSizes,
           receivedClothingSizes
         ).map((category, index) => {
-          let filteredParameterOptions = [];
+          let filteredParameterOptions: { value: string; text: any }[] = [];
 
-          if (params[category.value]) {
-            category.options.filter((option) => {
-              if (params[category.value].includes(option.value)) {
-                filteredParameterOptions.push(option);
-              }
-            });
-          }
+          const values: string[] = Array.isArray(params[category.value])
+            ? (params[category.value] as string[])
+            : [params[category.value] as string];
+
+          category.options.filter((option) => {
+            if (values.includes(option.value)) {
+              filteredParameterOptions.push(option);
+            }
+          });
 
           return (
             <Select
