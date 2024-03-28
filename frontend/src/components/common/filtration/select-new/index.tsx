@@ -12,6 +12,7 @@ import * as Styles from "./styles";
 export const Select = ({
   value,
   title,
+  params,
   options,
   multiple,
   isActive,
@@ -137,10 +138,7 @@ export const Select = ({
 
       setChosenOptions(filteredParameterOptions);
     }
-
-    //  console.log("filteredParameterOptions", filteredParameterOptions);
-    //  console.log(value, chosenOptions);
-  }, [!notCheckbox && filteredParameterOptions]);
+  }, [params]);
 
   useEffect(() => {
     if (disabled && chosenOptions.length > 0) {

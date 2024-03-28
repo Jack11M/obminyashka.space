@@ -235,6 +235,7 @@ const Filtration = () => {
           return (
             <Select
               {...category}
+              params={params}
               key={"filter" + index}
               multiple={category.multiple}
               onChange={(values) => onChange(values)}
