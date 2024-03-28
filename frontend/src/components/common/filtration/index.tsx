@@ -71,11 +71,11 @@ const Filtration = () => {
         delete paramsObject.subCategories;
       }
 
-      if (values.value === "1") {
+      if (values.value !== "2") {
         delete paramsObject.shoesSizes;
       }
 
-      if (values.value === "2") {
+      if (values.value !== "1") {
         delete paramsObject.clothingSizes;
       }
     }
