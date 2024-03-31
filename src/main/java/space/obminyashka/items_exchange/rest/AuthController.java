@@ -108,6 +108,20 @@ public class AuthController {
         throw new BadRequestException(getMessageSource(USER_NOT_REGISTERED));
     }
 
+    @PostMapping(value = ApiKey.AUTH_RESEND_CODE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @Operation(summary = "Register new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
+    })
+    public void resendConfirmationCode(@RequestParam String email,
+                                       @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
+        if (userService.existsByEmail(email)) {
+            mailService.sendEmailTemplateAndGenerateConfrimationCode(email, EmailType.REGISTRATION, host);
+        }
+        throw new BadRequestException("Юзер був видалений");
+    }
+
     @PostMapping(value = ApiKey.AUTH_REFRESH_TOKEN, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Renew access token with refresh token")
     @ApiResponses(value = {
