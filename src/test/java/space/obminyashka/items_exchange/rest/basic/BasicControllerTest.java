@@ -54,6 +54,7 @@ public abstract class BasicControllerTest {
     private <T> ResultActions getResultActionsAndExpectStatus(MockHttpServletRequestBuilder builder, T dto,
                                                               ResultMatcher expectedStatus) throws Exception {
         return mockMvc.perform(builder
+                        .header(HttpHeaders.HOST, "localhost")
                         .content(asJsonString(dto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
