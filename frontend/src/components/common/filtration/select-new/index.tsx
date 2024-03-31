@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-console */
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 import { CheckBox } from "obminyashka-components";
@@ -26,7 +25,9 @@ export const Select = ({
   filteredParameterOptions,
 }: ISelectProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [chosenOptions, setChosenOptions] = useState<ISelectOption[] | []>([]);
+  const [chosenOptions, setChosenOptions] = useState<ISelectOption[] | []>(
+    filteredParameterOptions ? filteredParameterOptions : []
+  );
   const [filtrationValue, setFiltrationValue] = useState<string>("");
 
   const isDisabled = isLoading || disabled || !options?.length;
@@ -120,15 +121,6 @@ export const Select = ({
   useOutsideClick(onBlur, ref);
 
   useEffect(() => {
-    if ((isOpen || isActive) && !disabled) {
-      onChange({
-        value: value ? value : "",
-        chosenOptions: chosenOptions,
-      });
-    }
-  }, [chosenOptions, isActive, isOpen]);
-
-  useEffect(() => {
     if (
       filteredParameterOptions &&
       filteredParameterOptions.length > 0 &&
@@ -139,6 +131,15 @@ export const Select = ({
       setChosenOptions(filteredParameterOptions);
     }
   }, [params]);
+
+  useEffect(() => {
+    if ((isOpen || isActive) && !disabled) {
+      onChange({
+        value: value ? value : "",
+        chosenOptions: chosenOptions,
+      });
+    }
+  }, [chosenOptions, isActive, isOpen]);
 
   useEffect(() => {
     if (disabled && chosenOptions.length > 0) {

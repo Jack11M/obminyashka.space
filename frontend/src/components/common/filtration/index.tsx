@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import { showMessage, ButtonNew } from "obminyashka-components";
 
 import api from "src/REST/Resources";
@@ -9,6 +9,7 @@ import { enumAge } from "src/config/ENUM";
 import { en, ua } from "src/components/local";
 import { getAuthLang } from "src/store/auth/slice";
 
+import { SearchContext } from "..";
 import { ICategories, IOnChangeValue } from "./types";
 import {
   cities,
@@ -23,6 +24,8 @@ import { Select } from "./select-new";
 
 const Filtration = () => {
   const lang = useSelector(getAuthLang);
+
+  const { search } = useContext(SearchContext);
 
   const [open, setOpen] = useState<number>(-1);
   const [isOpenLocation, setIsOpenLocation] = useState<boolean>(false);
@@ -55,57 +58,64 @@ const Filtration = () => {
   };
 
   const onChange = (values: IOnChangeValue, isCategory?: boolean) => {
-    const paramsObject = Object.fromEntries(searchParams);
+    const params = Object.fromEntries(searchParams);
     const subCategories = values.chosenOptions.map(({ value }) => value);
 
     if (isCategory) {
-      paramsObject.category = values.value;
+      params.category = values.value;
 
       if (subCategories.length > 0) {
-        paramsObject.subCategories = JSON.stringify(
+        params.subCategories = JSON.stringify(
           subCategories.map((category) => Number(category))
         );
       }
 
       if (subCategories.length === 0) {
-        delete paramsObject.subCategories;
+        delete params.subCategories;
       }
 
       if (values.value !== "2") {
-        delete paramsObject.shoesSizes;
+        delete params.shoesSizes;
       }
 
       if (values.value !== "1") {
-        delete paramsObject.clothingSizes;
+        delete params.clothingSizes;
       }
     }
 
     if (!isCategory) {
       if (values.value === "gender") {
-        paramsObject[values.value] = JSON.stringify(subCategories[0]);
+        params[values.value] = JSON.stringify(subCategories[0]);
       }
 
       if (values.value !== "gender") {
-        paramsObject[values.value] = JSON.stringify(subCategories);
+        params[values.value] = JSON.stringify(subCategories);
       }
 
       if (subCategories.length === 0) {
-        delete paramsObject[values.value];
+        delete params[values.value];
       }
     }
 
-    setSearchParams(paramsObject);
+    setSearchParams(params);
   };
 
   useEffect(() => {
-    const paramsMap: { [key: string]: string[] | number[] | string } = {};
+    const params = Object.fromEntries(searchParams);
+    const paramsForFiltering: { [key: string]: string[] | number[] | string } =
+      {};
 
     searchParams.forEach((value, key) => {
-      paramsMap[key] = JSON.parse(value);
+      paramsForFiltering[key] = key === "search" ? value : JSON.parse(value);
     });
 
-    setParams(paramsMap);
-  }, [searchParams]);
+    if (!search.length) {
+      delete params.search;
+    }
+
+    setParams(paramsForFiltering);
+    setSearchParams(params);
+  }, [searchParams, search]);
 
   useEffect(() => {
     const openCategory = searchParams.get("category");
@@ -147,6 +157,7 @@ const Filtration = () => {
         {receivedCategories &&
           generateCategoriesData(receivedCategories).map((category, index) => {
             let filteredParameterOptions: { value: string; text: any }[] = [];
+
             const subCategories: number[] = params.subCategories as number[];
 
             if (subCategories) {

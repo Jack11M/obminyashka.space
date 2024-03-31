@@ -1,17 +1,22 @@
 /* eslint-disable */
 // @ts-nocheck
 // TODO: fix typescript
-import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Title, showMessage, ProductCard, PagePagination } from 'obminyashka-components';
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Title,
+  showMessage,
+  ProductCard,
+  PagePagination,
+} from "obminyashka-components";
 
-import api from 'src/REST/Resources';
-import { route } from 'src/routes/routeConstants';
-import { getCity } from 'src/Utils/getLocationProperties';
-import { Filtration, SearchContext } from 'src/components/common';
-import { getTranslatedText } from 'src/components/local/localization';
+import api from "src/REST/Resources";
+import { route } from "src/routes/routeConstants";
+import { getCity } from "src/Utils/getLocationProperties";
+import { Filtration, SearchContext } from "src/components/common";
+import { getTranslatedText } from "src/components/local/localization";
 
-import * as Styles from './styles';
+import * as Styles from "./styles";
 
 const SearchResults = () => {
   const navigate = useNavigate();
@@ -19,17 +24,20 @@ const SearchResults = () => {
   const { search, setSearch, isFetch, setIsFetch } = useContext(SearchContext);
   const [adv, setAdv] = useState({});
 
-  const searchResults = search || searchParams.get('search');
+  const searchResults = search || searchParams.get("search");
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
-    setSearchParams({ search: searchResults });
+    const currentParams = Object.fromEntries(searchParams);
 
     try {
-      const response = await api.search.postFilter({keyword: searchResults, page: currentPage - 1});
+      const response = await api.search.postFilter({
+        keyword: currentParams.search,
+        page: currentPage - 1,
+      });
       setAdv(response);
     } catch (err) {
-      log.error(err)
+      console.error(err);
     } finally {
       setIsFetch(false);
     }
@@ -42,19 +50,22 @@ const SearchResults = () => {
   }, [isFetch, searchResults]);
 
   useEffect(() => {
-    if (searchResults || search) {
-      getAdv();
-    } else {
+    const currentParams = Object.fromEntries(searchParams);
+
+    if (searchResults) {
+      const newSearchParams = { ...currentParams, search: searchResults || "" };
+
+      setSearchParams(newSearchParams);
       setSearch(searchResults);
     }
 
     return () => {
-      setSearch('');
+      setSearch("");
     };
-  }, []);
+  }, [searchResults]);
 
   const moveToProductPage = (id) => {
-    navigate(route.productPage.replace(':id', id));
+    navigate(route.productPage.replace(":id", id));
   };
 
   return (
@@ -62,15 +73,17 @@ const SearchResults = () => {
       <Styles.SearchingContent>
         <Styles.FilterContainer>
           <Styles.BreadCrumbs>
-            {getTranslatedText('filterPage.home')}/
-            <Styles.Span>{getTranslatedText('filterPage.searchResults')}</Styles.Span>
+            {getTranslatedText("filterPage.home")}/
+            <Styles.Span>
+              {getTranslatedText("filterPage.searchResults")}
+            </Styles.Span>
           </Styles.BreadCrumbs>
 
           <Filtration />
         </Styles.FilterContainer>
 
         <div>
-          <Title text={getTranslatedText('filterPage.searchResults')} />
+          <Title text={getTranslatedText("filterPage.searchResults")} />
 
           {adv.content && (
             <PagePagination
@@ -85,7 +98,7 @@ const SearchResults = () => {
                     text={item.title}
                     key={item.advertisementId}
                     city={getCity(item.location)}
-                    buttonText={getTranslatedText('button.look')}
+                    buttonText={getTranslatedText("button.look")}
                     picture={`data:image/jpeg;base64,${item.image}`}
                     onClick={() => moveToProductPage(item.advertisementId)}
                   />
