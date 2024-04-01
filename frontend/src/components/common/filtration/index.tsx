@@ -1,8 +1,8 @@
 /* eslint-disable */
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
 import { showMessage, ButtonNew } from "obminyashka-components";
+import { useContext, useEffect, useState } from "react";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
@@ -84,11 +84,11 @@ const Filtration = () => {
     }
 
     if (!isCategory) {
-      if (values.value === "gender") {
+      if (values.value === "gender" && subCategories.length > 0) {
         params[values.value] = JSON.stringify(subCategories[0]);
       }
 
-      if (values.value !== "gender") {
+      if (values.value !== "gender" && subCategories.length > 0) {
         params[values.value] = JSON.stringify(subCategories);
       }
 
@@ -102,20 +102,13 @@ const Filtration = () => {
 
   useEffect(() => {
     const params = Object.fromEntries(searchParams);
-    const paramsForFiltering: { [key: string]: string[] | number[] | string } =
-      {};
-
-    searchParams.forEach((value, key) => {
-      paramsForFiltering[key] = key === "search" ? value : JSON.parse(value);
-    });
 
     if (!search.length) {
       delete params.search;
     }
 
-    setParams(paramsForFiltering);
     setSearchParams(params);
-  }, [searchParams, search]);
+  }, [search]);
 
   useEffect(() => {
     const openCategory = searchParams.get("category");
@@ -123,6 +116,19 @@ const Filtration = () => {
     if (openCategory) {
       setOpenCategory(+openCategory - 1);
     }
+
+    const paramsForFiltering: { [key: string]: string[] | number[] | string } =
+      {};
+
+    searchParams.forEach((value, key) => {
+      paramsForFiltering[key] = key === "search" ? value : JSON.parse(value);
+    });
+
+    setParams(paramsForFiltering);
+
+    setTimeout(() => {
+      setParams({});
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -156,7 +162,7 @@ const Filtration = () => {
 
         {receivedCategories &&
           generateCategoriesData(receivedCategories).map((category, index) => {
-            let filteredParameterOptions: { value: string; text: any }[] = [];
+            const filteredParameterOptions: { value: string; text: any }[] = [];
 
             const subCategories: number[] = params.subCategories as number[];
 
@@ -233,12 +239,12 @@ const Filtration = () => {
         ).map((category, index) => {
           let filteredParameterOptions: { value: string; text: any }[] = [];
 
-          const values: string[] = Array.isArray(params[category.value])
+          const paramsValues: string[] = Array.isArray(params[category.value])
             ? (params[category.value] as string[])
             : [params[category.value] as string];
 
           category.options.filter((option) => {
-            if (values.includes(option.value)) {
+            if (paramsValues.includes(option.value)) {
               filteredParameterOptions.push(option);
             }
           });
@@ -246,7 +252,6 @@ const Filtration = () => {
           return (
             <Select
               {...category}
-              params={params}
               key={"filter" + index}
               multiple={category.multiple}
               onChange={(values) => onChange(values)}

@@ -11,7 +11,6 @@ import * as Styles from "./styles";
 export const Select = ({
   value,
   title,
-  params,
   options,
   multiple,
   isActive,
@@ -130,7 +129,7 @@ export const Select = ({
 
       setChosenOptions(filteredParameterOptions);
     }
-  }, [params]);
+  }, [filteredParameterOptions]);
 
   useEffect(() => {
     if ((isOpen || isActive) && !disabled) {

@@ -23,5 +23,4 @@ export interface ISelectProps {
   setIsActive?: (num?: number) => void;
   filteredParameterOptions?: ISelectOption[];
   onChange: (values: IOnChangeValue) => void;
-  params?: { [key: string]: string[] | number[] | string };
 }

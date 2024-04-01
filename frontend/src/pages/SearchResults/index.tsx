@@ -44,24 +44,19 @@ const SearchResults = () => {
   };
 
   useEffect(() => {
-    if (isFetch && searchResults) {
+    if (searchResults) {
       getAdv();
     }
-  }, [isFetch, searchResults]);
+  }, []);
 
   useEffect(() => {
     const currentParams = Object.fromEntries(searchParams);
 
     if (searchResults) {
-      const newSearchParams = { ...currentParams, search: searchResults || "" };
+      const newSearchParams = { ...currentParams, search: searchResults };
 
       setSearchParams(newSearchParams);
-      setSearch(searchResults);
     }
-
-    return () => {
-      setSearch("");
-    };
   }, [searchResults]);
 
   const moveToProductPage = (id) => {
