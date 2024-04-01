@@ -27,8 +27,8 @@ const SearchResults = () => {
   const searchResults = search || searchParams.get("search");
 
   const getAdv = async (page: number) => {
-    const currentPage = page ?? 1;
     const currentParams = Object.fromEntries(searchParams);
+    const currentPage = page ?? 1;
 
     try {
       const response = await api.search.postFilter({
@@ -44,20 +44,15 @@ const SearchResults = () => {
   };
 
   useEffect(() => {
-    if (searchResults) {
-      getAdv();
-    }
-  }, []);
-
-  useEffect(() => {
     const currentParams = Object.fromEntries(searchParams);
 
     if (searchResults) {
       const newSearchParams = { ...currentParams, search: searchResults };
 
+      getAdv();
       setSearchParams(newSearchParams);
     }
-  }, [searchResults]);
+  }, []);
 
   const moveToProductPage = (id) => {
     navigate(route.productPage.replace(":id", id));
