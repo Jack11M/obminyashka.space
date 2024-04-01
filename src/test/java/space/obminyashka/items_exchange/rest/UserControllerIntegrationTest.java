@@ -180,6 +180,16 @@ class UserControllerIntegrationTest extends BasicControllerTest {
     }
 
     @Test
+    @WithMockUser
+    void resetUserPassword_whenEmailNotExist_shouldReturnExceptionMessage() throws Exception {
+        var verifyEmailRequest = new VerifyEmailRequest("email@gmail.com");
+        when(userService.existsByEmail(verifyEmailRequest.email())).thenReturn(false);
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(USER_SERVICE_RESET_PASSWORD), verifyEmailRequest, status().isOk());
+        assertEquals(mvcResult.getResponse().getContentAsString(), getMessageSource(ExceptionMessage.RESET_PASSWORD));
+    }
+
+    @Test
     @WithMockUser(username = "admin")
     void setUserAvatar_whenReceivedBMPImage_shouldThrowUnsupportedMediaTypeException() throws Exception {
 
