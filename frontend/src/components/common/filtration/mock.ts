@@ -66,7 +66,7 @@ export const generateFilterData = (
       title: "age",
       multiple: true,
       options: ages.map((age: string) => ({
-        value: age,
+        value: age.replace(/ /g, ""),
         text: age,
       })),
     },
