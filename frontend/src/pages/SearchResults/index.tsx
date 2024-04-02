@@ -27,14 +27,19 @@ const SearchResults = () => {
   const searchResults = search || searchParams.get("search");
 
   const getAdv = async (page: number) => {
-    const currentParams = Object.fromEntries(searchParams);
     const currentPage = page ?? 1;
+    const requestData: { [key: string]: string[] | number[] | string } = {};
+
+    searchParams.forEach((value, key) => {
+      if (key === "search") {
+        requestData.keyword = value;
+      } else {
+        requestData[key] = JSON.parse(value);
+      }
+    });
 
     try {
-      const response = await api.search.postFilter({
-        keyword: currentParams.search,
-        page: currentPage - 1,
-      });
+      const response = await api.search.postFilter(requestData);
       setAdv(response);
     } catch (err) {
       console.error(err);
@@ -49,8 +54,12 @@ const SearchResults = () => {
     if (searchResults) {
       const newSearchParams = { ...currentParams, search: searchResults };
 
-      getAdv();
       setSearchParams(newSearchParams);
+      getAdv();
+    }
+
+    if (Object.keys(currentParams).length && !searchResults) {
+      getAdv();
     }
   }, []);
 

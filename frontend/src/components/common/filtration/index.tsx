@@ -65,13 +65,13 @@ const Filtration = () => {
       params.category = values.value;
 
       if (subCategories.length > 0) {
-        params.subCategories = JSON.stringify(
+        params.subcategoriesIdValues = JSON.stringify(
           subCategories.map((category) => Number(category))
         );
       }
 
       if (subCategories.length === 0) {
-        delete params.subCategories;
+        delete params.subcategoriesIdValues;
       }
 
       if (values.value !== "2") {
@@ -164,7 +164,8 @@ const Filtration = () => {
           generateCategoriesData(receivedCategories).map((category, index) => {
             const filteredParameterOptions: { value: string; text: any }[] = [];
 
-            const subCategories: number[] = params.subCategories as number[];
+            const subCategories: number[] =
+              params.subcategoriesIdValues as number[];
 
             if (subCategories) {
               category.options.filter((option) => {
