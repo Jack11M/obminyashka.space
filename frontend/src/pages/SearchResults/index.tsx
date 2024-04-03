@@ -21,7 +21,7 @@ import * as Styles from "./styles";
 const SearchResults = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { search, setSearch, isFetch, setIsFetch } = useContext(SearchContext);
+  const { search, setIsFetch } = useContext(SearchContext);
   const [adv, setAdv] = useState({});
 
   const searchResults = search || searchParams.get("search");
@@ -30,12 +30,14 @@ const SearchResults = () => {
     const currentPage = page ?? 1;
     const requestData: { [key: string]: string[] | number[] | string } = {};
 
+    requestData.page = currentPage - 1;
+
+    if (searchResults) {
+      requestData.keyword = searchResults;
+    }
+
     searchParams.forEach((value, key) => {
-      if (key === "search") {
-        requestData.keyword = value;
-      } else {
-        requestData[key] = JSON.parse(value);
-      }
+      key === "search" ? "" : (requestData[key] = JSON.parse(value));
     });
 
     try {
@@ -49,18 +51,7 @@ const SearchResults = () => {
   };
 
   useEffect(() => {
-    const currentParams = Object.fromEntries(searchParams);
-
-    if (searchResults) {
-      const newSearchParams = { ...currentParams, search: searchResults };
-
-      setSearchParams(newSearchParams);
-      getAdv();
-    }
-
-    if (Object.keys(currentParams).length && !searchResults) {
-      getAdv();
-    }
+    getAdv();
   }, []);
 
   const moveToProductPage = (id) => {
@@ -72,7 +63,7 @@ const SearchResults = () => {
       <Styles.SearchingContent>
         <Styles.FilterContainer>
           <Styles.BreadCrumbs>
-            {getTranslatedText("filterPage.home")}/
+            {getTranslatedText("filterPage.home")}
             <Styles.Span>
               {getTranslatedText("filterPage.searchResults")}
             </Styles.Span>

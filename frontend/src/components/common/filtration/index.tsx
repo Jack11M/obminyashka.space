@@ -49,6 +49,8 @@ const Filtration = () => {
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
 
+  const currentParams = Object.fromEntries(searchParams);
+
   const setOpenCategory = (id: number) => {
     if (open === id) {
       return;
@@ -58,63 +60,67 @@ const Filtration = () => {
   };
 
   const onChange = (values: IOnChangeValue, isCategory?: boolean) => {
-    const params = Object.fromEntries(searchParams);
     const subCategories = values.chosenOptions.map(({ value }) => value);
 
     if (isCategory) {
-      params.category = values.value;
+      currentParams.category = values.value;
 
       if (subCategories.length > 0) {
-        params.subcategoriesIdValues = JSON.stringify(
+        currentParams.subcategoriesIdValues = JSON.stringify(
           subCategories.map((category) => Number(category))
         );
       }
 
       if (subCategories.length === 0) {
-        delete params.subcategoriesIdValues;
+        delete currentParams.subcategoriesIdValues;
       }
 
       if (values.value !== "2") {
-        delete params.shoesSizes;
+        delete currentParams.shoesSizes;
       }
 
       if (values.value !== "1") {
-        delete params.clothingSizes;
+        delete currentParams.clothingSizes;
       }
     }
 
     if (!isCategory) {
       if (values.value === "gender" && subCategories.length > 0) {
-        params[values.value] = JSON.stringify(subCategories[0]);
+        currentParams[values.value] = JSON.stringify(subCategories[0]);
       }
 
       if (values.value !== "gender" && subCategories.length > 0) {
-        params[values.value] = JSON.stringify(subCategories);
+        currentParams[values.value] = JSON.stringify(subCategories);
       }
 
       if (subCategories.length === 0) {
-        delete params[values.value];
+        delete currentParams[values.value];
       }
     }
 
-    setSearchParams(params);
+    setSearchParams(currentParams);
   };
 
   useEffect(() => {
-    const params = Object.fromEntries(searchParams);
-
     if (!search.length) {
-      delete params.search;
-    }
+      delete currentParams.search;
 
-    setSearchParams(params);
+      setSearchParams(currentParams);
+    }
   }, [search]);
 
   useEffect(() => {
     const openCategory = searchParams.get("category");
+    const searchResults = search || searchParams.get("search");
 
     if (openCategory) {
       setOpenCategory(+openCategory - 1);
+    }
+
+    if (searchResults) {
+      const newParams = { ...currentParams, search: searchResults };
+
+      setSearchParams(newParams);
     }
 
     const paramsForFiltering: { [key: string]: string[] | number[] | string } =
