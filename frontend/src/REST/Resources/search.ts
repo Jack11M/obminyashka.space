@@ -5,7 +5,7 @@ interface RequestData {
   size: number;
   enableRandom: boolean;
   keyword: string;
-  subcategoriesIdValues?: number[];
+  subcategoriesIdValues: number[];
   excludeAdvertisementId: string;
   locationId: string;
   gender: string;
