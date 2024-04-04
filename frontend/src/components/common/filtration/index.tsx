@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { showMessage, ButtonNew } from "obminyashka-components";
+import { showMessage, ButtonNew, Select } from "obminyashka-components";
 import { useContext, useEffect, useState } from "react";
 
 import api from "src/REST/Resources";
@@ -20,7 +20,7 @@ import {
 
 import * as Styles from "./styles";
 
-import { Select } from "./select-new";
+// import { Select } from "./select-new";
 
 const Filtration = () => {
   const lang = useSelector(getAuthLang);
@@ -162,7 +162,7 @@ const Filtration = () => {
   }, []);
 
   return (
-    <div>
+    <Styles.FiltrationWrapper>
       <Styles.CategoryWrapper>
         <Styles.CategoryTitle>
           {getTranslatedText("categoriesTitle.category")}
@@ -208,7 +208,7 @@ const Filtration = () => {
         </Styles.CategoryTitle>
         <Styles.CategoryUnderline />
 
-        <Styles.LocationContainer>
+        <Styles.LocationTitleContainer>
           <Styles.LocationTitle
             readOnly
             value={getTranslatedText("filter.location")}
@@ -216,31 +216,35 @@ const Filtration = () => {
           />
 
           <Styles.Triangle isOpen={isOpenLocation} />
-        </Styles.LocationContainer>
+        </Styles.LocationTitleContainer>
 
-        <Styles.ScrollWrapper filtration>
-          <Styles.SubCategories filtration isOpen={isOpenLocation}>
-            <Styles.SubCategory filtration>
-              <Select
-                value="99"
-                filtration
-                title="region"
-                options={regions}
-                onChange={(values) => console.log(values)}
-              />
-            </Styles.SubCategory>
+        <Styles.SubCategories filtration isOpen={isOpenLocation}>
+          <Styles.SubCategory filtration>
+            <Select
+              value="99"
+              filtration
+              title="region"
+              options={regions}
+              onChange={(values) => console.log(values)}
+            />
+          </Styles.SubCategory>
 
-            <Styles.SubCategory filtration>
-              <Select
-                value="100"
-                filtration
-                title="city"
-                options={cities}
-                onChange={(values) => console.log(values)}
-              />
-            </Styles.SubCategory>
-          </Styles.SubCategories>
-        </Styles.ScrollWrapper>
+          <Styles.SubCategory
+            filtration
+            style={{
+              top: "55px",
+              zIndex: "99",
+            }}
+          >
+            <Select
+              value="100"
+              filtration
+              title="city"
+              options={cities}
+              onChange={(values) => console.log(values)}
+            />
+          </Styles.SubCategory>
+        </Styles.SubCategories>
 
         {generateFilterData(
           lang,
@@ -279,10 +283,8 @@ const Filtration = () => {
         })}
       </Styles.CategoryWrapper>
 
-      <div style={{ margin: "10px 0", width: "334px" }}>
-        <ButtonNew colorType={"blue"} styleType={"default"} text="submit" />
-      </div>
-    </div>
+      <ButtonNew colorType={"blue"} styleType={"default"} text="submit" />
+    </Styles.FiltrationWrapper>
   );
 };
 

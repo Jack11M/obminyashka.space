@@ -1,5 +1,21 @@
 import styled, { css } from "styled-components";
 
+export const FiltrationWrapper = styled.div`
+  width: 300px;
+
+  ${({ theme }) => css`
+    ${theme.responsive.isDesktopMD &&
+    css`
+      width: 350px;
+    `}
+
+    ${theme.responsive.isDesktopLG &&
+    css`
+      width: 370px;
+    `}
+  `}
+`;
+
 export const CategoryWrapper = styled.div`
   padding: 25px;
   margin-bottom: 50px;
@@ -21,7 +37,7 @@ export const CategoryUnderline = styled.div`
   background-color: #d1d1d1;
 `;
 
-export const LocationContainer = styled.div`
+export const LocationTitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -118,8 +134,10 @@ export const SubCategories = styled.div<{
   isOpen: boolean;
   filtration?: boolean;
 }>`
-  display: grid;
   box-sizing: border-box;
+  display: grid;
+  position: relative;
+  height: 97px;
   gap: 4px;
   overflow: hidden;
   transition: all 0.4s ease;
@@ -133,6 +151,7 @@ export const SubCategories = styled.div<{
     css`
       gap: 15px;
       width: 100%;
+      overflow: visible;
     `}
   `}
 `;
@@ -142,8 +161,10 @@ export const SubCategory = styled.div<{
   filtration?: boolean;
   notCheckbox?: boolean;
 }>`
-  position: relative;
   display: flex;
+  position: absolute;
+  top: 0;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   padding: 7px 35px 7px 14px;
@@ -154,6 +175,7 @@ export const SubCategory = styled.div<{
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
+  z-index: 999;
 
   ${({ theme, filtration }) => css`
     color: ${theme.colors.colorGrey};
