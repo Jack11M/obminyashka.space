@@ -10,6 +10,7 @@ export const CategoryWrapper = styled.div`
 export const CategoryTitle = styled.h1`
   margin: 0 0 10px;
   font-size: 22px;
+  text-transform: uppercase;
   color: ${({ theme }) => theme.colors.categoryFilter.title};
 `;
 

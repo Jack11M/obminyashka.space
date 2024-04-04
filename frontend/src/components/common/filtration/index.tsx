@@ -6,8 +6,8 @@ import { useContext, useEffect, useState } from "react";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
-import { en, ua } from "src/components/local";
 import { getAuthLang } from "src/store/auth/slice";
+import { en, ua, getTranslatedText } from "src/components/local";
 
 import { SearchContext } from "..";
 import { ICategories, IOnChangeValue } from "./types";
@@ -164,7 +164,9 @@ const Filtration = () => {
   return (
     <div>
       <Styles.CategoryWrapper>
-        <Styles.CategoryTitle>Categories</Styles.CategoryTitle>
+        <Styles.CategoryTitle>
+          {getTranslatedText("categoriesTitle.category")}
+        </Styles.CategoryTitle>
         <Styles.CategoryUnderline />
 
         {receivedCategories &&
@@ -201,13 +203,15 @@ const Filtration = () => {
       </Styles.CategoryWrapper>
 
       <Styles.CategoryWrapper>
-        <Styles.CategoryTitle>Filter</Styles.CategoryTitle>
+        <Styles.CategoryTitle>
+          {getTranslatedText("categoriesTitle.filter")}
+        </Styles.CategoryTitle>
         <Styles.CategoryUnderline />
 
         <Styles.LocationContainer>
           <Styles.LocationTitle
             readOnly
-            value={"location"}
+            value={getTranslatedText("filter.location")}
             onClick={() => setIsOpenLocation(!isOpenLocation)}
           />
 

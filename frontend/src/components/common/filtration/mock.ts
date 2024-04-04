@@ -55,7 +55,7 @@ export const generateFilterData = (
   return [
     {
       value: "gender",
-      title: "sex",
+      title: getTranslatedText("filter.gender"),
       options: sex.map((gender: string) => ({
         value: gender,
         text: getTranslatedText(`genderEnum.${gender}`),
@@ -63,7 +63,7 @@ export const generateFilterData = (
     },
     {
       value: "age",
-      title: "age",
+      title: getTranslatedText("filter.age"),
       multiple: true,
       options: ages.map((age: string) => ({
         value: age.replace(/ /g, ""),
@@ -72,7 +72,7 @@ export const generateFilterData = (
     },
     {
       value: "clothingSizes",
-      title: "size(clothes)",
+      title: getTranslatedText("filter.clothingSizes"),
       disabled: 0,
       multiple: true,
       options: sizeClothes.map((size) => ({
@@ -82,7 +82,7 @@ export const generateFilterData = (
     },
     {
       value: "shoesSizes",
-      title: "size(shoes)",
+      title: getTranslatedText("filter.shoesSizes"),
       disabled: 1,
       multiple: true,
       options: sizeShoes.map((size) => ({
@@ -92,7 +92,7 @@ export const generateFilterData = (
     },
     {
       value: "season",
-      title: "season",
+      title: getTranslatedText("filter.season"),
       multiple: true,
       options: seasons.map((season: string) => ({
         value: season,
