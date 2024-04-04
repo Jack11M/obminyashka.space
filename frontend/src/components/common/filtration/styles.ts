@@ -1,12 +1,32 @@
 import styled, { css } from "styled-components";
 
-export const TitleContainer = styled.div`
+export const CategoryWrapper = styled.div`
+  padding: 25px;
+  margin-bottom: 50px;
+  border-radius: 20px;
+  border: 2px dashed ${({ theme }) => theme.colors.categoryFilter.border};
+`;
+
+export const CategoryTitle = styled.h1`
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: ${({ theme }) => theme.colors.categoryFilter.title};
+`;
+
+export const CategoryUnderline = styled.div`
+  margin-bottom: 20px;
+  height: 1px;
+  width: 100%;
+  background-color: #d1d1d1;
+`;
+
+export const LocationContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-export const Title = styled.input<{
+export const LocationTitle = styled.input<{
   isOpen?: boolean;
   disabled?: boolean;
   filtration?: boolean;
@@ -42,7 +62,7 @@ export const Title = styled.input<{
       ${filtration &&
     isOpen &&
     css`
-      border-bottom: 2px solid ${theme.colors.categoryFilter.scrollBgGrey};
+      border-bottom: 2px solid ${theme.colors.categoryFilter.inputBorderBottom};
     `}
   `}
 `;

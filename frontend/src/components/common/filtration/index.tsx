@@ -163,8 +163,9 @@ const Filtration = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: "20px" }}>
-        <h1>Categories</h1>
+      <Styles.CategoryWrapper>
+        <Styles.CategoryTitle>Categories</Styles.CategoryTitle>
+        <Styles.CategoryUnderline />
 
         {receivedCategories &&
           generateCategoriesData(receivedCategories).map((category, index) => {
@@ -197,20 +198,21 @@ const Filtration = () => {
               />
             );
           })}
-      </div>
+      </Styles.CategoryWrapper>
 
-      <div style={{ marginBottom: "20px" }}>
-        <h1>Filter</h1>
+      <Styles.CategoryWrapper>
+        <Styles.CategoryTitle>Filter</Styles.CategoryTitle>
+        <Styles.CategoryUnderline />
 
-        <Styles.TitleContainer>
-          <Styles.Title
+        <Styles.LocationContainer>
+          <Styles.LocationTitle
             readOnly
             value={"location"}
             onClick={() => setIsOpenLocation(!isOpenLocation)}
           />
 
           <Styles.Triangle isOpen={isOpenLocation} />
-        </Styles.TitleContainer>
+        </Styles.LocationContainer>
 
         <Styles.ScrollWrapper filtration>
           <Styles.SubCategories filtration isOpen={isOpenLocation}>
@@ -271,7 +273,7 @@ const Filtration = () => {
             />
           );
         })}
-      </div>
+      </Styles.CategoryWrapper>
 
       <div style={{ margin: "10px 0", width: "334px" }}>
         <ButtonNew colorType={"blue"} styleType={"default"} text="submit" />
