@@ -9,9 +9,13 @@ import { getTranslatedText } from "../local";
 
 const Footer = () => {
   const { pathname } = useLocation();
+  const isSearchResults = pathname?.replace("/", "") === route.SearchResults;
 
   return (
-    <Styles.Wrapper withBg={isWhiteBG(pathname)}>
+    <Styles.Wrapper
+      withBg={isWhiteBG(pathname)}
+      isSearchResults={isSearchResults}
+    >
       <FooterComponent
         toMain={route.home}
         toDeals={route.home}

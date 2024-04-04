@@ -1,10 +1,10 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const SearchingResults = styled.div`
-  padding: 0 15px;
-  margin: 200px auto 210px;
-  max-width: 1251px;
+  padding: 30px 35px 100px;
+  margin: 0 auto;
   overflow: hidden;
+  background-color: #fff;
 `;
 
 export const SearchingContent = styled.div`
