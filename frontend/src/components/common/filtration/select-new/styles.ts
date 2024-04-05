@@ -119,7 +119,7 @@ export const ScrollWrapper = styled.div<{
     isOpen &&
     css`
       margin-top: 15px;
-      max-height: 160px;
+      max-height: 230px;
     `}
   `}
 `;
@@ -143,6 +143,7 @@ export const SubCategories = styled.div<{
     css`
       gap: 15px;
       width: 100%;
+      background-color: white;
     `}
   `}
 `;

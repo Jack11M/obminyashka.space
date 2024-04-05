@@ -53,7 +53,6 @@ const SearchResults = () => {
   useEffect(() => {
     getAdv();
   }, []);
-
   const moveToProductPage = (id) => {
     navigate(route.productPage.replace(":id", id));
   };
@@ -72,8 +71,11 @@ const SearchResults = () => {
           <Filtration />
         </Styles.FilterContainer>
 
-        <div>
-          <Title text={getTranslatedText("filterPage.searchResults")} />
+        <Styles.PaginationContainer>
+          <Title
+            style={{ paddingLeft: "0", marginBottom: "50px" }}
+            text={getTranslatedText("filterPage.searchResults")}
+          />
 
           {adv.content && (
             <PagePagination
@@ -95,7 +97,7 @@ const SearchResults = () => {
                 ))}
             </PagePagination>
           )}
-        </div>
+        </Styles.PaginationContainer>
       </Styles.SearchingContent>
     </Styles.SearchingResults>
   );
