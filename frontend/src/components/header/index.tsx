@@ -95,6 +95,7 @@ const Header = () => {
           <CategoryButton
             categoryInfo={categories}
             textBtn={getTranslatedText("header.categories")}
+            isDisabled={pathname?.replace("/", "") === route.SearchResults}
           />
 
           <Responsive.Desktop>
