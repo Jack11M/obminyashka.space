@@ -283,7 +283,12 @@ const Filtration = () => {
         })}
       </Styles.CategoryWrapper>
 
-      <ButtonNew colorType={"blue"} styleType={"default"} text="submit" />
+      <ButtonNew
+        animated
+        text="submit"
+        colorType={"blue"}
+        styleType={"default"}
+      />
     </Styles.FiltrationWrapper>
   );
 };
