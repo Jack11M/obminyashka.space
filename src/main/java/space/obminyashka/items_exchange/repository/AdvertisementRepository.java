@@ -22,6 +22,7 @@ import java.util.UUID;
 public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID>, QuerydslPredicateExecutor<Advertisement> {
 
     boolean existsAdvertisementByIdAndUserUsername(UUID id, String username);
+
     boolean existsAdvertisementById(UUID id);
 
     @Modifying
@@ -55,7 +56,7 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "delete from favorite_advertisements " +
-        "where user_id = (select id from user where username = :username) and advertisement_id = :advertisementId")
+            "where user_id = (select id from user where username = :username) and advertisement_id = :advertisementId")
     int removeFavoriteAdvertisementsByIdAndUserUsername(UUID advertisementId, String username);
 
     @Query("SELECT COUNT(a) FROM Advertisement a WHERE " +
@@ -64,5 +65,8 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, UU
     Long countByIdNotAndSubcategoryId(UUID id, List<Long> subcategoryIds);
 
     boolean existsBySubcategoryId(long id);
+
+    @Query("SELECT a FROM Advertisement a WHERE a.subcategory.category.id = :categoryId")
+    Page<Advertisement> findAdvertisementByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
 }

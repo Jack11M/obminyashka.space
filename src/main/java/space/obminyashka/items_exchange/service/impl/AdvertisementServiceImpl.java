@@ -31,8 +31,13 @@ import space.obminyashka.items_exchange.service.LocationService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
 
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.UUID;
 
+import static java.util.function.Predicate.not;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
@@ -92,18 +97,31 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
     @Override
     public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
-        if (request.isEnableRandom()) {
-            List<Long> subcategoriesIdValues = request.getSubcategoriesIdValues();
-            if (subcategoriesIdValues.isEmpty()) subcategoriesIdValues = null;
+        PageRequest pageRequest = PageRequest.of(preparePage(request), request.getSize());
+        Page<Advertisement> advertisements = isCategoryIdPresent(request.getCategoryId())
+                ? advertisementRepository.findAdvertisementByCategoryId(request.getCategoryId(), pageRequest)
+                : advertisementRepository.findAll(request.toPredicate(), pageRequest);
 
-            final var totalRecordsSize = advertisementRepository.countByIdNotAndSubcategoryId(
-                    request.getExcludeAdvertisementId(),
-                    subcategoriesIdValues);
-            final var bound = (int) (totalRecordsSize / request.getSize());
-            request.setPage(bound > 0 ? random.nextInt(bound) : 0);
+        return advertisements.map(this::buildAdvertisementTitle);
+    }
+
+    private int preparePage(AdvertisementFilterRequest request) {
+        if (!request.isEnableRandom()) {
+            return request.getPage();
         }
-        return advertisementRepository.findAll(request.toPredicate(), PageRequest.of(request.getPage(), request.getSize()))
-                .map(this::buildAdvertisementTitle);
+        List<Long> subcategoriesIdValues = Optional.ofNullable(request.getSubcategoriesIdValues())
+                .filter(not(List::isEmpty))
+                .orElse(null);
+
+        long totalRecords = advertisementRepository.countByIdNotAndSubcategoryId(
+                request.getExcludeAdvertisementId(), subcategoriesIdValues);
+
+        int bound = (int) (totalRecords / request.getSize());
+        return bound > 0 ? random.nextInt(bound) : 0;
+    }
+
+    private boolean isCategoryIdPresent(Long categoryId) {
+        return categoryId != null && categoryId > 0;
     }
 
     @Override
