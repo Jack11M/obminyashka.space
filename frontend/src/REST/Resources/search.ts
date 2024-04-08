@@ -3,16 +3,17 @@ import { obminyashkaApi } from "../Service/networkProvider";
 interface RequestData {
   page: number;
   size: number;
-  enableRandom: boolean;
-  keyword: string;
-  subcategoriesIdValues: number[];
-  excludeAdvertisementId: string;
-  locationId: string;
-  gender: string;
   age: string[];
-  clothingSizes: string[];
-  shoesSizes: string[];
+  gender: string;
+  keyword: string;
   season: string[];
+  categoryId: number;
+  locationId: string;
+  shoesSizes: string[];
+  enableRandom: boolean;
+  clothingSizes: string[];
+  excludeAdvertisementId: string;
+  subcategoriesIdValues: number[];
 }
 
 export const postFilter = (dataValue: RequestData) =>

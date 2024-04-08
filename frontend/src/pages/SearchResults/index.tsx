@@ -28,7 +28,9 @@ const SearchResults = () => {
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
-    const requestData: { [key: string]: string[] | number[] | string } = {};
+    const requestData: {
+      [key: string]: string[] | number[] | string | number;
+    } = {};
 
     requestData.page = currentPage - 1;
 

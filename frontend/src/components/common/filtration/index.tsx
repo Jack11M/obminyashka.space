@@ -32,7 +32,7 @@ const Filtration = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = useState<{
-    [key: string]: string[] | number[] | string;
+    [key: string]: string[] | number[] | string | number;
   }>({});
 
   const [receivedShoeSizes, setReceivedShoeSize] = useState<string[]>([]);
@@ -63,7 +63,7 @@ const Filtration = () => {
     const subCategories = values.chosenOptions.map(({ value }) => value);
 
     if (isCategory) {
-      currentParams.category = values.value;
+      currentParams.categoryId = values.value;
 
       if (subCategories.length > 0) {
         currentParams.subcategoriesIdValues = JSON.stringify(
@@ -97,7 +97,6 @@ const Filtration = () => {
         delete currentParams[values.value];
       }
     }
-
     setSearchParams(currentParams);
   };
 
@@ -110,7 +109,7 @@ const Filtration = () => {
   }, [search]);
 
   useEffect(() => {
-    const openCategory = searchParams.get("category");
+    const openCategory = searchParams.get("categoryId");
     const searchResults = search || searchParams.get("search");
 
     if (openCategory) {
@@ -123,8 +122,9 @@ const Filtration = () => {
       setSearchParams(newParams);
     }
 
-    const paramsForFiltering: { [key: string]: string[] | number[] | string } =
-      {};
+    const paramsForFiltering: {
+      [key: string]: string[] | number[] | string | number;
+    } = {};
 
     searchParams.forEach((value, key) => {
       paramsForFiltering[key] = key === "search" ? value : JSON.parse(value);
