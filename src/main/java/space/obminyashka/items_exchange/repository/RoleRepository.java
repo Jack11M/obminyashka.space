@@ -1,12 +1,11 @@
 package space.obminyashka.items_exchange.repository;
 
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import space.obminyashka.items_exchange.repository.model.Role;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import jakarta.transaction.Transactional;
+import space.obminyashka.items_exchange.repository.model.Role;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -8,8 +8,8 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
-import space.obminyashka.items_exchange.service.util.InvalidatedTokensHolder;
 import space.obminyashka.items_exchange.repository.model.Role;
+import space.obminyashka.items_exchange.service.util.InvalidatedTokensHolder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

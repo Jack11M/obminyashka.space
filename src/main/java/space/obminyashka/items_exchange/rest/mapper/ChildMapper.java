@@ -2,8 +2,8 @@ package space.obminyashka.items_exchange.rest.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import space.obminyashka.items_exchange.rest.dto.ChildDto;
 import space.obminyashka.items_exchange.repository.model.Child;
+import space.obminyashka.items_exchange.rest.dto.ChildDto;
 
 import java.util.List;
 

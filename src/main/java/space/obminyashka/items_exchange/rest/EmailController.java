@@ -22,7 +22,8 @@ import space.obminyashka.items_exchange.service.util.EmailType;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.EMAIL_CONFIRMED;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.PositiveMessage.EMAIL_RESEND_CODE;
 
 @RestController
 @Slf4j

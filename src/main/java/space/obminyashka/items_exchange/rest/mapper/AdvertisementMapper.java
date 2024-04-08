@@ -3,11 +3,11 @@ package space.obminyashka.items_exchange.rest.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
+import space.obminyashka.items_exchange.repository.projection.AdvertisementTitleProjection;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
-import space.obminyashka.items_exchange.repository.model.Advertisement;
-import space.obminyashka.items_exchange.repository.projection.AdvertisementTitleProjection;
 
 import java.util.List;
 

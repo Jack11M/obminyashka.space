@@ -6,7 +6,8 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import space.obminyashka.items_exchange.rest.regexp.PatternHandler;
 
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_PHONE_NUMBER;
 
 @NoArgsConstructor
 @AllArgsConstructor
