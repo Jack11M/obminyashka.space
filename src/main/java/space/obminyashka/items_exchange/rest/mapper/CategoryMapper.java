@@ -1,9 +1,9 @@
 package space.obminyashka.items_exchange.rest.mapper;
 
 import org.mapstruct.Mapper;
+import space.obminyashka.items_exchange.repository.model.Category;
 import space.obminyashka.items_exchange.rest.dto.CategoryDto;
 import space.obminyashka.items_exchange.rest.response.CategoryNameView;
-import space.obminyashka.items_exchange.repository.model.Category;
 
 import java.util.List;
 

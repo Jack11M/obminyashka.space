@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 

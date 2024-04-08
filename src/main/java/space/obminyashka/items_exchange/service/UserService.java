@@ -45,6 +45,13 @@ public interface UserService {
     boolean registerNewUser(UserRegistrationRequest userRegistrationRequest, UUID codeId);
 
     /**
+     * resend validate code one more time
+     * @param email to which the code will be sent
+     * @param codeId UUID for confirmation email
+     */
+    void resendValidateCode(String email, UUID codeId);
+
+    /**
      * Update an existed user with new data
      * @param newMyUserInfoUpdateRequest new data for update
      * @param user existed user to update

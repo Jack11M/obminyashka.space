@@ -18,7 +18,11 @@ import space.obminyashka.items_exchange.repository.enums.Size;
 import space.obminyashka.items_exchange.repository.model.QAdvertisement;
 import space.obminyashka.items_exchange.rest.request.predicate.QPredicate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE_COMBINATION;
@@ -39,6 +43,9 @@ public class AdvertisementFilterRequest {
 
     @Schema(description = "Keyword for search", minLength = 3)
     private String keyword;
+
+    @Schema(description = "Category ID for advertisements filtering. See the full list of Categories in: /api/v1/category/all", example = "1")
+    private Long categoryId;
 
     @ArraySchema(arraySchema = @Schema(description = "Subcategories ID for advertisements filtering. Should belong to passed Category ID", example = "[1, 17]"))
     private List<Long> subcategoriesIdValues = new ArrayList<>();

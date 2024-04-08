@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import space.obminyashka.items_exchange.repository.ImageRepository;
 import space.obminyashka.items_exchange.rest.exception.ElementsNumberExceedException;
-import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.rest.exception.UnsupportedMediaTypeException;
 import space.obminyashka.items_exchange.rest.mapper.ImageMapper;
+import space.obminyashka.items_exchange.rest.response.ImageView;
 import space.obminyashka.items_exchange.service.ImageService;
 import space.obminyashka.items_exchange.service.util.SupportedMediaTypes;
 
@@ -20,22 +21,21 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
-import jakarta.transaction.Transactional;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.awt.Image.SCALE_REPLICATE;
 import static java.awt.Image.SCALE_SMOOTH;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.EXCEED_IMAGES_NUMBER;
 
 @Slf4j
 @Service

@@ -21,7 +21,7 @@ import space.obminyashka.items_exchange.service.ChildService;
 
 import java.util.List;
 
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.CHILDREN_AMOUNT;
 
 
 @RestController

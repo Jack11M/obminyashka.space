@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
 
 public interface Size {
 

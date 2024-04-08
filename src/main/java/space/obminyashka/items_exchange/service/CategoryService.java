@@ -1,7 +1,7 @@
 package space.obminyashka.items_exchange.service;
 
-import space.obminyashka.items_exchange.rest.dto.CategoryDto;
 import space.obminyashka.items_exchange.repository.enums.Size;
+import space.obminyashka.items_exchange.rest.dto.CategoryDto;
 
 import java.util.List;
 import java.util.Optional;

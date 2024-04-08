@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Arrays;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
 
 
 @Slf4j

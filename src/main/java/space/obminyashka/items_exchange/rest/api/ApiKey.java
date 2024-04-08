@@ -27,6 +27,7 @@ public class ApiKey {
     // Email API
     public static final String EMAIL = API + "/email";
     public static final String EMAIL_VALIDATE_CODE = EMAIL + "/validate/{code}";
+    public static final String EMAIL_RESEND_CODE = EMAIL + "/resend/code";
     // Image API
     public static final String IMAGE = API + "/image";
     public static final String IMAGE_BY_ADV_ID = IMAGE + "/{advertisement_id}";
