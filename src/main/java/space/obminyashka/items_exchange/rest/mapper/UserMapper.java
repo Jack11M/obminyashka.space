@@ -3,11 +3,11 @@ package space.obminyashka.items_exchange.rest.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
-import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.repository.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.repository.projection.UserProjection;
+import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
 
 import java.util.List;
 import java.util.Locale;

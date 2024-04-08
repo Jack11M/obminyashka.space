@@ -1,8 +1,8 @@
 package space.obminyashka.items_exchange.service;
 
+import space.obminyashka.items_exchange.rest.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.rest.response.RefreshTokenResponse;
 import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
-import space.obminyashka.items_exchange.rest.exception.RefreshTokenException;
 
 public interface AuthService {
 

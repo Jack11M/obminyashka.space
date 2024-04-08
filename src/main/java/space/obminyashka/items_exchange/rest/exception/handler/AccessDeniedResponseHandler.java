@@ -1,5 +1,7 @@
 package space.obminyashka.items_exchange.rest.exception.handler;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -7,11 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-import space.obminyashka.items_exchange.service.UserService;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
+import space.obminyashka.items_exchange.service.UserService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;

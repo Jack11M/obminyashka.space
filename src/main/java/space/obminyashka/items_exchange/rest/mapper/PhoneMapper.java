@@ -2,8 +2,8 @@ package space.obminyashka.items_exchange.rest.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import space.obminyashka.items_exchange.rest.dto.PhoneDto;
 import space.obminyashka.items_exchange.repository.model.Phone;
+import space.obminyashka.items_exchange.rest.dto.PhoneDto;
 
 import java.util.List;
 import java.util.Set;

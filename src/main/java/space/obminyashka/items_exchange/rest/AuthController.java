@@ -23,12 +23,12 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
-import space.obminyashka.items_exchange.rest.response.RefreshTokenResponse;
-import space.obminyashka.items_exchange.rest.request.UserLoginRequest;
-import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
-import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
 import space.obminyashka.items_exchange.rest.exception.RefreshTokenException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.rest.request.UserLoginRequest;
+import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
+import space.obminyashka.items_exchange.rest.response.RefreshTokenResponse;
+import space.obminyashka.items_exchange.rest.response.UserLoginResponse;
 import space.obminyashka.items_exchange.service.AuthService;
 import space.obminyashka.items_exchange.service.JwtTokenService;
 import space.obminyashka.items_exchange.service.MailService;

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND;
 
 @Component
 public class TokenAuthenticator implements AuthenticationEntryPoint {

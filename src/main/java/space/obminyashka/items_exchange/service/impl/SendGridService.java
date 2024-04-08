@@ -13,12 +13,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.rest.exception.EmailSendingException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EmailValidationCodeNotFoundException;
-import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
+import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.MailService;
 import space.obminyashka.items_exchange.service.util.EmailType;
-import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 
 import java.io.IOException;
 import java.time.Duration;
