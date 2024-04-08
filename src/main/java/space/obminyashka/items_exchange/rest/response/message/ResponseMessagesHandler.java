@@ -83,6 +83,7 @@ public class ResponseMessagesHandler {
         public static final String DELETE_ACCOUNT = "account.self.delete.request";
         public static final String ACCOUNT_ACTIVE_AGAIN = "account.made.active.again";
         public static final String EMAIL_CONFIRMED = "email.confirmed";
+        public static final String EMAIL_RESEND_CODE = "email.resend.code";
         public static final String RESET_PASSWORD = "reset.password";
     }
 }
