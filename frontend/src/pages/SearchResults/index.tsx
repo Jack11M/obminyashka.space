@@ -114,6 +114,7 @@ const SearchResults = () => {
               pageSize={adv?.size || 1}
               total={adv.totalElements}
               handleShowMore={handleShowMore}
+              text={getTranslatedText("paginationBtnText.showMore")}
             >
               {adv.content?.length > 0 &&
                 [

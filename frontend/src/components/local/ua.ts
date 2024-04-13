@@ -380,6 +380,9 @@ const ua = {
     booksTitle: "КНИГИ",
     booksSubTitle: "Освітні та дитячі",
   },
+  paginationBtnText: {
+    showMore: "показати ще",
+  },
 };
 
 export default ua;

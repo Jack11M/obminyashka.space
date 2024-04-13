@@ -380,6 +380,9 @@ const en = {
     transportTitle: "Books",
     transportSubTitle: "Educational and children's",
   },
+  paginationBtnText: {
+    showMore: "show more",
+  },
 };
 
 export default en;
