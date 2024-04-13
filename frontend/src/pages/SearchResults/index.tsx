@@ -20,27 +20,28 @@ import * as Styles from "./styles";
 
 const SearchResults = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { search, setIsFetch } = useContext(SearchContext);
   const [adv, setAdv] = useState({});
+  const [pageSize, setPageSize] = useState(1);
+  const [showMore, setShowMore] = useState([]);
+  const { search, setIsFetch } = useContext(SearchContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [disabledPages, setDisabledPages] = useState<number[]>([]);
 
   const searchResults = search || searchParams.get("search");
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
-    const requestData: {
-      [key: string]: string[] | number[] | string | number;
-    } = {};
 
-    requestData.page = currentPage - 1;
-
-    if (searchResults) {
-      requestData.keyword = searchResults;
-    }
-
-    searchParams.forEach((value, key) => {
-      key === "search" ? "" : (requestData[key] = JSON.parse(value));
-    });
+    const requestData = {
+      page: currentPage - 1,
+      size: pageSize,
+      ...(searchResults && { keyword: searchResults }),
+      ...Object.fromEntries(
+        [...searchParams]
+          .filter(([key]) => key !== "search")
+          .map(([key, value]) => [key, JSON.parse(value)])
+      ),
+    };
 
     try {
       const response = await api.search.postFilter(requestData);
@@ -52,12 +53,39 @@ const SearchResults = () => {
     }
   };
 
-  useEffect(() => {
-    getAdv();
-  }, []);
   const moveToProductPage = (id) => {
     navigate(route.productPage.replace(":id", id));
   };
+
+  const handleShowMore = () => {
+    setShowMore([...showMore, ...adv.content]);
+    setDisabledPages([...disabledPages, adv.number + 1]);
+    const nextPage = adv.number + 1;
+    getAdv(nextPage + 1);
+  };
+
+  const handleClear = (event) => {
+    const target = event.target;
+    if (target.closest(".rc-pagination-item")) {
+      setShowMore([]);
+      setDisabledPages([]);
+    }
+  };
+
+  useEffect(() => {
+    const paginationItems = document.querySelectorAll(".rc-pagination-item");
+    paginationItems.forEach((item, index) => {
+      if (disabledPages.includes(index + 1)) {
+        item.classList.add("disabled");
+      } else {
+        item.classList.remove("disabled");
+      }
+    });
+  }, [adv.number]);
+
+  useEffect(() => {
+    getAdv(adv.number + 1);
+  }, [pageSize]);
 
   return (
     <Styles.SearchingResults>
@@ -73,7 +101,7 @@ const SearchResults = () => {
           <Filtration />
         </Styles.FilterContainer>
 
-        <Styles.PaginationContainer>
+        <Styles.PaginationContainer onClick={handleClear}>
           <Title
             style={{ paddingLeft: "0", marginBottom: "50px" }}
             text={getTranslatedText("filterPage.searchResults")}
@@ -85,9 +113,19 @@ const SearchResults = () => {
               current={adv.number + 1}
               pageSize={adv?.size || 1}
               total={adv.totalElements}
+              handleShowMore={handleShowMore}
             >
               {adv.content?.length > 0 &&
-                adv.content.map((item) => (
+                [
+                  ...showMore.filter(
+                    (item) =>
+                      !adv.content.find(
+                        (contentItem) =>
+                          contentItem.advertisementId === item.advertisementId
+                      )
+                  ),
+                  ...adv.content,
+                ].map((item) => (
                   <ProductCard
                     text={item.title}
                     key={item.advertisementId}

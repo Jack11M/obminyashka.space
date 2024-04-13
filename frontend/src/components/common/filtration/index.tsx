@@ -20,8 +20,6 @@ import {
 
 import * as Styles from "./styles";
 
-// import { Select } from "./select-new";
-
 const Filtration = () => {
   const lang = useSelector(getAuthLang);
 
@@ -195,7 +193,7 @@ const Filtration = () => {
                 notCheckbox={category.notCheckbox}
                 deleteOnClose={category.deleteOnClose}
                 setIsActive={() => setOpenCategory(index)}
-                onChange={(values) => onChange(values, true)}
+                onChange={(values: IOnChangeValue) => onChange(values, true)}
                 filteredParameterOptions={filteredParameterOptions}
               />
             );
@@ -225,7 +223,7 @@ const Filtration = () => {
               filtration
               title="region"
               options={regions}
-              onChange={(values) => console.log(values)}
+              onChange={(values: any) => console.log(values)}
             />
           </Styles.SubCategory>
 
@@ -241,7 +239,7 @@ const Filtration = () => {
               filtration
               title="city"
               options={cities}
-              onChange={(values) => console.log(values)}
+              onChange={(values: any) => console.log(values)}
             />
           </Styles.SubCategory>
         </Styles.SubCategories>
@@ -271,7 +269,7 @@ const Filtration = () => {
               {...category}
               key={"filter" + index}
               multiple={category.multiple}
-              onChange={(values) => onChange(values)}
+              onChange={(values: IOnChangeValue) => onChange(values)}
               filteredParameterOptions={filteredParameterOptions}
               disabled={
                 category.disabled === undefined
