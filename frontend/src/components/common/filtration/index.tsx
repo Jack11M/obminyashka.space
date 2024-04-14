@@ -20,7 +20,7 @@ import {
 
 import * as Styles from "./styles";
 
-const Filtration = () => {
+const Filtration = ({ submit }: { submit?: () => void }) => {
   const lang = useSelector(getAuthLang);
 
   const { search } = useContext(SearchContext);
@@ -284,6 +284,7 @@ const Filtration = () => {
       <ButtonNew
         animated
         text="submit"
+        onClick={submit}
         colorType={"blue"}
         styleType={"default"}
       />

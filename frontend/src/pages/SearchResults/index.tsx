@@ -32,7 +32,7 @@ const SearchResults = () => {
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
-    let requestData;
+    let requestData = {};
 
     if (isSubmit) {
       requestData = {
@@ -101,10 +101,16 @@ const SearchResults = () => {
         setTimeout(() => {
           if (disabledPages[0] !== 1) {
             getAdv(disabledPages[0] - 1);
+          } else {
+            getAdv(1);
           }
         }, 0);
       }
     }
+  };
+
+  const submit = () => {
+    setIsSubmit(true);
   };
 
   useEffect(() => {
@@ -120,7 +126,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     getAdv(adv.number + 1);
-  }, []);
+  }, [isSubmit]);
 
   return (
     <Styles.SearchingResults>
@@ -133,7 +139,7 @@ const SearchResults = () => {
             </Styles.Span>
           </Styles.BreadCrumbs>
 
-          <Filtration />
+          <Filtration submit={submit} />
         </Styles.FilterContainer>
 
         <Styles.PaginationContainer onClick={handleClear}>
