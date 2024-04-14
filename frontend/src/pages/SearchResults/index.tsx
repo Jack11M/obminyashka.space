@@ -195,6 +195,12 @@ const SearchResults = () => {
                 ))}
             </PagePagination>
           )}
+
+          <Styles.ToUp
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <Styles.Image />
+          </Styles.ToUp>
         </Styles.PaginationContainer>
       </Styles.SearchingContent>
     </Styles.SearchingResults>

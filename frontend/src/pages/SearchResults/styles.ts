@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 export const SearchingResults = styled.div`
-  padding: 35px 45px 100px;
+  padding: 35px 45px 150px;
   overflow: hidden;
   background-color: #fff;
 `;
@@ -37,7 +37,32 @@ export const Span = styled.span`
 `;
 
 export const PaginationContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+`;
+
+export const ToUp = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 0;
+  bottom: -85px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  box-shadow: 0px 4px 15px 0px rgba(126, 205, 228, 0.5);
+  cursor: pointer;
+`;
+
+export const Image = styled.div`
+  display: inline-block;
+  padding: 7px;
+  margin-top: 8px;
+  border: solid ${({ theme }) => theme.colors.categoryFilter.border};
+  border-width: 0 3px 3px 0;
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
 `;
