@@ -93,7 +93,23 @@ const SearchResults = () => {
       setDisabledPages([]);
     }
 
-    if (target.closest(".rc-pagination-prev")) {
+    if (
+      target.closest(".rc-pagination-next") ||
+      target.closest(".rc-pagination-jump-next")
+    ) {
+      if (disabledPages.length && adv.totalPages === adv.number + 1) {
+        getAdv(adv.totalPages);
+        return;
+      }
+
+      const nextPage = adv.number + 1;
+      getAdv(nextPage + 1);
+    }
+
+    if (
+      target.closest(".rc-pagination-prev") ||
+      target.closest(".rc-pagination-jump-prev")
+    ) {
       if (disabledPages.length) {
         setShowMore([]);
         setDisabledPages([]);
@@ -122,7 +138,7 @@ const SearchResults = () => {
         item.classList.remove("disabled");
       }
     });
-  }, [adv.number]);
+  }, [adv.number, disabledPages]);
 
   useEffect(() => {
     getAdv(adv.number + 1);
@@ -154,7 +170,7 @@ const SearchResults = () => {
               current={adv.number + 1}
               pageSize={adv?.size || 1}
               total={adv.totalElements}
-              handleShowMore={handleShowMore}
+              showMore={handleShowMore}
               text={getTranslatedText("paginationBtnText.showMore")}
             >
               {adv.content?.length > 0 &&
