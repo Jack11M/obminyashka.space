@@ -141,7 +141,7 @@ const SearchResults = () => {
   }, [adv.number, disabledPages]);
 
   useEffect(() => {
-    getAdv(adv.number + 1);
+    getAdv();
   }, [isSubmit]);
 
   return (
