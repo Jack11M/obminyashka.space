@@ -21,8 +21,9 @@ import * as Styles from "./styles";
 const SearchResults = () => {
   const navigate = useNavigate();
   const [adv, setAdv] = useState({});
-  const [pageSize, setPageSize] = useState(1);
   const [showMore, setShowMore] = useState([]);
+  const [dataRequest, setDataRequest] = useState({});
+  const [isSubmit, setIsSubmit] = useState<boolean>(true);
   const { search, setIsFetch } = useContext(SearchContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [disabledPages, setDisabledPages] = useState<number[]>([]);
@@ -31,17 +32,28 @@ const SearchResults = () => {
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
+    let requestData;
 
-    const requestData = {
-      page: currentPage - 1,
-      size: pageSize,
-      ...(searchResults && { keyword: searchResults }),
-      ...Object.fromEntries(
-        [...searchParams]
-          .filter(([key]) => key !== "search")
-          .map(([key, value]) => [key, JSON.parse(value)])
-      ),
-    };
+    if (isSubmit) {
+      requestData = {
+        page: currentPage - 1,
+        size: 1,
+        ...(searchResults && { keyword: searchResults }),
+        ...Object.fromEntries(
+          [...searchParams]
+            .filter(([key]) => key !== "search")
+            .map(([key, value]) => [key, JSON.parse(value)])
+        ),
+      };
+
+      setDataRequest(requestData);
+    }
+
+    if (!isSubmit) {
+      requestData = dataRequest;
+      requestData.page = currentPage - 1;
+      requestData.size = 1;
+    }
 
     try {
       const response = await api.search.postFilter(requestData);
@@ -50,6 +62,7 @@ const SearchResults = () => {
       console.error(err);
     } finally {
       setIsFetch(false);
+      setIsSubmit(false);
     }
   };
 
@@ -58,24 +71,46 @@ const SearchResults = () => {
   };
 
   const handleShowMore = () => {
+    const nextPage = adv.number + 1;
     setShowMore([...showMore, ...adv.content]);
     setDisabledPages([...disabledPages, adv.number + 1]);
-    const nextPage = adv.number + 1;
-    getAdv(nextPage + 1);
+
+    if (nextPage !== adv.totalPages) {
+      getAdv(nextPage + 1);
+    }
   };
 
   const handleClear = (event) => {
     const target = event.target;
-    if (target.closest(".rc-pagination-item")) {
+
+    if (
+      target.closest(".rc-pagination-item") ||
+      target.closest(".rc-pagination-next") ||
+      target.closest(".rc-pagination-jump-prev") ||
+      target.closest(".rc-pagination-jump-next")
+    ) {
       setShowMore([]);
       setDisabledPages([]);
+    }
+
+    if (target.closest(".rc-pagination-prev")) {
+      if (disabledPages.length) {
+        setShowMore([]);
+        setDisabledPages([]);
+
+        setTimeout(() => {
+          if (disabledPages[0] !== 1) {
+            getAdv(disabledPages[0] - 1);
+          }
+        }, 0);
+      }
     }
   };
 
   useEffect(() => {
     const paginationItems = document.querySelectorAll(".rc-pagination-item");
-    paginationItems.forEach((item, index) => {
-      if (disabledPages.includes(index + 1)) {
+    paginationItems.forEach((item) => {
+      if (disabledPages.includes(+item.textContent)) {
         item.classList.add("disabled");
       } else {
         item.classList.remove("disabled");
@@ -85,7 +120,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     getAdv(adv.number + 1);
-  }, [pageSize]);
+  }, []);
 
   return (
     <Styles.SearchingResults>
