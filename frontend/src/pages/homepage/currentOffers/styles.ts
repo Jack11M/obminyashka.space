@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 
 export const ProductSection = styled.section`
-  margin-top: 10px;
+  /* margin-top: 10px; */
+  margin: 10px auto 0;
 `;
 
 export const ProductHeader = styled.div`
@@ -26,12 +27,13 @@ export const ProductHeader = styled.div`
 export const ProductListUl = styled.ul`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 20px;
+  grid-gap: 15px;
 
   ${({ theme }) => css`
     ${theme.responsive.isMobileBG &&
     css`
       grid-template-columns: repeat(3, 1fr);
+      grid-gap: 20px;
     `}
 
     ${theme.responsive.isTablet &&

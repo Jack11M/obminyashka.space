@@ -8,6 +8,7 @@ import {
   showMessage,
   ProductCard,
   PagePagination,
+  Responsive,
 } from "obminyashka-components";
 
 import api from "src/REST/Resources";
@@ -146,24 +147,23 @@ const SearchResults = () => {
 
   return (
     <Styles.SearchingResults>
-      <Styles.SearchingContent>
-        <Styles.FilterContainer>
-          <Styles.BreadCrumbs>
-            {getTranslatedText("filterPage.home")}
-            <Styles.Span>
-              {getTranslatedText("filterPage.searchResults")}
-            </Styles.Span>
-          </Styles.BreadCrumbs>
+      <Styles.BreadCrumbs>
+        {getTranslatedText("filterPage.home")}
+        <Styles.Span>
+          {getTranslatedText("filterPage.searchResults")}
+        </Styles.Span>
 
-          <Filtration submit={submit} />
-        </Styles.FilterContainer>
+        <Title text={getTranslatedText("filterPage.searchResults")} />
+      </Styles.BreadCrumbs>
+
+      <Styles.SearchingContent>
+        <Responsive.Desktop>
+          <Styles.FilterContainer>
+            <Filtration submit={submit} />
+          </Styles.FilterContainer>
+        </Responsive.Desktop>
 
         <Styles.PaginationContainer onClick={handleClear}>
-          <Title
-            style={{ paddingLeft: "0", marginBottom: "50px" }}
-            text={getTranslatedText("filterPage.searchResults")}
-          />
-
           {adv.content && (
             <PagePagination
               onChange={getAdv}

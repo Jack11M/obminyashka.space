@@ -1,13 +1,21 @@
 import styled, { css } from "styled-components";
 
 export const SearchingResults = styled.div`
-  padding: 35px 45px 180px;
+  padding: 35px 0 180px;
   overflow: hidden;
   background-color: #fff;
+
+  ${({ theme }) => css`
+    ${theme.responsive.isTablet &&
+    css`
+      padding: 35px 45px 180px;
+    `}
+  `}
 `;
 
 export const SearchingContent = styled.div`
   display: flex;
+  flex-direction: column;
   flex-direction: row;
   margin-top: 10px;
 
@@ -25,6 +33,7 @@ export const FilterContainer = styled.div`
 `;
 
 export const BreadCrumbs = styled.div`
+  display: flex;
   margin-bottom: 50px;
   color: #8f8f8f;
   font-size: 16px;
