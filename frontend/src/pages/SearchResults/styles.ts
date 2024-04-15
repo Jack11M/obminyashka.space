@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 export const SearchingResults = styled.div`
-  padding: 35px 45px 150px;
+  padding: 35px 45px 180px;
   overflow: hidden;
   background-color: #fff;
 `;

@@ -86,6 +86,7 @@ const SearchResults = () => {
     if (
       target.closest(".rc-pagination-item") ||
       target.closest(".rc-pagination-next") ||
+      target.closest(".rc-pagination-prev") ||
       target.closest(".rc-pagination-jump-prev") ||
       target.closest(".rc-pagination-jump-next")
     ) {
@@ -102,8 +103,10 @@ const SearchResults = () => {
         return;
       }
 
-      const nextPage = adv.number + 1;
-      getAdv(nextPage + 1);
+      if (disabledPages.length) {
+        const nextPage = adv.number + 1;
+        getAdv(nextPage + 1);
+      }
     }
 
     if (
@@ -111,9 +114,6 @@ const SearchResults = () => {
       target.closest(".rc-pagination-jump-prev")
     ) {
       if (disabledPages.length) {
-        setShowMore([]);
-        setDisabledPages([]);
-
         setTimeout(() => {
           if (disabledPages[0] !== 1) {
             getAdv(disabledPages[0] - 1);
