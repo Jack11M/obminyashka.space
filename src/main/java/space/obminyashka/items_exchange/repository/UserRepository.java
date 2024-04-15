@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
@@ -20,6 +21,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<UserAuthProjection> findAuthDataByEmailOrUsername(String email, String username);
 
     Optional<User> findByEmailOrUsername(String username, String email);
+
+    @Transactional
+    @Query("select u.id, u.username, u.email, u.advertisement, u.avatarImage from User u " +
+        " join Advertisement a.user.username = u.username " +
+        " where u.username = :username or u.email = :email")
+    Optional<UserSetDefaultImage> findByUsernameOrEmailForDefaultUser(String username, String email);
 
     Optional<UserProjection> findUserProjectionByEmail(String email);
 

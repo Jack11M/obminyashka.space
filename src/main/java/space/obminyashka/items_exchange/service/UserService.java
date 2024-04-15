@@ -3,6 +3,7 @@ package space.obminyashka.items_exchange.service;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
 import space.obminyashka.items_exchange.rest.request.UserRegistrationRequest;
 import space.obminyashka.items_exchange.rest.response.MyUserInfoView;
@@ -20,6 +21,8 @@ public interface UserService {
      * @return {@link Optional} with the user as the result
      */
     Optional<User> findByUsernameOrEmail(String usernameOrEmail);
+
+    Optional<UserSetDefaultImage> findByUsernameOrEmailForDefaultUser(String usernameOrEmail);
 
     /**
      * Find a user into DB by checking gained param either username or email columns

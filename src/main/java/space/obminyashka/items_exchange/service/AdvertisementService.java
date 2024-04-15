@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
@@ -109,7 +110,8 @@ public interface AdvertisementService {
      * @param owner user to check the advertisement and the image
      * @return result of the check
      */
-    boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, User owner);
+    boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, UserSetDefaultImage owner);
+
 
     /**
      * Returns whether an advertisement with the given id exists.

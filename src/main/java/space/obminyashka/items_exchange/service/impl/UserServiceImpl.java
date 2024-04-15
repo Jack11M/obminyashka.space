@@ -16,6 +16,7 @@ import space.obminyashka.items_exchange.repository.EmailConfirmationCodeReposito
 import space.obminyashka.items_exchange.repository.UserRepository;
 import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.repository.model.User;
+import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 import space.obminyashka.items_exchange.rest.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.rest.mapper.UserMapper;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
@@ -71,6 +72,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail);
+    }
+
+    @Override
+    public Optional<UserSetDefaultImage> findByUsernameOrEmailForDefaultUser(String usernameOrEmail) {
+        return userRepository.findByUsernameOrEmailForDefaultUser(usernameOrEmail, usernameOrEmail);
+
     }
 
     @Override
