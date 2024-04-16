@@ -163,8 +163,8 @@ const SearchResults = () => {
           </Styles.FilterContainer>
         </Responsive.Desktop>
 
-        <Styles.PaginationContainer onClick={handleClear}>
-          {adv.content && (
+        {adv.content && adv.content.length && (
+          <Styles.PaginationContainer onClick={handleClear}>
             <PagePagination
               onChange={getAdv}
               current={adv.number + 1}
@@ -194,14 +194,14 @@ const SearchResults = () => {
                   />
                 ))}
             </PagePagination>
-          )}
 
-          <Styles.ToUp
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            <Styles.Image />
-          </Styles.ToUp>
-        </Styles.PaginationContainer>
+            <Styles.ToUp
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
+              <Styles.Image />
+            </Styles.ToUp>
+          </Styles.PaginationContainer>
+        )}
       </Styles.SearchingContent>
     </Styles.SearchingResults>
   );

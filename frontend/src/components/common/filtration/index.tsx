@@ -284,6 +284,7 @@ const Filtration = ({ submit }: { submit?: () => void }) => {
       <ButtonNew
         animated
         text="submit"
+        height="50px"
         onClick={submit}
         colorType={"blue"}
         styleType={"default"}
