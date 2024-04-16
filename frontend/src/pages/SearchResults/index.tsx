@@ -4,11 +4,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
+  Icon,
   Title,
+  ButtonNew,
+  Responsive,
   showMessage,
   ProductCard,
   PagePagination,
-  Responsive,
 } from "obminyashka-components";
 
 import api from "src/REST/Resources";
@@ -38,7 +40,7 @@ const SearchResults = () => {
     if (isSubmit) {
       requestData = {
         page: currentPage - 1,
-        size: 1,
+        // size: 1,
         ...(searchResults && { keyword: searchResults }),
         ...Object.fromEntries(
           [...searchParams]
@@ -53,7 +55,7 @@ const SearchResults = () => {
     if (!isSubmit) {
       requestData = dataRequest;
       requestData.page = currentPage - 1;
-      requestData.size = 1;
+      // requestData.size = 1;
     }
 
     try {
@@ -147,14 +149,16 @@ const SearchResults = () => {
 
   return (
     <Styles.SearchingResults>
-      <Styles.BreadCrumbs>
-        {getTranslatedText("filterPage.home")}
-        <Styles.Span>
-          {getTranslatedText("filterPage.searchResults")}
-        </Styles.Span>
+      <Responsive.Desktop>
+        <Styles.BreadCrumbs>
+          {getTranslatedText("filterPage.home")}
+          <Styles.Span>
+            {getTranslatedText("filterPage.searchResults")}
+          </Styles.Span>
 
-        <Title text={getTranslatedText("filterPage.searchResults")} />
-      </Styles.BreadCrumbs>
+          <Title text={getTranslatedText("filterPage.searchResults")} />
+        </Styles.BreadCrumbs>
+      </Responsive.Desktop>
 
       <Styles.SearchingContent>
         <Responsive.Desktop>
@@ -165,6 +169,43 @@ const SearchResults = () => {
 
         {adv.content && adv.content.length && (
           <Styles.PaginationContainer onClick={handleClear}>
+            <Responsive.NotDesktop>
+              <Responsive.NotMobile>
+                <Styles.BreadCrumbs>
+                  {getTranslatedText("filterPage.home")}
+                  <Styles.Span>
+                    {getTranslatedText("filterPage.searchResults")}
+                  </Styles.Span>
+
+                  <Title text={getTranslatedText("filterPage.searchResults")} />
+                </Styles.BreadCrumbs>
+              </Responsive.NotMobile>
+
+              <Responsive.Tablet>
+                <Styles.TabletButtonContainer>
+                  <Icon.FilterBtn />
+                </Styles.TabletButtonContainer>
+              </Responsive.Tablet>
+
+              <Responsive.Mobile>
+                <Title
+                  style={{ justifyContent: "start", marginBottom: "40px" }}
+                  text={getTranslatedText("filterPage.searchResults")}
+                />
+
+                <Styles.MobileButtonContainer>
+                  <ButtonNew
+                    height="30px"
+                    width="160px"
+                    onClick={submit}
+                    colorType={"blue"}
+                    styleType={"outline"}
+                    text={getTranslatedText("categoriesTitle.filter")}
+                  />
+                </Styles.MobileButtonContainer>
+              </Responsive.Mobile>
+            </Responsive.NotDesktop>
+
             <PagePagination
               onChange={getAdv}
               current={adv.number + 1}

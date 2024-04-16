@@ -13,9 +13,18 @@ export const SearchingResults = styled.div`
   `}
 `;
 
+export const MobileButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+`;
+
+export const TabletButtonContainer = styled.div`
+  margin-bottom: 30px;
+`;
+
 export const SearchingContent = styled.div`
   display: flex;
-  flex-direction: column;
   flex-direction: row;
   margin-top: 10px;
 

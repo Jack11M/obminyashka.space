@@ -1,7 +1,6 @@
 import styled, { css } from "styled-components";
 
 export const ProductSection = styled.section`
-  /* margin-top: 10px; */
   margin: 10px auto 0;
 `;
 
