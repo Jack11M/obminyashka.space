@@ -6,7 +6,7 @@ export const SearchingResults = styled.div`
   background-color: #fff;
 
   ${({ theme }) => css`
-    ${theme.responsive.isTablet &&
+    ${theme.responsive.isDesktop &&
     css`
       padding: 35px 45px 180px;
     `}
