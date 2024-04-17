@@ -21,6 +21,7 @@ export const MobileButtonContainer = styled.div`
 
 export const TabletButtonContainer = styled.div`
   margin-bottom: 30px;
+  width: fit-content;
 `;
 
 export const SearchingContent = styled.div`

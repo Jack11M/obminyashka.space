@@ -15,6 +15,7 @@ import {
 
 import api from "src/REST/Resources";
 import { route } from "src/routes/routeConstants";
+import { Modal } from "src/pages/SearchResults/modal";
 import { getCity } from "src/Utils/getLocationProperties";
 import { Filtration, SearchContext } from "src/components/common";
 import { getTranslatedText } from "src/components/local/localization";
@@ -26,6 +27,7 @@ const SearchResults = () => {
   const [adv, setAdv] = useState({});
   const [showMore, setShowMore] = useState([]);
   const [dataRequest, setDataRequest] = useState({});
+  const [isModal, setIsModal] = useState<boolean>(false);
   const [isSubmit, setIsSubmit] = useState<boolean>(true);
   const { search, setIsFetch } = useContext(SearchContext);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -129,8 +131,18 @@ const SearchResults = () => {
   };
 
   const submit = () => {
+    setIsModal(false);
     setIsSubmit(true);
   };
+
+  useEffect(() => {
+    if (isModal) {
+      document.body.style.overflow = "hidden";
+      return;
+    }
+
+    document.body.style.overflow = "";
+  }, [isModal]);
 
   useEffect(() => {
     const paginationItems = document.querySelectorAll(".rc-pagination-item");
@@ -149,6 +161,10 @@ const SearchResults = () => {
 
   return (
     <Styles.SearchingResults>
+      <Modal isModal={isModal} setIsModal={setIsModal}>
+        <Filtration submit={submit} />
+      </Modal>
+
       <Responsive.Desktop>
         <Styles.BreadCrumbs>
           {getTranslatedText("filterPage.home")}
@@ -167,7 +183,7 @@ const SearchResults = () => {
           </Styles.FilterContainer>
         </Responsive.Desktop>
 
-        {adv.content && adv.content.length && (
+        {adv.content?.length && (
           <Styles.PaginationContainer onClick={handleClear}>
             <Responsive.NotDesktop>
               <Responsive.NotMobile>
@@ -182,7 +198,7 @@ const SearchResults = () => {
               </Responsive.NotMobile>
 
               <Responsive.Tablet>
-                <Styles.TabletButtonContainer>
+                <Styles.TabletButtonContainer onClick={() => setIsModal(true)}>
                   <Icon.FilterBtn />
                 </Styles.TabletButtonContainer>
               </Responsive.Tablet>
@@ -197,9 +213,9 @@ const SearchResults = () => {
                   <ButtonNew
                     height="30px"
                     width="160px"
-                    onClick={submit}
                     colorType={"blue"}
                     styleType={"outline"}
+                    onClick={() => setIsModal(true)}
                     text={getTranslatedText("categoriesTitle.filter")}
                   />
                 </Styles.MobileButtonContainer>
@@ -214,26 +230,25 @@ const SearchResults = () => {
               showMore={handleShowMore}
               text={getTranslatedText("paginationBtnText.showMore")}
             >
-              {adv.content?.length > 0 &&
-                [
-                  ...showMore.filter(
-                    (item) =>
-                      !adv.content.find(
-                        (contentItem) =>
-                          contentItem.advertisementId === item.advertisementId
-                      )
-                  ),
-                  ...adv.content,
-                ].map((item) => (
-                  <ProductCard
-                    text={item.title}
-                    key={item.advertisementId}
-                    city={getCity(item.location)}
-                    buttonText={getTranslatedText("button.look")}
-                    picture={`data:image/jpeg;base64,${item.image}`}
-                    onClick={() => moveToProductPage(item.advertisementId)}
-                  />
-                ))}
+              {[
+                ...showMore.filter(
+                  (item) =>
+                    !adv.content.find(
+                      (contentItem) =>
+                        contentItem.advertisementId === item.advertisementId
+                    )
+                ),
+                ...adv.content,
+              ].map((item) => (
+                <ProductCard
+                  text={item.title}
+                  key={item.advertisementId}
+                  city={getCity(item.location)}
+                  buttonText={getTranslatedText("button.look")}
+                  picture={`data:image/jpeg;base64,${item.image}`}
+                  onClick={() => moveToProductPage(item.advertisementId)}
+                />
+              ))}
             </PagePagination>
 
             <Styles.ToUp
