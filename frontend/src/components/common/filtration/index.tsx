@@ -10,7 +10,7 @@ import { getAuthLang } from "src/store/auth/slice";
 import { en, ua, getTranslatedText } from "src/components/local";
 
 import { SearchContext } from "..";
-import { ICategories, IOnChangeValue } from "./types";
+import { ICategories, IOnChangeValue, ISelect } from "./types";
 import {
   cities,
   regions,
@@ -20,7 +20,7 @@ import {
 
 import * as Styles from "./styles";
 
-const Filtration = ({ submit }: { submit?: () => void }) => {
+const Filtration = ({ submit, isLoading }: ISelect) => {
   const lang = useSelector(getAuthLang);
 
   const { search } = useContext(SearchContext);
@@ -185,7 +185,6 @@ const Filtration = ({ submit }: { submit?: () => void }) => {
             return (
               <Select
                 {...category}
-                disabled={false}
                 key={"category" + index}
                 isActive={open === index}
                 options={category.options}
@@ -219,6 +218,7 @@ const Filtration = ({ submit }: { submit?: () => void }) => {
         <Styles.SubCategories filtration isOpen={isOpenLocation}>
           <Styles.SubCategory filtration>
             <Select
+              // isLoading
               value="99"
               filtration
               title="region"
@@ -235,6 +235,7 @@ const Filtration = ({ submit }: { submit?: () => void }) => {
             }}
           >
             <Select
+              // isLoading
               value="100"
               filtration
               title="city"
@@ -287,6 +288,7 @@ const Filtration = ({ submit }: { submit?: () => void }) => {
         height="50px"
         onClick={submit}
         colorType={"blue"}
+        disabled={isLoading}
         styleType={"default"}
       />
     </Styles.FiltrationWrapper>

@@ -1,3 +1,8 @@
+export interface ISelect {
+  submit?: () => void;
+  isLoading: boolean;
+}
+
 export interface ISelectOption {
   text: string;
   value?: string;

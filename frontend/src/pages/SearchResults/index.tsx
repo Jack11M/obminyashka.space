@@ -31,6 +31,7 @@ const SearchResults = () => {
   const [isSubmit, setIsSubmit] = useState<boolean>(true);
   const { search, setIsFetch } = useContext(SearchContext);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [disabledPages, setDisabledPages] = useState<number[]>([]);
 
   const searchResults = search || searchParams.get("search");
@@ -61,6 +62,7 @@ const SearchResults = () => {
     }
 
     try {
+      setIsLoading(true);
       const response = await api.search.postFilter(requestData);
       setAdv(response);
     } catch (err) {
@@ -68,6 +70,7 @@ const SearchResults = () => {
     } finally {
       setIsFetch(false);
       setIsSubmit(false);
+      setIsLoading(false);
     }
   };
 
@@ -162,7 +165,7 @@ const SearchResults = () => {
   return (
     <Styles.SearchingResults>
       <Modal isModal={isModal} setIsModal={setIsModal}>
-        <Filtration submit={submit} />
+        <Filtration submit={submit} isLoading={isLoading} />
       </Modal>
 
       <Responsive.Desktop>
@@ -179,7 +182,7 @@ const SearchResults = () => {
       <Styles.SearchingContent>
         <Responsive.Desktop>
           <Styles.FilterContainer>
-            <Filtration submit={submit} />
+            <Filtration submit={submit} isLoading={isLoading} />
           </Styles.FilterContainer>
         </Responsive.Desktop>
 
@@ -224,6 +227,7 @@ const SearchResults = () => {
 
             <PagePagination
               onChange={getAdv}
+              isLoading={isLoading}
               current={adv.number + 1}
               pageSize={adv?.size || 1}
               total={adv.totalElements}
