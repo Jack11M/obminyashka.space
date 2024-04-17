@@ -21,6 +21,7 @@ export const MobileButtonContainer = styled.div`
 
 export const TabletButtonContainer = styled.div`
   margin-bottom: 30px;
+  height: 30px;
   width: fit-content;
 `;
 
@@ -44,11 +45,18 @@ export const FilterContainer = styled.div`
 
 export const BreadCrumbs = styled.div`
   display: flex;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   color: #8f8f8f;
   font-size: 16px;
   line-height: 26px;
   font-family: Roboto;
+
+  ${({ theme }) => css`
+    ${theme.responsive.isDesktop &&
+    css`
+      margin-bottom: 50px;
+    `}
+  `}
 `;
 
 export const Span = styled.span`

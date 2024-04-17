@@ -183,7 +183,7 @@ const SearchResults = () => {
           </Styles.FilterContainer>
         </Responsive.Desktop>
 
-        {adv.content?.length && (
+        {adv.content?.length > 0 && (
           <Styles.PaginationContainer onClick={handleClear}>
             <Responsive.NotDesktop>
               <Responsive.NotMobile>
