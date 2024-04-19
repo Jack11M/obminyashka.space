@@ -10,7 +10,7 @@ import { ModalProvider, SearchProvider } from "src/components/common";
 
 import Routes from "src/routes/routes";
 import { Header } from "src/components/header";
-import { Footer } from "src/components/footerNew";
+import { Footer } from "src/components/footer";
 
 import { Page } from "./styles";
 
