@@ -162,10 +162,12 @@ const SearchResults = () => {
   useEffect(() => {
     if (isSubmit) {
       getAdv();
-      return;
     }
-    getAdv();
   }, [isSubmit]);
+
+  useEffect(() => {
+    getAdv();
+  }, []);
 
   return (
     <Styles.SearchingResults>
