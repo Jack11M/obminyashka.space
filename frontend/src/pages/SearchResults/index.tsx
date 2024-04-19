@@ -28,7 +28,7 @@ const SearchResults = () => {
   const [showMore, setShowMore] = useState([]);
   const [dataRequest, setDataRequest] = useState({});
   const [isModal, setIsModal] = useState<boolean>(false);
-  const [isSubmit, setIsSubmit] = useState<boolean>(true);
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const { search, setIsFetch } = useContext(SearchContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
