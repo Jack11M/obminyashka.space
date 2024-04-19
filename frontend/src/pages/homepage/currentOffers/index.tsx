@@ -35,7 +35,7 @@ const CurrentOffers = () => {
 
   return (
     <>
-      {offers.length && (
+      {offers.length > 0 && (
         <Styles.ProductSection>
           <Styles.ProductHeader>
             <Title

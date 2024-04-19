@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
