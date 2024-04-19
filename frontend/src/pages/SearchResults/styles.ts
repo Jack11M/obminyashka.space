@@ -63,16 +63,23 @@ export const Span = styled.span`
   color: #11171f;
 `;
 
-export const PaginationContainer = styled.div`
+export const PaginationContainer = styled.div<{ isWidth: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+
+  ${({ isWidth }) => css`
+    ${isWidth &&
+    css`
+      width: 90%;
+    `}
+  `}
 `;
 
-export const ToUp = styled.div`
+export const ToUp = styled.div<{ isShowButton?: boolean }>`
   position: absolute;
-  display: flex;
+  display: ${({ isShowButton }) => (isShowButton ? "none" : "flex")};
   justify-content: center;
   align-items: center;
   right: 0;

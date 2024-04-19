@@ -35,6 +35,7 @@ const SearchResults = () => {
   const [disabledPages, setDisabledPages] = useState<number[]>([]);
 
   const searchResults = search || searchParams.get("search");
+  const isShow = adv.content?.length > 0;
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
@@ -43,7 +44,7 @@ const SearchResults = () => {
     if (isSubmit) {
       requestData = {
         page: currentPage - 1,
-        // size: 1,
+        size: 1,
         ...(searchResults && { keyword: searchResults }),
         ...Object.fromEntries(
           [...searchParams]
@@ -58,7 +59,7 @@ const SearchResults = () => {
     if (!isSubmit) {
       requestData = dataRequest;
       requestData.page = currentPage - 1;
-      // requestData.size = 1;
+      requestData.size = 1;
     }
 
     try {
@@ -163,7 +164,6 @@ const SearchResults = () => {
       getAdv();
       return;
     }
-
     getAdv();
   }, [isSubmit]);
 
@@ -191,55 +191,56 @@ const SearchResults = () => {
           </Styles.FilterContainer>
         </Responsive.Desktop>
 
-        {adv.content?.length > 0 && (
-          <Styles.PaginationContainer onClick={handleClear}>
-            <Responsive.NotDesktop>
-              <Responsive.NotMobile>
-                <Styles.BreadCrumbs>
-                  {getTranslatedText("filterPage.home")}
-                  <Styles.Span>
-                    {getTranslatedText("filterPage.searchResults")}
-                  </Styles.Span>
+        <Styles.PaginationContainer isWidth={!isShow} onClick={handleClear}>
+          <Responsive.NotDesktop>
+            <Responsive.NotMobile>
+              <Styles.BreadCrumbs>
+                {getTranslatedText("filterPage.home")}
+                <Styles.Span>
+                  {getTranslatedText("filterPage.searchResults")}
+                </Styles.Span>
 
-                  <Title text={getTranslatedText("filterPage.searchResults")} />
-                </Styles.BreadCrumbs>
-              </Responsive.NotMobile>
+                <Title text={getTranslatedText("filterPage.searchResults")} />
+              </Styles.BreadCrumbs>
+            </Responsive.NotMobile>
 
-              <Responsive.Tablet>
-                <Styles.TabletButtonContainer onClick={() => setIsModal(true)}>
-                  <Icon.FilterBtn />
-                </Styles.TabletButtonContainer>
-              </Responsive.Tablet>
+            <Responsive.Tablet>
+              <Styles.TabletButtonContainer onClick={() => setIsModal(true)}>
+                <Icon.FilterBtn />
+              </Styles.TabletButtonContainer>
+            </Responsive.Tablet>
 
-              <Responsive.Mobile>
-                <Title
-                  style={{ justifyContent: "start", marginBottom: "40px" }}
-                  text={getTranslatedText("filterPage.searchResults")}
+            <Responsive.Mobile>
+              <Title
+                style={{ justifyContent: "center", marginBottom: "40px" }}
+                text={getTranslatedText("filterPage.searchResults")}
+              />
+
+              <Styles.MobileButtonContainer>
+                <ButtonNew
+                  height="30px"
+                  width="160px"
+                  colorType={"blue"}
+                  styleType={"outline"}
+                  onClick={() => setIsModal(true)}
+                  text={getTranslatedText("categoriesTitle.filter")}
                 />
+              </Styles.MobileButtonContainer>
+            </Responsive.Mobile>
+          </Responsive.NotDesktop>
 
-                <Styles.MobileButtonContainer>
-                  <ButtonNew
-                    height="30px"
-                    width="160px"
-                    colorType={"blue"}
-                    styleType={"outline"}
-                    onClick={() => setIsModal(true)}
-                    text={getTranslatedText("categoriesTitle.filter")}
-                  />
-                </Styles.MobileButtonContainer>
-              </Responsive.Mobile>
-            </Responsive.NotDesktop>
-
-            <PagePagination
-              onChange={getAdv}
-              isLoading={isLoading}
-              current={adv.number + 1}
-              pageSize={adv?.size || 1}
-              total={adv.totalElements}
-              showMore={handleShowMore}
-              text={getTranslatedText("paginationBtnText.showMore")}
-            >
-              {[
+          <PagePagination
+            onChange={getAdv}
+            isLoading={isLoading}
+            isShowButtons={!isShow}
+            current={adv.number + 1}
+            pageSize={adv?.size || 1}
+            total={adv.totalElements}
+            showMore={handleShowMore}
+            text={getTranslatedText("paginationBtnText.showMore")}
+          >
+            {isShow &&
+              [
                 ...showMore.filter(
                   (item) =>
                     !adv.content.find(
@@ -258,15 +259,15 @@ const SearchResults = () => {
                   onClick={() => moveToProductPage(item.advertisementId)}
                 />
               ))}
-            </PagePagination>
+          </PagePagination>
 
-            <Styles.ToUp
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
-              <Styles.Image />
-            </Styles.ToUp>
-          </Styles.PaginationContainer>
-        )}
+          <Styles.ToUp
+            isShowButton={!isShow}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <Styles.Image />
+          </Styles.ToUp>
+        </Styles.PaginationContainer>
       </Styles.SearchingContent>
     </Styles.SearchingResults>
   );
