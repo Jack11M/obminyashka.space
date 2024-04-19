@@ -35,6 +35,7 @@ const SearchResults = () => {
   const [disabledPages, setDisabledPages] = useState<number[]>([]);
 
   const searchResults = search || searchParams.get("search");
+  const isCategory = search || searchParams.get("categoryId");
   const isShow = adv.content?.length > 0;
 
   const getAdv = async (page: number) => {
@@ -166,6 +167,10 @@ const SearchResults = () => {
   }, [isSubmit]);
 
   useEffect(() => {
+    if (isCategory) {
+      setIsModal(true);
+    }
+
     getAdv();
   }, []);
 
