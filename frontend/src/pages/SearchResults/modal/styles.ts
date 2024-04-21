@@ -1,4 +1,3 @@
-/* eslint-disable no-empty-pattern */
 import styled, { css } from "styled-components";
 
 export const ModalWrapper = styled.div<{ isModal: boolean }>`

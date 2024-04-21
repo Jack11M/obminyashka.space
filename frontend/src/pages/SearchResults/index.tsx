@@ -167,28 +167,28 @@ const SearchResults = () => {
   }, [isSubmit]);
 
   useEffect(() => {
-    if (isCategory) {
+    if (isCategory && window.innerWidth < 1366) {
       setIsModal(true);
     }
 
     getAdv();
   }, []);
 
+  console.log(isModal);
+
   return (
     <Styles.SearchingResults>
-      <Modal isModal={isModal} setIsModal={setIsModal}>
-        <Filtration submit={submit} isLoading={isLoading} />
-      </Modal>
+      <Responsive.NotDesktop>
+        <Modal isModal={isModal} setIsModal={setIsModal}>
+          <Filtration submit={submit} isLoading={isLoading} />
+        </Modal>
+      </Responsive.NotDesktop>
 
       <Responsive.Desktop>
-        <Styles.BreadCrumbs>
-          {getTranslatedText("filterPage.home")}
-          <Styles.Span>
-            {getTranslatedText("filterPage.searchResults")}
-          </Styles.Span>
-
-          <Title text={getTranslatedText("filterPage.searchResults")} />
-        </Styles.BreadCrumbs>
+        <Title
+          text={getTranslatedText("filterPage.searchResults")}
+          style={{ padding: "0", marginBottom: "70px" }}
+        />
       </Responsive.Desktop>
 
       <Styles.SearchingContent>
@@ -200,18 +200,12 @@ const SearchResults = () => {
 
         <Styles.PaginationContainer isWidth={!isShow} onClick={handleClear}>
           <Responsive.NotDesktop>
-            <Responsive.NotMobile>
-              <Styles.BreadCrumbs>
-                {getTranslatedText("filterPage.home")}
-                <Styles.Span>
-                  {getTranslatedText("filterPage.searchResults")}
-                </Styles.Span>
-
-                <Title text={getTranslatedText("filterPage.searchResults")} />
-              </Styles.BreadCrumbs>
-            </Responsive.NotMobile>
-
             <Responsive.Tablet>
+              <Title
+                text={getTranslatedText("filterPage.searchResults")}
+                style={{ padding: "0", marginBottom: "40px" }}
+              />
+
               <Styles.TabletButtonContainer onClick={() => setIsModal(true)}>
                 <Icon.FilterBtn />
               </Styles.TabletButtonContainer>
@@ -219,8 +213,8 @@ const SearchResults = () => {
 
             <Responsive.Mobile>
               <Title
-                style={{ justifyContent: "center", marginBottom: "40px" }}
                 text={getTranslatedText("filterPage.searchResults")}
+                style={{ justifyContent: "center", marginBottom: "40px" }}
               />
 
               <Styles.MobileButtonContainer>
