@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -14,9 +15,9 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.repository.EmailConfirmationCodeRepository;
 import space.obminyashka.items_exchange.repository.UserRepository;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.EmailConfirmationCode;
 import space.obminyashka.items_exchange.repository.model.User;
-import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 import space.obminyashka.items_exchange.rest.mapper.PhoneMapper;
 import space.obminyashka.items_exchange.rest.mapper.UserMapper;
 import space.obminyashka.items_exchange.rest.request.MyUserInfoUpdateRequest;
@@ -75,9 +76,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserSetDefaultImage> findByUsernameOrEmailForDefaultUser(String usernameOrEmail) {
-        return userRepository.findByUsernameOrEmailForDefaultUser(usernameOrEmail, usernameOrEmail);
-
+    public List<Advertisement> findListAdvertisementByUsername(String username) {
+        return userRepository.findListAdvertisementByUsername(username);
     }
 
     @Override

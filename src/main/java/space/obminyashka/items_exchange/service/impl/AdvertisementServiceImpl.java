@@ -17,7 +17,6 @@ import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.mapper.AdvertisementMapper;
@@ -184,8 +183,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, UserSetDefaultImage owner) {
-        return owner.getAdvertisements().stream()
+    public boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId,
+                                                             List<Advertisement> advertisements) {
+        return advertisements.stream()
                 .filter(adv -> adv.getId().equals(advertisementId))
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.repository.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.repository.projection.UserProjection;
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import space.obminyashka.items_exchange.rest.dto.UserSetDefaultImage;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
@@ -22,11 +22,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmailOrUsername(String username, String email);
 
-    @Transactional
-    @Query("select u.id, u.username, u.email, u.advertisement, u.avatarImage from User u " +
-        " join Advertisement a.user.username = u.username " +
-        " where u.username = :username or u.email = :email")
-    Optional<UserSetDefaultImage> findByUsernameOrEmailForDefaultUser(String username, String email);
+    @Query("select u.advertisements from User u where u.username = :username")
+    List<Advertisement> findListAdvertisementByUsername(String username);
 
     Optional<UserProjection> findUserProjectionByEmail(String email);
 
