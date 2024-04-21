@@ -200,23 +200,22 @@ const SearchResults = () => {
 
         <Styles.PaginationContainer isWidth={!isShow} onClick={handleClear}>
           <Responsive.NotDesktop>
-            <Responsive.Tablet>
-              <Title
-                text={getTranslatedText("filterPage.searchResults")}
-                style={{ padding: "0", marginBottom: "40px" }}
-              />
+            <Title
+              text={getTranslatedText("filterPage.searchResults")}
+              style={{
+                justifyContent: `${window.innerWidth < 768 ? "center" : ""}`,
+                padding: "0",
+                marginBottom: "40px",
+              }}
+            />
 
+            <Responsive.Tablet>
               <Styles.TabletButtonContainer onClick={() => setIsModal(true)}>
                 <Icon.FilterBtn />
               </Styles.TabletButtonContainer>
             </Responsive.Tablet>
 
             <Responsive.Mobile>
-              <Title
-                text={getTranslatedText("filterPage.searchResults")}
-                style={{ justifyContent: "center", marginBottom: "40px" }}
-              />
-
               <Styles.MobileButtonContainer>
                 <ButtonNew
                   height="30px"

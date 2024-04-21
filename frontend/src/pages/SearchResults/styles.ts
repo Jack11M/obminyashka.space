@@ -13,16 +13,16 @@ export const SearchingResults = styled.div`
   `}
 `;
 
-export const MobileButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 50px;
-`;
-
 export const TabletButtonContainer = styled.div`
   margin-bottom: 30px;
   height: 30px;
   width: fit-content;
+`;
+
+export const MobileButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
 `;
 
 export const SearchingContent = styled.div`
@@ -41,22 +41,6 @@ export const SearchingContent = styled.div`
 
 export const FilterContainer = styled.div`
   margin-right: 20px;
-`;
-
-export const BreadCrumbs = styled.div`
-  display: flex;
-  margin-bottom: 30px;
-  color: #8f8f8f;
-  font-size: 16px;
-  line-height: 26px;
-  font-family: Roboto;
-
-  ${({ theme }) => css`
-    ${theme.responsive.isDesktop &&
-    css`
-      margin-bottom: 50px;
-    `}
-  `}
 `;
 
 export const Span = styled.span`
