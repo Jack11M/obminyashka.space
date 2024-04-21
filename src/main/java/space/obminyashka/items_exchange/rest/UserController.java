@@ -172,7 +172,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> resetPassword(@Valid @RequestBody VerifyEmailRequest verifyEmailRequest,
-                                @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
+                                                @Parameter(hidden = true) @RequestHeader(HttpHeaders.HOST) String host) {
         var email = verifyEmailRequest.email();
         var resultMessage = getMessageSource(ResponseMessagesHandler.PositiveMessage.RESET_PASSWORD);
         if (userService.existsByEmail(email)) {
@@ -180,7 +180,7 @@ public class UserController {
             userService.saveCodeForResetPassword(email, codeId);
             return new ResponseEntity<>(resultMessage, HttpStatus.OK);
         }
-        return new ResponseEntity<>(resultMessage, HttpStatus.OK);
+        return new ResponseEntity<>(getMessageSource(RESET_PASSWORD), HttpStatus.OK);
     }
 
     @GetMapping(value = ApiKey.USER_SERVICE_PASSWORD_CONFIRM)

@@ -95,6 +95,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return emailConfirmationCodeRepository.save(confirmationCode).getUser().getId() != null;
     }
 
+    @Override
+    public void resendValidateCode(String email, UUID codeId) {
+        emailConfirmationCodeRepository.saveConfirmationCode(codeId, email,
+                LocalDateTime.now().plusHours(numberOfHoursToKeepEmailConformationCode), EmailType.REGISTRATION.name());
+    }
+
+
     private User userRegistrationDtoToUser(UserRegistrationRequest userRegistrationRequest) {
         return User.builder()
                 .username(userRegistrationRequest.getUsername())

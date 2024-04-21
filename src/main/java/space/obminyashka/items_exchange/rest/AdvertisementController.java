@@ -36,9 +36,10 @@ import space.obminyashka.items_exchange.service.*;
 import java.util.List;
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.repository.enums.Size.*;
+import static space.obminyashka.items_exchange.repository.enums.Size.Clothing;
+import static space.obminyashka.items_exchange.repository.enums.Size.Shoes;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
 
 @RestController
 @Tag(name = "Advertisement")

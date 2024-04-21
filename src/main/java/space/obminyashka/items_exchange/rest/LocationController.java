@@ -19,7 +19,6 @@ import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.rest.request.RawLocation;
 import space.obminyashka.items_exchange.rest.request.RequestLocation;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;

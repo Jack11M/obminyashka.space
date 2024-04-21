@@ -8,7 +8,8 @@ import lombok.*;
 
 import java.util.UUID;
 
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_NOT_NULL;
 
 @NoArgsConstructor
 @AllArgsConstructor

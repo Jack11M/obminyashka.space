@@ -1,8 +1,8 @@
 package space.obminyashka.items_exchange.service;
 
+import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.request.RawLocation;
-import space.obminyashka.items_exchange.repository.model.Location;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 
 import java.io.IOException;

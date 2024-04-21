@@ -1,13 +1,11 @@
 package space.obminyashka.items_exchange.service;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.stereotype.Service;
 import space.obminyashka.items_exchange.repository.RoleRepository;
 import space.obminyashka.items_exchange.repository.model.Role;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

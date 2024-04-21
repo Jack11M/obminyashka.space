@@ -1,9 +1,9 @@
 package space.obminyashka.items_exchange.repository.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 import space.obminyashka.items_exchange.repository.enums.Gender;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.UUID;
 
