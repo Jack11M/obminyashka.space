@@ -193,8 +193,8 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
                 notCheckbox={category.notCheckbox}
                 deleteOnClose={category.deleteOnClose}
                 setIsActive={() => setOpenCategory(index)}
-                onChange={(values: IOnChangeValue) => onChange(values, true)}
                 filteredParameterOptions={filteredParameterOptions}
+                onChange={(values: IOnChangeValue) => onChange(values, true)}
               />
             );
           })}
