@@ -96,6 +96,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
         delete currentParams[values.value];
       }
     }
+
     setSearchParams(currentParams);
   };
 
@@ -271,8 +272,8 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
               {...category}
               key={"filter" + index}
               multiple={category.multiple}
-              onChange={(values: IOnChangeValue) => onChange(values)}
               filteredParameterOptions={filteredParameterOptions}
+              onChange={(values: IOnChangeValue) => onChange(values)}
               disabled={
                 category.disabled === undefined
                   ? undefined

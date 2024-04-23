@@ -174,8 +174,6 @@ const SearchResults = () => {
     getAdv();
   }, []);
 
-  console.log(isModal);
-
   return (
     <Styles.SearchingResults>
       <Responsive.NotDesktop>
