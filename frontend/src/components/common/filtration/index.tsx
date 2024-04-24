@@ -3,7 +3,7 @@
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { showMessage, ButtonNew, Select } from "obminyashka-components";
+import { showMessage, ButtonNew } from "obminyashka-components";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
@@ -20,6 +20,7 @@ import {
 } from "./mock";
 
 import * as Styles from "./styles";
+import { Select } from "./select-new";
 
 const Filtration = ({ submit, isLoading }: ISelect) => {
   const lang = useSelector(getAuthLang);
@@ -51,10 +52,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   const currentParams = Object.fromEntries(searchParams);
 
   const setOpenCategory = (id: number) => {
-    if (open === id) {
-      return;
-    }
-
+    if (open === id) return;
     setOpen(id);
   };
 
@@ -64,37 +62,26 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
     if (isCategory) {
       currentParams.categoryId = values.value;
 
-      if (subCategories.length > 0) {
+      if (subCategories.length > 0)
         currentParams.subcategoriesIdValues = JSON.stringify(
           subCategories.map((category) => Number(category))
         );
-      }
 
-      if (subCategories.length === 0) {
+      if (subCategories.length === 0)
         delete currentParams.subcategoriesIdValues;
-      }
 
-      if (values.value !== "2") {
-        delete currentParams.shoesSizes;
-      }
-
-      if (values.value !== "1") {
-        delete currentParams.clothingSizes;
-      }
+      if (values.value !== "2") delete currentParams.shoesSizes;
+      if (values.value !== "1") delete currentParams.clothingSizes;
     }
 
     if (!isCategory) {
-      if (values.value === "gender" && subCategories.length > 0) {
+      if (values.value === "gender" && subCategories.length > 0)
         currentParams[values.value] = JSON.stringify(subCategories[0]);
-      }
 
-      if (values.value !== "gender" && subCategories.length > 0) {
+      if (values.value !== "gender" && subCategories.length > 0)
         currentParams[values.value] = JSON.stringify(subCategories);
-      }
 
-      if (subCategories.length === 0) {
-        delete currentParams[values.value];
-      }
+      if (subCategories.length === 0) delete currentParams[values.value];
     }
 
     setSearchParams(currentParams);
@@ -103,7 +90,6 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   useEffect(() => {
     if (!search.length) {
       delete currentParams.search;
-
       setSearchParams(currentParams);
     }
   }, [search]);
@@ -112,13 +98,10 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
     const openCategory = searchParams.get("categoryId");
     const searchResults = search || searchParams.get("search");
 
-    if (openCategory) {
-      setOpenCategory(+openCategory - 1);
-    }
+    if (openCategory) setOpenCategory(+openCategory - 1);
 
     if (searchResults) {
       const newParams = { ...currentParams, search: searchResults };
-
       setSearchParams(newParams);
     }
 
@@ -126,9 +109,10 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
       [key: string]: string[] | number[] | string | number;
     } = {};
 
-    searchParams.forEach((value, key) => {
-      paramsForFiltering[key] = key === "search" ? value : JSON.parse(value);
-    });
+    searchParams.forEach(
+      (value, key) =>
+        (paramsForFiltering[key] = key === "search" ? value : JSON.parse(value))
+    );
 
     setParams(paramsForFiltering);
 

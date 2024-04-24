@@ -34,9 +34,9 @@ const SearchResults = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [disabledPages, setDisabledPages] = useState<number[]>([]);
 
+  const isShow = adv.content?.length > 0;
   const searchResults = search || searchParams.get("search");
   const isCategory = search || searchParams.get("categoryId");
-  const isShow = adv.content?.length > 0;
 
   const getAdv = async (page: number) => {
     const currentPage = page ?? 1;
@@ -85,9 +85,7 @@ const SearchResults = () => {
     setShowMore([...showMore, ...adv.content]);
     setDisabledPages([...disabledPages, adv.number + 1]);
 
-    if (nextPage !== adv.totalPages) {
-      getAdv(nextPage + 1);
-    }
+    if (nextPage !== adv.totalPages) getAdv(nextPage + 1);
   };
 
   const handleClear = (event) => {
@@ -125,11 +123,8 @@ const SearchResults = () => {
     ) {
       if (disabledPages.length) {
         setTimeout(() => {
-          if (disabledPages[0] !== 1) {
-            getAdv(disabledPages[0] - 1);
-          } else {
-            getAdv(1);
-          }
+          if (disabledPages[0] !== 1) getAdv(disabledPages[0] - 1);
+          else getAdv(1);
         }, 0);
       }
     }
@@ -141,35 +136,25 @@ const SearchResults = () => {
   };
 
   useEffect(() => {
-    if (isModal) {
-      document.body.style.overflow = "hidden";
-      return;
-    }
-
-    document.body.style.overflow = "";
+    if (isModal) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
   }, [isModal]);
 
   useEffect(() => {
     const paginationItems = document.querySelectorAll(".rc-pagination-item");
     paginationItems.forEach((item) => {
-      if (disabledPages.includes(+item.textContent)) {
+      if (disabledPages.includes(+item.textContent))
         item.classList.add("disabled");
-      } else {
-        item.classList.remove("disabled");
-      }
+      else item.classList.remove("disabled");
     });
   }, [adv.number, disabledPages]);
 
   useEffect(() => {
-    if (isSubmit) {
-      getAdv();
-    }
+    if (isSubmit) getAdv();
   }, [isSubmit]);
 
   useEffect(() => {
-    if (isCategory && window.innerWidth < 1366) {
-      setIsModal(true);
-    }
+    if (isCategory && window.innerWidth < 1366) setIsModal(true);
 
     getAdv();
   }, []);
@@ -216,8 +201,8 @@ const SearchResults = () => {
             <Responsive.Mobile>
               <Styles.MobileButtonContainer>
                 <ButtonNew
-                  height="30px"
-                  width="160px"
+                  height="50px"
+                  width="225px"
                   colorType={"blue"}
                   styleType={"outline"}
                   onClick={() => setIsModal(true)}

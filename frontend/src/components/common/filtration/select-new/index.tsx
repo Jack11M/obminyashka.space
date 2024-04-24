@@ -41,16 +41,9 @@ export const Select = ({
   const ref = useRef<HTMLDivElement | null>(null);
 
   const setOpen = () => {
-    if (isDisabled) {
-      return;
-    }
-
-    if (setIsActive) {
-      setIsActive();
-      return;
-    }
-
-    setIsOpen(!isOpen);
+    if (isDisabled) return;
+    if (setIsActive) setIsActive();
+    else setIsOpen(!isOpen);
   };
 
   const setOptions = (option: ISelectOption) => {
@@ -63,23 +56,17 @@ export const Select = ({
       return;
     }
 
-    if (!multiple) {
-      setChosenOptions([option]);
-      return;
-    }
-
-    if (include) {
-      setChosenOptions(chosenOptions.filter((el) => el.text !== option.text));
-    }
-
-    if (!include) {
-      setChosenOptions([...chosenOptions, option]);
-    }
+    if (!multiple) setChosenOptions([option]);
+    else
+      setChosenOptions(
+        include
+          ? chosenOptions.filter((el) => el.text !== option.text)
+          : [...chosenOptions, option]
+      );
   };
 
-  const onChangeFiltration = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeFiltration = (e: ChangeEvent<HTMLInputElement>) =>
     setFiltrationValue(e.target.value);
-  };
 
   const onBlur = () => {
     if (filtration) {
@@ -108,13 +95,9 @@ export const Select = ({
       setIsOpen(false);
     }
 
-    if (isActive || isOpen) {
-      return;
-    }
-
-    if (deleteOnClose && chosenOptions.length && (!isActive || !isOpen)) {
+    if (isActive || isOpen) return;
+    if (deleteOnClose && chosenOptions.length && (!isActive || !isOpen))
       setChosenOptions([]);
-    }
   };
 
   useOutsideClick(onBlur, ref);
@@ -126,18 +109,13 @@ export const Select = ({
       !chosenOptions.length
     ) {
       setOpen();
-
       setChosenOptions(filteredParameterOptions);
     }
   }, [filteredParameterOptions]);
 
   useEffect(() => {
-    if ((isOpen || isActive) && !disabled) {
-      onChange({
-        value: value ? value : "",
-        chosenOptions: chosenOptions,
-      });
-    }
+    if ((isOpen || isActive) && !disabled)
+      onChange({ value: value || "", chosenOptions });
   }, [chosenOptions, isActive, isOpen]);
 
   useEffect(() => {
