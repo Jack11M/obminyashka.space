@@ -3,7 +3,7 @@
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { showMessage, ButtonNew } from "obminyashka-components";
+import { showMessage, ButtonNew, Select } from "obminyashka-components";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
@@ -20,7 +20,6 @@ import {
 } from "./mock";
 
 import * as Styles from "./styles";
-import { Select } from "./select-new";
 
 const Filtration = ({ submit, isLoading }: ISelect) => {
   const lang = useSelector(getAuthLang);
