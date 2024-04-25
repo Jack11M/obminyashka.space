@@ -28,7 +28,7 @@ const SearchResults = () => {
   const [showMore, setShowMore] = useState([]);
   const [dataRequest, setDataRequest] = useState({});
   const [isModal, setIsModal] = useState<boolean>(false);
-  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const [isSubmit, setIsSubmit] = useState<boolean>(true);
   const { search, setIsFetch } = useContext(SearchContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -45,7 +45,7 @@ const SearchResults = () => {
     if (isSubmit) {
       requestData = {
         page: currentPage - 1,
-        size: 1,
+        size: 4,
         ...(searchResults && { keyword: searchResults }),
         ...Object.fromEntries(
           [...searchParams]
@@ -60,7 +60,7 @@ const SearchResults = () => {
     if (!isSubmit) {
       requestData = dataRequest;
       requestData.page = currentPage - 1;
-      requestData.size = 1;
+      requestData.size = 4;
     }
 
     try {
@@ -71,8 +71,8 @@ const SearchResults = () => {
       console.error(err);
     } finally {
       setIsFetch(false);
-      setIsSubmit(false);
       setIsLoading(false);
+      isSubmit && setIsSubmit(false);
     }
   };
 
@@ -150,14 +150,12 @@ const SearchResults = () => {
   }, [adv.number, disabledPages]);
 
   useEffect(() => {
-    if (isSubmit) getAdv();
-  }, [isSubmit]);
+    if (isCategory && window.innerWidth < 1366) setIsModal(true);
+  }, []);
 
   useEffect(() => {
-    if (isCategory && window.innerWidth < 1366) setIsModal(true);
-
-    getAdv();
-  }, []);
+    if (isSubmit) getAdv();
+  }, [isSubmit]);
 
   return (
     <Styles.SearchingResults>
