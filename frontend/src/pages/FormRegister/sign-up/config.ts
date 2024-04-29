@@ -13,6 +13,13 @@ export const validationSchema = Yup.object().shape({
   email: Yup.string()
     .required(getTranslatedText("errors.requireField"))
     .matches(EMAIL_REG_EXP, getTranslatedText("errors.invalidEmailFormat"))
+    .test(
+      "no-cyrillic",
+      getTranslatedText("errors.invalidEmailFormat"),
+      (value) => {
+        return !/[а-яА-ЯёЁ]/.test(value || "");
+      }
+    )
     .matches(NUMBER_OF_CHARACTERS, getTranslatedText("errors.max129"))
     .matches(NO_SPACE, getTranslatedText("errors.noSpace"))
     .default(() => ""),
