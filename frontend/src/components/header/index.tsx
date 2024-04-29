@@ -44,6 +44,8 @@ const Header = () => {
 
   const { search, setSearch, setIsFetch } = useContext(SearchContext);
 
+  const isSearchResults = pathname?.replace("/", "") === route.SearchResults;
+
   const handleSelected = (langValue: { lang: string }) => {
     dispatch(setLanguage(langValue.lang));
     navigate(0);
@@ -94,8 +96,8 @@ const Header = () => {
 
           <CategoryButton
             categoryInfo={categories}
+            isDisabled={isSearchResults}
             textBtn={getTranslatedText("header.categories")}
-            isDisabled={pathname?.replace("/", "") === route.SearchResults}
           />
 
           <Responsive.Desktop>
