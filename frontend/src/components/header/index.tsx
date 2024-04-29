@@ -44,7 +44,7 @@ const Header = () => {
 
   const { search, setSearch, setIsFetch } = useContext(SearchContext);
 
-  // const isSearchResults = pathname?.replace("/", "") === route.SearchResults;
+  const isSearchResults = pathname?.replace("/", "") === route.SearchResults;
 
   const handleSelected = (langValue: { lang: string }) => {
     dispatch(setLanguage(langValue.lang));
@@ -60,7 +60,7 @@ const Header = () => {
     currentParams.search = search;
     setSearchParams(currentParams);
 
-    if (pathname?.replace("/", "") !== route.SearchResults) {
+    if (!isSearchResults) {
       navigate(route.SearchResults);
     }
   };
@@ -96,7 +96,7 @@ const Header = () => {
 
           <CategoryButton
             categoryInfo={categories}
-            // isDisabled={isSearchResults}
+            isDisabled={isSearchResults}
             textBtn={getTranslatedText("header.categories")}
           />
 
