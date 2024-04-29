@@ -167,8 +167,8 @@ const SearchResults = () => {
 
       <Responsive.Desktop>
         <Title
-          text={getTranslatedText("filterPage.searchResults")}
           style={{ padding: "0", marginBottom: "70px" }}
+          text={getTranslatedText("filterPage.searchResults")}
         />
       </Responsive.Desktop>
 
@@ -184,9 +184,9 @@ const SearchResults = () => {
             <Title
               text={getTranslatedText("filterPage.searchResults")}
               style={{
-                justifyContent: `${window.innerWidth < 768 ? "center" : ""}`,
                 padding: "0",
                 marginBottom: "40px",
+                justifyContent: `${window.innerWidth < 768 ? "center" : ""}`,
               }}
             />
 
