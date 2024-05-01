@@ -204,8 +204,8 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
           <Styles.SubCategory filtration>
             <Select
               // isLoading
-              value="99"
               filtration
+              value="region"
               title="region"
               options={regions}
               onChange={(values: any) => console.log(values)}
@@ -221,8 +221,8 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
           >
             <Select
               // isLoading
-              value="100"
               filtration
+              value="city"
               title="city"
               options={cities}
               onChange={(values: any) => console.log(values)}
