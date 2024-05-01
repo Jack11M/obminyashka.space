@@ -112,18 +112,6 @@ const AboutMyself = () => {
                     <Styles.WrapperInputAddPhones
                       key={String(`phones[${index}]`)}
                     >
-                      {/* <InputField
-                        type="tel"
-                        labelColor="black"
-                        inputMaxWidth="588px"
-                        inputFlexDirection="row"
-                        name={`phones[${index}]`}
-                        wrapperInputErrorWidth="415px"
-                        placeholder="+380(12)345-67-89"
-                        inputJustifyContent="space-between"
-                        label={getTranslatedText("ownInfo.phone")}
-                      /> */}
-
                       <Styles.InputPhonesContainer>
                         <label htmlFor={`phones[${index}]`}>
                           {getTranslatedText("ownInfo.phone")}
