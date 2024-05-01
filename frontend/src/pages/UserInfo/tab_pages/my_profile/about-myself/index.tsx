@@ -124,14 +124,21 @@ const AboutMyself = () => {
                         label={getTranslatedText("ownInfo.phone")}
                       /> */}
 
-                      <PhoneInput
-                        country="ua"
-                        name={`phones[${index}]`}
-                        value={values.phones[index]}
-                        onChange={(phone) => {
-                          setFieldValue(`phones[${index}]`, phone);
-                        }}
-                      />
+                      <Styles.InputPhonesContainer>
+                        <label htmlFor={`phones[${index}]`}>
+                          {getTranslatedText("ownInfo.phone")}
+                        </label>
+
+                        <PhoneInput
+                          country="ua"
+                          enableSearch
+                          name={`phones[${index}]`}
+                          value={values.phones[index]}
+                          onChange={(phone) => {
+                            setFieldValue(`phones[${index}]`, phone);
+                          }}
+                        />
+                      </Styles.InputPhonesContainer>
 
                       {lastIndex === index && maxArray && (
                         <Styles.WrapperAddButton>

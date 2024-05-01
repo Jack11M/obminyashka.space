@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const wrapperInputFlexColumnGap = `
   display: flex;
@@ -22,6 +22,23 @@ export const WrapperInputAddPhones = styled.div`
   position: relative;
 
   ${wrapperInputFlexColumnGap};
+`;
+
+export const InputPhonesContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .react-tel-input {
+    width: fit-content;
+    border-radius: 0;
+  }
+
+  .form-control {
+    height: 40px;
+    width: 415px;
+  }
 `;
 
 export const WrapperAddButton = styled.div`
