@@ -98,11 +98,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
         PageRequest pageRequest = PageRequest.of(preparePage(request), request.getSize());
-        Page<Advertisement> advertisements = isCategoryIdPresent(request.getCategoryId())
-                ? advertisementRepository.findAdvertisementByCategoryId(request.getCategoryId(), pageRequest)
-                : advertisementRepository.findAll(request.toPredicate(), pageRequest);
-
-        return advertisements.map(this::buildAdvertisementTitle);
+        return advertisementRepository.findAll(request.toPredicate(), pageRequest)
+                .map(this::buildAdvertisementTitle);
     }
 
     private int preparePage(AdvertisementFilterRequest request) {
@@ -118,10 +115,6 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
         int bound = (int) (totalRecords / request.getSize());
         return bound > 0 ? random.nextInt(bound) : 0;
-    }
-
-    private boolean isCategoryIdPresent(Long categoryId) {
-        return categoryId != null && categoryId > 0;
     }
 
     @Override
