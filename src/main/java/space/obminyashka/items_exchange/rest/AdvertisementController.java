@@ -93,7 +93,6 @@ public class AdvertisementController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")})
     @ResponseStatus(HttpStatus.OK)
     public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(@Valid @RequestBody AdvertisementFilterRequest advertisementFilterRequest) {
-        log.info("[filter] {}", advertisementFilterRequest);
         Page<AdvertisementTitleView> advertisements = advertisementService.filterAdvertisementBySearchParameters(advertisementFilterRequest);
         log.info("[filter] Response count: {}", advertisements.getTotalElements());
         return advertisements;
