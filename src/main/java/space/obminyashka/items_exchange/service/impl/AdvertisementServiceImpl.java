@@ -194,8 +194,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, User owner) {
-        return owner.getAdvertisements().stream()
+    public boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId,
+                                                             List<Advertisement> advertisements) {
+        return advertisements.stream()
                 .filter(adv -> adv.getId().equals(advertisementId))
                 .map(Advertisement::getImages)
                 .flatMap(Collection::stream)

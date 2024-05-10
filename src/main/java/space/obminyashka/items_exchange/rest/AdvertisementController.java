@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
@@ -179,15 +180,18 @@ public class AdvertisementController {
             @Parameter(name = "advertisementId", description = "ID of existed advertisement") @PathVariable UUID advertisementId,
             @Parameter(name = "imageId", description = "ID of existed image") @PathVariable UUID imageId,
             @Parameter(hidden = true) Authentication authentication) throws BadRequestException {
-        User owner = getUser(authentication.getName());
-        if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
+        List<Advertisement> listAdvertisementByUser = getListAdvertisementByUser(authentication.getName());
+        if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, listAdvertisementByUser)) {
             throw new BadRequestException(getMessageSource(
                     ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_IMAGE_ID_NOT_FOUND));
         }
-        owner.getAdvertisements().parallelStream()
-                .filter(advertisement -> advertisement.getId().equals(advertisementId))
-                .findFirst()
-                .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId));
+
+        Advertisement advertisementByUser = listAdvertisementByUser.parallelStream()
+            .filter(advertisement -> advertisement.getId().equals(advertisementId))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Can`t find advertisement by id"));
+
+        advertisementService.setDefaultImage(advertisementByUser, imageId);
     }
 
     private void validateInternalEntityIds(long subcategoryId, UUID locationId) throws IllegalIdentifierException {
@@ -207,5 +211,9 @@ public class AdvertisementController {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(getMessageSource(
                         ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
+    }
+
+    private List<Advertisement> getListAdvertisementByUser(String usernameOrEmail) {
+        return userService.findListAdvertisementByUsername(usernameOrEmail);
     }
 }
