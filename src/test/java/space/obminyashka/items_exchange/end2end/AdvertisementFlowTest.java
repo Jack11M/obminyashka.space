@@ -20,15 +20,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
 import space.obminyashka.items_exchange.repository.AdvertisementRepository;
-import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
-import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.repository.enums.AgeRange;
 import space.obminyashka.items_exchange.repository.enums.Gender;
 import space.obminyashka.items_exchange.repository.enums.Season;
 import space.obminyashka.items_exchange.repository.enums.Size;
+import space.obminyashka.items_exchange.rest.basic.BasicControllerTest;
+import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
+import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
+import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
+import space.obminyashka.items_exchange.rest.exception.bad_request.IllegalIdentifierException;
 import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.util.data_producer.AdvertisementModificationDtoProducer;
 
@@ -42,15 +43,31 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV_DEFAULT_IMAGE;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV_FILTER;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV_ID;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV_TOTAL;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.BLANK_DESCRIPTION;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.BLANK_TOPIC;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.BLANK_WISHES_TO_EXCHANGE;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SUBCATEGORY_COMBINATION;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE_COMBINATION;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SUBCATEGORY_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 import static space.obminyashka.items_exchange.util.JsonConverter.jsonToObject;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
 
 @SpringBootTest
 @DBRider
@@ -121,6 +138,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
         UUID excludeAdvertisementId = UUID.fromString("65e3ee49-5927-40be-aafd-0461ce45f295");
         final var advertisementFilterRequest = new AdvertisementFilterRequest()
                 .setExcludeAdvertisementId(excludeAdvertisementId)
+                .setCategoryId(1L)
                 .setSubcategoriesIdValues(List.of(1L));
 
         sendDtoAndGetResultAction(post(ADV_FILTER), advertisementFilterRequest, status().isOk())
@@ -173,6 +191,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByNecessaryParameters() throws Exception {
         final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setCategoryId(1L)
                 .setSubcategoriesIdValues(List.of(1L));
         advertisementFilterRequest.setClothingSizes(Set.of(Size.Clothing.FIFTY_SEVEN_2_SIXTY_TWO.getRange()));
 
@@ -185,6 +204,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldReturnAdvertisementsByAllParameters() throws Exception {
         final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setCategoryId(1L)
                 .setSubcategoriesIdValues(List.of(1L))
                 .setLocationId(UUID.fromString("2c5467f3-b7ee-48b1-9451-7028255b757b"))
                 .setGender(Gender.FEMALE)
@@ -202,6 +222,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     void findAdvertisementBySearchParameters_shouldBeThrownValidationException_WhenSizeFromIncorrectSubcategoryClothes() throws Exception {
         final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setCategoryId(1L)
                 .setSubcategoriesIdValues(List.of(1L));
 
         advertisementFilterRequest.setShoesSizes(Set.of(Size.Shoes.ELEVEN_POINT_FIVE.getLength()));
@@ -211,6 +232,22 @@ class AdvertisementFlowTest extends BasicControllerTest {
         assertThat(mvcResult.getResolvedException())
                 .isInstanceOf(MethodArgumentNotValidException.class)
                 .hasMessageContaining(getMessageSource(INVALID_SIZE_COMBINATION));
+    }
+
+    @Test
+    @WithMockUser(username = "admin")
+    @DataSet("database_init.yml")
+    void findAdvertisementBySearchParameters_shouldBeThrownBadRequestException_WhenSubcategoryNotBelongCategory() throws Exception {
+        final var advertisementFilterRequest = new AdvertisementFilterRequest()
+                .setCategoryId(2L)
+                .setSubcategoriesIdValues(List.of(14L, 1L, 3L));
+        advertisementFilterRequest.setShoesSizes(Set.of(Size.Shoes.ELEVEN_POINT_FIVE.getLength()));
+
+        MvcResult mvcResult = sendDtoAndGetMvcResult(post(ADV_FILTER), advertisementFilterRequest, status().isBadRequest());
+        String parametrizedMessageSource = getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION, "[1, 3]", "2");
+        assertThat(mvcResult.getResolvedException())
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining(parametrizedMessageSource);
     }
 
     @Test
