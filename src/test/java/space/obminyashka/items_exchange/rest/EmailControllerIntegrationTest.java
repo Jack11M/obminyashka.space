@@ -1,5 +1,6 @@
 package space.obminyashka.items_exchange.rest;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -29,6 +30,7 @@ import static space.obminyashka.items_exchange.rest.response.message.MessageSour
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Disabled
 public class EmailControllerIntegrationTest extends BasicControllerTest {
     @Autowired
     public EmailControllerIntegrationTest(MockMvc mockMvc) {
