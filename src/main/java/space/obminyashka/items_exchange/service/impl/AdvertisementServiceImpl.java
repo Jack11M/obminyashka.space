@@ -18,7 +18,6 @@ import space.obminyashka.items_exchange.repository.model.Image;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
 import space.obminyashka.items_exchange.rest.exception.IllegalOperationException;
-import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.mapper.AdvertisementMapper;
 import space.obminyashka.items_exchange.rest.mapper.CategoryMapper;
@@ -42,7 +41,6 @@ import static java.util.function.Predicate.not;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_NOT_EXISTED_ID;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.FAVORITE_ADVERTISEMENT_NOT_FOUND;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_CATEGORY_SUBCATEGORY_COMBINATION;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.USER_NOT_OWNER;
 
 
@@ -98,27 +96,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     }
 
     @Override
-    public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) throws BadRequestException {
-        validateAllSubcategoriesExistsInCategory(request.getCategoryId(), request.getSubcategoriesIdValues());
+    public Page<AdvertisementTitleView> filterAdvertisementBySearchParameters(AdvertisementFilterRequest request) {
         PageRequest pageRequest = PageRequest.of(preparePage(request), request.getSize());
         return advertisementRepository.findAll(request.toPredicate(), pageRequest)
                 .map(this::buildAdvertisementTitle);
-    }
-
-    private void validateAllSubcategoriesExistsInCategory(Long categoryId, List<Long> subcategoriesIdValues) throws BadRequestException {
-        if (categoryId == null && !subcategoriesIdValues.isEmpty()) {
-            return;
-        }
-        List<Long> existingSubcategoriesId = subcategoryService.findExistingIdForCategoryId(
-                categoryId, subcategoriesIdValues);
-        List<Long> notIncludedSubcategories = subcategoriesIdValues.stream()
-                .filter(subcategory -> !existingSubcategoriesId.contains(subcategory))
-                .toList();
-
-        if (!notIncludedSubcategories.isEmpty()) {
-            throw new BadRequestException(getParametrizedMessageSource(INVALID_CATEGORY_SUBCATEGORY_COMBINATION,
-                    notIncludedSubcategories, categoryId));
-        }
     }
 
     private int preparePage(AdvertisementFilterRequest request) {
