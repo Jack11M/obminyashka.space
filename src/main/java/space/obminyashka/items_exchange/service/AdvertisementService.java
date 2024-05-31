@@ -106,10 +106,11 @@ public interface AdvertisementService {
      * Check if a user owns such advertisement, and it has selected image
      * @param advertisementId id of selected advertisement to check
      * @param imageId id of an image to check into the advertisement
-     * @param owner user to check the advertisement and the image
+     * @param advertisements check the advertisement and the image
      * @return result of the check
      */
-    boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId, User owner);
+    boolean isUserHasAdvertisementAndItHasImageWithId(UUID advertisementId, UUID imageId,
+                                                        List<Advertisement> advertisements);
 
     /**
      * Returns whether an advertisement with the given id exists.

@@ -103,6 +103,7 @@ public class AdvertisementFilterRequest {
                 .add(extractShoesSizeLengths(shoesSizes), QAdvertisement.advertisement.size::in)
                 .add(age, QAdvertisement.advertisement.age::in)
                 .add(subcategoriesIdValues, QAdvertisement.advertisement.subcategory.id::in)
+                .add(categoryId, QAdvertisement.advertisement.subcategory.category.id::eq)
                 .add(keyword, this::createKeywordCondition)
                 .buildAnd();
     }
