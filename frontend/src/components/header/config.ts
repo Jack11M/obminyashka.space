@@ -4,35 +4,35 @@ import { getTranslatedText } from "../local";
 
 export const categories = [
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=1",
     text: getTranslatedText("header.clothes"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=2",
     text: getTranslatedText("header.shoes"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=3",
     text: getTranslatedText("header.toys"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=4",
     text: getTranslatedText("header.vehicles"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=5",
     text: getTranslatedText("header.furniture"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=6",
     text: getTranslatedText("header.babies"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=7",
     text: getTranslatedText("header.books"),
   },
   {
-    link: route.home,
+    link: route.SearchResults + "?categoryId=8",
     text: getTranslatedText("header.another"),
   },
 ];

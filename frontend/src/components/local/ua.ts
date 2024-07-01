@@ -245,6 +245,10 @@ const ua = {
     cancel: "Скасувати все",
     chooseSize: "Оберіть розмір",
   },
+  categoriesTitle: {
+    category: "Категорії",
+    filter: "Фільтр",
+  },
   categories: {
     Clothing: "Одяг",
     Shoes: "Взуття",
@@ -326,6 +330,14 @@ const ua = {
     "Useful Literature For Parents": "Корисна література для батьків",
     "Other (Books)": "Інше (книги)",
   },
+  filter: {
+    location: "Локація",
+    gender: "Стать",
+    age: "Вік",
+    clothingSizes: "Розмір (Одяг)",
+    shoesSizes: "Розмір (Взуття)",
+    season: "Сезон",
+  },
   genderEnum: {
     MALE: "Хлопчик",
     FEMALE: "Дівчинка",
@@ -367,6 +379,9 @@ const ua = {
     transportSubTitle: "Дитячий",
     booksTitle: "КНИГИ",
     booksSubTitle: "Освітні та дитячі",
+  },
+  paginationBtnText: {
+    showMore: "показати ще",
   },
 };
 
