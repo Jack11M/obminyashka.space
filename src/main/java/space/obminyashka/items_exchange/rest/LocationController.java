@@ -14,12 +14,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.LocationDto;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
-import space.obminyashka.items_exchange.rest.request.RequestLocation;
 import space.obminyashka.items_exchange.rest.response.LocationNameView;
 import space.obminyashka.items_exchange.service.LocationService;
 
@@ -29,7 +36,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getExceptionMessageSourceWithAdditionalInfo;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.ILLEGAL_ID;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ExceptionMessage.LOCATION_ALREADY_EXIST;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_LOCATION_ID;
@@ -56,33 +65,18 @@ public class LocationController {
         return locationService.findAllAreas();
     }
 
-    @GetMapping(value = ApiKey.LOCATION_DISTRICT, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all of existed districts by area id.")
+    @GetMapping(value = ApiKey.LOCATION_CITY, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get all city by area id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")})
     @ResponseStatus(HttpStatus.OK)
-    public List<LocationNameView> getAllDistricts(@RequestParam UUID areaId) throws EntityIdNotFoundException {
-        List<LocationNameView> locationNameViewList = locationService.findAllDistrictsByAreaId(areaId);
-        if (locationNameViewList.isEmpty()) {
+    public List<LocationNameView> getAllCityByAreaId(@RequestParam UUID areaId) throws EntityIdNotFoundException {
+        if (!locationService.existAreaById(areaId)) {
             throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_LOCATION_ID, areaId));
         }
-        return locationNameViewList;
-    }
-
-    @GetMapping(value = ApiKey.LOCATION_CITY, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Get all city by district id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND")})
-    @ResponseStatus(HttpStatus.OK)
-    public List<LocationNameView> getAllCityByDistrictId(@RequestParam UUID districtId) throws EntityIdNotFoundException {
-        if (!locationService.existDistricts(districtId)) {
-            throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_LOCATION_ID, districtId));
-        }
-        return locationService.getAllCityByDistrictId(districtId);
+        return locationService.getAllCityByAreaId(areaId);
     }
 
     @GetMapping(value = ApiKey.LOCATION_ID, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -156,21 +150,5 @@ public class LocationController {
                 .filter(Predicate.not(foundLocationsIdsToBeRemoved::contains))
                 .map(String::valueOf)
                 .collect(Collectors.joining(", ", ": ", ""));
-    }
-
-    @PreAuthorize(HAS_ROLE_ADMIN)
-    @PostMapping(value = ApiKey.LOCATIONS_INIT, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    @Operation(summary = "Setting up locations from request", description = "ADMIN ONLY")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
-            @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> createLocationsInitFile(@RequestBody RequestLocation requestLocations) {
-        try {
-            return new ResponseEntity<>(locationService.createParsedLocationsFile(requestLocations.getRawLocations()), HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 }
