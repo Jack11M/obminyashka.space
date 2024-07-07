@@ -12,10 +12,4 @@ public class Area extends BaseLocation {
     public Area(RawLocation rawLocation) {
         super(rawLocation.getAreaUa(), rawLocation.getAreaEn());
     }
-
-    @Override
-    public String formatForSQL() {
-        return "(UUID_TO_BIN('%s'),'%s','%s') ".formatted(id, nameEn, nameUa);
-    }
-
 }

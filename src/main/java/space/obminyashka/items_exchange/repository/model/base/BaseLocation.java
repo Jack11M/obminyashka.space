@@ -41,8 +41,6 @@ public abstract class BaseLocation {
         return stringToDecorate.replace("’", "'").replace("'", "\\'");
     }
 
-    public abstract String formatForSQL();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

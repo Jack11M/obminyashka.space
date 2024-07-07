@@ -19,11 +19,6 @@ public class City extends BaseLocation {
     private Area area;
 
     @Override
-    public String formatForSQL() {
-        return " (UUID_TO_BIN('%s'),UUID_TO_BIN('%s'),'%s','%s')".formatted(id, area.getId(), nameEn, nameUa);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof City city)) return false;
