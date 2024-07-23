@@ -1,15 +1,5 @@
 import { getTranslatedText } from "src/components/local";
 
-export const regions = [
-  { value: "90", text: "Kyivska" },
-  { value: "91", text: "Dneprovska" },
-  { value: "92", text: "Kharkivska" },
-  { value: "93", text: "Odesska" },
-  { value: "94", text: "Lvivska" },
-  { value: "95", text: "Poltavska" },
-  { value: "96", text: "Zaporizska" },
-];
-
 export const cities = [
   { value: "97", text: "Kyiv" },
   { value: "98", text: "Dnepr" },
@@ -19,6 +9,21 @@ export const cities = [
   { value: "102", text: "Poltava" },
   { value: "103", text: "Zaporizia" },
 ];
+
+export const generateArea = (
+  lang: string,
+  data: {
+    id: string;
+    nameEn: string;
+    nameUa: string;
+  }[]
+) =>
+  data.map((el) => {
+    return {
+      value: el.id,
+      text: lang === "en" ? el.nameEn : el.nameUa,
+    };
+  });
 
 export const generateCategoriesData = (
   data: {

@@ -1,24 +1,22 @@
-import { regions } from './mock';
-
 export const initialValues = {
   age: [],
-  sex: '',
+  sex: "",
   season: [],
-  'size(shoes)': [],
-  'size(clothes)': [],
+  "size(shoes)": [],
+  "size(clothes)": [],
   category: {
-    id: '',
+    id: "",
     subcategories: [],
-    activeCategory: '',
+    activeCategory: "",
   },
   region: {
-    id: '',
-    location: regions,
-    inputValue: '',
+    id: "",
+    location: [],
+    inputValue: "",
   },
   city: {
-    id: '',
+    id: "",
     location: [],
-    inputValue: '',
+    inputValue: "",
   },
 };

@@ -5,6 +5,7 @@ import * as filter from "./filter";
 import * as product from "./product";
 import * as profile from "./profile";
 import * as addGood from "./add-good";
+import * as location from "./location";
 
 export default {
   auth,
@@ -14,4 +15,5 @@ export default {
   profile,
   addGood,
   product,
+  location,
 };

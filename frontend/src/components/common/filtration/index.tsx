@@ -3,7 +3,8 @@
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { showMessage, ButtonNew, Select } from "obminyashka-components";
+import { showMessage, ButtonNew } from "obminyashka-components";
+import { Select } from "./select-new";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
@@ -14,7 +15,7 @@ import { SearchContext } from "..";
 import { ICategories, IOnChangeValue, ISelect } from "./types";
 import {
   cities,
-  regions,
+  generateArea,
   generateFilterData,
   generateCategoriesData,
 } from "./mock";
@@ -28,12 +29,11 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
 
   const [open, setOpen] = useState<number>(-1);
   const [isOpenLocation, setIsOpenLocation] = useState<boolean>(false);
-
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = useState<{
     [key: string]: string[] | number[] | string | number;
   }>({});
-
+  const [area, setArea] = useState<any[]>([]);
   const [receivedShoeSizes, setReceivedShoeSize] = useState<string[]>([]);
   const [receivedClothingSizes, setReceivedClothingSize] = useState<string[]>(
     []
@@ -42,13 +42,19 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
     []
   );
 
+  const currentParams = Object.fromEntries(searchParams);
   const { seasonEnum, genderEnum } = lang === "en" ? en : ua;
 
   const agesShow = Object.values(enumAge);
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
 
-  const currentParams = Object.fromEntries(searchParams);
+  const initialAreaValue = generateArea(lang, area).find(
+    (el) =>
+      currentParams?.region &&
+      el.value === JSON.parse(currentParams?.region) &&
+      el
+  );
 
   const setOpenCategory = (id: number) => {
     if (open === id) return;
@@ -79,6 +85,9 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
 
       if (values.value !== "gender" && subCategories.length > 0)
         currentParams[values.value] = JSON.stringify(subCategories);
+
+      if (values.value === "region" && subCategories.length > 0)
+        currentParams[values.value] = JSON.stringify(subCategories[0]);
 
       if (subCategories.length === 0) delete currentParams[values.value];
     }
@@ -123,20 +132,23 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   useEffect(() => {
     (async () => {
       try {
-        const [categories, clothingSizes, shoeSizes] = await Promise.all([
+        const [categories, clothingSizes, shoeSizes, area] = await Promise.all([
           api.addGood.getCategoryAll(),
           api.addGood.getSize(1),
           api.addGood.getSize(2),
+          api.location.getAreaLocation(),
         ]);
 
         if (
           Array.isArray(categories) &&
           Array.isArray(clothingSizes) &&
-          Array.isArray(shoeSizes)
+          Array.isArray(shoeSizes) &&
+          Array.isArray(area)
         ) {
           setReceivedClothingSize(clothingSizes);
           setReceivedShoeSize(shoeSizes);
           setReceivedCategories(categories);
+          setArea(area);
         }
       } catch (err: any) {
         showMessage.error(err.response?.data ?? err?.message);
@@ -203,12 +215,14 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
         <Styles.SubCategories filtration isOpen={isOpenLocation}>
           <Styles.SubCategory filtration>
             <Select
-              // isLoading
               filtration
               value="region"
-              title="region"
-              options={regions}
-              onChange={(values: any) => console.log(values)}
+              isLoading={isLoading}
+              options={generateArea(lang, area)}
+              onChange={(values: IOnChangeValue) => onChange(values)}
+              title={
+                initialAreaValue?.text ?? getTranslatedText("addAdv.district")
+              }
             />
           </Styles.SubCategory>
 
@@ -220,11 +234,11 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
             }}
           >
             <Select
-              // isLoading
               filtration
               value="city"
               title="city"
               options={cities}
+              isLoading={isLoading}
               onChange={(values: any) => console.log(values)}
             />
           </Styles.SubCategory>
@@ -238,7 +252,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
           receivedShoeSizes,
           receivedClothingSizes
         ).map((category, index) => {
-          let filteredParameterOptions: { value: string; text: any }[] = [];
+          const filteredParameterOptions: { value: string; text: any }[] = [];
 
           const paramsValues: string[] = Array.isArray(params[category.value])
             ? (params[category.value] as string[])

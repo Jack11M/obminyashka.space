@@ -25,7 +25,7 @@ export const Select = ({
 }: ISelectProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [chosenOptions, setChosenOptions] = useState<ISelectOption[] | []>(
-    filteredParameterOptions ? filteredParameterOptions : []
+    filteredParameterOptions ?? []
   );
   const [filtrationValue, setFiltrationValue] = useState<string>("");
 
@@ -37,6 +37,10 @@ export const Select = ({
       isEmptyFiltrationValue ||
       el.text.toLowerCase().startsWith(filtrationValue.toLowerCase())
   );
+
+  const matchesOption =
+    filtration &&
+    chosenOptions.filter(({ text }) => text === filtrationValue)[0];
 
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -70,19 +74,6 @@ export const Select = ({
 
   const onBlur = () => {
     if (filtration) {
-      const matchesOption = chosenOptions.filter(
-        ({ text }) => text === filtrationValue
-      )[0];
-
-      if (matchesOption) {
-        setFiltrationValue(matchesOption.text);
-        setChosenOptions([matchesOption]);
-        onChange({
-          value: value ? value : "",
-          chosenOptions: chosenOptions,
-        });
-      }
-
       if (!matchesOption && chosenOptions.length) {
         setFiltrationValue("");
         setChosenOptions([]);
@@ -114,8 +105,29 @@ export const Select = ({
   }, [filteredParameterOptions]);
 
   useEffect(() => {
+    if (filtration) {
+      if (matchesOption) {
+        setFiltrationValue(matchesOption.text);
+        setChosenOptions([matchesOption]);
+        onChange({
+          value: value ?? "",
+          chosenOptions: chosenOptions,
+        });
+      }
+
+      if (!filtrationValue) {
+        setChosenOptions([]);
+        onChange({
+          value: "",
+          chosenOptions: [],
+        });
+      }
+    }
+  }, [filtrationValue]);
+
+  useEffect(() => {
     if ((isOpen || isActive) && !disabled)
-      onChange({ value: value || "", chosenOptions });
+      onChange({ value: value ?? "", chosenOptions });
   }, [chosenOptions, isActive, isOpen]);
 
   useEffect(() => {

@@ -142,6 +142,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     const paginationItems = document.querySelectorAll(".rc-pagination-item");
+
     paginationItems.forEach((item) => {
       if (disabledPages.includes(+item.textContent))
         item.classList.add("disabled");
