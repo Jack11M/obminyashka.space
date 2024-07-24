@@ -37,7 +37,6 @@ export const Select = ({
       isEmptyFiltrationValue ||
       el.text.toLowerCase().startsWith(filtrationValue.toLowerCase())
   );
-
   const matchesOption =
     filtration &&
     chosenOptions.filter(({ text }) => text === filtrationValue)[0];

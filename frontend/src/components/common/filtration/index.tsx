@@ -3,8 +3,8 @@
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { showMessage, ButtonNew } from "obminyashka-components";
-import { Select } from "./select-new";
+import { showMessage, ButtonNew, Select } from "obminyashka-components";
+// import { Select } from "./select-new";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
@@ -14,7 +14,6 @@ import { en, ua, getTranslatedText } from "src/components/local";
 import { SearchContext } from "..";
 import { ICategories, IOnChangeValue, ISelect } from "./types";
 import {
-  cities,
   generateArea,
   generateFilterData,
   generateCategoriesData,
