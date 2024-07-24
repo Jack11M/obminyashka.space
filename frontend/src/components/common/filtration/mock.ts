@@ -10,6 +10,52 @@ export const cities = [
   { value: "103", text: "Zaporizia" },
 ];
 
+interface Options {
+  value: string;
+  text: string | number;
+}
+
+interface Category {
+  value: string;
+  options: Options[];
+}
+
+export const filteredParameterOptions = (
+  category: Category,
+  params: {
+    [key: string]: string[] | number[] | string | number;
+  },
+  isFilter?: boolean
+) => {
+  const filteredParameterOptions: Options[] = [];
+
+  if (isFilter) {
+    const paramsValues: string[] = Array.isArray(params[category.value])
+      ? (params[category.value] as string[])
+      : [params[category.value] as string];
+
+    category.options.filter((option) => {
+      if (paramsValues.includes(option.value)) {
+        filteredParameterOptions.push(option);
+      }
+    });
+  }
+
+  if (!isFilter) {
+    const subCategories: number[] = params.subcategoriesIdValues as number[];
+
+    if (subCategories) {
+      category.options.filter((option) => {
+        if (subCategories.includes(+option.value)) {
+          filteredParameterOptions.push(option);
+        }
+      });
+    }
+  }
+
+  return filteredParameterOptions;
+};
+
 export const generateArea = (
   lang: string,
   data: {

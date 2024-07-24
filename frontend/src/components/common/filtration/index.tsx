@@ -18,6 +18,7 @@ import {
   generateArea,
   generateFilterData,
   generateCategoriesData,
+  filteredParameterOptions,
 } from "./mock";
 
 import * as Styles from "./styles";
@@ -49,12 +50,9 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
 
-  const initialAreaValue = generateArea(lang, area).find(
-    (el) =>
-      currentParams?.region &&
-      el.value === JSON.parse(currentParams?.region) &&
-      el
-  );
+  const initialAreaValue = generateArea(lang, area).find((el) => {
+    return params?.region && el.value === params?.region && el;
+  });
 
   const setOpenCategory = (id: number) => {
     if (open === id) return;
@@ -104,9 +102,11 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
 
   useEffect(() => {
     const openCategory = searchParams.get("categoryId");
+    const openRegion = searchParams.get("region");
     const searchResults = search || searchParams.get("search");
 
     if (openCategory) setOpenCategory(+openCategory - 1);
+    if (openRegion) setIsOpenLocation(true);
 
     if (searchResults) {
       const newParams = { ...currentParams, search: searchResults };
@@ -166,19 +166,6 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
 
         {receivedCategories &&
           generateCategoriesData(receivedCategories).map((category, index) => {
-            const filteredParameterOptions: { value: string; text: any }[] = [];
-
-            const subCategories: number[] =
-              params.subcategoriesIdValues as number[];
-
-            if (subCategories) {
-              category.options.filter((option) => {
-                if (subCategories.includes(+option.value)) {
-                  filteredParameterOptions.push(option);
-                }
-              });
-            }
-
             return (
               <Select
                 {...category}
@@ -189,8 +176,11 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
                 notCheckbox={category.notCheckbox}
                 deleteOnClose={category.deleteOnClose}
                 setIsActive={() => setOpenCategory(index)}
-                filteredParameterOptions={filteredParameterOptions}
                 onChange={(values: IOnChangeValue) => onChange(values, true)}
+                filteredParameterOptions={filteredParameterOptions(
+                  category,
+                  params
+                )}
               />
             );
           })}
@@ -219,10 +209,9 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
               value="region"
               isLoading={isLoading}
               options={generateArea(lang, area)}
+              title={getTranslatedText("addAdv.district")}
               onChange={(values: IOnChangeValue) => onChange(values)}
-              title={
-                initialAreaValue?.text ?? getTranslatedText("addAdv.district")
-              }
+              filteredParameterOptions={initialAreaValue && [initialAreaValue]}
             />
           </Styles.SubCategory>
 
@@ -237,7 +226,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
               filtration
               value="city"
               title="city"
-              options={cities}
+              // options={cities}
               isLoading={isLoading}
               onChange={(values: any) => console.log(values)}
             />
@@ -252,25 +241,17 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
           receivedShoeSizes,
           receivedClothingSizes
         ).map((category, index) => {
-          const filteredParameterOptions: { value: string; text: any }[] = [];
-
-          const paramsValues: string[] = Array.isArray(params[category.value])
-            ? (params[category.value] as string[])
-            : [params[category.value] as string];
-
-          category.options.filter((option) => {
-            if (paramsValues.includes(option.value)) {
-              filteredParameterOptions.push(option);
-            }
-          });
-
           return (
             <Select
               {...category}
               key={"filter" + index}
               multiple={category.multiple}
-              filteredParameterOptions={filteredParameterOptions}
               onChange={(values: IOnChangeValue) => onChange(values)}
+              filteredParameterOptions={filteredParameterOptions(
+                category,
+                params,
+                true
+              )}
               disabled={
                 category.disabled === undefined
                   ? undefined

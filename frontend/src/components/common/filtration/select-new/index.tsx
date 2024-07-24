@@ -99,8 +99,15 @@ export const Select = ({
       filteredParameterOptions.length > 0 &&
       !chosenOptions.length
     ) {
-      setOpen();
+      if (!filtration) {
+        setOpen();
+      }
+
       setChosenOptions(filteredParameterOptions);
+
+      if (filtration) {
+        setFiltrationValue(filteredParameterOptions?.[0].text);
+      }
     }
   }, [filteredParameterOptions]);
 

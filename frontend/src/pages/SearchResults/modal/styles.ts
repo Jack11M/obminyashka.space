@@ -55,6 +55,7 @@ export const ModalContent = styled.div<{ isModal: boolean }>`
 
 export const Cross = styled.div`
   position: relative;
+  cursor: pointer;
 
   ${({ theme }) => css`
     &:before,
