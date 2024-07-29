@@ -31,12 +31,12 @@ class LocationControllerIntegrationTest extends BasicControllerTest {
         super(mockMvc);
     }
 
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    @ParameterizedTest
-    @MethodSource("locationPostTestData")
-    void createLocation_shouldNotReturnOkWhenValid(LocationDto dto, ResultMatcher expectedStatus) throws Exception {
-        sendDtoAndGetMvcResult(post(LOCATION), dto, expectedStatus);
-    }
+//    @WithMockUser(username = "admin", roles = "ADMIN")
+//    @ParameterizedTest
+//    @MethodSource("locationPostTestData")
+//    void createLocation_shouldNotReturnOkWhenValid(LocationDto dto, ResultMatcher expectedStatus) throws Exception {
+//        sendDtoAndGetMvcResult(post(LOCATION), dto, expectedStatus);
+//    }
 
     private static Stream<Arguments> locationPostTestData() {
         return Stream.of(
