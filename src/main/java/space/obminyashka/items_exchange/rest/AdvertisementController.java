@@ -188,15 +188,16 @@ public class AdvertisementController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void setDefaultImage(
             @Parameter(name = "advertisementId", description = "ID of existed advertisement") @PathVariable UUID advertisementId,
             @Parameter(name = "imageId", description = "ID of existed image") @PathVariable UUID imageId,
-            @Parameter(hidden = true) Authentication authentication) throws BadRequestException {
+            @Parameter(hidden = true) Authentication authentication) throws IllegalOperationException {
         List<Advertisement> listAdvertisementByUser = getListAdvertisementByUser(authentication.getName());
         if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, listAdvertisementByUser)) {
-            throw new BadRequestException(getMessageSource(
+            throw new IllegalOperationException(getMessageSource(
                     ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_IMAGE_ID_NOT_FOUND));
         }
 

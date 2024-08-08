@@ -367,7 +367,7 @@ class AdvertisementFlowTest extends BasicControllerTest {
     @DataSet("database_init.yml")
     @MethodSource("provideTestIds")
     void setDefaultImage_shouldReturn400WhenNotValidAdvertisementId(UUID firstId, UUID secondId) throws Exception {
-        sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, firstId, secondId), status().isBadRequest());
+        sendUriAndGetMvcResult(post(ADV_DEFAULT_IMAGE, firstId, secondId), status().isForbidden());
     }
 
     private static Stream<Arguments> provideTestIds() {
