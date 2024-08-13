@@ -63,6 +63,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public boolean isCategoryValid(long id) {
+        return !String.valueOf(id).startsWith("0");
+    }
+
+    @Override
     public boolean isCategoryDtoUpdatable(CategoryDto categoryDto) {
         return isCategoryExistsByIdAndNameOrNotExistsByName(categoryDto.getId(),
                 categoryDto.getName()) && isSubcategoriesExist(categoryDto);

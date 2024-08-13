@@ -63,6 +63,14 @@ public interface CategoryService {
     boolean isCategoryDeletable(long categoryId);
 
     /**
+     * Checks if a category with the given ID transmitted with 0 at the beginning
+     *
+     * @param id is Category ID.
+     * @return {@code false} if a category with the given ID transmitted 0 at the beginning, {@code true} otherwise.
+     */
+    boolean isCategoryValid(long id);
+
+    /**
      * Checks if the category DTO ID exists in DB, updated category name has not duplicates and internal subcategories exist or have IDs equals zero.
      *
      * @param categoryDto must not be null.
