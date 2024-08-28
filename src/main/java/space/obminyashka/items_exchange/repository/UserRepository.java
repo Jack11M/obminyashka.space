@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.repository.projection.UserAuthProjection;
 import space.obminyashka.items_exchange.repository.projection.UserProjection;
@@ -20,6 +21,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<UserAuthProjection> findAuthDataByEmailOrUsername(String email, String username);
 
     Optional<User> findByEmailOrUsername(String username, String email);
+
+    @Query("select u.advertisements from User u where u.username = :username")
+    List<Advertisement> findListAdvertisementByUsername(String username);
 
     Optional<UserProjection> findUserProjectionByEmail(String email);
 

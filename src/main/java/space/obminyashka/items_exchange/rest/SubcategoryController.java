@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.exception.bad_request.InvalidDtoException;
+import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
 import space.obminyashka.items_exchange.service.AdvertisementService;
 import space.obminyashka.items_exchange.service.SubcategoryService;
@@ -23,7 +24,9 @@ import java.util.List;
 
 import static space.obminyashka.items_exchange.config.SecurityConfig.HAS_ROLE_ADMIN;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getExceptionMessageSourceWithId;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_NOT_POSITIVE_ID;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SUBCATEGORY_ID;
 
 @RestController
 @RequestMapping(ApiKey.SUBCATEGORY)
@@ -55,10 +58,14 @@ public class SubcategoryController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "User is not authorized"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void deleteSubcategoryById(@PathVariable("subcategory_id") @Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}") long subcategoryId)
             throws InvalidDtoException {
+        if (!subcategoryService.isSubcategoryExistsById(subcategoryId)) {
+            throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_SUBCATEGORY_ID, subcategoryId));
+        }
         if (advertisementService.areAdvertisementsExistWithSubcategory(subcategoryId)) {
             throw new InvalidDtoException(getExceptionMessageSourceWithId(subcategoryId, ResponseMessagesHandler.ValidationMessage.SUBCATEGORY_NOT_DELETABLE));
         }

@@ -18,8 +18,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import space.obminyashka.items_exchange.repository.model.Advertisement;
 import space.obminyashka.items_exchange.repository.model.User;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.AdvertisementModificationDto;
@@ -30,14 +39,20 @@ import space.obminyashka.items_exchange.rest.request.AdvertisementFilterRequest;
 import space.obminyashka.items_exchange.rest.response.AdvertisementDisplayView;
 import space.obminyashka.items_exchange.rest.response.AdvertisementTitleView;
 import space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler;
-import space.obminyashka.items_exchange.service.*;
+import space.obminyashka.items_exchange.service.AdvertisementService;
+import space.obminyashka.items_exchange.service.ImageService;
+import space.obminyashka.items_exchange.service.LocationService;
+import space.obminyashka.items_exchange.service.SubcategoryService;
+import space.obminyashka.items_exchange.service.UserService;
 
 import java.util.List;
 import java.util.UUID;
 
 import static space.obminyashka.items_exchange.repository.enums.Size.Clothing;
 import static space.obminyashka.items_exchange.repository.enums.Size.Shoes;
-import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.*;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getExceptionMessageSourceWithId;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
+import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
 
 @RestController
@@ -173,21 +188,25 @@ public class AdvertisementController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED"),
             @ApiResponse(responseCode = "403", description = "FORBIDDEN")})
     @ResponseStatus(HttpStatus.OK)
     public void setDefaultImage(
             @Parameter(name = "advertisementId", description = "ID of existed advertisement") @PathVariable UUID advertisementId,
             @Parameter(name = "imageId", description = "ID of existed image") @PathVariable UUID imageId,
-            @Parameter(hidden = true) Authentication authentication) throws BadRequestException {
-        User owner = getUser(authentication.getName());
-        if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, owner)) {
-            throw new BadRequestException(getMessageSource(
+            @Parameter(hidden = true) Authentication authentication) throws IllegalOperationException {
+        List<Advertisement> listAdvertisementByUser = getListAdvertisementByUser(authentication.getName());
+        if (!advertisementService.isUserHasAdvertisementAndItHasImageWithId(advertisementId, imageId, listAdvertisementByUser)) {
+            throw new IllegalOperationException(getMessageSource(
                     ResponseMessagesHandler.ExceptionMessage.ADVERTISEMENT_IMAGE_ID_NOT_FOUND));
         }
-        owner.getAdvertisements().parallelStream()
-                .filter(advertisement -> advertisement.getId().equals(advertisementId))
-                .findFirst()
-                .ifPresent(adv -> advertisementService.setDefaultImage(adv, imageId));
+
+        Advertisement advertisementByUser = listAdvertisementByUser.parallelStream()
+            .filter(advertisement -> advertisement.getId().equals(advertisementId))
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Can`t find advertisement by id"));
+
+        advertisementService.setDefaultImage(advertisementByUser, imageId);
     }
 
     private void validateInternalEntityIds(long subcategoryId, UUID locationId) throws IllegalIdentifierException {
@@ -207,5 +226,9 @@ public class AdvertisementController {
         return userService.findByUsernameOrEmail(userNameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(getMessageSource(
                         ResponseMessagesHandler.ExceptionMessage.USER_NOT_FOUND)));
+    }
+
+    private List<Advertisement> getListAdvertisementByUser(String usernameOrEmail) {
+        return userService.findListAdvertisementByUsername(usernameOrEmail);
     }
 }

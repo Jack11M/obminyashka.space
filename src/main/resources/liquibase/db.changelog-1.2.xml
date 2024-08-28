@@ -158,4 +158,19 @@
             <column name="type" type="varchar(100)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="1.2.10.1: add area to city and district to city name" author="lavniuzhenkova">
+        <addColumn tableName="city">
+            <column name="area_id" type="${type.uuid}"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="city" baseColumnNames="area_id" constraintName="fk_city_area"
+                                 referencedTableName="area"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="1.2.10.2_drop_district" author="lavniuzhenkova">
+        <dropForeignKeyConstraint baseTableName="city" constraintName="fk_city_district"/>
+        <dropColumn tableName="city" columnName="district_id"/>
+        <dropTable tableName="district"/>
+    </changeSet>
 </databaseChangeLog>

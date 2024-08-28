@@ -1,7 +1,6 @@
 package space.obminyashka.items_exchange.rest;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -28,11 +27,20 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static space.obminyashka.items_exchange.rest.api.ApiKey.*;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV_FILTER;
+import static space.obminyashka.items_exchange.rest.api.ApiKey.ADV_ID;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getParametrizedMessageSource;
-import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.*;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.BLANK_DESCRIPTION;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.BLANK_TOPIC;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.BLANK_WISHES_TO_EXCHANGE;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_ENUM_VALUE;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_MAX_SIZE;
+import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
 
@@ -110,7 +118,6 @@ class AdvertisementControllerIntegrationTest extends BasicControllerTest {
 
     @Test
     @WithMockUser(username = "admin")
-    @Disabled("needs to find the reasons why the test does not pass")
     void createAdvertisement_shouldReturn400WhenInvalidSizeForCategory() throws Exception {
         final var dto = AdvertisementModificationDtoProducer.createNonExistAdvertisementModificationDto();
         dto.setSize("invalidSize");

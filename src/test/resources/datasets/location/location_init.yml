@@ -10,15 +10,8 @@ area:
     name_ua: 'Вінницька'
 
 
-district:
-  - id: 5c5467f3-b7ee-48b1-9451-7028255b757b
-    area_id: 842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10
-    name_ua: 'Лиманський район'
-    name_en: 'Limanskii district'
-
-
 city:
   - id: c7bcf076-2f8a-4f76-b727-d79e84629b0b
-    district_id: 5c5467f3-b7ee-48b1-9451-7028255b757b
+    area_id: 842f9ab1-95e8-4c81-a49b-fa4f6d0c3a10
     name_ua: 'Одеса'
     name_en: 'Odesa'
