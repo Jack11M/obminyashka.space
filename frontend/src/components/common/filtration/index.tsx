@@ -3,8 +3,8 @@
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { showMessage, ButtonNew, Select } from "obminyashka-components";
-// import { Select } from "./select-new";
+import { showMessage, ButtonNew } from "obminyashka-components";
+import { Select } from "./select-new";
 
 import api from "src/REST/Resources";
 import { enumAge } from "src/config/ENUM";
@@ -33,7 +33,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   const [params, setParams] = useState<{
     [key: string]: string[] | number[] | string | number;
   }>({});
-  const [area, setArea] = useState<any[]>([]);
+  const [areas, setAreas] = useState<any[]>([]);
   const [receivedShoeSizes, setReceivedShoeSize] = useState<string[]>([]);
   const [receivedClothingSizes, setReceivedClothingSize] = useState<string[]>(
     []
@@ -49,7 +49,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
 
-  const initialAreaValue = generateArea(lang, area).find((el) => {
+  const initialAreaValue = generateArea(lang, areas).find((el) => {
     return params?.region && el.value === params?.region && el;
   });
 
@@ -84,6 +84,9 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
         currentParams[values.value] = JSON.stringify(subCategories);
 
       if (values.value === "region" && subCategories.length > 0)
+        currentParams[values.value] = JSON.stringify(subCategories[0]);
+
+      if (values.value === "city" && subCategories.length > 0)
         currentParams[values.value] = JSON.stringify(subCategories[0]);
 
       if (subCategories.length === 0) delete currentParams[values.value];
@@ -131,23 +134,25 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
   useEffect(() => {
     (async () => {
       try {
-        const [categories, clothingSizes, shoeSizes, area] = await Promise.all([
-          api.addGood.getCategoryAll(),
-          api.addGood.getSize(1),
-          api.addGood.getSize(2),
-          api.location.getAreaLocation(),
-        ]);
+        const [categories, clothingSizes, shoeSizes, areas] = await Promise.all(
+          [
+            api.addGood.getCategoryAll(),
+            api.addGood.getSize(1),
+            api.addGood.getSize(2),
+            api.location.getAreaLocation(),
+          ]
+        );
 
         if (
           Array.isArray(categories) &&
           Array.isArray(clothingSizes) &&
           Array.isArray(shoeSizes) &&
-          Array.isArray(area)
+          Array.isArray(areas)
         ) {
           setReceivedClothingSize(clothingSizes);
           setReceivedShoeSize(shoeSizes);
           setReceivedCategories(categories);
-          setArea(area);
+          setAreas(areas);
         }
       } catch (err: any) {
         showMessage.error(err.response?.data ?? err?.message);
@@ -207,7 +212,7 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
               filtration
               value="region"
               isLoading={isLoading}
-              options={generateArea(lang, area)}
+              options={generateArea(lang, areas)}
               title={getTranslatedText("addAdv.district")}
               onChange={(values: IOnChangeValue) => onChange(values)}
               filteredParameterOptions={initialAreaValue && [initialAreaValue]}
@@ -224,9 +229,9 @@ const Filtration = ({ submit, isLoading }: ISelect) => {
             <Select
               filtration
               value="city"
-              title="city"
-              // options={cities}
+              options={[]}
               isLoading={isLoading}
+              title={getTranslatedText("addAdv.city")}
               onChange={(values: any) => console.log(values)}
             />
           </Styles.SubCategory>
