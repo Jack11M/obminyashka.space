@@ -6,9 +6,9 @@ import axios from "axios";
 import { store } from "src/store";
 import { logOutUser } from "src/store/auth/slice";
 import {
-  addDataToUserInStorage,
   getStorageUser,
   getStorageLang,
+  addDataToUserInStorage,
 } from "src/Utils";
 
 const refreshUrl = "/auth/refresh/token";
