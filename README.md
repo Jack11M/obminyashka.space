@@ -4,6 +4,8 @@ This is the source code of the IT School Hillel's EVO project "Obminyashka".
 
 Our aim is to give our users opportunity to share or exchange any children's clothes.
 
+[![Coverage Status](https://coveralls.io/repos/github/Jack11M/obminyashka.space/badge.svg)](https://coveralls.io/github/Jack11M/obminyashka.space)
+
 ## The technologies used:
 
 #### Front-End

@@ -5,9 +5,9 @@ import space.obminyashka.items_exchange.rest.api.ApiKey;
 
 @RequiredArgsConstructor
 public enum EmailType {
-    REGISTRATION("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.EMAIL_VALIDATE_CODE),
-    CHANGING("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.EMAIL_VALIDATE_CODE),
-    RESET("d-dd980dcd28fa4460a579959b12a7b68c", ApiKey.USER_SERVICE_PASSWORD_CONFIRM);
+    REGISTRATION("d-11d830a2e530404a8c9b9f5412a2034f", ApiKey.EMAIL_VALIDATE_CODE),
+    CHANGING("d-11d830a2e530404a8c9b9f5412a2034f", ApiKey.EMAIL_VALIDATE_CODE),
+    RESET("d-11d830a2e530404a8c9b9f5412a2034f", ApiKey.USER_SERVICE_PASSWORD_CONFIRM);
 
     public final String template;
     public final String callbackEndpoint;
