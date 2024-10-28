@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.rest;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -24,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static space.obminyashka.items_exchange.rest.api.ApiKey.EMAIL_RESEND_CODE;
 import static space.obminyashka.items_exchange.rest.response.message.MessageSourceProxy.getMessageSource;
 
-@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EmailControllerIntegrationTest extends BasicControllerTest {

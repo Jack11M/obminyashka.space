@@ -1,6 +1,5 @@
 package space.obminyashka.items_exchange.rest;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,6 @@ import static space.obminyashka.items_exchange.rest.response.message.ResponseMes
 import static space.obminyashka.items_exchange.rest.response.message.ResponseMessagesHandler.ValidationMessage.INVALID_SIZE;
 import static space.obminyashka.items_exchange.util.JsonConverter.asJsonString;
 
-@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdvertisementControllerIntegrationTest extends BasicControllerTest {
