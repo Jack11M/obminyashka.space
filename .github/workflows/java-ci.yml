@@ -26,8 +26,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           check-latest: true
-      - name: Run build with Maven
-        run: mvn --batch-mode --update-snapshots package jacoco:prepare-agent
+      - name: Run Maven build without tests
+        run: mvn --batch-mode --update-snapshots package -DskipTests
+      - name: Run tests with Jacoco
+        run: mvn --batch-mode test jacoco:report
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
