@@ -19,9 +19,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -33,7 +33,7 @@ jobs:
         with:
           repo-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: artifact
           path: ./target/space.obminyashka-*.jar
@@ -48,7 +48,7 @@ jobs:
       packages: write
     steps:
       - name: Upload Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: artifact
       - name: Deploy over SSH
@@ -66,7 +66,7 @@ jobs:
     environment: production
     steps:
       - name: Run artefact
-        uses: appleboy/ssh-action@v0.1.8
+        uses: appleboy/ssh-action@v1.2.0
         env:
           DB_PASSWORD: ${{ secrets.OBMINYASHKA_DATABASE_PASSWORD_SECRET }}
           SSL_PASSWORD: ${{ secrets.OBMINYASHKA_CERTIFICATE_PASSWORD_SECRET }}

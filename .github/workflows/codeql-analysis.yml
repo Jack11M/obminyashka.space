@@ -58,7 +58,7 @@ jobs:
       name: Set up NodeJS
       uses: actions/setup-node@v3
       with:
-        node-version: '18.16.0'
+        node-version: '20.18.0'
         cache: npm
         cache-dependency-path: frontend
     - if: matrix.language == 'javascript'
