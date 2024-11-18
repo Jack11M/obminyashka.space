@@ -1,6 +1,11 @@
-import { useContext, useEffect } from 'react';
-import { useWindowSize } from 'react-use';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useContext, useEffect } from "react";
+import { useWindowSize } from "react-use";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import {
   Logo,
   Deals,
@@ -11,19 +16,19 @@ import {
   Responsive,
   CategoryButton,
   InputChangeEventType,
-} from 'obminyashka-components';
+} from "obminyashka-components";
 
-import { route } from 'src/routes/routeConstants';
-import { getProfile } from 'src/store/profile/slice';
-import { SearchContext } from 'src/components/common';
-import { getUserThunk } from 'src/store/profile/thunk';
-import { useAppDispatch, useAppSelector } from 'src/store';
-import { getAuth, getAuthed, setLanguage } from 'src/store/auth/slice';
+import { route } from "src/routes/routeConstants";
+import { getProfile } from "src/store/profile/slice";
+import { SearchContext } from "src/components/common";
+import { getUserThunk } from "src/store/profile/thunk";
+import { useAppDispatch, useAppSelector } from "src/store";
+import { getAuth, getAuthed, setLanguage } from "src/store/auth/slice";
 
-import * as Styles from './styles';
-import { getTranslatedText } from '../local';
-import { SelectLanguage } from '../selectLang';
-import { burgerLinks, categories } from './config';
+import * as Styles from "./styles";
+import { getTranslatedText } from "../local";
+import { SelectLanguage } from "../selectLang";
+import { burgerLinks, categories } from "./config";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -35,7 +40,11 @@ const Header = () => {
   const isAuthed = useAppSelector(getAuthed);
   const profile = useAppSelector(getProfile);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const { search, setSearch, setIsFetch } = useContext(SearchContext);
+
+  const isSearchResults = pathname?.replace("/", "") === route.SearchResults;
 
   const handleSelected = (langValue: { lang: string }) => {
     dispatch(setLanguage(langValue.lang));
@@ -44,21 +53,25 @@ const Header = () => {
 
   const move = () => {
     setIsFetch(true);
+    const currentParams = Object.fromEntries(searchParams);
 
     if (!search) return;
 
-    if (pathname?.replace('/', '') !== route.SearchResults) {
+    currentParams.search = search;
+    setSearchParams(currentParams);
+
+    if (!isSearchResults) {
       navigate(route.SearchResults);
     }
   };
 
   const keyEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (!search) {
-      if (event.key === 'Enter') event.preventDefault();
+      if (event.key === "Enter") event.preventDefault();
       return;
     }
 
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
       move();
     }
@@ -72,7 +85,7 @@ const Header = () => {
 
   const onChange = (e: InputChangeEventType | string) => {
     setIsFetch(false);
-    setSearch(typeof e === 'string' ? e : e.target.value);
+    setSearch(typeof e === "string" ? e : e.target.value);
   };
 
   return (
@@ -83,15 +96,29 @@ const Header = () => {
 
           <CategoryButton
             categoryInfo={categories}
-            textBtn={getTranslatedText('header.categories')}
+            isDisabled={isSearchResults}
+            textBtn={getTranslatedText("header.categories")}
           />
 
           <Responsive.Desktop>
-            <Deals to={route.home} heartIcon={true} text={getTranslatedText('header.goodness')} />
+            <Deals
+              to={route.home}
+              heartIcon={true}
+              text={getTranslatedText("header.goodness")}
+            />
 
-            <Search onClick={move} value={search} onChange={onChange} onKeyDown={keyEnter} />
+            <Search
+              onClick={move}
+              value={search}
+              onChange={onChange}
+              onKeyDown={keyEnter}
+            />
 
-            <Deals to={route.home} puzzleIcon={true} text={getTranslatedText('header.about')} />
+            <Deals
+              to={route.home}
+              puzzleIcon={true}
+              text={getTranslatedText("header.about")}
+            />
           </Responsive.Desktop>
 
           <Responsive.NotMobile>
@@ -99,16 +126,21 @@ const Header = () => {
               <ButtonNew
                 plus
                 animated
-                colorType='green'
-                styleType='default'
+                colorType="green"
+                styleType="default"
                 onClick={() => navigate(route.addAdv)}
-                text={getTranslatedText('button.addAdv')}
+                text={getTranslatedText("button.addAdv")}
               />
             </Styles.BtnContainer>
           </Responsive.NotMobile>
 
           <Responsive.NotDesktop>
-            <Search value={search} onClick={move} onChange={onChange} onKeyDown={keyEnter} />
+            <Search
+              value={search}
+              onClick={move}
+              onChange={onChange}
+              onKeyDown={keyEnter}
+            />
           </Responsive.NotDesktop>
 
           <Responsive.Desktop>
@@ -121,7 +153,11 @@ const Header = () => {
             </Styles.LngAvatarContainer>
           </Responsive.Desktop>
 
-          <Burger lang={lang} data={burgerLinks} onSelectLanguage={handleSelected} />
+          <Burger
+            lang={lang}
+            data={burgerLinks}
+            onSelectLanguage={handleSelected}
+          />
         </Styles.Container>
       </Styles.HeaderOverlay>
     </Styles.Header>

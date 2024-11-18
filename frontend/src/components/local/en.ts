@@ -246,6 +246,10 @@ const en = {
     cancel: "Cancel everything",
     chooseSize: "Choose a size",
   },
+  categoriesTitle: {
+    category: "Categories",
+    filter: "Filter",
+  },
   categories: {
     Clothing: "Clothing",
     Shoes: "Shoes",
@@ -326,6 +330,14 @@ const en = {
     "Useful Literature For Parents": "Useful Literature For Parents",
     "Other (Books)": "Other (Books)",
   },
+  filter: {
+    location: "Location",
+    gender: "Gender",
+    age: "Age",
+    clothingSizes: "Size (clothes)",
+    shoesSizes: "Size (shoes)",
+    season: "Season",
+  },
   genderEnum: {
     MALE: "For boys",
     FEMALE: "For girls",
@@ -367,6 +379,9 @@ const en = {
     subTitle: "Children's",
     transportTitle: "Books",
     transportSubTitle: "Educational and children's",
+  },
+  paginationBtnText: {
+    showMore: "show more",
   },
 };
 

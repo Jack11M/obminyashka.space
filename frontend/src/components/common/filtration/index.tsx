@@ -1,56 +1,158 @@
 /* eslint-disable */
 // @ts-nocheck
-// TODO: fix typescript
-import { useMemo, useEffect, useState } from 'react';
-import { Form } from 'formik';
-import { useSelector } from 'react-redux';
-import { showMessage } from 'obminyashka-components';
+import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { showMessage, ButtonNew } from "obminyashka-components";
+import { Select } from "./select-new";
 
-import api from 'src/REST/Resources';
-import ua from 'src/components/local/ua';
-import { enumAge } from 'src/config/ENUM';
-import { getAuthLang } from 'src/store/auth/slice';
-import { getTranslatedText } from 'src/components/local';
-import { FormikHandler, FormikCheckBox } from 'src/components/common/formik';
+import api from "src/REST/Resources";
+import { enumAge } from "src/config/ENUM";
+import { getAuthLang } from "src/store/auth/slice";
+import { en, ua, getTranslatedText } from "src/components/local";
 
-import * as Styles from './styles';
+import { SearchContext } from "..";
+import { ICategories, IOnChangeValue, ISelect } from "./types";
+import {
+  generateArea,
+  generateFilterData,
+  generateCategoriesData,
+  filteredParameterOptions,
+} from "./mock";
 
-import { Select } from './select';
-import { CheckBoxes } from './checkbox';
-import { InputsWithLocation } from './input';
+import * as Styles from "./styles";
 
-const Filtration = () => {
+const Filtration = ({ submit, isLoading }: ISelect) => {
   const lang = useSelector(getAuthLang);
 
-  const [receivedShoeSizes, setReceivedShoeSize] = useState([]);
-  const [receivedCategories, setReceivedCategories] = useState([]);
-  const [receivedClothingSizes, setReceivedClothingSize] = useState([]);
+  const { search } = useContext(SearchContext);
 
-  const [age, setAge] = useState([]);
-  const [gender, setGender] = useState([]);
-  const [season, setSeason] = useState([]);
-  const [shoesSizes, setShoesSizes] = useState([]);
-  const [clothesSizes, setClothesSizes] = useState([]);
+  const [open, setOpen] = useState<number>(-1);
+  const [isOpenLocation, setIsOpenLocation] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [params, setParams] = useState<{
+    [key: string]: string[] | number[] | string | number;
+  }>({});
+  const [areas, setAreas] = useState<any[]>([]);
+  const [receivedShoeSizes, setReceivedShoeSize] = useState<string[]>([]);
+  const [receivedClothingSizes, setReceivedClothingSize] = useState<string[]>(
+    []
+  );
+  const [receivedCategories, setReceivedCategories] = useState<ICategories[]>(
+    []
+  );
 
-  const { seasonEnum, genderEnum } = ua;
+  const currentParams = Object.fromEntries(searchParams);
+  const { seasonEnum, genderEnum } = lang === "en" ? en : ua;
 
-  const agesShow = Object.keys(enumAge);
+  const agesShow = Object.values(enumAge);
   const sexShow = Object.keys(genderEnum);
   const seasonShow = Object.keys(seasonEnum);
+
+  const initialAreaValue = generateArea(lang, areas).find((el) => {
+    return params?.region && el.value === params?.region && el;
+  });
+
+  const setOpenCategory = (id: number) => {
+    if (open === id) return;
+    setOpen(id);
+  };
+
+  const onChange = (values: IOnChangeValue, isCategory?: boolean) => {
+    const subCategories = values.chosenOptions.map(({ value }) => value);
+
+    if (isCategory) {
+      currentParams.categoryId = values.value;
+
+      if (subCategories.length > 0)
+        currentParams.subcategoriesIdValues = JSON.stringify(
+          subCategories.map((category) => Number(category))
+        );
+
+      if (subCategories.length === 0)
+        delete currentParams.subcategoriesIdValues;
+
+      if (values.value !== "2") delete currentParams.shoesSizes;
+      if (values.value !== "1") delete currentParams.clothingSizes;
+    }
+
+    if (!isCategory) {
+      if (values.value === "gender" && subCategories.length > 0)
+        currentParams[values.value] = JSON.stringify(subCategories[0]);
+
+      if (values.value !== "gender" && subCategories.length > 0)
+        currentParams[values.value] = JSON.stringify(subCategories);
+
+      if (values.value === "region" && subCategories.length > 0)
+        currentParams[values.value] = JSON.stringify(subCategories[0]);
+
+      if (values.value === "city" && subCategories.length > 0)
+        currentParams[values.value] = JSON.stringify(subCategories[0]);
+
+      if (subCategories.length === 0) delete currentParams[values.value];
+    }
+
+    setSearchParams(currentParams);
+  };
+
+  useEffect(() => {
+    if (!search.length) {
+      delete currentParams.search;
+      setSearchParams(currentParams);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    const openCategory = searchParams.get("categoryId");
+    const openRegion = searchParams.get("region");
+    const searchResults = search || searchParams.get("search");
+
+    if (openCategory) setOpenCategory(+openCategory - 1);
+    if (openRegion) setIsOpenLocation(true);
+
+    if (searchResults) {
+      const newParams = { ...currentParams, search: searchResults };
+      setSearchParams(newParams);
+    }
+
+    const paramsForFiltering: {
+      [key: string]: string[] | number[] | string | number;
+    } = {};
+
+    searchParams.forEach(
+      (value, key) =>
+        (paramsForFiltering[key] = key === "search" ? value : JSON.parse(value))
+    );
+
+    setParams(paramsForFiltering);
+
+    setTimeout(() => {
+      setParams({});
+    }, 1000);
+  }, []);
 
   useEffect(() => {
     (async () => {
       try {
-        const [categories, clothingSizes, shoeSizes] = await Promise.all([
-          api.addGood.getCategoryAll(),
-          api.addGood.getSize(1),
-          api.addGood.getSize(2),
-        ]);
+        const [categories, clothingSizes, shoeSizes, areas] = await Promise.all(
+          [
+            api.addGood.getCategoryAll(),
+            api.addGood.getSize(1),
+            api.addGood.getSize(2),
+            api.location.getAreaLocation(),
+          ]
+        );
 
-        if (Array.isArray(categories) && Array.isArray(clothingSizes) && Array.isArray(shoeSizes)) {
+        if (
+          Array.isArray(categories) &&
+          Array.isArray(clothingSizes) &&
+          Array.isArray(shoeSizes) &&
+          Array.isArray(areas)
+        ) {
           setReceivedClothingSize(clothingSizes);
           setReceivedShoeSize(shoeSizes);
           setReceivedCategories(categories);
+          setAreas(areas);
         }
       } catch (err: any) {
         showMessage.error(err.response?.data ?? err?.message);
@@ -58,120 +160,122 @@ const Filtration = () => {
     })();
   }, []);
 
-  const currentType = useMemo(() => {
-    return lang === 'en' ? 'cm' : 'см';
-  }, [lang]);
-
   return (
-    <FormikHandler>
-      <Form>
-        <Styles.CategoryFilter>
-          <Styles.Title>{getTranslatedText('filterPage.categories')}</Styles.Title>
+    <Styles.FiltrationWrapper>
+      <Styles.CategoryWrapper>
+        <Styles.CategoryTitle>
+          {getTranslatedText("categoriesTitle.category")}
+        </Styles.CategoryTitle>
+        <Styles.CategoryUnderline />
 
-          <Styles.SelectBlock>
-            {receivedCategories.map((category) => (
+        {receivedCategories &&
+          generateCategoriesData(receivedCategories).map((category, index) => {
+            return (
               <Select
-                key={category.id}
-                data={category.subcategories}
-                title={getTranslatedText(`categories.${category.name}`)}
+                {...category}
+                key={"category" + index}
+                isActive={open === index}
+                options={category.options}
+                multiple={category.multiple}
+                notCheckbox={category.notCheckbox}
+                deleteOnClose={category.deleteOnClose}
+                setIsActive={() => setOpenCategory(index)}
+                onChange={(values: IOnChangeValue) => onChange(values, true)}
+                filteredParameterOptions={filteredParameterOptions(
+                  category,
+                  params
+                )}
               />
-            ))}
-          </Styles.SelectBlock>
-        </Styles.CategoryFilter>
+            );
+          })}
+      </Styles.CategoryWrapper>
 
-        <Styles.Filter>
-          <Styles.Title>{getTranslatedText('filterPage.filter')}</Styles.Title>
+      <Styles.CategoryWrapper>
+        <Styles.CategoryTitle>
+          {getTranslatedText("categoriesTitle.filter")}
+        </Styles.CategoryTitle>
+        <Styles.CategoryUnderline />
 
-          <Styles.CheckBoxBlock>
-            <InputsWithLocation />
+        <Styles.LocationTitleContainer>
+          <Styles.LocationTitle
+            readOnly
+            value={getTranslatedText("filter.location")}
+            onClick={() => setIsOpenLocation(!isOpenLocation)}
+          />
 
-            <CheckBoxes title={getTranslatedText('product.sex')}>
-              {sexShow.map((item) => (
-                <FormikCheckBox
-                  gap={20}
-                  key={item}
-                  value={item}
-                  fontSize={16}
-                  type='checkbox'
-                  onChange={setGender}
-                  selectedValues={gender}
-                  margin='4px 8px 4px 25px'
-                  text={getTranslatedText(`genderEnum.${item}`)}
-                />
-              ))}
-            </CheckBoxes>
+          <Styles.Triangle isOpen={isOpenLocation} />
+        </Styles.LocationTitleContainer>
 
-            <CheckBoxes title={getTranslatedText('product.age')}>
-              {agesShow.map((item) => (
-                <FormikCheckBox
-                  gap={20}
-                  key={item}
-                  value={item}
-                  fontSize={16}
-                  type='checkbox'
-                  onChange={setAge}
-                  selectedValues={age}
-                  text={enumAge[item]}
-                  margin='4px 8px 4px 25px'
-                />
-              ))}
-            </CheckBoxes>
+        <Styles.SubCategories filtration isOpen={isOpenLocation}>
+          <Styles.SubCategory filtration>
+            <Select
+              filtration
+              value="region"
+              isLoading={isLoading}
+              options={generateArea(lang, areas)}
+              title={getTranslatedText("addAdv.district")}
+              onChange={(values: IOnChangeValue) => onChange(values)}
+              filteredParameterOptions={initialAreaValue && [initialAreaValue]}
+            />
+          </Styles.SubCategory>
 
-            <CheckBoxes title={getTranslatedText('product.clothingSizes')}>
-              <Styles.ScrollBar>
-                {receivedClothingSizes.map((item) => (
-                  <FormikCheckBox
-                    gap={20}
-                    key={item}
-                    value={item}
-                    fontSize={16}
-                    type='checkbox'
-                    margin='4px 8px 4px 25px'
-                    onChange={setClothesSizes}
-                    selectedValues={clothesSizes}
-                    text={`${item} ${currentType}`}
-                  />
-                ))}
-              </Styles.ScrollBar>
-            </CheckBoxes>
+          <Styles.SubCategory
+            filtration
+            style={{
+              top: "55px",
+              zIndex: "99",
+            }}
+          >
+            <Select
+              filtration
+              value="city"
+              options={[]}
+              isLoading={isLoading}
+              title={getTranslatedText("addAdv.city")}
+              onChange={(values: any) => console.log(values)}
+            />
+          </Styles.SubCategory>
+        </Styles.SubCategories>
 
-            <CheckBoxes title={getTranslatedText('product.shoeSizes')}>
-              <Styles.ScrollBar>
-                {receivedShoeSizes.map((item) => (
-                  <FormikCheckBox
-                    gap={20}
-                    key={item}
-                    value={item}
-                    fontSize={16}
-                    type='checkbox'
-                    onChange={setShoesSizes}
-                    margin='4px 8px 4px 25px'
-                    selectedValues={shoesSizes}
-                    text={`${item} ${currentType}`}
-                  />
-                ))}
-              </Styles.ScrollBar>
-            </CheckBoxes>
+        {generateFilterData(
+          lang,
+          sexShow,
+          agesShow,
+          seasonShow,
+          receivedShoeSizes,
+          receivedClothingSizes
+        ).map((category, index) => {
+          return (
+            <Select
+              {...category}
+              key={"filter" + index}
+              multiple={category.multiple}
+              onChange={(values: IOnChangeValue) => onChange(values)}
+              filteredParameterOptions={filteredParameterOptions(
+                category,
+                params,
+                true
+              )}
+              disabled={
+                category.disabled === undefined
+                  ? undefined
+                  : !(open === category.disabled)
+              }
+            />
+          );
+        })}
+      </Styles.CategoryWrapper>
 
-            <CheckBoxes title={getTranslatedText('product.season')}>
-              {seasonShow.map((item) => (
-                <FormikCheckBox
-                  gap={20}
-                  key={item}
-                  value={item}
-                  fontSize={16}
-                  type='checkbox'
-                  onChange={setSeason}
-                  selectedValues={season}
-                  margin='4px 8px 4px 25px'
-                  text={getTranslatedText(`seasonEnum.${item}`)}
-                />
-              ))}
-            </CheckBoxes>
-          </Styles.CheckBoxBlock>
-        </Styles.Filter>
-      </Form>
-    </FormikHandler>
+      <ButtonNew
+        animated
+        text="submit"
+        height="50px"
+        onClick={submit}
+        colorType={"blue"}
+        disabled={isLoading}
+        styleType={"default"}
+      />
+    </Styles.FiltrationWrapper>
   );
 };
 
