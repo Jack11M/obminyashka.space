@@ -1,4 +1,20 @@
-import { obminyashkaApi } from '../Service/networkProvider';
+import { obminyashkaApi } from "../Service/networkProvider";
 
-export const postFilter = (dataValue: { keyword: number, page: number}) =>
-  obminyashkaApi.post('/adv/filter', dataValue).then(({ data }) => data);
+interface RequestData {
+  page: number;
+  size: number;
+  age: string[];
+  gender: string;
+  keyword: string;
+  season: string[];
+  categoryId: number;
+  locationId: string;
+  shoesSizes: string[];
+  enableRandom: boolean;
+  clothingSizes: string[];
+  excludeAdvertisementId: string;
+  subcategoriesIdValues: number[];
+}
+
+export const postFilter = (dataValue: RequestData) =>
+  obminyashkaApi.post("/adv/filter", dataValue).then(({ data }) => data);
