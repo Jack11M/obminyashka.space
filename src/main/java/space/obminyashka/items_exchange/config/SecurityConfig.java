@@ -108,7 +108,8 @@ public class SecurityConfig {
                                 "/**/*.html",
                                 "/**/*.css",
                                 "/**/*.js",
-                                "/**/*.ttf").permitAll()
+                                "/**/*.ttf",
+                                "/ChatIndex.html").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/error", "/manage/**").permitAll()
                         .requestMatchers(HttpMethod.POST, ApiKey.OAUTH2, ApiKey.OAUTH2_LOGIN).permitAll()
                         .requestMatchers(HttpMethod.POST,
