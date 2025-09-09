@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import space.obminyashka.items_exchange.rest.api.ApiKey;
 import space.obminyashka.items_exchange.rest.dto.CategoryDto;
 import space.obminyashka.items_exchange.rest.exception.DataConflictException;
+import space.obminyashka.items_exchange.rest.exception.bad_request.BadRequestException;
 import space.obminyashka.items_exchange.rest.exception.bad_request.InvalidDtoException;
 import space.obminyashka.items_exchange.rest.exception.not_found.CategorySizeNotFoundException;
 import space.obminyashka.items_exchange.rest.exception.not_found.EntityIdNotFoundException;
@@ -137,6 +138,9 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategoryById(@Positive(message = "{" + INVALID_NOT_POSITIVE_ID + "}")
                                    @PathVariable("category_id") long id) throws DataConflictException {
+        if (!categoryService.isCategoryValid(id)) {
+            throw new BadRequestException(getParametrizedMessageSource(INVALID_CATEGORY_ID, id));
+        }
         if (!categoryService.isCategoryExistsById(id)) {
             throw new EntityIdNotFoundException(getParametrizedMessageSource(INVALID_CATEGORY_ID, id));
         }
